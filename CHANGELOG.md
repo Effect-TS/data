@@ -1,5 +1,25 @@
 # @fp-ts/core
 
+## 0.0.1
+
+### Patch Changes
+
+- [`be90dd9`](https://github.com/fp-ts/data/commit/be90dd959ba624e92bc28c87ba19e5f697ab3d0e) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Port List's functions:
+
+  - ListBuilder
+  - List
+  - Cons
+  - Nil
+  - builder
+  - make
+  - cons
+  - nil
+  - drop
+  - take
+  - filter
+  - isCons
+  - isNil
+
 ## 0.0.2
 
 ### Patch Changes
