@@ -73,7 +73,7 @@ module.exports = {
           "quoteStyle": "alwaysDouble",
           "trailingCommas": "never",
           "operatorPosition": "maintain",
-          "useParentheses": "force"
+          "arrowFunction.useParentheses": "force"
         }
       }
     ]

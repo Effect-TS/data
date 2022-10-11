@@ -14,8 +14,8 @@ function getModuleNames(): ReadonlyArray<string> {
   return glob
     .sync("./src/**/*.ts")
     .map((file) => path.parse(file))
-    .filter((file) => !file.dir.includes("/internal/"))
-    .map(file => file.name)
+    .filter((file) => !file.dir.startsWith("./src/internal"))
+    .map((file) => file.name)
 }
 
 describe("index", () => {
