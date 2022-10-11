@@ -9,24 +9,36 @@
  * forked from https://github.com/frptools
  */
 
+/** @internal */
 export function isNothing<T>(value: T | null | undefined) {
   return value === void 0 || value === null
 }
 
+/** @internal */
 const defaultIncHi = 0x14057b7e
+/** @internal */
 const defaultIncLo = 0xf767814f
+/** @internal */
 const MUL_HI = 0x5851f42d >>> 0
+/** @internal */
 const MUL_LO = 0x4c957f2d >>> 0
+/** @internal */
 const BIT_53 = 9007199254740992.0
+/** @internal */
 const BIT_27 = 134217728.0
 
+/** @internal */
 export type PCGRandomState = [number, number, number, number]
+
+/** @internal */
 export type OptionalNumber = number | null | undefined
 
 /**
  * PCG is a family of simple fast space-efficient statistically good algorithms
  * for random number generation. Unlike many general-purpose RNGs, they are also
  * hard to predict.
+ *
+ * @internal
  */
 export class PCGRandom {
   private _state: Int32Array
