@@ -42,7 +42,7 @@ const pcgr = new PCGRandom()
  * @since 1.0.0
  * @category hashing
  */
-export const random: <A extends object>(self: A) => number = (self) => {
+export const randomHash: <A extends object>(self: A) => number = (self) => {
   if (!CACHE.has(self)) {
     const h = optimize(pcgr.number())
     CACHE.set(self, h)

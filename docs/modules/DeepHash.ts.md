@@ -16,7 +16,7 @@ Added in v1.0.0
   - [combine](#combine)
 - [hashing](#hashing)
   - [deepHash](#deephash)
-  - [random](#random)
+  - [randomHash](#randomhash)
 - [model](#model)
   - [DeepHash](#deephash)
   - [DeepHash (interface)](#deephash-interface)
@@ -48,12 +48,12 @@ export declare const deepHash: <A>(self: A) => number
 
 Added in v1.0.0
 
-## random
+## randomHash
 
 **Signature**
 
 ```ts
-export declare const random: <A extends object>(self: A) => number
+export declare const randomHash: <A extends object>(self: A) => number
 ```
 
 Added in v1.0.0

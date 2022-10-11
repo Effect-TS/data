@@ -21,7 +21,7 @@ export class MutableListBuilder<A> implements LB.MutableListBuilder<A>, DE.DeepE
   }
 
   [DH.DeepHash.symbol](): number {
-    return DH.random(this)
+    return DH.randomHash(this)
   }
 
   [DE.DeepEqual.symbol](that: unknown) {
