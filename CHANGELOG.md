@@ -1,5 +1,47 @@
 # @fp-ts/core
 
+## 0.0.1
+
+### Patch Changes
+
+- [`c0ce8c9`](https://github.com/fp-ts/data/commit/c0ce8c991343075550df71a9d0dd891c0867c770) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Port List's functions:
+
+  - ListBuilder
+  - List
+  - Cons
+  - Nil
+  - builder
+  - make
+  - cons
+  - nil
+  - drop
+  - take
+  - filter
+  - isCons
+  - isNil
+  - isList
+  - prepend
+  - prependAll
+  - concat
+  - partition
+  - partitionMap
+  - splitAt
+  - head
+  - tail
+  - empty
+  - any
+  - all
+  - find
+  - forEach
+  - flatMap
+  - fromIterable
+  - reverse
+  - reduce
+  - headUnsafe
+  - tailUnsafe
+  - lastUnsafe
+  - map
+
 ## 0.0.2
 
 ### Patch Changes
