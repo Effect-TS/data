@@ -84,7 +84,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const ap: <A>(fa: L.List<A>) => <B>(self: L.List<(a: A) => B>) => L.List<B>
+export declare const ap: <A>(fa: List<A>) => <B>(self: List<(a: A) => B>) => List<B>
 ```
 
 Added in v1.0.0
@@ -96,7 +96,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const builder: <A>() => LB.MutableListBuilder<A>
+export declare const builder: <A>() => MutableListBuilder<A>
 ```
 
 Added in v1.0.0
@@ -106,7 +106,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const cons: <A>(head: A, tail: L.List<A>) => L.Cons<A>
+export declare const cons: <A>(head: A, tail: List<A>) => Cons<A>
 ```
 
 Added in v1.0.0
@@ -116,7 +116,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const empty: <A = never>() => L.List<A>
+export declare const empty: <A = never>() => List<A>
 ```
 
 Added in v1.0.0
@@ -126,7 +126,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const make: <As extends readonly any[]>(...prefix: As) => L.List<As[number]>
+export declare const make: <As extends readonly any[]>(...prefix: As) => List<As[number]>
 ```
 
 Added in v1.0.0
@@ -136,7 +136,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const nil: <A = never>() => L.Nil<A>
+export declare const nil: <A = never>() => Nil<A>
 ```
 
 Added in v1.0.0
@@ -146,7 +146,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const of: <A>(a: A) => L.List<A>
+export declare const of: <A>(a: A) => List<A>
 ```
 
 Added in v1.0.0
@@ -158,7 +158,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const fromIterable: <A>(prefix: Iterable<A>) => L.List<A>
+export declare const fromIterable: <A>(prefix: Iterable<A>) => List<A>
 ```
 
 Added in v1.0.0
@@ -170,7 +170,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const drop: (n: number) => <A>(self: L.List<A>) => L.List<A>
+export declare const drop: (n: number) => <A>(self: List<A>) => List<A>
 ```
 
 Added in v1.0.0
@@ -181,8 +181,8 @@ Added in v1.0.0
 
 ```ts
 export declare const filter: {
-  <A, B extends A>(p: Refinement<A, B>): (self: L.List<A>) => L.List<B>
-  <A>(p: Predicate<A>): (self: L.List<A>) => L.List<A>
+  <A, B extends A>(p: Refinement<A, B>): (self: List<A>) => List<B>
+  <A>(p: Predicate<A>): (self: List<A>) => List<A>
 }
 ```
 
@@ -193,7 +193,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const take: (n: number) => <A>(self: L.List<A>) => L.List<A>
+export declare const take: (n: number) => <A>(self: List<A>) => List<A>
 ```
 
 Added in v1.0.0
@@ -206,8 +206,8 @@ Added in v1.0.0
 
 ```ts
 export declare const find: {
-  <A, B extends A>(p: Refinement<A, B>): (self: L.List<A>) => Option<B>
-  <A>(p: Predicate<A>): (self: L.List<A>) => Option<A>
+  <A, B extends A>(p: Refinement<A, B>): (self: List<A>) => Option<B>
+  <A>(p: Predicate<A>): (self: List<A>) => Option<A>
 }
 ```
 
@@ -220,7 +220,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const reduce: <A, B>(b: B, f: (b: B, a: A) => B) => (self: L.List<A>) => B
+export declare const reduce: <A, B>(b: B, f: (b: B, a: A) => B) => (self: List<A>) => B
 ```
 
 Added in v1.0.0
@@ -232,7 +232,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const head: <A>(self: L.List<A>) => Option<A>
+export declare const head: <A>(self: List<A>) => Option<A>
 ```
 
 Added in v1.0.0
@@ -242,7 +242,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const tail: <A>(self: L.List<A>) => Option<L.List<A>>
+export declare const tail: <A>(self: List<A>) => Option<List<A>>
 ```
 
 Added in v1.0.0
@@ -254,7 +254,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Apply: _apply.Apply<L.ListTypeLambda>
+export declare const Apply: Apply<ListTypeLambda>
 ```
 
 Added in v1.0.0
@@ -264,7 +264,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const FromIdentity: _fromIdentity.FromIdentity<L.ListTypeLambda>
+export declare const FromIdentity: FromIdentity<ListTypeLambda>
 ```
 
 Added in v1.0.0
@@ -274,7 +274,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Functor: _functor.Functor<L.ListTypeLambda>
+export declare const Functor: Functor<ListTypeLambda>
 ```
 
 Added in v1.0.0
@@ -286,7 +286,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const map: <A, B>(f: (a: A) => B) => (self: L.List<A>) => L.List<B>
+export declare const map: <A, B>(f: (a: A) => B) => (self: List<A>) => List<B>
 ```
 
 Added in v1.0.0
@@ -340,7 +340,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const concat: <B>(prefix: L.List<B>) => <A>(self: L.List<A>) => L.List<B | A>
+export declare const concat: <B>(prefix: List<B>) => <A>(self: List<A>) => List<B | A>
 ```
 
 Added in v1.0.0
@@ -350,7 +350,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const prepend: <B>(elem: B) => <A>(self: L.List<A>) => L.Cons<B | A>
+export declare const prepend: <B>(elem: B) => <A>(self: List<A>) => Cons<B | A>
 ```
 
 Added in v1.0.0
@@ -360,7 +360,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const prependAll: <B>(prefix: L.List<B>) => <A>(self: L.List<A>) => L.List<B | A>
+export declare const prependAll: <B>(prefix: List<B>) => <A>(self: List<A>) => List<B | A>
 ```
 
 Added in v1.0.0
@@ -370,7 +370,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const reverse: <A>(self: L.List<A>) => L.List<A>
+export declare const reverse: <A>(self: List<A>) => List<A>
 ```
 
 Added in v1.0.0
@@ -382,7 +382,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const partition: <A>(f: Predicate<A>) => (self: L.List<A>) => readonly [L.List<A>, L.List<A>]
+export declare const partition: <A>(f: Predicate<A>) => (self: List<A>) => readonly [List<A>, List<A>]
 ```
 
 Added in v1.0.0
@@ -394,7 +394,7 @@ Added in v1.0.0
 ```ts
 export declare const partitionMap: <A, B, C>(
   f: (a: A) => Result<B, C>
-) => (self: L.List<A>) => readonly [L.List<B>, L.List<C>]
+) => (self: List<A>) => readonly [List<B>, List<C>]
 ```
 
 Added in v1.0.0
@@ -404,7 +404,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const splitAt: (n: number) => <A>(self: L.List<A>) => readonly [L.List<A>, L.List<A>]
+export declare const splitAt: (n: number) => <A>(self: List<A>) => readonly [List<A>, List<A>]
 ```
 
 Added in v1.0.0
@@ -416,7 +416,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const all: <A>(p: Predicate<A>) => (self: L.List<A>) => boolean
+export declare const all: <A>(p: Predicate<A>) => (self: List<A>) => boolean
 ```
 
 Added in v1.0.0
@@ -426,7 +426,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const any: <A>(p: Predicate<A>) => (self: L.List<A>) => boolean
+export declare const any: <A>(p: Predicate<A>) => (self: List<A>) => boolean
 ```
 
 Added in v1.0.0
@@ -438,7 +438,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const isCons: <A>(self: L.List<A>) => self is L.Cons<A>
+export declare const isCons: <A>(self: List<A>) => self is Cons<A>
 ```
 
 Added in v1.0.0
@@ -448,7 +448,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const isList: { <A>(u: Iterable<A>): u is L.List<A>; (u: unknown): u is L.List<unknown> }
+export declare const isList: { <A>(u: Iterable<A>): u is List<A>; (u: unknown): u is List<unknown> }
 ```
 
 Added in v1.0.0
@@ -458,7 +458,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const isNil: <A>(self: L.List<A>) => self is L.Nil<A>
+export declare const isNil: <A>(self: List<A>) => self is Nil<A>
 ```
 
 Added in v1.0.0
@@ -470,7 +470,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const flatMap: <A, B>(f: (a: A) => L.List<B>) => (self: L.List<A>) => L.List<B>
+export declare const flatMap: <A, B>(f: (a: A) => List<B>) => (self: List<A>) => List<B>
 ```
 
 Added in v1.0.0
@@ -482,7 +482,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const sortWith: <A>(ord: Ord<A>) => (self: L.List<A>) => L.List<A>
+export declare const sortWith: <A>(ord: Ord<A>) => (self: List<A>) => List<A>
 ```
 
 Added in v1.0.0
@@ -506,7 +506,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const forEach: <A, U>(f: (a: A) => U) => (self: L.List<A>) => void
+export declare const forEach: <A, U>(f: (a: A) => U) => (self: List<A>) => void
 ```
 
 Added in v1.0.0
@@ -532,7 +532,7 @@ Added in v3.0.0
 **Signature**
 
 ```ts
-export declare const headUnsafe: <A>(self: L.List<A>) => A
+export declare const headUnsafe: <A>(self: List<A>) => A
 ```
 
 Added in v1.0.0
@@ -542,7 +542,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const lastUnsafe: <A>(self: L.List<A>) => A
+export declare const lastUnsafe: <A>(self: List<A>) => A
 ```
 
 Added in v1.0.0
@@ -552,7 +552,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const tailUnsafe: <A>(self: L.List<A>) => L.List<A>
+export declare const tailUnsafe: <A>(self: List<A>) => List<A>
 ```
 
 Added in v1.0.0

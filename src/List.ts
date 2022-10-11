@@ -7,22 +7,24 @@ import type { Option } from "@fp-ts/core/Option"
 import type { Predicate } from "@fp-ts/core/Predicate"
 import type { Refinement } from "@fp-ts/core/Refinement"
 import type { Result } from "@fp-ts/core/Result"
-import type * as _apply from "@fp-ts/core/typeclasses/Apply"
-import type * as _fromIdentity from "@fp-ts/core/typeclasses/FromIdentity"
-import type * as _functor from "@fp-ts/core/typeclasses/Functor"
+import { Apply } from "@fp-ts/core/typeclasses/Apply"
+import { FromIdentity } from "@fp-ts/core/typeclasses/FromIdentity"
+import { Functor } from "@fp-ts/core/typeclasses/Functor"
 import type { Ord } from "@fp-ts/core/typeclasses/Ord"
 import type { DeepEqual } from "@fp-ts/data/DeepEqual"
 import * as LI from "@fp-ts/data/internal/List"
 import * as _sortWith from "@fp-ts/data/internal/List/sortWith"
-import type * as L from "@fp-ts/data/List"
-import type * as LB from "@fp-ts/data/MutableListBuilder"
+import type { MutableListBuilder } from "@fp-ts/data/MutableListBuilder"
+
+type LCons<A> = Cons<A>
+type LNil<A> = Nil<A>
 
 /**
  * @since 1.0.0
  */
 export declare namespace List {
-  export type Cons<A> = L.Cons<A>
-  export type Nil<A> = L.Nil<A>
+  export type Cons<A> = LCons<A>
+  export type Nil<A> = LNil<A>
 }
 
 const TypeId: unique symbol = LI.ListTypeId as TypeId
@@ -73,7 +75,7 @@ export interface ListTypeLambda extends HKT.TypeLambda {
  * @since 1.0.0
  * @category constructors
  */
-export const builder: <A>() => LB.MutableListBuilder<A> = LI.builder
+export const builder: <A>() => MutableListBuilder<A> = LI.builder
 
 /**
  * @since 1.0.0
@@ -286,20 +288,24 @@ export const lastUnsafe: <A>(self: List<A>) => A = LI.unsafeLast
  */
 export const sortWith: <A>(ord: Ord<A>) => (self: List<A>) => List<A> = _sortWith.sortWith
 
-/**
- * @since 1.0.0
- * @category instances
- */
-export const Functor: _functor.Functor<ListTypeLambda> = LI.Functor
+const Functor: Functor<ListTypeLambda> = LI.Functor
+const FromIdentity: FromIdentity<ListTypeLambda> = LI.FromIdentity
+const Apply: Apply<ListTypeLambda> = LI.Apply
 
-/**
- * @since 1.0.0
- * @category instances
- */
-export const FromIdentity: _fromIdentity.FromIdentity<ListTypeLambda> = LI.FromIdentity
-
-/**
- * @since 1.0.0
- * @category instances
- */
-export const Apply: _apply.Apply<ListTypeLambda> = LI.Apply
+export {
+  /**
+   * @since 1.0.0
+   * @category instances
+   */
+  Apply,
+  /**
+   * @since 1.0.0
+   * @category instances
+   */
+  FromIdentity,
+  /**
+   * @since 1.0.0
+   * @category instances
+   */
+  Functor
+}
