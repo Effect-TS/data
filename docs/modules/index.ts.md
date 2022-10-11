@@ -16,6 +16,7 @@ Added in v1.0.0
   - [deepEqual](#deepequal)
   - [deepHash](#deephash)
   - [list](#list)
+  - [mutableListBuilder](#mutablelistbuilder)
 
 ---
 
@@ -47,6 +48,16 @@ Added in v1.0.0
 
 ```ts
 export declare const list: any
+```
+
+Added in v1.0.0
+
+## mutableListBuilder
+
+**Signature**
+
+```ts
+export declare const mutableListBuilder: any
 ```
 
 Added in v1.0.0

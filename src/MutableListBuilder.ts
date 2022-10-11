@@ -1,3 +1,6 @@
+/**
+ * @since 1.0.0
+ */
 import type { DeepEqual } from "@fp-ts/data/DeepEqual"
 import * as LBI from "@fp-ts/data/internal/ListBuilder"
 import type { Cons, List } from "@fp-ts/data/List"

@@ -43,7 +43,6 @@ Added in v1.0.0
 - [model](#model)
   - [Cons (interface)](#cons-interface)
   - [List (type alias)](#list-type-alias)
-  - [ListBuilder (interface)](#listbuilder-interface)
   - [Nil (interface)](#nil-interface)
 - [mutations](#mutations)
   - [concat](#concat)
@@ -63,8 +62,10 @@ Added in v1.0.0
   - [isNil](#isnil)
 - [sequencing](#sequencing)
   - [flatMap](#flatmap)
+- [sorting](#sorting)
+  - [sortWith](#sortwith)
 - [symbol](#symbol)
-  - [ListTypeId (type alias)](#listtypeid-type-alias)
+  - [TypeId (type alias)](#typeid-type-alias)
 - [traversing](#traversing)
   - [forEach](#foreach)
 - [type lambdas](#type-lambdas)
@@ -95,7 +96,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const builder: <A>() => ListBuilder<A>
+export declare const builder: <A>() => any
 ```
 
 Added in v1.0.0
@@ -298,7 +299,7 @@ Added in v1.0.0
 
 ```ts
 export interface Cons<A> extends Iterable<A>, DeepEqual {
-  readonly [ListTypeId]: ListTypeId
+  readonly _id: TypeId
   readonly _tag: 'Cons'
   readonly _A: (_: never) => A
   readonly head: A
@@ -318,43 +319,13 @@ export type List<A> = Cons<A> | Nil<A>
 
 Added in v1.0.0
 
-## ListBuilder (interface)
-
-**Signature**
-
-```ts
-export interface ListBuilder<A> extends Iterable<A>, DeepEqual {
-  readonly length: number
-
-  readonly isEmpty: () => boolean
-
-  readonly unsafeHead: () => A
-
-  readonly unsafeTail: () => List<A>
-
-  readonly append: (elem: A) => ListBuilder<A>
-
-  readonly prepend: (elem: A) => ListBuilder<A>
-
-  readonly unprepend: (this: this) => A
-
-  readonly build: () => List<A>
-
-  readonly insert: (idx: number, elem: A) => ListBuilder<A>
-
-  readonly reduce: <B>(b: B, f: (b: B, a: A) => B) => B
-}
-```
-
-Added in v1.0.0
-
 ## Nil (interface)
 
 **Signature**
 
 ```ts
 export interface Nil<A> extends Iterable<A>, DeepEqual {
-  readonly [ListTypeId]: ListTypeId
+  readonly _id: TypeId
   readonly _tag: 'Nil'
   readonly _A: (_: never) => A
 }
@@ -504,14 +475,26 @@ export declare const flatMap: <A, B>(f: (a: A) => List<B>) => (self: List<A>) =>
 
 Added in v1.0.0
 
-# symbol
+# sorting
 
-## ListTypeId (type alias)
+## sortWith
 
 **Signature**
 
 ```ts
-export type ListTypeId = typeof ListTypeId
+export declare const sortWith: <A>(ord: Ord<A>) => (self: List<A>) => List<A>
+```
+
+Added in v1.0.0
+
+# symbol
+
+## TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof TypeId
 ```
 
 Added in v1.0.0
