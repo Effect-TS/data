@@ -14,22 +14,22 @@ import type { Predicate } from "@fp-ts/core/Predicate"
 import type { Refinement } from "@fp-ts/core/Refinement"
 import * as R from "@fp-ts/core/Result"
 import type * as L from "@fp-ts/data/List"
+import type * as LB from "@fp-ts/data/MutableListBuilder"
 
 import type * as _apply from "@fp-ts/core/typeclasses/Apply"
 import type * as _fromIdentity from "@fp-ts/core/typeclasses/FromIdentity"
 import type * as _functor from "@fp-ts/core/typeclasses/Functor"
-import type { Ord } from "@fp-ts/core/typeclasses/Ord"
 import * as DE from "@fp-ts/data/DeepEqual"
 import * as DH from "@fp-ts/data/DeepHash"
 
 /** @internal */
-export const ListTypeId: L.ListTypeId = Symbol.for("@fp-ts/data/List") as L.ListTypeId
+export const ListTypeId: L.TypeId = Symbol.for("@fp-ts/data/List") as L.TypeId
 
 /** @internal */
 export class ConsImpl<A> implements Iterable<A>, L.Cons<A>, DE.DeepEqual {
   readonly _tag = "Cons"
   readonly _A: (_: never) => A = (_) => _
-  readonly [ListTypeId]: L.ListTypeId = ListTypeId
+  readonly _id: L.TypeId = ListTypeId
   constructor(readonly head: A, public tail: L.List<A>) {}
   [DH.DeepHash.symbol](): number {
     return pipe(this, reduce(DH.deepHash(this._tag), (h, a) => pipe(h, DH.combine(DH.deepHash(a)))))
@@ -70,7 +70,7 @@ export class ConsImpl<A> implements Iterable<A>, L.Cons<A>, DE.DeepEqual {
 export class NilImpl<A> implements Iterable<A>, L.Nil<A>, DE.DeepEqual {
   readonly _tag = "Nil"
   readonly _A: (_: never) => A = (_) => _
-  readonly [ListTypeId]: L.ListTypeId = ListTypeId;
+  readonly _id: L.TypeId = ListTypeId;
 
   [DH.DeepHash.symbol](): number {
     return DH.deepHash(this._tag)
@@ -154,7 +154,7 @@ export function isList<A>(u: Iterable<A>): u is L.List<A>
 export function isList(u: unknown): u is L.List<unknown>
 /** @internal */
 export function isList(u: unknown): u is L.List<unknown> {
-  return typeof u === "object" && u != null && ListTypeId in u
+  return typeof u === "object" && u != null && "_id" in u && u["_id"] === ListTypeId
 }
 
 /** @internal */
@@ -567,43 +567,14 @@ export function tail<A>(self: L.List<A>): O.Option<L.List<A>> {
 }
 
 /** @internal */
-export function sortWith<A>(ord: Ord<A>) {
-  return (self: L.List<A>): L.List<A> => {
-    const len = length(self)
-    const b = new ListBuilder<A>()
-    if (len === 1) {
-      b.append(unsafeHead(self)!)
-    } else if (len > 1) {
-      const arr = new Array<[number, A]>(len)
-      copyToArrayWithIndex(self, arr)
-      arr.sort(([i, x], [j, y]) => {
-        const c = ord.compare(y)(x)
-        return c !== 0 ? c : i < j ? -1 : 1
-      })
-      for (let i = 0; i < len; i++) {
-        b.append(arr[i]![1])
-      }
-    }
-    return b.build()
-  }
-}
+export class MutableListBuilder<A> implements LB.MutableListBuilder<A>, DE.DeepEqual {
+  readonly _id: LB.TypeId = Symbol.for("@fp-ts/data/MutableListBuilder") as LB.TypeId
 
-/** @internal */
-function copyToArrayWithIndex<A>(list: L.List<A>, arr: Array<[number, A]>): void {
-  let these = list
-  let i = 0
-  while (!isNil(these)) {
-    arr[i] = [i, these.head]
-    these = these.tail
-    i++
-  }
-}
-
-/** @internal */
-export class ListBuilder<A> implements L.ListBuilder<A>, DE.DeepEqual {
-  private first: L.List<A> = nil()
-  private last0: ConsImpl<A> | undefined = undefined
-  private len = 0;
+  constructor(
+    public first: L.List<A>,
+    public last0: ConsImpl<A> | undefined,
+    public len: number
+  ) {}
 
   [Symbol.iterator](): Iterator<A> {
     return this.first[Symbol.iterator]()
@@ -620,105 +591,11 @@ export class ListBuilder<A> implements L.ListBuilder<A>, DE.DeepEqual {
   get length(): number {
     return this.len
   }
-
-  isEmpty = (): boolean => {
-    return this.len === 0
-  }
-
-  unsafeHead = (): A => {
-    if (this.isEmpty()) {
-      throw new Error("Expected ListBuilder to be not empty")
-    }
-    return (this.first as L.Cons<A>).head
-  }
-
-  unsafeTail = (): L.List<A> => {
-    if (this.isEmpty()) {
-      throw new Error("Expected ListBuilder to be not empty")
-    }
-    return (this.first as L.Cons<A>).tail
-  }
-
-  append = (elem: A): ListBuilder<A> => {
-    const last1 = new ConsImpl(elem, nil())
-    if (this.len === 0) {
-      this.first = last1
-    } else {
-      this.last0!.tail = last1
-    }
-    this.last0 = last1
-    this.len += 1
-    return this
-  }
-
-  prepend = (elem: A): ListBuilder<A> => {
-    this.insert(0, elem)
-    return this
-  }
-
-  unprepend = (): A => {
-    if (this.isEmpty()) {
-      throw new Error("no such element")
-    }
-    const h = (this.first as L.Cons<A>).head
-    this.first = (this.first as L.Cons<A>).tail
-    this.len -= 1
-    return h
-  }
-
-  build = (): L.List<A> => {
-    return this.first
-  }
-
-  insert = (idx: number, elem: A): ListBuilder<A> => {
-    if (idx < 0 || idx > this.len) {
-      throw new Error(`Index ${idx} out of bounds ${0} ${this.len - 1}`)
-    }
-    if (idx === this.len) {
-      this.append(elem)
-    } else {
-      const p = this.locate(idx)
-      const nx = cons(elem, this.getNext(p))
-      if (p === undefined) {
-        this.first = nx
-      } else {
-        ;(p as ConsImpl<A>).tail = nx
-      }
-      this.len += 1
-    }
-    return this
-  }
-
-  reduce = <B>(b: B, f: (b: B, a: A) => B): B => {
-    return reduce(b, f)(this.first)
-  }
-
-  private getNext(p: L.List<A> | undefined): L.List<A> {
-    if (p === undefined) {
-      return this.first
-    } else {
-      return unsafeTail(p)!
-    }
-  }
-
-  private locate(i: number): L.List<A> | undefined {
-    if (i === 0) {
-      return undefined
-    } else if (i === this.len) {
-      return this.last0
-    } else {
-      let p = this.first
-      for (let j = i - 1; j > 0; j--) {
-        p = unsafeTail(p)!
-      }
-      return p
-    }
-  }
 }
 
 /** @internal */
-export function builder<A>(): ListBuilder<A> {
-  return new ListBuilder()
+export function builder<A>(): MutableListBuilder<A> {
+  return new MutableListBuilder(nil(), void 0, 0)
 }
 
 /** @internal */
