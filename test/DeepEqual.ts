@@ -1,6 +1,7 @@
 import * as R from "@fp-ts/core/Result"
 import { deepEqual } from "@fp-ts/data/DeepEqual"
 import * as L from "@fp-ts/data/List"
+import * as LB from "@fp-ts/data/MutableListBuilder"
 import { assertTrue } from "@fp-ts/data/test/util"
 
 describe("DeepEqual", () => {
@@ -8,7 +9,7 @@ describe("DeepEqual", () => {
     assertTrue(deepEqual(L.make(0, 1, 2), L.make(0, 1, 2)))
   })
   it("ListBuilder", () => {
-    assertTrue(!deepEqual(L.builder(), L.builder()))
+    assertTrue(!deepEqual(LB.make(), LB.make()))
   })
   it("Result", () => {
     assertTrue(deepEqual(R.succeed(1), R.succeed(1)))

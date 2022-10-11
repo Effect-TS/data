@@ -10,7 +10,7 @@ describe("List", () => {
   })
 
   it("constructs a list via builder", () => {
-    const builder = L.builder<number>()
+    const builder = LB.make<number>()
     for (let i = 0; i <= 3; i++) {
       pipe(builder, LB.append(i))
     }

@@ -8,7 +8,7 @@ import type { List } from "@fp-ts/data/List"
 export function sortWith<A>(ord: Ord<A>) {
   return (self: List<A>): List<A> => {
     const len = L.length(self)
-    const b = L.builder<A>()
+    const b = LB.make<A>()
     if (len === 1) {
       pipe(b, LB.append(L.unsafeHead(self)))
     } else if (len > 1) {

@@ -36,6 +36,12 @@ export interface MutableListBuilder<A> extends Iterable<A>, DeepEqual {
 
 /**
  * @since 1.0.0
+ * @category constructors
+ */
+export const make: <A>() => MutableListBuilder<A> = LBI.make
+
+/**
+ * @since 1.0.0
  * @category mutations
  */
 export const append: <A>(elem: A) => (self: MutableListBuilder<A>) => MutableListBuilder<A> =

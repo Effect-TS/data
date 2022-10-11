@@ -14,7 +14,6 @@ import type { Ord } from "@fp-ts/core/typeclasses/Ord"
 import type { DeepEqual } from "@fp-ts/data/DeepEqual"
 import * as LI from "@fp-ts/data/internal/List"
 import * as _sortWith from "@fp-ts/data/internal/List/sortWith"
-import type { MutableListBuilder } from "@fp-ts/data/MutableListBuilder"
 
 type LCons<A> = Cons<A>
 type LNil<A> = Nil<A>
@@ -70,12 +69,6 @@ export type List<A> = Cons<A> | Nil<A>
 export interface ListTypeLambda extends HKT.TypeLambda {
   readonly type: List<this["Out1"]>
 }
-
-/**
- * @since 1.0.0
- * @category constructors
- */
-export const builder: <A>() => MutableListBuilder<A> = LI.builder
 
 /**
  * @since 1.0.0

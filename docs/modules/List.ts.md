@@ -15,7 +15,6 @@ Added in v1.0.0
 - [apply](#apply)
   - [ap](#ap)
 - [constructors](#constructors)
-  - [builder](#builder)
   - [cons](#cons)
   - [empty](#empty)
   - [make](#make)
@@ -90,16 +89,6 @@ export declare const ap: <A>(fa: List<A>) => <B>(self: List<(a: A) => B>) => Lis
 Added in v1.0.0
 
 # constructors
-
-## builder
-
-**Signature**
-
-```ts
-export declare const builder: <A>() => MutableListBuilder<A>
-```
-
-Added in v1.0.0
 
 ## cons
 

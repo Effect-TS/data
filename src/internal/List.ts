@@ -14,7 +14,6 @@ import type { Predicate } from "@fp-ts/core/Predicate"
 import type { Refinement } from "@fp-ts/core/Refinement"
 import * as R from "@fp-ts/core/Result"
 import type * as L from "@fp-ts/data/List"
-import type * as LB from "@fp-ts/data/MutableListBuilder"
 
 import type * as _apply from "@fp-ts/core/typeclasses/Apply"
 import type * as _fromIdentity from "@fp-ts/core/typeclasses/FromIdentity"
@@ -564,38 +563,6 @@ export function splitAt(n: number) {
 /** @internal */
 export function tail<A>(self: L.List<A>): O.Option<L.List<A>> {
   return isNil(self) ? O.none : O.some(self.tail)
-}
-
-/** @internal */
-export class MutableListBuilder<A> implements LB.MutableListBuilder<A>, DE.DeepEqual {
-  readonly _id: LB.TypeId = Symbol.for("@fp-ts/data/MutableListBuilder") as LB.TypeId
-
-  constructor(
-    public first: L.List<A>,
-    public last0: ConsImpl<A> | undefined,
-    public len: number
-  ) {}
-
-  [Symbol.iterator](): Iterator<A> {
-    return this.first[Symbol.iterator]()
-  }
-
-  [DH.DeepHash.symbol](): number {
-    return DH.random(this)
-  }
-
-  [DE.DeepEqual.symbol](that: unknown) {
-    return this === that
-  }
-
-  get length(): number {
-    return this.len
-  }
-}
-
-/** @internal */
-export function builder<A>(): MutableListBuilder<A> {
-  return new MutableListBuilder(nil(), void 0, 0)
 }
 
 /** @internal */

@@ -12,6 +12,8 @@ Added in v1.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
+- [constructors](#constructors)
+  - [make](#make)
 - [conversions](#conversions)
   - [toList](#tolist)
 - [folding](#folding)
@@ -33,6 +35,18 @@ Added in v1.0.0
   - [tailUnsafe](#tailunsafe)
 
 ---
+
+# constructors
+
+## make
+
+**Signature**
+
+```ts
+export declare const make: <A>() => MutableListBuilder<A>
+```
+
+Added in v1.0.0
 
 # conversions
 
