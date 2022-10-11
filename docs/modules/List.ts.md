@@ -64,7 +64,6 @@ Added in v1.0.0
 - [sequencing](#sequencing)
   - [flatMap](#flatmap)
 - [symbol](#symbol)
-  - [ListTypeId](#listtypeid)
   - [ListTypeId (type alias)](#listtypeid-type-alias)
 - [traversing](#traversing)
   - [forEach](#foreach)
@@ -506,16 +505,6 @@ export declare const flatMap: <A, B>(f: (a: A) => List<B>) => (self: List<A>) =>
 Added in v1.0.0
 
 # symbol
-
-## ListTypeId
-
-**Signature**
-
-```ts
-export declare const ListTypeId: typeof ListTypeId
-```
-
-Added in v1.0.0
 
 ## ListTypeId (type alias)
 

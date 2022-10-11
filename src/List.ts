@@ -48,11 +48,7 @@ export interface ListBuilder<A> extends Iterable<A> {
   readonly reduce: <B>(b: B, f: (b: B, a: A) => B) => B
 }
 
-/**
- * @since 1.0.0
- * @category symbol
- */
-export const ListTypeId: unique symbol = LI.ListTypeId as ListTypeId
+const ListTypeId: unique symbol = LI.ListTypeId as ListTypeId
 
 /**
  * @since 1.0.0
