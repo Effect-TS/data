@@ -10,6 +10,7 @@ import type { Result } from "@fp-ts/core/Result"
 import type * as _apply from "@fp-ts/core/typeclasses/Apply"
 import type * as _fromIdentity from "@fp-ts/core/typeclasses/FromIdentity"
 import type * as _functor from "@fp-ts/core/typeclasses/Functor"
+import type { DeepHash } from "@fp-ts/data/DeepHash"
 import * as LI from "@fp-ts/data/internal/List"
 import type * as L from "@fp-ts/data/List"
 
@@ -60,7 +61,7 @@ export type ListTypeId = typeof ListTypeId
  * @since 1.0.0
  * @category model
  */
-export interface Cons<A> extends Iterable<A> {
+export interface Cons<A> extends Iterable<A>, DeepHash {
   readonly _typeId: ListTypeId
   readonly _tag: "Cons"
   readonly _A: (_: never) => A
@@ -72,7 +73,7 @@ export interface Cons<A> extends Iterable<A> {
  * @since 1.0.0
  * @category model
  */
-export interface Nil<A> extends Iterable<A> {
+export interface Nil<A> extends Iterable<A>, DeepHash {
   readonly _typeId: ListTypeId
   readonly _tag: "Nil"
   readonly _A: (_: never) => A
