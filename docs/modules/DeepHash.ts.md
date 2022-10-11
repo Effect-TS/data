@@ -1,6 +1,6 @@
 ---
 title: DeepHash.ts
-nav_order: 1
+nav_order: 2
 parent: Modules
 ---
 
@@ -16,6 +16,7 @@ Added in v1.0.0
   - [combine](#combine)
 - [hashing](#hashing)
   - [deepHash](#deephash)
+  - [random](#random)
 - [model](#model)
   - [DeepHash](#deephash)
   - [DeepHash (interface)](#deephash-interface)
@@ -30,7 +31,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare function combine(b: number): (self: number) => number
+export declare const combine: (b: number) => (self: number) => number
 ```
 
 Added in v1.0.0
@@ -42,7 +43,17 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare function deepHash<A>(self: A)
+export declare const deepHash: <A>(self: A) => number
+```
+
+Added in v1.0.0
+
+## random
+
+**Signature**
+
+```ts
+export declare const random: <A extends object>(self: A) => number
 ```
 
 Added in v1.0.0

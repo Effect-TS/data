@@ -2,6 +2,7 @@
  * @since 1.0.0
  */
 import { pipe } from "@fp-ts/core/Function"
+import { PCGRandom } from "@fp-ts/data/internal/Random"
 
 /**
  * @since 1.0.0
@@ -35,6 +36,20 @@ export const deepHash: <A>(self: A) => number = <A>(self: A) => {
   return optimize(hash(self))
 }
 
+const pcgr = new PCGRandom()
+
+/**
+ * @since 1.0.0
+ * @category hashing
+ */
+export const random: <A extends object>(self: A) => number = (self) => {
+  if (!CACHE.has(self)) {
+    const h = optimize(pcgr.number())
+    CACHE.set(self, h)
+  }
+  return CACHE.get(self)!
+}
+
 /**
  * @since 1.0.0
  * @category combining
@@ -63,7 +78,7 @@ function string(str: string): number {
 const CACHE = new WeakMap()
 
 function structure(o: object): number {
-  CACHE.set(o, number(Math.random()))
+  CACHE.set(o, number(pcgr.number()))
   const keys = Object.keys(o)
   let h = 12289
   for (let i = 0; i < keys.length; i++) {
@@ -128,7 +143,7 @@ function hash<A>(self: A) {
   }
   if (typeof self === "function") {
     if (CACHE.has(self)) {
-      CACHE.set(self, isDeepHash(self) ? self[DeepHash.symbol]() : number(Math.random()))
+      CACHE.set(self, isDeepHash(self) ? self[DeepHash.symbol]() : number(pcgr.number()))
     }
     return CACHE.get(self)!
   }

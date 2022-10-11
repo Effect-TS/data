@@ -2,10 +2,15 @@
  * @since 1.0.0
  */
 
+import * as deepEqual from "@fp-ts/data/DeepEqual"
 import * as deepHash from "@fp-ts/data/DeepHash"
 import * as list from "@fp-ts/data/List"
 
 export {
+  /**
+   * @since 1.0.0
+   */
+  deepEqual,
   /**
    * @since 1.0.0
    */

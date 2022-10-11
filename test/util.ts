@@ -8,6 +8,10 @@ import type * as Se from "@fp-ts/core/typeclasses/Semigroup"
 import * as assert from "assert"
 import * as fc from "fast-check"
 
+export const assertTrue = (self: boolean) => {
+  assert.strictEqual(self, true)
+}
+
 export const deepStrictEqual = <A>(actual: A, expected: A) => {
   assert.deepStrictEqual(actual, expected)
 }

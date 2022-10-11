@@ -19,19 +19,25 @@ import type * as _apply from "@fp-ts/core/typeclasses/Apply"
 import type * as _fromIdentity from "@fp-ts/core/typeclasses/FromIdentity"
 import type * as _functor from "@fp-ts/core/typeclasses/Functor"
 import type { Ord } from "@fp-ts/core/typeclasses/Ord"
+import * as DE from "@fp-ts/data/DeepEqual"
 import * as DH from "@fp-ts/data/DeepHash"
 
 /** @internal */
 export const ListTypeId: L.ListTypeId = Symbol.for("@fp-ts/data/List") as L.ListTypeId
 
 /** @internal */
-export class ConsImpl<A> implements Iterable<A>, L.Cons<A>, DH.DeepHash {
+export class ConsImpl<A> implements Iterable<A>, L.Cons<A>, DE.DeepEqual {
   readonly _tag = "Cons"
   readonly _A: (_: never) => A = (_) => _
-  readonly _typeId: L.ListTypeId = ListTypeId
+  readonly [ListTypeId]: L.ListTypeId = ListTypeId
   constructor(readonly head: A, public tail: L.List<A>) {}
   [DH.DeepHash.symbol](): number {
     return pipe(this, reduce(DH.deepHash(this._tag), (h, a) => pipe(h, DH.combine(DH.deepHash(a)))))
+  }
+  [DE.DeepEqual.symbol](that: unknown): boolean {
+    return isList(that) && that._tag === "Cons" ?
+      DE.deepEqual(that.head)(this.head) && DE.deepEqual(that.tail)(this.tail) :
+      false
   }
   [Symbol.iterator](): Iterator<A> {
     let done = false
@@ -61,13 +67,17 @@ export class ConsImpl<A> implements Iterable<A>, L.Cons<A>, DH.DeepHash {
 }
 
 /** @internal */
-export class NilImpl<A> implements Iterable<A>, L.Nil<A>, DH.DeepHash {
+export class NilImpl<A> implements Iterable<A>, L.Nil<A>, DE.DeepEqual {
   readonly _tag = "Nil"
   readonly _A: (_: never) => A = (_) => _
-  readonly _typeId: L.ListTypeId = ListTypeId;
+  readonly [ListTypeId]: L.ListTypeId = ListTypeId;
 
   [DH.DeepHash.symbol](): number {
     return DH.deepHash(this._tag)
+  }
+
+  [DE.DeepEqual.symbol](that: unknown): boolean {
+    return isList(that) && that._tag === "Nil"
   }
 
   [Symbol.iterator](): Iterator<A> {
@@ -590,13 +600,21 @@ function copyToArrayWithIndex<A>(list: L.List<A>, arr: Array<[number, A]>): void
 }
 
 /** @internal */
-export class ListBuilder<A> implements L.ListBuilder<A> {
+export class ListBuilder<A> implements L.ListBuilder<A>, DE.DeepEqual {
   private first: L.List<A> = nil()
   private last0: ConsImpl<A> | undefined = undefined
   private len = 0;
 
   [Symbol.iterator](): Iterator<A> {
     return this.first[Symbol.iterator]()
+  }
+
+  [DH.DeepHash.symbol](): number {
+    return DH.random(this)
+  }
+
+  [DE.DeepEqual.symbol](that: unknown) {
+    return this === that
   }
 
   get length(): number {
