@@ -14,6 +14,6 @@ describe("List", () => {
     for (let i = 0; i <= 3; i++) {
       pipe(builder, LB.append(i))
     }
-    assertTrue(pipe(builder, LB.build, deepEqual(L.make(0, 1, 2, 3))))
+    assertTrue(pipe(builder, LB.toList, deepEqual(L.make(0, 1, 2, 3))))
   })
 })

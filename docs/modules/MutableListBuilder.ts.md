@@ -13,7 +13,6 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [conversions](#conversions)
-  - [build](#build)
   - [toList](#tolist)
 - [folding](#folding)
   - [reduce](#reduce)
@@ -36,16 +35,6 @@ Added in v1.0.0
 ---
 
 # conversions
-
-## build
-
-**Signature**
-
-```ts
-export declare const build: <A>(self: MutableListBuilder<A>) => any
-```
-
-Added in v1.0.0
 
 ## toList
 

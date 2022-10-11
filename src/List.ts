@@ -15,7 +15,7 @@ import type { DeepEqual } from "@fp-ts/data/DeepEqual"
 import * as LI from "@fp-ts/data/internal/List"
 import * as _sortWith from "@fp-ts/data/internal/List/sortWith"
 import type * as L from "@fp-ts/data/List"
-import type { MutableListBuilder } from "@fp-ts/data/MutableListBuilder"
+import type * as LB from "@fp-ts/data/MutableListBuilder"
 
 /**
  * @since 1.0.0
@@ -73,7 +73,7 @@ export interface ListTypeLambda extends HKT.TypeLambda {
  * @since 1.0.0
  * @category constructors
  */
-export const builder: <A>() => MutableListBuilder<A> = LI.builder
+export const builder: <A>() => LB.MutableListBuilder<A> = LI.builder
 
 /**
  * @since 1.0.0

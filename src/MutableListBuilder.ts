@@ -93,9 +93,3 @@ export const headUnsafe: <A>(self: MutableListBuilder<A>) => A = LBI.unsafeHead
  * @category unsafe
  */
 export const tailUnsafe: <A>(self: MutableListBuilder<A>) => List<A> = LBI.unsafeTail
-
-/**
- * @since 1.0.0
- * @category conversions
- */
-export const build: <A>(self: MutableListBuilder<A>) => List<A> = LBI.build
