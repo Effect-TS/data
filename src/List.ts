@@ -63,8 +63,8 @@ export interface Nil<A> extends Iterable<A>, DeepEqual {
 export type List<A> = Cons<A> | Nil<A>
 
 /**
+ * @since 1.0.0
  * @category type lambdas
- * @since 3.0.0
  */
 export interface ListTypeLambda extends HKT.TypeLambda {
   readonly type: List<this["Out1"]>

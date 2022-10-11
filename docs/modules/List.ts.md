@@ -512,7 +512,7 @@ export interface ListTypeLambda extends HKT.TypeLambda {
 }
 ```
 
-Added in v3.0.0
+Added in v1.0.0
 
 # unsafe
 
