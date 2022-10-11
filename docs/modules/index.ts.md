@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 1
+nav_order: 2
 parent: Modules
 ---
 
@@ -13,11 +13,22 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [utils](#utils)
+  - [deepHash](#deephash)
   - [list](#list)
 
 ---
 
 # utils
+
+## deepHash
+
+**Signature**
+
+```ts
+export declare const deepHash: any
+```
+
+Added in v1.0.0
 
 ## list
 

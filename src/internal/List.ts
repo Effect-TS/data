@@ -19,16 +19,20 @@ import type * as _apply from "@fp-ts/core/typeclasses/Apply"
 import type * as _fromIdentity from "@fp-ts/core/typeclasses/FromIdentity"
 import type * as _functor from "@fp-ts/core/typeclasses/Functor"
 import type { Ord } from "@fp-ts/core/typeclasses/Ord"
+import * as DH from "@fp-ts/data/DeepHash"
 
 /** @internal */
 export const ListTypeId: L.ListTypeId = Symbol.for("@fp-ts/data/List") as L.ListTypeId
 
 /** @internal */
-export class ConsImpl<A> implements Iterable<A>, L.Cons<A> {
+export class ConsImpl<A> implements Iterable<A>, L.Cons<A>, DH.DeepHash {
   readonly _tag = "Cons"
   readonly _A: (_: never) => A = (_) => _
   readonly _typeId: L.ListTypeId = ListTypeId
   constructor(readonly head: A, public tail: L.List<A>) {}
+  [DH.DeepHash.symbol](): number {
+    return pipe(this, reduce(DH.deepHash(this._tag), (h, a) => pipe(h, DH.combine(DH.deepHash(a)))))
+  }
   [Symbol.iterator](): Iterator<A> {
     let done = false
     // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -57,10 +61,14 @@ export class ConsImpl<A> implements Iterable<A>, L.Cons<A> {
 }
 
 /** @internal */
-export class NilImpl<A> implements Iterable<A>, L.Nil<A> {
+export class NilImpl<A> implements Iterable<A>, L.Nil<A>, DH.DeepHash {
   readonly _tag = "Nil"
   readonly _A: (_: never) => A = (_) => _
   readonly _typeId: L.ListTypeId = ListTypeId;
+
+  [DH.DeepHash.symbol](): number {
+    return DH.deepHash(this._tag)
+  }
 
   [Symbol.iterator](): Iterator<A> {
     return {
