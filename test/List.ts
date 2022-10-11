@@ -1,5 +1,7 @@
+import { pipe } from "@fp-ts/core/Function"
 import { deepEqual } from "@fp-ts/data/DeepEqual"
 import * as L from "@fp-ts/data/List"
+import * as LB from "@fp-ts/data/MutableListBuilder"
 import { assertTrue } from "@fp-ts/data/test/util"
 
 describe("List", () => {
@@ -10,8 +12,8 @@ describe("List", () => {
   it("constructs a list via builder", () => {
     const builder = L.builder<number>()
     for (let i = 0; i <= 3; i++) {
-      builder.append(i)
+      pipe(builder, LB.append(i))
     }
-    assertTrue(deepEqual(builder.build(), L.make(0, 1, 2, 3)))
+    assertTrue(pipe(builder, LB.build, deepEqual(L.make(0, 1, 2, 3))))
   })
 })

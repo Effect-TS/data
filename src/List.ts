@@ -10,9 +10,12 @@ import type { Result } from "@fp-ts/core/Result"
 import type * as _apply from "@fp-ts/core/typeclasses/Apply"
 import type * as _fromIdentity from "@fp-ts/core/typeclasses/FromIdentity"
 import type * as _functor from "@fp-ts/core/typeclasses/Functor"
+import type { Ord } from "@fp-ts/core/typeclasses/Ord"
 import type { DeepEqual } from "@fp-ts/data/DeepEqual"
 import * as LI from "@fp-ts/data/internal/List"
+import * as _sortWith from "@fp-ts/data/internal/List/sortWith"
 import type * as L from "@fp-ts/data/List"
+import type { MutableListBuilder } from "@fp-ts/data/MutableListBuilder"
 
 /**
  * @since 1.0.0
@@ -22,47 +25,20 @@ export declare namespace List {
   export type Nil<A> = L.Nil<A>
 }
 
-/**
- * @since 1.0.0
- *
- * @category model
- */
-export interface ListBuilder<A> extends Iterable<A>, DeepEqual {
-  readonly length: number
-
-  readonly isEmpty: () => boolean
-
-  readonly unsafeHead: () => A
-
-  readonly unsafeTail: () => List<A>
-
-  readonly append: (elem: A) => ListBuilder<A>
-
-  readonly prepend: (elem: A) => ListBuilder<A>
-
-  readonly unprepend: (this: this) => A
-
-  readonly build: () => List<A>
-
-  readonly insert: (idx: number, elem: A) => ListBuilder<A>
-
-  readonly reduce: <B>(b: B, f: (b: B, a: A) => B) => B
-}
-
-const ListTypeId: unique symbol = LI.ListTypeId as ListTypeId
+const TypeId: unique symbol = LI.ListTypeId as TypeId
 
 /**
  * @since 1.0.0
  * @category symbol
  */
-export type ListTypeId = typeof ListTypeId
+export type TypeId = typeof TypeId
 
 /**
  * @since 1.0.0
  * @category model
  */
 export interface Cons<A> extends Iterable<A>, DeepEqual {
-  readonly [ListTypeId]: ListTypeId
+  readonly _id: TypeId
   readonly _tag: "Cons"
   readonly _A: (_: never) => A
   readonly head: A
@@ -74,7 +50,7 @@ export interface Cons<A> extends Iterable<A>, DeepEqual {
  * @category model
  */
 export interface Nil<A> extends Iterable<A>, DeepEqual {
-  readonly [ListTypeId]: ListTypeId
+  readonly _id: TypeId
   readonly _tag: "Nil"
   readonly _A: (_: never) => A
 }
@@ -97,7 +73,7 @@ export interface ListTypeLambda extends HKT.TypeLambda {
  * @since 1.0.0
  * @category constructors
  */
-export const builder: <A>() => ListBuilder<A> = LI.builder
+export const builder: <A>() => MutableListBuilder<A> = LI.builder
 
 /**
  * @since 1.0.0
@@ -303,6 +279,12 @@ export const tailUnsafe: <A>(self: List<A>) => List<A> = LI.unsafeTail
  * @category unsafe
  */
 export const lastUnsafe: <A>(self: List<A>) => A = LI.unsafeLast
+
+/**
+ * @since 1.0.0
+ * @category sorting
+ */
+export const sortWith: <A>(ord: Ord<A>) => (self: List<A>) => List<A> = _sortWith.sortWith
 
 /**
  * @since 1.0.0
