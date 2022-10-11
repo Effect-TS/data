@@ -27,7 +27,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const deepEqual: any
+export declare const deepEqual: typeof deepEqual
 ```
 
 Added in v1.0.0
@@ -37,7 +37,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const deepHash: any
+export declare const deepHash: typeof deepHash
 ```
 
 Added in v1.0.0
@@ -47,7 +47,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const list: any
+export declare const list: typeof list
 ```
 
 Added in v1.0.0
@@ -57,7 +57,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const mutableListBuilder: any
+export declare const mutableListBuilder: typeof mutableListBuilder
 ```
 
 Added in v1.0.0

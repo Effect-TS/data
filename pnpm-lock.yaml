@@ -5,7 +5,7 @@ patchedDependencies:
     hash: wzvflwv62ngf22ppz3frldq37m
     path: patches/@effect-ts__build-utils@0.40.3.patch
   docs-ts@0.6.10:
-    hash: kopsvnhbdkcgooilfhlwro2v5m
+    hash: hxi4q35dpslvaqd64zvxr4fn6m
     path: patches/docs-ts@0.6.10.patch
 
 importers:
@@ -76,7 +76,7 @@ importers:
       c8: 7.12.0
       concurrently: 7.4.0
       cpx: 1.5.0
-      docs-ts: 0.6.10_kopsvnhbdkcgooilfhlwro2v5m_dmjzcauo3cshxeipj7bv64ktgm
+      docs-ts: 0.6.10_hxi4q35dpslvaqd64zvxr4fn6m_dmjzcauo3cshxeipj7bv64ktgm
       eslint: 8.24.0
       eslint-import-resolver-typescript: 3.5.1_dg2pe6kqkrddxbf2funb723kue
       eslint-plugin-codegen: 0.16.1
@@ -2271,7 +2271,7 @@ packages:
     dev: true
     patched: true
 
-  /docs-ts/0.6.10_kopsvnhbdkcgooilfhlwro2v5m_dmjzcauo3cshxeipj7bv64ktgm:
+  /docs-ts/0.6.10_hxi4q35dpslvaqd64zvxr4fn6m_dmjzcauo3cshxeipj7bv64ktgm:
     resolution: {integrity: sha512-DTX9c5AJ92ojMOKqqvwF8t77C8Gdgs9FPB8seymHs+F+Wl6aapc3ZkHUM+p8o+jwcBmPoihxssdK903dfwQ1JQ==}
     hasBin: true
     peerDependencies:

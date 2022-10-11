@@ -41,7 +41,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const toList: <A>(self: MutableListBuilder<A>) => any
+export declare const toList: <A>(self: MutableListBuilder<A>) => List<A>
 ```
 
 Added in v1.0.0
@@ -171,7 +171,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const tailUnsafe: <A>(self: MutableListBuilder<A>) => any
+export declare const tailUnsafe: <A>(self: MutableListBuilder<A>) => List<A>
 ```
 
 Added in v1.0.0
