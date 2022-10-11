@@ -30,12 +30,12 @@ export interface DeepEqualConstructor {
 
 /**
  * @since 1.0.0
- * @category hashing
+ * @category equality
  */
 export function deepEqual<B>(that: B): <A>(self: A) => boolean
 /**
  * @since 1.0.0
- * @category hashing
+ * @category equality
  */
 export function deepEqual<A, B>(self: A, that: B): boolean
 export function deepEqual(...args: Array<any>): any {

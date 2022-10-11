@@ -12,7 +12,7 @@ Added in v1.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [hashing](#hashing)
+- [equality](#equality)
   - [deepEqual](#deepequal)
 - [model](#model)
   - [DeepEqual](#deepequal)
@@ -21,7 +21,7 @@ Added in v1.0.0
 
 ---
 
-# hashing
+# equality
 
 ## deepEqual
 
