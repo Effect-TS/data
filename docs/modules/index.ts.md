@@ -16,6 +16,7 @@ Added in v1.0.0
   - [deepEqual](#deepequal)
   - [deepHash](#deephash)
   - [list](#list)
+  - [mutableHashMap](#mutablehashmap)
   - [mutableListBuilder](#mutablelistbuilder)
 
 ---
@@ -48,6 +49,16 @@ Added in v1.0.0
 
 ```ts
 export declare const list: typeof list
+```
+
+Added in v1.0.0
+
+## mutableHashMap
+
+**Signature**
+
+```ts
+export declare const mutableHashMap: typeof mutableHashMap
 ```
 
 Added in v1.0.0
