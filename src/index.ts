@@ -2,6 +2,7 @@
  * @since 1.0.0
  */
 
+import * as context from "@fp-ts/data/Context"
 import * as deepEqual from "@fp-ts/data/DeepEqual"
 import * as deepHash from "@fp-ts/data/DeepHash"
 import * as list from "@fp-ts/data/List"
@@ -9,6 +10,10 @@ import * as mutableHashMap from "@fp-ts/data/MutableHashMap"
 import * as mutableListBuilder from "@fp-ts/data/MutableListBuilder"
 
 export {
+  /**
+   * @since 1.0.0
+   */
+  context,
   /**
    * @since 1.0.0
    */
