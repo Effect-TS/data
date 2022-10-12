@@ -1,6 +1,6 @@
 ---
 title: Context.ts
-nav_order: 1
+nav_order: 2
 parent: Modules
 ---
 
@@ -18,7 +18,6 @@ Added in v1.0.0
 - [getters](#getters)
   - [get](#get)
   - [getOption](#getoption)
-  - [getUnsafe](#getunsafe)
 - [guards](#guards)
   - [isContext](#iscontext)
 - [model](#model)
@@ -32,6 +31,8 @@ Added in v1.0.0
 - [symbol](#symbol)
   - [TagTypeId (type alias)](#tagtypeid-type-alias)
   - [TypeId (type alias)](#typeid-type-alias)
+- [unsafe](#unsafe)
+  - [unsafeGet](#unsafeget)
 
 ---
 
@@ -81,16 +82,6 @@ export declare const getOption: <S>(tag: Tag<S>) => <Services>(self: Context<Ser
 
 Added in v1.0.0
 
-## getUnsafe
-
-**Signature**
-
-```ts
-export declare const getUnsafe: <S>(tag: Tag<S>) => <Services>(self: Context<Services>) => S
-```
-
-Added in v1.0.0
-
 # guards
 
 ## isContext
@@ -112,7 +103,7 @@ Added in v1.0.0
 ```ts
 export interface Context<Services> extends DeepEqual {
   readonly _id: TypeId
-  readonly _S: (_: never) => Services
+  readonly _S: (_: Services) => unknown
   /** @internal */
   readonly unsafeMap: Map<Tag<any>, any>
 }
@@ -197,6 +188,18 @@ Added in v1.0.0
 
 ```ts
 export type TypeId = typeof TypeId
+```
+
+Added in v1.0.0
+
+# unsafe
+
+## unsafeGet
+
+**Signature**
+
+```ts
+export declare const unsafeGet: <S>(tag: Tag<S>) => <Services>(self: Context<Services>) => S
 ```
 
 Added in v1.0.0

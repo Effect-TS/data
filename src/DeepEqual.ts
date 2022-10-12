@@ -2,6 +2,7 @@
  * @since 1.0.0
  */
 import { absurd } from "@fp-ts/core/Function"
+import type { Eq } from "@fp-ts/core/typeclasses/Eq"
 import * as DH from "@fp-ts/data/DeepHash"
 
 /**
@@ -38,11 +39,21 @@ export function deepEqual<B>(that: B): <A>(self: A) => boolean
  * @category equality
  */
 export function deepEqual<A, B>(self: A, that: B): boolean
-export function deepEqual(...args: Array<any>): any {
-  if (args.length === 1) {
-    return (self: unknown) => equal(self, args[0])
+export function deepEqual(): any {
+  if (arguments.length === 1) {
+    return (self: unknown) => equal(self, arguments[0])
   }
-  return equal(args[0], args[1])
+  return equal(arguments[0], arguments[1])
+}
+
+/**
+ * @since 1.0.0
+ * @category equality
+ */
+export function getEq<A>(): Eq<A> {
+  return {
+    equals: (that) => (self) => equal(self, that)
+  }
 }
 
 function isDeepEqual(u: unknown): u is DeepEqual {

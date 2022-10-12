@@ -1,6 +1,6 @@
 ---
 title: List.ts
-nav_order: 5
+nav_order: 6
 parent: Modules
 ---
 
@@ -23,12 +23,14 @@ Added in v1.0.0
   - [of](#of)
 - [conversions](#conversions)
   - [fromIterable](#fromiterable)
+- [elements](#elements)
+  - [every](#every)
+  - [findFirst](#findfirst)
+  - [some](#some)
 - [filtering](#filtering)
   - [drop](#drop)
   - [filter](#filter)
   - [take](#take)
-- [finding](#finding)
-  - [find](#find)
 - [folding](#folding)
   - [reduce](#reduce)
 - [getters](#getters)
@@ -53,9 +55,6 @@ Added in v1.0.0
   - [partition](#partition)
   - [partitionMap](#partitionmap)
   - [splitAt](#splitat)
-- [predicates](#predicates)
-  - [all](#all)
-  - [any](#any)
 - [refinements](#refinements)
   - [isCons](#iscons)
   - [isList](#islist)
@@ -71,9 +70,9 @@ Added in v1.0.0
 - [type lambdas](#type-lambdas)
   - [ListTypeLambda (interface)](#listtypelambda-interface)
 - [unsafe](#unsafe)
-  - [headUnsafe](#headunsafe)
-  - [lastUnsafe](#lastunsafe)
-  - [tailUnsafe](#tailunsafe)
+  - [unsafeHead](#unsafehead)
+  - [unsafeLast](#unsafelast)
+  - [unsafeTail](#unsafetail)
 
 ---
 
@@ -163,6 +162,41 @@ export declare const fromIterable: <A>(prefix: Iterable<A>) => List<A>
 
 Added in v1.0.0
 
+# elements
+
+## every
+
+**Signature**
+
+```ts
+export declare const every: <A>(p: Predicate<A>) => (self: List<A>) => boolean
+```
+
+Added in v1.0.0
+
+## findFirst
+
+**Signature**
+
+```ts
+export declare const findFirst: {
+  <A, B extends A>(p: Refinement<A, B>): (self: List<A>) => Option<B>
+  <A>(p: Predicate<A>): (self: List<A>) => Option<A>
+}
+```
+
+Added in v1.0.0
+
+## some
+
+**Signature**
+
+```ts
+export declare const some: <A>(p: Predicate<A>) => (self: List<A>) => boolean
+```
+
+Added in v1.0.0
+
 # filtering
 
 ## drop
@@ -194,21 +228,6 @@ Added in v1.0.0
 
 ```ts
 export declare const take: (n: number) => <A>(self: List<A>) => List<A>
-```
-
-Added in v1.0.0
-
-# finding
-
-## find
-
-**Signature**
-
-```ts
-export declare const find: {
-  <A, B extends A>(p: Refinement<A, B>): (self: List<A>) => Option<B>
-  <A>(p: Predicate<A>): (self: List<A>) => Option<A>
-}
 ```
 
 Added in v1.0.0
@@ -409,28 +428,6 @@ export declare const splitAt: (n: number) => <A>(self: List<A>) => readonly [Lis
 
 Added in v1.0.0
 
-# predicates
-
-## all
-
-**Signature**
-
-```ts
-export declare const all: <A>(p: Predicate<A>) => (self: List<A>) => boolean
-```
-
-Added in v1.0.0
-
-## any
-
-**Signature**
-
-```ts
-export declare const any: <A>(p: Predicate<A>) => (self: List<A>) => boolean
-```
-
-Added in v1.0.0
-
 # refinements
 
 ## isCons
@@ -527,32 +524,32 @@ Added in v1.0.0
 
 # unsafe
 
-## headUnsafe
+## unsafeHead
 
 **Signature**
 
 ```ts
-export declare const headUnsafe: <A>(self: List<A>) => A
+export declare const unsafeHead: <A>(self: List<A>) => A
 ```
 
 Added in v1.0.0
 
-## lastUnsafe
+## unsafeLast
 
 **Signature**
 
 ```ts
-export declare const lastUnsafe: <A>(self: List<A>) => A
+export declare const unsafeLast: <A>(self: List<A>) => A
 ```
 
 Added in v1.0.0
 
-## tailUnsafe
+## unsafeTail
 
 **Signature**
 
 ```ts
-export declare const tailUnsafe: <A>(self: List<A>) => List<A>
+export declare const unsafeTail: <A>(self: List<A>) => List<A>
 ```
 
 Added in v1.0.0

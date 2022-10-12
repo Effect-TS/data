@@ -1,6 +1,6 @@
 ---
 title: MutableListBuilder.ts
-nav_order: 7
+nav_order: 8
 parent: Modules
 ---
 
@@ -32,8 +32,8 @@ Added in v1.0.0
 - [symbol](#symbol)
   - [TypeId (type alias)](#typeid-type-alias)
 - [unsafe](#unsafe)
-  - [headUnsafe](#headunsafe)
-  - [tailUnsafe](#tailunsafe)
+  - [unsafeHead](#unsafehead)
+  - [unsafeTail](#unsafetail)
 
 ---
 
@@ -181,22 +181,22 @@ Added in v1.0.0
 
 # unsafe
 
-## headUnsafe
+## unsafeHead
 
 **Signature**
 
 ```ts
-export declare const headUnsafe: <A>(self: MutableListBuilder<A>) => A
+export declare const unsafeHead: <A>(self: MutableListBuilder<A>) => A
 ```
 
 Added in v1.0.0
 
-## tailUnsafe
+## unsafeTail
 
 **Signature**
 
 ```ts
-export declare const tailUnsafe: <A>(self: MutableListBuilder<A>) => List<A>
+export declare const unsafeTail: <A>(self: MutableListBuilder<A>) => List<A>
 ```
 
 Added in v1.0.0
