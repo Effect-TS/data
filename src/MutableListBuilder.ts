@@ -106,10 +106,10 @@ export const unprepend: <A>(self: MutableListBuilder<A>) => A = LBI.unprepend
  * @since 1.0.0
  * @category unsafe
  */
-export const headUnsafe: <A>(self: MutableListBuilder<A>) => A = LBI.unsafeHead
+export const unsafeHead: <A>(self: MutableListBuilder<A>) => A = LBI.unsafeHead
 
 /**
  * @since 1.0.0
  * @category unsafe
  */
-export const tailUnsafe: <A>(self: MutableListBuilder<A>) => List<A> = LBI.unsafeTail
+export const unsafeTail: <A>(self: MutableListBuilder<A>) => List<A> = LBI.unsafeTail

@@ -1,6 +1,6 @@
 ---
 title: DeepEqual.ts
-nav_order: 2
+nav_order: 3
 parent: Modules
 ---
 
@@ -14,6 +14,7 @@ Added in v1.0.0
 
 - [equality](#equality)
   - [deepEqual](#deepequal)
+  - [getEq](#geteq)
 - [model](#model)
   - [DeepEqual](#deepequal)
   - [DeepEqual (interface)](#deepequal-interface)
@@ -30,6 +31,16 @@ Added in v1.0.0
 ```ts
 export declare function deepEqual<B>(that: B): <A>(self: A) => boolean
 export declare function deepEqual<A, B>(self: A, that: B): boolean
+```
+
+Added in v1.0.0
+
+## getEq
+
+**Signature**
+
+```ts
+export declare function getEq<A>(): Eq<A>
 ```
 
 Added in v1.0.0

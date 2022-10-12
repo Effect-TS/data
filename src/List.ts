@@ -208,21 +208,21 @@ export const empty: <A = never>() => List<A> = LI.empty
 
 /**
  * @since 1.0.0
- * @category predicates
+ * @category elements
  */
-export const any: <A>(p: Predicate<A>) => (self: List<A>) => boolean = LI.any
+export const some: <A>(p: Predicate<A>) => (self: List<A>) => boolean = LI.any
 
 /**
  * @since 1.0.0
- * @category predicates
+ * @category elements
  */
-export const all: <A>(p: Predicate<A>) => (self: List<A>) => boolean = LI.all
+export const every: <A>(p: Predicate<A>) => (self: List<A>) => boolean = LI.all
 
 /**
  * @since 1.0.0
- * @category finding
+ * @category elements
  */
-export const find: {
+export const findFirst: {
   <A, B extends A>(p: Refinement<A, B>): (self: List<A>) => Option<B>
   <A>(p: Predicate<A>): (self: List<A>) => Option<A>
 } = LI.find
@@ -267,19 +267,19 @@ export const ap: <A>(fa: List<A>) => <B>(self: List<(a: A) => B>) => List<B> = L
  * @since 1.0.0
  * @category unsafe
  */
-export const headUnsafe: <A>(self: List<A>) => A = LI.unsafeHead
+export const unsafeHead: <A>(self: List<A>) => A = LI.unsafeHead
 
 /**
  * @since 1.0.0
  * @category unsafe
  */
-export const tailUnsafe: <A>(self: List<A>) => List<A> = LI.unsafeTail
+export const unsafeTail: <A>(self: List<A>) => List<A> = LI.unsafeTail
 
 /**
  * @since 1.0.0
  * @category unsafe
  */
-export const lastUnsafe: <A>(self: List<A>) => A = LI.unsafeLast
+export const unsafeLast: <A>(self: List<A>) => A = LI.unsafeLast
 
 /**
  * @since 1.0.0

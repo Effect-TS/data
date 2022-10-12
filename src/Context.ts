@@ -140,9 +140,9 @@ export const get = <Services, T extends Tags<Services>>(tag: T) =>
 
 /**
  * @since 1.0.0
- * @category getters
+ * @category unsafe
  */
-export const getUnsafe = <S>(tag: Tag<S>) =>
+export const unsafeGet = <S>(tag: Tag<S>) =>
   <Services>(self: Context<Services>): S => {
     if (!self.unsafeMap.has(tag)) {
       throw new Error("Service not found")

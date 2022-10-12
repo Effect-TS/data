@@ -47,7 +47,7 @@ describe.concurrent("Context", () => {
     assert.throw(() => {
       pipe(
         Services,
-        Context.getUnsafe(C)
+        Context.unsafeGet(C)
       )
     })
   })

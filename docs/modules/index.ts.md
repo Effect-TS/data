@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 4
+nav_order: 5
 parent: Modules
 ---
 
@@ -13,6 +13,7 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [utils](#utils)
+  - [chunk](#chunk)
   - [context](#context)
   - [deepEqual](#deepequal)
   - [deepHash](#deephash)
@@ -23,6 +24,16 @@ Added in v1.0.0
 ---
 
 # utils
+
+## chunk
+
+**Signature**
+
+```ts
+export declare const chunk: typeof chunk
+```
+
+Added in v1.0.0
 
 ## context
 
