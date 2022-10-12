@@ -13,7 +13,8 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [constructors](#constructors)
-  - [make](#make)
+  - [MutableListBuilder](#mutablelistbuilder)
+  - [empty](#empty)
 - [conversions](#conversions)
   - [toList](#tolist)
 - [folding](#folding)
@@ -38,12 +39,22 @@ Added in v1.0.0
 
 # constructors
 
-## make
+## MutableListBuilder
 
 **Signature**
 
 ```ts
-export declare const make: <A>() => MutableListBuilder<A>
+export declare const MutableListBuilder: <As extends readonly unknown[]>(...as: As) => MutableListBuilder<As[number]>
+```
+
+Added in v1.0.0
+
+## empty
+
+**Signature**
+
+```ts
+export declare const empty: <A>() => MutableListBuilder<A>
 ```
 
 Added in v1.0.0

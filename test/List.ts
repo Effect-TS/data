@@ -6,14 +6,14 @@ import { assertTrue } from "@fp-ts/data/test/util"
 
 describe("List", () => {
   it("constructs a list", () => {
-    assertTrue(deepEqual(Array.from(L.make(0, 1, 2, 3)), [0, 1, 2, 3]))
+    assertTrue(deepEqual(Array.from(L.List(0, 1, 2, 3)), [0, 1, 2, 3]))
   })
 
   it("constructs a list via builder", () => {
-    const builder = LB.make<number>()
+    const builder = LB.empty<number>()
     for (let i = 0; i <= 3; i++) {
       pipe(builder, LB.append(i))
     }
-    assertTrue(pipe(builder, LB.toList, deepEqual(L.make(0, 1, 2, 3))))
+    assertTrue(pipe(builder, LB.toList, deepEqual(L.List(0, 1, 2, 3))))
   })
 })

@@ -15,6 +15,7 @@ Added in v1.0.0
 - [apply](#apply)
   - [ap](#ap)
 - [constructors](#constructors)
+  - [List](#list)
   - [cons](#cons)
   - [empty](#empty)
   - [make](#make)
@@ -89,6 +90,16 @@ export declare const ap: <A>(fa: List<A>) => <B>(self: List<(a: A) => B>) => Lis
 Added in v1.0.0
 
 # constructors
+
+## List
+
+**Signature**
+
+```ts
+export declare const List: <As extends readonly any[]>(...prefix: As) => List<As[number]>
+```
+
+Added in v1.0.0
 
 ## cons
 
