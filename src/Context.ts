@@ -70,14 +70,14 @@ export type Tags<R> = R extends infer S ? Tag<S> : never
  */
 export interface Context<Services> extends DeepEqual {
   readonly _id: TypeId
-  readonly _S: (_: never) => Services
+  readonly _S: (_: Services) => unknown
   /** @internal */
   readonly unsafeMap: Map<Tag<any>, any>
 }
 
 class ContextImpl<Services> implements Context<Services> {
   _id: typeof TypeId = TypeId
-  _S = (_: never) => _;
+  _S = (_: Services) => _;
 
   [DeepEqual.symbol](that: unknown): boolean {
     if (isContext(that)) {
