@@ -68,13 +68,12 @@ describe.concurrent("MutableHashMap", () => {
   })
 
   it("has", () => {
-    const map = pipe(
-      HM.empty<Key, Value>(),
-      HM.set(key(0, 0), value(0, 0)),
-      HM.set(key(0, 0), value(1, 1)),
-      HM.set(key(1, 1), value(2, 2)),
-      HM.set(key(1, 1), value(3, 3)),
-      HM.set(key(0, 0), value(4, 4))
+    const map = HM.MutableHashMap(
+      [key(0, 0), value(0, 0)],
+      [key(0, 0), value(1, 1)],
+      [key(1, 1), value(2, 2)],
+      [key(1, 1), value(3, 3)],
+      [key(0, 0), value(4, 4)]
     )
 
     pipe(

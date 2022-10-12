@@ -80,6 +80,12 @@ export const make: <As extends ReadonlyArray<any>>(...prefix: As) => List<As[num
  * @since 1.0.0
  * @category constructors
  */
+export const List: <As extends ReadonlyArray<any>>(...prefix: As) => List<As[number]> = LI.make
+
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
 export const of: <A>(a: A) => List<A> = LI.of
 
 /**

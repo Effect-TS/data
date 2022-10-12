@@ -9,7 +9,7 @@ describe("DeepEqual", () => {
     assertTrue(deepEqual(L.make(0, 1, 2), L.make(0, 1, 2)))
   })
   it("ListBuilder", () => {
-    assertTrue(!deepEqual(LB.make(), LB.make()))
+    assertTrue(!deepEqual(LB.empty(), LB.empty()))
   })
   it("Result", () => {
     assertTrue(deepEqual(R.succeed(1), R.succeed(1)))

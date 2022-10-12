@@ -13,6 +13,7 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [constructors](#constructors)
+  - [MutableHashMap](#mutablehashmap)
   - [empty](#empty)
   - [make](#make)
 - [conversions](#conversions)
@@ -34,6 +35,21 @@ Added in v1.0.0
 ---
 
 # constructors
+
+## MutableHashMap
+
+**Signature**
+
+```ts
+export declare const MutableHashMap: <Entries extends (readonly [any, any])[]>(
+  ...entries: Entries
+) => MutableHashMap<
+  Entries[number] extends readonly [infer K, any] ? K : never,
+  Entries[number] extends readonly [any, infer V] ? V : never
+>
+```
+
+Added in v1.0.0
 
 ## empty
 
