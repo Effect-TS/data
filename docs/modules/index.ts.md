@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 5
+nav_order: 6
 parent: Modules
 ---
 
@@ -17,6 +17,7 @@ Added in v1.0.0
   - [context](#context)
   - [deepEqual](#deepequal)
   - [deepHash](#deephash)
+  - [duration](#duration)
   - [list](#list)
   - [mutableHashMap](#mutablehashmap)
   - [mutableListBuilder](#mutablelistbuilder)
@@ -61,6 +62,16 @@ Added in v1.0.0
 
 ```ts
 export declare const deepHash: typeof deepHash
+```
+
+Added in v1.0.0
+
+## duration
+
+**Signature**
+
+```ts
+export declare const duration: typeof duration
 ```
 
 Added in v1.0.0

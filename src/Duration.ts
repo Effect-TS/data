@@ -1,3 +1,6 @@
+/**
+ * @since 1.0.0
+ */
 import * as DE from "@fp-ts/data/DeepEqual"
 import * as DH from "@fp-ts/data/DeepHash"
 
@@ -19,7 +22,7 @@ export interface Duration {
 }
 
 /** @internal */
-export class DurationImpl implements DE.DeepEqual {
+class DurationImpl implements DE.DeepEqual {
   readonly _id: TypeId = TypeId
   constructor(readonly millis: number) {}
   [DH.DeepHash.symbol](): number {
