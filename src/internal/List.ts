@@ -31,12 +31,15 @@ export class ConsImpl<A> implements Iterable<A>, L.Cons<A>, DE.DeepEqual {
   readonly _id: L.TypeId = ListTypeId
   constructor(readonly head: A, public tail: L.List<A>) {}
   [DH.DeepHash.symbol](): number {
-    return pipe(this, reduce(DH.deepHash(this._tag), (h, a) => pipe(h, DH.combine(DH.deepHash(a)))))
+    return pipe(
+      this,
+      reduce(DH.deepHash(this._tag), (h, a) => pipe(h, DH.combine(DH.deepHash(a))))
+    )
   }
   [DE.DeepEqual.symbol](that: unknown): boolean {
-    return isList(that) && that._tag === "Cons" ?
-      DE.deepEqual(that.head)(this.head) && DE.deepEqual(that.tail)(this.tail) :
-      false
+    return isList(that) && that._tag === "Cons"
+      ? DE.deepEqual(that.head)(this.head) && DE.deepEqual(that.tail)(this.tail)
+      : false
   }
   [Symbol.iterator](): Iterator<A> {
     let done = false
@@ -123,10 +126,7 @@ export function length<A>(self: L.List<A>): number {
 }
 
 /** @internal */
-export function equalsWith<A, B>(
-  that: L.List<B>,
-  f: (a: A, b: B) => boolean
-) {
+export function equalsWith<A, B>(that: L.List<B>, f: (a: A, b: B) => boolean) {
   return (self: L.List<A>): boolean => {
     if ((self as L.List<A | B>) === that) {
       return true
@@ -153,11 +153,16 @@ export function isList<A>(u: Iterable<A>): u is L.List<A>
 export function isList(u: unknown): u is L.List<unknown>
 /** @internal */
 export function isList(u: unknown): u is L.List<unknown> {
-  return typeof u === "object" && u != null && "_id" in u && u["_id"] === ListTypeId
+  return (
+    typeof u === "object" && u != null && "_id" in u && u["_id"] === ListTypeId
+  )
 }
 
 /** @internal */
-export function reduce<A, B>(b: B, f: (b: B, a: A) => B): (self: L.List<A>) => B {
+export function reduce<A, B>(
+  b: B,
+  f: (b: B, a: A) => B
+): (self: L.List<A>) => B {
   return (self) => {
     let acc = b
     let these = self
@@ -256,6 +261,19 @@ export function prependAll<B>(prefix: L.List<B>) {
 }
 
 /** @internal */
+export function reversePrependAll<B>(prefix: L.List<B>) {
+  return <A>(self: L.List<A>): L.List<A | B> => {
+    let these: L.List<A | B> = self
+    let pres = prefix
+    while (isCons(pres)) {
+      these = new ConsImpl(pres.head, these)
+      pres = pres.tail
+    }
+    return these
+  }
+}
+
+/** @internal */
 export function concat<B>(that: L.List<B>) {
   return <A>(self: L.List<A>): L.List<A | B> => pipe(that, prependAll(self))
 }
@@ -280,7 +298,9 @@ export function any<A>(p: Predicate<A>) {
 }
 
 /** @internal */
-export function filter<A, B extends A>(p: Refinement<A, B>): (self: L.List<A>) => L.List<B>
+export function filter<A, B extends A>(
+  p: Refinement<A, B>
+): (self: L.List<A>) => L.List<B>
 /** @internal */
 export function filter<A>(p: Predicate<A>): (self: L.List<A>) => L.List<A>
 /** @internal */
@@ -289,7 +309,11 @@ export function filter<A>(p: Predicate<A>) {
 }
 
 /** @internal */
-function noneIn<A>(l: L.List<A>, p: Predicate<A>, isFlipped: boolean): L.List<A> {
+function noneIn<A>(
+  l: L.List<A>,
+  p: Predicate<A>,
+  isFlipped: boolean
+): L.List<A> {
   /* eslint-disable no-constant-condition */
   while (true) {
     if (isNil(l)) {
@@ -369,12 +393,18 @@ function partialFill<A>(
 }
 
 /** @internal */
-function filterCommon_<A>(list: L.List<A>, p: Predicate<A>, isFlipped: boolean): L.List<A> {
+function filterCommon_<A>(
+  list: L.List<A>,
+  p: Predicate<A>,
+  isFlipped: boolean
+): L.List<A> {
   return noneIn(list, p, isFlipped)
 }
 
 /** @internal */
-export function find<A, B extends A>(p: Refinement<A, B>): (self: L.List<A>) => O.Option<B>
+export function find<A, B extends A>(
+  p: Refinement<A, B>
+): (self: L.List<A>) => O.Option<B>
 /** @internal */
 export function find<A>(p: Predicate<A>): (self: L.List<A>) => O.Option<A>
 /** @internal */
@@ -458,7 +488,9 @@ export function from<A>(prefix: Iterable<A>): L.List<A> {
 }
 
 /** @internal */
-export function make<As extends ReadonlyArray<any>>(...prefix: As): L.List<As[number]> {
+export function make<As extends ReadonlyArray<any>>(
+  ...prefix: As
+): L.List<As[number]> {
   return from(prefix)
 }
 
@@ -557,7 +589,10 @@ export function reverse<A>(self: L.List<A>): L.List<A> {
 
 /** @internal */
 export function splitAt(n: number) {
-  return <A>(self: L.List<A>): readonly [L.List<A>, L.List<A>] => [take(n)(self), drop(n)(self)]
+  return <A>(self: L.List<A>): readonly [L.List<A>, L.List<A>] => [
+    take(n)(self),
+    drop(n)(self)
+  ]
 }
 
 /** @internal */
@@ -582,7 +617,16 @@ export const FromIdentity: _fromIdentity.FromIdentity<L.ListTypeLambda> = {
 export const ap: <A>(
   fa: L.List<A>
 ) => <B>(self: L.List<(a: A) => B>) => L.List<B> = (fa) =>
-  (self) => pipe(self, flatMap((f) => pipe(fa, map((a) => f(a)))))
+  (self) =>
+    pipe(
+      self,
+      flatMap((f) =>
+        pipe(
+          fa,
+          map((a) => f(a))
+        )
+      )
+    )
 
 /** @internal */
 export const Apply: _apply.Apply<L.ListTypeLambda> = {
