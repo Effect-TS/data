@@ -1,0 +1,117 @@
+import { constant, identity } from "@fp-ts/core/Function"
+import type { Result } from "@fp-ts/core/Result"
+import type { Chunk } from "@fp-ts/data/Chunk"
+import type { Context } from "@fp-ts/data/Context"
+import type * as D from "@fp-ts/data/Differ"
+import * as ChunkPatch from "@fp-ts/data/Differ/ChunkPatch"
+import * as ContextPatch from "@fp-ts/data/Differ/ContextPatch"
+import * as OrPatch from "@fp-ts/data/Differ/OrPatch"
+import { equals } from "@fp-ts/data/Equal"
+
+export const DifferTypeId: D.TypeId = Symbol.for("@fp-ts/data/Differ") as D.TypeId
+
+/** @internal */
+export function make<Value, Patch>(params: {
+  readonly empty: Patch
+  readonly diff: (oldValue: Value, newValue: Value) => Patch
+  readonly combine: (first: Patch, second: Patch) => Patch
+  readonly patch: (patch: Patch, oldValue: Value) => Value
+}): D.Differ<Value, Patch> {
+  return { _id: DifferTypeId, ...params }
+}
+
+/** @internal */
+export function environment<A>(): D.Differ<Context<A>, ContextPatch.ContextPatch<A, A>> {
+  return make({
+    empty: ContextPatch.empty(),
+    combine: (first, second) => ContextPatch.combine(second)(first),
+    diff: (oldValue, newValue) => ContextPatch.diff(oldValue, newValue),
+    patch: (patch, oldValue) => ContextPatch.patch(oldValue)(patch)
+  })
+}
+
+/** @internal */
+export function chunk<Value, Patch>(
+  differ: D.Differ<Value, Patch>
+): D.Differ<Chunk<Value>, ChunkPatch.ChunkPatch<Value, Patch>> {
+  return make({
+    empty: ChunkPatch.empty(),
+    combine: (first, second) => ChunkPatch.combine(second)(first),
+    diff: (oldValue, newValue) => ChunkPatch.diff(oldValue, newValue, differ),
+    patch: (patch, oldValue) => ChunkPatch.patch(oldValue, differ)(patch)
+  })
+}
+
+/** @internal */
+export function orElseResult<Value2, Patch2>(that: D.Differ<Value2, Patch2>) {
+  return <Value, Patch>(
+    self: D.Differ<Value, Patch>
+  ): D.Differ<Result<Value, Value2>, OrPatch.OrPatch<Value, Value2, Patch, Patch2>> =>
+    make({
+      empty: OrPatch.empty(),
+      combine: (first, second) => OrPatch.combine(second)(first),
+      diff: (oldValue, newValue) => OrPatch.diff(oldValue, newValue, self, that),
+      patch: (patch, oldValue) => OrPatch.patch(oldValue, self, that)(patch)
+    })
+}
+
+/** @internal */
+export function transform<Value, Value2>(f: (value: Value) => Value2, g: (value: Value2) => Value) {
+  return <Patch>(self: D.Differ<Value, Patch>): D.Differ<Value2, Patch> =>
+    make({
+      empty: self.empty,
+      combine: (first, second) => self.combine(first, second),
+      diff: (oldValue, newValue) => self.diff(g(oldValue), g(newValue)),
+      patch: (patch, oldValue) => f(self.patch(patch, g(oldValue)))
+    })
+}
+
+/** @internal */
+export function update<A>(): D.Differ<A, (a: A) => A> {
+  return updateWith((_, a) => a)
+}
+
+/** @internal */
+export function updateWith<A>(f: (x: A, y: A) => A): D.Differ<A, (a: A) => A> {
+  return make({
+    empty: identity,
+    combine: (first, second) => {
+      if (first === identity) {
+        return second
+      }
+      if (second === identity) {
+        return first
+      }
+      return (a) => second(first(a))
+    },
+    diff: (oldValue, newValue) => {
+      if (equals(oldValue, newValue)) {
+        return identity
+      }
+      return constant(newValue)
+    },
+    patch: (patch, oldValue) => f(oldValue, patch(oldValue))
+  })
+}
+
+/** @internal */
+export function zip<Value2, Patch2>(that: D.Differ<Value2, Patch2>) {
+  return <Value, Patch>(
+    self: D.Differ<Value, Patch>
+  ): D.Differ<readonly [Value, Value2], readonly [Patch, Patch2]> =>
+    make({
+      empty: [self.empty, that.empty] as const,
+      combine: (first, second) => [
+        self.combine(first[0], second[0]),
+        that.combine(first[1], second[1])
+      ],
+      diff: (oldValue, newValue) => [
+        self.diff(oldValue[0], newValue[0]),
+        that.diff(oldValue[1], newValue[1])
+      ],
+      patch: (patch, oldValue) => [
+        self.patch(patch[0], oldValue[0]),
+        that.patch(patch[1], oldValue[1])
+      ]
+    })
+}
