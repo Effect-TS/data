@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 6
+nav_order: 7
 parent: Modules
 ---
 
@@ -18,6 +18,7 @@ Added in v1.0.0
   - [deepEqual](#deepequal)
   - [deepHash](#deephash)
   - [duration](#duration)
+  - [immutableQueue](#immutablequeue)
   - [list](#list)
   - [mutableHashMap](#mutablehashmap)
   - [mutableListBuilder](#mutablelistbuilder)
@@ -72,6 +73,16 @@ Added in v1.0.0
 
 ```ts
 export declare const duration: typeof duration
+```
+
+Added in v1.0.0
+
+## immutableQueue
+
+**Signature**
+
+```ts
+export declare const immutableQueue: typeof immutableQueue
 ```
 
 Added in v1.0.0
