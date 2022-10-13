@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 6
+nav_order: 10
 parent: Modules
 ---
 
@@ -14,7 +14,10 @@ Added in v1.0.0
 
 - [utils](#utils)
   - [chunk](#chunk)
+  - [chunkPatch](#chunkpatch)
   - [context](#context)
+  - [contextPatch](#contextpatch)
+  - [differ](#differ)
   - [duration](#duration)
   - [equal](#equal)
   - [hash](#hash)
@@ -23,6 +26,7 @@ Added in v1.0.0
   - [mutableHashSet](#mutablehashset)
   - [mutableListBuilder](#mutablelistbuilder)
   - [mutableRef](#mutableref)
+  - [orPatch](#orpatch)
   - [queue](#queue)
 
 ---
@@ -39,12 +43,42 @@ export declare const chunk: typeof chunk
 
 Added in v1.0.0
 
+## chunkPatch
+
+**Signature**
+
+```ts
+export declare const chunkPatch: typeof chunkPatch
+```
+
+Added in v1.0.0
+
 ## context
 
 **Signature**
 
 ```ts
 export declare const context: typeof context
+```
+
+Added in v1.0.0
+
+## contextPatch
+
+**Signature**
+
+```ts
+export declare const contextPatch: typeof contextPatch
+```
+
+Added in v1.0.0
+
+## differ
+
+**Signature**
+
+```ts
+export declare const differ: typeof differ
 ```
 
 Added in v1.0.0
@@ -125,6 +159,16 @@ Added in v1.0.0
 
 ```ts
 export declare const mutableRef: typeof mutableRef
+```
+
+Added in v1.0.0
+
+## orPatch
+
+**Signature**
+
+```ts
+export declare const orPatch: typeof orPatch
 ```
 
 Added in v1.0.0

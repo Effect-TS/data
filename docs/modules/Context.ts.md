@@ -101,7 +101,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Context<Services> extends Equal.Equal {
+export interface Context<Services> extends Equal {
   readonly _id: TypeId
   readonly _S: (_: Services) => unknown
   /** @internal */
@@ -116,7 +116,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Tag<Service> extends Equal.Equal {
+export interface Tag<Service> extends Equal {
   readonly _id: TagTypeId
   readonly _S: (_: Service) => Service
 }
