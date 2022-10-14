@@ -7,11 +7,11 @@ import * as context from "@fp-ts/data/Context"
 import * as duration from "@fp-ts/data/Duration"
 import * as equal from "@fp-ts/data/Equal"
 import * as hash from "@fp-ts/data/Hash"
-import * as immutableQueue from "@fp-ts/data/ImmutableQueue"
 import * as list from "@fp-ts/data/List"
 import * as mutableHashMap from "@fp-ts/data/MutableHashMap"
 import * as mutableListBuilder from "@fp-ts/data/MutableListBuilder"
 import * as mutableRef from "@fp-ts/data/MutableRef"
+import * as queue from "@fp-ts/data/Queue"
 
 export {
   /**
@@ -37,10 +37,6 @@ export {
   /**
    * @since 1.0.0
    */
-  immutableQueue,
-  /**
-   * @since 1.0.0
-   */
   list,
   /**
    * @since 1.0.0
@@ -53,5 +49,9 @@ export {
   /**
    * @since 1.0.0
    */
-  mutableRef
+  mutableRef,
+  /**
+   * @since 1.0.0
+   */
+  queue
 }

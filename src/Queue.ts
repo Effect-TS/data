@@ -9,10 +9,10 @@ import type { Refinement } from "@fp-ts/core/Refinement"
 import { FromIdentity } from "@fp-ts/core/typeclasses/FromIdentity"
 import { Functor } from "@fp-ts/core/typeclasses/Functor"
 import type * as Equal from "@fp-ts/data/Equal"
-import * as IQI from "@fp-ts/data/internal/ImmutableQueue"
+import * as QI from "@fp-ts/data/internal/Queue"
 import type * as L from "@fp-ts/data/List"
 
-const TypeId: unique symbol = IQI.ImmutableQueueTypeId as TypeId
+const TypeId: unique symbol = QI.QueueTypeId as TypeId
 
 /**
  * @since 1.0.0
@@ -24,7 +24,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category model
  */
-export interface ImmutableQueue<A> extends Iterable<A>, Equal.Equal {
+export interface Queue<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
   readonly _A: (_: never) => A
   /** @internal */
@@ -37,8 +37,8 @@ export interface ImmutableQueue<A> extends Iterable<A>, Equal.Equal {
  * @since 1.0.0
  * @category type lambdas
  */
-export interface ImmutableQueueTypeLambda extends HKT.TypeLambda {
-  readonly type: ImmutableQueue<this["Out1"]>
+export interface QueueTypeLambda extends HKT.TypeLambda {
+  readonly type: Queue<this["Out1"]>
 }
 
 /**
@@ -47,7 +47,7 @@ export interface ImmutableQueueTypeLambda extends HKT.TypeLambda {
  */
 export const make: <As extends ReadonlyArray<any>>(
   ...items: As
-) => ImmutableQueue<As[number]> = IQI.make
+) => Queue<As[number]> = QI.make
 
 /**
  * @since 1.0.0
@@ -55,58 +55,58 @@ export const make: <As extends ReadonlyArray<any>>(
  */
 export const ImmutableQueue: <As extends ReadonlyArray<any>>(
   ...items: As
-) => ImmutableQueue<As[number]> = IQI.make
+) => Queue<As[number]> = QI.make
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const of: <A>(a: A) => ImmutableQueue<A> = IQI.of
+export const of: <A>(a: A) => Queue<A> = QI.of
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const empty: <A = never>() => ImmutableQueue<A> = IQI.empty
+export const empty: <A = never>() => Queue<A> = QI.empty
 
 /**
  * @since 1.0.0
  * @category refinements
  */
-export const isImmutableQueue: {
-  <A>(u: Iterable<A>): u is ImmutableQueue<A>
-  (u: unknown): u is ImmutableQueue<unknown>
-} = IQI.isImmutableQueue
+export const isQueue: {
+  <A>(u: Iterable<A>): u is Queue<A>
+  (u: unknown): u is Queue<unknown>
+} = QI.isQueue
 
 /**
  * @since 1.0.0
  * @category predicates
  */
-export const isEmpty: <A>(self: ImmutableQueue<A>) => boolean = IQI.isEmpty
+export const isEmpty: <A>(self: Queue<A>) => boolean = QI.isEmpty
 
 /**
  * @since 1.0.0
  * @category predicates
  */
-export const isNonEmpty: <A>(self: ImmutableQueue<A>) => boolean = IQI.isNonEmpty
+export const isNonEmpty: <A>(self: Queue<A>) => boolean = QI.isNonEmpty
 
 /**
  * @since 1.0.0
  * @category getters
  */
-export const length: <A>(self: ImmutableQueue<A>) => number = IQI.length
+export const length: <A>(self: Queue<A>) => number = QI.length
 
 /**
  * @since 1.0.0
  * @category getters
  */
-export const head: <A>(self: ImmutableQueue<A>) => O.Option<A> = IQI.head
+export const head: <A>(self: Queue<A>) => O.Option<A> = QI.head
 
 /**
  * @since 1.0.0
  * @category getters
  */
-export const tail: <A>(self: ImmutableQueue<A>) => O.Option<ImmutableQueue<A>> = IQI.tail
+export const tail: <A>(self: Queue<A>) => O.Option<Queue<A>> = QI.tail
 
 /**
  * @since 1.0.0
@@ -114,7 +114,7 @@ export const tail: <A>(self: ImmutableQueue<A>) => O.Option<ImmutableQueue<A>> =
  */
 export const prepend: <B>(
   elem: B
-) => <A>(self: ImmutableQueue<A>) => ImmutableQueue<A | B> = IQI.prepend
+) => <A>(self: Queue<A>) => Queue<A | B> = QI.prepend
 
 /**
  * @since 1.0.0
@@ -122,7 +122,7 @@ export const prepend: <B>(
  */
 export const enqueue: <B>(
   elem: B
-) => <A>(self: ImmutableQueue<A>) => ImmutableQueue<A | B> = IQI.enqueue
+) => <A>(self: Queue<A>) => Queue<A | B> = QI.enqueue
 
 /**
  * @since 1.0.0
@@ -130,15 +130,15 @@ export const enqueue: <B>(
  */
 export const enqueueAll: <B>(
   iter: Iterable<B>
-) => <A>(self: ImmutableQueue<A>) => ImmutableQueue<A | B> = IQI.enqueueAll
+) => <A>(self: Queue<A>) => Queue<A | B> = QI.enqueueAll
 
 /**
  * @since 1.0.0
  * @category mutations
  */
 export const dequeue: <A>(
-  self: ImmutableQueue<A>
-) => O.Option<readonly [A, ImmutableQueue<A>]> = IQI.dequeue
+  self: Queue<A>
+) => O.Option<readonly [A, Queue<A>]> = QI.dequeue
 
 /**
  * @since 1.0.0
@@ -146,7 +146,7 @@ export const dequeue: <A>(
  */
 export const map: <A, B>(
   f: (a: A) => B
-) => (self: ImmutableQueue<A>) => ImmutableQueue<B> = IQI.map
+) => (self: Queue<A>) => Queue<B> = QI.map
 
 /**
  * @since 1.0.0
@@ -155,7 +155,7 @@ export const map: <A, B>(
 export const reduce: <A, B>(
   b: B,
   f: (b: B, a: A) => B
-) => (self: ImmutableQueue<A>) => B = IQI.reduce
+) => (self: Queue<A>) => B = QI.reduce
 
 /**
  * @since 1.0.0
@@ -163,7 +163,7 @@ export const reduce: <A, B>(
  */
 export const some: <A>(
   predicate: Predicate<A>
-) => (self: ImmutableQueue<A>) => boolean = IQI.some
+) => (self: Queue<A>) => boolean = QI.some
 
 /**
  * @since 1.0.0
@@ -171,10 +171,10 @@ export const some: <A>(
  */
 export const findFirst: {
   <A, B extends A>(refinement: Refinement<A, B>): (
-    self: ImmutableQueue<A>
+    self: Queue<A>
   ) => O.Option<B>
-  <A>(predicate: Predicate<A>): (self: ImmutableQueue<A>) => O.Option<A>
-} = IQI.findFirst
+  <A>(predicate: Predicate<A>): (self: Queue<A>) => O.Option<A>
+} = QI.findFirst
 
 /**
  * @since 1.0.0
@@ -182,39 +182,39 @@ export const findFirst: {
  */
 export const filter: {
   <A, B extends A>(refinement: Refinement<A, B>): (
-    self: ImmutableQueue<A>
-  ) => ImmutableQueue<B>
-  <A>(predicate: Predicate<A>): (self: ImmutableQueue<A>) => ImmutableQueue<A>
-} = IQI.filter
+    self: Queue<A>
+  ) => Queue<B>
+  <A>(predicate: Predicate<A>): (self: Queue<A>) => Queue<A>
+} = QI.filter
 
 /**
  * @since 1.0.0
  * @category conversions
  */
-export const fromIterable: <A>(items: Iterable<A>) => ImmutableQueue<A> = IQI.from
+export const fromIterable: <A>(items: Iterable<A>) => Queue<A> = QI.from
 
 /**
  * @since 1.0.0
  * @category unsafe
  */
-export const unsafeHead: <A>(self: ImmutableQueue<A>) => A = IQI.unsafeHead
+export const unsafeHead: <A>(self: Queue<A>) => A = QI.unsafeHead
 
 /**
  * @since 1.0.0
  * @category unsafe
  */
-export const unsafeTail: <A>(self: ImmutableQueue<A>) => ImmutableQueue<A> = IQI.unsafeTail
+export const unsafeTail: <A>(self: Queue<A>) => Queue<A> = QI.unsafeTail
 
 /**
  * @since 1.0.0
  * @category unsafe
  */
 export const unsafeDequeue: <A>(
-  self: ImmutableQueue<A>
-) => readonly [A, ImmutableQueue<A>] = IQI.unsafeDequeue
+  self: Queue<A>
+) => readonly [A, Queue<A>] = QI.unsafeDequeue
 
-const Functor: Functor<ImmutableQueueTypeLambda> = IQI.Functor
-const FromIdentity: FromIdentity<ImmutableQueueTypeLambda> = IQI.FromIdentity
+const Functor: Functor<QueueTypeLambda> = QI.Functor
+const FromIdentity: FromIdentity<QueueTypeLambda> = QI.FromIdentity
 
 export {
   /**

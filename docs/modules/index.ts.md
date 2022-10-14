@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 7
+nav_order: 6
 parent: Modules
 ---
 
@@ -18,11 +18,11 @@ Added in v1.0.0
   - [duration](#duration)
   - [equal](#equal)
   - [hash](#hash)
-  - [immutableQueue](#immutablequeue)
   - [list](#list)
   - [mutableHashMap](#mutablehashmap)
   - [mutableListBuilder](#mutablelistbuilder)
   - [mutableRef](#mutableref)
+  - [queue](#queue)
 
 ---
 
@@ -78,16 +78,6 @@ export declare const hash: typeof hash
 
 Added in v1.0.0
 
-## immutableQueue
-
-**Signature**
-
-```ts
-export declare const immutableQueue: typeof immutableQueue
-```
-
-Added in v1.0.0
-
 ## list
 
 **Signature**
@@ -124,6 +114,16 @@ Added in v1.0.0
 
 ```ts
 export declare const mutableRef: typeof mutableRef
+```
+
+Added in v1.0.0
+
+## queue
+
+**Signature**
+
+```ts
+export declare const queue: typeof queue
 ```
 
 Added in v1.0.0
