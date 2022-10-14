@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 10
+nav_order: 11
 parent: Modules
 ---
 
@@ -21,6 +21,7 @@ Added in v1.0.0
   - [duration](#duration)
   - [equal](#equal)
   - [hash](#hash)
+  - [hashMap](#hashmap)
   - [list](#list)
   - [mutableHashMap](#mutablehashmap)
   - [mutableHashSet](#mutablehashset)
@@ -109,6 +110,16 @@ Added in v1.0.0
 
 ```ts
 export declare const hash: typeof hash
+```
+
+Added in v1.0.0
+
+## hashMap
+
+**Signature**
+
+```ts
+export declare const hashMap: typeof hashMap
 ```
 
 Added in v1.0.0
