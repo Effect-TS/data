@@ -16,7 +16,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category model
  */
-export interface AtomicReference<T> extends Equal.Equal {
+export interface MutableRef<T> extends Equal.Equal {
   readonly _id: TypeId
   readonly _T: (_: never) => T
 
@@ -24,7 +24,7 @@ export interface AtomicReference<T> extends Equal.Equal {
   current: T
 }
 
-class AtomicReferenceImpl<T> implements AtomicReference<T> {
+class MutableRefImpl<T> implements MutableRef<T> {
   _T: (_: never) => T = (_) => _
   _id: typeof TypeId = TypeId
   constructor(public current: T) {}
@@ -40,40 +40,40 @@ class AtomicReferenceImpl<T> implements AtomicReference<T> {
  * @since 1.0.0
  * @category constructors
  */
-export const make = <T>(value: T): AtomicReference<T> => new AtomicReferenceImpl(value)
+export const make = <T>(value: T): MutableRef<T> => new MutableRefImpl(value)
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const Atomic = <T>(value: T): AtomicReference<T> => new AtomicReferenceImpl(value)
+export const MutableRef = <T>(value: T): MutableRef<T> => new MutableRefImpl(value)
 
 /**
  * @since 1.0.0
  * @category general
  */
-export const get = <T>(self: AtomicReference<T>): T => self.current
+export const get = <T>(self: MutableRef<T>): T => self.current
 
 /**
  * @since 1.0.0
  * @category general
  */
 export const set = <T>(value: T) =>
-  (self: AtomicReference<T>): AtomicReference<T> => (self.current = value, self)
+  (self: MutableRef<T>): MutableRef<T> => (self.current = value, self)
 
 /**
  * @since 1.0.0
  * @category general
  */
 export const setAndGet = <T>(value: T) =>
-  (self: AtomicReference<T>): T => (self.current = value, self.current)
+  (self: MutableRef<T>): T => (self.current = value, self.current)
 
 /**
  * @since 1.0.0
  * @category general
  */
 export const getAndSet = <T>(value: T) =>
-  (self: AtomicReference<T>): T => {
+  (self: MutableRef<T>): T => {
     const current = self.current
     self.current = value
     return current
@@ -84,7 +84,7 @@ export const getAndSet = <T>(value: T) =>
  * @category general
  */
 export const compareAndSet = <T>(oldValue: T, newValue: T) =>
-  (self: AtomicReference<T>): boolean => {
+  (self: MutableRef<T>): boolean => {
     if (Equal.equals(oldValue, self.current)) {
       self.current = newValue
       return true
@@ -96,7 +96,7 @@ export const compareAndSet = <T>(oldValue: T, newValue: T) =>
  * @since 1.0.0
  * @category numeric
  */
-export const incrementAndGet = (self: AtomicReference<number>): number => {
+export const incrementAndGet = (self: MutableRef<number>): number => {
   self.current = self.current + 1
   return self.current
 }
@@ -105,7 +105,7 @@ export const incrementAndGet = (self: AtomicReference<number>): number => {
  * @since 1.0.0
  * @category numeric
  */
-export const getAndIncrement = (self: AtomicReference<number>): number => {
+export const getAndIncrement = (self: MutableRef<number>): number => {
   const current = self.current
   self.current = self.current + 1
   return current
@@ -115,7 +115,7 @@ export const getAndIncrement = (self: AtomicReference<number>): number => {
  * @since 1.0.0
  * @category numeric
  */
-export const decrementAndGet = (self: AtomicReference<number>): number => {
+export const decrementAndGet = (self: MutableRef<number>): number => {
   self.current = self.current - 1
   return self.current
 }
@@ -124,7 +124,7 @@ export const decrementAndGet = (self: AtomicReference<number>): number => {
  * @since 1.0.0
  * @category numeric
  */
-export const getAndDecrement = (self: AtomicReference<number>): number => {
+export const getAndDecrement = (self: MutableRef<number>): number => {
   const current = self.current
   self.current = self.current + 1
   return current
