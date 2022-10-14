@@ -2,7 +2,6 @@
  * @since 1.0.0
  */
 
-import * as atomicReference from "@fp-ts/data/AtomicReference"
 import * as chunk from "@fp-ts/data/Chunk"
 import * as context from "@fp-ts/data/Context"
 import * as duration from "@fp-ts/data/Duration"
@@ -12,12 +11,9 @@ import * as immutableQueue from "@fp-ts/data/ImmutableQueue"
 import * as list from "@fp-ts/data/List"
 import * as mutableHashMap from "@fp-ts/data/MutableHashMap"
 import * as mutableListBuilder from "@fp-ts/data/MutableListBuilder"
+import * as mutableRef from "@fp-ts/data/MutableRef"
 
 export {
-  /**
-   * @since 1.0.0
-   */
-  atomicReference,
   /**
    * @since 1.0.0
    */
@@ -53,5 +49,9 @@ export {
   /**
    * @since 1.0.0
    */
-  mutableListBuilder
+  mutableListBuilder,
+  /**
+   * @since 1.0.0
+   */
+  mutableRef
 }

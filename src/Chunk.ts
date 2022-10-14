@@ -10,9 +10,9 @@ import * as RA from "@fp-ts/core/ReadonlyArray"
 import type { Refinement } from "@fp-ts/core/Refinement"
 import type { Result } from "@fp-ts/core/Result"
 import type { Ord } from "@fp-ts/core/typeclasses/Ord"
-import * as Atomic from "@fp-ts/data/AtomicReference"
 import * as Equal from "@fp-ts/data/Equal"
 import * as Hash from "@fp-ts/data/Hash"
+import * as MRef from "@fp-ts/data/MutableRef"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/Chunk") as TypeId
 
@@ -77,7 +77,7 @@ interface IAppend<A> {
   readonly start: Chunk<A>
   readonly buffer: Array<unknown>
   readonly bufferUsed: number
-  readonly chain: Atomic.AtomicReference<number>
+  readonly chain: MRef.MutableRef<number>
 }
 
 /** @internal */
@@ -86,7 +86,7 @@ interface IPrepend<A> {
   readonly end: Chunk<A>
   readonly buffer: Array<unknown>
   readonly bufferUsed: number
-  readonly chain: Atomic.AtomicReference<number>
+  readonly chain: MRef.MutableRef<number>
 }
 
 /** @internal */
@@ -402,7 +402,7 @@ export const append = <A1>(a: A1) =>
       case "IAppend": {
         if (
           self.backing.bufferUsed < self.backing.buffer.length &&
-          Atomic.compareAndSet(self.backing.bufferUsed, self.backing.bufferUsed + 1)(
+          MRef.compareAndSet(self.backing.bufferUsed, self.backing.bufferUsed + 1)(
             self.backing.chain
           )
         ) {
@@ -425,7 +425,7 @@ export const append = <A1>(a: A1) =>
             start: concat(chunk)(self.backing.start),
             buffer: self.backing.buffer,
             bufferUsed: 1,
-            chain: Atomic.make(1)
+            chain: MRef.make(1)
           })
         }
       }
@@ -437,7 +437,7 @@ export const append = <A1>(a: A1) =>
           buffer,
           start: self,
           bufferUsed: 1,
-          chain: Atomic.make(1)
+          chain: MRef.make(1)
         })
       }
     }
@@ -455,7 +455,7 @@ export const prepend = <A1>(a: A1) =>
       case "IPrepend": {
         if (
           self.backing.bufferUsed < self.backing.buffer.length &&
-          Atomic.compareAndSet(self.backing.bufferUsed, self.backing.bufferUsed + 1)(
+          MRef.compareAndSet(self.backing.bufferUsed, self.backing.bufferUsed + 1)(
             self.backing.chain
           )
         ) {
@@ -478,7 +478,7 @@ export const prepend = <A1>(a: A1) =>
             end: concat(chunk)(self.backing.end),
             buffer: self.backing.buffer,
             bufferUsed: 1,
-            chain: Atomic.make(1)
+            chain: MRef.make(1)
           })
         }
       }
@@ -490,7 +490,7 @@ export const prepend = <A1>(a: A1) =>
           buffer,
           end: self,
           bufferUsed: 1,
-          chain: Atomic.make(1)
+          chain: MRef.make(1)
         })
       }
     }

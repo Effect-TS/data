@@ -1,10 +1,10 @@
 ---
-title: AtomicReference.ts
-nav_order: 1
+title: MutableRef.ts
+nav_order: 11
 parent: Modules
 ---
 
-## AtomicReference overview
+## MutableRef overview
 
 Added in v1.0.0
 
@@ -13,7 +13,7 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [constructors](#constructors)
-  - [Atomic](#atomic)
+  - [MutableRef](#mutableref)
   - [make](#make)
 - [general](#general)
   - [compareAndSet](#compareandset)
@@ -22,7 +22,7 @@ Added in v1.0.0
   - [set](#set)
   - [setAndGet](#setandget)
 - [model](#model)
-  - [AtomicReference (interface)](#atomicreference-interface)
+  - [MutableRef (interface)](#mutableref-interface)
 - [numeric](#numeric)
   - [decrementAndGet](#decrementandget)
   - [getAndDecrement](#getanddecrement)
@@ -35,12 +35,12 @@ Added in v1.0.0
 
 # constructors
 
-## Atomic
+## MutableRef
 
 **Signature**
 
 ```ts
-export declare const Atomic: <T>(value: T) => AtomicReference<T>
+export declare const MutableRef: <T>(value: T) => MutableRef<T>
 ```
 
 Added in v1.0.0
@@ -50,7 +50,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const make: <T>(value: T) => AtomicReference<T>
+export declare const make: <T>(value: T) => MutableRef<T>
 ```
 
 Added in v1.0.0
@@ -62,7 +62,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const compareAndSet: <T>(oldValue: T, newValue: T) => (self: AtomicReference<T>) => boolean
+export declare const compareAndSet: <T>(oldValue: T, newValue: T) => (self: MutableRef<T>) => boolean
 ```
 
 Added in v1.0.0
@@ -72,7 +72,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const get: <T>(self: AtomicReference<T>) => T
+export declare const get: <T>(self: MutableRef<T>) => T
 ```
 
 Added in v1.0.0
@@ -82,7 +82,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getAndSet: <T>(value: T) => (self: AtomicReference<T>) => T
+export declare const getAndSet: <T>(value: T) => (self: MutableRef<T>) => T
 ```
 
 Added in v1.0.0
@@ -92,7 +92,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const set: <T>(value: T) => (self: AtomicReference<T>) => AtomicReference<T>
+export declare const set: <T>(value: T) => (self: MutableRef<T>) => MutableRef<T>
 ```
 
 Added in v1.0.0
@@ -102,19 +102,19 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const setAndGet: <T>(value: T) => (self: AtomicReference<T>) => T
+export declare const setAndGet: <T>(value: T) => (self: MutableRef<T>) => T
 ```
 
 Added in v1.0.0
 
 # model
 
-## AtomicReference (interface)
+## MutableRef (interface)
 
 **Signature**
 
 ```ts
-export interface AtomicReference<T> extends Equal.Equal {
+export interface MutableRef<T> extends Equal.Equal {
   readonly _id: TypeId
   readonly _T: (_: never) => T
 
@@ -132,7 +132,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const decrementAndGet: (self: AtomicReference<number>) => number
+export declare const decrementAndGet: (self: MutableRef<number>) => number
 ```
 
 Added in v1.0.0
@@ -142,7 +142,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getAndDecrement: (self: AtomicReference<number>) => number
+export declare const getAndDecrement: (self: MutableRef<number>) => number
 ```
 
 Added in v1.0.0
@@ -152,7 +152,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getAndIncrement: (self: AtomicReference<number>) => number
+export declare const getAndIncrement: (self: MutableRef<number>) => number
 ```
 
 Added in v1.0.0
@@ -162,7 +162,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const incrementAndGet: (self: AtomicReference<number>) => number
+export declare const incrementAndGet: (self: MutableRef<number>) => number
 ```
 
 Added in v1.0.0
