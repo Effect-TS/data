@@ -237,7 +237,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface ImmutableQueue<A> extends Iterable<A>, DE.DeepEqual {
+export interface ImmutableQueue<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
   readonly _A: (_: never) => A
   /** @internal */

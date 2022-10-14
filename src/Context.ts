@@ -3,8 +3,8 @@
  */
 import type { Option } from "@fp-ts/core/Option"
 import * as O from "@fp-ts/core/Option"
-import { DeepEqual } from "@fp-ts/data/DeepEqual"
-import { DeepHash, deepHash, randomHash } from "@fp-ts/data/DeepHash"
+import * as Equal from "@fp-ts/data/Equal"
+import * as Hash from "@fp-ts/data/Hash"
 
 const TagTypeId: unique symbol = Symbol.for("@fp-ts/data/Context/Tag") as TagTypeId
 
@@ -18,7 +18,7 @@ export type TagTypeId = typeof TagTypeId
  * @since 1.0.0
  * @category model
  */
-export interface Tag<Service> extends DeepEqual {
+export interface Tag<Service> extends Equal.Equal {
   readonly _id: TagTypeId
   readonly _S: (_: Service) => Service
 }
@@ -35,12 +35,12 @@ class TagImpl<Service> implements Tag<Service> {
   readonly _id: typeof TagTypeId = TagTypeId
   readonly _S: (_: Service) => Service = (_) => _;
 
-  [DeepEqual.symbol](that: unknown) {
+  [Equal.Equal.symbol](that: unknown) {
     return this === that
   }
 
-  [DeepHash.symbol](): number {
-    return randomHash(this)
+  [Hash.Hash.symbol](): number {
+    return Hash.random(this)
   }
 }
 
@@ -68,7 +68,7 @@ export type Tags<R> = R extends infer S ? Tag<S> : never
  * @since 1.0.0
  * @category model
  */
-export interface Context<Services> extends DeepEqual {
+export interface Context<Services> extends Equal.Equal {
   readonly _id: TypeId
   readonly _S: (_: Services) => unknown
   /** @internal */
@@ -79,7 +79,7 @@ class ContextImpl<Services> implements Context<Services> {
   _id: typeof TypeId = TypeId
   _S = (_: Services) => _;
 
-  [DeepEqual.symbol](that: unknown): boolean {
+  [Equal.symbol](that: unknown): boolean {
     if (isContext(that)) {
       if (this.unsafeMap.size === that.unsafeMap.size) {
         for (const k of this.unsafeMap.keys()) {
@@ -93,8 +93,8 @@ class ContextImpl<Services> implements Context<Services> {
     return false
   }
 
-  [DeepHash.symbol](): number {
-    return deepHash(this.unsafeMap.size)
+  [Hash.symbol](): number {
+    return Hash.evaluate(this.unsafeMap.size)
   }
 
   constructor(readonly unsafeMap: Map<Tag<any>, any>) {}

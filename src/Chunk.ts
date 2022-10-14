@@ -10,8 +10,8 @@ import * as RA from "@fp-ts/core/ReadonlyArray"
 import type { Refinement } from "@fp-ts/core/Refinement"
 import type { Result } from "@fp-ts/core/Result"
 import type { Ord } from "@fp-ts/core/typeclasses/Ord"
-import { DeepEqual, deepEqual, getEq } from "@fp-ts/data/DeepEqual"
-import { DeepHash, deepHash } from "@fp-ts/data/DeepHash"
+import * as Equal from "@fp-ts/data/Equal"
+import * as Hash from "@fp-ts/data/Hash"
 import { AtomicNumber } from "@fp-ts/data/internal/AtomicNumber"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/Chunk") as TypeId
@@ -26,7 +26,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category model
  */
-export interface Chunk<A> extends Iterable<A>, DeepEqual {
+export interface Chunk<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
   readonly _A: (_: never) => A
 
@@ -186,12 +186,12 @@ class ChunkImpl<A> implements Chunk<A> {
     }
   }
 
-  [DeepEqual.symbol](that: unknown): boolean {
-    return isChunk(that) && deepEqual(toArray(this), toArray(that))
+  [Equal.symbol](that: unknown): boolean {
+    return isChunk(that) && Equal.equals(toArray(this), toArray(that))
   }
 
-  [DeepHash.symbol](): number {
-    return deepHash(toArray(this))
+  [Hash.symbol](): number {
+    return Hash.evaluate(toArray(this))
   }
 
   [Symbol.iterator](): Iterator<A> {
@@ -733,7 +733,7 @@ export const filterMapWhile = <A, B>(f: (a: A) => Option<B>) =>
  * @category elements
  */
 export const elem = <A>(a: A) =>
-  (self: Chunk<A>): boolean => pipe(toArray(self), RA.elem(getEq())(a))
+  (self: Chunk<A>): boolean => pipe(toArray(self), RA.elem(Equal.getEq())(a))
 
 /**
  * Filter out optional values
@@ -754,7 +754,7 @@ export const dedupeAdjacent = <A>(self: Chunk<A>): Chunk<A> => {
   let lastA: O.Option<A> = O.none
 
   for (const a of self) {
-    if (O.isNone(lastA) || !deepEqual(a, lastA.value)) {
+    if (O.isNone(lastA) || !Equal.equals(a, lastA.value)) {
       builder.push(a)
       lastA = O.some(a)
     }
@@ -903,7 +903,7 @@ export const intersection = <A>(that: Chunk<A>) =>
   (self: Chunk<A>): Chunk<A> =>
     pipe(
       toArray(self),
-      RA.intersection(getEq<A>())(toArray(that)),
+      RA.intersection(Equal.getEq<A>())(toArray(that)),
       unsafeFromArray
     )
 
@@ -1304,7 +1304,7 @@ export const unfold = <A, S>(s: S, f: (s: S) => Option<readonly [A, S]>): Chunk<
  */
 export function union<A>(that: Chunk<A>) {
   return (self: Chunk<A>): Chunk<A> =>
-    unsafeFromArray(RA.union(getEq<A>())(toArray(that))(toArray(self)))
+    unsafeFromArray(RA.union(Equal.getEq<A>())(toArray(that))(toArray(self)))
 }
 
 /**
@@ -1314,7 +1314,7 @@ export function union<A>(that: Chunk<A>) {
  * @category elements
  */
 export const dedupe = <A>(self: Chunk<A>): Chunk<A> =>
-  unsafeFromArray(RA.uniq(getEq<A>())(toArray(self)))
+  unsafeFromArray(RA.uniq(Equal.getEq<A>())(toArray(self)))
 
 /**
  * Returns the first element of this chunk.

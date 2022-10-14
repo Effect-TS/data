@@ -8,7 +8,7 @@ import type { Predicate } from "@fp-ts/core/Predicate"
 import type { Refinement } from "@fp-ts/core/Refinement"
 import { FromIdentity } from "@fp-ts/core/typeclasses/FromIdentity"
 import { Functor } from "@fp-ts/core/typeclasses/Functor"
-import type * as DE from "@fp-ts/data/DeepEqual"
+import type * as Equal from "@fp-ts/data/Equal"
 import * as IQI from "@fp-ts/data/internal/ImmutableQueue"
 import type * as L from "@fp-ts/data/List"
 
@@ -24,7 +24,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category model
  */
-export interface ImmutableQueue<A> extends Iterable<A>, DE.DeepEqual {
+export interface ImmutableQueue<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
   readonly _A: (_: never) => A
   /** @internal */

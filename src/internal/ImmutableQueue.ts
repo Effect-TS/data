@@ -14,8 +14,8 @@ import type { Predicate } from "@fp-ts/core/Predicate"
 import type { Refinement } from "@fp-ts/core/Refinement"
 import type * as _fromIdentity from "@fp-ts/core/typeclasses/FromIdentity"
 import type * as _functor from "@fp-ts/core/typeclasses/Functor"
-import * as DE from "@fp-ts/data/DeepEqual"
-import * as DH from "@fp-ts/data/DeepHash"
+import * as DE from "@fp-ts/data/Equal"
+import * as DH from "@fp-ts/data/Hash"
 import type * as IQ from "@fp-ts/data/ImmutableQueue"
 import * as II from "@fp-ts/data/internal/Iterable"
 import * as LI from "@fp-ts/data/internal/List"
@@ -25,25 +25,25 @@ export const ImmutableQueueTypeId: IQ.TypeId = Symbol.for(
   "@fp-ts/data/ImmutableQueue"
 ) as IQ.TypeId
 
-class ImmutableQueueImpl<A> implements IQ.ImmutableQueue<A>, Iterable<A>, DE.DeepEqual {
+class ImmutableQueueImpl<A> implements IQ.ImmutableQueue<A>, Iterable<A>, DE.Equal {
   readonly _id: IQ.TypeId = ImmutableQueueTypeId
   readonly _A: (_: never) => A = (_) => _
   constructor(public _in: L.List<A>, public _out: L.List<A>) {}
   [Symbol.iterator](): Iterator<A> {
     return pipe(this._out, II.concat(L.reverse(this._in)))[Symbol.iterator]()
   }
-  [DH.DeepHash.symbol](): number {
+  [DH.Hash.symbol](): number {
     return pipe(
-      DH.deepHash(this._id),
-      DH.combine(DH.deepHash(this._in)),
-      DH.combine(DH.deepHash(this._out))
+      DH.evaluate(this._id),
+      DH.combine(DH.evaluate(this._in)),
+      DH.combine(DH.evaluate(this._out))
     )
   }
-  [DE.DeepEqual.symbol](that: unknown): boolean {
+  [DE.Equal.symbol](that: unknown): boolean {
     return (
       isImmutableQueue(that) &&
-      pipe(this._in, DE.deepEqual(that._in)) &&
-      pipe(this._out, DE.deepEqual(that._out))
+      pipe(this._in, DE.equals(that._in)) &&
+      pipe(this._out, DE.equals(that._out))
     )
   }
 }

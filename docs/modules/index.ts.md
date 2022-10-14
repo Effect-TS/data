@@ -15,9 +15,9 @@ Added in v1.0.0
 - [utils](#utils)
   - [chunk](#chunk)
   - [context](#context)
-  - [deepEqual](#deepequal)
-  - [deepHash](#deephash)
   - [duration](#duration)
+  - [equal](#equal)
+  - [hash](#hash)
   - [immutableQueue](#immutablequeue)
   - [list](#list)
   - [mutableHashMap](#mutablehashmap)
@@ -47,32 +47,32 @@ export declare const context: typeof context
 
 Added in v1.0.0
 
-## deepEqual
-
-**Signature**
-
-```ts
-export declare const deepEqual: typeof deepEqual
-```
-
-Added in v1.0.0
-
-## deepHash
-
-**Signature**
-
-```ts
-export declare const deepHash: typeof deepHash
-```
-
-Added in v1.0.0
-
 ## duration
 
 **Signature**
 
 ```ts
 export declare const duration: typeof duration
+```
+
+Added in v1.0.0
+
+## equal
+
+**Signature**
+
+```ts
+export declare const equal: typeof equal
+```
+
+Added in v1.0.0
+
+## hash
+
+**Signature**
+
+```ts
+export declare const hash: typeof hash
 ```
 
 Added in v1.0.0

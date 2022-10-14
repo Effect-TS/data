@@ -3,29 +3,35 @@
  */
 import { absurd } from "@fp-ts/core/Function"
 import type { Eq } from "@fp-ts/core/typeclasses/Eq"
-import * as DH from "@fp-ts/data/DeepHash"
+import * as DH from "@fp-ts/data/Hash"
 
 /**
  * @since 1.0.0
  * @category model
  */
-export const DeepEqual: DeepEqualConstructor = {
-  symbol: Symbol.for("@fp-ts/data/DeepEqual") as DeepEqualConstructor["symbol"]
+export const Equal: EqualConstructor = {
+  symbol: Symbol.for("@fp-ts/data/DeepEqual") as EqualConstructor["symbol"]
+}
+
+/**
+ * @since 1.0.0
+ * @category symbol
+ */
+export const symbol: EqualConstructor["symbol"] = Equal.symbol
+
+/**
+ * @since 1.0.0
+ * @category model
+ */
+export interface Equal extends DH.Hash {
+  readonly [Equal.symbol]: (that: unknown) => boolean
 }
 
 /**
  * @since 1.0.0
  * @category model
  */
-export interface DeepEqual extends DH.DeepHash {
-  readonly [DeepEqual.symbol]: (that: unknown) => boolean
-}
-
-/**
- * @since 1.0.0
- * @category model
- */
-export interface DeepEqualConstructor {
+export interface EqualConstructor {
   readonly symbol: unique symbol
 }
 
@@ -33,31 +39,28 @@ export interface DeepEqualConstructor {
  * @since 1.0.0
  * @category equality
  */
-export function deepEqual<B>(that: B): <A>(self: A) => boolean
+export function equals<B>(that: B): <A>(self: A) => boolean
 /**
  * @since 1.0.0
  * @category equality
  */
-export function deepEqual<A, B>(self: A, that: B): boolean
-export function deepEqual(): any {
+export function equals<A, B>(self: A, that: B): boolean
+export function equals(): any {
   if (arguments.length === 1) {
-    return (self: unknown) => equal(self, arguments[0])
+    return (self: unknown) => compareBoth(self, arguments[0])
   }
-  return equal(arguments[0], arguments[1])
+  return compareBoth(arguments[0], arguments[1])
 }
 
-/**
- * @since 1.0.0
- * @category equality
- */
+/** @internal */
 export function getEq<A>(): Eq<A> {
   return {
-    equals: (that) => (self) => equal(self, that)
+    equals: (that) => (self) => compareBoth(self, that)
   }
 }
 
-function isDeepEqual(u: unknown): u is DeepEqual {
-  return typeof u === "object" && u !== null && DeepEqual.symbol in u
+function isDeepEqual(u: unknown): u is Equal {
+  return typeof u === "object" && u !== null && Equal.symbol in u
 }
 
 function object(self: object, that: object) {
@@ -75,21 +78,21 @@ function object(self: object, that: object) {
   if (keysA.length !== keysB.length) {
     return false
   }
-  if (!deepEqual(keysA, keysB)) {
+  if (!equals(keysA, keysB)) {
     return false
   }
   for (const ka of keysA) {
     const va = self[ka]
     const vb = that[ka]
-    if (!deepEqual(va, vb)) {
+    if (!equals(va, vb)) {
       return false
     }
   }
   return true
 }
 
-function equal<A, B>(self: A, that: B): boolean
-function equal(self: unknown, that: unknown) {
+function compareBoth<A, B>(self: A, that: B): boolean
+function compareBoth(self: unknown, that: unknown) {
   const selfType = typeof self
   switch (selfType) {
     case "number": {
@@ -116,19 +119,19 @@ function equal(self: unknown, that: unknown) {
       }
       if (Array.isArray(self)) {
         if (Array.isArray(that)) {
-          return self.length === that.length && self.every((v, i) => deepEqual(v, that[i]))
+          return self.length === that.length && self.every((v, i) => equals(v, that[i]))
         } else {
           return false
         }
       }
-      const hashSelf = DH.deepHash(self)
-      const hashThat = DH.deepHash(that)
+      const hashSelf = DH.evaluate(self)
+      const hashThat = DH.evaluate(that)
       if (hashSelf !== hashThat) {
         return false
       }
       if (isDeepEqual(self)) {
         if (isDeepEqual(that)) {
-          return self[DeepEqual.symbol](that)
+          return self[Equal.symbol](that)
         } else {
           return false
         }
@@ -138,12 +141,12 @@ function equal(self: unknown, that: unknown) {
     case "function": {
       if (isDeepEqual(self)) {
         if (isDeepEqual(that)) {
-          const hashSelf = DH.deepHash(self)
-          const hashThat = DH.deepHash(that)
+          const hashSelf = DH.evaluate(self)
+          const hashThat = DH.evaluate(that)
           if (hashSelf !== hashThat) {
             return false
           }
-          return self[DeepEqual.symbol](that)
+          return self[Equal.symbol](that)
         } else {
           return false
         }

@@ -3,11 +3,11 @@ import * as L from "@fp-ts/data/internal/List"
 import type { Cons, List } from "@fp-ts/data/List"
 import type * as LB from "@fp-ts/data/MutableListBuilder"
 
-import * as DE from "@fp-ts/data/DeepEqual"
-import * as DH from "@fp-ts/data/DeepHash"
+import * as DE from "@fp-ts/data/Equal"
+import * as DH from "@fp-ts/data/Hash"
 
 /** @internal */
-export class MutableListBuilder<A> implements LB.MutableListBuilder<A>, DE.DeepEqual {
+export class MutableListBuilder<A> implements LB.MutableListBuilder<A>, DE.Equal {
   readonly _id: LB.TypeId = Symbol.for("@fp-ts/data/MutableListBuilder") as LB.TypeId
 
   constructor(
@@ -20,11 +20,11 @@ export class MutableListBuilder<A> implements LB.MutableListBuilder<A>, DE.DeepE
     return this.first[Symbol.iterator]()
   }
 
-  [DH.DeepHash.symbol](): number {
-    return DH.randomHash(this)
+  [DH.Hash.symbol](): number {
+    return DH.random(this)
   }
 
-  [DE.DeepEqual.symbol](that: unknown) {
+  [DE.Equal.symbol](that: unknown) {
     return this === that
   }
 

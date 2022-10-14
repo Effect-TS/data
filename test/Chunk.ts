@@ -1,6 +1,6 @@
 import { pipe } from "@fp-ts/core/Function"
 import * as C from "@fp-ts/data/Chunk"
-import { deepEqual } from "@fp-ts/data/DeepEqual"
+import { equals } from "@fp-ts/data/Equal"
 
 describe("Chunk", () => {
   it("append", () => {
@@ -9,7 +9,7 @@ describe("Chunk", () => {
       C.append(0),
       C.append(1),
       C.append(2),
-      deepEqual(C.unsafeFromArray([0, 1, 2])),
+      equals(C.unsafeFromArray([0, 1, 2])),
       assert.isTrue
     )
   })
@@ -20,7 +20,7 @@ describe("Chunk", () => {
       C.prepend(0),
       C.prepend(1),
       C.prepend(2),
-      deepEqual(C.unsafeFromArray([2, 1, 0])),
+      equals(C.unsafeFromArray([2, 1, 0])),
       assert.isTrue
     )
   })
@@ -29,7 +29,7 @@ describe("Chunk", () => {
     pipe(
       C.unsafeFromArray([0, 1]),
       C.concat(C.unsafeFromArray([2, 3])),
-      deepEqual(C.unsafeFromArray([0, 1, 2, 3])),
+      equals(C.unsafeFromArray([0, 1, 2, 3])),
       assert.isTrue
     )
   })
