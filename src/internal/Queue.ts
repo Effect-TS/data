@@ -21,9 +21,7 @@ import * as LI from "@fp-ts/data/internal/List"
 import * as L from "@fp-ts/data/List"
 import type * as Q from "@fp-ts/data/Queue"
 
-export const QueueTypeId: Q.TypeId = Symbol.for(
-  "@fp-ts/data/Queue"
-) as Q.TypeId
+export const QueueTypeId: Q.TypeId = Symbol.for("@fp-ts/data/Queue") as Q.TypeId
 
 class QueueImpl<A> implements Q.Queue<A>, Iterable<A>, DE.Equal {
   readonly _id: Q.TypeId = QueueTypeId

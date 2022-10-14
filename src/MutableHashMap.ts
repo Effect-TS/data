@@ -7,7 +7,7 @@ import type { Option } from "@fp-ts/core/Option"
 import * as Equal from "@fp-ts/data/Equal"
 import * as Hash from "@fp-ts/data/Hash"
 
-const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableListBuilder") as TypeId
+const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableHashMap") as TypeId
 
 /**
  * @since 1.0.0
