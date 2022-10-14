@@ -4,8 +4,8 @@
 import { pipe } from "@fp-ts/core/Function"
 import * as O from "@fp-ts/core/Option"
 import type { Option } from "@fp-ts/core/Option"
-import { DeepEqual, deepEqual } from "@fp-ts/data/DeepEqual"
-import { DeepHash, deepHash, randomHash } from "@fp-ts/data/DeepHash"
+import * as Equal from "@fp-ts/data/Equal"
+import * as Hash from "@fp-ts/data/Hash"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableListBuilder") as TypeId
 
@@ -48,7 +48,7 @@ class Node<K, V> implements Iterable<readonly [K, V]> {
  * @since 1.0.0
  * @category model
  */
-export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, DeepEqual {
+export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, Equal.Equal {
   readonly _id: TypeId
 
   readonly _K: (_: K) => K
@@ -70,11 +70,11 @@ class MutableHashMapImpl<K, V> implements MutableHashMap<K, V> {
   readonly backingMap = new Map<number, Node<K, V>>()
   length = 0;
 
-  [DeepHash.symbol]() {
-    return randomHash(this)
+  [Hash.Hash.symbol]() {
+    return Hash.random(this)
   }
 
-  [DeepEqual.symbol](that: unknown) {
+  [Equal.Equal.symbol](that: unknown) {
     return this === that
   }
 
@@ -90,7 +90,7 @@ class MutableHashMapImpl<K, V> implements MutableHashMap<K, V> {
  */
 export const get = <K>(k: K) =>
   <V>(self: MutableHashMap<K, V>): Option<V> => {
-    const hash = deepHash(k)
+    const hash = Hash.evaluate(k)
     const arr = self.backingMap.get(hash)
 
     if (arr == null) {
@@ -100,7 +100,7 @@ export const get = <K>(k: K) =>
     let c: Node<K, V> | undefined = arr
 
     while (c) {
-      if (deepEqual(k, c.k)) {
+      if (Equal.equals(k, c.k)) {
         return O.some(c.v)
       }
       c = c.next
@@ -135,7 +135,7 @@ export const size = <K, V>(self: MutableHashMap<K, V>): number => {
  */
 export const update = <K, V>(k: K, f: (v: V) => V) =>
   (self: MutableHashMap<K, V>): MutableHashMap<K, V> => {
-    const hash = deepHash(k)
+    const hash = Hash.evaluate(k)
     const arr = self.backingMap.get(hash)
 
     if (arr == null) {
@@ -145,7 +145,7 @@ export const update = <K, V>(k: K, f: (v: V) => V) =>
     let c: Node<K, V> | undefined = arr
 
     while (c) {
-      if (deepEqual(k, c.k)) {
+      if (Equal.equals(k, c.k)) {
         c.v = f(c.v)
         return self
       }
@@ -161,7 +161,7 @@ export const update = <K, V>(k: K, f: (v: V) => V) =>
  */
 export const set = <K, V>(k: K, v: V) =>
   (self: MutableHashMap<K, V>): MutableHashMap<K, V> => {
-    const hash = deepHash(k)
+    const hash = Hash.evaluate(k)
     const arr = self.backingMap.get(hash)
 
     if (arr == null) {
@@ -174,7 +174,7 @@ export const set = <K, V>(k: K, v: V) =>
     let l = arr
 
     while (c) {
-      if (deepEqual(k, c.k)) {
+      if (Equal.equals(k, c.k)) {
         c.v = v
         return self
       }
@@ -208,14 +208,14 @@ export const modify = <K, V>(key: K, f: (value: Option<V>) => Option<V>) =>
  */
 export const remove = <K>(k: K) =>
   <V>(self: MutableHashMap<K, V>): MutableHashMap<K, V> => {
-    const hash = deepHash(k)
+    const hash = Hash.evaluate(k)
     const arr = self.backingMap.get(hash)
 
     if (arr == null) {
       return self
     }
 
-    if (deepEqual(k, arr.k)) {
+    if (Equal.equals(k, arr.k)) {
       if (arr.next != null) {
         self.backingMap.set(hash, arr.next)
       } else {
@@ -229,7 +229,7 @@ export const remove = <K>(k: K) =>
     let curr = arr
 
     while (next) {
-      if (deepEqual(k, next.k)) {
+      if (Equal.equals(k, next.k)) {
         curr.next = next.next
         self.length = self.length - 1
         return self

@@ -127,7 +127,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, DeepEqual {
+export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, Equal.Equal {
   readonly _id: TypeId
 
   readonly _K: (_: K) => K

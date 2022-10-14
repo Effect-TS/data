@@ -317,7 +317,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Cons<A> extends Iterable<A>, DeepEqual {
+export interface Cons<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
   readonly _tag: 'Cons'
   readonly _A: (_: never) => A
@@ -343,7 +343,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Nil<A> extends Iterable<A>, DeepEqual {
+export interface Nil<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
   readonly _tag: 'Nil'
   readonly _A: (_: never) => A

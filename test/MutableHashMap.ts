@@ -1,29 +1,29 @@
 import { pipe } from "@fp-ts/core/Function"
 import * as O from "@fp-ts/core/Option"
-import { DeepEqual, deepEqual } from "@fp-ts/data/DeepEqual"
-import { DeepHash, deepHash } from "@fp-ts/data/DeepHash"
+import * as Equal from "@fp-ts/data/Equal"
+import * as Hash from "@fp-ts/data/Hash"
 import * as HM from "@fp-ts/data/MutableHashMap"
 
-class Key implements DeepEqual {
+class Key implements Equal.Equal {
   constructor(readonly a: number, readonly b: number) {}
 
-  [DeepHash.symbol]() {
-    return deepHash(`${this.a}-${this.b}`)
+  [Hash.Hash.symbol]() {
+    return Hash.evaluate(`${this.a}-${this.b}`)
   }
 
-  [DeepEqual.symbol](that: unknown): boolean {
+  [Equal.Equal.symbol](that: unknown): boolean {
     return that instanceof Key && this.a === that.a && this.b === that.b
   }
 }
 
-class Value implements DeepEqual {
+class Value implements Equal.Equal {
   constructor(readonly c: number, readonly d: number) {}
 
-  [DeepHash.symbol]() {
-    return deepHash(`${this.c}-${this.d}`)
+  [Hash.Hash.symbol]() {
+    return Hash.evaluate(`${this.c}-${this.d}`)
   }
 
-  [DeepEqual.symbol](that: unknown): boolean {
+  [Equal.Equal.symbol](that: unknown): boolean {
     return that instanceof Value && this.c === that.c && this.d === that.d
   }
 }
@@ -62,7 +62,7 @@ describe.concurrent("MutableHashMap", () => {
 
     pipe(
       result,
-      deepEqual(O.some(value(1, 1))),
+      Equal.equals(O.some(value(1, 1))),
       assert.isTrue
     )
   })
@@ -115,7 +115,7 @@ describe.concurrent("MutableHashMap", () => {
     pipe(
       map,
       HM.get(key(0, 0)),
-      deepEqual(O.some(value(0, 1))),
+      Equal.equals(O.some(value(0, 1))),
       assert.isTrue
     )
 
@@ -132,7 +132,7 @@ describe.concurrent("MutableHashMap", () => {
     pipe(
       map,
       HM.get(key(2, 2)),
-      deepEqual(O.some(value(2, 2))),
+      Equal.equals(O.some(value(2, 2))),
       assert.isTrue
     )
   })
@@ -177,7 +177,7 @@ describe.concurrent("MutableHashMap", () => {
     )
 
     assert.isTrue(
-      deepEqual(Array.from(map), [
+      Equal.equals(Array.from(map), [
         [key(0, 0), value(4, 4)],
         [key(1, 1), value(3, 3)]
       ])
@@ -212,7 +212,7 @@ describe.concurrent("MutableHashMap", () => {
     pipe(
       map,
       HM.get(key(0, 0)),
-      deepEqual(O.some(value(1, 1))),
+      Equal.equals(O.some(value(1, 1))),
       assert.isTrue
     )
   })

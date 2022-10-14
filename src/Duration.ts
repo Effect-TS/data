@@ -1,8 +1,8 @@
 /**
  * @since 1.0.0
  */
-import * as DE from "@fp-ts/data/DeepEqual"
-import * as DH from "@fp-ts/data/DeepHash"
+import * as Equal from "@fp-ts/data/Equal"
+import * as Hash from "@fp-ts/data/Hash"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/Duration")
 
@@ -22,13 +22,13 @@ export interface Duration {
 }
 
 /** @internal */
-class DurationImpl implements DE.DeepEqual {
+class DurationImpl implements Equal.Equal {
   readonly _id: TypeId = TypeId
   constructor(readonly millis: number) {}
-  [DH.DeepHash.symbol](): number {
-    return DH.deepHash(this.millis)
+  [Hash.symbol](): number {
+    return Hash.evaluate(this.millis)
   }
-  [DE.DeepEqual.symbol](that: unknown): boolean {
+  [Equal.symbol](that: unknown): boolean {
     return isDuration(that) && this.millis === that.millis
   }
 }

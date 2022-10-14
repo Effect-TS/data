@@ -18,27 +18,27 @@ import type * as L from "@fp-ts/data/List"
 import type * as _apply from "@fp-ts/core/typeclasses/Apply"
 import type * as _fromIdentity from "@fp-ts/core/typeclasses/FromIdentity"
 import type * as _functor from "@fp-ts/core/typeclasses/Functor"
-import * as DE from "@fp-ts/data/DeepEqual"
-import * as DH from "@fp-ts/data/DeepHash"
+import * as DE from "@fp-ts/data/Equal"
+import * as DH from "@fp-ts/data/Hash"
 
 /** @internal */
 export const ListTypeId: L.TypeId = Symbol.for("@fp-ts/data/List") as L.TypeId
 
 /** @internal */
-export class ConsImpl<A> implements Iterable<A>, L.Cons<A>, DE.DeepEqual {
+export class ConsImpl<A> implements Iterable<A>, L.Cons<A>, DE.Equal {
   readonly _tag = "Cons"
   readonly _A: (_: never) => A = (_) => _
   readonly _id: L.TypeId = ListTypeId
   constructor(readonly head: A, public tail: L.List<A>) {}
-  [DH.DeepHash.symbol](): number {
+  [DH.Hash.symbol](): number {
     return pipe(
       this,
-      reduce(DH.deepHash(this._tag), (h, a) => pipe(h, DH.combine(DH.deepHash(a))))
+      reduce(DH.evaluate(this._tag), (h, a) => pipe(h, DH.combine(DH.evaluate(a))))
     )
   }
-  [DE.DeepEqual.symbol](that: unknown): boolean {
+  [DE.Equal.symbol](that: unknown): boolean {
     return isList(that) && that._tag === "Cons"
-      ? DE.deepEqual(that.head)(this.head) && DE.deepEqual(that.tail)(this.tail)
+      ? DE.equals(that.head)(this.head) && DE.equals(that.tail)(this.tail)
       : false
   }
   [Symbol.iterator](): Iterator<A> {
@@ -69,16 +69,16 @@ export class ConsImpl<A> implements Iterable<A>, L.Cons<A>, DE.DeepEqual {
 }
 
 /** @internal */
-export class NilImpl<A> implements Iterable<A>, L.Nil<A>, DE.DeepEqual {
+export class NilImpl<A> implements Iterable<A>, L.Nil<A>, DE.Equal {
   readonly _tag = "Nil"
   readonly _A: (_: never) => A = (_) => _
   readonly _id: L.TypeId = ListTypeId;
 
-  [DH.DeepHash.symbol](): number {
-    return DH.deepHash(this._tag)
+  [DH.Hash.symbol](): number {
+    return DH.evaluate(this._tag)
   }
 
-  [DE.DeepEqual.symbol](that: unknown): boolean {
+  [DE.Equal.symbol](that: unknown): boolean {
     return isList(that) && that._tag === "Nil"
   }
 

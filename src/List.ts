@@ -11,7 +11,7 @@ import { Apply } from "@fp-ts/core/typeclasses/Apply"
 import { FromIdentity } from "@fp-ts/core/typeclasses/FromIdentity"
 import { Functor } from "@fp-ts/core/typeclasses/Functor"
 import type { Ord } from "@fp-ts/core/typeclasses/Ord"
-import type { DeepEqual } from "@fp-ts/data/DeepEqual"
+import type * as Equal from "@fp-ts/data/Equal"
 import * as LI from "@fp-ts/data/internal/List"
 import * as _sortWith from "@fp-ts/data/internal/List/sortWith"
 
@@ -38,7 +38,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category model
  */
-export interface Cons<A> extends Iterable<A>, DeepEqual {
+export interface Cons<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
   readonly _tag: "Cons"
   readonly _A: (_: never) => A
@@ -50,7 +50,7 @@ export interface Cons<A> extends Iterable<A>, DeepEqual {
  * @since 1.0.0
  * @category model
  */
-export interface Nil<A> extends Iterable<A>, DeepEqual {
+export interface Nil<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
   readonly _tag: "Nil"
   readonly _A: (_: never) => A

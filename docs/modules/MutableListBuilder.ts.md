@@ -102,7 +102,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface MutableListBuilder<A> extends Iterable<A>, DeepEqual {
+export interface MutableListBuilder<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
   length: number
   first: List<A>

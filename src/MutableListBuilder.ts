@@ -1,7 +1,7 @@
 /**
  * @since 1.0.0
  */
-import type { DeepEqual } from "@fp-ts/data/DeepEqual"
+import type * as Equal from "@fp-ts/data/Equal"
 import * as LBI from "@fp-ts/data/internal/ListBuilder"
 import type { Cons, List } from "@fp-ts/data/List"
 
@@ -26,7 +26,7 @@ export type TypeId = typeof TypeId
  *
  * @category model
  */
-export interface MutableListBuilder<A> extends Iterable<A>, DeepEqual {
+export interface MutableListBuilder<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
   length: number
   first: List<A>

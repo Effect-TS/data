@@ -1,7 +1,7 @@
 import { pipe } from "@fp-ts/core/Function"
 import * as O from "@fp-ts/core/Option"
 import * as Context from "@fp-ts/data/Context"
-import { deepEqual } from "@fp-ts/data/DeepEqual"
+import { equals } from "@fp-ts/data/Equal"
 
 interface A {
   a: number
@@ -29,19 +29,19 @@ describe.concurrent("Context", () => {
     assert.isTrue(pipe(
       Services,
       Context.get(A),
-      deepEqual({ a: 0 })
+      equals({ a: 0 })
     ))
 
     assert.isTrue(pipe(
       Services,
       Context.getOption(B),
-      deepEqual(O.some({ b: 1 }))
+      equals(O.some({ b: 1 }))
     ))
 
     assert.isTrue(pipe(
       Services,
       Context.getOption(C),
-      deepEqual(O.none)
+      equals(O.none)
     ))
 
     assert.throw(() => {
@@ -71,25 +71,25 @@ describe.concurrent("Context", () => {
     assert.isTrue(pipe(
       pruned,
       Context.get(A),
-      deepEqual({ a: 0 })
+      equals({ a: 0 })
     ))
 
     assert.isTrue(pipe(
       pruned,
       Context.getOption(B),
-      deepEqual(O.some({ b: 1 }))
+      equals(O.some({ b: 1 }))
     ))
 
     assert.isTrue(pipe(
       pruned,
       Context.getOption(C),
-      deepEqual(O.none)
+      equals(O.none)
     ))
 
     assert.isTrue(pipe(
       env,
       Context.getOption(C),
-      deepEqual(O.some({ c: 2 }))
+      equals(O.some({ c: 2 }))
     ))
   })
 })

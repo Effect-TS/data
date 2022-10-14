@@ -8,23 +8,29 @@ import { PCGRandom } from "@fp-ts/data/internal/Random"
  * @since 1.0.0
  * @category model
  */
-export const DeepHash: DeepHashConstructor = {
-  symbol: Symbol.for("@fp-ts/data/DeepHash") as DeepHashConstructor["symbol"]
+export const Hash: HashConstructor = {
+  symbol: Symbol.for("@fp-ts/data/DeepHash") as HashConstructor["symbol"]
+}
+
+/**
+ * @since 1.0.0
+ * @category symbol
+ */
+export const symbol: HashConstructor["symbol"] = Hash.symbol
+
+/**
+ * @since 1.0.0
+ * @category model
+ */
+export interface Hash {
+  readonly [Hash.symbol]: () => number
 }
 
 /**
  * @since 1.0.0
  * @category model
  */
-export interface DeepHash {
-  readonly [DeepHash.symbol]: () => number
-}
-
-/**
- * @since 1.0.0
- * @category model
- */
-export interface DeepHashConstructor {
+export interface HashConstructor {
   readonly symbol: unique symbol
 }
 
@@ -32,8 +38,8 @@ export interface DeepHashConstructor {
  * @since 1.0.0
  * @category hashing
  */
-export const deepHash: <A>(self: A) => number = <A>(self: A) => {
-  return optimize(hash(self))
+export const evaluate: <A>(self: A) => number = <A>(self: A) => {
+  return optimize(computeHash(self))
 }
 
 const pcgr = new PCGRandom()
@@ -42,7 +48,7 @@ const pcgr = new PCGRandom()
  * @since 1.0.0
  * @category hashing
  */
-export const randomHash: <A extends object>(self: A) => number = (self) => {
+export const random: <A extends object>(self: A) => number = (self) => {
   if (!CACHE.has(self)) {
     const h = optimize(pcgr.number())
     CACHE.set(self, h)
@@ -56,8 +62,8 @@ export const randomHash: <A extends object>(self: A) => number = (self) => {
  */
 export const combine: (b: number) => (self: number) => number = (b) => (self) => (self * 53) ^ b
 
-function isDeepHash(u: unknown): u is DeepHash {
-  return typeof u === "object" && u !== null && DeepHash.symbol in u
+function isDeepHash(u: unknown): u is Hash {
+  return typeof u === "object" && u !== null && Hash.symbol in u
 }
 
 function number(n: number) {
@@ -82,7 +88,7 @@ function structure(o: object): number {
   const keys = Object.keys(o)
   let h = 12289
   for (let i = 0; i < keys.length; i++) {
-    h ^= pipe(string(keys[i]!), combine(deepHash((o as any)[keys[i]!])))
+    h ^= pipe(string(keys[i]!), combine(evaluate((o as any)[keys[i]!])))
   }
   return h
 }
@@ -90,7 +96,7 @@ function structure(o: object): number {
 function array(arr: ReadonlyArray<any>): number {
   let h = 6151
   for (let i = 0; i < arr.length; i++) {
-    h = pipe(h, combine(deepHash(arr[i])))
+    h = pipe(h, combine(evaluate(arr[i])))
   }
   return h
 }
@@ -104,7 +110,7 @@ function object(value: object): number {
   if (CACHE.has(value)) return CACHE.get(value)
   let h: number
   if (isDeepHash(value)) {
-    h = value[DeepHash.symbol]()
+    h = value[Hash.symbol]()
   } else {
     h = (
       protoMap.get(Object.getPrototypeOf(value))
@@ -119,7 +125,7 @@ function optimize(n: number) {
   return (n & 0xbfffffff) | ((n >>> 1) & 0x40000000)
 }
 
-function hash<A>(self: A) {
+function computeHash<A>(self: A) {
   if (typeof self === "number") {
     return number(self)
   }
@@ -143,7 +149,7 @@ function hash<A>(self: A) {
   }
   if (typeof self === "function") {
     if (CACHE.has(self)) {
-      CACHE.set(self, isDeepHash(self) ? self[DeepHash.symbol]() : number(pcgr.number()))
+      CACHE.set(self, isDeepHash(self) ? self[Hash.symbol]() : number(pcgr.number()))
     }
     return CACHE.get(self)!
   }
