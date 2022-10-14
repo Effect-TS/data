@@ -12,6 +12,7 @@ import * as duration from "@fp-ts/data/Duration"
 import * as equal from "@fp-ts/data/Equal"
 import * as hash from "@fp-ts/data/Hash"
 import * as hashMap from "@fp-ts/data/HashMap"
+import * as hashSet from "@fp-ts/data/HashSet"
 import * as list from "@fp-ts/data/List"
 import * as mutableHashMap from "@fp-ts/data/MutableHashMap"
 import * as mutableHashSet from "@fp-ts/data/MutableHashSet"
@@ -56,6 +57,10 @@ export {
    * @since 1.0.0
    */
   hashMap,
+  /**
+   * @since 1.0.0
+   */
+  hashSet,
   /**
    * @since 1.0.0
    */

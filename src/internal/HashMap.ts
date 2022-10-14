@@ -10,7 +10,7 @@ import { SIZE } from "@fp-ts/data/internal/HashMap/config"
 import * as Node from "@fp-ts/data/internal/HashMap/node"
 
 /** @internal */
-export const HashMapTypeId: HM.TypeId = Symbol.for("@fp-ts/data/List") as HM.TypeId
+export const HashMapTypeId: HM.TypeId = Symbol.for("@fp-ts/data/HashMap") as HM.TypeId
 
 type TraversalFn<K, V, A> = (k: K, v: V) => A
 
@@ -33,7 +33,8 @@ function variance<A, B>(_: A): B {
   return _ as unknown as B
 }
 
-class HashMapImpl<K, V> implements HM.HashMap<K, V> {
+/** @internal */
+export class HashMapImpl<K, V> implements HM.HashMap<K, V> {
   readonly _id: HM.TypeId = HashMapTypeId
   readonly _Key: (_: never) => K = variance
   readonly _Value: (_: never) => V = variance
