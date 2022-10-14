@@ -18,7 +18,7 @@ Added in v1.0.0
   - [make](#make)
 - [conversions](#conversions)
   - [fromIterable](#fromiterable)
-- [getters](#getters)
+- [elements](#elements)
   - [get](#get)
   - [has](#has)
   - [size](#size)
@@ -88,7 +88,7 @@ export declare const fromIterable: <K, V>(entries: Iterable<readonly [K, V]>) =>
 
 Added in v1.0.0
 
-# getters
+# elements
 
 ## get
 
@@ -131,7 +131,7 @@ export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, Equal.E
   readonly _id: TypeId
 
   readonly _K: (_: K) => K
-  readonly _V: () => V
+  readonly _V: (_: never) => V
 
   /** @internal */
   readonly backingMap: Map<number, Node<K, V>>
