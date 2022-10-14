@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 7
+nav_order: 8
 parent: Modules
 ---
 
@@ -13,6 +13,7 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [utils](#utils)
+  - [atomicReference](#atomicreference)
   - [chunk](#chunk)
   - [context](#context)
   - [duration](#duration)
@@ -26,6 +27,16 @@ Added in v1.0.0
 ---
 
 # utils
+
+## atomicReference
+
+**Signature**
+
+```ts
+export declare const atomicReference: typeof atomicReference
+```
+
+Added in v1.0.0
 
 ## chunk
 

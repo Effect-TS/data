@@ -2,6 +2,7 @@
  * @since 1.0.0
  */
 
+import * as atomicReference from "@fp-ts/data/AtomicReference"
 import * as chunk from "@fp-ts/data/Chunk"
 import * as context from "@fp-ts/data/Context"
 import * as duration from "@fp-ts/data/Duration"
@@ -13,6 +14,10 @@ import * as mutableHashMap from "@fp-ts/data/MutableHashMap"
 import * as mutableListBuilder from "@fp-ts/data/MutableListBuilder"
 
 export {
+  /**
+   * @since 1.0.0
+   */
+  atomicReference,
   /**
    * @since 1.0.0
    */
