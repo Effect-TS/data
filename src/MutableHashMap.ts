@@ -52,7 +52,7 @@ export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, Equal.E
   readonly _id: TypeId
 
   readonly _K: (_: K) => K
-  readonly _V: () => V
+  readonly _V: (_: never) => V
 
   /** @internal */
   readonly backingMap: Map<number, Node<K, V>>
@@ -64,8 +64,8 @@ export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, Equal.E
 class MutableHashMapImpl<K, V> implements MutableHashMap<K, V> {
   readonly _id: TypeId = TypeId
 
-  readonly _K!: (_: K) => K
-  readonly _V!: () => V
+  readonly _K: (_: K) => K = (_) => _
+  readonly _V: (_: never) => V = (_) => _
 
   readonly backingMap = new Map<number, Node<K, V>>()
   length = 0;
@@ -86,7 +86,7 @@ class MutableHashMapImpl<K, V> implements MutableHashMap<K, V> {
 
 /**
  * @since 1.0.0
- * @category getters
+ * @category elements
  */
 export const get = <K>(k: K) =>
   <V>(self: MutableHashMap<K, V>): Option<V> => {
@@ -111,7 +111,7 @@ export const get = <K>(k: K) =>
 
 /**
  * @since 1.0.0
- * @category getters
+ * @category elements
  */
 export const has = <K>(k: K) =>
   <V>(self: MutableHashMap<K, V>): boolean =>
@@ -123,7 +123,7 @@ export const has = <K>(k: K) =>
 
 /**
  * @since 1.0.0
- * @category getters
+ * @category elements
  */
 export const size = <K, V>(self: MutableHashMap<K, V>): number => {
   return self.length

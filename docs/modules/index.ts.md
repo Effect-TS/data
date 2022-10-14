@@ -20,6 +20,7 @@ Added in v1.0.0
   - [hash](#hash)
   - [list](#list)
   - [mutableHashMap](#mutablehashmap)
+  - [mutableHashSet](#mutablehashset)
   - [mutableListBuilder](#mutablelistbuilder)
   - [mutableRef](#mutableref)
   - [queue](#queue)
@@ -94,6 +95,16 @@ Added in v1.0.0
 
 ```ts
 export declare const mutableHashMap: typeof mutableHashMap
+```
+
+Added in v1.0.0
+
+## mutableHashSet
+
+**Signature**
+
+```ts
+export declare const mutableHashSet: typeof mutableHashSet
 ```
 
 Added in v1.0.0
