@@ -299,13 +299,12 @@ describe.concurrent("HashMap", () => {
     deepStrictEqual(HashMap.get(key(1))(result), Option.some(value("b")))
   })
 
-  // TODO(Max): after porting HashSet
-  // it("remove non existing key doesn't change the array", () => {
-  //   const map = HashMap.make([13, 95], [90, 4])
-  //   const result = pipe(map, HashMap.remove(75))
+  it("remove non existing key doesn't change the array", () => {
+    const map = HashMap.make([13, 95], [90, 4])
+    const result = pipe(map, HashMap.remove(75))
 
-  //   deepStrictEqual(Array.from(HashMap.keySet(map)), Array.from(HashMap.keySet(result)))
-  // })
+    deepStrictEqual(Array.from(HashMap.keySet(map)), Array.from(HashMap.keySet(result)))
+  })
 
   it("removeMany", () => {
     const map = HashMap.make([key(0), value("a")], [key(1), value("b")])

@@ -6,11 +6,10 @@ import type { Option } from "@fp-ts/core/Option"
 import type { Predicate } from "@fp-ts/core/Predicate"
 import type { Refinement } from "@fp-ts/core/Refinement"
 import type { Equal } from "@fp-ts/data/Equal"
+import type { HashSet } from "@fp-ts/data/HashSet"
 import * as HM from "@fp-ts/data/internal/HashMap"
+import * as _keySet from "@fp-ts/data/internal/HashMap/keySet"
 import type * as HMN from "@fp-ts/data/internal/HashMap/node"
-
-// TODO(Max): after porting HashSet
-// - [ ] keySet
 
 const TypeId: unique symbol = HM.HashMapTypeId as TypeId
 
@@ -157,6 +156,14 @@ export const setTree: <K, V>(
  * @category getters
  */
 export const keys: <K, V>(self: HashMap<K, V>) => IterableIterator<K> = HM.keys
+
+/**
+ * Returns a `HashSet` of keys within the `HashMap`.
+ *
+ * @since 1.0.0
+ * @category getter
+ */
+export const keySet: <K, V>(self: HashMap<K, V>) => HashSet<K> = _keySet.keySet
 
 /**
  * Returns an `IterableIterator` of the values within the `HashMap`.
