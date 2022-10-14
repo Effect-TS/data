@@ -1,10 +1,10 @@
 ---
-title: ImmutableQueue.ts
-nav_order: 6
+title: Queue.ts
+nav_order: 11
 parent: Modules
 ---
 
-## ImmutableQueue overview
+## Queue overview
 
 Added in v1.0.0
 
@@ -36,7 +36,7 @@ Added in v1.0.0
 - [mapping](#mapping)
   - [map](#map)
 - [model](#model)
-  - [ImmutableQueue (interface)](#immutablequeue-interface)
+  - [Queue (interface)](#queue-interface)
 - [mutations](#mutations)
   - [dequeue](#dequeue)
   - [enqueue](#enqueue)
@@ -46,11 +46,11 @@ Added in v1.0.0
   - [isEmpty](#isempty)
   - [isNonEmpty](#isnonempty)
 - [refinements](#refinements)
-  - [isImmutableQueue](#isimmutablequeue)
+  - [isQueue](#isqueue)
 - [symbol](#symbol)
   - [TypeId (type alias)](#typeid-type-alias)
 - [type lambdas](#type-lambdas)
-  - [ImmutableQueueTypeLambda (interface)](#immutablequeuetypelambda-interface)
+  - [QueueTypeLambda (interface)](#queuetypelambda-interface)
 - [unsafe](#unsafe)
   - [unsafeDequeue](#unsafedequeue)
   - [unsafeHead](#unsafehead)
@@ -65,7 +65,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const ImmutableQueue: <As extends readonly any[]>(...items: As) => ImmutableQueue<As[number]>
+export declare const ImmutableQueue: <As extends readonly any[]>(...items: As) => Queue<As[number]>
 ```
 
 Added in v1.0.0
@@ -75,7 +75,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const empty: <A = never>() => ImmutableQueue<A>
+export declare const empty: <A = never>() => Queue<A>
 ```
 
 Added in v1.0.0
@@ -85,7 +85,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const make: <As extends readonly any[]>(...items: As) => ImmutableQueue<As[number]>
+export declare const make: <As extends readonly any[]>(...items: As) => Queue<As[number]>
 ```
 
 Added in v1.0.0
@@ -95,7 +95,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const of: <A>(a: A) => ImmutableQueue<A>
+export declare const of: <A>(a: A) => Queue<A>
 ```
 
 Added in v1.0.0
@@ -107,7 +107,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const fromIterable: <A>(items: Iterable<A>) => ImmutableQueue<A>
+export declare const fromIterable: <A>(items: Iterable<A>) => Queue<A>
 ```
 
 Added in v1.0.0
@@ -120,8 +120,8 @@ Added in v1.0.0
 
 ```ts
 export declare const findFirst: {
-  <A, B extends A>(refinement: Refinement<A, B>): (self: ImmutableQueue<A>) => O.Option<B>
-  <A>(predicate: Predicate<A>): (self: ImmutableQueue<A>) => O.Option<A>
+  <A, B extends A>(refinement: Refinement<A, B>): (self: Queue<A>) => O.Option<B>
+  <A>(predicate: Predicate<A>): (self: Queue<A>) => O.Option<A>
 }
 ```
 
@@ -132,7 +132,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const some: <A>(predicate: Predicate<A>) => (self: ImmutableQueue<A>) => boolean
+export declare const some: <A>(predicate: Predicate<A>) => (self: Queue<A>) => boolean
 ```
 
 Added in v1.0.0
@@ -145,8 +145,8 @@ Added in v1.0.0
 
 ```ts
 export declare const filter: {
-  <A, B extends A>(refinement: Refinement<A, B>): (self: ImmutableQueue<A>) => ImmutableQueue<B>
-  <A>(predicate: Predicate<A>): (self: ImmutableQueue<A>) => ImmutableQueue<A>
+  <A, B extends A>(refinement: Refinement<A, B>): (self: Queue<A>) => Queue<B>
+  <A>(predicate: Predicate<A>): (self: Queue<A>) => Queue<A>
 }
 ```
 
@@ -159,7 +159,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const reduce: <A, B>(b: B, f: (b: B, a: A) => B) => (self: ImmutableQueue<A>) => B
+export declare const reduce: <A, B>(b: B, f: (b: B, a: A) => B) => (self: Queue<A>) => B
 ```
 
 Added in v1.0.0
@@ -171,7 +171,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const head: <A>(self: ImmutableQueue<A>) => O.Option<A>
+export declare const head: <A>(self: Queue<A>) => O.Option<A>
 ```
 
 Added in v1.0.0
@@ -181,7 +181,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const length: <A>(self: ImmutableQueue<A>) => number
+export declare const length: <A>(self: Queue<A>) => number
 ```
 
 Added in v1.0.0
@@ -191,7 +191,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const tail: <A>(self: ImmutableQueue<A>) => O.Option<ImmutableQueue<A>>
+export declare const tail: <A>(self: Queue<A>) => O.Option<Queue<A>>
 ```
 
 Added in v1.0.0
@@ -203,7 +203,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const FromIdentity: FromIdentity<ImmutableQueueTypeLambda>
+export declare const FromIdentity: FromIdentity<QueueTypeLambda>
 ```
 
 Added in v1.0.0
@@ -213,7 +213,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Functor: Functor<ImmutableQueueTypeLambda>
+export declare const Functor: Functor<QueueTypeLambda>
 ```
 
 Added in v1.0.0
@@ -225,19 +225,19 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const map: <A, B>(f: (a: A) => B) => (self: ImmutableQueue<A>) => ImmutableQueue<B>
+export declare const map: <A, B>(f: (a: A) => B) => (self: Queue<A>) => Queue<B>
 ```
 
 Added in v1.0.0
 
 # model
 
-## ImmutableQueue (interface)
+## Queue (interface)
 
 **Signature**
 
 ```ts
-export interface ImmutableQueue<A> extends Iterable<A>, Equal.Equal {
+export interface Queue<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
   readonly _A: (_: never) => A
   /** @internal */
@@ -256,7 +256,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const dequeue: <A>(self: ImmutableQueue<A>) => O.Option<readonly [A, ImmutableQueue<A>]>
+export declare const dequeue: <A>(self: Queue<A>) => O.Option<readonly [A, Queue<A>]>
 ```
 
 Added in v1.0.0
@@ -266,7 +266,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const enqueue: <B>(elem: B) => <A>(self: ImmutableQueue<A>) => ImmutableQueue<B | A>
+export declare const enqueue: <B>(elem: B) => <A>(self: Queue<A>) => Queue<B | A>
 ```
 
 Added in v1.0.0
@@ -276,7 +276,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const enqueueAll: <B>(iter: Iterable<B>) => <A>(self: ImmutableQueue<A>) => ImmutableQueue<B | A>
+export declare const enqueueAll: <B>(iter: Iterable<B>) => <A>(self: Queue<A>) => Queue<B | A>
 ```
 
 Added in v1.0.0
@@ -286,7 +286,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const prepend: <B>(elem: B) => <A>(self: ImmutableQueue<A>) => ImmutableQueue<B | A>
+export declare const prepend: <B>(elem: B) => <A>(self: Queue<A>) => Queue<B | A>
 ```
 
 Added in v1.0.0
@@ -298,7 +298,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const isEmpty: <A>(self: ImmutableQueue<A>) => boolean
+export declare const isEmpty: <A>(self: Queue<A>) => boolean
 ```
 
 Added in v1.0.0
@@ -308,22 +308,19 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const isNonEmpty: <A>(self: ImmutableQueue<A>) => boolean
+export declare const isNonEmpty: <A>(self: Queue<A>) => boolean
 ```
 
 Added in v1.0.0
 
 # refinements
 
-## isImmutableQueue
+## isQueue
 
 **Signature**
 
 ```ts
-export declare const isImmutableQueue: {
-  <A>(u: Iterable<A>): u is ImmutableQueue<A>
-  (u: unknown): u is ImmutableQueue<unknown>
-}
+export declare const isQueue: { <A>(u: Iterable<A>): u is Queue<A>; (u: unknown): u is Queue<unknown> }
 ```
 
 Added in v1.0.0
@@ -342,13 +339,13 @@ Added in v1.0.0
 
 # type lambdas
 
-## ImmutableQueueTypeLambda (interface)
+## QueueTypeLambda (interface)
 
 **Signature**
 
 ```ts
-export interface ImmutableQueueTypeLambda extends HKT.TypeLambda {
-  readonly type: ImmutableQueue<this['Out1']>
+export interface QueueTypeLambda extends HKT.TypeLambda {
+  readonly type: Queue<this['Out1']>
 }
 ```
 
@@ -361,7 +358,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unsafeDequeue: <A>(self: ImmutableQueue<A>) => readonly [A, ImmutableQueue<A>]
+export declare const unsafeDequeue: <A>(self: Queue<A>) => readonly [A, Queue<A>]
 ```
 
 Added in v1.0.0
@@ -371,7 +368,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unsafeHead: <A>(self: ImmutableQueue<A>) => A
+export declare const unsafeHead: <A>(self: Queue<A>) => A
 ```
 
 Added in v1.0.0
@@ -381,7 +378,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unsafeTail: <A>(self: ImmutableQueue<A>) => ImmutableQueue<A>
+export declare const unsafeTail: <A>(self: Queue<A>) => Queue<A>
 ```
 
 Added in v1.0.0
