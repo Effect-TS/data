@@ -15,6 +15,8 @@ Added in v1.0.0
 - [constructors](#constructors)
   - [chunk](#chunk)
   - [environment](#environment)
+  - [hashMap](#hashmap)
+  - [hashSet](#hashset)
   - [make](#make)
 - [model](#model)
   - [Differ (interface)](#differ-interface)
@@ -52,6 +54,31 @@ Constructs a differ that knows how to diff `Env` values.
 
 ```ts
 export declare const environment: <A>() => Differ<Context<A>, any>
+```
+
+Added in v1.0.0
+
+## hashMap
+
+Constructs a differ that knows how to diff a `HashMap` of keys and values given
+a differ that knows how to diff the values.
+
+**Signature**
+
+```ts
+export declare const hashMap: <Key, Value, Patch>(differ: Differ<Value, Patch>) => Differ<HashMap<Key, Value>, any>
+```
+
+Added in v1.0.0
+
+## hashSet
+
+Constructs a differ that knows how to diff a `HashSet` of values.
+
+**Signature**
+
+```ts
+export declare const hashSet: <Value>() => Differ<HashSet<Value>, any>
 ```
 
 Added in v1.0.0

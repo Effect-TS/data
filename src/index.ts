@@ -7,6 +7,8 @@ import * as context from "@fp-ts/data/Context"
 import * as differ from "@fp-ts/data/Differ"
 import * as chunkPatch from "@fp-ts/data/Differ/ChunkPatch"
 import * as contextPatch from "@fp-ts/data/Differ/ContextPatch"
+import * as hashMapPatch from "@fp-ts/data/Differ/HashMapPatch"
+import * as hashSetPatch from "@fp-ts/data/Differ/HashSetPatch"
 import * as orPatch from "@fp-ts/data/Differ/OrPatch"
 import * as duration from "@fp-ts/data/Duration"
 import * as equal from "@fp-ts/data/Equal"
@@ -60,7 +62,15 @@ export {
   /**
    * @since 1.0.0
    */
+  hashMapPatch,
+  /**
+   * @since 1.0.0
+   */
   hashSet,
+  /**
+   * @since 1.0.0
+   */
+  hashSetPatch,
   /**
    * @since 1.0.0
    */

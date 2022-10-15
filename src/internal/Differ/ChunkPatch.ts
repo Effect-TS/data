@@ -5,22 +5,21 @@ import type * as CP from "@fp-ts/data/Differ/ChunkPatch"
 import { equals } from "@fp-ts/data/Equal"
 import * as L from "@fp-ts/data/internal/List"
 
+/** @internal */
 export const ChunkPatchTypeId: CP.TypeId = Symbol.for("@fp-ts/data/Differ/ChunkPatch") as CP.TypeId
 
 function variance<A, B>(a: A): B {
   return a as unknown as B
 }
 
-/** @internal */
-export class Empty<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
+class Empty<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
   readonly _tag = "Empty"
   readonly _Value: (_: Value) => Value = variance
   readonly _Patch: (_: Patch) => Patch = variance
   readonly _id: CP.TypeId = ChunkPatchTypeId
 }
 
-/** @internal */
-export class AndThen<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
+class AndThen<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
   readonly _tag = "AndThen"
   readonly _Value: (_: Value) => Value = variance
   readonly _Patch: (_: Patch) => Patch = variance
@@ -31,8 +30,7 @@ export class AndThen<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
   ) {}
 }
 
-/** @internal */
-export class Append<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
+class Append<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
   readonly _tag = "Append"
   readonly _Value: (_: Value) => Value = variance
   readonly _Patch: (_: Patch) => Patch = variance
@@ -40,8 +38,7 @@ export class Append<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
   constructor(readonly values: C.Chunk<Value>) {}
 }
 
-/** @internal */
-export class Slice<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
+class Slice<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
   readonly _tag = "Slice"
   readonly _Value: (_: Value) => Value = variance
   readonly _Patch: (_: Patch) => Patch = variance
@@ -49,8 +46,7 @@ export class Slice<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
   constructor(readonly from: number, readonly until: number) {}
 }
 
-/** @internal */
-export class Update<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
+class Update<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
   readonly _tag = "Update"
   readonly _Value: (_: Value) => Value = variance
   readonly _Patch: (_: Patch) => Patch = variance
