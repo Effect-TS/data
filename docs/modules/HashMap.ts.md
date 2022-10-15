@@ -1,6 +1,6 @@
 ---
 title: HashMap.ts
-nav_order: 10
+nav_order: 12
 parent: Modules
 ---
 
@@ -31,6 +31,8 @@ Added in v1.0.0
 - [folding](#folding)
   - [reduce](#reduce)
   - [reduceWithIndex](#reducewithindex)
+- [getter](#getter)
+  - [keySet](#keyset)
 - [getters](#getters)
   - [keys](#keys)
   - [size](#size)
@@ -271,6 +273,20 @@ export declare const reduceWithIndex: <K, V, Z>(
   zero: Z,
   f: (accumulator: Z, key: K, value: V) => Z
 ) => (self: HashMap<K, V>) => Z
+```
+
+Added in v1.0.0
+
+# getter
+
+## keySet
+
+Returns a `HashSet` of keys within the `HashMap`.
+
+**Signature**
+
+```ts
+export declare const keySet: <K, V>(self: HashMap<K, V>) => HashSet<K>
 ```
 
 Added in v1.0.0

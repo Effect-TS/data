@@ -5,8 +5,12 @@ import type { Context } from "@fp-ts/data/Context"
 import type * as D from "@fp-ts/data/Differ"
 import * as ChunkPatch from "@fp-ts/data/Differ/ChunkPatch"
 import * as ContextPatch from "@fp-ts/data/Differ/ContextPatch"
+import * as HashMapPatch from "@fp-ts/data/Differ/HashMapPatch"
+import * as HashSetPatch from "@fp-ts/data/Differ/HashSetPatch"
 import * as OrPatch from "@fp-ts/data/Differ/OrPatch"
 import { equals } from "@fp-ts/data/Equal"
+import type { HashMap } from "@fp-ts/data/HashMap"
+import type { HashSet } from "@fp-ts/data/HashSet"
 
 export const DifferTypeId: D.TypeId = Symbol.for("@fp-ts/data/Differ") as D.TypeId
 
@@ -39,6 +43,28 @@ export function chunk<Value, Patch>(
     combine: (first, second) => ChunkPatch.combine(second)(first),
     diff: (oldValue, newValue) => ChunkPatch.diff(oldValue, newValue, differ),
     patch: (patch, oldValue) => ChunkPatch.patch(oldValue, differ)(patch)
+  })
+}
+
+/** @internal */
+export function hashMap<Key, Value, Patch>(
+  differ: D.Differ<Value, Patch>
+): D.Differ<HashMap<Key, Value>, HashMapPatch.HashMapPatch<Key, Value, Patch>> {
+  return make({
+    empty: HashMapPatch.empty(),
+    combine: (first, second) => HashMapPatch.combine(second)(first),
+    diff: (oldValue, newValue) => HashMapPatch.diff(oldValue, newValue, differ),
+    patch: (patch, oldValue) => HashMapPatch.patch(oldValue, differ)(patch)
+  })
+}
+
+/** @internal */
+export function hashSet<Value>(): D.Differ<HashSet<Value>, HashSetPatch.HashSetPatch<Value>> {
+  return make({
+    empty: HashSetPatch.empty(),
+    combine: (first, second) => HashSetPatch.combine(second)(first),
+    diff: (oldValue, newValue) => HashSetPatch.diff(oldValue, newValue),
+    patch: (patch, oldValue) => HashSetPatch.patch(oldValue)(patch)
   })
 }
 

@@ -3,6 +3,8 @@ import * as Result from "@fp-ts/core/Result"
 import * as Chunk from "@fp-ts/data/Chunk"
 import * as Differ from "@fp-ts/data/Differ"
 import { equals } from "@fp-ts/data/Equal"
+import * as HashMap from "@fp-ts/data/HashMap"
+import * as HashSet from "@fp-ts/data/HashSet"
 import { it as it_ } from "vitest"
 
 function diffLaws<Value, Patch>(
@@ -71,13 +73,17 @@ function randomChunk(): Chunk.Chunk<number> {
   return Chunk.fromIterable(Array.from({ length: 20 }, smallInt))
 }
 
-// function randomHashMap(): HashMap<number, number> {
-//   return HashMap.from(Chunk.fill(2, smallInt).zip(Chunk.fill(2, smallInt)))
-// }
+function randomHashMap(): HashMap.HashMap<number, number> {
+  return pipe(
+    Chunk.fromIterable(Array.from({ length: 2 }, smallInt)),
+    Chunk.zip(Chunk.fromIterable(Array.from({ length: 2 }, smallInt))),
+    HashMap.from
+  )
+}
 
-// function randomHashSet(): HashSet<number> {
-//   return HashSet.from(Chunk.fill(20, smallInt))
-// }
+function randomHashSet(): HashSet.HashSet<number> {
+  return HashSet.from(Array.from({ length: 20 }, smallInt))
+}
 
 function randomResult(): Result.Result<number, number> {
   return Math.random() < 0.5 ? Result.fail(smallInt()) : Result.succeed(smallInt())
@@ -104,21 +110,21 @@ describe.concurrent("Differ", () => {
     )
   })
 
-  // describe.concurrent("hashMap", () => {
-  //   diffLaws(
-  //     Differ.hashMap<number, number, (n: number) => number>(Differ.update<number>()),
-  //     randomHashMap,
-  //     equals
-  //   )
-  // })
+  describe.concurrent("hashMap", () => {
+    diffLaws(
+      Differ.hashMap<number, number, (n: number) => number>(Differ.update<number>()),
+      randomHashMap,
+      equals
+    )
+  })
 
-  // describe.concurrent("hashSet", () => {
-  //   diffLaws(
-  //     Differ.hashSet<number>(),
-  //     randomHashSet,
-  //     equals
-  //   )
-  // })
+  describe.concurrent("hashSet", () => {
+    diffLaws(
+      Differ.hashSet<number>(),
+      randomHashSet,
+      equals
+    )
+  })
 
   describe.concurrent("tuple", () => {
     diffLaws(

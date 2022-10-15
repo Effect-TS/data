@@ -1,6 +1,6 @@
 ---
 title: Differ/OrPatch.ts
-nav_order: 6
+nav_order: 8
 parent: Modules
 ---
 

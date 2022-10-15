@@ -7,7 +7,11 @@ import type { Chunk } from "@fp-ts/data/Chunk"
 import type { Context } from "@fp-ts/data/Context"
 import type { ChunkPatch } from "@fp-ts/data/Differ/ChunkPatch"
 import type { ContextPatch } from "@fp-ts/data/Differ/ContextPatch"
+import type { HashMapPatch } from "@fp-ts/data/Differ/HashMapPatch"
+import type { HashSetPatch } from "@fp-ts/data/Differ/HashSetPatch"
 import type { OrPatch } from "@fp-ts/data/Differ/OrPatch"
+import type { HashMap } from "@fp-ts/data/HashMap"
+import type { HashSet } from "@fp-ts/data/HashSet"
 import * as D from "@fp-ts/data/internal/Differ"
 
 const TypeId: unique symbol = D.DifferTypeId as TypeId
@@ -76,13 +80,13 @@ export declare namespace Differ {
     export type Patch<Value, Patch> = ChunkPatch<Value, Patch>
   }
 
-  // export namespace HashMap {
-  //   export type Patch<Key, Value, Patch> = HashMapPatch<Key, Value, Patch>
-  // }
+  export namespace HashMap {
+    export type Patch<Key, Value, Patch> = HashMapPatch<Key, Value, Patch>
+  }
 
-  // export namespace HashSet {
-  //   export type Patch<Value> = HashSetPatch<Value>
-  // }
+  export namespace HashSet {
+    export type Patch<Value> = HashSetPatch<Value>
+  }
 }
 
 /**
@@ -116,6 +120,25 @@ export const environment: <A>() => Differ<Context<A>, ContextPatch<A, A>> = D.en
 export const chunk: <Value, Patch>(
   differ: Differ<Value, Patch>
 ) => Differ<Chunk<Value>, ChunkPatch<Value, Patch>> = D.chunk
+
+/**
+ * Constructs a differ that knows how to diff a `HashMap` of keys and values given
+ * a differ that knows how to diff the values.
+ *
+ * @since 1.0.0
+ * @category constructors
+ */
+export const hashMap: <Key, Value, Patch>(
+  differ: Differ<Value, Patch>
+) => Differ<HashMap<Key, Value>, HashMapPatch<Key, Value, Patch>> = D.hashMap
+
+/**
+ * Constructs a differ that knows how to diff a `HashSet` of values.
+ *
+ * @since 1.0.0
+ * @category constructors
+ */
+export const hashSet: <Value>() => Differ<HashSet<Value>, HashSetPatch<Value>> = D.hashSet
 
 /**
  * Combines this differ and the specified differ to produce a differ that

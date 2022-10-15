@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 12
+nav_order: 14
 parent: Modules
 ---
 
@@ -22,7 +22,9 @@ Added in v1.0.0
   - [equal](#equal)
   - [hash](#hash)
   - [hashMap](#hashmap)
+  - [hashMapPatch](#hashmappatch)
   - [hashSet](#hashset)
+  - [hashSetPatch](#hashsetpatch)
   - [list](#list)
   - [mutableHashMap](#mutablehashmap)
   - [mutableHashSet](#mutablehashset)
@@ -125,12 +127,32 @@ export declare const hashMap: typeof hashMap
 
 Added in v1.0.0
 
+## hashMapPatch
+
+**Signature**
+
+```ts
+export declare const hashMapPatch: typeof hashMapPatch
+```
+
+Added in v1.0.0
+
 ## hashSet
 
 **Signature**
 
 ```ts
 export declare const hashSet: typeof hashSet
+```
+
+Added in v1.0.0
+
+## hashSetPatch
+
+**Signature**
+
+```ts
+export declare const hashSetPatch: typeof hashSetPatch
 ```
 
 Added in v1.0.0
