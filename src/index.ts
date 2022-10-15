@@ -23,6 +23,8 @@ import * as mutableRef from "@fp-ts/data/MutableRef"
 import * as queue from "@fp-ts/data/Queue"
 import * as redBlackTree from "@fp-ts/data/RedBlackTree"
 import * as safeEval from "@fp-ts/data/SafeEval"
+import * as sortedMap from "@fp-ts/data/SortedMap"
+import * as sortedSet from "@fp-ts/data/SortedSet"
 
 export {
   /**
@@ -108,5 +110,13 @@ export {
   /**
    * @since 1.0.0
    */
-  safeEval
+  safeEval,
+  /**
+   * @since 1.0.0
+   */
+  sortedMap,
+  /**
+   * @since 1.0.0
+   */
+  sortedSet
 }

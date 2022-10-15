@@ -770,7 +770,7 @@ export function forEachBetween<K, V>(min: K, max: K, f: (key: K, value: V) => vo
 /** @internal */
 export function reduce<Z, V>(zero: Z, f: (accumulator: Z, value: V) => Z) {
   return <K>(self: RBT.RedBlackTree<K, V>): Z => {
-    return reduceWithIndex(zero, (accumulator, _, value: V) => f(accumulator, value))(self)
+    return reduceWithIndex(zero, (accumulator, _: K, value: V) => f(accumulator, value))(self)
   }
 }
 

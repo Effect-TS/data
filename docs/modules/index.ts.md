@@ -34,6 +34,8 @@ Added in v1.0.0
   - [queue](#queue)
   - [redBlackTree](#redblacktree)
   - [safeEval](#safeeval)
+  - [sortedMap](#sortedmap)
+  - [sortedSet](#sortedset)
 
 ---
 
@@ -245,6 +247,26 @@ Added in v1.0.0
 
 ```ts
 export declare const safeEval: typeof safeEval
+```
+
+Added in v1.0.0
+
+## sortedMap
+
+**Signature**
+
+```ts
+export declare const sortedMap: typeof sortedMap
+```
+
+Added in v1.0.0
+
+## sortedSet
+
+**Signature**
+
+```ts
+export declare const sortedSet: typeof sortedSet
 ```
 
 Added in v1.0.0

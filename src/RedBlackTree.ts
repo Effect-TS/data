@@ -31,6 +31,7 @@ export const Direction = RBTI.Direction
  */
 export interface RedBlackTree<Key, Value> extends Iterable<readonly [Key, Value]>, Equal {
   readonly _id: TypeId
+  readonly _ord: Ord<Key>
   readonly _Key: (_: never) => Key
   readonly _Value: (_: never) => Value
 }
