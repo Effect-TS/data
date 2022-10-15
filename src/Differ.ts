@@ -87,6 +87,18 @@ export declare namespace Differ {
 export const empty: <Value, Patch>(self: Differ<Value, Patch>) => Patch = (self) => self.empty
 
 /**
+ * An empty patch that describes no changes.
+ *
+ * @since 1.0.0
+ * @category patch
+ */
+export const diff: <Value>(
+  oldValue: Value,
+  newValue: Value
+) => <Patch>(differ: Differ<Value, Patch>) => Patch = (oldValue, newValue) =>
+  (self) => self.diff(oldValue, newValue)
+
+/**
  * Combines two patches to produce a new patch that describes the updates of
  * the first patch and then the updates of the second patch. The combine
  * operation should be associative. In addition, if the combine operation is

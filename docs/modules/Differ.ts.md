@@ -28,6 +28,7 @@ Added in v1.0.0
   - [zip](#zip)
 - [patch](#patch)
   - [combine](#combine)
+  - [diff](#diff)
   - [empty](#empty)
   - [patch](#patch-1)
 - [symbol](#symbol)
@@ -235,6 +236,18 @@ deterministic `FiberRef` values.
 
 ```ts
 export declare const combine: <Patch>(first: Patch, second: Patch) => <Value>(self: Differ<Value, Patch>) => Patch
+```
+
+Added in v1.0.0
+
+## diff
+
+An empty patch that describes no changes.
+
+**Signature**
+
+```ts
+export declare const diff: <Value>(oldValue: Value, newValue: Value) => <Patch>(differ: Differ<Value, Patch>) => Patch
 ```
 
 Added in v1.0.0
