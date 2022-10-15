@@ -32,6 +32,7 @@ Added in v1.0.0
   - [mutableRef](#mutableref)
   - [orPatch](#orpatch)
   - [queue](#queue)
+  - [redBlackTree](#redblacktree)
 
 ---
 
@@ -223,6 +224,16 @@ Added in v1.0.0
 
 ```ts
 export declare const queue: typeof queue
+```
+
+Added in v1.0.0
+
+## redBlackTree
+
+**Signature**
+
+```ts
+export declare const redBlackTree: typeof redBlackTree
 ```
 
 Added in v1.0.0

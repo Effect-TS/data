@@ -13,6 +13,7 @@ import * as Hash from "@fp-ts/data/Hash"
 import type { HashMap } from "@fp-ts/data/HashMap"
 import type { HashSet } from "@fp-ts/data/HashSet"
 
+/** @internal */
 export const DifferTypeId: D.TypeId = Symbol.for("@fp-ts/data/Differ") as D.TypeId
 
 /** @internal */
