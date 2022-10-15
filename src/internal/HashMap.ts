@@ -80,9 +80,11 @@ export class HashMapImpl<K, V> implements HM.HashMap<K, V> {
 }
 
 class HashMapIterator<K, V, T> implements IterableIterator<T> {
-  v = visitLazy(this.map._root, this.f, undefined)
+  v: Option.Option<VisitResult<K, V, T>>
 
-  constructor(readonly map: HashMapImpl<K, V>, readonly f: TraversalFn<K, V, T>) {}
+  constructor(readonly map: HashMapImpl<K, V>, readonly f: TraversalFn<K, V, T>) {
+    this.v = visitLazy(this.map._root, this.f, undefined)
+  }
 
   next(): IteratorResult<T> {
     if (Option.isNone(this.v)) {

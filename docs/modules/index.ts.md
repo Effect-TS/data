@@ -33,6 +33,7 @@ Added in v1.0.0
   - [orPatch](#orpatch)
   - [queue](#queue)
   - [redBlackTree](#redblacktree)
+  - [safeEval](#safeeval)
 
 ---
 
@@ -234,6 +235,16 @@ Added in v1.0.0
 
 ```ts
 export declare const redBlackTree: typeof redBlackTree
+```
+
+Added in v1.0.0
+
+## safeEval
+
+**Signature**
+
+```ts
+export declare const safeEval: typeof safeEval
 ```
 
 Added in v1.0.0

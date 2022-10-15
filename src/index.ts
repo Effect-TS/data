@@ -22,6 +22,7 @@ import * as mutableListBuilder from "@fp-ts/data/MutableListBuilder"
 import * as mutableRef from "@fp-ts/data/MutableRef"
 import * as queue from "@fp-ts/data/Queue"
 import * as redBlackTree from "@fp-ts/data/RedBlackTree"
+import * as safeEval from "@fp-ts/data/SafeEval"
 
 export {
   /**
@@ -103,5 +104,9 @@ export {
   /**
    * @since 1.0.0
    */
-  redBlackTree
+  redBlackTree,
+  /**
+   * @since 1.0.0
+   */
+  safeEval
 }
