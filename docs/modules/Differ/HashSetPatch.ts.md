@@ -35,7 +35,7 @@ Constructs a set patch from a new set of values.
 **Signature**
 
 ```ts
-export declare const diff: <Value>(oldValue: HashSet<Value>, newValue: HashSet<Value>) => any
+export declare const diff: <Value>(oldValue: HashSet<Value>, newValue: HashSet<Value>) => HashSetPatch<Value>
 ```
 
 Added in v1.0.0
@@ -47,7 +47,7 @@ Constructs an empty set patch.
 **Signature**
 
 ```ts
-export declare const empty: <Value>() => any
+export declare const empty: <Value>() => HashSetPatch<Value>
 ```
 
 Added in v1.0.0
@@ -63,7 +63,7 @@ described by this patch.
 **Signature**
 
 ```ts
-export declare const patch: <Value>(oldValue: HashSet<Value>) => (self: any) => HashSet<Value>
+export declare const patch: <Value>(oldValue: HashSet<Value>) => (self: HashSetPatch<Value>) => HashSet<Value>
 ```
 
 Added in v1.0.0
@@ -77,7 +77,10 @@ A patch which describes updates to a set of values.
 **Signature**
 
 ```ts
-export interface HashSetPatch<
+export interface HashSetPatch<Value> {
+  readonly _id: TypeId
+  readonly _Value: (_: Value) => Value
+}
 ```
 
 Added in v1.0.0
@@ -92,7 +95,7 @@ applying their changes sequentially.
 **Signature**
 
 ```ts
-export declare const combine: <Value>(that: any) => (self: any) => any
+export declare const combine: <Value>(that: HashSetPatch<Value>) => (self: HashSetPatch<Value>) => HashSetPatch<Value>
 ```
 
 Added in v1.0.0

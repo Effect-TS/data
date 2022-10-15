@@ -41,7 +41,9 @@ differ that knows how to diff the values.
 **Signature**
 
 ```ts
-export declare const chunk: <Value, Patch>(differ: Differ<Value, Patch>) => Differ<Chunk<Value>, any>
+export declare const chunk: <Value, Patch>(
+  differ: Differ<Value, Patch>
+) => Differ<Chunk<Value>, ChunkPatch<Value, Patch>>
 ```
 
 Added in v1.0.0
@@ -53,7 +55,7 @@ Constructs a differ that knows how to diff `Env` values.
 **Signature**
 
 ```ts
-export declare const environment: <A>() => Differ<Context<A>, any>
+export declare const environment: <A>() => Differ<Context<A>, ContextPatch<A, A>>
 ```
 
 Added in v1.0.0
@@ -66,7 +68,9 @@ a differ that knows how to diff the values.
 **Signature**
 
 ```ts
-export declare const hashMap: <Key, Value, Patch>(differ: Differ<Value, Patch>) => Differ<HashMap<Key, Value>, any>
+export declare const hashMap: <Key, Value, Patch>(
+  differ: Differ<Value, Patch>
+) => Differ<HashMap<Key, Value>, HashMapPatch<Key, Value, Patch>>
 ```
 
 Added in v1.0.0
@@ -78,7 +82,7 @@ Constructs a differ that knows how to diff a `HashSet` of values.
 **Signature**
 
 ```ts
-export declare const hashSet: <Value>() => Differ<HashSet<Value>, any>
+export declare const hashSet: <Value>() => Differ<HashSet<Value>, HashSetPatch<Value>>
 ```
 
 Added in v1.0.0
@@ -161,7 +165,7 @@ knows how to diff the sum of their values.
 ```ts
 export declare const orElseResult: <Value2, Patch2>(
   that: Differ<Value2, Patch2>
-) => <Value, Patch>(self: Differ<Value, Patch>) => Differ<Result<Value, Value2>, any>
+) => <Value, Patch>(self: Differ<Value, Patch>) => Differ<Result<Value, Value2>, OrPatch<Value, Value2, Patch, Patch2>>
 ```
 
 Added in v1.0.0

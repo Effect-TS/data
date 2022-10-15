@@ -20,7 +20,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category model
  */
-export interface ChunkPatch<in out Value, in out Patch> {
+export interface ChunkPatch<Value, Patch> {
   readonly _id: TypeId
   readonly _Value: (_: Value) => Value
   readonly _Patch: (_: Patch) => Patch

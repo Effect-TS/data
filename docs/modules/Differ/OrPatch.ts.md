@@ -41,7 +41,7 @@ export declare const diff: <Value, Value2, Patch, Patch2>(
   newValue: Result<Value, Value2>,
   left: Differ<Value, Patch>,
   right: Differ<Value2, Patch2>
-) => any
+) => OrPatch<Value, Value2, Patch, Patch2>
 ```
 
 Added in v1.0.0
@@ -53,7 +53,7 @@ Constructs an empty `OrPatch`.
 **Signature**
 
 ```ts
-export declare const empty: <Value, Value2, Patch, Patch2>() => any
+export declare const empty: <Value, Value2, Patch, Patch2>() => OrPatch<Value, Value2, Patch, Patch2>
 ```
 
 Added in v1.0.0
@@ -72,7 +72,7 @@ export declare const patch: <Value, Value2, Patch, Patch2>(
   oldValue: Result<Value, Value2>,
   left: Differ<Value, Patch>,
   right: Differ<Value2, Patch2>
-) => (self: any) => Result<Value, Value2>
+) => (self: OrPatch<Value, Value2, Patch, Patch2>) => Result<Value, Value2>
 ```
 
 Added in v1.0.0
@@ -86,7 +86,13 @@ A patch which describes updates to either one value or another.
 **Signature**
 
 ```ts
-export interface OrPatch<
+export interface OrPatch<Value, Value2, Patch, Patch2> {
+  readonly _id: TypeId
+  readonly _Value: (_: Value) => Value
+  readonly _Value2: (_: Value2) => Value2
+  readonly _Patch: (_: Patch) => Patch
+  readonly _Patch2: (_: Patch2) => Patch2
+}
 ```
 
 Added in v1.0.0
@@ -101,7 +107,9 @@ their changes sequentially.
 **Signature**
 
 ```ts
-export declare const combine: <Value, Value2, Patch, Patch2>(that: any) => (self: any) => any
+export declare const combine: <Value, Value2, Patch, Patch2>(
+  that: OrPatch<Value, Value2, Patch, Patch2>
+) => (self: OrPatch<Value, Value2, Patch, Patch2>) => OrPatch<Value, Value2, Patch, Patch2>
 ```
 
 Added in v1.0.0

@@ -20,7 +20,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category model
  */
-export interface OrPatch<in out Value, in out Value2, in out Patch, in out Patch2> {
+export interface OrPatch<Value, Value2, Patch, Patch2> {
   readonly _id: TypeId
   readonly _Value: (_: Value) => Value
   readonly _Value2: (_: Value2) => Value2

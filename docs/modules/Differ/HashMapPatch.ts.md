@@ -40,7 +40,7 @@ export declare const diff: <Key, Value, Patch>(
   oldValue: HashMap<Key, Value>,
   newValue: HashMap<Key, Value>,
   differ: Differ<Value, Patch>
-) => any
+) => HashMapPatch<Key, Value, Patch>
 ```
 
 Added in v1.0.0
@@ -52,7 +52,7 @@ Constructs an empty map patch.
 **Signature**
 
 ```ts
-export declare const empty: <Key, Value, Patch>() => any
+export declare const empty: <Key, Value, Patch>() => HashMapPatch<Key, Value, Patch>
 ```
 
 Added in v1.0.0
@@ -71,7 +71,7 @@ values updated with the changes described by this patch.
 export declare const patch: <Key, Value, Patch>(
   oldValue: HashMap<Key, Value>,
   differ: Differ<Value, Patch>
-) => (self: any) => HashMap<Key, Value>
+) => (self: HashMapPatch<Key, Value, Patch>) => HashMap<Key, Value>
 ```
 
 Added in v1.0.0
@@ -85,7 +85,12 @@ A patch which describes updates to a map of keys and values.
 **Signature**
 
 ```ts
-export interface HashMapPatch<
+export interface HashMapPatch<Key, Value, Patch> {
+  readonly _id: TypeId
+  readonly _Key: (_: Key) => Key
+  readonly _Value: (_: Value) => Value
+  readonly _Patch: (_: Patch) => Patch
+}
 ```
 
 Added in v1.0.0
@@ -100,7 +105,9 @@ applying their changes sequentially.
 **Signature**
 
 ```ts
-export declare const combine: <Key, Value, Patch>(that: any) => (self: any) => any
+export declare const combine: <Key, Value, Patch>(
+  that: HashMapPatch<Key, Value, Patch>
+) => (self: HashMapPatch<Key, Value, Patch>) => HashMapPatch<Key, Value, Patch>
 ```
 
 Added in v1.0.0

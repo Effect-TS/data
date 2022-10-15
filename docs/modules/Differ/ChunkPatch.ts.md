@@ -40,7 +40,7 @@ export declare const diff: <Value, Patch>(
   oldValue: Chunk<Value>,
   newValue: Chunk<Value>,
   differ: Differ<Value, Patch>
-) => any
+) => ChunkPatch<Value, Patch>
 ```
 
 Added in v1.0.0
@@ -52,7 +52,7 @@ Constructs an empty chunk patch.
 **Signature**
 
 ```ts
-export declare const empty: <Value, Patch>() => any
+export declare const empty: <Value, Patch>() => ChunkPatch<Value, Patch>
 ```
 
 Added in v1.0.0
@@ -71,7 +71,7 @@ changes described by this patch.
 export declare const patch: <Value, Patch>(
   oldValue: Chunk<Value>,
   differ: Differ<Value, Patch>
-) => (self: any) => Chunk<Value>
+) => (self: ChunkPatch<Value, Patch>) => Chunk<Value>
 ```
 
 Added in v1.0.0
@@ -85,7 +85,11 @@ A patch which describes updates to a chunk of values.
 **Signature**
 
 ```ts
-export interface ChunkPatch<
+export interface ChunkPatch<Value, Patch> {
+  readonly _id: TypeId
+  readonly _Value: (_: Value) => Value
+  readonly _Patch: (_: Patch) => Patch
+}
 ```
 
 Added in v1.0.0
@@ -100,7 +104,9 @@ applying their changes sequentially.
 **Signature**
 
 ```ts
-export declare const combine: <Value, Patch>(that: any) => (self: any) => any
+export declare const combine: <Value, Patch>(
+  that: ChunkPatch<Value, Patch>
+) => (self: ChunkPatch<Value, Patch>) => ChunkPatch<Value, Patch>
 ```
 
 Added in v1.0.0

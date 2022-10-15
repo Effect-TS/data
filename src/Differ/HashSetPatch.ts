@@ -19,7 +19,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category model
  */
-export interface HashSetPatch<in out Value> {
+export interface HashSetPatch<Value> {
   readonly _id: TypeId
   readonly _Value: (_: Value) => Value
 }

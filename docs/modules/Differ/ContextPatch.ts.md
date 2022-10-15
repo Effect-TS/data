@@ -33,7 +33,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const diff: <Input, Output>(oldValue: Context<Input>, newValue: Context<Output>) => any
+export declare const diff: <Input, Output>(
+  oldValue: Context<Input>,
+  newValue: Context<Output>
+) => ContextPatch<Input, Output>
 ```
 
 Added in v1.0.0
@@ -45,7 +48,7 @@ An empty patch which returns the environment unchanged.
 **Signature**
 
 ```ts
-export declare const empty: <Input = never, Output = never>() => any
+export declare const empty: <Input = never, Output = never>() => ContextPatch<Input, Output>
 ```
 
 Added in v1.0.0
@@ -60,7 +63,9 @@ Applies a `Patch` to the specified `Context` to produce a new patched
 **Signature**
 
 ```ts
-export declare const patch: <Input>(context: Context<Input>) => <Output>(self: any) => Context<Output>
+export declare const patch: <Input>(
+  context: Context<Input>
+) => <Output>(self: ContextPatch<Input, Output>) => Context<Output>
 ```
 
 Added in v1.0.0
@@ -76,7 +81,11 @@ different services in the environment in a compositional way.
 **Signature**
 
 ```ts
-export interface ContextPatch<
+export interface ContextPatch<Input, Output> {
+  readonly _id: TypeId
+  readonly _Input: (_: Input) => void
+  readonly _Output: (_: never) => Output
+}
 ```
 
 Added in v1.0.0
@@ -91,7 +100,9 @@ updates from this patch and then the updates from the specified patch.
 **Signature**
 
 ```ts
-export declare const combine: <Output, Output2>(that: any) => <Input>(self: any) => any
+export declare const combine: <Output, Output2>(
+  that: ContextPatch<Output, Output2>
+) => <Input>(self: ContextPatch<Input, Output>) => ContextPatch<Input, Output2>
 ```
 
 Added in v1.0.0

@@ -21,7 +21,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category model
  */
-export interface ContextPatch<in Input, out Output> {
+export interface ContextPatch<Input, Output> {
   readonly _id: TypeId
   readonly _Input: (_: Input) => void
   readonly _Output: (_: never) => Output
