@@ -10,6 +10,7 @@ import type { ContextPatch } from "@fp-ts/data/Differ/ContextPatch"
 import type { HashMapPatch } from "@fp-ts/data/Differ/HashMapPatch"
 import type { HashSetPatch } from "@fp-ts/data/Differ/HashSetPatch"
 import type { OrPatch } from "@fp-ts/data/Differ/OrPatch"
+import type { Equal } from "@fp-ts/data/Equal"
 import type { HashMap } from "@fp-ts/data/HashMap"
 import type { HashSet } from "@fp-ts/data/HashSet"
 import * as D from "@fp-ts/data/internal/Differ"
@@ -41,29 +42,17 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category model
  */
-export interface Differ<Value, Patch> {
+export interface Differ<Value, Patch> extends Equal {
   readonly _id: TypeId
-  /**
-   * An empty patch that describes no changes.
-   */
+  readonly _V: (_: Value) => Value
+  readonly _P: (_: Patch) => Patch
+  /** @internal */
   readonly empty: Patch
-  /**
-   * Constructs a patch describing the updates to a value from an old value and
-   * a new value.
-   */
+  /** @internal */
   readonly diff: (oldValue: Value, newValue: Value) => Patch
-  /**
-   * Combines two patches to produce a new patch that describes the updates of
-   * the first patch and then the updates of the second patch. The combine
-   * operation should be associative. In addition, if the combine operation is
-   * commutative then joining multiple fibers concurrently will result in
-   * deterministic `FiberRef` values.
-   */
+  /** @internal */
   readonly combine: (first: Patch, second: Patch) => Patch
-  /**
-   * Applies a patch to an old value to produce a new value that is equal to the
-   * old value with the updates described by the patch.
-   */
+  /** @internal */
   readonly patch: (patch: Patch, oldValue: Value) => Value
 }
 
@@ -88,6 +77,43 @@ export declare namespace Differ {
     export type Patch<Value> = HashSetPatch<Value>
   }
 }
+
+/**
+ * An empty patch that describes no changes.
+ *
+ * @since 1.0.0
+ * @category patch
+ */
+export const empty: <Value, Patch>(self: Differ<Value, Patch>) => Patch = (self) => self.empty
+
+/**
+ * Combines two patches to produce a new patch that describes the updates of
+ * the first patch and then the updates of the second patch. The combine
+ * operation should be associative. In addition, if the combine operation is
+ * commutative then joining multiple fibers concurrently will result in
+ * deterministic `FiberRef` values.
+ *
+ * @since 1.0.0
+ * @category patch
+ */
+export const combine: <Patch>(
+  first: Patch,
+  second: Patch
+) => <Value>(self: Differ<Value, Patch>) => Patch = (first, second) =>
+  (self) => self.combine(first, second)
+
+/**
+ * Applies a patch to an old value to produce a new value that is equal to the
+ * old value with the updates described by the patch.
+ *
+ * @since 1.0.0
+ * @category patch
+ */
+export const patch: <Patch, Value>(
+  patch: Patch,
+  oldValue: Value
+) => (self: Differ<Value, Patch>) => Value = (patch, oldValue) =>
+  (self) => self.patch(patch, oldValue)
 
 /**
  * Constructs a new `Differ`.
