@@ -8,11 +8,40 @@ import * as ContextPatch from "@fp-ts/data/Differ/ContextPatch"
 import * as HashMapPatch from "@fp-ts/data/Differ/HashMapPatch"
 import * as HashSetPatch from "@fp-ts/data/Differ/HashSetPatch"
 import * as OrPatch from "@fp-ts/data/Differ/OrPatch"
-import { equals } from "@fp-ts/data/Equal"
+import * as Equal from "@fp-ts/data/Equal"
+import * as Hash from "@fp-ts/data/Hash"
 import type { HashMap } from "@fp-ts/data/HashMap"
 import type { HashSet } from "@fp-ts/data/HashSet"
 
 export const DifferTypeId: D.TypeId = Symbol.for("@fp-ts/data/Differ") as D.TypeId
+
+/** @internal */
+class DifferImpl<Value, Patch> implements D.Differ<Value, Patch> {
+  readonly empty: Patch
+  readonly diff: (oldValue: Value, newValue: Value) => Patch
+  readonly combine: (first: Patch, second: Patch) => Patch
+  readonly patch: (patch: Patch, oldValue: Value) => Value
+  readonly _id: D.TypeId = DifferTypeId
+  readonly _P: (_: Patch) => Patch = identity
+  readonly _V: (_: Value) => Value = identity
+  constructor(params: {
+    empty: Patch
+    diff: (oldValue: Value, newValue: Value) => Patch
+    combine: (first: Patch, second: Patch) => Patch
+    patch: (patch: Patch, oldValue: Value) => Value
+  }) {
+    this.empty = params.empty
+    this.diff = params.diff
+    this.combine = params.combine
+    this.patch = params.patch
+  }
+  [Equal.symbol](that: unknown) {
+    return this === that
+  }
+  [Hash.symbol]() {
+    return Hash.random(this)
+  }
+}
 
 /** @internal */
 export function make<Value, Patch>(params: {
@@ -21,7 +50,7 @@ export function make<Value, Patch>(params: {
   readonly combine: (first: Patch, second: Patch) => Patch
   readonly patch: (patch: Patch, oldValue: Value) => Value
 }): D.Differ<Value, Patch> {
-  return { _id: DifferTypeId, ...params }
+  return new DifferImpl(params)
 }
 
 /** @internal */
@@ -111,7 +140,7 @@ export function updateWith<A>(f: (x: A, y: A) => A): D.Differ<A, (a: A) => A> {
       return (a) => second(first(a))
     },
     diff: (oldValue, newValue) => {
-      if (equals(oldValue, newValue)) {
+      if (Equal.equals(oldValue, newValue)) {
         return identity
       }
       return constant(newValue)
