@@ -29,6 +29,7 @@ import * as predicate from "@fp-ts/data/Predicate"
 import * as queue from "@fp-ts/data/Queue"
 import * as redBlackTree from "@fp-ts/data/RedBlackTree"
 import * as refinement from "@fp-ts/data/Refinement"
+import * as result from "@fp-ts/data/Result"
 import * as safeEval from "@fp-ts/data/SafeEval"
 import * as sortedMap from "@fp-ts/data/SortedMap"
 import * as sortedSet from "@fp-ts/data/SortedSet"
@@ -165,6 +166,10 @@ export {
    * @since 1.0.0
    */
   refinement,
+  /**
+   * @since 1.0.0
+   */
+  result,
   /**
    * @since 1.0.0
    */

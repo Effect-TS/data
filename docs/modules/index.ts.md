@@ -44,6 +44,7 @@ Added in v1.0.0
   - [queue](#queue)
   - [redBlackTree](#redblacktree)
   - [refinement](#refinement)
+  - [result](#result)
   - [safeEval](#safeeval)
   - [sortedMap](#sortedmap)
   - [sortedSet](#sortedset)
@@ -361,6 +362,16 @@ Added in v1.0.0
 
 ```ts
 export declare const refinement: typeof refinement
+```
+
+Added in v1.0.0
+
+## result
+
+**Signature**
+
+```ts
+export declare const result: typeof result
 ```
 
 Added in v1.0.0
