@@ -212,6 +212,11 @@ export function getAt(index: number) {
 }
 
 /** @internal */
+export function getOrd<K, V>(tree: RBT.RedBlackTree<K, V>): Ord.Ord<K> {
+  return (tree as RedBlackTreeImpl<K, V>)._ord
+}
+
+/** @internal */
 export function find<K>(key: K) {
   return <V>(self: RBT.RedBlackTree<K, V>): List.List<V> => {
     const cmp = (self as RedBlackTreeImpl<K, V>)._ord.compare

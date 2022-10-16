@@ -124,7 +124,8 @@ export const difference = <A, B extends A>(that: Iterable<B>) =>
  */
 export const union = <A>(that: Iterable<A>) =>
   (self: SortedSet<A>): SortedSet<A> => {
-    let out = empty<A>(self.keyTree._ord)
+    const ord = RBT.getOrd(self.keyTree)
+    let out = empty<A>(ord)
     for (const value of self) {
       out = add(value)(out)
     }
@@ -140,7 +141,8 @@ export const union = <A>(that: Iterable<A>) =>
  */
 export const intersection = <A>(that: Iterable<A>) =>
   (self: SortedSet<A>): SortedSet<A> => {
-    let out = empty(self.keyTree._ord)
+    const ord = RBT.getOrd(self.keyTree)
+    let out = empty(ord)
     for (const value of that) {
       if (has(value)(self)) {
         out = add(value)(out)
@@ -241,7 +243,8 @@ export const filter: {
   <A>(predicate: Predicate<A>): (self: SortedSet<A>) => SortedSet<A>
 } = <A>(predicate: Predicate<A>) =>
   (self: SortedSet<A>): SortedSet<A> => {
-    let out = empty<A>(self.keyTree._ord)
+    const ord = RBT.getOrd(self.keyTree)
+    let out = empty<A>(ord)
     for (const value of self) {
       if (predicate(value)) {
         out = add(value)(out)
@@ -261,8 +264,9 @@ export const partition: {
   <A>(predicate: Predicate<A>): (self: SortedSet<A>) => readonly [SortedSet<A>, SortedSet<A>]
 } = <A>(predicate: Predicate<A>) =>
   (self: SortedSet<A>): readonly [SortedSet<A>, SortedSet<A>] => {
-    let right = empty(self.keyTree._ord)
-    let left = empty(self.keyTree._ord)
+    const ord = RBT.getOrd(self.keyTree)
+    let right = empty(ord)
+    let left = empty(ord)
     for (const value of self) {
       if (predicate(value)) {
         right = add(value)(right)

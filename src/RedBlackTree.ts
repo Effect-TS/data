@@ -31,7 +31,6 @@ export const Direction = RBTI.Direction
  */
 export interface RedBlackTree<Key, Value> extends Iterable<readonly [Key, Value]>, Equal {
   readonly _id: TypeId
-  readonly _ord: Ord<Key>
   readonly _Key: (_: never) => Key
   readonly _Value: (_: never) => Value
 }
@@ -61,6 +60,14 @@ export const isRedBlackTree: {
  * @category constructors
  */
 export const empty: <K, V = never>(ord: Ord<K>) => RedBlackTree<K, V> = RBT.empty
+
+/**
+ * Gets the `Ord<K>` that the `RedBlackTree<K, V>` is using.
+ *
+ * @since 1.0.0
+ * @category getters
+ */
+export const getOrd: <K, V>(self: RedBlackTree<K, V>) => Ord<K> = RBT.getOrd
 
 /**
  * Constructs a new tree from an iterable of key-value pairs.

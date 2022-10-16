@@ -28,6 +28,7 @@ Added in v1.0.0
   - [reduceWithIndex](#reducewithindex)
 - [getters](#getters)
   - [first](#first)
+  - [getOrd](#getord)
   - [keys](#keys)
   - [last](#last)
   - [size](#size)
@@ -201,6 +202,18 @@ export declare const first: <K, V>(tree: RedBlackTree<K, V>) => Option<readonly 
 
 Added in v1.0.0
 
+## getOrd
+
+Gets the `Ord<K>` that the `RedBlackTree<K, V>` is using.
+
+**Signature**
+
+```ts
+export declare const getOrd: <K, V>(self: RedBlackTree<K, V>) => Ord<K>
+```
+
+Added in v1.0.0
+
 ## keys
 
 Get all the keys present in the tree.
@@ -264,7 +277,6 @@ A Red-Black Tree.
 ```ts
 export interface RedBlackTree<Key, Value> extends Iterable<readonly [Key, Value]>, Equal {
   readonly _id: TypeId
-  readonly _ord: Ord<Key>
   readonly _Key: (_: never) => Key
   readonly _Value: (_: never) => Value
 }
