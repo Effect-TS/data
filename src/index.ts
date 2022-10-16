@@ -24,6 +24,7 @@ import * as mutableHashSet from "@fp-ts/data/mutable/MutableHashSet"
 import * as mutableListBuilder from "@fp-ts/data/mutable/MutableListBuilder"
 import * as mutableRef from "@fp-ts/data/mutable/MutableRef"
 import * as number from "@fp-ts/data/Number"
+import * as option from "@fp-ts/data/Option"
 import * as predicate from "@fp-ts/data/Predicate"
 import * as queue from "@fp-ts/data/Queue"
 import * as redBlackTree from "@fp-ts/data/RedBlackTree"
@@ -32,8 +33,11 @@ import * as safeEval from "@fp-ts/data/SafeEval"
 import * as sortedMap from "@fp-ts/data/SortedMap"
 import * as sortedSet from "@fp-ts/data/SortedSet"
 import * as string from "@fp-ts/data/String"
+import * as compactable from "@fp-ts/data/typeclasses/Compactable"
+import * as filterable from "@fp-ts/data/typeclasses/Filterable"
 import * as fromOption from "@fp-ts/data/typeclasses/FromOption"
 import * as fromResult from "@fp-ts/data/typeclasses/FromResult"
+import * as traversableFilterable from "@fp-ts/data/typeclasses/TraversableFilterable"
 import * as weakIterableMap from "@fp-ts/data/weak/WeakIterableMap"
 
 export {
@@ -53,6 +57,10 @@ export {
    * @since 1.0.0
    */
   chunkPatch,
+  /**
+   * @since 1.0.0
+   */
+  compactable,
   /**
    * @since 1.0.0
    */
@@ -77,6 +85,10 @@ export {
    * @since 1.0.0
    */
   equal,
+  /**
+   * @since 1.0.0
+   */
+  filterable,
   /**
    * @since 1.0.0
    */
@@ -132,6 +144,10 @@ export {
   /**
    * @since 1.0.0
    */
+  option,
+  /**
+   * @since 1.0.0
+   */
   orPatch,
   /**
    * @since 1.0.0
@@ -165,6 +181,10 @@ export {
    * @since 1.0.0
    */
   string,
+  /**
+   * @since 1.0.0
+   */
+  traversableFilterable,
   /**
    * @since 1.0.0
    */
