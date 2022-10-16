@@ -21,11 +21,10 @@ import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import type * as monad from "@fp-ts/core/Monad"
 import type { Monoid } from "@fp-ts/core/Monoid"
 import type * as applicative from "@fp-ts/core/Monoidal"
+import type * as fromIdentity from "@fp-ts/core/Pointed"
 import type { Semigroup } from "@fp-ts/core/Semigroup"
 import { fromCombine } from "@fp-ts/core/Semigroup"
 import * as apply from "@fp-ts/core/Semigroupal"
-import type { Show } from "@fp-ts/core/Show"
-import type * as fromIdentity from "@fp-ts/core/Succeed"
 import * as traversable from "@fp-ts/core/Traversable"
 import { equals } from "@fp-ts/data/Equal"
 import { flow, identity, pipe, SK } from "@fp-ts/data/Function"
@@ -400,19 +399,7 @@ export const duplicate: <E, A>(ma: Result<E, A>) => Result<E, Result<E, A>> = ex
 export const traverse = <F extends TypeLambda>(F: applicative.Monoidal<F>) =>
   <A, FS, FR, FO, FE, B>(f: (a: A) => Kind<F, FS, FR, FO, FE, B>) =>
     <E>(ta: Result<E, A>): Kind<F, FS, FR, FO, FE, Result<E, B>> =>
-      isFailure(ta) ? F.succeed(fail(ta.failure)) : pipe(f(ta.success), F.map(succeed))
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const getShow = <E, A>(ShowE: Show<E>, ShowA: Show<A>): Show<Result<E, A>> => ({
-  show: (
-    self
-  ) => (isFailure(self) ?
-    `fail(${ShowE.show(self.failure)})` :
-    `succeed(${ShowA.show(self.success)})`)
-})
+      isFailure(ta) ? F.of(fail(ta.failure)) : pipe(f(ta.success), F.map(succeed))
 
 /**
  * Semigroup returning the left-most non-`Failure` value. If both operands are `Success`es then the inner values are
@@ -434,12 +421,13 @@ export const getShow = <E, A>(ShowE: Show<E>, ShowA: Show<A>): Show<Result<E, A>
  */
 export const getSemigroup = <A>(Semigroup: Semigroup<A>) =>
   <E>(): Semigroup<Result<E, A>> =>
-    fromCombine((self, that) =>
-      isFailure(that) ?
-        self :
-        isFailure(self) ?
-        that :
-        succeed(Semigroup.combine(self.success, that.success))
+    fromCombine((that) =>
+      (self) =>
+        isFailure(that) ?
+          self :
+          isFailure(self) ?
+          that :
+          succeed(Semigroup.combine(that.success)(self.success))
     )
 
 /**
@@ -602,8 +590,8 @@ export const unit: <E>(self: Result<E, unknown>) => Result<E, void> = functor.un
  * @category instances
  * @since 1.0.0
  */
-export const Succeed: fromIdentity.Succeed<ResultTypeLambda> = {
-  succeed
+export const Succeed: fromIdentity.Pointed<ResultTypeLambda> = {
+  of: succeed
 }
 
 /**
@@ -663,28 +651,40 @@ export const zipRight: <E2, A>(
 ) => <E1>(self: Result<E1, unknown>) => Result<E2 | E1, A> = flattenable.zipRight(Flattenable)
 
 /**
+ * Sequentially zips this effect with the specified effect using the specified combiner function.
+ *
+ * @category tuple sequencing
+ * @since 1.0.0
+ */
+export const zipWith: <E2, B, A, C>(
+  that: Result<E2, B>,
+  f: (a: A, b: B) => C
+) => <E1>(self: Result<E1, A>) => Result<E2 | E1, C> = (that, f) =>
+  (self) => pipe(self, flatMap((a) => pipe(that, map((b) => f(a, b)))))
+
+/**
  * @category instances
  * @since 1.0.0
  */
 export const Apply: apply.Semigroupal<ResultTypeLambda> = {
   map,
-  zipWith: (first, second, f) => zipWith(second, f)(first),
+  zipWith,
   zipMany: <E, A>(
-    start: Result<E, A>,
     others: Iterable<Result<E, A>>
-  ): Result<E, [A, ...Array<A>]> => {
-    if (isFailure(start)) {
-      return fail(start.failure)
-    }
-    const res: [A, ...Array<A>] = [start.success]
-    for (const o of others) {
-      if (isFailure(o)) {
-        return fail(o.failure)
+  ) =>
+    (start: Result<E, A>): Result<E, [A, ...Array<A>]> => {
+      if (isFailure(start)) {
+        return fail(start.failure)
       }
-      res.push(o.success)
+      const res: [A, ...Array<A>] = [start.success]
+      for (const o of others) {
+        if (isFailure(o)) {
+          return fail(o.failure)
+        }
+        res.push(o.success)
+      }
+      return succeed(res)
     }
-    return succeed(res)
-  }
 }
 
 /**
@@ -724,7 +724,7 @@ export const lift3: <A, B, C, D>(
  */
 export const Applicative: applicative.Monoidal<ResultTypeLambda> = {
   map,
-  succeed,
+  of: succeed,
   zipMany: Apply.zipMany,
   zipWith: Apply.zipWith,
   zipAll: <E, A>(collection: Iterable<Result<E, A>>): Result<E, ReadonlyArray<A>> => {
@@ -796,49 +796,49 @@ export const getValidatedApplicative = <E>(
   Semigroup: Semigroup<E>
 ): applicative.Monoidal<ValidatedT<ResultTypeLambda, E>> => ({
   map,
-  succeed,
+  of: succeed,
   zipWith: <A, B, C>(
-    fa: Result<E, A>,
     fb: Result<E, B>,
     f: (a: A, b: B) => C
-  ): Result<E, C> => {
-    if (isFailure(fa)) {
-      if (isFailure(fb)) {
-        return fail(Semigroup.combine(fa.failure, fb.failure))
-      } else {
-        return fail(fa.failure)
+  ) =>
+    (fa: Result<E, A>): Result<E, C> => {
+      if (isFailure(fa)) {
+        if (isFailure(fb)) {
+          return fail(Semigroup.combine(fb.failure)(fa.failure))
+        } else {
+          return fail(fa.failure)
+        }
+      } else if (isFailure(fb)) {
+        return fail(fb.failure)
       }
-    } else if (isFailure(fb)) {
-      return fail(fb.failure)
-    }
-    return succeed(f(fa.success, fb.success))
-  },
+      return succeed(f(fa.success, fb.success))
+    },
   zipMany: <A>(
-    start: Result<E, A>,
     others: Iterable<Result<E, A>>
-  ): Result<E, [A, ...Array<A>]> => {
-    const failures: Array<E> = []
-    const res: Array<A> = []
-    if (isFailure(start)) {
-      failures.push(start.failure)
-    } else {
-      res.push(start.success)
-    }
-    for (const o of others) {
-      if (isFailure(o)) {
-        failures.push(o.failure)
+  ) =>
+    (start: Result<E, A>): Result<E, [A, ...Array<A>]> => {
+      const failures: Array<E> = []
+      const res: Array<A> = []
+      if (isFailure(start)) {
+        failures.push(start.failure)
       } else {
-        res.push(o.success)
+        res.push(start.success)
       }
-    }
-    if (failures.length > 0) {
-      if (failures.length > 1) {
-        return fail(Semigroup.combineMany(failures[0], (failures.shift(), failures)))
+      for (const o of others) {
+        if (isFailure(o)) {
+          failures.push(o.failure)
+        } else {
+          res.push(o.success)
+        }
       }
-      return fail(failures[0])
-    }
-    return succeed(res as [A, ...Array<A>])
-  },
+      if (failures.length > 0) {
+        if (failures.length > 1) {
+          return fail(Semigroup.combineMany((failures.shift(), failures))(failures[0]))
+        }
+        return fail(failures[0])
+      }
+      return succeed(res as [A, ...Array<A>])
+    },
   zipAll: <A>(collection: Iterable<Result<E, A>>): Result<E, ReadonlyArray<A>> => {
     const failures: Array<E> = []
     const res: Array<A> = []
@@ -851,7 +851,7 @@ export const getValidatedApplicative = <E>(
     }
     if (failures.length > 0) {
       if (failures.length > 1) {
-        return fail(Semigroup.combineMany(failures[0], (failures.shift(), failures)))
+        return fail(Semigroup.combineMany((failures.shift(), failures))(failures[0]))
       }
       return fail(failures[0])
     }
@@ -865,7 +865,7 @@ export const getValidatedApplicative = <E>(
  */
 export const Monad: monad.Monad<ResultTypeLambda> = {
   map,
-  succeed,
+  of: succeed,
   flatMap
 }
 
@@ -1265,17 +1265,6 @@ export const zipFlatten: <E2, B>(
 ) => <E1, A extends ReadonlyArray<unknown>>(
   self: Result<E1, A>
 ) => Result<E1 | E2, readonly [...A, B]> = apply.zipFlatten(Apply)
-
-/**
- * Sequentially zips this effect with the specified effect using the specified combiner function.
- *
- * @category tuple sequencing
- * @since 1.0.0
- */
-export const zipWith: <E2, B, A, C>(
-  that: Result<E2, B>,
-  f: (a: A, b: B) => C
-) => <E1>(self: Result<E1, A>) => Result<E2 | E1, C> = apply.zipWith(Apply)
 
 // -------------------------------------------------------------------------------------
 // array utils

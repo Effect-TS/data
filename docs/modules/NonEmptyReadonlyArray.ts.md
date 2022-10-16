@@ -51,7 +51,6 @@ Added in v1.0.0
   - [Functor](#functor)
   - [Monad](#monad)
   - [Traversable](#traversable)
-  - [liftShow](#liftshow)
 - [lifting](#lifting)
   - [lift2](#lift2)
   - [lift3](#lift3)
@@ -423,16 +422,6 @@ Added in v1.0.0
 
 ```ts
 export declare const Traversable: traversable.Traversable<NonEmptyReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
-## liftShow
-
-**Signature**
-
-```ts
-export declare const liftShow: <A>(Show: Show<A>) => Show<readonly [A, ...A[]]>
 ```
 
 Added in v1.0.0

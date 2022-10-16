@@ -21,7 +21,6 @@ import type * as monoidal from "@fp-ts/core/Monoidal"
 import * as semigroup from "@fp-ts/core/Semigroup"
 import type { Semigroup } from "@fp-ts/core/Semigroup"
 import * as semigroupal from "@fp-ts/core/Semigroupal"
-import type { Show } from "@fp-ts/core/Show"
 import * as ord from "@fp-ts/core/Sortable"
 import type { Sortable } from "@fp-ts/core/Sortable"
 import type * as traversable from "@fp-ts/core/Traversable"
@@ -424,7 +423,7 @@ export const groupBy = <A>(f: (a: A) => string) =>
  */
 export const sort = <B>(O: Sortable<B>) =>
   <A extends B>(as: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A> =>
-    as.length === 1 ? as : (as.slice().sort((self, that) => O.compare(self, that)) as any)
+    as.length === 1 ? as : (as.slice().sort((self, that) => O.compare(that)(self)) as any)
 
 /**
  * @internal
@@ -808,14 +807,6 @@ export interface NonEmptyReadonlyArrayTypeLambda extends TypeLambda {
  * @category instances
  * @since 1.0.0
  */
-export const liftShow = <A>(Show: Show<A>): Show<NonEmptyReadonlyArray<A>> => ({
-  show: (as) => `[${as.map(Show.show).join(", ")}]`
-})
-
-/**
- * @category instances
- * @since 1.0.0
- */
 export declare const getSemigroup: <A>() => Semigroup<NonEmptyReadonlyArray<A>>
 
 /**
@@ -865,17 +856,17 @@ export const unit: (self: NonEmptyReadonlyArray<unknown>) => NonEmptyReadonlyArr
  */
 export const Apply: semigroupal.Semigroupal<NonEmptyReadonlyArrayTypeLambda> = {
   map,
-  zipWith: (fa, fb, f) => zipWith(fb, f)(fa),
+  zipWith,
   zipMany: <A>(
-    start: readonly [A, ...Array<A>],
     others: Iterable<readonly [A, ...Array<A>]>
-  ): readonly [[A, ...Array<A>], ...Array<[A, ...Array<A>]>] => {
-    let c: readonly [[A, ...Array<A>], ...Array<[A, ...Array<A>]>] = pipe(start, map((a) => [a]))
-    for (const o of others) {
-      c = pipe(c, zipWith(o, (a, b) => [...a, b]))
+  ) =>
+    (start: readonly [A, ...Array<A>]): readonly [[A, ...Array<A>], ...Array<[A, ...Array<A>]>] => {
+      let c: readonly [[A, ...Array<A>], ...Array<[A, ...Array<A>]>] = pipe(start, map((a) => [a]))
+      for (const o of others) {
+        c = pipe(c, zipWith(o, (a, b) => [...a, b]))
+      }
+      return c
     }
-    return c
-  }
 }
 
 /**
@@ -909,7 +900,7 @@ export const lift3: <A, B, C, D>(
  */
 export const Applicative: monoidal.Monoidal<NonEmptyReadonlyArrayTypeLambda> = {
   map,
-  succeed: of,
+  of,
   zipMany: Apply.zipMany,
   zipWith: Apply.zipWith,
   zipAll: <A>(
@@ -929,7 +920,7 @@ export const Applicative: monoidal.Monoidal<NonEmptyReadonlyArrayTypeLambda> = {
  */
 export const Monad: monad.Monad<NonEmptyReadonlyArrayTypeLambda> = {
   map,
-  succeed: of,
+  of,
   flatMap
 }
 
@@ -970,7 +961,7 @@ export const reduce = <B, A>(b: B, f: (b: B, a: A) => B) =>
 export const foldMap = <S>(S: Semigroup<S>) =>
   <A>(f: (a: A) => S) =>
     (self: NonEmptyReadonlyArray<A>): S =>
-      self.slice(1).reduce((s, a) => S.combine(s, f(a)), f(self[0]))
+      self.slice(1).reduce((s, a) => S.combine(f(a))(s), f(self[0]))
 
 /**
  * @category folding
@@ -995,7 +986,7 @@ export const reduceWithIndex = <B, A>(b: B, f: (i: number, b: B, a: A) => B) =>
 export const foldMapWithIndex = <S>(S: Semigroup<S>) =>
   <A>(f: (i: number, a: A) => S) =>
     (self: NonEmptyReadonlyArray<A>): S =>
-      self.slice(1).reduce((s, a, i) => S.combine(s, f(i + 1, a)), f(0, self[0]))
+      self.slice(1).reduce((s, a, i) => S.combine(f(i + 1, a))(s), f(0, self[0]))
 
 /**
  * @category folding
@@ -1161,7 +1152,7 @@ export const init = <A>(as: NonEmptyReadonlyArray<A>): ReadonlyArray<A> => as.sl
  */
 export const min = <A>(O: Sortable<A>): ((as: NonEmptyReadonlyArray<A>) => A) => {
   const S = semigroup.min(O)
-  return (nea) => nea.reduce((a, acc) => S.combine(a, acc))
+  return (nea) => nea.reduce((a, acc) => S.combine(acc)(a))
 }
 
 /**
@@ -1169,11 +1160,11 @@ export const min = <A>(O: Sortable<A>): ((as: NonEmptyReadonlyArray<A>) => A) =>
  */
 export const max = <A>(O: Sortable<A>): ((as: NonEmptyReadonlyArray<A>) => A) => {
   const S = semigroup.max(O)
-  return (nea) => nea.reduce((a, acc) => S.combine(a, acc))
+  return (nea) => nea.reduce((a, acc) => S.combine(acc)(a))
 }
 
 /**
  * @since 1.0.0
  */
 export const combineAll = <A>(S: Semigroup<A>) =>
-  (fa: NonEmptyReadonlyArray<A>): A => fa.reduce((a, acc) => S.combine(a, acc))
+  (fa: NonEmptyReadonlyArray<A>): A => fa.reduce((a, acc) => S.combine(acc)(a))

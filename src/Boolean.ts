@@ -3,7 +3,6 @@
  */
 import type * as monoid from "@fp-ts/core/Monoid"
 import type * as semigroup from "@fp-ts/core/Semigroup"
-import type * as show from "@fp-ts/core/Show"
 import type * as sortable from "@fp-ts/core/Sortable"
 import type { LazyArg } from "@fp-ts/data/Function"
 import type { Refinement } from "@fp-ts/data/Refinement"
@@ -63,14 +62,15 @@ export const match = <A, B = A>(onFalse: LazyArg<A>, onTrue: LazyArg<B>) =>
  * @since 1.0.0
  */
 export const SemigroupAll: semigroup.Semigroup<boolean> = {
-  combine: (a, b) => and(b)(a),
-  combineMany: (start, others) => {
-    let c = start
-    for (const o of others) {
-      c = and(o)(c)
+  combine: and,
+  combineMany: (others) =>
+    (start) => {
+      let c = start
+      for (const o of others) {
+        c = and(o)(c)
+      }
+      return c
     }
-    return c
-  }
 }
 
 /**
@@ -88,14 +88,15 @@ export const SemigroupAll: semigroup.Semigroup<boolean> = {
  * @since 1.0.0
  */
 export const SemigroupAny: semigroup.Semigroup<boolean> = {
-  combine: (first, second) => or(second)(first),
-  combineMany: (start, others) => {
-    let c = start
-    for (const o of others) {
-      c = or(o)(c)
+  combine: or,
+  combineMany: (others) =>
+    (start) => {
+      let c = start
+      for (const o of others) {
+        c = or(o)(c)
+      }
+      return c
     }
-    return c
-  }
 }
 
 /**
@@ -109,7 +110,7 @@ export const SemigroupAny: semigroup.Semigroup<boolean> = {
 export const MonoidAll: monoid.Monoid<boolean> = {
   combine: SemigroupAll.combine,
   combineMany: SemigroupAll.combineMany,
-  combineAll: (all) => SemigroupAll.combineMany(true, all),
+  combineAll: (all) => SemigroupAll.combineMany(all)(true),
   empty: true
 }
 
@@ -124,7 +125,7 @@ export const MonoidAll: monoid.Monoid<boolean> = {
 export const MonoidAny: monoid.Monoid<boolean> = {
   combine: SemigroupAny.combine,
   combineMany: SemigroupAny.combineMany,
-  combineAll: (all) => SemigroupAny.combineMany(false, all),
+  combineAll: (all) => SemigroupAny.combineMany(all)(false),
   empty: false
 }
 
@@ -133,15 +134,7 @@ export const MonoidAny: monoid.Monoid<boolean> = {
  * @since 1.0.0
  */
 export const Sortable: sortable.Sortable<boolean> = {
-  compare: (self, that) => self < that ? -1 : self > that ? 1 : 0
-}
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Show: show.Show<boolean> = {
-  show: (b) => JSON.stringify(b)
+  compare: (that) => (self) => self < that ? -1 : self > that ? 1 : 0
 }
 
 /**

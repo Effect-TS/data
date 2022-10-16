@@ -4,7 +4,7 @@
 import type * as contravariant from "@fp-ts/core/Contravariant"
 import type { TypeLambda } from "@fp-ts/core/HKT"
 import type * as monoid from "@fp-ts/core/Monoid"
-import type * as semigroup from "@fp-ts/core/Semigroup"
+import * as semigroup from "@fp-ts/core/Semigroup"
 import { constFalse, constTrue, flow } from "@fp-ts/data/Function"
 
 /**
@@ -44,16 +44,7 @@ export const and = <A>(that: Predicate<A>) =>
  * @category instances
  * @since 1.0.0
  */
-export const getSemigroupAny = <A>(): semigroup.Semigroup<Predicate<A>> => ({
-  combine: (first, second) => or(second)(first),
-  combineMany: (start, others) => {
-    let c = start
-    for (const o of others) {
-      c = or(o)(c)
-    }
-    return c
-  }
-})
+export const getSemigroupAny = <A>(): semigroup.Semigroup<Predicate<A>> => semigroup.fromCombine(or)
 
 /**
  * @category instances
@@ -64,7 +55,7 @@ export const getMonoidAny = <A>(): monoid.Monoid<Predicate<A>> => {
   return ({
     combine: S.combine,
     combineMany: S.combineMany,
-    combineAll: (all) => S.combineMany(constFalse, all),
+    combineAll: (all) => S.combineMany(all)(constFalse),
     empty: constFalse
   })
 }
@@ -73,16 +64,8 @@ export const getMonoidAny = <A>(): monoid.Monoid<Predicate<A>> => {
  * @category instances
  * @since 1.0.0
  */
-export const getSemigroupAll = <A>(): semigroup.Semigroup<Predicate<A>> => ({
-  combine: (first, second) => and(second)(first),
-  combineMany: (start, others) => {
-    let c = start
-    for (const o of others) {
-      c = and(o)(c)
-    }
-    return c
-  }
-})
+export const getSemigroupAll = <A>(): semigroup.Semigroup<Predicate<A>> =>
+  semigroup.fromCombine(and)
 
 /**
  * @category instances
@@ -93,7 +76,7 @@ export const getMonoidAll = <A>(): monoid.Monoid<Predicate<A>> => {
   return ({
     combine: S.combine,
     combineMany: S.combineMany,
-    combineAll: (all) => S.combineMany(constTrue, all),
+    combineAll: (all) => S.combineMany(all)(constTrue),
     empty: constTrue
   })
 }

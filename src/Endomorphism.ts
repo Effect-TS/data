@@ -67,14 +67,15 @@ export const Category: category.Category<EndomorphismTypeLambda> = {
  * @since 1.0.0
  */
 export const getSemigroup = <A>(): semigroup.Semigroup<Endomorphism<A>> => ({
-  combine: (self, that) => func.flow(self, that),
-  combineMany: (first, others) => {
-    let c = first
-    for (const o of others) {
-      c = (a) => o(c(a))
+  combine: (that) => (self) => func.flow(self, that),
+  combineMany: (others) =>
+    (first) => {
+      let c = first
+      for (const o of others) {
+        c = (a) => o(c(a))
+      }
+      return c
     }
-    return c
-  }
 })
 
 /**
@@ -88,7 +89,7 @@ export const getMonoid = <A>(): monoid.Monoid<Endomorphism<A>> => {
   return ({
     combine: S.combine,
     combineMany: S.combineMany,
-    combineAll: (all) => S.combineMany(func.identity, all),
+    combineAll: (all) => S.combineMany(all)(func.identity),
     empty: func.identity
   })
 }

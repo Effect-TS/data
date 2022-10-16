@@ -19,11 +19,10 @@ import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import type * as monad from "@fp-ts/core/Monad"
 import type * as monoid from "@fp-ts/core/Monoid"
 import type * as applicative from "@fp-ts/core/Monoidal"
+import type * as fromIdentity from "@fp-ts/core/Pointed"
 import type * as semigroup from "@fp-ts/core/Semigroup"
 import * as apply from "@fp-ts/core/Semigroupal"
-import type * as show from "@fp-ts/core/Show"
 import * as ord from "@fp-ts/core/Sortable"
-import type * as fromIdentity from "@fp-ts/core/Succeed"
 import * as traversable from "@fp-ts/core/Traversable"
 import { equals } from "@fp-ts/data/Equal"
 import type { LazyArg } from "@fp-ts/data/Function"
@@ -403,8 +402,8 @@ export const map: <A, B>(f: (a: A) => B) => (fa: Option<A>) => Option<B> = (f) =
  * @category instances
  * @since 1.0.0
  */
-export const FromIdentity: fromIdentity.Succeed<OptionTypeLambda> = {
-  succeed: some
+export const FromIdentity: fromIdentity.Pointed<OptionTypeLambda> = {
+  of: some
 }
 
 /**
@@ -564,19 +563,11 @@ export const traverse: <F extends TypeLambda>(
 ) => <A, S, R, O, E, B>(
   f: (a: A) => Kind<F, S, R, O, E, B>
 ) => (ta: Option<A>) => Kind<F, S, R, O, E, Option<B>> = (F) =>
-  (f) => (ta) => isNone(ta) ? F.succeed(none) : pipe(f(ta.value), F.map(some))
+  (f) => (ta) => isNone(ta) ? F.of(none) : pipe(f(ta.value), F.map(some))
 
 // -------------------------------------------------------------------------------------
 // instances
 // -------------------------------------------------------------------------------------
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const liftShow = <A>(Show: show.Show<A>): show.Show<Option<A>> => ({
-  show: (ma) => (isNone(ma) ? "none" : `some(${Show.show(ma.value)})`)
-})
 
 /**
  * The `Ord` instance allows `Option` values to be compared with
@@ -601,8 +592,8 @@ export const liftShow = <A>(Show: show.Show<A>): show.Show<Option<A>> => ({
  * @since 1.0.0
  */
 export const liftOrd = <A>(O: ord.Sortable<A>): ord.Sortable<Option<A>> =>
-  ord.fromCompare((self, that) =>
-    isSome(self) ? (isSome(that) ? O.compare(self.value, that.value) : 1) : -1
+  ord.fromCompare((that) =>
+    (self) => isSome(self) ? (isSome(that) ? O.compare(that.value)(self.value) : 1) : -1
   )
 
 /**
@@ -633,21 +624,23 @@ export const liftOrd = <A>(O: ord.Sortable<A>): ord.Sortable<Option<A>> =>
 export const getMonoid = <A>(
   Semigroup: semigroup.Semigroup<A>
 ): monoid.Monoid<Option<A>> => {
-  const combine = (self: Option<A>, that: Option<A>): Option<A> =>
-    isNone(self) ? that : isNone(that) ? self : some(Semigroup.combine(self.value, that.value))
+  const combine = (that: Option<A>) =>
+    (self: Option<A>): Option<A> =>
+      isNone(self) ? that : isNone(that) ? self : some(Semigroup.combine(that.value)(self.value))
   return ({
     combine,
-    combineMany: (start, others) => {
-      let c = start
-      for (const o of others) {
-        c = combine(c, o)
-      }
-      return c
-    },
+    combineMany: (others) =>
+      (start) => {
+        let c = start
+        for (const o of others) {
+          c = combine(o)(c)
+        }
+        return c
+      },
     combineAll: (collection: Iterable<Option<A>>): Option<A> => {
       let c: Option<A> = none
       for (const o of collection) {
-        c = combine(c, o)
+        c = combine(o)(c)
       }
       return c
     },
@@ -688,28 +681,40 @@ export const as: <B>(b: B) => (self: Option<unknown>) => Option<B> = functor.as(
 export const unit: (self: Option<unknown>) => Option<void> = functor.unit(Functor)
 
 /**
+ * Sequentially zips this effect with the specified effect using the specified combiner function.
+ *
+ * @category tuple sequencing
+ * @since 1.0.0
+ */
+export const zipWith: <B, A, C>(
+  that: Option<B>,
+  f: (a: A, b: B) => C
+) => (self: Option<A>) => Option<C> = (that, f) =>
+  (self) => pipe(self, flatMap((a) => pipe(that, map((b) => f(a, b)))))
+
+/**
  * @category instances
  * @since 1.0.0
  */
 export const Apply: apply.Semigroupal<OptionTypeLambda> = {
   map,
+  zipWith,
   zipMany: <A>(
-    start: Option<A>,
     others: Iterable<Option<A>>
-  ): Option<[A, ...Array<A>]> => {
-    if (isNone(start)) {
-      return none
-    }
-    const res: [A, ...Array<A>] = [start.value]
-    for (const o of others) {
-      if (isNone(o)) {
+  ) =>
+    (start: Option<A>): Option<[A, ...Array<A>]> => {
+      if (isNone(start)) {
         return none
       }
-      res.push(o.value)
+      const res: [A, ...Array<A>] = [start.value]
+      for (const o of others) {
+        if (isNone(o)) {
+          return none
+        }
+        res.push(o.value)
+      }
+      return some(res)
     }
-    return some(res)
-  },
-  zipWith: (first, second, f) => zipWith(second, f)(first)
 }
 
 /**
@@ -736,7 +741,7 @@ export const lift3: <A, B, C, D>(
  * @since 1.0.0
  */
 export const Applicative: applicative.Monoidal<OptionTypeLambda> = {
-  succeed: some,
+  of: some,
   map,
   zipMany: Apply.zipMany,
   zipWith: Apply.zipWith,
@@ -758,7 +763,7 @@ export const Applicative: applicative.Monoidal<OptionTypeLambda> = {
  */
 export const Monad: monad.Monad<OptionTypeLambda> = {
   map,
-  succeed: some,
+  of: some,
   flatMap
 }
 
@@ -1100,17 +1105,6 @@ export const zipFlatten: <B>(
   fb: Option<B>
 ) => <A extends ReadonlyArray<unknown>>(self: Option<A>) => Option<readonly [...A, B]> = apply
   .zipFlatten(Apply)
-
-/**
- * Sequentially zips this effect with the specified effect using the specified combiner function.
- *
- * @category tuple sequencing
- * @since 1.0.0
- */
-export const zipWith: <B, A, C>(
-  that: Option<B>,
-  f: (a: A, b: B) => C
-) => (self: Option<A>) => Option<C> = apply.zipWith(Apply)
 
 // -------------------------------------------------------------------------------------
 // array utils

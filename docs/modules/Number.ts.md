@@ -19,7 +19,6 @@ Added in v1.0.0
   - [Ord](#ord)
   - [SemigroupMultiply](#semigroupmultiply)
   - [SemigroupSum](#semigroupsum)
-  - [Show](#show)
 - [refinements](#refinements)
   - [isNumber](#isnumber)
 - [utils](#utils)
@@ -101,16 +100,6 @@ Added in v1.0.0
 
 ```ts
 export declare const SemigroupSum: semigroup.Semigroup<number>
-```
-
-Added in v1.0.0
-
-## Show
-
-**Signature**
-
-```ts
-export declare const Show: show.Show<number>
 ```
 
 Added in v1.0.0

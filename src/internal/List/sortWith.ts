@@ -15,7 +15,7 @@ export function sortWith<A>(ord: Sortable<A>) {
       const arr = new Array<[number, A]>(len)
       copyToArrayWithIndex(self, arr)
       arr.sort(([i, x], [j, y]) => {
-        const c = ord.compare(x, y)
+        const c = ord.compare(y)(x)
         return c !== 0 ? c : i < j ? -1 : 1
       })
       for (let i = 0; i < len; i++) {

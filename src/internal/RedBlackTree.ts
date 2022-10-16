@@ -223,7 +223,7 @@ export function find<K>(key: K) {
     let node = (self as RedBlackTreeImpl<K, V>)._root
     let result = List.empty<V>()
     while (node != null) {
-      const d = cmp(key, node.key)
+      const d = cmp(node.key)(key)
       if (d === 0 && Equal.equals(key, node.key)) {
         result = List.cons(node.value, result)
       }
@@ -243,7 +243,7 @@ export function findFirst<K>(key: K) {
     const cmp = (self as RedBlackTreeImpl<K, V>)._ord.compare
     let node = (self as RedBlackTreeImpl<K, V>)._root
     while (node != null) {
-      const d = cmp(key, node.key)
+      const d = cmp(node.key)(key)
       if (Equal.equals(key, node.key)) {
         return Option.some(node.value)
       }
@@ -266,7 +266,7 @@ export function insert<K, V>(key: K, value: V) {
     const n_stack: Array<Node.Node<K, V>> = []
     const d_stack: Array<Ordering.Ordering> = []
     while (n != null) {
-      const d = cmp(key, n.key)
+      const d = cmp(n.key)(key)
       n_stack.push(n)
       d_stack.push(d)
       if (d <= 0) {
@@ -440,7 +440,7 @@ export function removeFirst<K>(key: K) {
     let node: Node.Node<K, V> | undefined = (self as RedBlackTreeImpl<K, V>)._root
     const stack = []
     while (node != null) {
-      const d = cmp(key, node.key)
+      const d = cmp(node.key)(key)
       stack.push(node)
       if (Equal.equals(key, node.key)) {
         node = undefined
@@ -609,7 +609,7 @@ export function greaterThan<K>(key: K, direction: RBT.RedBlackTree.Direction = D
         const stack = []
         let last_ptr = 0
         while (node != null) {
-          const d = cmp(key, node.key)
+          const d = cmp(node.key)(key)
           stack.push(node)
           if (d < 0) {
             last_ptr = stack.length
@@ -640,7 +640,7 @@ export function greaterThanEqual<K>(
         const stack = []
         let last_ptr = 0
         while (node != null) {
-          const d = cmp(key, node.key)
+          const d = cmp(node.key)(key)
           stack.push(node)
           if (d <= 0) {
             last_ptr = stack.length
@@ -668,7 +668,7 @@ export function lessThan<K>(key: K, direction: RBT.RedBlackTree.Direction = Dire
         const stack = []
         let last_ptr = 0
         while (node != null) {
-          const d = cmp(key, node.key)
+          const d = cmp(node.key)(key)
           stack.push(node)
           if (d > 0) {
             last_ptr = stack.length
@@ -699,7 +699,7 @@ export function lessThanEqual<K>(
         const stack = []
         let last_ptr = 0
         while (node != null) {
-          const d = cmp(key, node.key)
+          const d = cmp(node.key)(key)
           stack.push(node)
           if (d <= 0) {
             last_ptr = stack.length
@@ -827,13 +827,13 @@ function visitGreaterThanEqual<K, V, A>(
   while (!done) {
     if (current != null) {
       stack = new Stack(current, stack)
-      if (ord.compare(min, current.key) <= 0) {
+      if (ord.compare(current.key)(min) <= 0) {
         current = current.left
       } else {
         current = undefined
       }
     } else if (stack != null) {
-      if (ord.compare(min, stack.value.key) <= 0) {
+      if (ord.compare(stack.value.key)(min) <= 0) {
         const value = visit(stack.value.key, stack.value.value)
         if (Option.isSome(value)) {
           return value
@@ -861,7 +861,7 @@ function visitLessThan<K, V, A>(
     if (current != null) {
       stack = new Stack(current, stack)
       current = current.left
-    } else if (stack != null && ord.compare(max, stack.value.key) > 0) {
+    } else if (stack != null && ord.compare(stack.value.key)(max) > 0) {
       const value = visit(stack.value.key, stack.value.value)
       if (Option.isSome(value)) {
         return value
@@ -888,13 +888,13 @@ function visitBetween<K, V, A>(
   while (!done) {
     if (current != null) {
       stack = new Stack(current, stack)
-      if (ord.compare(min, current.key) <= 0) {
+      if (ord.compare(current.key)(min) <= 0) {
         current = current.left
       } else {
         current = undefined
       }
-    } else if (stack != null && ord.compare(max, stack.value.key) > 0) {
-      if (ord.compare(min, stack.value.key) <= 0) {
+    } else if (stack != null && ord.compare(stack.value.key)(max) > 0) {
+      if (ord.compare(stack.value.key)(min) <= 0) {
         const value = visit(stack.value.key, stack.value.value)
         if (Option.isSome(value)) {
           return value

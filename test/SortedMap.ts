@@ -40,7 +40,7 @@ function value(n: number): Value {
 function makeSortedMap(...numbers: Array<readonly [number, number]>): SM.SortedMap<Key, Value> {
   const entries = numbers.map(([k, v]) => [key(k), value(v)] as const)
   return SM.from({
-    compare: (self: Key, that: Key) => self.id > that.id ? 1 : self.id < that.id ? -1 : 0
+    compare: (that: Key) => (self: Key) => self.id > that.id ? 1 : self.id < that.id ? -1 : 0
   })(entries)
 }
 

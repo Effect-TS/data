@@ -16,7 +16,6 @@ Added in v1.0.0
   - [Monoid](#monoid)
   - [Ord](#ord)
   - [Semigroup](#semigroup)
-  - [Show](#show)
 - [refinements](#refinements)
   - [isString](#isstring)
 - [utils](#utils)
@@ -73,16 +72,6 @@ Added in v1.0.0
 
 ```ts
 export declare const Semigroup: semigroup.Semigroup<string>
-```
-
-Added in v1.0.0
-
-## Show
-
-**Signature**
-
-```ts
-export declare const Show: show_.Show<string>
 ```
 
 Added in v1.0.0

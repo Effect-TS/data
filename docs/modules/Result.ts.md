@@ -76,7 +76,6 @@ Added in v1.0.0
   - [getCompactable](#getcompactable)
   - [getFilterable](#getfilterable)
   - [getSemigroup](#getsemigroup)
-  - [getShow](#getshow)
   - [getTraversableFilterable](#gettraversablefilterable)
 - [interop](#interop)
   - [fromThrowable](#fromthrowable)
@@ -639,7 +638,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Succeed: fromIdentity.Succeed<ResultTypeLambda>
+export declare const Succeed: fromIdentity.Pointed<ResultTypeLambda>
 ```
 
 Added in v1.0.0
@@ -683,16 +682,6 @@ combined using the provided `Semigroup`.
 
 ```ts
 export declare const getSemigroup: <A>(Semigroup: Semigroup<A>) => <E>() => Semigroup<Result<E, A>>
-```
-
-Added in v1.0.0
-
-## getShow
-
-**Signature**
-
-```ts
-export declare const getShow: <E, A>(ShowE: Show<E>, ShowA: Show<A>) => Show<Result<E, A>>
 ```
 
 Added in v1.0.0
