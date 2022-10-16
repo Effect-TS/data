@@ -27,6 +27,7 @@ import * as redBlackTree from "@fp-ts/data/RedBlackTree"
 import * as safeEval from "@fp-ts/data/SafeEval"
 import * as sortedMap from "@fp-ts/data/SortedMap"
 import * as sortedSet from "@fp-ts/data/SortedSet"
+import * as weakIterableMap from "@fp-ts/data/WeakIterableMap"
 
 export {
   /**
@@ -128,5 +129,9 @@ export {
   /**
    * @since 1.0.0
    */
-  sortedSet
+  sortedSet,
+  /**
+   * @since 1.0.0
+   */
+  weakIterableMap
 }
