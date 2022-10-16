@@ -6,7 +6,7 @@ parent: Modules
 
 ## Number overview
 
-Added in v3.0.0
+Added in v1.0.0
 
 ---
 
@@ -42,7 +42,7 @@ Added in v3.0.0
 export declare const Bounded: bounded.Bounded<number>
 ```
 
-Added in v3.0.0
+Added in v1.0.0
 
 ## Eq
 
@@ -52,7 +52,7 @@ Added in v3.0.0
 export declare const Eq: eq.Eq<number>
 ```
 
-Added in v3.0.0
+Added in v1.0.0
 
 ## MonoidMultiply
 
@@ -66,7 +66,7 @@ The `empty` value is `1`.
 export declare const MonoidMultiply: monoid.Monoid<number>
 ```
 
-Added in v3.0.0
+Added in v1.0.0
 
 ## MonoidSum
 
@@ -80,7 +80,7 @@ The `empty` value is `0`.
 export declare const MonoidSum: monoid.Monoid<number>
 ```
 
-Added in v3.0.0
+Added in v1.0.0
 
 ## Ord
 
@@ -90,7 +90,7 @@ Added in v3.0.0
 export declare const Ord: ord.Ord<number>
 ```
 
-Added in v3.0.0
+Added in v1.0.0
 
 ## SemigroupMultiply
 
@@ -102,7 +102,7 @@ Added in v3.0.0
 export declare const SemigroupMultiply: semigroup.Semigroup<number>
 ```
 
-Added in v3.0.0
+Added in v1.0.0
 
 ## SemigroupSum
 
@@ -114,7 +114,7 @@ Added in v3.0.0
 export declare const SemigroupSum: semigroup.Semigroup<number>
 ```
 
-Added in v3.0.0
+Added in v1.0.0
 
 ## Show
 
@@ -124,7 +124,7 @@ Added in v3.0.0
 export declare const Show: show.Show<number>
 ```
 
-Added in v3.0.0
+Added in v1.0.0
 
 # refinements
 
@@ -136,7 +136,7 @@ Added in v3.0.0
 export declare const isNumber: Refinement<unknown, number>
 ```
 
-Added in v3.0.0
+Added in v1.0.0
 
 # utils
 
@@ -148,7 +148,7 @@ Added in v3.0.0
 export declare const multiply: (that: number) => (self: number) => number
 ```
 
-Added in v3.0.0
+Added in v1.0.0
 
 ## multiplyAll
 
@@ -158,7 +158,7 @@ Added in v3.0.0
 export declare const multiplyAll: (collection: Iterable<number>) => number
 ```
 
-Added in v3.0.0
+Added in v1.0.0
 
 ## sub
 
@@ -168,7 +168,7 @@ Added in v3.0.0
 export declare const sub: (that: number) => (self: number) => number
 ```
 
-Added in v3.0.0
+Added in v1.0.0
 
 ## sum
 
@@ -178,7 +178,7 @@ Added in v3.0.0
 export declare const sum: (that: number) => (self: number) => number
 ```
 
-Added in v3.0.0
+Added in v1.0.0
 
 ## sumAll
 
@@ -188,4 +188,4 @@ Added in v3.0.0
 export declare const sumAll: (collection: Iterable<number>) => number
 ```
 
-Added in v3.0.0
+Added in v1.0.0
