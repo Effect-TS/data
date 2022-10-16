@@ -38,6 +38,7 @@ Added in v1.0.0
   - [mutableListBuilder](#mutablelistbuilder)
   - [mutableRef](#mutableref)
   - [number](#number)
+  - [option](#option)
   - [orPatch](#orpatch)
   - [predicate](#predicate)
   - [queue](#queue)
@@ -300,6 +301,16 @@ Added in v1.0.0
 
 ```ts
 export declare const number: typeof number
+```
+
+Added in v1.0.0
+
+## option
+
+**Signature**
+
+```ts
+export declare const option: typeof option
 ```
 
 Added in v1.0.0
