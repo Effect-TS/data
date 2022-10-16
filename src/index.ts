@@ -11,7 +11,9 @@ import * as hashMapPatch from "@fp-ts/data/Differ/HashMapPatch"
 import * as hashSetPatch from "@fp-ts/data/Differ/HashSetPatch"
 import * as orPatch from "@fp-ts/data/Differ/OrPatch"
 import * as duration from "@fp-ts/data/Duration"
+import * as endomorphism from "@fp-ts/data/Endomorphism"
 import * as equal from "@fp-ts/data/Equal"
+import * as _function from "@fp-ts/data/Function"
 import * as hash from "@fp-ts/data/Hash"
 import * as hashMap from "@fp-ts/data/HashMap"
 import * as hashSet from "@fp-ts/data/HashSet"
@@ -27,6 +29,10 @@ import * as sortedMap from "@fp-ts/data/SortedMap"
 import * as sortedSet from "@fp-ts/data/SortedSet"
 
 export {
+  /**
+   * @since 1.0.0
+   */
+  _function as function,
   /**
    * @since 1.0.0
    */
@@ -51,6 +57,10 @@ export {
    * @since 1.0.0
    */
   duration,
+  /**
+   * @since 1.0.0
+   */
+  endomorphism,
   /**
    * @since 1.0.0
    */
