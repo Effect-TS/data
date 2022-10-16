@@ -1,10 +1,10 @@
 /**
  * @since 1.0.0
  */
-import * as O from "@fp-ts/core/Option"
 import * as Equal from "@fp-ts/data/Equal"
 import { identity } from "@fp-ts/data/Function"
 import * as Hash from "@fp-ts/data/Hash"
+import * as O from "@fp-ts/data/Option"
 
 /**
  * An implementation of a weak map that supports the Iterable protocol.

@@ -2,12 +2,12 @@
  * @since 1.0.0
  */
 
-import type { Option } from "@fp-ts/core/Option"
-import type { Ord } from "@fp-ts/core/typeclasses/Ord"
+import type { Sortable } from "@fp-ts/core/Sortable"
 import type { Equal } from "@fp-ts/data/Equal"
 import * as RBT from "@fp-ts/data/internal/RedBlackTree"
 import * as RBTI from "@fp-ts/data/internal/RedBlackTree/iterator"
 import type { List } from "@fp-ts/data/List"
+import type { Option } from "@fp-ts/data/Option"
 
 const TypeId: unique symbol = RBT.RedBlackTreeTypeId as TypeId
 
@@ -59,7 +59,7 @@ export const isRedBlackTree: {
  * @since 1.0.0
  * @category constructors
  */
-export const empty: <K, V = never>(ord: Ord<K>) => RedBlackTree<K, V> = RBT.empty
+export const empty: <K, V = never>(ord: Sortable<K>) => RedBlackTree<K, V> = RBT.empty
 
 /**
  * Gets the `Ord<K>` that the `RedBlackTree<K, V>` is using.
@@ -67,7 +67,7 @@ export const empty: <K, V = never>(ord: Ord<K>) => RedBlackTree<K, V> = RBT.empt
  * @since 1.0.0
  * @category getters
  */
-export const getOrd: <K, V>(self: RedBlackTree<K, V>) => Ord<K> = RBT.getOrd
+export const getSortable: <K, V>(self: RedBlackTree<K, V>) => Sortable<K> = RBT.getSortable
 
 /**
  * Constructs a new tree from an iterable of key-value pairs.
@@ -76,7 +76,7 @@ export const getOrd: <K, V>(self: RedBlackTree<K, V>) => Ord<K> = RBT.getOrd
  * @category constructors
  */
 export const from: <K, V>(
-  ord: Ord<K>
+  ord: Sortable<K>
 ) => (
   entries: Iterable<readonly [K, V]>
 ) => RedBlackTree<K, V> = RBT.from
@@ -88,7 +88,7 @@ export const from: <K, V>(
  * @category constructors
  */
 export const make: <K, Entries extends Array<readonly [K, any]>>(
-  ord: Ord<K>
+  ord: Sortable<K>
 ) => (
   ...entries: Entries
 ) => RedBlackTree<K, Entries[number] extends readonly [any, infer V] ? V : never> = RBT.make

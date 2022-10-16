@@ -2,11 +2,11 @@
  * @since 1.0.0
  */
 
+import type * as category from "@fp-ts/core/Category"
+import type * as composable from "@fp-ts/core/Composable"
 import type { TypeLambda } from "@fp-ts/core/HKT"
-import type * as category from "@fp-ts/core/typeclasses/Category"
-import type * as composable from "@fp-ts/core/typeclasses/Composable"
-import type * as monoid from "@fp-ts/core/typeclasses/Monoid"
-import type * as semigroup from "@fp-ts/core/typeclasses/Semigroup"
+import type * as monoid from "@fp-ts/core/Monoid"
+import type * as semigroup from "@fp-ts/core/Semigroup"
 import * as func from "@fp-ts/data/Function"
 
 /**
@@ -67,7 +67,14 @@ export const Category: category.Category<EndomorphismTypeLambda> = {
  * @since 1.0.0
  */
 export const getSemigroup = <A>(): semigroup.Semigroup<Endomorphism<A>> => ({
-  combine: (that) => (self) => func.flow(self, that)
+  combine: (self, that) => func.flow(self, that),
+  combineMany: (first, others) => {
+    let c = first
+    for (const o of others) {
+      c = (a) => o(c(a))
+    }
+    return c
+  }
 })
 
 /**
@@ -76,7 +83,12 @@ export const getSemigroup = <A>(): semigroup.Semigroup<Endomorphism<A>> => ({
  * @category instances
  * @since 1.0.0
  */
-export const getMonoid = <A>(): monoid.Monoid<Endomorphism<A>> => ({
-  combine: getSemigroup<A>().combine,
-  empty: func.identity
-})
+export const getMonoid = <A>(): monoid.Monoid<Endomorphism<A>> => {
+  const S = getSemigroup<A>()
+  return ({
+    combine: S.combine,
+    combineMany: S.combineMany,
+    combineAll: (all) => S.combineMany(func.identity, all),
+    empty: func.identity
+  })
+}

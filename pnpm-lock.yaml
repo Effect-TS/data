@@ -17,9 +17,9 @@ importers:
       '@babel/plugin-transform-modules-commonjs': ^7.18.6
       '@changesets/changelog-github': ^0.4.7
       '@changesets/cli': ^2.25.0
-      '@effect-ts/build-utils': 0.40.3
+      '@effect-ts/build-utils': 0.40.5
       '@effect-ts/core': ^0.60.2
-      '@fp-ts/core': ^0.0.2
+      '@fp-ts/core': ^0.0.3
       '@repo-tooling/eslint-plugin-dprint': ^0.0.4
       '@types/benchmark': ^1.0.31
       '@types/chai': ^4.3.3
@@ -55,14 +55,14 @@ importers:
       vite: ^2.9.13
       vitest: 0.24.3
     dependencies:
-      '@fp-ts/core': 0.0.2
+      '@fp-ts/core': 0.0.3
     devDependencies:
       '@babel/cli': 7.19.3_@babel+core@7.19.3
       '@babel/core': 7.19.3
       '@babel/plugin-transform-modules-commonjs': 7.18.6_@babel+core@7.19.3
       '@changesets/changelog-github': 0.4.7
       '@changesets/cli': 2.25.0
-      '@effect-ts/build-utils': 0.40.3_wzvflwv62ngf22ppz3frldq37m_smskbqsf3q6kbozdrpluio47kq
+      '@effect-ts/build-utils': 0.40.5_smskbqsf3q6kbozdrpluio47kq
       '@effect-ts/core': 0.60.4
       '@repo-tooling/eslint-plugin-dprint': 0.0.4_typescript@4.8.4
       '@types/benchmark': 1.0.33
@@ -615,8 +615,8 @@ packages:
       is-negated-glob: 1.0.0
     dev: true
 
-  /@effect-ts/build-utils/0.40.3_wzvflwv62ngf22ppz3frldq37m_smskbqsf3q6kbozdrpluio47kq:
-    resolution: {integrity: sha512-4AogENdrtSyEFLYgyFNlj0d+W2ckZ/ZTapCO2lWdl4kRGHQr4/beKoNmAbPNyfxZeoJ/7rFEa1mB1Tvm7eIdlw==}
+  /@effect-ts/build-utils/0.40.5_smskbqsf3q6kbozdrpluio47kq:
+    resolution: {integrity: sha512-5gWxbnxhqcDydsTSgTG1e0bOHADfk0lm3cv97yjgeLeqVhO1RxJ4R7RM0alF5MeRsismMW/mInLR8Gn82TU+7Q==}
     hasBin: true
     peerDependencies:
       '@effect-ts/core': '>= 0.28.9'
@@ -627,7 +627,6 @@ packages:
       cpx: 1.5.0
       picocolors: 1.0.0
     dev: true
-    patched: true
 
   /@effect-ts/core/0.60.4:
     resolution: {integrity: sha512-kplDLAsiuidDAOipNcZJPbo3YF7eJHdIWe9sK+6l83HjnTwAp8+56s3hgVhTti0mMO7/Wzo9ZnuQlbjo9IykZA==}
@@ -683,8 +682,8 @@ packages:
       - supports-color
     dev: true
 
-  /@fp-ts/core/0.0.2:
-    resolution: {integrity: sha512-qGNGKHqd36RyOu0Ns62H+XYmTDoyr3gispsRNLYLhOA9kXPZNYPhRGeuVB5pvbDlZO9/mfS++PX4jK0HYIr1Pg==}
+  /@fp-ts/core/0.0.3:
+    resolution: {integrity: sha512-X/LM3ge7xR1kiDW7tV+2arBCd/Sz2L79OWdH4QmNyqwmeRpdvPTzhNqdyHt0eUGNn1yjtxsyQNwFjWF1qDGP7g==}
     dev: false
 
   /@humanwhocodes/config-array/0.10.7:
@@ -3450,7 +3449,7 @@ packages:
     requiresBuild: true
     dependencies:
       bindings: 1.5.0
-      nan: 2.16.0
+      nan: 2.17.0
     dev: true
     optional: true
 
@@ -4813,8 +4812,8 @@ packages:
       minimatch: 3.1.2
     dev: true
 
-  /nan/2.16.0:
-    resolution: {integrity: sha512-UdAqHyFngu7TfQKsCBgAA6pWDkT8MAO7d0jyOecVhN5354xbLqdn8mV9Tat9gepAupm0bt2DbeaSC8vS52MuFA==}
+  /nan/2.17.0:
+    resolution: {integrity: sha512-2ZTgtl0nJsO0KQCjEpxcIr5D+Yv90plTitZt9JBfQvVJDS5seMl3FOvsh3+9CoYWXf/1l5OaZzzF6nDm4cagaQ==}
     requiresBuild: true
     dev: true
     optional: true

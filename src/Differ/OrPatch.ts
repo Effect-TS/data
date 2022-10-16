@@ -2,9 +2,9 @@
  * @since 1.0.0
  */
 
-import type { Result } from "@fp-ts/core/Result"
 import type { Differ } from "@fp-ts/data/Differ"
 import * as OP from "@fp-ts/data/internal/Differ/OrPatch"
+import type { Result } from "@fp-ts/data/Result"
 
 const TypeId: unique symbol = OP.OrPatchTypeId as TypeId
 

@@ -1,10 +1,10 @@
-import type { Predicate } from "@fp-ts/core/Predicate"
-import type { Refinement } from "@fp-ts/core/Refinement"
 import * as Equal from "@fp-ts/data/Equal"
 import * as Hash from "@fp-ts/data/Hash"
 import type { HashMap } from "@fp-ts/data/HashMap"
 import type * as HS from "@fp-ts/data/HashSet"
 import * as HM from "@fp-ts/data/internal/HashMap"
+import type { Predicate } from "@fp-ts/data/Predicate"
+import type { Refinement } from "@fp-ts/data/Refinement"
 
 /** @internal */
 export const HashSetTypeId: HS.TypeId = Symbol.for("@fp-ts/data/HashSet") as HS.TypeId

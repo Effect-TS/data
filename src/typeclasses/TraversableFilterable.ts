@@ -3,14 +3,14 @@
  *
  * @since 1.0.0
  */
+import type { Functor } from "@fp-ts/core/Functor"
 import type { Kind, TypeClass, TypeLambda } from "@fp-ts/core/HKT"
-import type { Result } from "@fp-ts/core/Result"
-import type { Applicative } from "@fp-ts/core/typeclasses/Applicative"
-import type { Functor } from "@fp-ts/core/typeclasses/Functor"
-import type { Traversable } from "@fp-ts/core/typeclasses/Traversable"
+import type { Monoidal } from "@fp-ts/core/Monoidal"
+import type { Traversable } from "@fp-ts/core/Traversable"
 import { flow, pipe } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
 import type { Option } from "@fp-ts/data/Option"
+import type { Result } from "@fp-ts/data/Result"
 import * as compactable from "@fp-ts/data/typeclasses/Compactable"
 import type { Compactable } from "@fp-ts/data/typeclasses/Compactable"
 
@@ -20,14 +20,14 @@ import type { Compactable } from "@fp-ts/data/typeclasses/Compactable"
  */
 export interface TraversableFilterable<T extends TypeLambda> extends TypeClass<T> {
   readonly traversePartitionMap: <F extends TypeLambda>(
-    Applicative: Applicative<F>
+    Monoidal: Monoidal<F>
   ) => <A, S, R, O, E, B, C>(
     f: (a: A) => Kind<F, S, R, O, E, Result<B, C>>
   ) => <TS, TR, TO, TE>(
     self: Kind<T, TS, TR, TO, TE, A>
   ) => Kind<F, S, R, O, E, readonly [Kind<T, TS, TR, TO, TE, B>, Kind<T, TS, TR, TO, TE, C>]>
   readonly traverseFilterMap: <F extends TypeLambda>(
-    Applicative: Applicative<F>
+    Monoidal: Monoidal<F>
   ) => <A, S, R, O, E, B>(
     f: (a: A) => Kind<F, S, R, O, E, Option<B>>
   ) => <TS, TR, TO, TE>(
@@ -67,7 +67,7 @@ export const traverseFilter = <T extends TypeLambda>(
   TraversableFilterable: TraversableFilterable<T>
 ) =>
   <F extends TypeLambda>(
-    Applicative: Applicative<F>
+    Applicative: Monoidal<F>
   ): (<B extends A, S, R, O, E, A = B>(
     predicate: (a: A) => Kind<F, S, R, O, E, boolean>
   ) => <TS, TR, TO, TE>(
@@ -88,7 +88,7 @@ export const traversePartition = <T extends TypeLambda>(
   TraversableFilterable: TraversableFilterable<T>
 ) =>
   <F extends TypeLambda>(
-    Applicative: Applicative<F>
+    Applicative: Monoidal<F>
   ): (<B extends A, S, R, O, E, A = B>(
     predicate: (a: A) => Kind<F, S, R, O, E, boolean>
   ) => <TS, TR, TO, TE>(

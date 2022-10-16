@@ -1,11 +1,11 @@
 /**
  * @since 1.0.0
  */
+import type * as category from "@fp-ts/core/Category"
+import type * as composable from "@fp-ts/core/Composable"
 import type { TypeLambda } from "@fp-ts/core/HKT"
-import type * as category from "@fp-ts/core/typeclasses/Category"
-import type * as composable from "@fp-ts/core/typeclasses/Composable"
-import type * as monoid from "@fp-ts/core/typeclasses/Monoid"
-import type * as semigroup from "@fp-ts/core/typeclasses/Semigroup"
+import type * as monoid from "@fp-ts/core/Monoid"
+import type * as semigroup from "@fp-ts/core/Semigroup"
 import type { Endomorphism } from "@fp-ts/data/Endomorphism"
 
 // -------------------------------------------------------------------------------------
@@ -78,9 +78,18 @@ export const Category: category.Category<FunctionTypeLambda> = {
  * @since 1.0.0
  */
 export const getSemigroup = <S>(Semigroup: semigroup.Semigroup<S>) =>
-  <A>(): semigroup.Semigroup<(a: A) => S> => ({
-    combine: (that) => (self) => (a) => Semigroup.combine(that(a))(self(a))
-  })
+  <A>(): semigroup.Semigroup<(a: A) => S> => {
+    return ({
+      combine: (self, that) => (a) => Semigroup.combine(self(a), that(a)),
+      combineMany: (start, others) => {
+        let c = start
+        for (const o of others) {
+          c = (a) => Semigroup.combine(c(a), o(a))
+        }
+        return c
+      }
+    })
+  }
 
 /**
  * Unary functions form a monoid as long as you can provide a monoid for the codomain.
@@ -107,10 +116,16 @@ export const getSemigroup = <S>(Semigroup: semigroup.Semigroup<S>) =>
  * @since 1.0.0
  */
 export const getMonoid = <M>(Monoid: monoid.Monoid<M>) =>
-  <A>(): monoid.Monoid<(a: A) => M> => ({
-    combine: getSemigroup(Monoid)<A>().combine,
-    empty: () => Monoid.empty
-  })
+  <A>(): monoid.Monoid<(a: A) => M> => {
+    const S = getSemigroup(Monoid)<A>()
+    const empty = () => Monoid.empty
+    return ({
+      combine: S.combine,
+      combineMany: S.combineMany,
+      combineAll: (all) => S.combineMany(empty, all),
+      empty
+    })
+  }
 
 /**
  * @since 1.0.0

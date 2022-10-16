@@ -1,9 +1,9 @@
 /**
  * @since 1.0.0
  */
-import type { NonEmptyReadonlyArray } from "@fp-ts/core/NonEmptyReadonlyArray"
-import type { Failure, Result, Success } from "@fp-ts/core/Result"
+import type { NonEmptyReadonlyArray } from "@fp-ts/data/NonEmptyReadonlyArray"
 import type { None, Option, Some } from "@fp-ts/data/Option"
+import type { Failure, Result, Success } from "@fp-ts/data/Result"
 
 // -------------------------------------------------------------------------------------
 // Option

@@ -1,11 +1,11 @@
-import { pipe } from "@fp-ts/core/Function"
-import type { Ord } from "@fp-ts/core/typeclasses/Ord"
+import type { Sortable } from "@fp-ts/core/Sortable"
+import { pipe } from "@fp-ts/data/Function"
 import * as L from "@fp-ts/data/internal/List"
 import * as LB from "@fp-ts/data/internal/ListBuilder"
 import type { List } from "@fp-ts/data/List"
 
 /** @internal */
-export function sortWith<A>(ord: Ord<A>) {
+export function sortWith<A>(ord: Sortable<A>) {
   return (self: List<A>): List<A> => {
     const len = L.length(self)
     const b = LB.make<A>()
@@ -15,7 +15,7 @@ export function sortWith<A>(ord: Ord<A>) {
       const arr = new Array<[number, A]>(len)
       copyToArrayWithIndex(self, arr)
       arr.sort(([i, x], [j, y]) => {
-        const c = ord.compare(y)(x)
+        const c = ord.compare(x, y)
         return c !== 0 ? c : i < j ? -1 : 1
       })
       for (let i = 0; i < len; i++) {

@@ -2,17 +2,17 @@
  * @since 1.0.0
  */
 
-import { identity, pipe } from "@fp-ts/core/Function"
-import * as O from "@fp-ts/core/Option"
-import type { Option } from "@fp-ts/core/Option"
-import type { Predicate } from "@fp-ts/core/Predicate"
-import * as RA from "@fp-ts/core/ReadonlyArray"
-import type { Refinement } from "@fp-ts/core/Refinement"
-import type { Result } from "@fp-ts/core/Result"
-import type { Ord } from "@fp-ts/core/typeclasses/Ord"
+import type { Sortable } from "@fp-ts/core/Sortable"
 import * as Equal from "@fp-ts/data/Equal"
+import { identity, pipe } from "@fp-ts/data/Function"
 import * as Hash from "@fp-ts/data/Hash"
 import * as MRef from "@fp-ts/data/mutable/MutableRef"
+import type { Option } from "@fp-ts/data/Option"
+import * as O from "@fp-ts/data/Option"
+import type { Predicate } from "@fp-ts/data/Predicate"
+import * as RA from "@fp-ts/data/ReadonlyArray"
+import type { Refinement } from "@fp-ts/data/Refinement"
+import type { Result } from "@fp-ts/data/Result"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/Chunk") as TypeId
 
@@ -736,8 +736,7 @@ export const filterMapWhile = <A, B>(f: (a: A) => Option<B>) =>
  * @since 1.0.0
  * @category elements
  */
-export const elem = <A>(a: A) =>
-  (self: Chunk<A>): boolean => pipe(toArray(self), RA.elem(Equal.getEq())(a))
+export const elem = <A>(a: A) => (self: Chunk<A>): boolean => pipe(toArray(self), RA.elem(a))
 
 /**
  * Filter out optional values
@@ -904,10 +903,10 @@ export const head = <A>(self: Chunk<A>): Option<A> => get(0)(self)
  * @category elements
  */
 export const intersection = <A>(that: Chunk<A>) =>
-  (self: Chunk<A>): Chunk<A> =>
+  <B>(self: Chunk<B>): Chunk<A & B> =>
     pipe(
       toArray(self),
-      RA.intersection(Equal.getEq<A>())(toArray(that)),
+      RA.intersection(toArray(that)),
       unsafeFromArray
     )
 
@@ -1168,7 +1167,7 @@ export const size = <A>(self: Chunk<A>): number => self.length
  * @since 1.0.0
  * @category elements
  */
-export const sort = <B>(O: Ord<B>) =>
+export const sort = <B>(O: Sortable<B>) =>
   <A extends B>(as: Chunk<A>): Chunk<A> =>
     pipe(
       toArray(as),
@@ -1307,8 +1306,8 @@ export const unfold = <A, S>(s: S, f: (s: S) => Option<readonly [A, S]>): Chunk<
  * @category elements
  */
 export function union<A>(that: Chunk<A>) {
-  return (self: Chunk<A>): Chunk<A> =>
-    unsafeFromArray(RA.union(Equal.getEq<A>())(toArray(that))(toArray(self)))
+  return <B>(self: Chunk<B>): Chunk<A | B> =>
+    unsafeFromArray(RA.union(toArray(that))(toArray(self)))
 }
 
 /**
@@ -1317,8 +1316,7 @@ export function union<A>(that: Chunk<A>) {
  * @since 1.0.0
  * @category elements
  */
-export const dedupe = <A>(self: Chunk<A>): Chunk<A> =>
-  unsafeFromArray(RA.uniq(Equal.getEq<A>())(toArray(self)))
+export const dedupe = <A>(self: Chunk<A>): Chunk<A> => unsafeFromArray(RA.uniq(toArray(self)))
 
 /**
  * Returns the first element of this chunk.

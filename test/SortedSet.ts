@@ -1,9 +1,9 @@
-import { pipe } from "@fp-ts/core/Function"
-import * as Str from "@fp-ts/core/string"
-import * as Ord from "@fp-ts/core/typeclasses/Ord"
+import * as Ord from "@fp-ts/core/Sortable"
 import * as Eq from "@fp-ts/data/Equal"
+import { pipe } from "@fp-ts/data/Function"
 import * as H from "@fp-ts/data/Hash"
 import * as SortedSet from "@fp-ts/data/SortedSet"
+import * as Str from "@fp-ts/data/String"
 
 class Member implements Eq.Equal {
   constructor(readonly id: string) {}
@@ -17,7 +17,7 @@ class Member implements Eq.Equal {
   }
 }
 
-const OrdMember: Ord.Ord<Member> = pipe(Str.Ord, Ord.contramap((member) => member.id))
+const OrdMember: Ord.Sortable<Member> = pipe(Str.Ord, Ord.contramap((member) => member.id))
 
 describe.concurrent("SortedSet", () => {
   it("add", () => {

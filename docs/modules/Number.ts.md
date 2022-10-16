@@ -14,7 +14,6 @@ Added in v1.0.0
 
 - [instances](#instances)
   - [Bounded](#bounded)
-  - [Eq](#eq)
   - [MonoidMultiply](#monoidmultiply)
   - [MonoidSum](#monoidsum)
   - [Ord](#ord)
@@ -40,16 +39,6 @@ Added in v1.0.0
 
 ```ts
 export declare const Bounded: bounded.Bounded<number>
-```
-
-Added in v1.0.0
-
-## Eq
-
-**Signature**
-
-```ts
-export declare const Eq: eq.Eq<number>
 ```
 
 Added in v1.0.0
@@ -87,7 +76,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Ord: ord.Ord<number>
+export declare const Ord: ord.Sortable<number>
 ```
 
 Added in v1.0.0

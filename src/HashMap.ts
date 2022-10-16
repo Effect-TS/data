@@ -2,14 +2,14 @@
  * @since 1.0.0
  */
 
-import type { Option } from "@fp-ts/core/Option"
-import type { Predicate } from "@fp-ts/core/Predicate"
-import type { Refinement } from "@fp-ts/core/Refinement"
 import type { Equal } from "@fp-ts/data/Equal"
 import type { HashSet } from "@fp-ts/data/HashSet"
 import * as HM from "@fp-ts/data/internal/HashMap"
 import * as _keySet from "@fp-ts/data/internal/HashMap/keySet"
 import type * as HMN from "@fp-ts/data/internal/HashMap/node"
+import type { Option } from "@fp-ts/data/Option"
+import type { Predicate } from "@fp-ts/data/Predicate"
+import type { Refinement } from "@fp-ts/data/Refinement"
 
 const TypeId: unique symbol = HM.HashMapTypeId as TypeId
 

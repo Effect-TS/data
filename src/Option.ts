@@ -12,31 +12,27 @@
  *
  * @since 1.0.0
  */
+import type * as extendable from "@fp-ts/core/Extendable"
+import * as flattenable from "@fp-ts/core/FlatMap"
+import * as functor from "@fp-ts/core/Functor"
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
-import type { NonEmptyReadonlyArray } from "@fp-ts/core/NonEmptyReadonlyArray"
-import type { Result } from "@fp-ts/core/Result"
-import type * as alt from "@fp-ts/core/typeclasses/Alt"
-import * as alternative from "@fp-ts/core/typeclasses/Alternative"
-import type * as applicative from "@fp-ts/core/typeclasses/Applicative"
-import * as apply from "@fp-ts/core/typeclasses/Apply"
-import * as eq from "@fp-ts/core/typeclasses/Eq"
-import type * as extendable from "@fp-ts/core/typeclasses/Extendable"
-import * as flattenable from "@fp-ts/core/typeclasses/Flattenable"
-import * as fromIdentity from "@fp-ts/core/typeclasses/FromIdentity"
-import * as functor from "@fp-ts/core/typeclasses/Functor"
-import type * as kleisliCategory from "@fp-ts/core/typeclasses/KleisliCategory"
-import type * as kleisliComposable from "@fp-ts/core/typeclasses/KleisliComposable"
-import type * as monad from "@fp-ts/core/typeclasses/Monad"
-import type * as monoid from "@fp-ts/core/typeclasses/Monoid"
-import * as ord from "@fp-ts/core/typeclasses/Ord"
-import type * as semigroup from "@fp-ts/core/typeclasses/Semigroup"
-import type * as show from "@fp-ts/core/typeclasses/Show"
-import * as traversable from "@fp-ts/core/typeclasses/Traversable"
+import type * as monad from "@fp-ts/core/Monad"
+import type * as monoid from "@fp-ts/core/Monoid"
+import type * as applicative from "@fp-ts/core/Monoidal"
+import type * as semigroup from "@fp-ts/core/Semigroup"
+import * as apply from "@fp-ts/core/Semigroupal"
+import type * as show from "@fp-ts/core/Show"
+import * as ord from "@fp-ts/core/Sortable"
+import type * as fromIdentity from "@fp-ts/core/Succeed"
+import * as traversable from "@fp-ts/core/Traversable"
+import { equals } from "@fp-ts/data/Equal"
 import type { LazyArg } from "@fp-ts/data/Function"
 import { flow, identity, pipe, SK } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
+import type { NonEmptyReadonlyArray } from "@fp-ts/data/NonEmptyReadonlyArray"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
+import type { Result } from "@fp-ts/data/Result"
 import type * as compactable from "@fp-ts/data/typeclasses/Compactable"
 import * as filterable from "@fp-ts/data/typeclasses/Filterable"
 import * as fromOption_ from "@fp-ts/data/typeclasses/FromOption"
@@ -407,8 +403,8 @@ export const map: <A, B>(f: (a: A) => B) => (fa: Option<A>) => Option<B> = (f) =
  * @category instances
  * @since 1.0.0
  */
-export const FromIdentity: fromIdentity.FromIdentity<OptionTypeLambda> = {
-  of: some
+export const FromIdentity: fromIdentity.Succeed<OptionTypeLambda> = {
+  succeed: some
 }
 
 /**
@@ -422,40 +418,9 @@ export const flatMap: <A, B>(f: (a: A) => Option<B>) => (self: Option<A>) => Opt
  * @category instances
  * @since 1.0.0
  */
-export const Flattenable: flattenable.Flattenable<OptionTypeLambda> = {
+export const Flattenable: flattenable.FlatMap<OptionTypeLambda> = {
   map,
   flatMap
-}
-
-/**
- * @since 1.0.0
- */
-export const composeKleisli: <B, C>(
-  bfc: (b: B) => Option<C>
-) => <A>(afb: (a: A) => Option<B>) => (a: A) => Option<C> = flattenable.composeKleisli(
-  Flattenable
-)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const KleisliComposable: kleisliComposable.KleisliComposable<OptionTypeLambda> = {
-  composeKleisli
-}
-
-/**
- * @since 1.0.0
- */
-export const idKleisli: <A>() => (a: A) => Option<A> = fromIdentity.idKleisli(FromIdentity)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const CategoryKind: kleisliCategory.KleisliCategory<OptionTypeLambda> = {
-  composeKleisli,
-  idKleisli
 }
 
 /**
@@ -480,10 +445,8 @@ export const zipRight: <A>(that: Option<A>) => (self: Option<unknown>) => Option
 /**
  * @since 1.0.0
  */
-export const ap: <A>(fa: Option<A>) => <B>(fab: Option<(a: A) => B>) => Option<B> = flattenable
-  .ap(
-    Flattenable
-  )
+export const ap: <A>(fa: Option<A>) => <B>(fab: Option<(a: A) => B>) => Option<B> = (fa) =>
+  (fab) => pipe(fab, flatMap((ab) => pipe(fa, map((a) => ab(a)))))
 
 /**
  * @since 1.0.0
@@ -597,11 +560,11 @@ export const partitionMap: <A, B, C>(
  * @since 1.0.0
  */
 export const traverse: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
+  F: applicative.Monoidal<F>
 ) => <A, S, R, O, E, B>(
   f: (a: A) => Kind<F, S, R, O, E, B>
 ) => (ta: Option<A>) => Kind<F, S, R, O, E, Option<B>> = (F) =>
-  (f) => (ta) => isNone(ta) ? F.of(none) : pipe(f(ta.value), F.map(some))
+  (f) => (ta) => isNone(ta) ? F.succeed(none) : pipe(f(ta.value), F.map(some))
 
 // -------------------------------------------------------------------------------------
 // instances
@@ -614,28 +577,6 @@ export const traverse: <F extends TypeLambda>(
 export const liftShow = <A>(Show: show.Show<A>): show.Show<Option<A>> => ({
   show: (ma) => (isNone(ma) ? "none" : `some(${Show.show(ma.value)})`)
 })
-
-/**
- * @exampleTodo
- * import { none, some, liftEq } from '@fp-ts/core/data/Option'
- * import * as N from '@fp-ts/core/data/number'
- *
- * const E = liftEq(N.Eq)
- * assert.strictEqual(E.equals(none)(none), true)
- * assert.strictEqual(E.equals(none)(some(1)), false)
- * assert.strictEqual(E.equals(some(1))(none), false)
- * assert.strictEqual(E.equals(some(1))(some(2)), false)
- * assert.strictEqual(E.equals(some(1))(some(1)), true)
- *
- * @category instances
- * @since 1.0.0
- */
-export const liftEq = <A>(Eq: eq.Eq<A>): eq.Eq<Option<A>> =>
-  eq.fromEquals(
-    (that) =>
-      (self) =>
-        isNone(self) ? isNone(that) : isNone(that) ? false : Eq.equals(that.value)(self.value)
-  )
 
 /**
  * The `Ord` instance allows `Option` values to be compared with
@@ -659,9 +600,9 @@ export const liftEq = <A>(Eq: eq.Eq<A>): eq.Eq<Option<A>> =>
  * @category instances
  * @since 1.0.0
  */
-export const liftOrd = <A>(O: ord.Ord<A>): ord.Ord<Option<A>> =>
-  ord.fromCompare((that) =>
-    (self) => isSome(self) ? (isSome(that) ? O.compare(that.value)(self.value) : 1) : -1
+export const liftOrd = <A>(O: ord.Sortable<A>): ord.Sortable<Option<A>> =>
+  ord.fromCompare((self, that) =>
+    isSome(self) ? (isSome(that) ? O.compare(self.value, that.value) : 1) : -1
   )
 
 /**
@@ -691,12 +632,28 @@ export const liftOrd = <A>(O: ord.Ord<A>): ord.Ord<Option<A>> =>
  */
 export const getMonoid = <A>(
   Semigroup: semigroup.Semigroup<A>
-): monoid.Monoid<Option<A>> => ({
-  combine: (that) =>
-    (self) =>
-      isNone(self) ? that : isNone(that) ? self : some(Semigroup.combine(that.value)(self.value)),
-  empty: none
-})
+): monoid.Monoid<Option<A>> => {
+  const combine = (self: Option<A>, that: Option<A>): Option<A> =>
+    isNone(self) ? that : isNone(that) ? self : some(Semigroup.combine(self.value, that.value))
+  return ({
+    combine,
+    combineMany: (start, others) => {
+      let c = start
+      for (const o of others) {
+        c = combine(c, o)
+      }
+      return c
+    },
+    combineAll: (collection: Iterable<Option<A>>): Option<A> => {
+      let c: Option<A> = none
+      for (const o of collection) {
+        c = combine(c, o)
+      }
+      return c
+    },
+    empty: none
+  })
+}
 
 /**
  * @category instances
@@ -734,9 +691,25 @@ export const unit: (self: Option<unknown>) => Option<void> = functor.unit(Functo
  * @category instances
  * @since 1.0.0
  */
-export const Apply: apply.Apply<OptionTypeLambda> = {
+export const Apply: apply.Semigroupal<OptionTypeLambda> = {
   map,
-  ap
+  zipMany: <A>(
+    start: Option<A>,
+    others: Iterable<Option<A>>
+  ): Option<[A, ...Array<A>]> => {
+    if (isNone(start)) {
+      return none
+    }
+    const res: [A, ...Array<A>] = [start.value]
+    for (const o of others) {
+      if (isNone(o)) {
+        return none
+      }
+      res.push(o.value)
+    }
+    return some(res)
+  },
+  zipWith: (first, second, f) => zipWith(second, f)(first)
 }
 
 /**
@@ -762,10 +735,21 @@ export const lift3: <A, B, C, D>(
  * @category instances
  * @since 1.0.0
  */
-export const Applicative: applicative.Applicative<OptionTypeLambda> = {
+export const Applicative: applicative.Monoidal<OptionTypeLambda> = {
+  succeed: some,
   map,
-  ap,
-  of: some
+  zipMany: Apply.zipMany,
+  zipWith: Apply.zipWith,
+  zipAll: <A>(collection: Iterable<Option<A>>): Option<ReadonlyArray<A>> => {
+    const res: Array<A> = []
+    for (const o of collection) {
+      if (isNone(o)) {
+        return none
+      }
+      res.push(o.value)
+    }
+    return res.length > 0 ? some(res) : none
+  }
 }
 
 /**
@@ -774,7 +758,7 @@ export const Applicative: applicative.Applicative<OptionTypeLambda> = {
  */
 export const Monad: monad.Monad<OptionTypeLambda> = {
   map,
-  of: some,
+  succeed: some,
   flatMap
 }
 
@@ -814,32 +798,6 @@ export const foldMap = <M>(Monoid: monoid.Monoid<M>) =>
  */
 export const reduceRight = <B, A>(b: B, f: (a: A, b: B) => B) =>
   (self: Option<A>): B => isNone(self) ? b : f(self.value, b)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Alt: alt.Alt<OptionTypeLambda> = {
-  orElse
-}
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Alternative: alternative.Alternative<OptionTypeLambda> = {
-  orElse,
-  none: () => none
-}
-
-/**
- * Returns an effect that runs each of the specified effects in order until one of them succeeds.
- *
- * @category error handling
- * @since 1.0.0
- */
-export const firstSuccessOf: <A>(collection: Iterable<Option<A>>) => Option<A> = alternative
-  .firstSuccessOf(Alternative)
 
 /**
  * @category instances
@@ -899,7 +857,7 @@ export const Traversable: traversable.Traversable<OptionTypeLambda> = {
  * @since 1.0.0
  */
 export const sequence: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
+  F: applicative.Monoidal<F>
 ) => <S, R, O, E, A>(fas: Option<Kind<F, S, R, O, E, A>>) => Kind<F, S, R, O, E, Option<A>> =
   traversable.sequence(Traversable)
 
@@ -908,7 +866,7 @@ export const sequence: <F extends TypeLambda>(
  * @since 1.0.0
  */
 export const traverseFilterMap: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
+  F: applicative.Monoidal<F>
 ) => <A, S, R, O, E, B>(
   f: (a: A) => Kind<F, S, R, O, E, Option<B>>
 ) => (ta: Option<A>) => Kind<F, S, R, O, E, Option<B>> = traversableFilterable.traverseFilterMap(
@@ -921,7 +879,7 @@ export const traverseFilterMap: <F extends TypeLambda>(
  * @since 1.0.0
  */
 export const traversePartitionMap: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
+  F: applicative.Monoidal<F>
 ) => <A, S, R, O, E, B, C>(
   f: (a: A) => Kind<F, S, R, O, E, Result<B, C>>
 ) => (wa: Option<A>) => Kind<F, S, R, O, E, readonly [Option<B>, Option<C>]> = traversableFilterable
@@ -943,7 +901,7 @@ export const TraversableFilterable: traversableFilterable.TraversableFilterable<
  * @since 1.0.0
  */
 export const traverseFilter: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
+  F: applicative.Monoidal<F>
 ) => <B extends A, S, R, O, E, A = B>(
   predicate: (a: A) => Kind<F, S, R, O, E, boolean>
 ) => (self: Option<B>) => Kind<F, S, R, O, E, Option<B>> = traversableFilterable.traverseFilter(
@@ -955,7 +913,7 @@ export const traverseFilter: <F extends TypeLambda>(
  * @since 1.0.0
  */
 export const traversePartition: <F extends TypeLambda>(
-  ApplicativeF: applicative.Applicative<F>
+  ApplicativeF: applicative.Monoidal<F>
 ) => <B extends A, S, R, O, E, A = B>(
   predicate: (a: A) => Kind<F, S, R, O, E, boolean>
 ) => (self: Option<B>) => Kind<F, S, R, O, E, readonly [Option<B>, Option<B>]> =
@@ -1025,8 +983,8 @@ export const flatMapResult: <A, E, B>(f: (a: A) => Result<E, B>) => (ma: Option<
  *
  * @since 1.0.0
  */
-export const elem = <A>(E: eq.Eq<A>) =>
-  (a: A) => (ma: Option<A>): boolean => isNone(ma) ? false : E.equals(ma.value)(a)
+export const elem = <A>(a: A) =>
+  (ma: Option<A>): boolean => isNone(ma) ? false : equals(ma.value)(a)
 
 /**
  * Returns `true` if the predicate is satisfied by the wrapped value

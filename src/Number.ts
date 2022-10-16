@@ -1,12 +1,11 @@
 /**
  * @since 1.0.0
  */
-import type * as bounded from "@fp-ts/core/typeclasses/Bounded"
-import * as eq from "@fp-ts/core/typeclasses/Eq"
-import * as monoid from "@fp-ts/core/typeclasses/Monoid"
-import type * as ord from "@fp-ts/core/typeclasses/Ord"
-import type * as semigroup from "@fp-ts/core/typeclasses/Semigroup"
-import type * as show from "@fp-ts/core/typeclasses/Show"
+import type * as bounded from "@fp-ts/core/Bounded"
+import type * as monoid from "@fp-ts/core/Monoid"
+import type * as semigroup from "@fp-ts/core/Semigroup"
+import type * as show from "@fp-ts/core/Show"
+import type * as ord from "@fp-ts/core/Sortable"
 import type { Refinement } from "@fp-ts/data/Refinement"
 
 /**
@@ -35,14 +34,8 @@ export const sub = (that: number) => (self: number): number => self - that
  * @category instances
  * @since 1.0.0
  */
-export const Eq: eq.Eq<number> = eq.EqStrict
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Ord: ord.Ord<number> = {
-  compare: (that) => (self) => self < that ? -1 : self > that ? 1 : 0
+export const Ord: ord.Sortable<number> = {
+  compare: (self, that) => self < that ? -1 : self > that ? 1 : 0
 }
 
 /**
@@ -51,8 +44,8 @@ export const Ord: ord.Ord<number> = {
  */
 export const Bounded: bounded.Bounded<number> = {
   compare: Ord.compare,
-  top: Infinity,
-  bottom: -Infinity
+  maximum: Infinity,
+  minimum: -Infinity
 }
 
 /**
@@ -76,7 +69,14 @@ export const Show: show.Show<number> = {
  * @since 1.0.0
  */
 export const SemigroupSum: semigroup.Semigroup<number> = {
-  combine: sum
+  combine: (first, second) => sum(second)(first),
+  combineMany: (start, others) => {
+    let c = start
+    for (const o of others) {
+      c = sum(o)(c)
+    }
+    return c
+  }
 }
 
 /**
@@ -92,7 +92,14 @@ export const SemigroupSum: semigroup.Semigroup<number> = {
  * @since 1.0.0
  */
 export const SemigroupMultiply: semigroup.Semigroup<number> = {
-  combine: multiply
+  combine: (first, second) => multiply(second)(first),
+  combineMany: (start, others) => {
+    let c = start
+    for (const o of others) {
+      c = multiply(o)(c)
+    }
+    return c
+  }
 }
 
 /**
@@ -105,6 +112,8 @@ export const SemigroupMultiply: semigroup.Semigroup<number> = {
  */
 export const MonoidSum: monoid.Monoid<number> = {
   combine: SemigroupSum.combine,
+  combineMany: SemigroupSum.combineMany,
+  combineAll: (all) => SemigroupSum.combineMany(0, all),
   empty: 0
 }
 
@@ -118,17 +127,17 @@ export const MonoidSum: monoid.Monoid<number> = {
  */
 export const MonoidMultiply: monoid.Monoid<number> = {
   combine: SemigroupMultiply.combine,
+  combineMany: SemigroupMultiply.combineMany,
+  combineAll: (all) => SemigroupMultiply.combineMany(0, all),
   empty: 1
 }
 
 /**
  * @since 1.0.0
  */
-export const sumAll: (collection: Iterable<number>) => number = monoid.combineAll(MonoidSum)
+export const sumAll: (collection: Iterable<number>) => number = MonoidSum.combineAll
 
 /**
  * @since 1.0.0
  */
-export const multiplyAll: (collection: Iterable<number>) => number = monoid.combineAll(
-  MonoidMultiply
-)
+export const multiplyAll: (collection: Iterable<number>) => number = MonoidMultiply.combineAll

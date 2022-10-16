@@ -44,9 +44,7 @@ Added in v1.0.0
   - [let](#let)
 - [error handling](#error-handling)
   - [catchAll](#catchall)
-  - [firstSuccessOf](#firstsuccessof)
   - [getOrElse](#getorelse)
-  - [getValidatedAlt](#getvalidatedalt)
   - [getValidatedApplicative](#getvalidatedapplicative)
   - [mapError](#maperror)
   - [orElse](#orelse)
@@ -65,21 +63,17 @@ Added in v1.0.0
   - [reduce](#reduce)
   - [reduceRight](#reduceright)
 - [instances](#instances)
-  - [Alt](#alt)
   - [Applicative](#applicative)
   - [Apply](#apply)
   - [Bifunctor](#bifunctor)
-  - [CategoryKind](#categorykind)
   - [Extendable](#extendable)
   - [Flattenable](#flattenable)
-  - [FromIdentity](#fromidentity)
   - [FromResult](#fromresult)
   - [Functor](#functor)
-  - [KleisliComposable](#kleislicomposable)
   - [Monad](#monad)
+  - [Succeed](#succeed)
   - [Traversable](#traversable)
   - [getCompactable](#getcompactable)
-  - [getEq](#geteq)
   - [getFilterable](#getfilterable)
   - [getSemigroup](#getsemigroup)
   - [getShow](#getshow)
@@ -134,12 +128,10 @@ Added in v1.0.0
   - [ValidatedT (interface)](#validatedt-interface)
 - [utils](#utils)
   - [ap](#ap)
-  - [composeKleisli](#composekleisli)
   - [duplicate](#duplicate)
   - [elem](#elem)
   - [exists](#exists)
   - [extend](#extend)
-  - [idKleisli](#idkleisli)
   - [reverse](#reverse)
   - [tap](#tap)
 
@@ -343,20 +335,6 @@ export declare const catchAll: <E1, E2, B>(
 
 Added in v1.0.0
 
-## firstSuccessOf
-
-Returns an effect that runs each of the specified effects in order until one of them succeeds.
-
-**Signature**
-
-```ts
-export declare const firstSuccessOf: <E, A>(
-  startWith: Result<E, A>
-) => (collection: Iterable<Result<E, A>>) => Result<E, A>
-```
-
-Added in v1.0.0
-
 ## getOrElse
 
 Returns the wrapped value if it's a `Success` or a default value if is a `Failure`.
@@ -365,19 +343,6 @@ Returns the wrapped value if it's a `Success` or a default value if is a `Failur
 
 ```ts
 export declare const getOrElse: <B>(onError: B) => <A>(self: Result<unknown, A>) => B | A
-```
-
-Added in v1.0.0
-
-## getValidatedAlt
-
-The default [`Alt`](#semigroupkind) instance returns the last error, if you want to
-get all errors you need to provide a way to combine them via a `Semigroup`.
-
-**Signature**
-
-```ts
-export declare const getValidatedAlt: <E>(Semigroup: Semigroup<E>) => alt.Alt<ValidatedT<ResultTypeLambda, E>>
 ```
 
 Added in v1.0.0
@@ -392,7 +357,7 @@ get all errors you need to provide a way to combine them via a `Semigroup`.
 ```ts
 export declare const getValidatedApplicative: <E>(
   Semigroup: Semigroup<E>
-) => applicative.Applicative<ValidatedT<ResultTypeLambda, E>>
+) => applicative.Monoidal<ValidatedT<ResultTypeLambda, E>>
 ```
 
 Added in v1.0.0
@@ -531,7 +496,7 @@ Added in v1.0.0
 
 ```ts
 export declare const traverseFilterMap: <F extends TypeLambda>(
-  Applicative: applicative.Applicative<F>
+  Applicative: applicative.Monoidal<F>
 ) => <A, S, R, O, FE, B, E>(
   f: (a: A) => Kind<F, S, R, O, FE, Option<B>>,
   onNone: E
@@ -546,7 +511,7 @@ Added in v1.0.0
 
 ```ts
 export declare const traversePartitionMap: <F extends TypeLambda>(
-  Applicative: applicative.Applicative<F>
+  Applicative: applicative.Monoidal<F>
 ) => <A, S, R, O, FE, B, C, E>(
   f: (a: A) => Kind<F, S, R, O, FE, Result<B, C>>,
   onNone: E
@@ -589,22 +554,12 @@ Added in v1.0.0
 
 # instances
 
-## Alt
-
-**Signature**
-
-```ts
-export declare const Alt: alt.Alt<ResultTypeLambda>
-```
-
-Added in v1.0.0
-
 ## Applicative
 
 **Signature**
 
 ```ts
-export declare const Applicative: applicative.Applicative<ResultTypeLambda>
+export declare const Applicative: applicative.Monoidal<ResultTypeLambda>
 ```
 
 Added in v1.0.0
@@ -614,7 +569,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Apply: apply.Apply<ResultTypeLambda>
+export declare const Apply: apply.Semigroupal<ResultTypeLambda>
 ```
 
 Added in v1.0.0
@@ -625,16 +580,6 @@ Added in v1.0.0
 
 ```ts
 export declare const Bifunctor: bifunctor.Bifunctor<ResultTypeLambda>
-```
-
-Added in v1.0.0
-
-## CategoryKind
-
-**Signature**
-
-```ts
-export declare const CategoryKind: kleisliCategory.KleisliCategory<ResultTypeLambda>
 ```
 
 Added in v1.0.0
@@ -654,17 +599,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Flattenable: flattenable.Flattenable<ResultTypeLambda>
-```
-
-Added in v1.0.0
-
-## FromIdentity
-
-**Signature**
-
-```ts
-export declare const FromIdentity: fromIdentity.FromIdentity<ResultTypeLambda>
+export declare const Flattenable: flattenable.FlatMap<ResultTypeLambda>
 ```
 
 Added in v1.0.0
@@ -689,22 +624,22 @@ export declare const Functor: functor.Functor<ResultTypeLambda>
 
 Added in v1.0.0
 
-## KleisliComposable
-
-**Signature**
-
-```ts
-export declare const KleisliComposable: kleisliComposable.KleisliComposable<ResultTypeLambda>
-```
-
-Added in v1.0.0
-
 ## Monad
 
 **Signature**
 
 ```ts
 export declare const Monad: monad.Monad<ResultTypeLambda>
+```
+
+Added in v1.0.0
+
+## Succeed
+
+**Signature**
+
+```ts
+export declare const Succeed: fromIdentity.Succeed<ResultTypeLambda>
 ```
 
 Added in v1.0.0
@@ -725,16 +660,6 @@ Added in v1.0.0
 
 ```ts
 export declare const getCompactable: <E>(onNone: E) => Compactable<ValidatedT<ResultTypeLambda, E>>
-```
-
-Added in v1.0.0
-
-## getEq
-
-**Signature**
-
-```ts
-export declare const getEq: <E, A>(EE: eq.Eq<E>, EA: eq.Eq<A>) => eq.Eq<Result<E, A>>
 ```
 
 Added in v1.0.0
@@ -1106,7 +1031,7 @@ Added in v1.0.0
 
 ```ts
 export declare const sequence: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
+  F: applicative.Monoidal<F>
 ) => <E, FS, FR, FO, FE, A>(fa: Result<E, Kind<F, FS, FR, FO, FE, A>>) => Kind<F, FS, FR, FO, FE, Result<E, A>>
 ```
 
@@ -1132,7 +1057,7 @@ Map each element of a structure to an action, evaluate these actions from left t
 
 ```ts
 export declare const traverse: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
+  F: applicative.Monoidal<F>
 ) => <A, FS, FR, FO, FE, B>(
   f: (a: A) => Kind<F, FS, FR, FO, FE, B>
 ) => <E>(ta: Result<E, A>) => Kind<F, FS, FR, FO, FE, Result<E, B>>
@@ -1297,18 +1222,6 @@ export declare const ap: <E2, A>(fa: Result<E2, A>) => <E1, B>(fab: Result<E1, (
 
 Added in v1.0.0
 
-## composeKleisli
-
-**Signature**
-
-```ts
-export declare const composeKleisli: <B, E2, C>(
-  bfc: (b: B) => Result<E2, C>
-) => <A, E1>(afb: (a: A) => Result<E1, B>) => (a: A) => Result<E2 | E1, C>
-```
-
-Added in v1.0.0
-
 ## duplicate
 
 **Signature**
@@ -1326,7 +1239,7 @@ Tests whether a value is a member of a `Result`.
 **Signature**
 
 ```ts
-export declare const elem: <A>(E: eq.Eq<A>) => (a: A) => <E>(ma: Result<E, A>) => boolean
+export declare const elem: <B>(a: B) => <A, E>(ma: Result<E, A>) => boolean
 ```
 
 Added in v1.0.0
@@ -1349,16 +1262,6 @@ Added in v1.0.0
 
 ```ts
 export declare const extend: <E, A, B>(f: (wa: Result<E, A>) => B) => (wa: Result<E, A>) => Result<E, B>
-```
-
-Added in v1.0.0
-
-## idKleisli
-
-**Signature**
-
-```ts
-export declare const idKleisli: <A>() => (a: A) => Result<never, A>
 ```
 
 Added in v1.0.0

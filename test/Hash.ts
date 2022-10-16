@@ -1,6 +1,6 @@
-import * as R from "@fp-ts/core/Result"
 import { evaluate } from "@fp-ts/data/Hash"
 import * as L from "@fp-ts/data/List"
+import * as R from "@fp-ts/data/Result"
 import { assertTrue } from "@fp-ts/data/test/util"
 
 describe("Hash", () => {

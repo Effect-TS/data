@@ -109,7 +109,7 @@ Added in v1.0.0
 ```ts
 export declare const flatMapNullable: <F extends TypeLambda>(
   F: FromOption<F>,
-  C: Flattenable<F>
+  C: FlatMap<F>
 ) => <A, B>(
   f: (a: A) => B | null | undefined
 ) => <S, R, O, E>(self: Kind<F, S, R, O, E, A>) => Kind<F, S, R, O, E, NonNullable<B>>

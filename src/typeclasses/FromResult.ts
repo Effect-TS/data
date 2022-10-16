@@ -3,14 +3,15 @@
  *
  * @since 1.0.0
  */
+import type { FlatMap } from "@fp-ts/core/FlatMap"
 import type { Kind, TypeClass, TypeLambda } from "@fp-ts/core/HKT"
-import * as O from "@fp-ts/core/Option"
-import * as R from "@fp-ts/core/Result"
-import type { Flattenable } from "@fp-ts/core/typeclasses/Flattenable"
 import { flow, pipe } from "@fp-ts/data/Function"
+import * as C from "@fp-ts/data/internal/Common"
+import type * as O from "@fp-ts/data/Option"
 import { not } from "@fp-ts/data/Predicate"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
+import type * as R from "@fp-ts/data/Result"
 
 /**
  * @category models
@@ -27,7 +28,7 @@ export interface FromResult<F extends TypeLambda> extends TypeClass<F> {
 export const fromOption = <F extends TypeLambda>(FromResult: FromResult<F>) =>
   <E>(onNone: E) =>
     <A, S>(self: O.Option<A>): Kind<F, S, unknown, never, E, A> =>
-      FromResult.fromResult(R.fromOption(onNone)(self))
+      FromResult.fromResult(C.fromOptionToResult(onNone)(self))
 
 /**
  * @category conversions
@@ -36,7 +37,7 @@ export const fromOption = <F extends TypeLambda>(FromResult: FromResult<F>) =>
 export const fromNullable = <F extends TypeLambda>(FromResult: FromResult<F>) =>
   <E>(onNullable: E) =>
     <A, S>(a: A): Kind<F, S, unknown, never, E, NonNullable<A>> =>
-      FromResult.fromResult(R.fromNullable(onNullable)(a))
+      FromResult.fromResult(C.fromNullableToResult(onNullable)(a))
 
 // -------------------------------------------------------------------------------------
 // lifting
@@ -59,7 +60,7 @@ export const liftPredicate: <F extends TypeLambda>(
 } = <F extends TypeLambda>(FromResult: FromResult<F>) =>
   <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: E) =>
     <S>(b: B): Kind<F, S, unknown, never, E, B> =>
-      FromResult.fromResult(predicate(b) ? R.succeed(b) : R.fail(onFalse))
+      FromResult.fromResult(predicate(b) ? C.succeed(b) : C.fail(onFalse))
 
 /**
  * @category lifting
@@ -82,7 +83,7 @@ export const liftNullable = <F extends TypeLambda>(FromResult: FromResult<F>) =>
  */
 export const liftOption = <F extends TypeLambda>(FromResult: FromResult<F>) => {
   return <A extends ReadonlyArray<unknown>, B, E>(f: (...a: A) => O.Option<B>, onNone: E) => {
-    const fromOption = R.fromOption(onNone)
+    const fromOption = C.fromOptionToResult(onNone)
     return <S>(...a: A): Kind<F, S, unknown, never, E, B> =>
       FromResult.fromResult(fromOption(f(...a)))
   }
@@ -106,7 +107,7 @@ export const liftResult = <F extends TypeLambda>(FromResult: FromResult<F>) =>
  */
 export const flatMapNullable = <M extends TypeLambda>(
   FromResult: FromResult<M>,
-  Flattenable: Flattenable<M>
+  Flattenable: FlatMap<M>
 ) => {
   const liftNullable_ = liftNullable(FromResult)
   return <A, B, E2>(f: (a: A) => B | null | undefined, onNullable: E2) => {
@@ -124,7 +125,7 @@ export const flatMapNullable = <M extends TypeLambda>(
  */
 export const flatMapOption = <F extends TypeLambda>(
   FromResult: FromResult<F>,
-  Flattenable: Flattenable<F>
+  Flattenable: FlatMap<F>
 ) => {
   const liftOption_ = liftOption(FromResult)
   return <A, B, E2>(f: (a: A) => O.Option<B>, onNone: E2) => {
@@ -141,7 +142,7 @@ export const flatMapOption = <F extends TypeLambda>(
  */
 export const flatMapResult = <M extends TypeLambda>(
   FromResult: FromResult<M>,
-  Flattenable: Flattenable<M>
+  Flattenable: FlatMap<M>
 ) => {
   const liftResult_ = liftResult(FromResult)
   return <A, E2, B>(f: (a: A) => R.Result<E2, B>) =>
@@ -171,7 +172,7 @@ export const flatMapResult = <M extends TypeLambda>(
  */
 export const filterMap = <F extends TypeLambda>(
   FromResult: FromResult<F>,
-  Flattenable: Flattenable<F>
+  Flattenable: FlatMap<F>
 ) =>
   <A, B, E>(
     f: (a: A) => O.Option<B>,
@@ -179,7 +180,7 @@ export const filterMap = <F extends TypeLambda>(
   ): (<S, R, O>(self: Kind<F, S, R, O, E, A>) => Kind<F, S, R, O, E, B>) =>
     Flattenable.flatMap((a) => {
       const ob = f(a)
-      return FromResult.fromResult(O.isNone(ob) ? R.fail(onNone) : R.succeed(ob.value))
+      return FromResult.fromResult(C.isNone(ob) ? C.fail(onNone) : C.succeed(ob.value))
     })
 
 /**
@@ -188,7 +189,7 @@ export const filterMap = <F extends TypeLambda>(
  */
 export const partitionMap = <F extends TypeLambda>(
   FromResult: FromResult<F>,
-  Flattenable: Flattenable<F>
+  Flattenable: FlatMap<F>
 ) =>
   <A, B, C, E>(f: (a: A) => R.Result<B, C>, onEmpty: E) =>
     <S, R, O>(
@@ -196,8 +197,8 @@ export const partitionMap = <F extends TypeLambda>(
     ): readonly [Kind<F, S, R, O, E, B>, Kind<F, S, R, O, E, C>] => {
       const filterMapFM = filterMap(FromResult, Flattenable)
       return [
-        pipe(self, filterMapFM(flow(f, R.getFailure), onEmpty)),
-        pipe(self, filterMapFM(flow(f, R.getSuccess), onEmpty))
+        pipe(self, filterMapFM(flow(f, C.getFailure), onEmpty)),
+        pipe(self, filterMapFM(flow(f, C.getSuccess), onEmpty))
       ]
     }
 
@@ -207,7 +208,7 @@ export const partitionMap = <F extends TypeLambda>(
  */
 export const filter = <F extends TypeLambda>(
   FromResult: FromResult<F>,
-  Flattenable: Flattenable<F>
+  Flattenable: FlatMap<F>
 ): {
   <C extends A, B extends A, E2, A = C>(refinement: Refinement<A, B>, onFalse: E2): <S, R, O, E1>(
     self: Kind<F, S, R, O, E1, C>
@@ -220,7 +221,7 @@ export const filter = <F extends TypeLambda>(
     predicate: Predicate<A>,
     onFalse: E2
   ): (<S, R, O, E1>(mb: Kind<F, S, R, O, E1, B>) => Kind<F, S, R, O, E1 | E2, B>) =>
-    Flattenable.flatMap((b) => FromResult.fromResult(predicate(b) ? R.succeed(b) : R.fail(onFalse)))
+    Flattenable.flatMap((b) => FromResult.fromResult(predicate(b) ? C.succeed(b) : C.fail(onFalse)))
 
 /**
  * @category filtering
@@ -228,7 +229,7 @@ export const filter = <F extends TypeLambda>(
  */
 export const partition = <F extends TypeLambda>(
   FromResult: FromResult<F>,
-  Flattenable: Flattenable<F>
+  Flattenable: FlatMap<F>
 ): {
   <C extends A, B extends A, E, A = C>(refinement: Refinement<A, B>, onFalse: E): <S, R, O>(
     self: Kind<F, S, R, O, E, C>

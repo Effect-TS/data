@@ -2,11 +2,11 @@
  * @since 1.0.0
  */
 
-import { pipe } from "@fp-ts/core/Function"
-import * as O from "@fp-ts/core/Option"
-import type { Ord } from "@fp-ts/core/typeclasses/Ord"
+import type { Sortable } from "@fp-ts/core/Sortable"
 import * as Eq from "@fp-ts/data/Equal"
+import { pipe } from "@fp-ts/data/Function"
 import * as H from "@fp-ts/data/Hash"
+import * as O from "@fp-ts/data/Option"
 import * as RBT from "@fp-ts/data/RedBlackTree"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/SortedMap")
@@ -64,14 +64,14 @@ export const isSortedMap: {
  * @since 1.0.0
  * @category constructors
  */
-export const empty = <K, V = never>(ord: Ord<K>): SortedMap<K, V> =>
+export const empty = <K, V = never>(ord: Sortable<K>): SortedMap<K, V> =>
   new SortedMapImpl<K, V>(RBT.empty<K, V>(ord))
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const from = <K>(ord: Ord<K>) =>
+export const from = <K>(ord: Sortable<K>) =>
   <V>(
     iterable: Iterable<readonly [K, V]>
   ): SortedMap<K, V> => new SortedMapImpl(RBT.from<K, V>(ord)(iterable))
@@ -80,7 +80,7 @@ export const from = <K>(ord: Ord<K>) =>
  * @since 1.0.0
  * @category constructors
  */
-export const make = <K>(ord: Ord<K>) =>
+export const make = <K>(ord: Sortable<K>) =>
   <Entries extends ReadonlyArray<readonly [K, any]>>(...entries: Entries): SortedMap<
     K,
     Entries[number] extends (readonly [any, infer V]) ? V : never
@@ -183,7 +183,10 @@ export const reduceWithIndex = <K, V, B>(zero: B, f: (accumulator: B, key: K, va
  */
 export const mapWithIndex = <K, A, B>(f: (k: K, a: A) => B) =>
   (self: SortedMap<K, A>): SortedMap<K, B> =>
-    pipe(self, reduceWithIndex(empty<K, B>(RBT.getOrd(self.tree)), (b, k, v) => set(k, f(k, v))(b)))
+    pipe(
+      self,
+      reduceWithIndex(empty<K, B>(RBT.getSortable(self.tree)), (b, k, v) => set(k, f(k, v))(b))
+    )
 
 /**
  * @since 1.0.0

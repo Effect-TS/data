@@ -13,7 +13,6 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [instances](#instances)
-  - [Eq](#eq)
   - [Monoid](#monoid)
   - [Ord](#ord)
   - [Semigroup](#semigroup)
@@ -42,16 +41,6 @@ Added in v1.0.0
 
 # instances
 
-## Eq
-
-**Signature**
-
-```ts
-export declare const Eq: eq.Eq<string>
-```
-
-Added in v1.0.0
-
 ## Monoid
 
 `string` monoid under concatenation.
@@ -71,7 +60,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Ord: ord.Ord<string>
+export declare const Ord: sortable.Sortable<string>
 ```
 
 Added in v1.0.0

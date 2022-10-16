@@ -1,9 +1,9 @@
-import type { Result } from "@fp-ts/core/Result"
-import * as R from "@fp-ts/core/Result"
 import type { Differ } from "@fp-ts/data/Differ"
 import type * as OP from "@fp-ts/data/Differ/OrPatch"
 import { equals } from "@fp-ts/data/Equal"
 import * as L from "@fp-ts/data/internal/List"
+import type { Result } from "@fp-ts/data/Result"
+import * as R from "@fp-ts/data/Result"
 
 /** @internal */
 export const OrPatchTypeId: OP.TypeId = Symbol.for("@fp-ts/data/Differ/OrPatch") as OP.TypeId

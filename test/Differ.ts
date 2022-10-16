@@ -1,10 +1,10 @@
-import { pipe } from "@fp-ts/core/Function"
-import * as Result from "@fp-ts/core/Result"
 import * as Chunk from "@fp-ts/data/Chunk"
 import * as Differ from "@fp-ts/data/Differ"
 import { equals } from "@fp-ts/data/Equal"
+import { pipe } from "@fp-ts/data/Function"
 import * as HashMap from "@fp-ts/data/HashMap"
 import * as HashSet from "@fp-ts/data/HashSet"
+import * as Result from "@fp-ts/data/Result"
 import { it as it_ } from "vitest"
 
 function diffLaws<Value, Patch>(

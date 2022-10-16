@@ -29,8 +29,6 @@ Added in v1.0.0
   - [bindRight](#bindright)
   - [bindTo](#bindto)
   - [let](#let)
-- [error handling](#error-handling)
-  - [firstSuccessOf](#firstsuccessof)
 - [filtering](#filtering)
   - [compact](#compact)
   - [filter](#filter)
@@ -53,11 +51,8 @@ Added in v1.0.0
   - [reduceRightWithIndex](#reducerightwithindex)
   - [reduceWithIndex](#reducewithindex)
 - [instances](#instances)
-  - [Alt](#alt)
-  - [Alternative](#alternative)
   - [Applicative](#applicative)
   - [Apply](#apply)
-  - [CategoryKind](#categorykind)
   - [Compactable](#compactable)
   - [Extendable](#extendable)
   - [Filterable](#filterable)
@@ -66,7 +61,6 @@ Added in v1.0.0
   - [FromOption](#fromoption)
   - [FromResult](#fromresult)
   - [Functor](#functor)
-  - [KleisliComposable](#kleislicomposable)
   - [Monad](#monad)
   - [Traversable](#traversable)
   - [TraversableFilterable](#traversablefilterable)
@@ -75,7 +69,6 @@ Added in v1.0.0
   - [getSemigroup](#getsemigroup)
   - [getUnionMonoid](#getunionmonoid)
   - [getUnionSemigroup](#getunionsemigroup)
-  - [liftEq](#lifteq)
   - [liftOrd](#liftord)
   - [liftShow](#liftshow)
 - [lifting](#lifting)
@@ -115,7 +108,6 @@ Added in v1.0.0
   - [ap](#ap)
   - [chop](#chop)
   - [chunksOf](#chunksof)
-  - [composeKleisli](#composekleisli)
   - [concat](#concat)
   - [deleteAt](#deleteat)
   - [difference](#difference)
@@ -138,7 +130,6 @@ Added in v1.0.0
   - [flatMapWithIndex](#flatmapwithindex)
   - [flatten](#flatten)
   - [head](#head)
-  - [idKleisli](#idkleisli)
   - [init](#init)
   - [insertAt](#insertat)
   - [intercalate](#intercalate)
@@ -353,20 +344,6 @@ export declare const let: <N extends string, A extends object, B>(
 
 Added in v1.0.0
 
-# error handling
-
-## firstSuccessOf
-
-Returns an effect that runs each of the specified effects in order until one of them succeeds.
-
-**Signature**
-
-```ts
-export declare const firstSuccessOf: <A>(collection: Iterable<readonly A[]>) => readonly A[]
-```
-
-Added in v1.0.0
-
 # filtering
 
 ## compact
@@ -499,7 +476,7 @@ Added in v1.0.0
 
 ```ts
 export declare const traverseFilterMap: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
+  F: applicative.Monoidal<F>
 ) => <A, S, R, O, E, B>(
   f: (a: A) => Kind<F, S, R, O, E, Option<B>>
 ) => (ta: readonly A[]) => Kind<F, S, R, O, E, readonly B[]>
@@ -513,7 +490,7 @@ Added in v1.0.0
 
 ```ts
 export declare const traversePartitionMap: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
+  F: applicative.Monoidal<F>
 ) => <A, S, R, O, E, B, C>(
   f: (a: A) => Kind<F, S, R, O, E, Result<B, C>>
 ) => (wa: readonly A[]) => Kind<F, S, R, O, E, readonly [readonly B[], readonly C[]]>
@@ -561,7 +538,7 @@ Added in v1.0.0
 
 ```ts
 export declare const reduceKind: <F extends TypeLambda>(
-  Flattenable: flattenable.Flattenable<F>
+  Flattenable: flattenable.FlatMap<F>
 ) => <S, R, O, E, B, A>(
   fb: Kind<F, S, R, O, E, B>,
   f: (b: B, a: A) => Kind<F, S, R, O, E, B>
@@ -602,32 +579,12 @@ Added in v1.0.0
 
 # instances
 
-## Alt
-
-**Signature**
-
-```ts
-export declare const Alt: alt.Alt<ReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
-## Alternative
-
-**Signature**
-
-```ts
-export declare const Alternative: alternative.Alternative<ReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
 ## Applicative
 
 **Signature**
 
 ```ts
-export declare const Applicative: applicative.Applicative<ReadonlyArrayTypeLambda>
+export declare const Applicative: applicative.Monoidal<ReadonlyArrayTypeLambda>
 ```
 
 Added in v1.0.0
@@ -637,17 +594,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Apply: apply.Apply<ReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
-## CategoryKind
-
-**Signature**
-
-```ts
-export declare const CategoryKind: kleisliCategory.KleisliCategory<ReadonlyArrayTypeLambda>
+export declare const Apply: apply.Semigroupal<ReadonlyArrayTypeLambda>
 ```
 
 Added in v1.0.0
@@ -687,7 +634,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Flattenable: flattenable.Flattenable<ReadonlyArrayTypeLambda>
+export declare const Flattenable: flattenable.FlatMap<ReadonlyArrayTypeLambda>
 ```
 
 Added in v1.0.0
@@ -697,7 +644,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const FromIdentity: fromIdentity.FromIdentity<ReadonlyArrayTypeLambda>
+export declare const FromIdentity: fromIdentity.Succeed<ReadonlyArrayTypeLambda>
 ```
 
 Added in v1.0.0
@@ -728,16 +675,6 @@ Added in v1.0.0
 
 ```ts
 export declare const Functor: functor.Functor<ReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
-## KleisliComposable
-
-**Signature**
-
-```ts
-export declare const KleisliComposable: kleisliComposable.KleisliComposable<ReadonlyArrayTypeLambda>
 ```
 
 Added in v1.0.0
@@ -777,7 +714,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getIntersectionSemigroup: <A>(E: eq.Eq<A>) => Semigroup<readonly A[]>
+export declare const getIntersectionSemigroup: <A>() => Semigroup<readonly A[]>
 ```
 
 Added in v1.0.0
@@ -811,7 +748,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getUnionMonoid: <A>(E: eq.Eq<A>) => Monoid<readonly A[]>
+export declare const getUnionMonoid: <A>() => Monoid<readonly A[]>
 ```
 
 Added in v1.0.0
@@ -821,21 +758,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getUnionSemigroup: <A>(E: eq.Eq<A>) => Semigroup<readonly A[]>
-```
-
-Added in v1.0.0
-
-## liftEq
-
-Derives an `Eq` over the `ReadonlyArray` of a given element type from the `Eq` of that type. The derived `Eq` defines two
-`ReadonlyArray`s as equal if all elements of both `ReadonlyArray`s are compared equal pairwise with the given `E`. In case of `ReadonlyArray`s of
-different lengths, the result is non equality.
-
-**Signature**
-
-```ts
-export declare const liftEq: <A>(Eq: eq.Eq<A>) => eq.Eq<readonly A[]>
+export declare const getUnionSemigroup: <A>() => Semigroup<readonly A[]>
 ```
 
 Added in v1.0.0
@@ -850,7 +773,7 @@ the same length, the result is equality.
 **Signature**
 
 ```ts
-export declare const liftOrd: <A>(O: ord.Ord<A>) => ord.Ord<readonly A[]>
+export declare const liftOrd: <A>(O: ord.Sortable<A>) => ord.Sortable<readonly A[]>
 ```
 
 Added in v1.0.0
@@ -1106,7 +1029,7 @@ Added in v1.0.0
 
 ```ts
 export declare const sequence: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
+  F: applicative.Monoidal<F>
 ) => <S, R, O, E, A>(fas: readonly Kind<F, S, R, O, E, A>[]) => Kind<F, S, R, O, E, readonly A[]>
 ```
 
@@ -1118,7 +1041,7 @@ Added in v1.0.0
 
 ```ts
 export declare const traverse: <F extends TypeLambda>(
-  Applicative: applicative.Applicative<F>
+  Applicative: applicative.Monoidal<F>
 ) => <A, S, R, O, E, B>(
   f: (a: A) => Kind<F, S, R, O, E, B>
 ) => (self: readonly A[]) => Kind<F, S, R, O, E, readonly B[]>
@@ -1132,7 +1055,7 @@ Added in v1.0.0
 
 ```ts
 export declare const traverseWithIndex: <F extends TypeLambda>(
-  Applicative: applicative.Applicative<F>
+  Applicative: applicative.Monoidal<F>
 ) => <A, S, R, O, E, B>(
   f: (i: number, a: A) => Kind<F, S, R, O, E, B>
 ) => (self: readonly A[]) => Kind<F, S, R, O, E, readonly B[]>
@@ -1238,18 +1161,6 @@ export declare const chunksOf: (n: number) => <A>(as: readonly A[]) => readonly 
 
 Added in v1.0.0
 
-## composeKleisli
-
-**Signature**
-
-```ts
-export declare const composeKleisli: <B, C>(
-  bfc: (b: B) => readonly C[]
-) => <A>(afb: (a: A) => readonly B[]) => (a: A) => readonly C[]
-```
-
-Added in v1.0.0
-
 ## concat
 
 **Signature**
@@ -1280,7 +1191,7 @@ comparisons. The order and references of result values are determined by the fir
 **Signature**
 
 ```ts
-export declare const difference: <A>(Eq: eq.Eq<A>) => (that: readonly A[]) => (self: readonly A[]) => readonly A[]
+export declare const difference: <B>(that: readonly B[]) => <A>(self: readonly A[]) => readonly A[]
 ```
 
 Added in v1.0.0
@@ -1348,7 +1259,7 @@ Tests whether a value is a member of a `ReadonlyArray`.
 **Signature**
 
 ```ts
-export declare const elem: <A>(E: eq.Eq<A>) => (a: A) => (as: readonly A[]) => boolean
+export declare const elem: <B>(a: B) => <A>(as: readonly A[]) => boolean
 ```
 
 Added in v1.0.0
@@ -1524,16 +1435,6 @@ export declare const head: <A>(self: readonly A[]) => Option<A>
 
 Added in v1.0.0
 
-## idKleisli
-
-**Signature**
-
-```ts
-export declare const idKleisli: <A>() => (a: A) => readonly A[]
-```
-
-Added in v1.0.0
-
 ## init
 
 Get all but the last element of a `ReadonlyArray`, creating a new `ReadonlyArray`, or `None` if the `ReadonlyArray` is empty.
@@ -1579,7 +1480,7 @@ comparisons. The order and references of result values are determined by the fir
 **Signature**
 
 ```ts
-export declare const intersection: <A>(E: eq.Eq<A>) => (that: readonly A[]) => (self: readonly A[]) => readonly A[]
+export declare const intersection: <A>(that: readonly A[]) => <B>(self: readonly B[]) => readonly (A & B)[]
 ```
 
 Added in v1.0.0
@@ -1773,7 +1674,7 @@ Sort the elements of a `ReadonlyArray` in increasing order, creating a new `Read
 **Signature**
 
 ```ts
-export declare const sort: <B>(O: ord.Ord<B>) => <A extends B>(as: readonly A[]) => readonly A[]
+export declare const sort: <B>(O: ord.Sortable<B>) => <A extends B>(as: readonly A[]) => readonly A[]
 ```
 
 Added in v1.0.0
@@ -1786,7 +1687,7 @@ etc...
 **Signature**
 
 ```ts
-export declare const sortBy: <B>(ords: readonly ord.Ord<B>[]) => <A extends B>(as: readonly A[]) => readonly A[]
+export declare const sortBy: <B>(ords: readonly ord.Sortable<B>[]) => <A extends B>(as: readonly A[]) => readonly A[]
 ```
 
 Added in v1.0.0
@@ -1916,7 +1817,7 @@ Filter values inside a context.
 
 ```ts
 export declare const traverseFilter: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
+  F: applicative.Monoidal<F>
 ) => <B extends A, S, R, O, E, A = B>(
   predicate: (a: A) => Kind<F, S, R, O, E, boolean>
 ) => (self: readonly B[]) => Kind<F, S, R, O, E, readonly B[]>
@@ -1930,7 +1831,7 @@ Added in v1.0.0
 
 ```ts
 export declare const traversePartition: <F extends TypeLambda>(
-  ApplicativeF: applicative.Applicative<F>
+  ApplicativeF: applicative.Monoidal<F>
 ) => <B extends A, S, R, O, E, A = B>(
   predicate: (a: A) => Kind<F, S, R, O, E, boolean>
 ) => (self: readonly B[]) => Kind<F, S, R, O, E, readonly [readonly B[], readonly B[]]>
@@ -1955,7 +1856,9 @@ Creates a `ReadonlyArray` of unique values, in order, from all given `ReadonlyAr
 **Signature**
 
 ```ts
-export declare const union: <A>(E: eq.Eq<A>) => (that: readonly A[]) => (self: readonly A[]) => readonly A[]
+export declare const union: <B>(
+  that: readonly B[]
+) => <A>(self: readonly A[]) => readonly B[] | readonly [B | A, ...(B | A)[]]
 ```
 
 Added in v1.0.0
@@ -1967,7 +1870,7 @@ Remove duplicates from a `ReadonlyArray`, keeping the first occurrence of an ele
 **Signature**
 
 ```ts
-export declare const uniq: <A>(E: eq.Eq<A>) => (self: readonly A[]) => readonly A[]
+export declare const uniq: <A>(self: readonly A[]) => readonly A[]
 ```
 
 Added in v1.0.0

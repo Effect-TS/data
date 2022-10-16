@@ -1,8 +1,8 @@
-import { pipe } from "@fp-ts/core/Function"
-import * as Option from "@fp-ts/core/Option"
 import * as Equal from "@fp-ts/data/Equal"
+import { pipe } from "@fp-ts/data/Function"
 import * as Hash from "@fp-ts/data/Hash"
 import * as HashMap from "@fp-ts/data/HashMap"
+import * as Option from "@fp-ts/data/Option"
 import { deepStrictEqual } from "@fp-ts/data/test/util"
 
 class Key implements Equal.Equal {

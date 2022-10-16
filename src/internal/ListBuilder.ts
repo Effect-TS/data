@@ -1,4 +1,4 @@
-import { pipe } from "@fp-ts/core/Function"
+import { pipe } from "@fp-ts/data/Function"
 import * as L from "@fp-ts/data/internal/List"
 import type { Cons, List } from "@fp-ts/data/List"
 import type * as LB from "@fp-ts/data/mutable/MutableListBuilder"

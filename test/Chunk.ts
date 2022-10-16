@@ -1,6 +1,6 @@
-import { pipe } from "@fp-ts/core/Function"
 import * as C from "@fp-ts/data/Chunk"
 import { equals } from "@fp-ts/data/Equal"
+import { pipe } from "@fp-ts/data/Function"
 
 describe("Chunk", () => {
   it("append", () => {

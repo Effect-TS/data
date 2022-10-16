@@ -1,6 +1,6 @@
-import { pipe } from "@fp-ts/core/Function"
-import * as O from "@fp-ts/core/Option"
 import { equals } from "@fp-ts/data/Equal"
+import { pipe } from "@fp-ts/data/Function"
+import * as O from "@fp-ts/data/Option"
 import * as Q from "@fp-ts/data/Queue"
 
 describe.concurrent("Queue", () => {

@@ -1,7 +1,7 @@
 /**
  * @since 1.0.0
  */
-import { pipe } from "@fp-ts/core/Function"
+import { pipe } from "@fp-ts/data/Function"
 import { PCGRandom } from "@fp-ts/data/internal/Random"
 
 /**

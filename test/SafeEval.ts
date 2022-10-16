@@ -1,4 +1,4 @@
-import { pipe } from "@fp-ts/core/Function"
+import { pipe } from "@fp-ts/data/Function"
 import * as SafeEval from "@fp-ts/data/SafeEval"
 import { deepStrictEqual } from "@fp-ts/data/test/util"
 

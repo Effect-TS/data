@@ -3,17 +3,15 @@
  */
 
 import type * as HKT from "@fp-ts/core/HKT"
-import type { Option } from "@fp-ts/core/Option"
-import type { Predicate } from "@fp-ts/core/Predicate"
-import type { Refinement } from "@fp-ts/core/Refinement"
-import type { Result } from "@fp-ts/core/Result"
-import { Apply } from "@fp-ts/core/typeclasses/Apply"
-import { FromIdentity } from "@fp-ts/core/typeclasses/FromIdentity"
-import { Functor } from "@fp-ts/core/typeclasses/Functor"
-import type { Ord } from "@fp-ts/core/typeclasses/Ord"
+import type { Sortable } from "@fp-ts/core/Sortable"
 import type * as Equal from "@fp-ts/data/Equal"
+import { pipe } from "@fp-ts/data/Function"
 import * as LI from "@fp-ts/data/internal/List"
 import * as _sortWith from "@fp-ts/data/internal/List/sortWith"
+import type { Option } from "@fp-ts/data/Option"
+import type { Predicate } from "@fp-ts/data/Predicate"
+import type { Refinement } from "@fp-ts/data/Refinement"
+import type { Result } from "@fp-ts/data/Result"
 
 type LCons<A> = Cons<A>
 type LNil<A> = Nil<A>
@@ -261,7 +259,8 @@ export const reduce: <A, B>(b: B, f: (b: B, a: A) => B) => (self: List<A>) => B 
  * @since 1.0.0
  * @category apply
  */
-export const ap: <A>(fa: List<A>) => <B>(self: List<(a: A) => B>) => List<B> = LI.ap
+export const ap: <A>(fa: List<A>) => <B>(self: List<(a: A) => B>) => List<B> = (fa) =>
+  (fab) => pipe(fab, flatMap((f) => pipe(fa, map((a) => f(a)))))
 
 /**
  * @since 1.0.0
@@ -285,26 +284,4 @@ export const unsafeLast: <A>(self: List<A>) => A = LI.unsafeLast
  * @since 1.0.0
  * @category sorting
  */
-export const sortWith: <A>(ord: Ord<A>) => (self: List<A>) => List<A> = _sortWith.sortWith
-
-const Functor: Functor<ListTypeLambda> = LI.Functor
-const FromIdentity: FromIdentity<ListTypeLambda> = LI.FromIdentity
-const Apply: Apply<ListTypeLambda> = LI.Apply
-
-export {
-  /**
-   * @since 1.0.0
-   * @category instances
-   */
-  Apply,
-  /**
-   * @since 1.0.0
-   * @category instances
-   */
-  FromIdentity,
-  /**
-   * @since 1.0.0
-   * @category instances
-   */
-  Functor
-}
+export const sortWith: <A>(ord: Sortable<A>) => (self: List<A>) => List<A> = _sortWith.sortWith

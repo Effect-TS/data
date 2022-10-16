@@ -54,7 +54,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const empty: <A>(ord: Ord<A>) => SortedSet<A>
+export declare const empty: <A>(ord: Sortable<A>) => SortedSet<A>
 ```
 
 Added in v1.0.0
@@ -188,7 +188,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const map: <B>(ord: Ord<B>) => <A>(f: (a: A) => B) => (self: SortedSet<A>) => SortedSet<B>
+export declare const map: <B>(ord: Sortable<B>) => <A>(f: (a: A) => B) => (self: SortedSet<A>) => SortedSet<B>
 ```
 
 Added in v1.0.0
@@ -261,7 +261,9 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const flatMap: <B>(ord: Ord<B>) => <A>(f: (a: A) => Iterable<B>) => (self: SortedSet<A>) => SortedSet<B>
+export declare const flatMap: <B>(
+  ord: Sortable<B>
+) => <A>(f: (a: A) => Iterable<B>) => (self: SortedSet<A>) => SortedSet<B>
 ```
 
 Added in v1.0.0
