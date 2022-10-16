@@ -183,7 +183,7 @@ export const reduceWithIndex = <K, V, B>(zero: B, f: (accumulator: B, key: K, va
  */
 export const mapWithIndex = <K, A, B>(f: (k: K, a: A) => B) =>
   (self: SortedMap<K, A>): SortedMap<K, B> =>
-    pipe(self, reduceWithIndex(empty<K, B>(self.tree._ord), (b, k, v) => set(k, f(k, v))(b)))
+    pipe(self, reduceWithIndex(empty<K, B>(RBT.getOrd(self.tree)), (b, k, v) => set(k, f(k, v))(b)))
 
 /**
  * @since 1.0.0
