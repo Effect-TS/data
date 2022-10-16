@@ -32,6 +32,8 @@ import * as safeEval from "@fp-ts/data/SafeEval"
 import * as sortedMap from "@fp-ts/data/SortedMap"
 import * as sortedSet from "@fp-ts/data/SortedSet"
 import * as string from "@fp-ts/data/String"
+import * as fromOption from "@fp-ts/data/typeclasses/FromOption"
+import * as fromResult from "@fp-ts/data/typeclasses/FromResult"
 import * as weakIterableMap from "@fp-ts/data/WeakIterableMap"
 
 export {
@@ -75,6 +77,14 @@ export {
    * @since 1.0.0
    */
   equal,
+  /**
+   * @since 1.0.0
+   */
+  fromOption,
+  /**
+   * @since 1.0.0
+   */
+  fromResult,
   /**
    * @since 1.0.0
    */
