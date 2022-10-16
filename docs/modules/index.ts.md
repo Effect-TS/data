@@ -37,11 +37,13 @@ Added in v1.0.0
   - [mutableHashSet](#mutablehashset)
   - [mutableListBuilder](#mutablelistbuilder)
   - [mutableRef](#mutableref)
+  - [nonEmptyReadonlyArray](#nonemptyreadonlyarray)
   - [number](#number)
   - [option](#option)
   - [orPatch](#orpatch)
   - [predicate](#predicate)
   - [queue](#queue)
+  - [readonlyArray](#readonlyarray)
   - [redBlackTree](#redblacktree)
   - [refinement](#refinement)
   - [result](#result)
@@ -296,6 +298,16 @@ export declare const mutableRef: typeof mutableRef
 
 Added in v1.0.0
 
+## nonEmptyReadonlyArray
+
+**Signature**
+
+```ts
+export declare const nonEmptyReadonlyArray: typeof nonEmptyReadonlyArray
+```
+
+Added in v1.0.0
+
 ## number
 
 **Signature**
@@ -342,6 +354,16 @@ Added in v1.0.0
 
 ```ts
 export declare const queue: typeof queue
+```
+
+Added in v1.0.0
+
+## readonlyArray
+
+**Signature**
+
+```ts
+export declare const readonlyArray: typeof readonlyArray
 ```
 
 Added in v1.0.0

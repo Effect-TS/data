@@ -23,10 +23,12 @@ import * as mutableHashMap from "@fp-ts/data/mutable/MutableHashMap"
 import * as mutableHashSet from "@fp-ts/data/mutable/MutableHashSet"
 import * as mutableListBuilder from "@fp-ts/data/mutable/MutableListBuilder"
 import * as mutableRef from "@fp-ts/data/mutable/MutableRef"
+import * as nonEmptyReadonlyArray from "@fp-ts/data/NonEmptyReadonlyArray"
 import * as number from "@fp-ts/data/Number"
 import * as option from "@fp-ts/data/Option"
 import * as predicate from "@fp-ts/data/Predicate"
 import * as queue from "@fp-ts/data/Queue"
+import * as readonlyArray from "@fp-ts/data/ReadonlyArray"
 import * as redBlackTree from "@fp-ts/data/RedBlackTree"
 import * as refinement from "@fp-ts/data/Refinement"
 import * as result from "@fp-ts/data/Result"
@@ -141,6 +143,10 @@ export {
   /**
    * @since 1.0.0
    */
+  nonEmptyReadonlyArray,
+  /**
+   * @since 1.0.0
+   */
   number,
   /**
    * @since 1.0.0
@@ -158,6 +164,10 @@ export {
    * @since 1.0.0
    */
   queue,
+  /**
+   * @since 1.0.0
+   */
+  readonlyArray,
   /**
    * @since 1.0.0
    */
