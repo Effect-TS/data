@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 16
+nav_order: 17
 parent: Modules
 ---
 
@@ -13,6 +13,7 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [utils](#utils)
+  - [boolean](#boolean)
   - [chunk](#chunk)
   - [chunkPatch](#chunkpatch)
   - [context](#context)
@@ -32,18 +33,31 @@ Added in v1.0.0
   - [mutableHashSet](#mutablehashset)
   - [mutableListBuilder](#mutablelistbuilder)
   - [mutableRef](#mutableref)
+  - [number](#number)
   - [orPatch](#orpatch)
   - [predicate](#predicate)
   - [queue](#queue)
   - [redBlackTree](#redblacktree)
+  - [refinement](#refinement)
   - [safeEval](#safeeval)
   - [sortedMap](#sortedmap)
   - [sortedSet](#sortedset)
+  - [string](#string)
   - [weakIterableMap](#weakiterablemap)
 
 ---
 
 # utils
+
+## boolean
+
+**Signature**
+
+```ts
+export declare const boolean: typeof boolean
+```
+
+Added in v1.0.0
 
 ## chunk
 
@@ -235,6 +249,16 @@ export declare const mutableRef: typeof mutableRef
 
 Added in v1.0.0
 
+## number
+
+**Signature**
+
+```ts
+export declare const number: typeof number
+```
+
+Added in v1.0.0
+
 ## orPatch
 
 **Signature**
@@ -275,6 +299,16 @@ export declare const redBlackTree: typeof redBlackTree
 
 Added in v1.0.0
 
+## refinement
+
+**Signature**
+
+```ts
+export declare const refinement: typeof refinement
+```
+
+Added in v1.0.0
+
 ## safeEval
 
 **Signature**
@@ -301,6 +335,16 @@ Added in v1.0.0
 
 ```ts
 export declare const sortedSet: typeof sortedSet
+```
+
+Added in v1.0.0
+
+## string
+
+**Signature**
+
+```ts
+export declare const string: typeof string
 ```
 
 Added in v1.0.0
