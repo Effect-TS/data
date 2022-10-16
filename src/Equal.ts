@@ -7,7 +7,7 @@ import * as DH from "@fp-ts/data/Hash"
 
 /**
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export const Equal: EqualConstructor = {
   symbol: Symbol.for("@fp-ts/data/DeepEqual") as EqualConstructor["symbol"]
@@ -21,7 +21,7 @@ export const symbol: EqualConstructor["symbol"] = Equal.symbol
 
 /**
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export interface Equal extends DH.Hash {
   readonly [Equal.symbol]: (that: unknown) => boolean
@@ -29,7 +29,7 @@ export interface Equal extends DH.Hash {
 
 /**
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export interface EqualConstructor {
   readonly symbol: unique symbol

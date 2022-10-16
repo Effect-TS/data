@@ -16,7 +16,7 @@ export type TagTypeId = typeof TagTypeId
 
 /**
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export interface Tag<Service> extends Equal {
   readonly _id: TagTypeId
@@ -46,13 +46,13 @@ export type TypeId = typeof TypeId
 
 /**
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export type Tags<R> = R extends infer S ? Tag<S> : never
 
 /**
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export interface Context<Services> extends Equal {
   readonly _id: TypeId

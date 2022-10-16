@@ -17,7 +17,7 @@ Added in v1.0.0
   - [empty](#empty)
 - [destructors](#destructors)
   - [patch](#patch)
-- [model](#model)
+- [models](#models)
   - [HashSetPatch (interface)](#hashsetpatch-interface)
 - [mutations](#mutations)
   - [combine](#combine)
@@ -68,7 +68,7 @@ export declare const patch: <Value>(oldValue: HashSet<Value>) => (self: HashSetP
 
 Added in v1.0.0
 
-# model
+# models
 
 ## HashSetPatch (interface)
 

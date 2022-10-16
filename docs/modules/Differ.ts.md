@@ -18,7 +18,7 @@ Added in v1.0.0
   - [hashMap](#hashmap)
   - [hashSet](#hashset)
   - [make](#make)
-- [model](#model)
+- [models](#models)
   - [Differ (interface)](#differ-interface)
 - [mutations](#mutations)
   - [orElseResult](#orelseresult)
@@ -109,7 +109,7 @@ export declare const make: <Value, Patch>(params: {
 
 Added in v1.0.0
 
-# model
+# models
 
 ## Differ (interface)
 

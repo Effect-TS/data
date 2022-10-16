@@ -78,7 +78,7 @@ Added in v1.0.0
 - [mapping](#mapping)
   - [map](#map)
   - [mapWithIndex](#mapwithindex)
-- [model](#model)
+- [models](#models)
   - [Chunk (interface)](#chunk-interface)
 - [mutations](#mutations)
   - [append](#append)
@@ -861,7 +861,7 @@ export declare const mapWithIndex: <A, B>(f: (i: number, a: A) => B) => (self: C
 
 Added in v1.0.0
 
-# model
+# models
 
 ## Chunk (interface)
 

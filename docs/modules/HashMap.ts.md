@@ -1,6 +1,6 @@
 ---
 title: HashMap.ts
-nav_order: 12
+nav_order: 14
 parent: Modules
 ---
 
@@ -40,7 +40,7 @@ Added in v1.0.0
 - [mapping](#mapping)
   - [map](#map)
   - [mapWithIndex](#mapwithindex)
-- [model](#model)
+- [models](#models)
   - [HashMap (interface)](#hashmap-interface)
 - [mutations](#mutations)
   - [beginMutation](#beginmutation)
@@ -355,7 +355,7 @@ export declare const mapWithIndex: <K, V, A>(f: (key: K, value: V) => A) => (sel
 
 Added in v1.0.0
 
-# model
+# models
 
 ## HashMap (interface)
 

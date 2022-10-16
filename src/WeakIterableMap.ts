@@ -1,3 +1,6 @@
+/**
+ * @since 1.0.0
+ */
 import * as O from "@fp-ts/core/Option"
 import * as Equal from "@fp-ts/data/Equal"
 import { identity } from "@fp-ts/data/Function"
@@ -11,6 +14,9 @@ import * as Hash from "@fp-ts/data/Hash"
  * NOTE: this is truly weak only in the case FinalizationRegistry is available,
  * otherwise it is backed by a classical map and will not be weak (i.e. in
  * engines that don't natively support ES2021).
+ *
+ * @since 1.0.0
+ * @category models
  */
 export interface WeakIterableMap<K extends object, V>
   extends Iterable<readonly [K, V]>, Equal.Equal

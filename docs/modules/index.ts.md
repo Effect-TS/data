@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 14
+nav_order: 16
 parent: Modules
 ---
 
@@ -19,7 +19,9 @@ Added in v1.0.0
   - [contextPatch](#contextpatch)
   - [differ](#differ)
   - [duration](#duration)
+  - [endomorphism](#endomorphism)
   - [equal](#equal)
+  - [function](#function)
   - [hash](#hash)
   - [hashMap](#hashmap)
   - [hashMapPatch](#hashmappatch)
@@ -36,6 +38,7 @@ Added in v1.0.0
   - [safeEval](#safeeval)
   - [sortedMap](#sortedmap)
   - [sortedSet](#sortedset)
+  - [weakIterableMap](#weakiterablemap)
 
 ---
 
@@ -101,12 +104,32 @@ export declare const duration: typeof duration
 
 Added in v1.0.0
 
+## endomorphism
+
+**Signature**
+
+```ts
+export declare const endomorphism: typeof endomorphism
+```
+
+Added in v1.0.0
+
 ## equal
 
 **Signature**
 
 ```ts
 export declare const equal: typeof equal
+```
+
+Added in v1.0.0
+
+## function
+
+**Signature**
+
+```ts
+export declare const function: typeof _function
 ```
 
 Added in v1.0.0
@@ -267,6 +290,16 @@ Added in v1.0.0
 
 ```ts
 export declare const sortedSet: typeof sortedSet
+```
+
+Added in v1.0.0
+
+## weakIterableMap
+
+**Signature**
+
+```ts
+export declare const weakIterableMap: typeof weakIterableMap
 ```
 
 Added in v1.0.0

@@ -1,6 +1,6 @@
 ---
 title: SortedSet.ts
-nav_order: 24
+nav_order: 26
 parent: Modules
 ---
 
@@ -30,7 +30,7 @@ Added in v1.0.0
   - [values](#values)
 - [mapping](#mapping)
   - [map](#map)
-- [model](#model)
+- [models](#models)
   - [SortedSet (interface)](#sortedset-interface)
 - [mutations](#mutations)
   - [difference](#difference)
@@ -193,7 +193,7 @@ export declare const map: <B>(ord: Ord<B>) => <A>(f: (a: A) => B) => (self: Sort
 
 Added in v1.0.0
 
-# model
+# models
 
 ## SortedSet (interface)
 

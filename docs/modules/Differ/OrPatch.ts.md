@@ -17,7 +17,7 @@ Added in v1.0.0
   - [empty](#empty)
 - [destructors](#destructors)
   - [patch](#patch)
-- [model](#model)
+- [models](#models)
   - [OrPatch (interface)](#orpatch-interface)
 - [mutations](#mutations)
   - [combine](#combine)
@@ -77,7 +77,7 @@ export declare const patch: <Value, Value2, Patch, Patch2>(
 
 Added in v1.0.0
 
-# model
+# models
 
 ## OrPatch (interface)
 

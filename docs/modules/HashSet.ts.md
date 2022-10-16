@@ -1,6 +1,6 @@
 ---
 title: HashSet.ts
-nav_order: 13
+nav_order: 15
 parent: Modules
 ---
 
@@ -30,7 +30,7 @@ Added in v1.0.0
   - [values](#values)
 - [mapping](#mapping)
   - [map](#map)
-- [model](#model)
+- [models](#models)
   - [HashSet (interface)](#hashset-interface)
 - [mutations](#mutations)
   - [add](#add)
@@ -218,7 +218,7 @@ export declare const map: <A, B>(f: (a: A) => B) => (self: HashSet<A>) => HashSe
 
 Added in v1.0.0
 
-# model
+# models
 
 ## HashSet (interface)
 

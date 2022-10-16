@@ -18,7 +18,7 @@ export type TypeId = typeof TypeId
  * A patch which describes updates to either one value or another.
  *
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export interface OrPatch<Value, Value2, Patch, Patch2> {
   readonly _id: TypeId

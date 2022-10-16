@@ -7,7 +7,7 @@ import type { Cons, List } from "@fp-ts/data/List"
 
 /**
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export interface MutableCons<A> extends Cons<A> {
   tail: List<A>
@@ -24,7 +24,7 @@ export type TypeId = typeof TypeId
 /**
  * @since 1.0.0
  *
- * @category model
+ * @category models
  */
 export interface MutableListBuilder<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId

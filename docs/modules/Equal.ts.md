@@ -1,6 +1,6 @@
 ---
 title: Equal.ts
-nav_order: 10
+nav_order: 11
 parent: Modules
 ---
 
@@ -14,7 +14,7 @@ Added in v1.0.0
 
 - [equality](#equality)
   - [equals](#equals)
-- [model](#model)
+- [models](#models)
   - [Equal](#equal)
   - [Equal (interface)](#equal-interface)
   - [EqualConstructor (interface)](#equalconstructor-interface)
@@ -36,7 +36,7 @@ export declare function equals<A, B>(self: A, that: B): boolean
 
 Added in v1.0.0
 
-# model
+# models
 
 ## Equal
 

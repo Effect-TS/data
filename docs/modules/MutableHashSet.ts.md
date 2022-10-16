@@ -1,6 +1,6 @@
 ---
 title: MutableHashSet.ts
-nav_order: 17
+nav_order: 19
 parent: Modules
 ---
 
@@ -21,7 +21,7 @@ Added in v1.0.0
   - [has](#has)
   - [remove](#remove)
   - [size](#size)
-- [model](#model)
+- [models](#models)
   - [MutableHashSet (interface)](#mutablehashset-interface)
 - [symbol](#symbol)
   - [TypeId (type alias)](#typeid-type-alias)
@@ -102,7 +102,7 @@ export declare const size: <K>(self: MutableHashSet<K>) => number
 
 Added in v1.0.0
 
-# model
+# models
 
 ## MutableHashSet (interface)
 

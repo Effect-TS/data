@@ -17,7 +17,7 @@ Added in v1.0.0
   - [empty](#empty)
 - [destructors](#destructors)
   - [patch](#patch)
-- [model](#model)
+- [models](#models)
   - [ChunkPatch (interface)](#chunkpatch-interface)
 - [mutations](#mutations)
   - [combine](#combine)
@@ -76,7 +76,7 @@ export declare const patch: <Value, Patch>(
 
 Added in v1.0.0
 
-# model
+# models
 
 ## ChunkPatch (interface)
 

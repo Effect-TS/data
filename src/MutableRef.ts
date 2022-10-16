@@ -14,7 +14,7 @@ export type TypeId = typeof TypeId
 
 /**
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export interface MutableRef<T> extends Equal.Equal {
   readonly _id: TypeId

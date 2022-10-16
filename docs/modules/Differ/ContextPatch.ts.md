@@ -17,7 +17,7 @@ Added in v1.0.0
   - [empty](#empty)
 - [destructors](#destructors)
   - [patch](#patch)
-- [model](#model)
+- [models](#models)
   - [ContextPatch (interface)](#contextpatch-interface)
 - [mutations](#mutations)
   - [combine](#combine)
@@ -70,7 +70,7 @@ export declare const patch: <Input>(
 
 Added in v1.0.0
 
-# model
+# models
 
 ## ContextPatch (interface)
 

@@ -1,6 +1,6 @@
 ---
 title: SortedMap.ts
-nav_order: 23
+nav_order: 25
 parent: Modules
 ---
 
@@ -33,7 +33,7 @@ Added in v1.0.0
 - [mapping](#mapping)
   - [map](#map)
   - [mapWithIndex](#mapwithindex)
-- [model](#model)
+- [models](#models)
   - [SortedMap (interface)](#sortedmap-interface)
 - [predicates](#predicates)
   - [isEmpty](#isempty)
@@ -222,7 +222,7 @@ export declare const mapWithIndex: <K, A, B>(f: (k: K, a: A) => B) => (self: Sor
 
 Added in v1.0.0
 
-# model
+# models
 
 ## SortedMap (interface)
 

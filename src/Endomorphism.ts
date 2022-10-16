@@ -10,7 +10,7 @@ import type * as semigroup from "@fp-ts/core/typeclasses/Semigroup"
 import * as func from "@fp-ts/data/Function"
 
 /**
- * @category model
+ * @category models
  * @since 1.0.0
  */
 export interface Endomorphism<A> {

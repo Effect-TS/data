@@ -17,7 +17,7 @@ Added in v1.0.0
   - [empty](#empty)
 - [destructors](#destructors)
   - [patch](#patch)
-- [model](#model)
+- [models](#models)
   - [HashMapPatch (interface)](#hashmappatch-interface)
 - [mutations](#mutations)
   - [combine](#combine)
@@ -76,7 +76,7 @@ export declare const patch: <Key, Value, Patch>(
 
 Added in v1.0.0
 
-# model
+# models
 
 ## HashMapPatch (interface)
 

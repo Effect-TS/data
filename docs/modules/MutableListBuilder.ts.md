@@ -1,6 +1,6 @@
 ---
 title: MutableListBuilder.ts
-nav_order: 18
+nav_order: 20
 parent: Modules
 ---
 
@@ -19,7 +19,7 @@ Added in v1.0.0
   - [toList](#tolist)
 - [folding](#folding)
   - [reduce](#reduce)
-- [model](#model)
+- [models](#models)
   - [MutableCons (interface)](#mutablecons-interface)
   - [MutableListBuilder (interface)](#mutablelistbuilder-interface)
 - [mutations](#mutations)
@@ -83,7 +83,7 @@ export declare const reduce: <A, B>(b: B, f: (b: B, a: A) => B) => (self: Mutabl
 
 Added in v1.0.0
 
-# model
+# models
 
 ## MutableCons (interface)
 

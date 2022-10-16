@@ -1,6 +1,6 @@
 ---
 title: MutableHashMap.ts
-nav_order: 16
+nav_order: 18
 parent: Modules
 ---
 
@@ -22,7 +22,7 @@ Added in v1.0.0
   - [get](#get)
   - [has](#has)
   - [size](#size)
-- [model](#model)
+- [models](#models)
   - [MutableHashMap (interface)](#mutablehashmap-interface)
 - [mutations](#mutations)
   - [modify](#modify)
@@ -120,7 +120,7 @@ export declare const size: <K, V>(self: MutableHashMap<K, V>) => number
 
 Added in v1.0.0
 
-# model
+# models
 
 ## MutableHashMap (interface)
 

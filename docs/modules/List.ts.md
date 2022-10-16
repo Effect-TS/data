@@ -1,6 +1,6 @@
 ---
 title: List.ts
-nav_order: 15
+nav_order: 17
 parent: Modules
 ---
 
@@ -42,7 +42,7 @@ Added in v1.0.0
   - [Functor](#functor)
 - [mapping](#mapping)
   - [map](#map)
-- [model](#model)
+- [models](#models)
   - [Cons (interface)](#cons-interface)
   - [List (type alias)](#list-type-alias)
   - [Nil (interface)](#nil-interface)
@@ -310,7 +310,7 @@ export declare const map: <A, B>(f: (a: A) => B) => (self: List<A>) => List<B>
 
 Added in v1.0.0
 
-# model
+# models
 
 ## Cons (interface)
 

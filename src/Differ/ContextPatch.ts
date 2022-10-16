@@ -19,7 +19,7 @@ export type TypeId = typeof TypeId
  * different services in the environment in a compositional way.
  *
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export interface ContextPatch<Input, Output> {
   readonly _id: TypeId

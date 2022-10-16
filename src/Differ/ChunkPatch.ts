@@ -18,7 +18,7 @@ export type TypeId = typeof TypeId
  * A patch which describes updates to a chunk of values.
  *
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export interface ChunkPatch<Value, Patch> {
   readonly _id: TypeId

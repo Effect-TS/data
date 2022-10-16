@@ -56,7 +56,7 @@ export const Category: category.Category<FunctionTypeLambda> = {
 /**
  * Unary functions form a semigroup as long as you can provide a semigroup for the codomain.
  *
- * @example
+ * @exampleTodo
  * import { Predicate } from '@fp-ts/core/data/Predicate'
  * import { pipe, getSemigroup } from '@fp-ts/core/data/Function'
  * import * as B from '@fp-ts/core/data/boolean'
@@ -85,7 +85,7 @@ export const getSemigroup = <S>(Semigroup: semigroup.Semigroup<S>) =>
 /**
  * Unary functions form a monoid as long as you can provide a monoid for the codomain.
  *
- * @example
+ * @exampleTodo
  * import { Predicate } from '@fp-ts/core/data/Predicate'
  * import { getMonoid, pipe } from '@fp-ts/core/data/Function'
  * import * as B from '@fp-ts/core/data/boolean'
@@ -127,7 +127,7 @@ export interface LazyArg<A> {
 }
 
 /**
- * @example
+ * @exampleTodo
  * import { FunctionN } from '@fp-ts/core/data/Function'
  *
  * export const sum: FunctionN<[number, number], number> = (a, b) => a + b
@@ -191,7 +191,7 @@ export const constVoid: LazyArg<void> = constUndefined
 /**
  * Flips the arguments of a curried function.
  *
- * @example
+ * @exampleTodo
  * import { flip } from '@fp-ts/core/data/Function'
  *
  * const f = (a: number) => (b: string) => a - b.length
@@ -206,7 +206,7 @@ export const flip = <A, B, C>(f: (a: A) => (b: B) => C): ((b: B) => (a: A) => C)
 /**
  * Performs left-to-right function composition. The first argument may have any arity, the remaining arguments must be unary.
  *
- * @example
+ * @exampleTodo
  * import { flow } from '@fp-ts/core/data/Function'
  *
  * const len = (s: string): number => s.length
@@ -350,7 +350,7 @@ export const absurd = <A>(_: never): A => {
 /**
  * Creates a tupled version of this function: instead of `n` arguments, it accepts a single tuple argument.
  *
- * @example
+ * @exampleTodo
  * import { tupled } from '@fp-ts/core/data/Function'
  *
  * const add = tupled((x: number, y: number): number => x + y)
@@ -373,7 +373,7 @@ export const untupled = <A extends ReadonlyArray<unknown>, B>(f: (a: A) => B): (
 /**
  * Pipes the value of an expression into a pipeline of functions.
  *
- * @example
+ * @exampleTodo
  * import { pipe } from '@fp-ts/core/data/Function'
  *
  * const len = (s: string): number => s.length

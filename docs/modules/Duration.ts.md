@@ -29,7 +29,7 @@ Added in v1.0.0
   - [zero](#zero)
 - [guards](#guards)
   - [isDuration](#isduration)
-- [model](#model)
+- [models](#models)
   - [Duration (interface)](#duration-interface)
 - [mutations](#mutations)
   - [add](#add)
@@ -186,7 +186,7 @@ export declare const isDuration: (u: unknown) => u is Duration
 
 Added in v1.0.0
 
-# model
+# models
 
 ## Duration (interface)
 

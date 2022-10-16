@@ -36,7 +36,7 @@ export type TypeId = typeof TypeId
 
 /**
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export interface Cons<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
@@ -48,7 +48,7 @@ export interface Cons<A> extends Iterable<A>, Equal.Equal {
 
 /**
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export interface Nil<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
@@ -58,7 +58,7 @@ export interface Nil<A> extends Iterable<A>, Equal.Equal {
 
 /**
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export type List<A> = Cons<A> | Nil<A>
 

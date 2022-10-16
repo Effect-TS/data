@@ -40,7 +40,7 @@ export type TypeId = typeof TypeId
  * values for arbitrarily complex data types compositionally.
  *
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export interface Differ<Value, Patch> extends Equal {
   readonly _id: TypeId

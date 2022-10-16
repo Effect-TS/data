@@ -46,7 +46,7 @@ class Node<K, V> implements Iterable<readonly [K, V]> {
 
 /**
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, Equal.Equal {
   readonly _id: TypeId

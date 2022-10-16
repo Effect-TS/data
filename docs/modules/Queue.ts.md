@@ -1,6 +1,6 @@
 ---
 title: Queue.ts
-nav_order: 20
+nav_order: 22
 parent: Modules
 ---
 
@@ -35,7 +35,7 @@ Added in v1.0.0
   - [Functor](#functor)
 - [mapping](#mapping)
   - [map](#map)
-- [model](#model)
+- [models](#models)
   - [Queue (interface)](#queue-interface)
 - [mutations](#mutations)
   - [dequeue](#dequeue)
@@ -230,7 +230,7 @@ export declare const map: <A, B>(f: (a: A) => B) => (self: Queue<A>) => Queue<B>
 
 Added in v1.0.0
 
-# model
+# models
 
 ## Queue (interface)
 

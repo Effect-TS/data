@@ -19,7 +19,7 @@ export type TypeId = typeof TypeId
 
 /**
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export interface SortedMap<K, V> extends Iterable<readonly [K, V]>, Eq.Equal {
   readonly _id: TypeId

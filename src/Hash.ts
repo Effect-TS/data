@@ -6,7 +6,7 @@ import { PCGRandom } from "@fp-ts/data/internal/Random"
 
 /**
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export const Hash: HashConstructor = {
   symbol: Symbol.for("@fp-ts/data/DeepHash") as HashConstructor["symbol"]
@@ -20,7 +20,7 @@ export const symbol: HashConstructor["symbol"] = Hash.symbol
 
 /**
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export interface Hash {
   readonly [Hash.symbol]: () => number
@@ -28,7 +28,7 @@ export interface Hash {
 
 /**
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export interface HashConstructor {
   readonly symbol: unique symbol

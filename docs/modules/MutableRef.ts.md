@@ -1,6 +1,6 @@
 ---
 title: MutableRef.ts
-nav_order: 19
+nav_order: 21
 parent: Modules
 ---
 
@@ -21,7 +21,7 @@ Added in v1.0.0
   - [getAndSet](#getandset)
   - [set](#set)
   - [setAndGet](#setandget)
-- [model](#model)
+- [models](#models)
   - [MutableRef (interface)](#mutableref-interface)
 - [numeric](#numeric)
   - [decrementAndGet](#decrementandget)
@@ -107,7 +107,7 @@ export declare const setAndGet: <T>(value: T) => (self: MutableRef<T>) => T
 
 Added in v1.0.0
 
-# model
+# models
 
 ## MutableRef (interface)
 

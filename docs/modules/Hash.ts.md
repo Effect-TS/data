@@ -1,6 +1,6 @@
 ---
 title: Hash.ts
-nav_order: 11
+nav_order: 13
 parent: Modules
 ---
 
@@ -17,7 +17,7 @@ Added in v1.0.0
 - [hashing](#hashing)
   - [evaluate](#evaluate)
   - [random](#random)
-- [model](#model)
+- [models](#models)
   - [Hash](#hash)
   - [Hash (interface)](#hash-interface)
   - [HashConstructor (interface)](#hashconstructor-interface)
@@ -60,7 +60,7 @@ export declare const random: <A extends object>(self: A) => number
 
 Added in v1.0.0
 
-# model
+# models
 
 ## Hash
 

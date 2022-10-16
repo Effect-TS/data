@@ -18,7 +18,7 @@ export type TypeId = typeof TypeId
  * A patch which describes updates to a map of keys and values.
  *
  * @since 1.0.0
- * @category model
+ * @category models
  */
 export interface HashMapPatch<Key, Value, Patch> {
   readonly _id: TypeId

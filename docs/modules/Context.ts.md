@@ -20,7 +20,7 @@ Added in v1.0.0
   - [getOption](#getoption)
 - [guards](#guards)
   - [isContext](#iscontext)
-- [model](#model)
+- [models](#models)
   - [Context (interface)](#context-interface)
   - [Tag (interface)](#tag-interface)
   - [Tags (type alias)](#tags-type-alias)
@@ -94,7 +94,7 @@ export declare const isContext: (u: unknown) => u is Context<never>
 
 Added in v1.0.0
 
-# model
+# models
 
 ## Context (interface)
 
