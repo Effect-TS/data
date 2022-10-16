@@ -33,6 +33,7 @@ Added in v1.0.0
   - [mutableListBuilder](#mutablelistbuilder)
   - [mutableRef](#mutableref)
   - [orPatch](#orpatch)
+  - [predicate](#predicate)
   - [queue](#queue)
   - [redBlackTree](#redblacktree)
   - [safeEval](#safeeval)
@@ -240,6 +241,16 @@ Added in v1.0.0
 
 ```ts
 export declare const orPatch: typeof orPatch
+```
+
+Added in v1.0.0
+
+## predicate
+
+**Signature**
+
+```ts
+export declare const predicate: typeof predicate
 ```
 
 Added in v1.0.0
