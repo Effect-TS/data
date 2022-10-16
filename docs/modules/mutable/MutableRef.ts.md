@@ -1,5 +1,5 @@
 ---
-title: MutableRef.ts
+title: mutable/MutableRef.ts
 nav_order: 22
 parent: Modules
 ---

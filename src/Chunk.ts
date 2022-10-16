@@ -12,7 +12,7 @@ import type { Result } from "@fp-ts/core/Result"
 import type { Ord } from "@fp-ts/core/typeclasses/Ord"
 import * as Equal from "@fp-ts/data/Equal"
 import * as Hash from "@fp-ts/data/Hash"
-import * as MRef from "@fp-ts/data/MutableRef"
+import * as MRef from "@fp-ts/data/mutable/MutableRef"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/Chunk") as TypeId
 

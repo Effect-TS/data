@@ -1,5 +1,5 @@
 ---
-title: WeakIterableMap.ts
+title: weak/WeakIterableMap.ts
 nav_order: 34
 parent: Modules
 ---
