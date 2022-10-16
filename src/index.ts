@@ -2,6 +2,7 @@
  * @since 1.0.0
  */
 
+import * as boolean from "@fp-ts/data/Boolean"
 import * as chunk from "@fp-ts/data/Chunk"
 import * as context from "@fp-ts/data/Context"
 import * as differ from "@fp-ts/data/Differ"
@@ -30,6 +31,7 @@ import * as refinement from "@fp-ts/data/Refinement"
 import * as safeEval from "@fp-ts/data/SafeEval"
 import * as sortedMap from "@fp-ts/data/SortedMap"
 import * as sortedSet from "@fp-ts/data/SortedSet"
+import * as string from "@fp-ts/data/String"
 import * as weakIterableMap from "@fp-ts/data/WeakIterableMap"
 
 export {
@@ -37,6 +39,10 @@ export {
    * @since 1.0.0
    */
   _function as function,
+  /**
+   * @since 1.0.0
+   */
+  boolean,
   /**
    * @since 1.0.0
    */
@@ -145,6 +151,10 @@ export {
    * @since 1.0.0
    */
   sortedSet,
+  /**
+   * @since 1.0.0
+   */
+  string,
   /**
    * @since 1.0.0
    */
