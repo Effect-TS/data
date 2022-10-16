@@ -27,7 +27,7 @@ Added in v1.0.0
   - [liftOption](#liftoption)
   - [liftPredicate](#liftpredicate)
   - [liftResult](#liftresult)
-- [model](#model)
+- [models](#models)
   - [FromResult (interface)](#fromresult-interface)
 - [sequencing](#sequencing)
   - [flatMapNullable](#flatmapnullable)
@@ -196,7 +196,7 @@ export declare const liftResult: <F extends TypeLambda>(
 
 Added in v1.0.0
 
-# model
+# models
 
 ## FromResult (interface)
 

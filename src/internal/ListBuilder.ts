@@ -1,7 +1,7 @@
 import { pipe } from "@fp-ts/core/Function"
 import * as L from "@fp-ts/data/internal/List"
 import type { Cons, List } from "@fp-ts/data/List"
-import type * as LB from "@fp-ts/data/MutableListBuilder"
+import type * as LB from "@fp-ts/data/mutable/MutableListBuilder"
 
 import * as DE from "@fp-ts/data/Equal"
 import * as DH from "@fp-ts/data/Hash"

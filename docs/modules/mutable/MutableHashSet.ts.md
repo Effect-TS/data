@@ -1,5 +1,5 @@
 ---
-title: MutableHashSet.ts
+title: mutable/MutableHashSet.ts
 nav_order: 20
 parent: Modules
 ---

@@ -1,7 +1,7 @@
 import { pipe } from "@fp-ts/core/Function"
 import { equals } from "@fp-ts/data/Equal"
 import * as L from "@fp-ts/data/List"
-import * as LB from "@fp-ts/data/MutableListBuilder"
+import * as LB from "@fp-ts/data/mutable/MutableListBuilder"
 import { assertTrue } from "@fp-ts/data/test/util"
 
 describe("List", () => {
