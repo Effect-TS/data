@@ -17,7 +17,6 @@ Added in v1.0.0
   - [MonoidAny](#monoidany)
   - [SemigroupAll](#semigroupall)
   - [SemigroupAny](#semigroupany)
-  - [Show](#show)
   - [Sortable](#sortable)
 - [pattern matching](#pattern-matching)
   - [match](#match)
@@ -81,16 +80,6 @@ Added in v1.0.0
 
 ```ts
 export declare const SemigroupAny: semigroup.Semigroup<boolean>
-```
-
-Added in v1.0.0
-
-## Show
-
-**Signature**
-
-```ts
-export declare const Show: show.Show<boolean>
 ```
 
 Added in v1.0.0

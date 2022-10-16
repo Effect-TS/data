@@ -76,7 +76,6 @@ Added in v1.0.0
   - [TraversableFilterable](#traversablefilterable)
   - [getMonoid](#getmonoid)
   - [liftOrd](#liftord)
-  - [liftShow](#liftshow)
 - [interop](#interop)
   - [fromThrowable](#fromthrowable)
   - [liftThrowable](#liftthrowable)
@@ -577,7 +576,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const FromIdentity: fromIdentity.Succeed<OptionTypeLambda>
+export declare const FromIdentity: fromIdentity.Pointed<OptionTypeLambda>
 ```
 
 Added in v1.0.0
@@ -674,16 +673,6 @@ the type the `Option` contains.
 
 ```ts
 export declare const liftOrd: <A>(O: ord.Sortable<A>) => ord.Sortable<Option<A>>
-```
-
-Added in v1.0.0
-
-## liftShow
-
-**Signature**
-
-```ts
-export declare const liftShow: <A>(Show: show.Show<A>) => show.Show<Option<A>>
 ```
 
 Added in v1.0.0

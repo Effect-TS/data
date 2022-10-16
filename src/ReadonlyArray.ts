@@ -8,12 +8,12 @@ import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import type * as monad from "@fp-ts/core/Monad"
 import type { Monoid } from "@fp-ts/core/Monoid"
 import type * as applicative from "@fp-ts/core/Monoidal"
+import type * as fromIdentity from "@fp-ts/core/Pointed"
 import type { Semigroup } from "@fp-ts/core/Semigroup"
+import { fromCombine } from "@fp-ts/core/Semigroup"
 import * as apply from "@fp-ts/core/Semigroupal"
-import type { Show } from "@fp-ts/core/Show"
 import * as ord from "@fp-ts/core/Sortable"
 import type { Sortable } from "@fp-ts/core/Sortable"
-import type * as fromIdentity from "@fp-ts/core/Succeed"
 import * as traversable from "@fp-ts/core/Traversable"
 import type { Endomorphism } from "@fp-ts/data/Endomorphism"
 import { equals } from "@fp-ts/data/Equal"
@@ -867,7 +867,7 @@ export const failures = <E, A>(as: ReadonlyArray<Result<E, A>>): ReadonlyArray<E
  */
 export const sort = <B>(O: Sortable<B>) =>
   <A extends B>(as: ReadonlyArray<A>): ReadonlyArray<A> =>
-    as.length <= 1 ? as : as.slice().sort((self, that) => O.compare(self, that))
+    as.length <= 1 ? as : as.slice().sort((self, that) => O.compare(that)(self))
 
 /**
  * Apply a function to pairs of elements at the same index in two `ReadonlyArray`s, collecting the results in a new `ReadonlyArray`. If one
@@ -1224,8 +1224,8 @@ export const map = <A, B>(f: (a: A) => B) =>
  * @category instances
  * @since 1.0.0
  */
-export const FromIdentity: fromIdentity.Succeed<ReadonlyArrayTypeLambda> = {
-  succeed: of
+export const FromIdentity: fromIdentity.Pointed<ReadonlyArrayTypeLambda> = {
+  of
 }
 
 /**
@@ -1437,7 +1437,7 @@ export const traverseWithIndex = <F extends TypeLambda>(Applicative: applicative
       pipe(
         self,
         reduceWithIndex<Kind<F, S, R, O, E, ReadonlyArray<B>>, A>(
-          Applicative.succeed(internal.empty),
+          Applicative.of(internal.empty),
           (i, fbs, a) =>
             pipe(
               fbs,
@@ -1487,24 +1487,7 @@ export const unfold: <B, A>(b: B, f: (b: B) => Option<readonly [A, B]>) => Reado
  * @category instances
  * @since 1.0.0
  */
-export const liftShow = <A>(Show: Show<A>): Show<ReadonlyArray<A>> => ({
-  show: (as) => `[${as.map(Show.show).join(", ")}]`
-})
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const getUnionSemigroup = <A>(): Semigroup<ReadonlyArray<A>> => ({
-  combine: (first, second) => union(second)(first),
-  combineMany: (start, others) => {
-    let c = start
-    for (const o of others) {
-      c = union(o)(c)
-    }
-    return c
-  }
-})
+export const getUnionSemigroup = <A>(): Semigroup<ReadonlyArray<A>> => fromCombine(union)
 
 /**
  * @category instances
@@ -1515,7 +1498,7 @@ export const getUnionMonoid = <A>(): Monoid<ReadonlyArray<A>> => {
   return ({
     combine: S.combine,
     combineMany: S.combineMany,
-    combineAll: (all) => S.combineMany(empty, all),
+    combineAll: (all) => S.combineMany(all)(empty),
     empty
   })
 }
@@ -1524,16 +1507,8 @@ export const getUnionMonoid = <A>(): Monoid<ReadonlyArray<A>> => {
  * @category instances
  * @since 1.0.0
  */
-export const getIntersectionSemigroup = <A>(): Semigroup<ReadonlyArray<A>> => ({
-  combine: (first, second) => intersection(second)(first),
-  combineMany: (start, others) => {
-    let c = start
-    for (const o of others) {
-      c = intersection(o)(c)
-    }
-    return c
-  }
-})
+export const getIntersectionSemigroup = <A>(): Semigroup<ReadonlyArray<A>> =>
+  fromCombine(intersection)
 
 /**
  * Returns a `Semigroup` for `ReadonlyArray<A>`.
@@ -1548,16 +1523,7 @@ export const getIntersectionSemigroup = <A>(): Semigroup<ReadonlyArray<A>> => ({
  * @category instances
  * @since 1.0.0
  */
-export const getSemigroup = <A>(): Semigroup<ReadonlyArray<A>> => ({
-  combine: (first, second) => concat(second)(first),
-  combineMany: (start, others) => {
-    let c = start
-    for (const o of others) {
-      c = concat(o)(c)
-    }
-    return c
-  }
-})
+export const getSemigroup = <A>(): Semigroup<ReadonlyArray<A>> => fromCombine(concat)
 
 /**
  * Returns a `Monoid` for `ReadonlyArray<A>`.
@@ -1570,7 +1536,7 @@ export const getMonoid = <A>(): Monoid<ReadonlyArray<A>> => {
   return ({
     combine: S.combine,
     combineMany: S.combineMany,
-    combineAll: (all) => S.combineMany(empty, all),
+    combineAll: (all) => S.combineMany(all)(empty),
     empty
   })
 }
@@ -1595,18 +1561,20 @@ export const getMonoid = <A>(): Monoid<ReadonlyArray<A>> => {
  * @since 1.0.0
  */
 export const liftOrd = <A>(O: Sortable<A>): Sortable<ReadonlyArray<A>> =>
-  ord.fromCompare((self, that) => {
-    const aLen = self.length
-    const bLen = that.length
-    const len = Math.min(aLen, bLen)
-    for (let i = 0; i < len; i++) {
-      const o = O.compare(self[i], that[i])
-      if (o !== 0) {
-        return o
+  ord.fromCompare((that) =>
+    (self) => {
+      const aLen = self.length
+      const bLen = that.length
+      const len = Math.min(aLen, bLen)
+      for (let i = 0; i < len; i++) {
+        const o = O.compare(that[i])(self[i])
+        if (o !== 0) {
+          return o
+        }
       }
+      return number.Ord.compare(bLen)(aLen)
     }
-    return number.Ord.compare(aLen, bLen)
-  })
+  )
 
 /**
  * @category instances
@@ -1649,17 +1617,15 @@ export const unit: (self: ReadonlyArray<unknown>) => ReadonlyArray<void> = funct
  */
 export const Apply: apply.Semigroupal<ReadonlyArrayTypeLambda> = {
   map,
-  zipWith: (fa, fb, f) => zipWith(fb, f)(fa),
-  zipMany: <A>(
-    start: ReadonlyArray<A>,
-    others: Iterable<ReadonlyArray<A>>
-  ): ReadonlyArray<[A, ...Array<A>]> => {
-    let c: ReadonlyArray<[A, ...Array<A>]> = pipe(start, map((a) => [a]))
-    for (const o of others) {
-      c = pipe(c, zipWith(o, (a, b) => [...a, b]))
+  zipWith,
+  zipMany: <A>(others: Iterable<ReadonlyArray<A>>) =>
+    (start: ReadonlyArray<A>): ReadonlyArray<[A, ...Array<A>]> => {
+      let c: ReadonlyArray<[A, ...Array<A>]> = pipe(start, map((a) => [a]))
+      for (const o of others) {
+        c = pipe(c, zipWith(o, (a, b) => [...a, b]))
+      }
+      return c
     }
-    return c
-  }
 }
 
 /**
@@ -1689,7 +1655,7 @@ export const lift3: <A, B, C, D>(
  */
 export const Applicative: applicative.Monoidal<ReadonlyArrayTypeLambda> = {
   map,
-  succeed: of,
+  of,
   zipMany: Apply.zipMany,
   zipWith: Apply.zipWith,
   zipAll: <A>(collection: Iterable<ReadonlyArray<A>>): ReadonlyArray<ReadonlyArray<A>> => {
@@ -1707,7 +1673,7 @@ export const Applicative: applicative.Monoidal<ReadonlyArrayTypeLambda> = {
  */
 export const Monad: monad.Monad<ReadonlyArrayTypeLambda> = {
   map,
-  succeed: of,
+  of,
   flatMap
 }
 
@@ -1834,7 +1800,7 @@ export const reduce = <B, A>(b: B, f: (b: B, a: A) => B) =>
  */
 export const foldMap = <M>(Monoid: Monoid<M>) =>
   <A>(f: (a: A) => M) =>
-    (self: ReadonlyArray<A>): M => self.reduce((m, a) => Monoid.combine(m, f(a)), Monoid.empty)
+    (self: ReadonlyArray<A>): M => self.reduce((m, a) => Monoid.combine(f(a))(m), Monoid.empty)
 
 /**
  * @category folding
@@ -1857,7 +1823,7 @@ export const reduceWithIndex = <B, A>(b: B, f: (i: number, b: B, a: A) => B) =>
 export const foldMapWithIndex = <M>(Monoid: Monoid<M>) =>
   <A>(f: (i: number, a: A) => M) =>
     (self: ReadonlyArray<A>): M =>
-      self.reduce((m, a, i) => Monoid.combine(m, f(i, a)), Monoid.empty)
+      self.reduce((m, a, i) => Monoid.combine(f(i, a))(m), Monoid.empty)
 
 /**
  * @category folding

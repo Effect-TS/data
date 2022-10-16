@@ -5,7 +5,7 @@ import type * as category from "@fp-ts/core/Category"
 import type * as composable from "@fp-ts/core/Composable"
 import type { TypeLambda } from "@fp-ts/core/HKT"
 import type * as monoid from "@fp-ts/core/Monoid"
-import type * as semigroup from "@fp-ts/core/Semigroup"
+import * as semigroup from "@fp-ts/core/Semigroup"
 import type { Endomorphism } from "@fp-ts/data/Endomorphism"
 
 // -------------------------------------------------------------------------------------
@@ -78,18 +78,8 @@ export const Category: category.Category<FunctionTypeLambda> = {
  * @since 1.0.0
  */
 export const getSemigroup = <S>(Semigroup: semigroup.Semigroup<S>) =>
-  <A>(): semigroup.Semigroup<(a: A) => S> => {
-    return ({
-      combine: (self, that) => (a) => Semigroup.combine(self(a), that(a)),
-      combineMany: (start, others) => {
-        let c = start
-        for (const o of others) {
-          c = (a) => Semigroup.combine(c(a), o(a))
-        }
-        return c
-      }
-    })
-  }
+  <A>(): semigroup.Semigroup<(a: A) => S> =>
+    semigroup.fromCombine((that) => (self) => (a) => Semigroup.combine(that(a))(self(a)))
 
 /**
  * Unary functions form a monoid as long as you can provide a monoid for the codomain.
@@ -122,7 +112,7 @@ export const getMonoid = <M>(Monoid: monoid.Monoid<M>) =>
     return ({
       combine: S.combine,
       combineMany: S.combineMany,
-      combineAll: (all) => S.combineMany(empty, all),
+      combineAll: (all) => S.combineMany(all)(empty),
       empty
     })
   }

@@ -2,8 +2,7 @@
  * @since 1.0.0
  */
 import type * as monoid from "@fp-ts/core/Monoid"
-import type * as semigroup from "@fp-ts/core/Semigroup"
-import type * as show_ from "@fp-ts/core/Show"
+import * as semigroup from "@fp-ts/core/Semigroup"
 import type * as sortable from "@fp-ts/core/Sortable"
 import type { NonEmptyReadonlyArray } from "@fp-ts/data/NonEmptyReadonlyArray"
 import * as RA from "@fp-ts/data/ReadonlyArray"
@@ -30,16 +29,7 @@ export const concat = (that: string) => (self: string): string => self + that
  * @category instances
  * @since 1.0.0
  */
-export const Semigroup: semigroup.Semigroup<string> = {
-  combine: (first, second) => concat(second)(first),
-  combineMany: (start, others) => {
-    let s = start
-    for (const o of others) {
-      s = concat(o)(s)
-    }
-    return s
-  }
-}
+export const Semigroup: semigroup.Semigroup<string> = semigroup.fromCombine(concat)
 
 /**
  * An empty `string`.
@@ -66,7 +56,7 @@ export const empty = ""
 export const Monoid: monoid.Monoid<string> = {
   combine: Semigroup.combine,
   combineMany: Semigroup.combineMany,
-  combineAll: (all) => Semigroup.combineMany(empty, all),
+  combineAll: (all) => Semigroup.combineMany(all)(empty),
   empty
 }
 
@@ -88,20 +78,7 @@ export const concatAll: (collection: Iterable<string>) => string = Monoid.combin
  * @since 1.0.0
  */
 export const Ord: sortable.Sortable<string> = {
-  compare: (self, that) => self < that ? -1 : self > that ? 1 : 0
-}
-
-/**
- * @exampleTodo
- * import * as S from '@fp-ts/core/data/string'
- *
- * assert.deepStrictEqual(S.Show.show('a'), '"a"')
- *
- * @category instances
- * @since 1.0.0
- */
-export const Show: show_.Show<string> = {
-  show: (s) => JSON.stringify(s)
+  compare: (that) => (self) => self < that ? -1 : self > that ? 1 : 0
 }
 
 // -------------------------------------------------------------------------------------

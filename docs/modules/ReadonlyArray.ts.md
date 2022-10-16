@@ -70,7 +70,6 @@ Added in v1.0.0
   - [getUnionMonoid](#getunionmonoid)
   - [getUnionSemigroup](#getunionsemigroup)
   - [liftOrd](#liftord)
-  - [liftShow](#liftshow)
 - [lifting](#lifting)
   - [lift2](#lift2)
   - [lift3](#lift3)
@@ -644,7 +643,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const FromIdentity: fromIdentity.Succeed<ReadonlyArrayTypeLambda>
+export declare const FromIdentity: fromIdentity.Pointed<ReadonlyArrayTypeLambda>
 ```
 
 Added in v1.0.0
@@ -774,16 +773,6 @@ the same length, the result is equality.
 
 ```ts
 export declare const liftOrd: <A>(O: ord.Sortable<A>) => ord.Sortable<readonly A[]>
-```
-
-Added in v1.0.0
-
-## liftShow
-
-**Signature**
-
-```ts
-export declare const liftShow: <A>(Show: Show<A>) => Show<readonly A[]>
 ```
 
 Added in v1.0.0

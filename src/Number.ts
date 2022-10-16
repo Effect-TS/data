@@ -3,8 +3,7 @@
  */
 import type * as bounded from "@fp-ts/core/Bounded"
 import type * as monoid from "@fp-ts/core/Monoid"
-import type * as semigroup from "@fp-ts/core/Semigroup"
-import type * as show from "@fp-ts/core/Show"
+import * as semigroup from "@fp-ts/core/Semigroup"
 import type * as ord from "@fp-ts/core/Sortable"
 import type { Refinement } from "@fp-ts/data/Refinement"
 
@@ -35,7 +34,7 @@ export const sub = (that: number) => (self: number): number => self - that
  * @since 1.0.0
  */
 export const Ord: ord.Sortable<number> = {
-  compare: (self, that) => self < that ? -1 : self > that ? 1 : 0
+  compare: (that) => (self) => self < that ? -1 : self > that ? 1 : 0
 }
 
 /**
@@ -46,14 +45,6 @@ export const Bounded: bounded.Bounded<number> = {
   compare: Ord.compare,
   maximum: Infinity,
   minimum: -Infinity
-}
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Show: show.Show<number> = {
-  show: (a) => JSON.stringify(a)
 }
 
 /**
@@ -68,16 +59,7 @@ export const Show: show.Show<number> = {
  * @category instances
  * @since 1.0.0
  */
-export const SemigroupSum: semigroup.Semigroup<number> = {
-  combine: (first, second) => sum(second)(first),
-  combineMany: (start, others) => {
-    let c = start
-    for (const o of others) {
-      c = sum(o)(c)
-    }
-    return c
-  }
-}
+export const SemigroupSum: semigroup.Semigroup<number> = semigroup.fromCombine(sum)
 
 /**
  * `number` semigroup under multiplication.
@@ -91,16 +73,7 @@ export const SemigroupSum: semigroup.Semigroup<number> = {
  * @category instances
  * @since 1.0.0
  */
-export const SemigroupMultiply: semigroup.Semigroup<number> = {
-  combine: (first, second) => multiply(second)(first),
-  combineMany: (start, others) => {
-    let c = start
-    for (const o of others) {
-      c = multiply(o)(c)
-    }
-    return c
-  }
-}
+export const SemigroupMultiply: semigroup.Semigroup<number> = semigroup.fromCombine(multiply)
 
 /**
  * `number` monoid under addition.
@@ -113,7 +86,7 @@ export const SemigroupMultiply: semigroup.Semigroup<number> = {
 export const MonoidSum: monoid.Monoid<number> = {
   combine: SemigroupSum.combine,
   combineMany: SemigroupSum.combineMany,
-  combineAll: (all) => SemigroupSum.combineMany(0, all),
+  combineAll: (all) => SemigroupSum.combineMany(all)(0),
   empty: 0
 }
 
@@ -128,7 +101,7 @@ export const MonoidSum: monoid.Monoid<number> = {
 export const MonoidMultiply: monoid.Monoid<number> = {
   combine: SemigroupMultiply.combine,
   combineMany: SemigroupMultiply.combineMany,
-  combineAll: (all) => SemigroupMultiply.combineMany(0, all),
+  combineAll: (all) => SemigroupMultiply.combineMany(all)(0),
   empty: 1
 }
 

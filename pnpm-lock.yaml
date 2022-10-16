@@ -19,7 +19,7 @@ importers:
       '@changesets/cli': ^2.25.0
       '@effect-ts/build-utils': 0.40.5
       '@effect-ts/core': ^0.60.2
-      '@fp-ts/core': ^0.0.3
+      '@fp-ts/core': ^0.0.4
       '@repo-tooling/eslint-plugin-dprint': ^0.0.4
       '@types/benchmark': ^1.0.31
       '@types/chai': ^4.3.3
@@ -55,7 +55,7 @@ importers:
       vite: ^2.9.13
       vitest: 0.24.3
     dependencies:
-      '@fp-ts/core': 0.0.3
+      '@fp-ts/core': 0.0.4
     devDependencies:
       '@babel/cli': 7.19.3_@babel+core@7.19.3
       '@babel/core': 7.19.3
@@ -682,8 +682,8 @@ packages:
       - supports-color
     dev: true
 
-  /@fp-ts/core/0.0.3:
-    resolution: {integrity: sha512-X/LM3ge7xR1kiDW7tV+2arBCd/Sz2L79OWdH4QmNyqwmeRpdvPTzhNqdyHt0eUGNn1yjtxsyQNwFjWF1qDGP7g==}
+  /@fp-ts/core/0.0.4:
+    resolution: {integrity: sha512-p0dO6S4ejDxD15Y4IE4qAZA30w7y8WWhJIO/DwG/a2zlUCzMFEjfyaheZAh70REGBxwBsZkVpW++HyMcAbspVg==}
     dev: false
 
   /@humanwhocodes/config-array/0.10.7:
