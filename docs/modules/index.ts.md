@@ -22,6 +22,8 @@ Added in v1.0.0
   - [duration](#duration)
   - [endomorphism](#endomorphism)
   - [equal](#equal)
+  - [fromOption](#fromoption)
+  - [fromResult](#fromresult)
   - [function](#function)
   - [hash](#hash)
   - [hashMap](#hashmap)
@@ -135,6 +137,26 @@ Added in v1.0.0
 
 ```ts
 export declare const equal: typeof equal
+```
+
+Added in v1.0.0
+
+## fromOption
+
+**Signature**
+
+```ts
+export declare const fromOption: typeof fromOption
+```
+
+Added in v1.0.0
+
+## fromResult
+
+**Signature**
+
+```ts
+export declare const fromResult: typeof fromResult
 ```
 
 Added in v1.0.0
