@@ -1,7 +1,7 @@
-import * as O from "@fp-ts/core/Option"
 import type * as C from "@fp-ts/data/Context"
 import { Equal } from "@fp-ts/data/Equal"
 import { evaluate, Hash, random } from "@fp-ts/data/Hash"
+import * as O from "@fp-ts/data/Option"
 
 /** @internal */
 export const TagTypeId: C.TagTypeId = Symbol.for("@fp-ts/data/Context/Tag") as C.TagTypeId

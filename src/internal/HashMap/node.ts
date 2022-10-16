@@ -1,10 +1,9 @@
-import * as O from "@fp-ts/core/Option"
-import type { Eq } from "@fp-ts/core/typeclasses/Eq"
 import { equals } from "@fp-ts/data/Equal"
 import { arraySpliceIn, arraySpliceOut, arrayUpdate } from "@fp-ts/data/internal/HashMap/array"
 import { fromBitmap, hashFragment, toBitmap } from "@fp-ts/data/internal/HashMap/bitwise"
 import { MAX_INDEX_NODE, MIN_ARRAY_NODE, SIZE } from "@fp-ts/data/internal/HashMap/config"
 import { Stack } from "@fp-ts/data/internal/Stack"
+import * as O from "@fp-ts/data/Option"
 
 /** @internal */
 export type Node<K, V> =
@@ -54,9 +53,6 @@ export function isLeafNode<K, V>(
 export function canEditNode<K, V>(node: Node<K, V>, edit: number): boolean {
   return isEmptyNode(node) ? false : edit === node.edit
 }
-
-/** @internal */
-export type KeyEq<K> = Eq<K>["equals"]
 
 /** @internal */
 export type UpdateFn<V> = (v: O.Option<V>) => O.Option<V>

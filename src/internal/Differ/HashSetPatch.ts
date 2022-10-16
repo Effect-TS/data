@@ -1,6 +1,6 @@
 import type * as HSP from "@fp-ts/data/Differ/HashSetPatch"
 import * as HashSet from "@fp-ts/data/HashSet"
-import * as List from "@fp-ts/data/List"
+import * as List from "@fp-ts/data/internal/List"
 
 /** @internal */
 export const HashSetPatchTypeId: HSP.TypeId = Symbol.for(

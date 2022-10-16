@@ -8,16 +8,13 @@
  * Licensed under Apache License 2.0
  * (http://www.apache.org/licenses/LICENSE-2.0).
  */
-import { pipe, unsafeCoerce } from "@fp-ts/core/Function"
-import * as O from "@fp-ts/core/Option"
-import type { Predicate } from "@fp-ts/core/Predicate"
-import type { Refinement } from "@fp-ts/core/Refinement"
-import * as R from "@fp-ts/core/Result"
+import { pipe, unsafeCoerce } from "@fp-ts/data/Function"
 import type * as L from "@fp-ts/data/List"
+import * as O from "@fp-ts/data/Option"
+import type { Predicate } from "@fp-ts/data/Predicate"
+import type { Refinement } from "@fp-ts/data/Refinement"
+import * as R from "@fp-ts/data/Result"
 
-import type * as _apply from "@fp-ts/core/typeclasses/Apply"
-import type * as _fromIdentity from "@fp-ts/core/typeclasses/FromIdentity"
-import type * as _functor from "@fp-ts/core/typeclasses/Functor"
 import * as DE from "@fp-ts/data/Equal"
 import * as DH from "@fp-ts/data/Hash"
 
@@ -601,35 +598,4 @@ export function tail<A>(self: L.List<A>): O.Option<L.List<A>> {
 }
 
 /** @internal */
-export const Functor: _functor.Functor<L.ListTypeLambda> = {
-  map
-}
-
-/** @internal */
 export const of: <A>(a: A) => L.List<A> = (a) => cons(a, nil())
-
-/** @internal */
-export const FromIdentity: _fromIdentity.FromIdentity<L.ListTypeLambda> = {
-  of
-}
-
-/** @internal */
-export const ap: <A>(
-  fa: L.List<A>
-) => <B>(self: L.List<(a: A) => B>) => L.List<B> = (fa) =>
-  (self) =>
-    pipe(
-      self,
-      flatMap((f) =>
-        pipe(
-          fa,
-          map((a) => f(a))
-        )
-      )
-    )
-
-/** @internal */
-export const Apply: _apply.Apply<L.ListTypeLambda> = {
-  map,
-  ap
-}

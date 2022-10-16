@@ -28,7 +28,7 @@ Added in v1.0.0
   - [reduceWithIndex](#reducewithindex)
 - [getters](#getters)
   - [first](#first)
-  - [getOrd](#getord)
+  - [getSortable](#getsortable)
   - [keys](#keys)
   - [last](#last)
   - [size](#size)
@@ -77,7 +77,7 @@ Creates an empty `RedBlackTree`.
 **Signature**
 
 ```ts
-export declare const empty: <K, V = never>(ord: Ord<K>) => RedBlackTree<K, V>
+export declare const empty: <K, V = never>(ord: Sortable<K>) => RedBlackTree<K, V>
 ```
 
 Added in v1.0.0
@@ -89,7 +89,7 @@ Constructs a new tree from an iterable of key-value pairs.
 **Signature**
 
 ```ts
-export declare const from: <K, V>(ord: Ord<K>) => (entries: Iterable<readonly [K, V]>) => RedBlackTree<K, V>
+export declare const from: <K, V>(ord: Sortable<K>) => (entries: Iterable<readonly [K, V]>) => RedBlackTree<K, V>
 ```
 
 Added in v1.0.0
@@ -102,7 +102,7 @@ Constructs a new `RedBlackTree` from the specified entries.
 
 ```ts
 export declare const make: <K, Entries extends (readonly [K, any])[]>(
-  ord: Ord<K>
+  ord: Sortable<K>
 ) => (...entries: Entries) => RedBlackTree<K, Entries[number] extends readonly [any, infer V] ? V : never>
 ```
 
@@ -202,14 +202,14 @@ export declare const first: <K, V>(tree: RedBlackTree<K, V>) => Option<readonly 
 
 Added in v1.0.0
 
-## getOrd
+## getSortable
 
 Gets the `Ord<K>` that the `RedBlackTree<K, V>` is using.
 
 **Signature**
 
 ```ts
-export declare const getOrd: <K, V>(self: RedBlackTree<K, V>) => Ord<K>
+export declare const getSortable: <K, V>(self: RedBlackTree<K, V>) => Sortable<K>
 ```
 
 Added in v1.0.0

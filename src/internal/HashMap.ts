@@ -1,13 +1,13 @@
-import { identity, pipe } from "@fp-ts/core/Function"
-import * as Option from "@fp-ts/core/Option"
-import type { Predicate } from "@fp-ts/core/Predicate"
-import type { Refinement } from "@fp-ts/core/Refinement"
 import * as Equal from "@fp-ts/data/Equal"
+import { identity, pipe } from "@fp-ts/data/Function"
 import * as Hash from "@fp-ts/data/Hash"
 import type * as HM from "@fp-ts/data/HashMap"
 import { fromBitmap, hashFragment, toBitmap } from "@fp-ts/data/internal/HashMap/bitwise"
 import { SIZE } from "@fp-ts/data/internal/HashMap/config"
 import * as Node from "@fp-ts/data/internal/HashMap/node"
+import * as Option from "@fp-ts/data/Option"
+import type { Predicate } from "@fp-ts/data/Predicate"
+import type { Refinement } from "@fp-ts/data/Refinement"
 
 /** @internal */
 export const HashMapTypeId: HM.TypeId = Symbol.for("@fp-ts/data/HashMap") as HM.TypeId

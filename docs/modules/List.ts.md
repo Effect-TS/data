@@ -36,10 +36,6 @@ Added in v1.0.0
 - [getters](#getters)
   - [head](#head)
   - [tail](#tail)
-- [instances](#instances)
-  - [Apply](#apply)
-  - [FromIdentity](#fromidentity)
-  - [Functor](#functor)
 - [mapping](#mapping)
   - [map](#map)
 - [models](#models)
@@ -266,38 +262,6 @@ export declare const tail: <A>(self: List<A>) => Option<List<A>>
 
 Added in v1.0.0
 
-# instances
-
-## Apply
-
-**Signature**
-
-```ts
-export declare const Apply: Apply<ListTypeLambda>
-```
-
-Added in v1.0.0
-
-## FromIdentity
-
-**Signature**
-
-```ts
-export declare const FromIdentity: FromIdentity<ListTypeLambda>
-```
-
-Added in v1.0.0
-
-## Functor
-
-**Signature**
-
-```ts
-export declare const Functor: Functor<ListTypeLambda>
-```
-
-Added in v1.0.0
-
 # mapping
 
 ## map
@@ -479,7 +443,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const sortWith: <A>(ord: Ord<A>) => (self: List<A>) => List<A>
+export declare const sortWith: <A>(ord: Sortable<A>) => (self: List<A>) => List<A>
 ```
 
 Added in v1.0.0

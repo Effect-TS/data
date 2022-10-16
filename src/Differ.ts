@@ -2,7 +2,6 @@
  * @since 1.0.0
  */
 
-import type { Result } from "@fp-ts/core/Result"
 import type { Chunk } from "@fp-ts/data/Chunk"
 import type { Context } from "@fp-ts/data/Context"
 import type { ChunkPatch } from "@fp-ts/data/Differ/ChunkPatch"
@@ -14,6 +13,7 @@ import type { Equal } from "@fp-ts/data/Equal"
 import type { HashMap } from "@fp-ts/data/HashMap"
 import type { HashSet } from "@fp-ts/data/HashSet"
 import * as D from "@fp-ts/data/internal/Differ"
+import type { Result } from "@fp-ts/data/Result"
 
 const TypeId: unique symbol = D.DifferTypeId as TypeId
 

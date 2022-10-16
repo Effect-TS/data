@@ -1,5 +1,3 @@
-import { constant, identity } from "@fp-ts/core/Function"
-import type { Result } from "@fp-ts/core/Result"
 import type { Chunk } from "@fp-ts/data/Chunk"
 import type { Context } from "@fp-ts/data/Context"
 import type * as D from "@fp-ts/data/Differ"
@@ -9,9 +7,11 @@ import * as HashMapPatch from "@fp-ts/data/Differ/HashMapPatch"
 import * as HashSetPatch from "@fp-ts/data/Differ/HashSetPatch"
 import * as OrPatch from "@fp-ts/data/Differ/OrPatch"
 import * as Equal from "@fp-ts/data/Equal"
+import { constant, identity } from "@fp-ts/data/Function"
 import * as Hash from "@fp-ts/data/Hash"
 import type { HashMap } from "@fp-ts/data/HashMap"
 import type { HashSet } from "@fp-ts/data/HashSet"
+import type { Result } from "@fp-ts/data/Result"
 
 /** @internal */
 export const DifferTypeId: D.TypeId = Symbol.for("@fp-ts/data/Differ") as D.TypeId

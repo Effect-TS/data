@@ -1,8 +1,7 @@
 /**
  * @since 1.0.0
  */
-import { absurd } from "@fp-ts/core/Function"
-import type { Eq } from "@fp-ts/core/typeclasses/Eq"
+import { absurd } from "@fp-ts/data/Function"
 import * as DH from "@fp-ts/data/Hash"
 
 /**
@@ -50,13 +49,6 @@ export function equals(): any {
     return (self: unknown) => compareBoth(self, arguments[0])
   }
   return compareBoth(arguments[0], arguments[1])
-}
-
-/** @internal */
-export function getEq<A>(): Eq<A> {
-  return {
-    equals: (that) => (self) => compareBoth(self, that)
-  }
 }
 
 function isDeepEqual(u: unknown): u is Equal {

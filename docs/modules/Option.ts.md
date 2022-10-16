@@ -42,7 +42,6 @@ Added in v1.0.0
   - [let](#let)
 - [error handling](#error-handling)
   - [catchAll](#catchall)
-  - [firstSuccessOf](#firstsuccessof)
   - [getOrElse](#getorelse)
 - [filtering](#filtering)
   - [compact](#compact)
@@ -62,11 +61,8 @@ Added in v1.0.0
 - [instance operations](#instance-operations)
   - [orElse](#orelse)
 - [instances](#instances)
-  - [Alt](#alt)
-  - [Alternative](#alternative)
   - [Applicative](#applicative)
   - [Apply](#apply)
-  - [CategoryKind](#categorykind)
   - [Compactable](#compactable)
   - [Extendable](#extendable)
   - [Filterable](#filterable)
@@ -75,12 +71,10 @@ Added in v1.0.0
   - [FromOption](#fromoption)
   - [FromResult](#fromresult)
   - [Functor](#functor)
-  - [KleisliComposable](#kleislicomposable)
   - [Monad](#monad)
   - [Traversable](#traversable)
   - [TraversableFilterable](#traversablefilterable)
   - [getMonoid](#getmonoid)
-  - [liftEq](#lifteq)
   - [liftOrd](#liftord)
   - [liftShow](#liftshow)
 - [interop](#interop)
@@ -129,13 +123,11 @@ Added in v1.0.0
   - [OptionTypeLambda (interface)](#optiontypelambda-interface)
 - [utils](#utils)
   - [ap](#ap)
-  - [composeKleisli](#composekleisli)
   - [duplicate](#duplicate)
   - [elem](#elem)
   - [exists](#exists)
   - [extend](#extend)
   - [flatten](#flatten)
-  - [idKleisli](#idkleisli)
   - [tap](#tap)
 
 ---
@@ -324,18 +316,6 @@ export declare const catchAll: <B>(that: LazyArg<Option<B>>) => <A>(self: Option
 
 Added in v1.0.0
 
-## firstSuccessOf
-
-Returns an effect that runs each of the specified effects in order until one of them succeeds.
-
-**Signature**
-
-```ts
-export declare const firstSuccessOf: <A>(collection: Iterable<Option<A>>) => Option<A>
-```
-
-Added in v1.0.0
-
 ## getOrElse
 
 Extracts the value out of the structure, if it exists. Otherwise returns the given default value
@@ -424,7 +404,7 @@ Added in v1.0.0
 
 ```ts
 export declare const traverseFilter: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
+  F: applicative.Monoidal<F>
 ) => <B extends A, S, R, O, E, A = B>(
   predicate: (a: A) => Kind<F, S, R, O, E, boolean>
 ) => (self: Option<B>) => Kind<F, S, R, O, E, Option<B>>
@@ -438,7 +418,7 @@ Added in v1.0.0
 
 ```ts
 export declare const traverseFilterMap: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
+  F: applicative.Monoidal<F>
 ) => <A, S, R, O, E, B>(
   f: (a: A) => Kind<F, S, R, O, E, Option<B>>
 ) => (ta: Option<A>) => Kind<F, S, R, O, E, Option<B>>
@@ -452,7 +432,7 @@ Added in v1.0.0
 
 ```ts
 export declare const traversePartition: <F extends TypeLambda>(
-  ApplicativeF: applicative.Applicative<F>
+  ApplicativeF: applicative.Monoidal<F>
 ) => <B extends A, S, R, O, E, A = B>(
   predicate: (a: A) => Kind<F, S, R, O, E, boolean>
 ) => (self: Option<B>) => Kind<F, S, R, O, E, readonly [Option<B>, Option<B>]>
@@ -466,7 +446,7 @@ Added in v1.0.0
 
 ```ts
 export declare const traversePartitionMap: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
+  F: applicative.Monoidal<F>
 ) => <A, S, R, O, E, B, C>(
   f: (a: A) => Kind<F, S, R, O, E, Result<B, C>>
 ) => (wa: Option<A>) => Kind<F, S, R, O, E, readonly [Option<B>, Option<C>]>
@@ -532,32 +512,12 @@ Added in v1.0.0
 
 # instances
 
-## Alt
-
-**Signature**
-
-```ts
-export declare const Alt: alt.Alt<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## Alternative
-
-**Signature**
-
-```ts
-export declare const Alternative: alternative.Alternative<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
 ## Applicative
 
 **Signature**
 
 ```ts
-export declare const Applicative: applicative.Applicative<OptionTypeLambda>
+export declare const Applicative: applicative.Monoidal<OptionTypeLambda>
 ```
 
 Added in v1.0.0
@@ -567,17 +527,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Apply: apply.Apply<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## CategoryKind
-
-**Signature**
-
-```ts
-export declare const CategoryKind: kleisliCategory.KleisliCategory<OptionTypeLambda>
+export declare const Apply: apply.Semigroupal<OptionTypeLambda>
 ```
 
 Added in v1.0.0
@@ -617,7 +567,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Flattenable: flattenable.Flattenable<OptionTypeLambda>
+export declare const Flattenable: flattenable.FlatMap<OptionTypeLambda>
 ```
 
 Added in v1.0.0
@@ -627,7 +577,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const FromIdentity: fromIdentity.FromIdentity<OptionTypeLambda>
+export declare const FromIdentity: fromIdentity.Succeed<OptionTypeLambda>
 ```
 
 Added in v1.0.0
@@ -658,16 +608,6 @@ Added in v1.0.0
 
 ```ts
 export declare const Functor: functor.Functor<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## KleisliComposable
-
-**Signature**
-
-```ts
-export declare const KleisliComposable: kleisliComposable.KleisliComposable<OptionTypeLambda>
 ```
 
 Added in v1.0.0
@@ -722,16 +662,6 @@ export declare const getMonoid: <A>(Semigroup: semigroup.Semigroup<A>) => monoid
 
 Added in v1.0.0
 
-## liftEq
-
-**Signature**
-
-```ts
-export declare const liftEq: <A>(Eq: eq.Eq<A>) => eq.Eq<Option<A>>
-```
-
-Added in v1.0.0
-
 ## liftOrd
 
 The `Ord` instance allows `Option` values to be compared with
@@ -743,7 +673,7 @@ the type the `Option` contains.
 **Signature**
 
 ```ts
-export declare const liftOrd: <A>(O: ord.Ord<A>) => ord.Ord<Option<A>>
+export declare const liftOrd: <A>(O: ord.Sortable<A>) => ord.Sortable<Option<A>>
 ```
 
 Added in v1.0.0
@@ -1049,7 +979,7 @@ Added in v1.0.0
 
 ```ts
 export declare const sequence: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
+  F: applicative.Monoidal<F>
 ) => <S, R, O, E, A>(fas: Option<Kind<F, S, R, O, E, A>>) => Kind<F, S, R, O, E, Option<A>>
 ```
 
@@ -1073,7 +1003,7 @@ Added in v1.0.0
 
 ```ts
 export declare const traverse: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
+  F: applicative.Monoidal<F>
 ) => <A, S, R, O, E, B>(f: (a: A) => Kind<F, S, R, O, E, B>) => (ta: Option<A>) => Kind<F, S, R, O, E, Option<B>>
 ```
 
@@ -1207,18 +1137,6 @@ export declare const ap: <A>(fa: Option<A>) => <B>(fab: Option<(a: A) => B>) => 
 
 Added in v1.0.0
 
-## composeKleisli
-
-**Signature**
-
-```ts
-export declare const composeKleisli: <B, C>(
-  bfc: (b: B) => Option<C>
-) => <A>(afb: (a: A) => Option<B>) => (a: A) => Option<C>
-```
-
-Added in v1.0.0
-
 ## duplicate
 
 **Signature**
@@ -1236,7 +1154,7 @@ Tests whether a value is a member of a `Option`.
 **Signature**
 
 ```ts
-export declare const elem: <A>(E: eq.Eq<A>) => (a: A) => (ma: Option<A>) => boolean
+export declare const elem: <A>(a: A) => (ma: Option<A>) => boolean
 ```
 
 Added in v1.0.0
@@ -1269,16 +1187,6 @@ Added in v1.0.0
 
 ```ts
 export declare const flatten: <A>(mma: Option<Option<A>>) => Option<A>
-```
-
-Added in v1.0.0
-
-## idKleisli
-
-**Signature**
-
-```ts
-export declare const idKleisli: <A>() => (a: A) => Option<A>
 ```
 
 Added in v1.0.0

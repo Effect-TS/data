@@ -30,9 +30,6 @@ Added in v1.0.0
   - [head](#head)
   - [length](#length)
   - [tail](#tail)
-- [instances](#instances)
-  - [FromIdentity](#fromidentity)
-  - [Functor](#functor)
 - [mapping](#mapping)
   - [map](#map)
 - [models](#models)
@@ -192,28 +189,6 @@ Added in v1.0.0
 
 ```ts
 export declare const tail: <A>(self: Queue<A>) => O.Option<Queue<A>>
-```
-
-Added in v1.0.0
-
-# instances
-
-## FromIdentity
-
-**Signature**
-
-```ts
-export declare const FromIdentity: FromIdentity<QueueTypeLambda>
-```
-
-Added in v1.0.0
-
-## Functor
-
-**Signature**
-
-```ts
-export declare const Functor: Functor<QueueTypeLambda>
 ```
 
 Added in v1.0.0

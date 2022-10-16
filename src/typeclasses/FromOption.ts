@@ -3,10 +3,11 @@
  *
  * @since 1.0.0
  */
+import type { FlatMap } from "@fp-ts/core/FlatMap"
 import type { Kind, TypeClass, TypeLambda } from "@fp-ts/core/HKT"
-import * as O from "@fp-ts/core/Option"
-import type { Flattenable } from "@fp-ts/core/typeclasses/Flattenable"
 import { pipe } from "@fp-ts/data/Function"
+import * as C from "@fp-ts/data/internal/Common"
+import type * as O from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
 
@@ -27,7 +28,8 @@ export interface FromOption<F extends TypeLambda> extends TypeClass<F> {
  * @since 1.0.0
  */
 export const fromNullable = <F extends TypeLambda>(F: FromOption<F>) =>
-  <A, S>(a: A): Kind<F, S, unknown, never, never, NonNullable<A>> => F.fromOption(O.fromNullable(a))
+  <A, S>(a: A): Kind<F, S, unknown, never, never, NonNullable<A>> =>
+    F.fromOption(C.fromNullableToOption(a))
 
 // -------------------------------------------------------------------------------------
 // lifting
@@ -47,7 +49,7 @@ export const liftPredicate = <F extends TypeLambda>(
 } =>
   <B extends A, A = B>(predicate: Predicate<A>) =>
     <S>(b: B): Kind<F, S, unknown, never, never, B> =>
-      F.fromOption(predicate(b) ? O.some(b) : O.none)
+      F.fromOption(predicate(b) ? C.some(b) : C.none)
 
 /**
  * @category lifting
@@ -77,7 +79,7 @@ export const liftNullable = <F extends TypeLambda>(F: FromOption<F>) => {
  * @category sequencing
  * @since 1.0.0
  */
-export const flatMapNullable = <F extends TypeLambda>(F: FromOption<F>, C: Flattenable<F>) => {
+export const flatMapNullable = <F extends TypeLambda>(F: FromOption<F>, C: FlatMap<F>) => {
   const liftNullable_ = liftNullable(F)
   return <A, B>(f: (a: A) => B | null | undefined) =>
     <S, R, O, E>(self: Kind<F, S, R, O, E, A>): Kind<F, S, R, O, E, NonNullable<B>> => {

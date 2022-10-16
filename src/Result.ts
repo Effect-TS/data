@@ -13,26 +13,24 @@
  *
  * @since 1.0.0
  */
+import * as bifunctor from "@fp-ts/core/Bifunctor"
+import type * as extendable from "@fp-ts/core/Extendable"
+import * as flattenable from "@fp-ts/core/FlatMap"
+import * as functor from "@fp-ts/core/Functor"
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
-import type { NonEmptyReadonlyArray } from "@fp-ts/core/NonEmptyReadonlyArray"
-import * as alt from "@fp-ts/core/typeclasses/Alt"
-import type * as applicative from "@fp-ts/core/typeclasses/Applicative"
-import * as apply from "@fp-ts/core/typeclasses/Apply"
-import * as bifunctor from "@fp-ts/core/typeclasses/Bifunctor"
-import * as eq from "@fp-ts/core/typeclasses/Eq"
-import type * as extendable from "@fp-ts/core/typeclasses/Extendable"
-import * as flattenable from "@fp-ts/core/typeclasses/Flattenable"
-import * as fromIdentity from "@fp-ts/core/typeclasses/FromIdentity"
-import * as functor from "@fp-ts/core/typeclasses/Functor"
-import type * as kleisliCategory from "@fp-ts/core/typeclasses/KleisliCategory"
-import type * as kleisliComposable from "@fp-ts/core/typeclasses/KleisliComposable"
-import type * as monad from "@fp-ts/core/typeclasses/Monad"
-import type { Monoid } from "@fp-ts/core/typeclasses/Monoid"
-import type { Semigroup } from "@fp-ts/core/typeclasses/Semigroup"
-import type { Show } from "@fp-ts/core/typeclasses/Show"
-import * as traversable from "@fp-ts/core/typeclasses/Traversable"
+import type * as monad from "@fp-ts/core/Monad"
+import type { Monoid } from "@fp-ts/core/Monoid"
+import type * as applicative from "@fp-ts/core/Monoidal"
+import type { Semigroup } from "@fp-ts/core/Semigroup"
+import { fromCombine } from "@fp-ts/core/Semigroup"
+import * as apply from "@fp-ts/core/Semigroupal"
+import type { Show } from "@fp-ts/core/Show"
+import type * as fromIdentity from "@fp-ts/core/Succeed"
+import * as traversable from "@fp-ts/core/Traversable"
+import { equals } from "@fp-ts/data/Equal"
 import { flow, identity, pipe, SK } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
+import type { NonEmptyReadonlyArray } from "@fp-ts/data/NonEmptyReadonlyArray"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
@@ -399,10 +397,10 @@ export const duplicate: <E, A>(ma: Result<E, A>) => Result<E, Result<E, A>> = ex
  * @category traversing
  * @since 1.0.0
  */
-export const traverse = <F extends TypeLambda>(F: applicative.Applicative<F>) =>
+export const traverse = <F extends TypeLambda>(F: applicative.Monoidal<F>) =>
   <A, FS, FR, FO, FE, B>(f: (a: A) => Kind<F, FS, FR, FO, FE, B>) =>
     <E>(ta: Result<E, A>): Kind<F, FS, FR, FO, FE, Result<E, B>> =>
-      isFailure(ta) ? F.of(fail(ta.failure)) : pipe(f(ta.success), F.map(succeed))
+      isFailure(ta) ? F.succeed(fail(ta.failure)) : pipe(f(ta.success), F.map(succeed))
 
 /**
  * @category instances
@@ -415,19 +413,6 @@ export const getShow = <E, A>(ShowE: Show<E>, ShowA: Show<A>): Show<Result<E, A>
     `fail(${ShowE.show(self.failure)})` :
     `succeed(${ShowA.show(self.success)})`)
 })
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const getEq = <E, A>(EE: eq.Eq<E>, EA: eq.Eq<A>): eq.Eq<Result<E, A>> =>
-  eq.fromEquals(
-    (that) =>
-      (self) =>
-        isFailure(self)
-          ? isFailure(that) && EE.equals(that.failure)(self.failure)
-          : isSuccess(that) && EA.equals(that.success)(self.success)
-  )
 
 /**
  * Semigroup returning the left-most non-`Failure` value. If both operands are `Success`es then the inner values are
@@ -448,15 +433,14 @@ export const getEq = <E, A>(EE: eq.Eq<E>, EA: eq.Eq<A>): eq.Eq<Result<E, A>> =>
  * @since 1.0.0
  */
 export const getSemigroup = <A>(Semigroup: Semigroup<A>) =>
-  <E>(): Semigroup<Result<E, A>> => ({
-    combine: (that) =>
-      (self) =>
-        isFailure(that) ?
-          self :
-          isFailure(self) ?
-          that :
-          succeed(Semigroup.combine(that.success)(self.success))
-  })
+  <E>(): Semigroup<Result<E, A>> =>
+    fromCombine((self, that) =>
+      isFailure(that) ?
+        self :
+        isFailure(self) ?
+        that :
+        succeed(Semigroup.combine(self.success, that.success))
+    )
 
 /**
  * @category filtering
@@ -508,7 +492,7 @@ export const getFilterable = <E>(
  * @since 1.0.0
  */
 export const traverseFilterMap = <F extends TypeLambda>(
-  Applicative: applicative.Applicative<F>
+  Applicative: applicative.Monoidal<F>
 ) => {
   const traverse_ = traverse(Applicative)
   return <A, S, R, O, FE, B, E>(
@@ -524,7 +508,7 @@ export const traverseFilterMap = <F extends TypeLambda>(
  * @since 1.0.0
  */
 export const traversePartitionMap = <F extends TypeLambda>(
-  Applicative: applicative.Applicative<F>
+  Applicative: applicative.Monoidal<F>
 ) => {
   const traverse_ = traverse(Applicative)
   return <A, S, R, O, FE, B, C, E>(
@@ -618,8 +602,8 @@ export const unit: <E>(self: Result<E, unknown>) => Result<E, void> = functor.un
  * @category instances
  * @since 1.0.0
  */
-export const FromIdentity: fromIdentity.FromIdentity<ResultTypeLambda> = {
-  of: succeed
+export const Succeed: fromIdentity.Succeed<ResultTypeLambda> = {
+  succeed
 }
 
 /**
@@ -652,39 +636,9 @@ export const flatten: <E1, E2, A>(mma: Result<E1, Result<E2, A>>) => Result<E1 |
  * @category instances
  * @since 1.0.0
  */
-export const Flattenable: flattenable.Flattenable<ResultTypeLambda> = {
+export const Flattenable: flattenable.FlatMap<ResultTypeLambda> = {
   map,
   flatMap
-}
-
-/**
- * @since 1.0.0
- */
-export const composeKleisli: <B, E2, C>(
-  bfc: (b: B) => Result<E2, C>
-) => <A, E1>(afb: (a: A) => Result<E1, B>) => (a: A) => Result<E2 | E1, C> = flattenable
-  .composeKleisli(Flattenable)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const KleisliComposable: kleisliComposable.KleisliComposable<ResultTypeLambda> = {
-  composeKleisli
-}
-
-/**
- * @since 1.0.0
- */
-export const idKleisli: <A>() => (a: A) => Result<never, A> = fromIdentity.idKleisli(FromIdentity)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const CategoryKind: kleisliCategory.KleisliCategory<ResultTypeLambda> = {
-  composeKleisli,
-  idKleisli
 }
 
 /**
@@ -709,20 +663,36 @@ export const zipRight: <E2, A>(
 ) => <E1>(self: Result<E1, unknown>) => Result<E2 | E1, A> = flattenable.zipRight(Flattenable)
 
 /**
+ * @category instances
+ * @since 1.0.0
+ */
+export const Apply: apply.Semigroupal<ResultTypeLambda> = {
+  map,
+  zipWith: (first, second, f) => zipWith(second, f)(first),
+  zipMany: <E, A>(
+    start: Result<E, A>,
+    others: Iterable<Result<E, A>>
+  ): Result<E, [A, ...Array<A>]> => {
+    if (isFailure(start)) {
+      return fail(start.failure)
+    }
+    const res: [A, ...Array<A>] = [start.success]
+    for (const o of others) {
+      if (isFailure(o)) {
+        return fail(o.failure)
+      }
+      res.push(o.success)
+    }
+    return succeed(res)
+  }
+}
+
+/**
  * @since 1.0.0
  */
 export const ap: <E2, A>(
   fa: Result<E2, A>
-) => <E1, B>(fab: Result<E1, (a: A) => B>) => Result<E1 | E2, B> = flattenable.ap(Flattenable)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Apply: apply.Apply<ResultTypeLambda> = {
-  map,
-  ap
-}
+) => <E1, B>(fab: Result<E1, (a: A) => B>) => Result<E1 | E2, B> = apply.ap(Apply)
 
 /**
  * Lifts a binary function into `Result`.
@@ -752,10 +722,21 @@ export const lift3: <A, B, C, D>(
  * @category instances
  * @since 1.0.0
  */
-export const Applicative: applicative.Applicative<ResultTypeLambda> = {
+export const Applicative: applicative.Monoidal<ResultTypeLambda> = {
   map,
-  ap,
-  of: succeed
+  succeed,
+  zipMany: Apply.zipMany,
+  zipWith: Apply.zipWith,
+  zipAll: <E, A>(collection: Iterable<Result<E, A>>): Result<E, ReadonlyArray<A>> => {
+    const res: Array<A> = []
+    for (const o of collection) {
+      if (isFailure(o)) {
+        return fail(o.failure)
+      }
+      res.push(o.success)
+    }
+    return succeed(res)
+  }
 }
 
 /**
@@ -813,18 +794,69 @@ export const Applicative: applicative.Applicative<ResultTypeLambda> = {
  */
 export const getValidatedApplicative = <E>(
   Semigroup: Semigroup<E>
-): applicative.Applicative<ValidatedT<ResultTypeLambda, E>> => ({
+): applicative.Monoidal<ValidatedT<ResultTypeLambda, E>> => ({
   map,
-  ap: (fa) =>
-    (fab) =>
-      isFailure(fab)
-        ? isFailure(fa)
-          ? fail(Semigroup.combine(fa.failure)(fab.failure))
-          : fab
-        : isFailure(fa)
-        ? fa
-        : succeed(fab.success(fa.success)),
-  of: succeed
+  succeed,
+  zipWith: <A, B, C>(
+    fa: Result<E, A>,
+    fb: Result<E, B>,
+    f: (a: A, b: B) => C
+  ): Result<E, C> => {
+    if (isFailure(fa)) {
+      if (isFailure(fb)) {
+        return fail(Semigroup.combine(fa.failure, fb.failure))
+      } else {
+        return fail(fa.failure)
+      }
+    } else if (isFailure(fb)) {
+      return fail(fb.failure)
+    }
+    return succeed(f(fa.success, fb.success))
+  },
+  zipMany: <A>(
+    start: Result<E, A>,
+    others: Iterable<Result<E, A>>
+  ): Result<E, [A, ...Array<A>]> => {
+    const failures: Array<E> = []
+    const res: Array<A> = []
+    if (isFailure(start)) {
+      failures.push(start.failure)
+    } else {
+      res.push(start.success)
+    }
+    for (const o of others) {
+      if (isFailure(o)) {
+        failures.push(o.failure)
+      } else {
+        res.push(o.success)
+      }
+    }
+    if (failures.length > 0) {
+      if (failures.length > 1) {
+        return fail(Semigroup.combineMany(failures[0], (failures.shift(), failures)))
+      }
+      return fail(failures[0])
+    }
+    return succeed(res as [A, ...Array<A>])
+  },
+  zipAll: <A>(collection: Iterable<Result<E, A>>): Result<E, ReadonlyArray<A>> => {
+    const failures: Array<E> = []
+    const res: Array<A> = []
+    for (const o of collection) {
+      if (isFailure(o)) {
+        failures.push(o.failure)
+      } else {
+        res.push(o.success)
+      }
+    }
+    if (failures.length > 0) {
+      if (failures.length > 1) {
+        return fail(Semigroup.combineMany(failures[0], (failures.shift(), failures)))
+      }
+      return fail(failures[0])
+    }
+    return succeed(res as [A, ...Array<A>])
+  }
 })
 
 /**
@@ -833,7 +865,7 @@ export const getValidatedApplicative = <E>(
  */
 export const Monad: monad.Monad<ResultTypeLambda> = {
   map,
-  of: succeed,
+  succeed,
   flatMap
 }
 
@@ -905,74 +937,10 @@ export const Traversable: traversable.Traversable<ResultTypeLambda> = {
  * @since 1.0.0
  */
 export const sequence: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
+  F: applicative.Monoidal<F>
 ) => <E, FS, FR, FO, FE, A>(
   fa: Result<E, Kind<F, FS, FR, FO, FE, A>>
 ) => Kind<F, FS, FR, FO, FE, Result<E, A>> = traversable.sequence(Traversable)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Alt: alt.Alt<ResultTypeLambda> = {
-  orElse
-}
-
-/**
- * Returns an effect that runs each of the specified effects in order until one of them succeeds.
- *
- * @category error handling
- * @since 1.0.0
- */
-export const firstSuccessOf: <E, A>(
-  startWith: Result<E, A>
-) => (collection: Iterable<Result<E, A>>) => Result<E, A> = alt.firstSuccessOf(Alt)
-
-/**
- * The default [`Alt`](#semigroupkind) instance returns the last error, if you want to
- * get all errors you need to provide a way to combine them via a `Semigroup`.
- *
- * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
- * import { pipe } from '@fp-ts/core/data/Function'
- * import * as S from '@fp-ts/core/typeclasses/Semigroup'
- * import * as string from '@fp-ts/core/data/string'
- *
- * const parseString = (u: unknown): E.Result<string, string> =>
- *   typeof u === 'string' ? E.succeed(u) : E.fail('not a string')
- *
- * const parseNumber = (u: unknown): E.Result<string, number> =>
- *   typeof u === 'number' ? E.succeed(u) : E.fail('not a number')
- *
- * const parse = (u: unknown): E.Result<string, string | number> =>
- *   pipe(
- *     parseString(u),
- *     E.orElse<string, string | number>(parseNumber(u))
- *   )
- *
- * assert.deepStrictEqual(parse(true), E.fail('not a number')) // <= last error
- *
- * const Alt = E.getValidatedAlt(pipe(string.Semigroup, S.intercalate(', ')))
- *
- * const parseAll = (u: unknown): E.Result<string, string | number> =>
- *   pipe(parseString(u), Alt.orElse(parseNumber(u) as E.Result<string, string | number>))
- *
- * assert.deepStrictEqual(parseAll(true), E.fail('not a string, not a number')) // <= all errors
- *
- * @category error handling
- * @since 1.0.0
- */
-export const getValidatedAlt = <E>(
-  Semigroup: Semigroup<E>
-): alt.Alt<ValidatedT<ResultTypeLambda, E>> => ({
-  orElse: (that) =>
-    (self) => {
-      if (isSuccess(self)) {
-        return self
-      }
-      return isFailure(that) ? fail(Semigroup.combine(that.failure)(self.failure)) : that
-    }
-})
 
 /**
  * @category instances
@@ -1191,8 +1159,8 @@ export const flatMapOption: <A, B, E2>(
  *
  * @since 1.0.0
  */
-export const elem = <A>(E: eq.Eq<A>) =>
-  (a: A) => <E>(ma: Result<E, A>): boolean => isFailure(ma) ? false : E.equals(ma.success)(a)
+export const elem = <B>(a: B) =>
+  <A, E>(ma: Result<E, A>): boolean => isFailure(ma) ? false : equals(ma.success)(a)
 
 /**
  * Returns `false` if `Failure` or returns the result of the application of the given predicate to the `Success` value.

@@ -13,13 +13,12 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [instances](#instances)
-  - [Eq](#eq)
   - [MonoidAll](#monoidall)
   - [MonoidAny](#monoidany)
-  - [Ord](#ord)
   - [SemigroupAll](#semigroupall)
   - [SemigroupAny](#semigroupany)
   - [Show](#show)
+  - [Sortable](#sortable)
 - [pattern matching](#pattern-matching)
   - [match](#match)
 - [refinements](#refinements)
@@ -33,16 +32,6 @@ Added in v1.0.0
 ---
 
 # instances
-
-## Eq
-
-**Signature**
-
-```ts
-export declare const Eq: eq.Eq<boolean>
-```
-
-Added in v1.0.0
 
 ## MonoidAll
 
@@ -68,16 +57,6 @@ The `empty` value is `false`.
 
 ```ts
 export declare const MonoidAny: monoid.Monoid<boolean>
-```
-
-Added in v1.0.0
-
-## Ord
-
-**Signature**
-
-```ts
-export declare const Ord: ord.Ord<boolean>
 ```
 
 Added in v1.0.0
@@ -112,6 +91,16 @@ Added in v1.0.0
 
 ```ts
 export declare const Show: show.Show<boolean>
+```
+
+Added in v1.0.0
+
+## Sortable
+
+**Signature**
+
+```ts
+export declare const Sortable: sortable.Sortable<boolean>
 ```
 
 Added in v1.0.0

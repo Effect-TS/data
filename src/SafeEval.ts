@@ -2,7 +2,7 @@
  * @since 1.0.0
  */
 
-import type { LazyArg } from "@fp-ts/core/Function"
+import type { LazyArg } from "@fp-ts/data/Function"
 import * as SE from "@fp-ts/data/internal/SafeEval"
 
 const TypeId: unique symbol = SE.SafeEvalTypeId as TypeId

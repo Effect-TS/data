@@ -3,12 +3,12 @@
  *
  * @since 1.0.0
  */
+import type { Functor } from "@fp-ts/core/Functor"
 import type { Kind, TypeClass, TypeLambda } from "@fp-ts/core/HKT"
-import type { Result } from "@fp-ts/core/Result"
-import type { Functor } from "@fp-ts/core/typeclasses/Functor"
 import { pipe } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
 import type { Option } from "@fp-ts/data/Option"
+import type { Result } from "@fp-ts/data/Result"
 
 /**
  * @category models

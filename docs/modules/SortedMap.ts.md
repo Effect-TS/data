@@ -52,7 +52,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const empty: <K, V = never>(ord: Ord<K>) => SortedMap<K, V>
+export declare const empty: <K, V = never>(ord: Sortable<K>) => SortedMap<K, V>
 ```
 
 Added in v1.0.0
@@ -62,7 +62,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const from: <K>(ord: Ord<K>) => <V>(iterable: Iterable<readonly [K, V]>) => SortedMap<K, V>
+export declare const from: <K>(ord: Sortable<K>) => <V>(iterable: Iterable<readonly [K, V]>) => SortedMap<K, V>
 ```
 
 Added in v1.0.0
@@ -73,7 +73,7 @@ Added in v1.0.0
 
 ```ts
 export declare const make: <K>(
-  ord: Ord<K>
+  ord: Sortable<K>
 ) => <Entries extends readonly (readonly [K, any])[]>(
   ...entries: Entries
 ) => SortedMap<K, Entries[number] extends readonly [any, infer V] ? V : never>

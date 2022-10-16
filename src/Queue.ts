@@ -3,14 +3,12 @@
  */
 
 import type * as HKT from "@fp-ts/core/HKT"
-import type * as O from "@fp-ts/core/Option"
-import type { Predicate } from "@fp-ts/core/Predicate"
-import type { Refinement } from "@fp-ts/core/Refinement"
-import { FromIdentity } from "@fp-ts/core/typeclasses/FromIdentity"
-import { Functor } from "@fp-ts/core/typeclasses/Functor"
 import type * as Equal from "@fp-ts/data/Equal"
 import * as QI from "@fp-ts/data/internal/Queue"
 import type * as L from "@fp-ts/data/List"
+import type * as O from "@fp-ts/data/Option"
+import type { Predicate } from "@fp-ts/data/Predicate"
+import type { Refinement } from "@fp-ts/data/Refinement"
 
 const TypeId: unique symbol = QI.QueueTypeId as TypeId
 
@@ -212,19 +210,3 @@ export const unsafeTail: <A>(self: Queue<A>) => Queue<A> = QI.unsafeTail
 export const unsafeDequeue: <A>(
   self: Queue<A>
 ) => readonly [A, Queue<A>] = QI.unsafeDequeue
-
-const Functor: Functor<QueueTypeLambda> = QI.Functor
-const FromIdentity: FromIdentity<QueueTypeLambda> = QI.FromIdentity
-
-export {
-  /**
-   * @since 1.0.0
-   * @category instances
-   */
-  FromIdentity,
-  /**
-   * @since 1.0.0
-   * @category instances
-   */
-  Functor
-}

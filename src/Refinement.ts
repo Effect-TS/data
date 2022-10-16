@@ -2,10 +2,10 @@
  * @since 1.0.0
  */
 
-import { isSome } from "@fp-ts/core/Option"
-import type { Option } from "@fp-ts/core/Option"
-import { isSuccess } from "@fp-ts/core/Result"
-import type { Result } from "@fp-ts/core/Result"
+import type { Option } from "@fp-ts/data/Option"
+import { isSome } from "@fp-ts/data/Option"
+import type { Result } from "@fp-ts/data/Result"
+import { isSuccess } from "@fp-ts/data/Result"
 
 /**
  * @since 1.0.0

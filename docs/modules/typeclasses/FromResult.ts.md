@@ -71,7 +71,7 @@ Added in v1.0.0
 ```ts
 export declare const filter: <F extends TypeLambda>(
   FromResult: FromResult<F>,
-  Flattenable: Flattenable<F>
+  Flattenable: FlatMap<F>
 ) => {
   <C extends A, B extends A, E2, A = C>(refinement: Refinement<A, B>, onFalse: E2): <S, R, O, E1>(
     self: Kind<F, S, R, O, E1, C>
@@ -91,7 +91,7 @@ Added in v1.0.0
 ```ts
 export declare const filterMap: <F extends TypeLambda>(
   FromResult: FromResult<F>,
-  Flattenable: Flattenable<F>
+  Flattenable: FlatMap<F>
 ) => <A, B, E>(f: (a: A) => O.Option<B>, onNone: E) => <S, R, O>(self: Kind<F, S, R, O, E, A>) => Kind<F, S, R, O, E, B>
 ```
 
@@ -104,7 +104,7 @@ Added in v1.0.0
 ```ts
 export declare const partition: <F extends TypeLambda>(
   FromResult: FromResult<F>,
-  Flattenable: Flattenable<F>
+  Flattenable: FlatMap<F>
 ) => {
   <C extends A, B extends A, E, A = C>(refinement: Refinement<A, B>, onFalse: E): <S, R, O>(
     self: Kind<F, S, R, O, E, C>
@@ -124,7 +124,7 @@ Added in v1.0.0
 ```ts
 export declare const partitionMap: <F extends TypeLambda>(
   FromResult: FromResult<F>,
-  Flattenable: Flattenable<F>
+  Flattenable: FlatMap<F>
 ) => <A, B, C, E>(
   f: (a: A) => R.Result<B, C>,
   onEmpty: E
@@ -219,7 +219,7 @@ Added in v1.0.0
 ```ts
 export declare const flatMapNullable: <M extends TypeLambda>(
   FromResult: FromResult<M>,
-  Flattenable: Flattenable<M>
+  Flattenable: FlatMap<M>
 ) => <A, B, E2>(
   f: (a: A) => B | null | undefined,
   onNullable: E2
@@ -235,7 +235,7 @@ Added in v1.0.0
 ```ts
 export declare const flatMapOption: <F extends TypeLambda>(
   FromResult: FromResult<F>,
-  Flattenable: Flattenable<F>
+  Flattenable: FlatMap<F>
 ) => <A, B, E2>(
   f: (a: A) => O.Option<B>,
   onNone: E2
@@ -251,7 +251,7 @@ Added in v1.0.0
 ```ts
 export declare const flatMapResult: <M extends TypeLambda>(
   FromResult: FromResult<M>,
-  Flattenable: Flattenable<M>
+  Flattenable: FlatMap<M>
 ) => <A, E2, B>(
   f: (a: A) => R.Result<E2, B>
 ) => <S, R, O, E1>(self: Kind<M, S, R, O, E1, A>) => Kind<M, S, R, O, E2 | E1, B>

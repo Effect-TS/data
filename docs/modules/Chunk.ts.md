@@ -332,7 +332,7 @@ Gets the `n`-th element in the chunk if it exists
 **Signature**
 
 ```ts
-export declare const get: (n: number) => <A>(self: Chunk<A>) => O.Option<A>
+export declare const get: (n: number) => <A>(self: Chunk<A>) => Option<A>
 ```
 
 Added in v1.0.0
@@ -356,7 +356,7 @@ Returns the first element of this chunk if it exists.
 **Signature**
 
 ```ts
-export declare const head: <A>(self: Chunk<A>) => O.Option<A>
+export declare const head: <A>(self: Chunk<A>) => Option<A>
 ```
 
 Added in v1.0.0
@@ -370,7 +370,7 @@ The order and references of result values are determined by the Chunk.
 **Signature**
 
 ```ts
-export declare const intersection: <A>(that: Chunk<A>) => (self: Chunk<A>) => Chunk<A>
+export declare const intersection: <A>(that: Chunk<A>) => <B>(self: Chunk<B>) => Chunk<A & B>
 ```
 
 Added in v1.0.0
@@ -406,7 +406,7 @@ Returns the last element of this chunk if it exists.
 **Signature**
 
 ```ts
-export declare const last: <A>(self: Chunk<A>) => O.Option<A>
+export declare const last: <A>(self: Chunk<A>) => Option<A>
 ```
 
 Added in v1.0.0
@@ -454,7 +454,7 @@ Sort the elements of a Chunk in increasing order, creating a new Chunk.
 **Signature**
 
 ```ts
-export declare const sort: <B>(O: Ord<B>) => <A extends B>(as: Chunk<A>) => Chunk<A>
+export declare const sort: <B>(O: Sortable<B>) => <A extends B>(as: Chunk<A>) => Chunk<A>
 ```
 
 Added in v1.0.0
@@ -502,7 +502,7 @@ Returns every elements after the first.
 **Signature**
 
 ```ts
-export declare const tail: <A>(self: Chunk<A>) => O.Option<Chunk<A>>
+export declare const tail: <A>(self: Chunk<A>) => Option<Chunk<A>>
 ```
 
 Added in v1.0.0
@@ -538,7 +538,7 @@ Constructs a `Chunk` by repeatedly applying the function `f` as long as it \* re
 **Signature**
 
 ```ts
-export declare const unfold: <A, S>(s: S, f: (s: S) => O.Option<readonly [A, S]>) => Chunk<A>
+export declare const unfold: <A, S>(s: S, f: (s: S) => Option<readonly [A, S]>) => Chunk<A>
 ```
 
 Added in v1.0.0
@@ -591,7 +591,7 @@ longer chunk.
 **Signature**
 
 ```ts
-export declare const zipAll: <B>(that: Chunk<B>) => <A>(self: Chunk<A>) => Chunk<readonly [O.Option<A>, O.Option<B>]>
+export declare const zipAll: <B>(that: Chunk<B>) => <A>(self: Chunk<A>) => Chunk<readonly [Option<A>, Option<B>]>
 ```
 
 Added in v1.0.0
@@ -638,7 +638,7 @@ Filter out optional values
 **Signature**
 
 ```ts
-export declare const compact: <A>(self: Iterable<O.Option<A>>) => Chunk<A>
+export declare const compact: <A>(self: Iterable<Option<A>>) => Chunk<A>
 ```
 
 Added in v1.0.0
@@ -674,7 +674,7 @@ Returns a filtered and mapped subset of the elements.
 **Signature**
 
 ```ts
-export declare const filterMap: <A, B>(f: (a: A) => O.Option<B>) => (self: Iterable<A>) => Chunk<B>
+export declare const filterMap: <A, B>(f: (a: A) => Option<B>) => (self: Iterable<A>) => Chunk<B>
 ```
 
 Added in v1.0.0
@@ -686,7 +686,7 @@ Transforms all elements of the chunk for as long as the specified function retur
 **Signature**
 
 ```ts
-export declare const filterMapWhile: <A, B>(f: (a: A) => O.Option<B>) => (self: Iterable<A>) => Chunk<B>
+export declare const filterMapWhile: <A, B>(f: (a: A) => Option<B>) => (self: Iterable<A>) => Chunk<B>
 ```
 
 Added in v1.0.0
@@ -698,7 +698,7 @@ Returns a filtered and mapped subset of the elements.
 **Signature**
 
 ```ts
-export declare const filterMapWithIndex: <A, B>(f: (i: number, a: A) => O.Option<B>) => (self: Iterable<A>) => Chunk<B>
+export declare const filterMapWithIndex: <A, B>(f: (i: number, a: A) => Option<B>) => (self: Iterable<A>) => Chunk<B>
 ```
 
 Added in v1.0.0

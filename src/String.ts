@@ -1,33 +1,17 @@
 /**
  * @since 1.0.0
  */
-import type { NonEmptyReadonlyArray } from "@fp-ts/core/NonEmptyReadonlyArray"
-import * as RA from "@fp-ts/core/ReadonlyArray"
-import type * as eq from "@fp-ts/core/typeclasses/Eq"
-import * as monoid from "@fp-ts/core/typeclasses/Monoid"
-import type * as ord from "@fp-ts/core/typeclasses/Ord"
-import type * as semigroup from "@fp-ts/core/typeclasses/Semigroup"
-import type * as show_ from "@fp-ts/core/typeclasses/Show"
+import type * as monoid from "@fp-ts/core/Monoid"
+import type * as semigroup from "@fp-ts/core/Semigroup"
+import type * as show_ from "@fp-ts/core/Show"
+import type * as sortable from "@fp-ts/core/Sortable"
+import type { NonEmptyReadonlyArray } from "@fp-ts/data/NonEmptyReadonlyArray"
+import * as RA from "@fp-ts/data/ReadonlyArray"
 import type { Refinement } from "@fp-ts/data/Refinement"
 
 // -------------------------------------------------------------------------------------
 // instances
 // -------------------------------------------------------------------------------------
-
-/**
- * @exampleTodo
- * import * as S from '@fp-ts/core/data/string'
- * import { pipe } from '@fp-ts/core/data/Function'
- *
- * assert.deepStrictEqual(pipe('a', S.Eq.equals('a')), true)
- * assert.deepStrictEqual(pipe('a', S.Eq.equals('b')), false)
- *
- * @category instances
- * @since 1.0.0
- */
-export const Eq: eq.Eq<string> = {
-  equals: (that) => (self) => self === that
-}
 
 /**
  * @since 1.0.0
@@ -47,7 +31,14 @@ export const concat = (that: string) => (self: string): string => self + that
  * @since 1.0.0
  */
 export const Semigroup: semigroup.Semigroup<string> = {
-  combine: concat
+  combine: (first, second) => concat(second)(first),
+  combineMany: (start, others) => {
+    let s = start
+    for (const o of others) {
+      s = concat(o)(s)
+    }
+    return s
+  }
 }
 
 /**
@@ -74,13 +65,15 @@ export const empty = ""
  */
 export const Monoid: monoid.Monoid<string> = {
   combine: Semigroup.combine,
+  combineMany: Semigroup.combineMany,
+  combineAll: (all) => Semigroup.combineMany(empty, all),
   empty
 }
 
 /**
  * @since 1.0.0
  */
-export const concatAll: (collection: Iterable<string>) => string = monoid.combineAll(Monoid)
+export const concatAll: (collection: Iterable<string>) => string = Monoid.combineAll
 
 /**
  * @exampleTodo
@@ -94,8 +87,8 @@ export const concatAll: (collection: Iterable<string>) => string = monoid.combin
  * @category instances
  * @since 1.0.0
  */
-export const Ord: ord.Ord<string> = {
-  compare: (that) => (self) => self < that ? -1 : self > that ? 1 : 0
+export const Ord: sortable.Sortable<string> = {
+  compare: (self, that) => self < that ? -1 : self > that ? 1 : 0
 }
 
 /**

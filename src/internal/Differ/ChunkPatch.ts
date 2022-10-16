@@ -1,9 +1,9 @@
-import { pipe } from "@fp-ts/core/Function"
 import * as C from "@fp-ts/data/Chunk"
 import type { Differ } from "@fp-ts/data/Differ"
 import type * as CP from "@fp-ts/data/Differ/ChunkPatch"
 import { equals } from "@fp-ts/data/Equal"
-import * as L from "@fp-ts/data/internal/List"
+import { pipe } from "@fp-ts/data/Function"
+import * as L from "@fp-ts/data/List"
 
 /** @internal */
 export const ChunkPatchTypeId: CP.TypeId = Symbol.for("@fp-ts/data/Differ/ChunkPatch") as CP.TypeId

@@ -8,18 +8,16 @@
  * Licensed under Apache License 2.0
  * (http://www.apache.org/licenses/LICENSE-2.0).
  */
-import { pipe } from "@fp-ts/core/Function"
-import * as O from "@fp-ts/core/Option"
-import type { Predicate } from "@fp-ts/core/Predicate"
-import type { Refinement } from "@fp-ts/core/Refinement"
-import type * as _fromIdentity from "@fp-ts/core/typeclasses/FromIdentity"
-import type * as _functor from "@fp-ts/core/typeclasses/Functor"
 import * as DE from "@fp-ts/data/Equal"
+import { pipe } from "@fp-ts/data/Function"
 import * as DH from "@fp-ts/data/Hash"
 import * as II from "@fp-ts/data/internal/Iterable"
 import * as LI from "@fp-ts/data/internal/List"
 import * as L from "@fp-ts/data/List"
+import * as O from "@fp-ts/data/Option"
+import type { Predicate } from "@fp-ts/data/Predicate"
 import type * as Q from "@fp-ts/data/Queue"
+import type { Refinement } from "@fp-ts/data/Refinement"
 
 export const QueueTypeId: Q.TypeId = Symbol.for("@fp-ts/data/Queue") as Q.TypeId
 
@@ -273,14 +271,4 @@ export function enqueueAll<B>(iter: Iterable<B>) {
       return new QueueImpl<A | B>(newIn, self._out)
     }
   }
-}
-
-/** @internal */
-export const Functor: _functor.Functor<Q.QueueTypeLambda> = {
-  map
-}
-
-/** @internal */
-export const FromIdentity: _fromIdentity.FromIdentity<Q.QueueTypeLambda> = {
-  of
 }

@@ -1,7 +1,7 @@
-import * as R from "@fp-ts/core/Result"
 import { equals } from "@fp-ts/data/Equal"
 import * as L from "@fp-ts/data/List"
 import * as LB from "@fp-ts/data/mutable/MutableListBuilder"
+import * as R from "@fp-ts/data/Result"
 import { assertTrue } from "@fp-ts/data/test/util"
 
 describe("Equal", () => {

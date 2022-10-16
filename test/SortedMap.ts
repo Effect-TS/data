@@ -1,8 +1,8 @@
-import { pipe } from "@fp-ts/core/Function"
-import * as N from "@fp-ts/core/number"
-import * as O from "@fp-ts/core/Option"
 import * as Eq from "@fp-ts/data/Equal"
+import { pipe } from "@fp-ts/data/Function"
 import * as H from "@fp-ts/data/Hash"
+import * as N from "@fp-ts/data/Number"
+import * as O from "@fp-ts/data/Option"
 import * as SM from "@fp-ts/data/SortedMap"
 
 class Key implements Eq.Equal {
@@ -40,7 +40,7 @@ function value(n: number): Value {
 function makeSortedMap(...numbers: Array<readonly [number, number]>): SM.SortedMap<Key, Value> {
   const entries = numbers.map(([k, v]) => [key(k), value(v)] as const)
   return SM.from({
-    compare: (that: Key) => (self: Key) => self.id > that.id ? 1 : self.id < that.id ? -1 : 0
+    compare: (self: Key, that: Key) => self.id > that.id ? 1 : self.id < that.id ? -1 : 0
   })(entries)
 }
 

@@ -2,7 +2,7 @@ import type * as Differ from "@fp-ts/data/Differ"
 import type * as HMP from "@fp-ts/data/Differ/HashMapPatch"
 import * as Equal from "@fp-ts/data/Equal"
 import * as HashMap from "@fp-ts/data/HashMap"
-import * as List from "@fp-ts/data/List"
+import * as List from "@fp-ts/data/internal/List"
 
 /** @internal */
 export const HashMapPatchTypeId: HMP.TypeId = Symbol.for(

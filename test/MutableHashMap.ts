@@ -1,8 +1,8 @@
-import { pipe } from "@fp-ts/core/Function"
-import * as O from "@fp-ts/core/Option"
 import * as Equal from "@fp-ts/data/Equal"
+import { pipe } from "@fp-ts/data/Function"
 import * as Hash from "@fp-ts/data/Hash"
 import * as HM from "@fp-ts/data/mutable/MutableHashMap"
+import * as O from "@fp-ts/data/Option"
 
 class Key implements Equal.Equal {
   constructor(readonly a: number, readonly b: number) {}

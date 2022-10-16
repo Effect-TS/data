@@ -1,9 +1,9 @@
-import { pipe } from "@fp-ts/core/Function"
-import * as number from "@fp-ts/core/number"
-import * as Option from "@fp-ts/core/Option"
-import * as Ord from "@fp-ts/core/typeclasses/Ord"
+import * as Ord from "@fp-ts/core/Sortable"
 import * as Equal from "@fp-ts/data/Equal"
+import { pipe } from "@fp-ts/data/Function"
 import * as Hash from "@fp-ts/data/Hash"
+import * as number from "@fp-ts/data/Number"
+import * as Option from "@fp-ts/data/Option"
 import * as RedBlackTree from "@fp-ts/data/RedBlackTree"
 import { deepStrictEqual } from "@fp-ts/data/test/util"
 

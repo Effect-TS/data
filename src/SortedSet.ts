@@ -2,13 +2,13 @@
  * @since 1.0.0
  */
 
-import { pipe } from "@fp-ts/core/Function"
-import type { Predicate } from "@fp-ts/core/Predicate"
-import type { Refinement } from "@fp-ts/core/Refinement"
-import type { Ord } from "@fp-ts/core/typeclasses/Ord"
+import type { Sortable } from "@fp-ts/core/Sortable"
 import * as Eq from "@fp-ts/data/Equal"
+import { pipe } from "@fp-ts/data/Function"
 import * as H from "@fp-ts/data/Hash"
+import type { Predicate } from "@fp-ts/data/Predicate"
 import * as RBT from "@fp-ts/data/RedBlackTree"
+import type { Refinement } from "@fp-ts/data/Refinement"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/SortedSet")
 
@@ -63,7 +63,7 @@ export const isSortedSet: {
  * @since 1.0.0
  * @category constructors
  */
-export const empty = <A>(ord: Ord<A>): SortedSet<A> => new SortedSetImpl(RBT.empty(ord))
+export const empty = <A>(ord: Sortable<A>): SortedSet<A> => new SortedSetImpl(RBT.empty(ord))
 
 /**
  * @since 1.0.0
@@ -124,7 +124,7 @@ export const difference = <A, B extends A>(that: Iterable<B>) =>
  */
 export const union = <A>(that: Iterable<A>) =>
   (self: SortedSet<A>): SortedSet<A> => {
-    const ord = RBT.getOrd(self.keyTree)
+    const ord = RBT.getSortable(self.keyTree)
     let out = empty<A>(ord)
     for (const value of self) {
       out = add(value)(out)
@@ -141,7 +141,7 @@ export const union = <A>(that: Iterable<A>) =>
  */
 export const intersection = <A>(that: Iterable<A>) =>
   (self: SortedSet<A>): SortedSet<A> => {
-    const ord = RBT.getOrd(self.keyTree)
+    const ord = RBT.getSortable(self.keyTree)
     let out = empty(ord)
     for (const value of that) {
       if (has(value)(self)) {
@@ -192,7 +192,7 @@ export const forEach = <A>(f: (a: A) => void) =>
  * @since 1.0.0
  * @category sequencing
  */
-export const flatMap = <B>(ord: Ord<B>) =>
+export const flatMap = <B>(ord: Sortable<B>) =>
   <A>(f: (a: A) => Iterable<B>) =>
     (self: SortedSet<A>): SortedSet<B> => {
       let out = empty(ord)
@@ -211,7 +211,7 @@ export const flatMap = <B>(ord: Ord<B>) =>
  * @since 1.0.0
  * @category mapping
  */
-export const map = <B>(ord: Ord<B>) =>
+export const map = <B>(ord: Sortable<B>) =>
   <A>(f: (a: A) => B) =>
     (self: SortedSet<A>): SortedSet<B> => {
       let out = empty(ord)
@@ -243,7 +243,7 @@ export const filter: {
   <A>(predicate: Predicate<A>): (self: SortedSet<A>) => SortedSet<A>
 } = <A>(predicate: Predicate<A>) =>
   (self: SortedSet<A>): SortedSet<A> => {
-    const ord = RBT.getOrd(self.keyTree)
+    const ord = RBT.getSortable(self.keyTree)
     let out = empty<A>(ord)
     for (const value of self) {
       if (predicate(value)) {
@@ -264,7 +264,7 @@ export const partition: {
   <A>(predicate: Predicate<A>): (self: SortedSet<A>) => readonly [SortedSet<A>, SortedSet<A>]
 } = <A>(predicate: Predicate<A>) =>
   (self: SortedSet<A>): readonly [SortedSet<A>, SortedSet<A>] => {
-    const ord = RBT.getOrd(self.keyTree)
+    const ord = RBT.getSortable(self.keyTree)
     let right = empty(ord)
     let left = empty(ord)
     for (const value of self) {

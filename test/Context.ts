@@ -1,8 +1,8 @@
-import { pipe } from "@fp-ts/core/Function"
-import * as O from "@fp-ts/core/Option"
 import * as Context from "@fp-ts/data/Context"
 import * as Differ from "@fp-ts/data/Differ"
 import { equals } from "@fp-ts/data/Equal"
+import { pipe } from "@fp-ts/data/Function"
+import * as O from "@fp-ts/data/Option"
 
 interface A {
   a: number

@@ -1,6 +1,6 @@
-import type { LazyArg } from "@fp-ts/core/Function"
-import { constant, constVoid, identity } from "@fp-ts/core/Function"
 import * as Equal from "@fp-ts/data/Equal"
+import type { LazyArg } from "@fp-ts/data/Function"
+import { constant, constVoid, identity } from "@fp-ts/data/Function"
 import * as Hash from "@fp-ts/data/Hash"
 import { Stack } from "@fp-ts/data/internal/Stack"
 import type * as SE from "@fp-ts/data/SafeEval"

@@ -1,11 +1,10 @@
 /**
  * @since 1.0.0
  */
-import * as eq from "@fp-ts/core/typeclasses/Eq"
-import * as monoid from "@fp-ts/core/typeclasses/Monoid"
-import type * as ord from "@fp-ts/core/typeclasses/Ord"
-import type * as semigroup from "@fp-ts/core/typeclasses/Semigroup"
-import type * as show from "@fp-ts/core/typeclasses/Show"
+import type * as monoid from "@fp-ts/core/Monoid"
+import type * as semigroup from "@fp-ts/core/Semigroup"
+import type * as show from "@fp-ts/core/Show"
+import type * as sortable from "@fp-ts/core/Sortable"
 import type { LazyArg } from "@fp-ts/data/Function"
 import type { Refinement } from "@fp-ts/data/Refinement"
 
@@ -51,12 +50,6 @@ export const match = <A, B = A>(onFalse: LazyArg<A>, onTrue: LazyArg<B>) =>
   (value: boolean): A | B => value ? onTrue() : onFalse()
 
 /**
- * @category instances
- * @since 1.0.0
- */
-export const Eq: eq.Eq<boolean> = eq.EqStrict
-
-/**
  * `boolean` semigroup under conjunction.
  *
  * @exampleTodo
@@ -70,7 +63,14 @@ export const Eq: eq.Eq<boolean> = eq.EqStrict
  * @since 1.0.0
  */
 export const SemigroupAll: semigroup.Semigroup<boolean> = {
-  combine: and
+  combine: (a, b) => and(b)(a),
+  combineMany: (start, others) => {
+    let c = start
+    for (const o of others) {
+      c = and(o)(c)
+    }
+    return c
+  }
 }
 
 /**
@@ -88,7 +88,14 @@ export const SemigroupAll: semigroup.Semigroup<boolean> = {
  * @since 1.0.0
  */
 export const SemigroupAny: semigroup.Semigroup<boolean> = {
-  combine: or
+  combine: (first, second) => or(second)(first),
+  combineMany: (start, others) => {
+    let c = start
+    for (const o of others) {
+      c = or(o)(c)
+    }
+    return c
+  }
 }
 
 /**
@@ -101,6 +108,8 @@ export const SemigroupAny: semigroup.Semigroup<boolean> = {
  */
 export const MonoidAll: monoid.Monoid<boolean> = {
   combine: SemigroupAll.combine,
+  combineMany: SemigroupAll.combineMany,
+  combineAll: (all) => SemigroupAll.combineMany(true, all),
   empty: true
 }
 
@@ -114,6 +123,8 @@ export const MonoidAll: monoid.Monoid<boolean> = {
  */
 export const MonoidAny: monoid.Monoid<boolean> = {
   combine: SemigroupAny.combine,
+  combineMany: SemigroupAny.combineMany,
+  combineAll: (all) => SemigroupAny.combineMany(false, all),
   empty: false
 }
 
@@ -121,8 +132,8 @@ export const MonoidAny: monoid.Monoid<boolean> = {
  * @category instances
  * @since 1.0.0
  */
-export const Ord: ord.Ord<boolean> = {
-  compare: (that) => (self) => self < that ? -1 : self > that ? 1 : 0
+export const Sortable: sortable.Sortable<boolean> = {
+  compare: (self, that) => self < that ? -1 : self > that ? 1 : 0
 }
 
 /**
@@ -136,9 +147,9 @@ export const Show: show.Show<boolean> = {
 /**
  * @since 1.0.0
  */
-export const all: (collection: Iterable<boolean>) => boolean = monoid.combineAll(MonoidAll)
+export const all: (collection: Iterable<boolean>) => boolean = MonoidAll.combineAll
 
 /**
  * @since 1.0.0
  */
-export const any: (collection: Iterable<boolean>) => boolean = monoid.combineAll(MonoidAny)
+export const any: (collection: Iterable<boolean>) => boolean = MonoidAny.combineAll
