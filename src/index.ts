@@ -22,6 +22,7 @@ import * as mutableHashMap from "@fp-ts/data/MutableHashMap"
 import * as mutableHashSet from "@fp-ts/data/MutableHashSet"
 import * as mutableListBuilder from "@fp-ts/data/MutableListBuilder"
 import * as mutableRef from "@fp-ts/data/MutableRef"
+import * as predicate from "@fp-ts/data/Predicate"
 import * as queue from "@fp-ts/data/Queue"
 import * as redBlackTree from "@fp-ts/data/RedBlackTree"
 import * as safeEval from "@fp-ts/data/SafeEval"
@@ -110,6 +111,10 @@ export {
    * @since 1.0.0
    */
   orPatch,
+  /**
+   * @since 1.0.0
+   */
+  predicate,
   /**
    * @since 1.0.0
    */
