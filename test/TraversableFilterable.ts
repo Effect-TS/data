@@ -9,7 +9,7 @@ describe.concurrent("TraversableFilterable", () => {
   it("traversePartition", () => {
     const traversePartition = TraversableFilterable.traversePartition(
       ReadonlyArray.TraversableFilterable
-    )(Option.Applicative)
+    )(Option.Monoidal)
 
     deepStrictEqual(
       pipe(
@@ -32,7 +32,7 @@ describe.concurrent("TraversableFilterable", () => {
       ReadonlyArray.Traversable,
       ReadonlyArray.Functor,
       ReadonlyArray.Compactable
-    )(Option.Applicative)
+    )(Option.Monoidal)
 
     deepStrictEqual(
       pipe(
@@ -55,7 +55,7 @@ describe.concurrent("TraversableFilterable", () => {
   it("traverseFilter", () => {
     const traverseFilter = TraversableFilterable.traverseFilter(
       ReadonlyArray.TraversableFilterable
-    )(Option.Applicative)
+    )(Option.Monoidal)
 
     deepStrictEqual(
       pipe(
@@ -77,7 +77,7 @@ describe.concurrent("TraversableFilterable", () => {
     const traverseFilterMap = TraversableFilterable.traverseFilterMap(
       ReadonlyArray.Traversable,
       ReadonlyArray.Compactable
-    )(Result.Applicative)
+    )(Result.Monoidal)
 
     deepStrictEqual(
       pipe(

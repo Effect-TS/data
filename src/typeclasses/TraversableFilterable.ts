@@ -1,5 +1,5 @@
 /**
- * `TraversableFilterable` represents data structures which can be _partitioned_ with effects in some `Applicative` functor.
+ * `TraversableFilterable` represents data structures which can be _partitioned_ with effects in some `Monoidal` functor.
  *
  * @since 1.0.0
  */
@@ -43,11 +43,11 @@ export const traversePartitionMap = <T extends TypeLambda>(
   Functor: Functor<T>,
   Compactable: Compactable<T>
 ): TraversableFilterable<T>["traversePartitionMap"] =>
-  (Applicative) =>
+  (Monoidal) =>
     (f) =>
       flow(
-        Traversable.traverse(Applicative)(f),
-        Applicative.map(compactable.separate(Functor, Compactable))
+        Traversable.traverse(Monoidal)(f),
+        Monoidal.map(compactable.separate(Functor, Compactable))
       )
 
 /**
@@ -57,8 +57,7 @@ export const traverseFilterMap = <T extends TypeLambda>(
   Traversable: Traversable<T>,
   Compactable: Compactable<T>
 ): TraversableFilterable<T>["traverseFilterMap"] =>
-  (Applicative) =>
-    (f) => flow(Traversable.traverse(Applicative)(f), Applicative.map(Compactable.compact))
+  (Monoidal) => (f) => flow(Traversable.traverse(Monoidal)(f), Monoidal.map(Compactable.compact))
 
 /**
  * @since 1.0.0
@@ -67,17 +66,17 @@ export const traverseFilter = <T extends TypeLambda>(
   TraversableFilterable: TraversableFilterable<T>
 ) =>
   <F extends TypeLambda>(
-    Applicative: Monoidal<F>
+    Monoidal: Monoidal<F>
   ): (<B extends A, S, R, O, E, A = B>(
     predicate: (a: A) => Kind<F, S, R, O, E, boolean>
   ) => <TS, TR, TO, TE>(
     self: Kind<T, TS, TR, TO, TE, B>
   ) => Kind<F, S, R, O, E, Kind<T, TS, TR, TO, TE, B>>) =>
     (predicate) =>
-      TraversableFilterable.traverseFilterMap(Applicative)((b) =>
+      TraversableFilterable.traverseFilterMap(Monoidal)((b) =>
         pipe(
           predicate(b),
-          Applicative.map((ok) => (ok ? internal.some(b) : internal.none))
+          Monoidal.map((ok) => (ok ? internal.some(b) : internal.none))
         )
       )
 
@@ -88,16 +87,16 @@ export const traversePartition = <T extends TypeLambda>(
   TraversableFilterable: TraversableFilterable<T>
 ) =>
   <F extends TypeLambda>(
-    Applicative: Monoidal<F>
+    Monoidal: Monoidal<F>
   ): (<B extends A, S, R, O, E, A = B>(
     predicate: (a: A) => Kind<F, S, R, O, E, boolean>
   ) => <TS, TR, TO, TE>(
     self: Kind<T, TS, TR, TO, TE, B>
   ) => Kind<F, S, R, O, E, readonly [Kind<T, TS, TR, TO, TE, B>, Kind<T, TS, TR, TO, TE, B>]>) =>
     (predicate) =>
-      TraversableFilterable.traversePartitionMap(Applicative)((b) =>
+      TraversableFilterable.traversePartitionMap(Monoidal)((b) =>
         pipe(
           predicate(b),
-          Applicative.map((ok) => (ok ? internal.succeed(b) : internal.fail(b)))
+          Monoidal.map((ok) => (ok ? internal.succeed(b) : internal.fail(b)))
         )
       )

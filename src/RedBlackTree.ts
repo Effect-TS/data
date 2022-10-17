@@ -62,7 +62,7 @@ export const isRedBlackTree: {
 export const empty: <K, V = never>(ord: Sortable<K>) => RedBlackTree<K, V> = RBT.empty
 
 /**
- * Gets the `Ord<K>` that the `RedBlackTree<K, V>` is using.
+ * Gets the `Sortable<K>` that the `RedBlackTree<K, V>` is using.
  *
  * @since 1.0.0
  * @category getters

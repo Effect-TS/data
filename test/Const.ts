@@ -58,7 +58,7 @@ describe("Const", () => {
   })
 
   it("liftSortable", () => {
-    const Sortable = _.liftSortable(number.Ord)
+    const Sortable = _.liftSortable(number.Sortable)
     U.deepStrictEqual(Sortable.compare(_.make(1))(_.make(1)), 0)
     U.deepStrictEqual(Sortable.compare(_.make(1))(_.make(2)), 1)
     U.deepStrictEqual(Sortable.compare(_.make(2))(_.make(1)), -1)

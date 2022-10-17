@@ -74,7 +74,7 @@ describe.concurrent("SortedMap", () => {
 
   it("headOption", () => {
     const map1 = makeSortedMap([0, 10], [1, 20], [2, 30])
-    const map2 = SM.empty<number, number>(N.Ord)
+    const map2 = SM.empty<number, number>(N.Sortable)
 
     assert.deepEqual(SM.headOption(map1), O.some([key(0), value(10)] as const))
     assert.deepEqual(SM.headOption(map2), O.none)
@@ -82,7 +82,7 @@ describe.concurrent("SortedMap", () => {
 
   it("isEmpty", () => {
     const map1 = makeSortedMap([0, 10], [1, 20], [2, 30])
-    const map2 = SM.empty<number, number>(N.Ord)
+    const map2 = SM.empty<number, number>(N.Sortable)
 
     assert.isFalse(SM.isEmpty(map1))
     assert.isTrue(SM.isEmpty(map2))
@@ -90,7 +90,7 @@ describe.concurrent("SortedMap", () => {
 
   it("isNonEmpty", () => {
     const map1 = makeSortedMap([0, 10], [1, 20], [2, 30])
-    const map2 = SM.empty<number, number>(N.Ord)
+    const map2 = SM.empty<number, number>(N.Sortable)
 
     assert.isTrue(SM.isNonEmpty(map1))
     assert.isFalse(SM.isNonEmpty(map2))

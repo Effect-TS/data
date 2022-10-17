@@ -194,28 +194,28 @@ describe.concurrent("Option", () => {
       deepStrictEqual(
         pipe(
           Option.some("hello"),
-          Option.traverse(ReadonlyArray.Applicative)(() => [])
+          Option.traverse(ReadonlyArray.Monoidal)(() => [])
         ),
         []
       )
       deepStrictEqual(
         pipe(
           Option.some("hello"),
-          Option.traverse(ReadonlyArray.Applicative)((s) => [s.length])
+          Option.traverse(ReadonlyArray.Monoidal)((s) => [s.length])
         ),
         [Option.some(5)]
       )
       deepStrictEqual(
         pipe(
           Option.none,
-          Option.traverse(ReadonlyArray.Applicative)((s) => [s])
+          Option.traverse(ReadonlyArray.Monoidal)((s) => [s])
         ),
         [Option.none]
       )
     })
 
     it("sequence", () => {
-      const sequence = Option.sequence(ReadonlyArray.Applicative)
+      const sequence = Option.sequence(ReadonlyArray.Monoidal)
       deepStrictEqual(sequence(Option.some([1, 2])), [Option.some(1), Option.some(2)])
       deepStrictEqual(sequence(Option.none), [Option.none])
     })
@@ -270,7 +270,7 @@ describe.concurrent("Option", () => {
   })
 
   it("getOrd", () => {
-    const OS = Option.liftOrd(String.Ord)
+    const OS = Option.liftSortable(String.Sortable)
     deepStrictEqual(pipe(Option.none, OS.compare(Option.none)), 0)
     deepStrictEqual(pipe(Option.some("a"), OS.compare(Option.none)), 1)
     deepStrictEqual(pipe(Option.none, OS.compare(Option.some("a"))), -1)

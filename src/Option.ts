@@ -13,16 +13,16 @@
  * @since 1.0.0
  */
 import type * as extendable from "@fp-ts/core/Extendable"
-import * as flattenable from "@fp-ts/core/FlatMap"
+import * as flatMap_ from "@fp-ts/core/FlatMap"
 import * as functor from "@fp-ts/core/Functor"
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import type * as monad from "@fp-ts/core/Monad"
 import type * as monoid from "@fp-ts/core/Monoid"
-import type * as applicative from "@fp-ts/core/Monoidal"
-import type * as fromIdentity from "@fp-ts/core/Pointed"
+import type * as monoidal from "@fp-ts/core/Monoidal"
+import type * as pointed from "@fp-ts/core/Pointed"
 import type * as semigroup from "@fp-ts/core/Semigroup"
-import * as apply from "@fp-ts/core/Semigroupal"
-import * as ord from "@fp-ts/core/Sortable"
+import * as semigroupal from "@fp-ts/core/Semigroupal"
+import * as sortable from "@fp-ts/core/Sortable"
 import * as traversable from "@fp-ts/core/Traversable"
 import { equals } from "@fp-ts/data/Equal"
 import type { LazyArg } from "@fp-ts/data/Function"
@@ -402,7 +402,7 @@ export const map: <A, B>(f: (a: A) => B) => (fa: Option<A>) => Option<B> = (f) =
  * @category instances
  * @since 1.0.0
  */
-export const FromIdentity: fromIdentity.Pointed<OptionTypeLambda> = {
+export const Pointed: pointed.Pointed<OptionTypeLambda> = {
   of: some
 }
 
@@ -417,7 +417,7 @@ export const flatMap: <A, B>(f: (a: A) => Option<B>) => (self: Option<A>) => Opt
  * @category instances
  * @since 1.0.0
  */
-export const Flattenable: flattenable.FlatMap<OptionTypeLambda> = {
+export const FlatMap: flatMap_.FlatMap<OptionTypeLambda> = {
   map,
   flatMap
 }
@@ -429,8 +429,8 @@ export const Flattenable: flattenable.FlatMap<OptionTypeLambda> = {
  * @category sequencing
  * @since 1.0.0
  */
-export const zipLeft: (that: Option<unknown>) => <A>(self: Option<A>) => Option<A> = flattenable
-  .zipLeft(Flattenable)
+export const zipLeft: (that: Option<unknown>) => <A>(self: Option<A>) => Option<A> = flatMap_
+  .zipLeft(FlatMap)
 
 /**
  * A variant of `flatMap` that ignores the value produced by this effect.
@@ -438,8 +438,8 @@ export const zipLeft: (that: Option<unknown>) => <A>(self: Option<A>) => Option<
  * @category sequencing
  * @since 1.0.0
  */
-export const zipRight: <A>(that: Option<A>) => (self: Option<unknown>) => Option<A> = flattenable
-  .zipRight(Flattenable)
+export const zipRight: <A>(that: Option<A>) => (self: Option<unknown>) => Option<A> = flatMap_
+  .zipRight(FlatMap)
 
 /**
  * @since 1.0.0
@@ -559,7 +559,7 @@ export const partitionMap: <A, B, C>(
  * @since 1.0.0
  */
 export const traverse: <F extends TypeLambda>(
-  F: applicative.Monoidal<F>
+  F: monoidal.Monoidal<F>
 ) => <A, S, R, O, E, B>(
   f: (a: A) => Kind<F, S, R, O, E, B>
 ) => (ta: Option<A>) => Kind<F, S, R, O, E, Option<B>> = (F) =>
@@ -570,18 +570,18 @@ export const traverse: <F extends TypeLambda>(
 // -------------------------------------------------------------------------------------
 
 /**
- * The `Ord` instance allows `Option` values to be compared with
- * `compare`, whenever there is an `Ord` instance for
+ * The `Sortable` instance allows `Option` values to be compared with
+ * `compare`, whenever there is an `Sortable` instance for
  * the type the `Option` contains.
  *
  * `None` is considered to be less than any `Some` value.
  *
  * @exampleTodo
- * import { none, some, liftOrd } from '@fp-ts/core/data/Option'
+ * import { none, some, liftSortable } from '@fp-ts/core/data/Option'
  * import * as N from '@fp-ts/core/data/number'
  * import { pipe } from '@fp-ts/core/data/Function'
  *
- * const O = liftOrd(N.Ord)
+ * const O = liftSortable(N.Sortable)
  * assert.strictEqual(pipe(none, O.compare(none)), 0)
  * assert.strictEqual(pipe(none, O.compare(some(1))), -1)
  * assert.strictEqual(pipe(some(1), O.compare(none)), 1)
@@ -591,8 +591,8 @@ export const traverse: <F extends TypeLambda>(
  * @category instances
  * @since 1.0.0
  */
-export const liftOrd = <A>(O: ord.Sortable<A>): ord.Sortable<Option<A>> =>
-  ord.fromCompare((that) =>
+export const liftSortable = <A>(O: sortable.Sortable<A>): sortable.Sortable<Option<A>> =>
+  sortable.fromCompare((that) =>
     (self) => isSome(self) ? (isSome(that) ? O.compare(that.value)(self.value) : 1) : -1
   )
 
@@ -696,7 +696,7 @@ export const zipWith: <B, A, C>(
  * @category instances
  * @since 1.0.0
  */
-export const Apply: apply.Semigroupal<OptionTypeLambda> = {
+export const Semigroupal: semigroupal.Semigroupal<OptionTypeLambda> = {
   map,
   zipWith,
   zipMany: <A>(
@@ -724,7 +724,7 @@ export const Apply: apply.Semigroupal<OptionTypeLambda> = {
  * @since 1.0.0
  */
 export const lift2: <A, B, C>(f: (a: A, b: B) => C) => (fa: Option<A>, fb: Option<B>) => Option<C> =
-  apply.lift2(Apply)
+  semigroupal.lift2(Semigroupal)
 
 /**
  * Lifts a ternary function into `Option`.
@@ -734,17 +734,17 @@ export const lift2: <A, B, C>(f: (a: A, b: B) => C) => (fa: Option<A>, fb: Optio
  */
 export const lift3: <A, B, C, D>(
   f: (a: A, b: B, c: C) => D
-) => (fa: Option<A>, fb: Option<B>, fc: Option<C>) => Option<D> = apply.lift3(Apply)
+) => (fa: Option<A>, fb: Option<B>, fc: Option<C>) => Option<D> = semigroupal.lift3(Semigroupal)
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const Applicative: applicative.Monoidal<OptionTypeLambda> = {
+export const Monoidal: monoidal.Monoidal<OptionTypeLambda> = {
   of: some,
   map,
-  zipMany: Apply.zipMany,
-  zipWith: Apply.zipWith,
+  zipMany: Semigroupal.zipMany,
+  zipWith: Semigroupal.zipWith,
   zipAll: <A>(collection: Iterable<Option<A>>): Option<ReadonlyArray<A>> => {
     const res: Array<A> = []
     for (const o of collection) {
@@ -772,8 +772,8 @@ export const Monad: monad.Monad<OptionTypeLambda> = {
  *
  * @since 1.0.0
  */
-export const tap: <A>(f: (a: A) => Option<unknown>) => (self: Option<A>) => Option<A> = flattenable
-  .tap(Flattenable)
+export const tap: <A>(f: (a: A) => Option<unknown>) => (self: Option<A>) => Option<A> = flatMap_
+  .tap(FlatMap)
 
 /**
  * @category conversions
@@ -862,7 +862,7 @@ export const Traversable: traversable.Traversable<OptionTypeLambda> = {
  * @since 1.0.0
  */
 export const sequence: <F extends TypeLambda>(
-  F: applicative.Monoidal<F>
+  F: monoidal.Monoidal<F>
 ) => <S, R, O, E, A>(fas: Option<Kind<F, S, R, O, E, A>>) => Kind<F, S, R, O, E, Option<A>> =
   traversable.sequence(Traversable)
 
@@ -871,7 +871,7 @@ export const sequence: <F extends TypeLambda>(
  * @since 1.0.0
  */
 export const traverseFilterMap: <F extends TypeLambda>(
-  F: applicative.Monoidal<F>
+  F: monoidal.Monoidal<F>
 ) => <A, S, R, O, E, B>(
   f: (a: A) => Kind<F, S, R, O, E, Option<B>>
 ) => (ta: Option<A>) => Kind<F, S, R, O, E, Option<B>> = traversableFilterable.traverseFilterMap(
@@ -884,7 +884,7 @@ export const traverseFilterMap: <F extends TypeLambda>(
  * @since 1.0.0
  */
 export const traversePartitionMap: <F extends TypeLambda>(
-  F: applicative.Monoidal<F>
+  F: monoidal.Monoidal<F>
 ) => <A, S, R, O, E, B, C>(
   f: (a: A) => Kind<F, S, R, O, E, Result<B, C>>
 ) => (wa: Option<A>) => Kind<F, S, R, O, E, readonly [Option<B>, Option<C>]> = traversableFilterable
@@ -906,7 +906,7 @@ export const TraversableFilterable: traversableFilterable.TraversableFilterable<
  * @since 1.0.0
  */
 export const traverseFilter: <F extends TypeLambda>(
-  F: applicative.Monoidal<F>
+  F: monoidal.Monoidal<F>
 ) => <B extends A, S, R, O, E, A = B>(
   predicate: (a: A) => Kind<F, S, R, O, E, boolean>
 ) => (self: Option<B>) => Kind<F, S, R, O, E, Option<B>> = traversableFilterable.traverseFilter(
@@ -918,7 +918,7 @@ export const traverseFilter: <F extends TypeLambda>(
  * @since 1.0.0
  */
 export const traversePartition: <F extends TypeLambda>(
-  ApplicativeF: applicative.Monoidal<F>
+  Monoidal: monoidal.Monoidal<F>
 ) => <B extends A, S, R, O, E, A = B>(
   predicate: (a: A) => Kind<F, S, R, O, E, boolean>
 ) => (self: Option<B>) => Kind<F, S, R, O, E, readonly [Option<B>, Option<B>]> =
@@ -972,7 +972,7 @@ export const liftResult: <A extends ReadonlyArray<unknown>, E, B>(
  * @since 1.0.0
  */
 export const flatMapResult: <A, E, B>(f: (a: A) => Result<E, B>) => (ma: Option<A>) => Option<B> =
-  fromResult_.flatMapResult(FromResult, Flattenable)
+  fromResult_.flatMapResult(FromResult, FlatMap)
 
 /**
  * Tests whether a value is a member of a `Option`.
@@ -1065,7 +1065,7 @@ export const bind: <N extends string, A extends object, B>(
   name: Exclude<N, keyof A>,
   f: (a: A) => Option<B>
 ) => (self: Option<A>) => Option<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> =
-  flattenable.bind(Flattenable)
+  flatMap_.bind(FlatMap)
 
 /**
  * A variant of `bind` that sequentially ignores the scope.
@@ -1077,7 +1077,7 @@ export const bindRight: <N extends string, A extends object, B>(
   name: Exclude<N, keyof A>,
   fb: Option<B>
 ) => (self: Option<A>) => Option<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> =
-  apply.bindRight(Apply)
+  semigroupal.bindRight(Semigroupal)
 
 // -------------------------------------------------------------------------------------
 // tuple sequencing
@@ -1103,15 +1103,15 @@ export const tupled: <A>(self: Option<A>) => Option<readonly [A]> = functor.tupl
  */
 export const zipFlatten: <B>(
   fb: Option<B>
-) => <A extends ReadonlyArray<unknown>>(self: Option<A>) => Option<readonly [...A, B]> = apply
-  .zipFlatten(Apply)
+) => <A extends ReadonlyArray<unknown>>(self: Option<A>) => Option<readonly [...A, B]> = semigroupal
+  .zipFlatten(Semigroupal)
 
 // -------------------------------------------------------------------------------------
 // array utils
 // -------------------------------------------------------------------------------------
 
 /**
- * Equivalent to `NonEmptyReadonlyArray#traverseWithIndex(Apply)`.
+ * Equivalent to `NonEmptyReadonlyArray#traverseWithIndex(Semigroupal)`.
  *
  * @category traversing
  * @since 1.0.0
@@ -1136,7 +1136,7 @@ export const traverseNonEmptyReadonlyArrayWithIndex = <A, B>(
   }
 
 /**
- * Equivalent to `ReadonlyArray#traverseWithIndex(Applicative)`.
+ * Equivalent to `ReadonlyArray#traverseWithIndex(Monoidal)`.
  *
  * @category traversing
  * @since 1.0.0
@@ -1149,7 +1149,7 @@ export const traverseReadonlyArrayWithIndex = <A, B>(
 }
 
 /**
- * Equivalent to `NonEmptyReadonlyArray#traverse(Apply)`.
+ * Equivalent to `NonEmptyReadonlyArray#traverse(Semigroupal)`.
  *
  * @category traversing
  * @since 1.0.0
@@ -1161,7 +1161,7 @@ export const traverseNonEmptyReadonlyArray = <A, B>(
 }
 
 /**
- * Equivalent to `ReadonlyArray#traverse(Applicative)`.
+ * Equivalent to `ReadonlyArray#traverse(Monoidal)`.
  *
  * @category traversing
  * @since 1.0.0
@@ -1173,7 +1173,7 @@ export const traverseReadonlyArray = <A, B>(
 }
 
 /**
- * Equivalent to `ReadonlyArray#sequence(Applicative)`.
+ * Equivalent to `ReadonlyArray#sequence(Monoidal)`.
  *
  * @category traversing
  * @since 1.0.0

@@ -2,17 +2,17 @@
  * @since 1.0.0
  */
 import type * as extendable from "@fp-ts/core/Extendable"
-import * as flattenable from "@fp-ts/core/FlatMap"
+import * as flatMap_ from "@fp-ts/core/FlatMap"
 import * as functor from "@fp-ts/core/Functor"
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import type * as monad from "@fp-ts/core/Monad"
 import type { Monoid } from "@fp-ts/core/Monoid"
-import type * as applicative from "@fp-ts/core/Monoidal"
-import type * as fromIdentity from "@fp-ts/core/Pointed"
+import type * as monoidal from "@fp-ts/core/Monoidal"
+import type * as pointed from "@fp-ts/core/Pointed"
 import type { Semigroup } from "@fp-ts/core/Semigroup"
 import { fromCombine } from "@fp-ts/core/Semigroup"
-import * as apply from "@fp-ts/core/Semigroupal"
-import * as ord from "@fp-ts/core/Sortable"
+import * as semigroupal from "@fp-ts/core/Semigroupal"
+import * as sortable from "@fp-ts/core/Sortable"
 import type { Sortable } from "@fp-ts/core/Sortable"
 import * as traversable from "@fp-ts/core/Traversable"
 import type { Endomorphism } from "@fp-ts/data/Endomorphism"
@@ -874,7 +874,7 @@ export const failures = <E, A>(as: ReadonlyArray<Result<E, A>>): ReadonlyArray<E
  * import { sort } from '@fp-ts/core/data/ReadonlyArray'
  * import * as N from '@fp-ts/core/data/number'
  *
- * assert.deepStrictEqual(sort(N.Ord)([3, 2, 1]), [1, 2, 3])
+ * assert.deepStrictEqual(sort(N.Sortable)([3, 2, 1]), [1, 2, 3])
  *
  * @since 1.0.0
  */
@@ -1037,7 +1037,7 @@ export const uniq = <A>(
  *
  * @exampleTodo
  * import { sortBy } from '@fp-ts/core/data/ReadonlyArray'
- * import { contramap } from '@fp-ts/core/typeclasses/Ord'
+ * import { contramap } from '@fp-ts/core/Sortable'
  * import * as S from '@fp-ts/core/data/string'
  * import * as N from '@fp-ts/core/data/number'
  * import { pipe } from '@fp-ts/core/data/Function'
@@ -1046,8 +1046,8 @@ export const uniq = <A>(
  *   name: string
  *   age: number
  * }
- * const byName = pipe(S.Ord, contramap((p: Person) => p.name))
- * const byAge = pipe(N.Ord, contramap((p: Person) => p.age))
+ * const byName = pipe(S.Sortable, contramap((p: Person) => p.name))
+ * const byAge = pipe(N.Sortable, contramap((p: Person) => p.age))
  *
  * const sortByNameByAge = sortBy([byName, byAge])
  *
@@ -1237,7 +1237,7 @@ export const map = <A, B>(f: (a: A) => B) =>
  * @category instances
  * @since 1.0.0
  */
-export const FromIdentity: fromIdentity.Pointed<ReadonlyArrayTypeLambda> = {
+export const Pointed: pointed.Pointed<ReadonlyArrayTypeLambda> = {
   of
 }
 
@@ -1272,7 +1272,7 @@ export const flatMap: <A, B>(
  * @category instances
  * @since 1.0.0
  */
-export const Flattenable: flattenable.FlatMap<ReadonlyArrayTypeLambda> = {
+export const FlatMap: flatMap_.FlatMap<ReadonlyArrayTypeLambda> = {
   map,
   flatMap
 }
@@ -1286,7 +1286,7 @@ export const Flattenable: flattenable.FlatMap<ReadonlyArrayTypeLambda> = {
  */
 export const zipLeft: (
   that: ReadonlyArray<unknown>
-) => <A>(self: ReadonlyArray<A>) => ReadonlyArray<A> = flattenable.zipLeft(Flattenable)
+) => <A>(self: ReadonlyArray<A>) => ReadonlyArray<A> = flatMap_.zipLeft(FlatMap)
 
 /**
  * A variant of `flatMap` that ignores the value produced by this effect.
@@ -1296,7 +1296,7 @@ export const zipLeft: (
  */
 export const zipRight: <A>(
   that: ReadonlyArray<A>
-) => (self: ReadonlyArray<unknown>) => ReadonlyArray<A> = flattenable.zipRight(Flattenable)
+) => (self: ReadonlyArray<unknown>) => ReadonlyArray<A> = flatMap_.zipRight(FlatMap)
 
 /**
  * @since 1.0.0
@@ -1443,18 +1443,18 @@ export const duplicate: <A>(wa: ReadonlyArray<A>) => ReadonlyArray<ReadonlyArray
  * @category traversing
  * @since 1.0.0
  */
-export const traverseWithIndex = <F extends TypeLambda>(Applicative: applicative.Monoidal<F>) =>
+export const traverseWithIndex = <F extends TypeLambda>(Monoidal: monoidal.Monoidal<F>) =>
   <A, S, R, O, E, B>(f: (i: number, a: A) => Kind<F, S, R, O, E, B>) => {
-    const ap = apply.ap(Applicative)
+    const ap = semigroupal.ap(Monoidal)
     return (self: ReadonlyArray<A>): Kind<F, S, R, O, E, ReadonlyArray<B>> =>
       pipe(
         self,
         reduceWithIndex<Kind<F, S, R, O, E, ReadonlyArray<B>>, A>(
-          Applicative.of(internal.empty),
+          Monoidal.of(internal.empty),
           (i, fbs, a) =>
             pipe(
               fbs,
-              Applicative.map((bs) => (b: B) => append(b)(bs)),
+              Monoidal.map((bs) => (b: B) => append(b)(bs)),
               ap(f(i, a))
             )
         )
@@ -1465,11 +1465,11 @@ export const traverseWithIndex = <F extends TypeLambda>(Applicative: applicative
  * @category traversing
  * @since 1.0.0
  */
-export const traverse = <F extends TypeLambda>(Applicative: applicative.Monoidal<F>) =>
+export const traverse = <F extends TypeLambda>(Monoidal: monoidal.Monoidal<F>) =>
   <A, S, R, O, E, B>(
     f: (a: A) => Kind<F, S, R, O, E, B>
   ): ((self: ReadonlyArray<A>) => Kind<F, S, R, O, E, ReadonlyArray<B>>) =>
-    traverseWithIndex(Applicative)((_, a) => f(a))
+    traverseWithIndex(Monoidal)((_, a) => f(a))
 
 /**
  * @since 1.0.0
@@ -1555,17 +1555,17 @@ export const getMonoid = <A>(): Monoid<ReadonlyArray<A>> => {
 }
 
 /**
- * Derives an `Ord` over the `ReadonlyArray` of a given element type from the `Ord` of that type. The ordering between two such
+ * Derives an `Sortable` over the `ReadonlyArray` of a given element type from the `Sortable` of that type. The ordering between two such
  * `ReadonlyArray`s is equal to: the first non equal comparison of each `ReadonlyArray`s elements taken pairwise in increasing order, in
  * case of equality over all the pairwise elements; the longest `ReadonlyArray` is considered the greatest, if both `ReadonlyArray`s have
  * the same length, the result is equality.
  *
  * @exampleTodo
- * import { liftOrd } from '@fp-ts/core/data/ReadonlyArray'
+ * import { liftSortable } from '@fp-ts/core/data/ReadonlyArray'
  * import * as S from '@fp-ts/core/data/string'
  * import { pipe } from '@fp-ts/core/data/Function'
  *
- * const O = liftOrd(S.Ord)
+ * const O = liftSortable(S.Sortable)
  * assert.strictEqual(pipe(['b'], O.compare(['a'])), 1)
  * assert.strictEqual(pipe(['a'], O.compare(['a'])), 0)
  * assert.strictEqual(pipe(['a'], O.compare(['b'])), -1)
@@ -1573,19 +1573,19 @@ export const getMonoid = <A>(): Monoid<ReadonlyArray<A>> => {
  * @category instances
  * @since 1.0.0
  */
-export const liftOrd = <A>(O: Sortable<A>): Sortable<ReadonlyArray<A>> =>
-  ord.fromCompare((that) =>
+export const liftSortable = <A>(Sortable: Sortable<A>): Sortable<ReadonlyArray<A>> =>
+  sortable.fromCompare((that) =>
     (self) => {
       const aLen = self.length
       const bLen = that.length
       const len = Math.min(aLen, bLen)
       for (let i = 0; i < len; i++) {
-        const o = O.compare(that[i])(self[i])
+        const o = Sortable.compare(that[i])(self[i])
         if (o !== 0) {
           return o
         }
       }
-      return number.Ord.compare(bLen)(aLen)
+      return number.Sortable.compare(bLen)(aLen)
     }
   )
 
@@ -1628,7 +1628,7 @@ export const unit: (self: ReadonlyArray<unknown>) => ReadonlyArray<void> = funct
  * @category instances
  * @since 1.0.0
  */
-export const Apply: apply.Semigroupal<ReadonlyArrayTypeLambda> = {
+export const Semigroupal: semigroupal.Semigroupal<ReadonlyArrayTypeLambda> = {
   map,
   zipWith,
   zipMany: <A>(others: Iterable<ReadonlyArray<A>>) =>
@@ -1649,7 +1649,9 @@ export const Apply: apply.Semigroupal<ReadonlyArrayTypeLambda> = {
  */
 export const lift2: <A, B, C>(
   f: (a: A, b: B) => C
-) => (fa: ReadonlyArray<A>, fb: ReadonlyArray<B>) => ReadonlyArray<C> = apply.lift2(Apply)
+) => (fa: ReadonlyArray<A>, fb: ReadonlyArray<B>) => ReadonlyArray<C> = semigroupal.lift2(
+  Semigroupal
+)
 
 /**
  * Lifts a ternary function into `ReadonlyArray`.
@@ -1659,18 +1661,19 @@ export const lift2: <A, B, C>(
  */
 export const lift3: <A, B, C, D>(
   f: (a: A, b: B, c: C) => D
-) => (fa: ReadonlyArray<A>, fb: ReadonlyArray<B>, fc: ReadonlyArray<C>) => ReadonlyArray<D> = apply
-  .lift3(Apply)
+) => (fa: ReadonlyArray<A>, fb: ReadonlyArray<B>, fc: ReadonlyArray<C>) => ReadonlyArray<D> =
+  semigroupal
+    .lift3(Semigroupal)
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const Applicative: applicative.Monoidal<ReadonlyArrayTypeLambda> = {
+export const Monoidal: monoidal.Monoidal<ReadonlyArrayTypeLambda> = {
   map,
   of,
-  zipMany: Apply.zipMany,
-  zipWith: Apply.zipWith,
+  zipMany: Semigroupal.zipMany,
+  zipWith: Semigroupal.zipWith,
   zipAll: <A>(collection: Iterable<ReadonlyArray<A>>): ReadonlyArray<ReadonlyArray<A>> => {
     let c: ReadonlyArray<ReadonlyArray<A>> = [[], ...[]]
     for (const o of collection) {
@@ -1716,7 +1719,7 @@ export const Monad: monad.Monad<ReadonlyArrayTypeLambda> = {
  */
 export const tap: <A>(
   f: (a: A) => ReadonlyArray<unknown>
-) => (self: ReadonlyArray<A>) => ReadonlyArray<A> = flattenable.tap(Flattenable)
+) => (self: ReadonlyArray<A>) => ReadonlyArray<A> = flatMap_.tap(FlatMap)
 
 /**
  * @category instances
@@ -1849,7 +1852,7 @@ export const reduceRightWithIndex = <B, A>(b: B, f: (i: number, a: A, b: B) => B
  * @category folding
  * @since 1.0.0
  */
-export const reduceKind = <F extends TypeLambda>(Flattenable: flattenable.FlatMap<F>) =>
+export const reduceKind = <F extends TypeLambda>(Flattenable: flatMap_.FlatMap<F>) =>
   <S, R, O, E, B, A>(
     fb: Kind<F, S, R, O, E, B>,
     f: (b: B, a: A) => Kind<F, S, R, O, E, B>
@@ -1873,7 +1876,7 @@ export const Traversable: traversable.Traversable<ReadonlyArrayTypeLambda> = {
  * @since 1.0.0
  */
 export const sequence: <F extends TypeLambda>(
-  F: applicative.Monoidal<F>
+  F: monoidal.Monoidal<F>
 ) => <S, R, O, E, A>(
   fas: ReadonlyArray<Kind<F, S, R, O, E, A>>
 ) => Kind<F, S, R, O, E, ReadonlyArray<A>> = traversable.sequence(Traversable)
@@ -1883,7 +1886,7 @@ export const sequence: <F extends TypeLambda>(
  * @since 1.0.0
  */
 export const traverseFilterMap: <F extends TypeLambda>(
-  F: applicative.Monoidal<F>
+  F: monoidal.Monoidal<F>
 ) => <A, S, R, O, E, B>(
   f: (a: A) => Kind<F, S, R, O, E, Option<B>>
 ) => (ta: ReadonlyArray<A>) => Kind<F, S, R, O, E, ReadonlyArray<B>> = traversableFilterable
@@ -1894,7 +1897,7 @@ export const traverseFilterMap: <F extends TypeLambda>(
  * @since 1.0.0
  */
 export const traversePartitionMap: <F extends TypeLambda>(
-  F: applicative.Monoidal<F>
+  F: monoidal.Monoidal<F>
 ) => <A, S, R, O, E, B, C>(
   f: (a: A) => Kind<F, S, R, O, E, Result<B, C>>
 ) => (wa: ReadonlyArray<A>) => Kind<F, S, R, O, E, readonly [ReadonlyArray<B>, ReadonlyArray<C>]> =
@@ -1919,7 +1922,7 @@ export const TraversableFilterable: traversableFilterable.TraversableFilterable<
  * import * as RA from '@fp-ts/core/data/ReadonlyArray'
  * import * as T from '@fp-ts/core/data/Async'
  *
- * const traverseFilter = RA.traverseFilter(T.ApplicativePar)
+ * const traverseFilter = RA.traverseFilter(T.MonoidalPar)
  * async function test() {
  *   assert.deepStrictEqual(
  *     await pipe(
@@ -1934,7 +1937,7 @@ export const TraversableFilterable: traversableFilterable.TraversableFilterable<
  * @since 1.0.0
  */
 export const traverseFilter: <F extends TypeLambda>(
-  F: applicative.Monoidal<F>
+  F: monoidal.Monoidal<F>
 ) => <B extends A, S, R, O, E, A = B>(
   predicate: (a: A) => Kind<F, S, R, O, E, boolean>
 ) => (self: ReadonlyArray<B>) => Kind<F, S, R, O, E, ReadonlyArray<B>> = traversableFilterable
@@ -1944,7 +1947,7 @@ export const traverseFilter: <F extends TypeLambda>(
  * @since 1.0.0
  */
 export const traversePartition: <F extends TypeLambda>(
-  ApplicativeF: applicative.Monoidal<F>
+  Monoidal: monoidal.Monoidal<F>
 ) => <B extends A, S, R, O, E, A = B>(
   predicate: (a: A) => Kind<F, S, R, O, E, boolean>
 ) => (
@@ -2001,7 +2004,7 @@ export const flatMapNullable: <A, B>(
   f: (a: A) => B | null | undefined
 ) => (ma: ReadonlyArray<A>) => ReadonlyArray<NonNullable<B>> = fromOption_.flatMapNullable(
   FromOption,
-  Flattenable
+  FlatMap
 )
 
 /**
@@ -2129,8 +2132,8 @@ export const bind: <N extends string, A extends object, B>(
   f: (a: A) => ReadonlyArray<B>
 ) => (
   self: ReadonlyArray<A>
-) => ReadonlyArray<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = flattenable
-  .bind(Flattenable)
+) => ReadonlyArray<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = flatMap_
+  .bind(FlatMap)
 
 /**
  * A variant of `bind` that sequentially ignores the scope.
@@ -2143,9 +2146,10 @@ export const bindRight: <N extends string, A extends object, B>(
   fb: ReadonlyArray<B>
 ) => (
   self: ReadonlyArray<A>
-) => ReadonlyArray<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = apply.bindRight(
-  Apply
-)
+) => ReadonlyArray<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = semigroupal
+  .bindRight(
+    Semigroupal
+  )
 
 // -------------------------------------------------------------------------------------
 // tuple sequencing
@@ -2175,4 +2179,4 @@ export const zipFlatten: <B>(
   fb: ReadonlyArray<B>
 ) => <A extends ReadonlyArray<unknown>>(
   self: ReadonlyArray<A>
-) => ReadonlyArray<readonly [...A, B]> = apply.zipFlatten(Apply)
+) => ReadonlyArray<readonly [...A, B]> = semigroupal.zipFlatten(Semigroupal)

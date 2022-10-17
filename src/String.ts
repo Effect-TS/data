@@ -71,14 +71,14 @@ export const concatAll: (collection: Iterable<string>) => string = Monoid.combin
  * import * as S from '@fp-ts/core/data/string'
  * import { pipe } from '@fp-ts/core/data/Function'
  *
- * assert.deepStrictEqual(pipe('a', S.Ord.compare('a')), 0)
- * assert.deepStrictEqual(pipe('a', S.Ord.compare('b')), -1)
- * assert.deepStrictEqual(pipe('b', S.Ord.compare('a')), 1)
+ * assert.deepStrictEqual(pipe('a', S.Sortable.compare('a')), 0)
+ * assert.deepStrictEqual(pipe('a', S.Sortable.compare('b')), -1)
+ * assert.deepStrictEqual(pipe('b', S.Sortable.compare('a')), 1)
  *
  * @category instances
  * @since 1.0.0
  */
-export const Ord: sortable.Sortable<string> = {
+export const Sortable: sortable.Sortable<string> = {
   compare: (that) => (self) => self < that ? -1 : self > that ? 1 : 0
 }
 
