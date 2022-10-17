@@ -5,7 +5,6 @@
 import type { Sortable } from "@fp-ts/core/Sortable"
 import * as Eq from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
-import * as H from "@fp-ts/data/Hash"
 import * as O from "@fp-ts/data/Option"
 import * as RBT from "@fp-ts/data/RedBlackTree"
 
@@ -37,12 +36,12 @@ class SortedMapImpl<K, V> implements Iterable<readonly [K, V]>, Eq.Equal {
 
   constructor(readonly tree: RBT.RedBlackTree<K, V>) {}
 
-  [H.symbol](): number {
-    return this.tree[H.symbol]()
+  [Eq.symbolHash](): number {
+    return pipe(Eq.hash(this.tree), Eq.hashCombine(Eq.hash("@fp-ts/data/SortedMap")))
   }
 
-  [Eq.symbol](that: unknown): boolean {
-    return isSortedMap(that) && this.tree[Eq.symbol](that.tree)
+  [Eq.symbolEqual](that: unknown): boolean {
+    return isSortedMap(that) && Eq.equals(this.tree, that.tree)
   }
 
   [Symbol.iterator](): Iterator<readonly [K, V]> {

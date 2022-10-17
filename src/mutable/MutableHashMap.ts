@@ -3,7 +3,6 @@
  */
 import * as Equal from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
-import * as Hash from "@fp-ts/data/Hash"
 import * as O from "@fp-ts/data/Option"
 import type { Option } from "@fp-ts/data/Option"
 
@@ -70,11 +69,11 @@ class MutableHashMapImpl<K, V> implements MutableHashMap<K, V> {
   readonly backingMap = new Map<number, Node<K, V>>()
   length = 0;
 
-  [Hash.Hash.symbol]() {
-    return Hash.random(this)
+  [Equal.symbolHash]() {
+    return Equal.hashRandom(this)
   }
 
-  [Equal.Equal.symbol](that: unknown) {
+  [Equal.symbolEqual](that: unknown) {
     return this === that
   }
 
@@ -90,7 +89,7 @@ class MutableHashMapImpl<K, V> implements MutableHashMap<K, V> {
  */
 export const get = <K>(k: K) =>
   <V>(self: MutableHashMap<K, V>): Option<V> => {
-    const hash = Hash.evaluate(k)
+    const hash = Equal.hash(k)
     const arr = self.backingMap.get(hash)
 
     if (arr == null) {
@@ -135,7 +134,7 @@ export const size = <K, V>(self: MutableHashMap<K, V>): number => {
  */
 export const update = <K, V>(k: K, f: (v: V) => V) =>
   (self: MutableHashMap<K, V>): MutableHashMap<K, V> => {
-    const hash = Hash.evaluate(k)
+    const hash = Equal.hash(k)
     const arr = self.backingMap.get(hash)
 
     if (arr == null) {
@@ -161,7 +160,7 @@ export const update = <K, V>(k: K, f: (v: V) => V) =>
  */
 export const set = <K, V>(k: K, v: V) =>
   (self: MutableHashMap<K, V>): MutableHashMap<K, V> => {
-    const hash = Hash.evaluate(k)
+    const hash = Equal.hash(k)
     const arr = self.backingMap.get(hash)
 
     if (arr == null) {
@@ -208,7 +207,7 @@ export const modify = <K, V>(key: K, f: (value: Option<V>) => Option<V>) =>
  */
 export const remove = <K>(k: K) =>
   <V>(self: MutableHashMap<K, V>): MutableHashMap<K, V> => {
-    const hash = Hash.evaluate(k)
+    const hash = Equal.hash(k)
     const arr = self.backingMap.get(hash)
 
     if (arr == null) {

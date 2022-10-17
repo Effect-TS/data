@@ -1,18 +1,17 @@
 import * as Ord from "@fp-ts/core/Sortable"
 import * as Eq from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
-import * as H from "@fp-ts/data/Hash"
 import * as SortedSet from "@fp-ts/data/SortedSet"
 import * as Str from "@fp-ts/data/String"
 
 class Member implements Eq.Equal {
   constructor(readonly id: string) {}
 
-  [H.symbol](): number {
-    return H.evaluate(this.id)
+  [Eq.symbolHash](): number {
+    return Eq.hash(this.id)
   }
 
-  [Eq.symbol](u: unknown): boolean {
+  [Eq.symbolEqual](u: unknown): boolean {
     return u instanceof Member && this.id === u.id
   }
 }

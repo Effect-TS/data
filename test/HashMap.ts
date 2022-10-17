@@ -1,6 +1,5 @@
 import * as Equal from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
-import * as Hash from "@fp-ts/data/Hash"
 import * as HashMap from "@fp-ts/data/HashMap"
 import * as Option from "@fp-ts/data/Option"
 import { deepStrictEqual } from "@fp-ts/data/test/util"
@@ -8,11 +7,11 @@ import { deepStrictEqual } from "@fp-ts/data/test/util"
 class Key implements Equal.Equal {
   constructor(readonly n: number) {}
 
-  [Hash.symbol](): number {
-    return Hash.evaluate(this.n)
+  [Equal.symbolHash](): number {
+    return Equal.hash(this.n)
   }
 
-  [Equal.symbol](u: unknown): boolean {
+  [Equal.symbolEqual](u: unknown): boolean {
     return u instanceof Key && this.n === u.n
   }
 }
@@ -20,11 +19,11 @@ class Key implements Equal.Equal {
 class Value implements Equal.Equal {
   constructor(readonly s: string) {}
 
-  [Hash.symbol](): number {
-    return Hash.evaluate(this.s)
+  [Equal.symbolHash](): number {
+    return Equal.hash(this.s)
   }
 
-  [Equal.symbol](u: unknown): boolean {
+  [Equal.symbolEqual](u: unknown): boolean {
     return u instanceof Value && this.s === u.s
   }
 }
@@ -48,8 +47,8 @@ describe.concurrent("HashMap", () => {
   it("hasHash", () => {
     const map = HashMap.make([key(0), value("a")])
 
-    assert.isTrue(HashMap.hasHash(key(0), Hash.evaluate(key(0)))(map))
-    assert.isFalse(HashMap.hasHash(key(1), Hash.evaluate(key(0)))(map))
+    assert.isTrue(HashMap.hasHash(key(0), Equal.hash(key(0)))(map))
+    assert.isFalse(HashMap.hasHash(key(1), Equal.hash(key(0)))(map))
   })
 
   it("get", () => {
@@ -62,8 +61,8 @@ describe.concurrent("HashMap", () => {
   it("getHash", () => {
     const map = HashMap.make([key(0), value("a")])
 
-    deepStrictEqual(HashMap.getHash(key(0), Hash.evaluate(0))(map), Option.some(value("a")))
-    deepStrictEqual(HashMap.getHash(key(1), Hash.evaluate(0))(map), Option.none)
+    deepStrictEqual(HashMap.getHash(key(0), Equal.hash(0))(map), Option.some(value("a")))
+    deepStrictEqual(HashMap.getHash(key(1), Equal.hash(0))(map), Option.none)
   })
 
   it("set", () => {
@@ -260,7 +259,7 @@ describe.concurrent("HashMap", () => {
     const map = HashMap.make([key(0), value("a")], [key(1), value("b")])
     const result = pipe(
       map,
-      HashMap.modifyHash(key(0), Hash.evaluate(key(0)), (maybe) =>
+      HashMap.modifyHash(key(0), Equal.hash(key(0)), (maybe) =>
         Option.isSome(maybe) ?
           Option.some(value("test")) :
           Option.none)

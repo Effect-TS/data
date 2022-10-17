@@ -10,7 +10,6 @@
  */
 import * as DE from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
-import * as DH from "@fp-ts/data/Hash"
 import * as II from "@fp-ts/data/internal/Iterable"
 import * as LI from "@fp-ts/data/internal/List"
 import * as L from "@fp-ts/data/List"
@@ -28,14 +27,14 @@ class QueueImpl<A> implements Q.Queue<A>, Iterable<A>, DE.Equal {
   [Symbol.iterator](): Iterator<A> {
     return pipe(this._out, II.concat(L.reverse(this._in)))[Symbol.iterator]()
   }
-  [DH.Hash.symbol](): number {
+  [DE.symbolHash](): number {
     return pipe(
-      DH.evaluate(this._id),
-      DH.combine(DH.evaluate(this._in)),
-      DH.combine(DH.evaluate(this._out))
+      DE.hash(this._id),
+      DE.hashCombine(DE.hash(this._in)),
+      DE.hashCombine(DE.hash(this._out))
     )
   }
-  [DE.Equal.symbol](that: unknown): boolean {
+  [DE.symbolEqual](that: unknown): boolean {
     return (
       isQueue(that) &&
       pipe(this._in, DE.equals(that._in)) &&

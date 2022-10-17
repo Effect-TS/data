@@ -15,7 +15,6 @@ import * as duration from "@fp-ts/data/Duration"
 import * as endomorphism from "@fp-ts/data/Endomorphism"
 import * as equal from "@fp-ts/data/Equal"
 import * as _function from "@fp-ts/data/Function"
-import * as hash from "@fp-ts/data/Hash"
 import * as hashMap from "@fp-ts/data/HashMap"
 import * as hashSet from "@fp-ts/data/HashSet"
 import * as list from "@fp-ts/data/List"
@@ -100,10 +99,6 @@ export {
    * @since 1.0.0
    */
   fromResult,
-  /**
-   * @since 1.0.0
-   */
-  hash,
   /**
    * @since 1.0.0
    */

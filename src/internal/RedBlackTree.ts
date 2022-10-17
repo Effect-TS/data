@@ -1,7 +1,6 @@
 import type * as Ordering from "@fp-ts/core/Ordering"
 import type * as Sortable from "@fp-ts/core/Sortable"
 import * as Equal from "@fp-ts/data/Equal"
-import * as Hash from "@fp-ts/data/Hash"
 import { Direction, RedBlackTreeIterator } from "@fp-ts/data/internal/RedBlackTree/iterator"
 import * as Node from "@fp-ts/data/internal/RedBlackTree/node"
 import { Stack } from "@fp-ts/data/internal/Stack"
@@ -27,11 +26,11 @@ export class RedBlackTreeImpl<K, V> implements RBT.RedBlackTree<K, V> {
     readonly _root: Node.Node<K, V> | undefined
   ) {}
 
-  [Hash.symbol](): number {
-    return Hash.combine(Hash.evaluate(RedBlackTreeSymbolKey))(Hash.evaluate(Array.from(this)))
+  [Equal.symbolHash](): number {
+    return Equal.hashCombine(Equal.hash(RedBlackTreeSymbolKey))(Equal.hash(Array.from(this)))
   }
 
-  [Equal.symbol](that: unknown): boolean {
+  [Equal.symbolEqual](that: unknown): boolean {
     if (isRedBlackTree(that)) {
       if ((this._root?.count ?? 0) !== ((that as RedBlackTreeImpl<K, V>)._root?.count ?? 0)) {
         return false

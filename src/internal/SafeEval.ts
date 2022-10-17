@@ -1,7 +1,6 @@
 import * as Equal from "@fp-ts/data/Equal"
 import type { LazyArg } from "@fp-ts/data/Function"
 import { constant, constVoid, identity } from "@fp-ts/data/Function"
-import * as Hash from "@fp-ts/data/Hash"
 import { Stack } from "@fp-ts/data/internal/Stack"
 import type * as SE from "@fp-ts/data/SafeEval"
 
@@ -18,11 +17,11 @@ class Succeed<A> implements SE.SafeEval<A>, Equal.Equal {
   readonly _A: (_: never) => A = variance
   readonly _id: SE.TypeId = SafeEvalTypeId
   constructor(readonly a: LazyArg<A>) {}
-  [Equal.symbol](that: unknown) {
+  [Equal.symbolEqual](that: unknown) {
     return this === that
   }
-  [Hash.symbol]() {
-    return Hash.random(this)
+  [Equal.symbolHash]() {
+    return Equal.hashRandom(this)
   }
 }
 
@@ -31,11 +30,11 @@ class Suspend<A> implements SE.SafeEval<A>, Equal.Equal {
   readonly _A: (_: never) => A = variance
   readonly _id: SE.TypeId = SafeEvalTypeId
   constructor(readonly f: LazyArg<SafeEvalInternal<A>>) {}
-  [Equal.symbol](that: unknown) {
+  [Equal.symbolEqual](that: unknown) {
     return this === that
   }
-  [Hash.symbol]() {
-    return Hash.random(this)
+  [Equal.symbolHash]() {
+    return Equal.hashRandom(this)
   }
 }
 
@@ -47,11 +46,11 @@ class FlatMap<A, B> implements SE.SafeEval<B>, Equal.Equal {
     readonly value: SafeEvalInternal<A>,
     readonly cont: (a: A) => SafeEvalInternal<B>
   ) {}
-  [Equal.symbol](that: unknown) {
+  [Equal.symbolEqual](that: unknown) {
     return this === that
   }
-  [Hash.symbol]() {
-    return Hash.random(this)
+  [Equal.symbolHash]() {
+    return Equal.hashRandom(this)
   }
 }
 
