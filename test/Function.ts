@@ -6,7 +6,7 @@ import * as assert from "assert"
 const f = Function.increment
 const g = double
 
-describe("Function", () => {
+describe.concurrent("Function", () => {
   it("flip", () => {
     const f = (a: number) => (b: string) => a - b.length
     deepStrictEqual(Function.flip(f)("aaa")(2), -1)

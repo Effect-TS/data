@@ -1,8 +1,8 @@
 import * as Boolean from "@fp-ts/data/Boolean"
 import { deepStrictEqual } from "@fp-ts/data/test/util"
 
-describe("boolean", () => {
-  describe("all", () => {
+describe.concurrent("Boolean", () => {
+  describe.concurrent("all", () => {
     it("baseline", () => {
       deepStrictEqual(Boolean.all([true, true, true]), true)
       deepStrictEqual(Boolean.all([true, true, false]), false)
@@ -15,7 +15,7 @@ describe("boolean", () => {
     })
   })
 
-  describe("any", () => {
+  describe.concurrent("any", () => {
     it("baseline", () => {
       deepStrictEqual(Boolean.any([true, true, true]), true)
       deepStrictEqual(Boolean.any([true, true, false]), true)
@@ -29,7 +29,7 @@ describe("boolean", () => {
     })
   })
 
-  describe("match", () => {
+  describe.concurrent("match", () => {
     it("baseline", () => {
       const match = Boolean.match(() => "false", () => "true")
       deepStrictEqual(match(true), "true")
@@ -38,18 +38,11 @@ describe("boolean", () => {
   })
 
   // TODO
-  // describe("Ord", () => {
+  // describe.concurrent("Ord", () => {
   //   it("baseline", () => {
   //     deepStrictEqual(pipe(false, Boolean.Ord.compare(true)), -1)
   //     deepStrictEqual(pipe(true, Boolean.Ord.compare(false)), 1)
   //     deepStrictEqual(pipe(true, Boolean.Ord.compare(true)), 0)
-  //   })
-  // })
-
-  // describe("Show", () => {
-  //   it("baseline", () => {
-  //     deepStrictEqual(Boolean.Show.show(true), "true")
-  //     deepStrictEqual(Boolean.Show.show(false), "false")
   //   })
   // })
 })

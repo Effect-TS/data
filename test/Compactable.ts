@@ -3,7 +3,7 @@ import * as Result from "@fp-ts/data/Result"
 import { deepStrictEqual } from "@fp-ts/data/test/util"
 import * as Compactable from "@fp-ts/data/typeclasses/Compactable"
 
-describe("Compactable", () => {
+describe.concurrent("Compactable", () => {
   it("separate", () => {
     const separate = Compactable.separate(ReadonlyArray.Functor, ReadonlyArray.Compactable)
     deepStrictEqual(separate([]), [[], []])

@@ -7,7 +7,7 @@ import * as String from "@fp-ts/data/String"
 // import { gt } from "@fp-ts/data/typeclasses/Ord"
 import { deepStrictEqual, double } from "@fp-ts/data/test/util"
 
-describe("Result", () => {
+describe.concurrent("Result", () => {
   it("reduce", () => {
     deepStrictEqual(
       pipe(
@@ -36,10 +36,6 @@ describe("Result", () => {
     deepStrictEqual(pipe(Result.fail(1), Result.reduceRight("", f)), "")
   })
 
-  // -------------------------------------------------------------------------------------
-  // conversions
-  // -------------------------------------------------------------------------------------
-
   it("getSuccess", () => {
     deepStrictEqual(pipe(Result.succeed(1), Result.getSuccess), Option.some(1))
     deepStrictEqual(pipe(Result.fail("a"), Result.getSuccess), Option.none)
@@ -59,10 +55,6 @@ describe("Result", () => {
     deepStrictEqual(pipe(Result.succeed(1), Result.toUndefined), 1)
     deepStrictEqual(pipe(Result.fail("a"), Result.toUndefined), undefined)
   })
-
-  // -------------------------------------------------------------------------------------
-  // filtering
-  // -------------------------------------------------------------------------------------
 
   it("compact", () => {
     deepStrictEqual(
@@ -132,7 +124,7 @@ describe("Result", () => {
     deepStrictEqual(pipe(Result.fail(1), Result.zipRight(Result.fail(true))), Result.fail(1))
   })
 
-  describe("pipeables", () => {
+  describe.concurrent("pipeables", () => {
     it("orElse", () => {
       const assertAlt = (
         a: Result.Result<string, number>,
@@ -339,14 +331,13 @@ describe("Result", () => {
 
     deepStrictEqual(
       Result.fromThrowable(() => {
-        // tslint:disable-next-line: no-string-throw
         throw "string error"
       }, identity),
       Result.fail("string error")
     )
   })
 
-  describe("getCompactable", () => {
+  describe.concurrent("getCompactable", () => {
     const C = Result.getCompactable(String.Monoid.empty)
     it("compact", () => {
       deepStrictEqual(C.compact(Result.fail("1")), Result.fail("1"))
@@ -388,7 +379,7 @@ describe("Result", () => {
     ])
   })
 
-  describe("getFilterable", () => {
+  describe.concurrent("getFilterable", () => {
     const F = Result.getFilterable(String.Monoid.empty)
 
     it("filterMap", () => {
@@ -401,7 +392,7 @@ describe("Result", () => {
   })
 
   // TODO
-  // describe("getFilterableKind", () => {
+  // describe.concurrent("getFilterableKind", () => {
   //   const FilterableKind = Result.getTraversableFilterable(String.Monoid.empty)
   //   const p = (n: number) => n > 2
 
@@ -444,15 +435,6 @@ describe("Result", () => {
       Result.succeed(3)
     )
   })
-
-  // TODO
-  // describe("getShow", () => {
-  //   it("show", () => {
-  //     const Sh = Result.getShow(String.Show, String.Show)
-  //     deepStrictEqual(Sh.show(Result.fail("a")), `fail("a")`)
-  //     deepStrictEqual(Sh.show(Result.succeed("a")), `succeed("a")`)
-  //   })
-  // })
 
   it("getApplicativeValidation", () => {
     const A = Result.getValidatedApplicative(String.Monoid)
@@ -566,10 +548,6 @@ describe("Result", () => {
     deepStrictEqual(f("a"), Result.succeed(1))
     deepStrictEqual(f(""), Result.fail(new Error("empty string")))
   })
-
-  // -------------------------------------------------------------------------------------
-  // array utils
-  // -------------------------------------------------------------------------------------
 
   it("traverseNonEmptyReadonlyArray", () => {
     const f = Result.traverseNonEmptyReadonlyArray((

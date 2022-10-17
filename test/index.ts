@@ -18,7 +18,7 @@ function getModuleNames(): ReadonlyArray<string> {
     .map((file) => file.name)
 }
 
-describe("index", () => {
+describe.concurrent("index", () => {
   it("check exported modules", () => {
     const moduleNames = getModuleNames()
     moduleNames.forEach((name) => {
