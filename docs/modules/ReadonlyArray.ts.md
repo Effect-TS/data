@@ -17,6 +17,7 @@ Added in v1.0.0
   - [makeBy](#makeby)
   - [of](#of)
   - [prepend](#prepend)
+  - [range](#range)
   - [replicate](#replicate)
 - [conversions](#conversions)
   - [fromIterable](#fromiterable)
@@ -216,6 +217,18 @@ Prepend an element to the front of a `ReadonlyArray`, creating a new `NonEmptyRe
 
 ```ts
 export declare const prepend: <B>(head: B) => <A>(tail: readonly A[]) => readonly [B | A, ...(B | A)[]]
+```
+
+Added in v1.0.0
+
+## range
+
+Create a `ReadonlyArray` containing a range of integers, including both endpoints.
+
+**Signature**
+
+```ts
+export declare const range: (start: number, end: number) => readonly [number, ...number[]]
 ```
 
 Added in v1.0.0
