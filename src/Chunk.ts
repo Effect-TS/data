@@ -1023,7 +1023,8 @@ export const map = <A, B>(f: (a: A) => B) =>
  * @category mapping
  */
 export const mapWithIndex = <A, B>(f: (i: number, a: A) => B) =>
-  (self: Chunk<A>): Chunk<B> => unsafeFromArray(RA.mapWithIndex(f)(toArray(self)))
+  (self: Chunk<A>): Chunk<B> =>
+    unsafeFromArray(pipe(toArray(self), RA.mapWithIndex((a, i) => f(i, a))))
 
 /**
  * Statefully maps over the chunk, producing new elements of type `B`.

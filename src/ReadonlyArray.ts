@@ -4,6 +4,7 @@
 import type * as extendable from "@fp-ts/core/Extendable"
 import * as flatMap_ from "@fp-ts/core/FlatMap"
 import * as functor from "@fp-ts/core/Functor"
+import type * as functorWithIndex from "@fp-ts/core/FunctorWithIndex"
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import type * as monad from "@fp-ts/core/Monad"
 import type { Monoid } from "@fp-ts/core/Monoid"
@@ -15,6 +16,7 @@ import * as semigroupal from "@fp-ts/core/Semigroupal"
 import * as sortable from "@fp-ts/core/Sortable"
 import type { Sortable } from "@fp-ts/core/Sortable"
 import * as traversable from "@fp-ts/core/Traversable"
+import type * as traversableWithIndex from "@fp-ts/core/TraversableWithIndex"
 import type { Endomorphism } from "@fp-ts/data/Endomorphism"
 import { equals } from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
@@ -1338,9 +1340,20 @@ export const flatten: <A>(mma: ReadonlyArray<ReadonlyArray<A>>) => ReadonlyArray
 /**
  * @since 1.0.0
  */
-export const mapWithIndex: <A, B>(
-  f: (i: number, a: A) => B
-) => (fa: ReadonlyArray<A>) => ReadonlyArray<B> = (f) => (fa) => fa.map((a, i) => f(i, a))
+export const mapWithIndex = <A, B>(
+  f: (a: A, i: number) => B
+) => (self: ReadonlyArray<A>): ReadonlyArray<B> => self.map(f)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const FunctorWithIndex: functorWithIndex.FunctorWithIndex<
+  ReadonlyArrayTypeLambda,
+  number
+> = {
+  mapWithIndex
+}
 
 /**
  * @category filtering
@@ -1444,22 +1457,8 @@ export const duplicate: <A>(wa: ReadonlyArray<A>) => ReadonlyArray<ReadonlyArray
  * @since 1.0.0
  */
 export const traverseWithIndex = <F extends TypeLambda>(Monoidal: monoidal.Monoidal<F>) =>
-  <A, S, R, O, E, B>(f: (i: number, a: A) => Kind<F, S, R, O, E, B>) => {
-    const ap = semigroupal.ap(Monoidal)
-    return (self: ReadonlyArray<A>): Kind<F, S, R, O, E, ReadonlyArray<B>> =>
-      pipe(
-        self,
-        reduceWithIndex<Kind<F, S, R, O, E, ReadonlyArray<B>>, A>(
-          Monoidal.of(internal.empty),
-          (i, fbs, a) =>
-            pipe(
-              fbs,
-              Monoidal.map((bs) => (b: B) => append(b)(bs)),
-              ap(f(i, a))
-            )
-        )
-      )
-  }
+  <A, S, R, O, E, B>(f: (a: A, i: number) => Kind<F, S, R, O, E, B>) =>
+    (self: ReadonlyArray<A>): Kind<F, S, R, O, E, ReadonlyArray<B>> => Monoidal.zipAll(self.map(f))
 
 /**
  * @category traversing
@@ -1469,7 +1468,7 @@ export const traverse = <F extends TypeLambda>(Monoidal: monoidal.Monoidal<F>) =
   <A, S, R, O, E, B>(
     f: (a: A) => Kind<F, S, R, O, E, B>
   ): ((self: ReadonlyArray<A>) => Kind<F, S, R, O, E, ReadonlyArray<B>>) =>
-    traverseWithIndex(Monoidal)((_, a) => f(a))
+    traverseWithIndex(Monoidal)(f)
 
 /**
  * @since 1.0.0
@@ -1869,6 +1868,17 @@ export const reduceKind = <F extends TypeLambda>(Flattenable: flatMap_.FlatMap<F
  */
 export const Traversable: traversable.Traversable<ReadonlyArrayTypeLambda> = {
   traverse
+}
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const TraversableWithIndex: traversableWithIndex.TraversableWithIndex<
+  ReadonlyArrayTypeLambda,
+  number
+> = {
+  traverseWithIndex
 }
 
 /**
