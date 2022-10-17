@@ -14,7 +14,7 @@ import * as fc from "fast-check"
 describe("ReadonlyArray", () => {
   describe("pipeables", () => {
     it("traverse", () => {
-      const traverse = ReadonlyArray.traverse(Option.Applicative)((
+      const traverse = ReadonlyArray.traverse(Option.Monoidal)((
         n: number
       ): Option.Option<number> => (n % 2 === 0 ? Option.none : Option.some(n)))
       deepStrictEqual(traverse([1, 2]), Option.none)
@@ -22,7 +22,7 @@ describe("ReadonlyArray", () => {
     })
 
     it("sequence", () => {
-      const sequence = ReadonlyArray.sequence(Option.Applicative)
+      const sequence = ReadonlyArray.sequence(Option.Monoidal)
       deepStrictEqual(sequence([Option.some(1), Option.some(3)]), Option.some([1, 3]))
       deepStrictEqual(sequence([Option.some(1), Option.none]), Option.none)
     })
@@ -31,7 +31,7 @@ describe("ReadonlyArray", () => {
       deepStrictEqual(
         pipe(
           ["a", "bb"],
-          ReadonlyArray.traverseWithIndex(Option.Applicative)((
+          ReadonlyArray.traverseWithIndex(Option.Monoidal)((
             i,
             s
           ) => (s.length >= 1 ? Option.some(s + i) : Option.none))
@@ -41,7 +41,7 @@ describe("ReadonlyArray", () => {
       deepStrictEqual(
         pipe(
           ["a", "bb"],
-          ReadonlyArray.traverseWithIndex(Option.Applicative)((
+          ReadonlyArray.traverseWithIndex(Option.Monoidal)((
             i,
             s
           ) => (s.length > 1 ? Option.some(s + i) : Option.none))
@@ -720,7 +720,7 @@ describe("ReadonlyArray", () => {
 
   it("sort", () => {
     const S = pipe(
-      Number.Ord,
+      Number.Sortable,
       Sortable.contramap((x: { readonly a: number }) => x.a)
     )
     deepStrictEqual(
@@ -738,9 +738,9 @@ describe("ReadonlyArray", () => {
         { a: 3, b: "b1" }
       ]
     )
-    strictEqual(ReadonlyArray.sort(Number.Ord)(ReadonlyArray.empty), ReadonlyArray.empty)
+    strictEqual(ReadonlyArray.sort(Number.Sortable)(ReadonlyArray.empty), ReadonlyArray.empty)
     const as: ReadonlyArray<number> = [1]
-    strictEqual(ReadonlyArray.sort(Number.Ord)(as), as)
+    strictEqual(ReadonlyArray.sort(Number.Sortable)(as), as)
   })
 
   it("zipWith", () => {
@@ -954,11 +954,11 @@ describe("ReadonlyArray", () => {
       readonly c: boolean
     }
     const byName = pipe(
-      String.Ord,
+      String.Sortable,
       Sortable.contramap((p: { readonly a: string; readonly b: number }) => p.a)
     )
     const byAge = pipe(
-      Number.Ord,
+      Number.Sortable,
       Sortable.contramap((p: { readonly a: string; readonly b: number }) => p.b)
     )
     const f = ReadonlyArray.sortBy([byName, byAge])

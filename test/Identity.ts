@@ -154,27 +154,27 @@ describe("Identity", () => {
     })
 
     it("traverse", () => {
-      U.deepStrictEqual(pipe(1, _.traverse(O.Applicative)(O.some)), O.some(1))
+      U.deepStrictEqual(pipe(1, _.traverse(O.Monoidal)(O.some)), O.some(1))
       U.deepStrictEqual(
         pipe(
           1,
-          _.traverse(O.Applicative)(() => O.none)
+          _.traverse(O.Monoidal)(() => O.none)
         ),
         O.none
       )
 
-      U.deepStrictEqual(pipe(1, _.Traversable.traverse(O.Applicative)(O.some)), O.some(1))
+      U.deepStrictEqual(pipe(1, _.Traversable.traverse(O.Monoidal)(O.some)), O.some(1))
       U.deepStrictEqual(
         pipe(
           1,
-          _.Traversable.traverse(O.Applicative)(() => O.none)
+          _.Traversable.traverse(O.Monoidal)(() => O.none)
         ),
         O.none
       )
     })
 
     it("sequence", () => {
-      const sequence = _.sequence(O.Applicative)
+      const sequence = _.sequence(O.Monoidal)
       U.deepStrictEqual(sequence(O.some("a")), O.some("a"))
       U.deepStrictEqual(sequence(O.none), O.none)
     })

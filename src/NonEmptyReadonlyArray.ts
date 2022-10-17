@@ -13,7 +13,7 @@
  * @since 1.0.0
  */
 import type * as comonad from "@fp-ts/core/Comonad"
-import * as flattenable from "@fp-ts/core/FlatMap"
+import * as flatMap_ from "@fp-ts/core/FlatMap"
 import * as functor from "@fp-ts/core/Functor"
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import type * as monad from "@fp-ts/core/Monad"
@@ -21,7 +21,7 @@ import type * as monoidal from "@fp-ts/core/Monoidal"
 import * as semigroup from "@fp-ts/core/Semigroup"
 import type { Semigroup } from "@fp-ts/core/Semigroup"
 import * as semigroupal from "@fp-ts/core/Semigroupal"
-import * as ord from "@fp-ts/core/Sortable"
+import * as sortable from "@fp-ts/core/Sortable"
 import type { Sortable } from "@fp-ts/core/Sortable"
 import type * as traversable from "@fp-ts/core/Traversable"
 import type { Endomorphism } from "@fp-ts/data/Endomorphism"
@@ -214,7 +214,7 @@ export const uniq = <A>(self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A
  *
  * @exampleTodo
  * import * as RNEA from '@fp-ts/core/data/NonEmptyReadonlyArray'
- * import { contramap } from '@fp-ts/core/typeclasses/Ord'
+ * import { contramap } from '@fp-ts/core/Sortable'
  * import * as S from '@fp-ts/core/data/string'
  * import * as N from '@fp-ts/core/data/number'
  * import { pipe } from '@fp-ts/core/data/Function'
@@ -224,9 +224,9 @@ export const uniq = <A>(self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A
  *   age: number
  * }
  *
- * const byName = pipe(S.Ord, contramap((p: Person) => p.name))
+ * const byName = pipe(S.Sortable, contramap((p: Person) => p.name))
  *
- * const byAge = pipe(N.Ord, contramap((p: Person) => p.age))
+ * const byAge = pipe(N.Sortable, contramap((p: Person) => p.age))
  *
  * const sortByNameByAge = RNEA.sortBy([byName, byAge])
  *
@@ -250,7 +250,7 @@ export const sortBy = <B>(
   ords: ReadonlyArray<Sortable<B>>
 ): (<A extends B>(as: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A>) => {
   if (internal.isNonEmpty(ords)) {
-    return sort(ord.getMonoid<B>().combineAll(ords))
+    return sort(sortable.getMonoid<B>().combineAll(ords))
   }
   return identity
 }
@@ -658,7 +658,7 @@ export const flatMap: <A, B>(
  * @category instances
  * @since 1.0.0
  */
-export const Flattenable: flattenable.FlatMap<NonEmptyReadonlyArrayTypeLambda> = {
+export const FlatMap: flatMap_.FlatMap<NonEmptyReadonlyArrayTypeLambda> = {
   map,
   flatMap
 }
@@ -672,8 +672,8 @@ export const Flattenable: flattenable.FlatMap<NonEmptyReadonlyArrayTypeLambda> =
  */
 export const zipLeft: (
   second: NonEmptyReadonlyArray<unknown>
-) => <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A> = flattenable.zipLeft(
-  Flattenable
+) => <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A> = flatMap_.zipLeft(
+  FlatMap
 )
 
 /**
@@ -686,8 +686,8 @@ export const zipRight: <A>(
   second: NonEmptyReadonlyArray<A>
 ) => (
   self: NonEmptyReadonlyArray<unknown>
-) => NonEmptyReadonlyArray<A> = flattenable.zipRight(
-  Flattenable
+) => NonEmptyReadonlyArray<A> = flatMap_.zipRight(
+  FlatMap
 )
 
 /**
@@ -746,15 +746,15 @@ export const mapWithIndex: <A, B>(
  * @category traversing
  * @since 1.0.0
  */
-export const traverseWithIndex = <F extends TypeLambda>(Apply: semigroupal.Semigroupal<F>) =>
+export const traverseWithIndex = <F extends TypeLambda>(Semigroupal: semigroupal.Semigroupal<F>) =>
   <A, S, R, O, E, B>(f: (i: number, a: A) => Kind<F, S, R, O, E, B>) => {
-    const ap = semigroupal.ap(Apply)
+    const ap = semigroupal.ap(Semigroupal)
     return (self: NonEmptyReadonlyArray<A>): Kind<F, S, R, O, E, NonEmptyReadonlyArray<B>> => {
-      let out = pipe(f(0, head(self)), Apply.map(of))
+      let out = pipe(f(0, head(self)), Semigroupal.map(of))
       for (let i = 1; i < self.length; i++) {
         out = pipe(
           out,
-          Apply.map((bs) => (b: B) => pipe(bs, append(b))),
+          Semigroupal.map((bs) => (b: B) => pipe(bs, append(b))),
           ap(f(i, self[i]))
         )
       }
@@ -854,7 +854,7 @@ export const unit: (self: NonEmptyReadonlyArray<unknown>) => NonEmptyReadonlyArr
  * @category instances
  * @since 1.0.0
  */
-export const Apply: semigroupal.Semigroupal<NonEmptyReadonlyArrayTypeLambda> = {
+export const Semigroupal: semigroupal.Semigroupal<NonEmptyReadonlyArrayTypeLambda> = {
   map,
   zipWith,
   zipMany: <A>(
@@ -878,7 +878,7 @@ export const Apply: semigroupal.Semigroupal<NonEmptyReadonlyArrayTypeLambda> = {
 export const lift2: <A, B, C>(
   f: (a: A, b: B) => C
 ) => (fa: NonEmptyReadonlyArray<A>, fb: NonEmptyReadonlyArray<B>) => NonEmptyReadonlyArray<C> =
-  semigroupal.lift2(Apply)
+  semigroupal.lift2(Semigroupal)
 
 /**
  * Lifts a ternary function into `NonEmptyReadonlyArray`.
@@ -892,17 +892,17 @@ export const lift3: <A, B, C, D>(
   fa: NonEmptyReadonlyArray<A>,
   fb: NonEmptyReadonlyArray<B>,
   fc: NonEmptyReadonlyArray<C>
-) => NonEmptyReadonlyArray<D> = semigroupal.lift3(Apply)
+) => NonEmptyReadonlyArray<D> = semigroupal.lift3(Semigroupal)
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const Applicative: monoidal.Monoidal<NonEmptyReadonlyArrayTypeLambda> = {
+export const Monoidal: monoidal.Monoidal<NonEmptyReadonlyArrayTypeLambda> = {
   map,
   of,
-  zipMany: Apply.zipMany,
-  zipWith: Apply.zipWith,
+  zipMany: Semigroupal.zipMany,
+  zipWith: Semigroupal.zipWith,
   zipAll: <A>(
     all: Iterable<readonly [A, ...Array<A>]>
   ): readonly [ReadonlyArray<A>, ...Array<ReadonlyArray<A>>] => {
@@ -943,7 +943,7 @@ export const Monad: monad.Monad<NonEmptyReadonlyArrayTypeLambda> = {
  */
 export const tap: <A>(
   f: (a: A) => NonEmptyReadonlyArray<unknown>
-) => (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A> = flattenable.tap(Flattenable)
+) => (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A> = flatMap_.tap(FlatMap)
 
 /**
  * @category folding
@@ -999,7 +999,7 @@ export const reduceRightWithIndex = <B, A>(b: B, f: (i: number, a: A, b: B) => B
  * @category folding
  * @since 1.0.0
  */
-export const reduceKind = <F extends TypeLambda>(Flattenable: flattenable.FlatMap<F>) =>
+export const reduceKind = <F extends TypeLambda>(Flattenable: flatMap_.FlatMap<F>) =>
   <S, R, O, E, B, A>(
     fb: Kind<F, S, R, O, E, B>,
     f: (b: B, a: A) => Kind<F, S, R, O, E, B>
@@ -1072,8 +1072,8 @@ export const bind: <N extends string, A extends object, B>(
   f: (a: A) => NonEmptyReadonlyArray<B>
 ) => (
   self: NonEmptyReadonlyArray<A>
-) => NonEmptyReadonlyArray<{ readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }> =
-  flattenable.bind(Flattenable)
+) => NonEmptyReadonlyArray<{ readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }> = flatMap_
+  .bind(FlatMap)
 
 /**
  * A variant of `bind` that sequentially ignores the scope.
@@ -1088,7 +1088,7 @@ export const bindRight: <N extends string, A extends object, B>(
   self: NonEmptyReadonlyArray<A>
 ) => NonEmptyReadonlyArray<{ readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }> =
   semigroupal
-    .bindRight(Apply)
+    .bindRight(Semigroupal)
 
 // -------------------------------------------------------------------------------------
 // tuple sequencing
@@ -1117,7 +1117,7 @@ export const zipFlatten: <B>(
   fb: NonEmptyReadonlyArray<B>
 ) => <A extends ReadonlyArray<unknown>>(
   self: NonEmptyReadonlyArray<A>
-) => NonEmptyReadonlyArray<readonly [...A, B]> = semigroupal.zipFlatten(Apply)
+) => NonEmptyReadonlyArray<readonly [...A, B]> = semigroupal.zipFlatten(Semigroupal)
 
 /**
  * @since 1.0.0

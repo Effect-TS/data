@@ -4,7 +4,7 @@
 import type * as bounded from "@fp-ts/core/Bounded"
 import type * as monoid from "@fp-ts/core/Monoid"
 import * as semigroup from "@fp-ts/core/Semigroup"
-import type * as ord from "@fp-ts/core/Sortable"
+import type * as sortable from "@fp-ts/core/Sortable"
 import type { Refinement } from "@fp-ts/data/Refinement"
 
 /**
@@ -33,7 +33,7 @@ export const sub = (that: number) => (self: number): number => self - that
  * @category instances
  * @since 1.0.0
  */
-export const Ord: ord.Sortable<number> = {
+export const Sortable: sortable.Sortable<number> = {
   compare: (that) => (self) => self < that ? -1 : self > that ? 1 : 0
 }
 
@@ -42,7 +42,7 @@ export const Ord: ord.Sortable<number> = {
  * @since 1.0.0
  */
 export const Bounded: bounded.Bounded<number> = {
-  compare: Ord.compare,
+  compare: Sortable.compare,
   maximum: Infinity,
   minimum: -Infinity
 }

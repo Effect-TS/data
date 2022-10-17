@@ -221,7 +221,7 @@ describe.concurrent("Result", () => {
     })
 
     it("traverse", () => {
-      const traverse = Result.traverse(Option.Applicative)((
+      const traverse = Result.traverse(Option.Monoidal)((
         n: number
       ) => (n >= 2 ? Option.some(n) : Option.none))
       deepStrictEqual(pipe(Result.fail("a"), traverse), Option.some(Result.fail("a")))
@@ -230,7 +230,7 @@ describe.concurrent("Result", () => {
     })
 
     it("sequence", () => {
-      const sequence = Result.sequence(Option.Applicative)
+      const sequence = Result.sequence(Option.Monoidal)
       deepStrictEqual(sequence(Result.succeed(Option.some(1))), Option.some(Result.succeed(1)))
       deepStrictEqual(sequence(Result.fail("a")), Option.some(Result.fail("a")))
       deepStrictEqual(sequence(Result.succeed(Option.none)), Option.none)
@@ -437,7 +437,7 @@ describe.concurrent("Result", () => {
   })
 
   it("getApplicativeValidation", () => {
-    const A = Result.getValidatedApplicative(String.Monoid)
+    const A = Result.getValidatedMonoidal(String.Monoid)
 
     const flatZipPar = <B>(fb: Result.Result<string, B>) =>
       <A extends ReadonlyArray<unknown>>(

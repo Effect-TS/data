@@ -24,9 +24,9 @@ describe.concurrent("Number", () => {
   })
 
   it("Ord", () => {
-    deepStrictEqual(pipe(1, Number.Ord.compare(2)), -1)
-    deepStrictEqual(pipe(2, Number.Ord.compare(1)), 1)
-    deepStrictEqual(pipe(2, Number.Ord.compare(2)), 0)
+    deepStrictEqual(pipe(1, Number.Sortable.compare(2)), -1)
+    deepStrictEqual(pipe(2, Number.Sortable.compare(1)), 1)
+    deepStrictEqual(pipe(2, Number.Sortable.compare(2)), 0)
   })
 
   it("SemigroupMultiply", () => {

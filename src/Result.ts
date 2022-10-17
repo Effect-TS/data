@@ -15,16 +15,16 @@
  */
 import * as bifunctor from "@fp-ts/core/Bifunctor"
 import type * as extendable from "@fp-ts/core/Extendable"
-import * as flattenable from "@fp-ts/core/FlatMap"
+import * as flatMap_ from "@fp-ts/core/FlatMap"
 import * as functor from "@fp-ts/core/Functor"
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import type * as monad from "@fp-ts/core/Monad"
 import type { Monoid } from "@fp-ts/core/Monoid"
-import type * as applicative from "@fp-ts/core/Monoidal"
-import type * as fromIdentity from "@fp-ts/core/Pointed"
+import type * as monoidal from "@fp-ts/core/Monoidal"
+import type * as pointed from "@fp-ts/core/Pointed"
 import type { Semigroup } from "@fp-ts/core/Semigroup"
 import { fromCombine } from "@fp-ts/core/Semigroup"
-import * as apply from "@fp-ts/core/Semigroupal"
+import * as semigroupal from "@fp-ts/core/Semigroupal"
 import * as traversable from "@fp-ts/core/Traversable"
 import { equals } from "@fp-ts/data/Equal"
 import { flow, identity, pipe, SK } from "@fp-ts/data/Function"
@@ -384,22 +384,22 @@ export const duplicate: <E, A>(ma: Result<E, A>) => Result<E, Result<E, A>> = ex
  * import * as O from '@fp-ts/core/data/Option'
  *
  * assert.deepStrictEqual(
- *   pipe(E.succeed(['a']), E.traverse(O.Applicative)(RA.head)),
+ *   pipe(E.succeed(['a']), E.traverse(O.Monoidal)(RA.head)),
  *   O.some(E.succeed('a')),
  *  )
  *
  * assert.deepStrictEqual(
- *   pipe(E.succeed([]), E.traverse(O.Applicative)(RA.head)),
+ *   pipe(E.succeed([]), E.traverse(O.Monoidal)(RA.head)),
  *   O.none,
  * )
  *
  * @category traversing
  * @since 1.0.0
  */
-export const traverse = <F extends TypeLambda>(F: applicative.Monoidal<F>) =>
+export const traverse = <F extends TypeLambda>(Monoidal: monoidal.Monoidal<F>) =>
   <A, FS, FR, FO, FE, B>(f: (a: A) => Kind<F, FS, FR, FO, FE, B>) =>
     <E>(ta: Result<E, A>): Kind<F, FS, FR, FO, FE, Result<E, B>> =>
-      isFailure(ta) ? F.of(fail(ta.failure)) : pipe(f(ta.success), F.map(succeed))
+      isFailure(ta) ? Monoidal.of(fail(ta.failure)) : pipe(f(ta.success), Monoidal.map(succeed))
 
 /**
  * Semigroup returning the left-most non-`Failure` value. If both operands are `Success`es then the inner values are
@@ -480,14 +480,14 @@ export const getFilterable = <E>(
  * @since 1.0.0
  */
 export const traverseFilterMap = <F extends TypeLambda>(
-  Applicative: applicative.Monoidal<F>
+  Monoidal: monoidal.Monoidal<F>
 ) => {
-  const traverse_ = traverse(Applicative)
+  const traverse_ = traverse(Monoidal)
   return <A, S, R, O, FE, B, E>(
     f: (a: A) => Kind<F, S, R, O, FE, Option<B>>,
     onNone: E
   ): ((self: Result<E, A>) => Kind<F, S, R, O, FE, Result<E, B>>) => {
-    return flow(traverse_(f), Applicative.map(compact(onNone)))
+    return flow(traverse_(f), Monoidal.map(compact(onNone)))
   }
 }
 
@@ -496,14 +496,14 @@ export const traverseFilterMap = <F extends TypeLambda>(
  * @since 1.0.0
  */
 export const traversePartitionMap = <F extends TypeLambda>(
-  Applicative: applicative.Monoidal<F>
+  Monoidal: monoidal.Monoidal<F>
 ) => {
-  const traverse_ = traverse(Applicative)
+  const traverse_ = traverse(Monoidal)
   return <A, S, R, O, FE, B, C, E>(
     f: (a: A) => Kind<F, S, R, O, FE, Result<B, C>>,
     onNone: E
   ): ((self: Result<E, A>) => Kind<F, S, R, O, FE, readonly [Result<E, B>, Result<E, C>]>) => {
-    return flow(traverse_(f), Applicative.map(separate(onNone)))
+    return flow(traverse_(f), Monoidal.map(separate(onNone)))
   }
 }
 
@@ -515,12 +515,12 @@ export const getTraversableFilterable = <E>(
   onEmpty: E
 ): TraversableFilterable<ValidatedT<ResultTypeLambda, E>> => {
   return {
-    traverseFilterMap: (Applicative) => {
-      const traverseFilterMap_ = traverseFilterMap(Applicative)
+    traverseFilterMap: (Monoidal) => {
+      const traverseFilterMap_ = traverseFilterMap(Monoidal)
       return (f) => traverseFilterMap_(f, onEmpty)
     },
-    traversePartitionMap: (Applicative) => {
-      const traversePartitionMap_ = traversePartitionMap(Applicative)
+    traversePartitionMap: (Monoidal) => {
+      const traversePartitionMap_ = traversePartitionMap(Monoidal)
       return (f) => traversePartitionMap_(f, onEmpty)
     }
   }
@@ -590,7 +590,7 @@ export const unit: <E>(self: Result<E, unknown>) => Result<E, void> = functor.un
  * @category instances
  * @since 1.0.0
  */
-export const Succeed: fromIdentity.Pointed<ResultTypeLambda> = {
+export const Succeed: pointed.Pointed<ResultTypeLambda> = {
   of: succeed
 }
 
@@ -624,7 +624,7 @@ export const flatten: <E1, E2, A>(mma: Result<E1, Result<E2, A>>) => Result<E1 |
  * @category instances
  * @since 1.0.0
  */
-export const Flattenable: flattenable.FlatMap<ResultTypeLambda> = {
+export const FlatMap: flatMap_.FlatMap<ResultTypeLambda> = {
   map,
   flatMap
 }
@@ -638,7 +638,7 @@ export const Flattenable: flattenable.FlatMap<ResultTypeLambda> = {
  */
 export const zipLeft: <E2>(
   that: Result<E2, unknown>
-) => <E1, A>(self: Result<E1, A>) => Result<E2 | E1, A> = flattenable.zipLeft(Flattenable)
+) => <E1, A>(self: Result<E1, A>) => Result<E2 | E1, A> = flatMap_.zipLeft(FlatMap)
 
 /**
  * A variant of `flatMap` that ignores the value produced by this effect.
@@ -648,7 +648,7 @@ export const zipLeft: <E2>(
  */
 export const zipRight: <E2, A>(
   that: Result<E2, A>
-) => <E1>(self: Result<E1, unknown>) => Result<E2 | E1, A> = flattenable.zipRight(Flattenable)
+) => <E1>(self: Result<E1, unknown>) => Result<E2 | E1, A> = flatMap_.zipRight(FlatMap)
 
 /**
  * Sequentially zips this effect with the specified effect using the specified combiner function.
@@ -666,7 +666,7 @@ export const zipWith: <E2, B, A, C>(
  * @category instances
  * @since 1.0.0
  */
-export const Apply: apply.Semigroupal<ResultTypeLambda> = {
+export const Semigroupal: semigroupal.Semigroupal<ResultTypeLambda> = {
   map,
   zipWith,
   zipMany: <E, A>(
@@ -692,7 +692,7 @@ export const Apply: apply.Semigroupal<ResultTypeLambda> = {
  */
 export const ap: <E2, A>(
   fa: Result<E2, A>
-) => <E1, B>(fab: Result<E1, (a: A) => B>) => Result<E1 | E2, B> = apply.ap(Apply)
+) => <E1, B>(fab: Result<E1, (a: A) => B>) => Result<E1 | E2, B> = semigroupal.ap(Semigroupal)
 
 /**
  * Lifts a binary function into `Result`.
@@ -702,7 +702,9 @@ export const ap: <E2, A>(
  */
 export const lift2: <A, B, C>(
   f: (a: A, b: B) => C
-) => <E1, E2>(fa: Result<E1, A>, fb: Result<E2, B>) => Result<E1 | E2, C> = apply.lift2(Apply)
+) => <E1, E2>(fa: Result<E1, A>, fb: Result<E2, B>) => Result<E1 | E2, C> = semigroupal.lift2(
+  Semigroupal
+)
 
 /**
  * Lifts a ternary function into `Result`.
@@ -716,17 +718,17 @@ export const lift3: <A, B, C, D>(
   fa: Result<E1, A>,
   fb: Result<E2, B>,
   fc: Result<E3, C>
-) => Result<E1 | E2 | E3, D> = apply.lift3(Apply)
+) => Result<E1 | E2 | E3, D> = semigroupal.lift3(Semigroupal)
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const Applicative: applicative.Monoidal<ResultTypeLambda> = {
+export const Monoidal: monoidal.Monoidal<ResultTypeLambda> = {
   map,
   of: succeed,
-  zipMany: Apply.zipMany,
-  zipWith: Apply.zipWith,
+  zipMany: Semigroupal.zipMany,
+  zipWith: Semigroupal.zipWith,
   zipAll: <E, A>(collection: Iterable<Result<E, A>>): Result<E, ReadonlyArray<A>> => {
     const res: Array<A> = []
     for (const o of collection) {
@@ -740,11 +742,11 @@ export const Applicative: applicative.Monoidal<ResultTypeLambda> = {
 }
 
 /**
- * The default [`Applicative`](#applicative) instance returns the first error, if you want to
+ * The default [`Monoidal`](#monoidal) instance returns the first error, if you want to
  * get all errors you need to provide a way to combine them via a `Semigroup`.
  *
  * @exampleTodo
- * import * as A from '@fp-ts/core/typeclasses/Apply'
+ * import * as A from '@fp-ts/core/typeclasses/Semigroupal'
  * import * as E from '@fp-ts/core/data/Result'
  * import { pipe } from '@fp-ts/core/data/Function'
  * import * as S from '@fp-ts/core/typeclasses/Semigroup'
@@ -772,11 +774,11 @@ export const Applicative: applicative.Monoidal<ResultTypeLambda> = {
  *
  * assert.deepStrictEqual(parsePerson({}), E.fail('not a string')) // <= first error
  *
- * const Applicative = E.getValidatedApplicative(
+ * const Monoidal = E.getValidatedMonoidal(
  *   pipe(string.Semigroup, S.intercalate(', '))
  * )
  *
- * const bindRight = A.bindRight(Applicative)
+ * const bindRight = A.bindRight(Monoidal)
  *
  * const parsePersonAll = (
  *   input: Record<string, unknown>
@@ -792,9 +794,9 @@ export const Applicative: applicative.Monoidal<ResultTypeLambda> = {
  * @category error handling
  * @since 1.0.0
  */
-export const getValidatedApplicative = <E>(
+export const getValidatedMonoidal = <E>(
   Semigroup: Semigroup<E>
-): applicative.Monoidal<ValidatedT<ResultTypeLambda, E>> => ({
+): monoidal.Monoidal<ValidatedT<ResultTypeLambda, E>> => ({
   map,
   of: succeed,
   zipWith: <A, B, C>(
@@ -893,7 +895,7 @@ export const tapError: <E1, E2>(
  */
 export const tap: <A, E2>(
   f: (a: A) => Result<E2, unknown>
-) => <E1>(self: Result<E1, A>) => Result<E1 | E2, A> = flattenable.tap(Flattenable)
+) => <E1>(self: Result<E1, A>) => Result<E1 | E2, A> = flatMap_.tap(FlatMap)
 
 /**
  * @category conversions
@@ -937,7 +939,7 @@ export const Traversable: traversable.Traversable<ResultTypeLambda> = {
  * @since 1.0.0
  */
 export const sequence: <F extends TypeLambda>(
-  F: applicative.Monoidal<F>
+  F: monoidal.Monoidal<F>
 ) => <E, FS, FR, FO, FE, A>(
   fa: Result<E, Kind<F, FS, FR, FO, FE, A>>
 ) => Kind<F, FS, FR, FO, FE, Result<E, A>> = traversable.sequence(Traversable)
@@ -1106,7 +1108,7 @@ export const filter: {
     predicate: Predicate<A>,
     onFalse: E2
   ): <E1>(self: Result<E1, B>) => Result<E2 | E1, B>
-} = fromResult_.filter(FromResult, Flattenable)
+} = fromResult_.filter(FromResult, FlatMap)
 
 /**
  * @category filtering
@@ -1115,7 +1117,7 @@ export const filter: {
 export const filterMap: <A, B, E>(
   f: (a: A) => Option<B>,
   onNone: E
-) => (self: Result<E, A>) => Result<E, B> = fromResult_.filterMap(FromResult, Flattenable)
+) => (self: Result<E, A>) => Result<E, B> = fromResult_.filterMap(FromResult, FlatMap)
 
 /**
  * @category filtering
@@ -1128,7 +1130,7 @@ export const partition: {
   <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: E): (
     self: Result<E, B>
   ) => readonly [Result<E, B>, Result<E, B>]
-} = fromResult_.partition(FromResult, Flattenable)
+} = fromResult_.partition(FromResult, FlatMap)
 
 /**
  * @category filtering
@@ -1139,7 +1141,7 @@ export const partitionMap: <A, B, C, E>(
   onEmpty: E
 ) => (self: Result<E, A>) => readonly [Result<E, B>, Result<E, C>] = fromResult_.partitionMap(
   FromResult,
-  Flattenable
+  FlatMap
 )
 
 /**
@@ -1151,7 +1153,7 @@ export const flatMapOption: <A, B, E2>(
   onNone: E2
 ) => <E1>(self: Result<E1, A>) => Result<E2 | E1, B> = fromResult_.flatMapOption(
   FromResult,
-  Flattenable
+  FlatMap
 )
 
 /**
@@ -1221,8 +1223,8 @@ export const bind: <N extends string, A extends object, E2, B>(
   f: (a: A) => Result<E2, B>
 ) => <E1>(
   self: Result<E1, A>
-) => Result<E1 | E2, { readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }> = flattenable
-  .bind(Flattenable)
+) => Result<E1 | E2, { readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }> = flatMap_
+  .bind(FlatMap)
 
 /**
  * A variant of `bind` that sequentially ignores the scope.
@@ -1235,8 +1237,8 @@ export const bindRight: <N extends string, A extends object, E2, B>(
   fb: Result<E2, B>
 ) => <E1>(
   self: Result<E1, A>
-) => Result<E1 | E2, { readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }> = apply
-  .bindRight(Apply)
+) => Result<E1 | E2, { readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }> = semigroupal
+  .bindRight(Semigroupal)
 
 // -------------------------------------------------------------------------------------
 // tuple sequencing
@@ -1264,14 +1266,14 @@ export const zipFlatten: <E2, B>(
   fb: Result<E2, B>
 ) => <E1, A extends ReadonlyArray<unknown>>(
   self: Result<E1, A>
-) => Result<E1 | E2, readonly [...A, B]> = apply.zipFlatten(Apply)
+) => Result<E1 | E2, readonly [...A, B]> = semigroupal.zipFlatten(Semigroupal)
 
 // -------------------------------------------------------------------------------------
 // array utils
 // -------------------------------------------------------------------------------------
 
 /**
- * Equivalent to `NonEmptyReadonlyArray#traverseWithIndex(Apply)`.
+ * Equivalent to `NonEmptyReadonlyArray#traverseWithIndex(Semigroupal)`.
  *
  * @category traversing
  * @since 1.0.0
@@ -1296,7 +1298,7 @@ export const traverseNonEmptyReadonlyArrayWithIndex = <A, E, B>(
   }
 
 /**
- * Equivalent to `ReadonlyArray#traverseWithIndex(Applicative)`.
+ * Equivalent to `ReadonlyArray#traverseWithIndex(Monoidal)`.
  *
  * @category traversing
  * @since 1.0.0
@@ -1309,7 +1311,7 @@ export const traverseReadonlyArrayWithIndex = <A, E, B>(
 }
 
 /**
- * Equivalent to `NonEmptyReadonlyArray#traverse(Apply)`.
+ * Equivalent to `NonEmptyReadonlyArray#traverse(Semigroupal)`.
  *
  * @category traversing
  * @since 1.0.0
@@ -1321,7 +1323,7 @@ export const traverseNonEmptyReadonlyArray = <A, E, B>(
 }
 
 /**
- * Equivalent to `ReadonlyArray#traverse(Applicative)`.
+ * Equivalent to `ReadonlyArray#traverse(Monoidal)`.
  *
  * @category traversing
  * @since 1.0.0
@@ -1333,7 +1335,7 @@ export const traverseReadonlyArray = <A, E, B>(
 }
 
 /**
- * Equivalent to `ReadonlyArray#sequence(Applicative)`.
+ * Equivalent to `ReadonlyArray#sequence(Monoidal)`.
  *
  * @category traversing
  * @since 1.0.0
