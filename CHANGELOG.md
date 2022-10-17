@@ -1,5 +1,29 @@
 # @fp-ts/data
 
+## 0.0.3
+
+### Patch Changes
+
+- [#47](https://github.com/fp-ts/data/pull/47) [`5f4bb9b`](https://github.com/fp-ts/data/commit/5f4bb9b994da3d7a49de792470fcd556ee7af53d) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Unify Equals and Hash
+
+- [#46](https://github.com/fp-ts/data/pull/46) [`7510558`](https://github.com/fp-ts/data/commit/7510558c0f84d805298aed9c0a664db084a1eedf) Thanks [@IMax153](https://github.com/IMax153)! - fix MonoidMultiply.combineAll
+
+- [#58](https://github.com/fp-ts/data/pull/58) [`a524cc2`](https://github.com/fp-ts/data/commit/a524cc295050c43e1a723ea1406f4ec5ac6edf9c) Thanks [@IMax153](https://github.com/IMax153)! - add additional NonEmptyReadonlyArray constructors
+
+- [#50](https://github.com/fp-ts/data/pull/50) [`e64bcac`](https://github.com/fp-ts/data/commit/e64bcac7c027fc528c6c5fd7d1d3c5d950cdecb9) Thanks [@IMax153](https://github.com/IMax153)! - add ReadonlyArray.range
+
+- [#54](https://github.com/fp-ts/data/pull/54) [`8d37ea6`](https://github.com/fp-ts/data/commit/8d37ea64c780126c45993562a46eeb2cf631981c) Thanks [@IMax153](https://github.com/IMax153)! - Rename DoublyLinkedList to MutableList
+
+- [#55](https://github.com/fp-ts/data/pull/55) [`416b517`](https://github.com/fp-ts/data/commit/416b517ec6fd31eb602d33d9827550d63d4314f9) Thanks [@gcanti](https://github.com/gcanti)! - add Const module
+
+- [#57](https://github.com/fp-ts/data/pull/57) [`26644eb`](https://github.com/fp-ts/data/commit/26644ebedbffb9110de8ec0495272f002f0f98a9) Thanks [@gcanti](https://github.com/gcanti)! - move increment / decrement from Function to Number
+
+- [#54](https://github.com/fp-ts/data/pull/54) [`3bf3c85`](https://github.com/fp-ts/data/commit/3bf3c85625dbf2adbac7041067a2ace6f866d34c) Thanks [@IMax153](https://github.com/IMax153)! - add MutableQueue
+
+- [#53](https://github.com/fp-ts/data/pull/53) [`318ddba`](https://github.com/fp-ts/data/commit/318ddba66fd61ebaba352928fed1cd74bfad8a2f) Thanks [@gcanti](https://github.com/gcanti)! - add Identity module
+
+- [#54](https://github.com/fp-ts/data/pull/54) [`24846c9`](https://github.com/fp-ts/data/commit/24846c93f2eb9c2fd6634b10ca1015c01ad0847c) Thanks [@IMax153](https://github.com/IMax153)! - add DoublyLinkedList
+
 ## 0.0.2
 
 ### Patch Changes
