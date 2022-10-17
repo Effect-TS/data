@@ -42,8 +42,8 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
         pipe(
           NonEmptyReadonlyArray.make("a", "bb"),
           NonEmptyReadonlyArray.traverseWithIndex(Option.Monoidal)((
-            i,
-            s
+            s,
+            i
           ) => (s.length >= 1 ? Option.some(s + i) : Option.none))
         ),
         Option.some(NonEmptyReadonlyArray.make("a0", "bb1"))
@@ -52,8 +52,8 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
         pipe(
           NonEmptyReadonlyArray.make("a", "bb"),
           NonEmptyReadonlyArray.traverseWithIndex(Option.Monoidal)((
-            i,
-            s
+            s,
+            i
           ) => (s.length > 1 ? Option.some(s + i) : Option.none))
         ),
         Option.none
@@ -80,10 +80,10 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
   })
 
   it("mapWithIndex", () => {
-    const add = (i: number, n: number) => n + i
+    const add = (s: string, i: number) => s + i
     deepStrictEqual(
-      pipe(NonEmptyReadonlyArray.make(1, 2), NonEmptyReadonlyArray.mapWithIndex(add)),
-      [1, 3]
+      pipe(NonEmptyReadonlyArray.make("a", "b"), NonEmptyReadonlyArray.mapWithIndex(add)),
+      ["a0", "b1"]
     )
   })
 

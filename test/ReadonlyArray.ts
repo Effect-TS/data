@@ -32,8 +32,8 @@ describe.concurrent("ReadonlyArray", () => {
         pipe(
           ["a", "bb"],
           ReadonlyArray.traverseWithIndex(Option.Monoidal)((
-            i,
-            s
+            s,
+            i
           ) => (s.length >= 1 ? Option.some(s + i) : Option.none))
         ),
         Option.some(["a0", "bb1"])
@@ -42,8 +42,8 @@ describe.concurrent("ReadonlyArray", () => {
         pipe(
           ["a", "bb"],
           ReadonlyArray.traverseWithIndex(Option.Monoidal)((
-            i,
-            s
+            s,
+            i
           ) => (s.length > 1 ? Option.some(s + i) : Option.none))
         ),
         Option.none
@@ -100,10 +100,10 @@ describe.concurrent("ReadonlyArray", () => {
     it("mapWithIndex", () => {
       deepStrictEqual(
         pipe(
-          [1, 2, 3],
-          ReadonlyArray.mapWithIndex((i, n) => n + i)
+          ["a", "b"],
+          ReadonlyArray.mapWithIndex((s, i) => s + i)
         ),
-        [1, 3, 5]
+        ["a0", "b1"]
       )
     })
 

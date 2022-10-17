@@ -15,6 +15,7 @@
 import type * as comonad from "@fp-ts/core/Comonad"
 import * as flatMap_ from "@fp-ts/core/FlatMap"
 import * as functor from "@fp-ts/core/Functor"
+import type * as functorWithIndex from "@fp-ts/core/FunctorWithIndex"
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import type * as monad from "@fp-ts/core/Monad"
 import type * as monoidal from "@fp-ts/core/Monoidal"
@@ -24,6 +25,7 @@ import * as semigroupal from "@fp-ts/core/Semigroupal"
 import * as sortable from "@fp-ts/core/Sortable"
 import type { Sortable } from "@fp-ts/core/Sortable"
 import type * as traversable from "@fp-ts/core/Traversable"
+import type * as traversableWithIndex from "@fp-ts/core/TraversableWithIndex"
 import type { Endomorphism } from "@fp-ts/data/Endomorphism"
 import { equals } from "@fp-ts/data/Equal"
 import { flow, identity, pipe } from "@fp-ts/data/Function"
@@ -653,8 +655,7 @@ export const orElse = <B>(
  */
 export const map: <A, B>(
   f: (a: A) => B
-) => (fa: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<B> = (f) =>
-  mapWithIndex((_, a) => f(a))
+) => (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<B> = (f) => mapWithIndex(f)
 
 /**
  * @category constructors
@@ -758,38 +759,38 @@ export const flatten: <A>(
 /**
  * @since 1.0.0
  */
-export const mapWithIndex: <A, B>(
-  f: (i: number, a: A) => B
-) => (fa: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<B> = <A, B>(
-  f: (i: number, a: A) => B
+export const mapWithIndex = <A, B>(
+  f: (a: A, i: number) => B
 ) =>
-  (as: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<B> => {
-    const out: internal.NonEmptyArray<B> = [f(0, head(as))]
-    for (let i = 1; i < as.length; i++) {
-      out.push(f(i, as[i]))
+  (self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<B> => {
+    const out: internal.NonEmptyArray<B> = [f(head(self), 0)]
+    for (let i = 1; i < self.length; i++) {
+      out.push(f(self[i], i))
     }
     return out
   }
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const FunctorWithIndex: functorWithIndex.FunctorWithIndex<
+  NonEmptyReadonlyArrayTypeLambda,
+  number
+> = {
+  mapWithIndex
+}
 
 /**
  * @category traversing
  * @since 1.0.0
  */
 export const traverseWithIndex = <F extends TypeLambda>(Semigroupal: semigroupal.Semigroupal<F>) =>
-  <A, S, R, O, E, B>(f: (i: number, a: A) => Kind<F, S, R, O, E, B>) => {
-    const ap = semigroupal.ap(Semigroupal)
-    return (self: NonEmptyReadonlyArray<A>): Kind<F, S, R, O, E, NonEmptyReadonlyArray<B>> => {
-      let out = pipe(f(0, head(self)), Semigroupal.map(of))
-      for (let i = 1; i < self.length; i++) {
-        out = pipe(
-          out,
-          Semigroupal.map((bs) => (b: B) => pipe(bs, append(b))),
-          ap(f(i, self[i]))
-        )
-      }
-      return out
+  <A, S, R, O, E, B>(f: (a: A, i: number) => Kind<F, S, R, O, E, B>) =>
+    (self: NonEmptyReadonlyArray<A>): Kind<F, S, R, O, E, NonEmptyReadonlyArray<B>> => {
+      const fbs = pipe(self, mapWithIndex(f))
+      return pipe(head(fbs), Semigroupal.zipMany(tail(fbs)))
     }
-  }
 
 /**
  * @category traversing
@@ -799,7 +800,7 @@ export const traverse = <F extends TypeLambda>(Semigroupal: semigroupal.Semigrou
   <A, S, R, O, E, B>(
     f: (a: A) => Kind<F, S, R, O, E, B>
   ): ((self: NonEmptyReadonlyArray<A>) => Kind<F, S, R, O, E, NonEmptyReadonlyArray<B>>) =>
-    traverseWithIndex(Semigroupal)((_, a) => f(a))
+    traverseWithIndex(Semigroupal)(f)
 
 /**
  * @category traversing
@@ -1045,6 +1046,17 @@ export const reduceKind = <F extends TypeLambda>(Flattenable: flatMap_.FlatMap<F
  */
 export const Traversable: traversable.Traversable<NonEmptyReadonlyArrayTypeLambda> = {
   traverse
+}
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const TraversableWithIndex: traversableWithIndex.TraversableWithIndex<
+  NonEmptyReadonlyArrayTypeLambda,
+  number
+> = {
+  traverseWithIndex
 }
 
 /**
