@@ -23,6 +23,7 @@ import * as doublyLinkedList from "@fp-ts/data/mutable/DoublyLinkedList"
 import * as mutableHashMap from "@fp-ts/data/mutable/MutableHashMap"
 import * as mutableHashSet from "@fp-ts/data/mutable/MutableHashSet"
 import * as mutableListBuilder from "@fp-ts/data/mutable/MutableListBuilder"
+import * as mutableQueue from "@fp-ts/data/mutable/MutableQueue"
 import * as mutableRef from "@fp-ts/data/mutable/MutableRef"
 import * as nonEmptyReadonlyArray from "@fp-ts/data/NonEmptyReadonlyArray"
 import * as number from "@fp-ts/data/Number"
@@ -77,6 +78,10 @@ export {
    * @since 1.0.0
    */
   differ,
+  /**
+   * @since 1.0.0
+   */
+  doublyLinkedList,
   /**
    * @since 1.0.0
    */
@@ -137,6 +142,10 @@ export {
    * @since 1.0.0
    */
   mutableListBuilder,
+  /**
+   * @since 1.0.0
+   */
+  mutableQueue,
   /**
    * @since 1.0.0
    */
