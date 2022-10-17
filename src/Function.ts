@@ -338,16 +338,6 @@ export function flow(
 /**
  * @since 1.0.0
  */
-export const increment = (n: number): number => n + 1
-
-/**
- * @since 1.0.0
- */
-export const decrement = (n: number): number => n - 1
-
-/**
- * @since 1.0.0
- */
 export const absurd = <A>(_: never): A => {
   throw new Error("Called `absurd` function which should be uncallable")
 }

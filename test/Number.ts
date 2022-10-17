@@ -23,6 +23,14 @@ describe.concurrent("Number", () => {
     deepStrictEqual(Number.multiplyAll([2, 3, 4]), 24)
   })
 
+  it("increment", () => {
+    deepStrictEqual(Number.increment(2), 3)
+  })
+
+  it("decrement", () => {
+    deepStrictEqual(Number.decrement(2), 1)
+  })
+
   it("Ord", () => {
     deepStrictEqual(pipe(1, Number.Sortable.compare(2)), -1)
     deepStrictEqual(pipe(2, Number.Sortable.compare(1)), 1)
