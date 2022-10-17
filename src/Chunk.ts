@@ -989,14 +989,6 @@ export const make = <Elem extends ReadonlyArray<any>>(...elements: Elem): Chunk<
   unsafeFromArray(elements)
 
 /**
- * Build a chunk from a sequence of elements.
- *
- * @since 1.0.0
- * @category constructors
- */
-export const Chunk = make
-
-/**
  * Return a Chunk of length n with element i initialized with f(i).
  *
  * Note. n is normalized to a non negative integer.
