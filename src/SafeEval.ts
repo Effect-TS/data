@@ -76,26 +76,19 @@ export const struct: <NER extends Record<string, SafeEval<any>>>(
   }
 > = SE.struct as any
 
-// TODO: If the type of `tuple` is annotated below, vitest throws the following error:
-// ==>
-//  FAIL  test/SafeEval.ts [ test/SafeEval.ts ]
-//  FAIL  test/index.ts [ test/index.ts ]
-//  ❯ failureErrorWithLog node_modules/.pnpm/esbuild@0.15.11/node_modules/esbuild/lib/main.js:1566:15
-// Error: Transform failed with 1 error:
-// /workspace/data/src/SafeEval.ts:86:2: ERROR: Unexpected "..."
-//  ❯ node_modules/.pnpm/esbuild@0.15.11/node_modules/esbuild/lib/main.js:805:29
-//  ❯ responseCallbacks.<computed> node_modules/.pnpm/esbuild@0.15.11/node_modules/esbuild/lib/main.js:671:9
-//  ❯ handleIncomingPacket node_modules/.pnpm/esbuild@0.15.11/node_modules/esbuild/lib/main.js:726:9
-//  ❯ Socket.readFromStdout node_modules/.pnpm/esbuild@0.15.11/node_modules/esbuild/lib/main.js:647:7
-//  ❯ Socket.emit node:events:513:28
-
 /**
  * Constructs a tuple of results from a tuple of `SafeEval`s.
  *
  * @since 1.0.0
  * @category constructors
  */
-export const tuple = SE.tuple
+export const tuple: <EN extends ReadonlyArray<SafeEval<any>>>(
+  ...args: EN & {
+    readonly 0: SafeEval<any>
+    readonly 1: SafeEval<any>
+  }
+) => SafeEval<Readonly<{ [K in keyof EN]: [EN[K]] extends [SafeEval<infer A>] ? A : never }>> =
+  SE.tuple
 
 /**
  * @since 1.0.0
