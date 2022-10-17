@@ -7,6 +7,9 @@ const getExportName = (name: string): string => {
   if (name === "HKT") {
     return name.toLowerCase()
   }
+  if (name === "Const") {
+    return "const_"
+  }
   return name.substring(0, 1).toLowerCase() + name.substring(1)
 }
 
