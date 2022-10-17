@@ -8,12 +8,6 @@ import * as String from "@fp-ts/data/String"
 import { assertTrue, deepStrictEqual, double, strictEqual } from "@fp-ts/data/test/util"
 import { assert } from "vitest"
 
-export const make = <A>(
-  ...elements: readonly [A, ...ReadonlyArray<A>]
-): NonEmptyReadonlyArray.NonEmptyReadonlyArray<A> => {
-  return elements
-}
-
 describe.concurrent("NonEmptyReadonlyArray", () => {
   describe.concurrent("pipeables", () => {
     it("traverse", () => {
