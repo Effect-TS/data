@@ -1,6 +1,7 @@
 /**
  * @since 1.0.0
  */
+
 import type * as monoid from "@fp-ts/core/Monoid"
 import * as semigroup from "@fp-ts/core/Semigroup"
 import type * as sortable from "@fp-ts/core/Sortable"
