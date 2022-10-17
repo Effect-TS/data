@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 16
+nav_order: 17
 parent: Modules
 ---
 
@@ -31,6 +31,7 @@ Added in v1.0.0
   - [hashMapPatch](#hashmappatch)
   - [hashSet](#hashset)
   - [hashSetPatch](#hashsetpatch)
+  - [identity](#identity)
   - [list](#list)
   - [mutableHashMap](#mutablehashmap)
   - [mutableHashSet](#mutablehashset)
@@ -233,6 +234,16 @@ Added in v1.0.0
 
 ```ts
 export declare const hashSetPatch: typeof hashSetPatch
+```
+
+Added in v1.0.0
+
+## identity
+
+**Signature**
+
+```ts
+export declare const identity: typeof identity
 ```
 
 Added in v1.0.0
