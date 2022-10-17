@@ -1,6 +1,6 @@
 ---
 title: mutable/MutableQueue.ts
-nav_order: 22
+nav_order: 23
 parent: Modules
 ---
 
@@ -124,7 +124,7 @@ export interface MutableQueue<A> extends Iterable<A>, Equal.Equal {
   readonly _A: (_: never) => A
 
   /** @internal */
-  queue: DoublyLinkedList.DoublyLinkedList<A>
+  queue: MutableList.MutableList<A>
   /** @internal */
   capacity: number | undefined
 }

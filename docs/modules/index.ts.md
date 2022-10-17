@@ -20,7 +20,6 @@ Added in v1.0.0
   - [context](#context)
   - [contextPatch](#contextpatch)
   - [differ](#differ)
-  - [doublyLinkedList](#doublylinkedlist)
   - [duration](#duration)
   - [endomorphism](#endomorphism)
   - [equal](#equal)
@@ -36,6 +35,7 @@ Added in v1.0.0
   - [list](#list)
   - [mutableHashMap](#mutablehashmap)
   - [mutableHashSet](#mutablehashset)
+  - [mutableList](#mutablelist)
   - [mutableListBuilder](#mutablelistbuilder)
   - [mutableQueue](#mutablequeue)
   - [mutableRef](#mutableref)
@@ -126,16 +126,6 @@ Added in v1.0.0
 
 ```ts
 export declare const differ: typeof differ
-```
-
-Added in v1.0.0
-
-## doublyLinkedList
-
-**Signature**
-
-```ts
-export declare const doublyLinkedList: typeof doublyLinkedList
 ```
 
 Added in v1.0.0
@@ -286,6 +276,16 @@ Added in v1.0.0
 
 ```ts
 export declare const mutableHashSet: typeof mutableHashSet
+```
+
+Added in v1.0.0
+
+## mutableList
+
+**Signature**
+
+```ts
+export declare const mutableList: typeof mutableList
 ```
 
 Added in v1.0.0

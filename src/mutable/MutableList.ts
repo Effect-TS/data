@@ -4,7 +4,7 @@
 
 import * as Equal from "@fp-ts/data/Equal"
 
-const TypeId: unique symbol = Symbol.for("@fp-ts/data/DoublyLinkedList") as TypeId
+const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableList") as TypeId
 
 /**
  * @since 1.0.0
@@ -16,7 +16,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category model
  */
-export interface DoublyLinkedList<A> extends Iterable<A>, Equal.Equal {
+export interface MutableList<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
   readonly _A: (_: never) => A
 
@@ -31,7 +31,7 @@ function variance<A, B>(_: A): B {
 }
 
 /** @internal */
-class DoublyLinkedListImpl<A> implements DoublyLinkedList<A> {
+class MutableListImpl<A> implements MutableList<A> {
   readonly _id: TypeId = TypeId
   readonly _A: (_: never) => A = variance
 
@@ -82,21 +82,21 @@ class LinkedListNode<T> {
 }
 
 /**
- * Creates an empty `DoublyLinkedList`.
+ * Creates an empty `MutableList`.
  *
  * @since 1.0.0
  * @category constructors
  */
-export const empty = <A>(): DoublyLinkedList<A> => new DoublyLinkedListImpl()
+export const empty = <A>(): MutableList<A> => new MutableListImpl()
 
 /**
- * Creates a new `DoublyLinkedList` from an `Iterable`.
+ * Creates a new `MutableList` from an `Iterable`.
  *
  * @since 1.0.0
  * @category constructors
  */
-export const from = <A>(iterable: Iterable<A>): DoublyLinkedList<A> => {
-  const list: DoublyLinkedList<A> = new DoublyLinkedListImpl()
+export const from = <A>(iterable: Iterable<A>): MutableList<A> => {
+  const list: MutableList<A> = new MutableListImpl()
   for (const element of iterable) {
     append<A>(element)(list)
   }
@@ -104,12 +104,12 @@ export const from = <A>(iterable: Iterable<A>): DoublyLinkedList<A> => {
 }
 
 /**
- * Creates a new `DoublyLinkedList` from the specified elements.
+ * Creates a new `MutableList` from the specified elements.
  *
  * @since 1.0.0
  * @category constructors
  */
-export const make = <A>(...elements: ReadonlyArray<A>): DoublyLinkedList<A> => from(elements)
+export const make = <A>(...elements: ReadonlyArray<A>): MutableList<A> => from(elements)
 
 /**
  * Returns `true` if the list contains zero elements, `false`, otherwise.
@@ -117,7 +117,7 @@ export const make = <A>(...elements: ReadonlyArray<A>): DoublyLinkedList<A> => f
  * @since 1.0.0
  * @category getters
  */
-export const isEmpty = <A>(self: DoublyLinkedList<A>): boolean => length(self) === 0
+export const isEmpty = <A>(self: MutableList<A>): boolean => length(self) === 0
 
 /**
  * Returns the length of the list.
@@ -125,8 +125,7 @@ export const isEmpty = <A>(self: DoublyLinkedList<A>): boolean => length(self) =
  * @since 1.0.0
  * @category getters
  */
-export const length = <A>(self: DoublyLinkedList<A>): number =>
-  (self as DoublyLinkedListImpl<A>)._length
+export const length = <A>(self: MutableList<A>): number => (self as MutableListImpl<A>)._length
 
 /**
  * Returns the last element of the list, if it exists.
@@ -134,7 +133,7 @@ export const length = <A>(self: DoublyLinkedList<A>): number =>
  * @since 1.0.0
  * @category getters
  */
-export const tail = <A>(self: DoublyLinkedList<A>): A | undefined =>
+export const tail = <A>(self: MutableList<A>): A | undefined =>
   self.tail === undefined ? undefined : self.tail.value
 
 /**
@@ -143,7 +142,7 @@ export const tail = <A>(self: DoublyLinkedList<A>): A | undefined =>
  * @since 1.0.0
  * @category getters
  */
-export const head = <A>(self: DoublyLinkedList<A>): A | undefined =>
+export const head = <A>(self: MutableList<A>): A | undefined =>
   self.head === undefined ? undefined : self.head.value
 
 /**
@@ -153,7 +152,7 @@ export const head = <A>(self: DoublyLinkedList<A>): A | undefined =>
  * @category traversing
  */
 export const forEach = <A>(f: (element: A) => void) =>
-  (self: DoublyLinkedList<A>): void => {
+  (self: MutableList<A>): void => {
     let current = self.head
     while (current !== undefined) {
       f(current.value)
@@ -167,8 +166,8 @@ export const forEach = <A>(f: (element: A) => void) =>
  * @since 1.0.0
  * @category mutations
  */
-export const reset = <A>(self: DoublyLinkedList<A>): DoublyLinkedList<A> => {
-  ;(self as DoublyLinkedListImpl<A>)._length = 0
+export const reset = <A>(self: MutableList<A>): MutableList<A> => {
+  ;(self as MutableListImpl<A>)._length = 0
   self.head = undefined
   self.tail = undefined
   return self
@@ -181,9 +180,9 @@ export const reset = <A>(self: DoublyLinkedList<A>): DoublyLinkedList<A> => {
  * @category mutations
  */
 export const append = <A>(value: A) =>
-  (self: DoublyLinkedList<A>): DoublyLinkedList<A> => {
+  (self: MutableList<A>): MutableList<A> => {
     const node = new LinkedListNode(value)
-    if ((self as DoublyLinkedListImpl<A>)._length === 0) {
+    if ((self as MutableListImpl<A>)._length === 0) {
       self.head = node
     }
     if (self.tail === undefined) {
@@ -193,7 +192,7 @@ export const append = <A>(value: A) =>
       node.left = self.tail
       self.tail = node
     }
-    ;(self as DoublyLinkedListImpl<A>)._length += 1
+    ;(self as MutableListImpl<A>)._length += 1
     return self
   }
 
@@ -203,7 +202,7 @@ export const append = <A>(value: A) =>
  * @since 0.0.1
  * @category mutations
  */
-export const shift = <A>(self: DoublyLinkedList<A>): A | undefined => {
+export const shift = <A>(self: MutableList<A>): A | undefined => {
   const head = self.head
   if (head !== undefined) {
     remove(head)(self)
@@ -218,7 +217,7 @@ export const shift = <A>(self: DoublyLinkedList<A>): A | undefined => {
  * @since 0.0.1
  * @category mutations
  */
-export const pop = <A>(self: DoublyLinkedList<A>): A | undefined => {
+export const pop = <A>(self: MutableList<A>): A | undefined => {
   const tail = self.tail
   if (tail !== undefined) {
     remove(tail)(self)
@@ -228,7 +227,7 @@ export const pop = <A>(self: DoublyLinkedList<A>): A | undefined => {
 }
 
 function remove<A>(node: LinkedListNode<A>) {
-  return (self: DoublyLinkedList<A>): void => {
+  return (self: MutableList<A>): void => {
     if (node.removed) {
       return
     }
@@ -246,8 +245,8 @@ function remove<A>(node: LinkedListNode<A>) {
       self.tail = undefined
       self.head = undefined
     }
-    if ((self as DoublyLinkedListImpl<A>)._length > 0) {
-      ;(self as DoublyLinkedListImpl<A>)._length -= 1
+    if ((self as MutableListImpl<A>)._length > 0) {
+      ;(self as MutableListImpl<A>)._length -= 1
     }
   }
 }
