@@ -19,9 +19,9 @@ import * as hashMap from "@fp-ts/data/HashMap"
 import * as hashSet from "@fp-ts/data/HashSet"
 import * as identity from "@fp-ts/data/Identity"
 import * as list from "@fp-ts/data/List"
-import * as doublyLinkedList from "@fp-ts/data/mutable/DoublyLinkedList"
 import * as mutableHashMap from "@fp-ts/data/mutable/MutableHashMap"
 import * as mutableHashSet from "@fp-ts/data/mutable/MutableHashSet"
+import * as mutableList from "@fp-ts/data/mutable/MutableList"
 import * as mutableListBuilder from "@fp-ts/data/mutable/MutableListBuilder"
 import * as mutableQueue from "@fp-ts/data/mutable/MutableQueue"
 import * as mutableRef from "@fp-ts/data/mutable/MutableRef"
@@ -81,10 +81,6 @@ export {
   /**
    * @since 1.0.0
    */
-  doublyLinkedList,
-  /**
-   * @since 1.0.0
-   */
   duration,
   /**
    * @since 1.0.0
@@ -138,6 +134,10 @@ export {
    * @since 1.0.0
    */
   mutableHashSet,
+  /**
+   * @since 1.0.0
+   */
+  mutableList,
   /**
    * @since 1.0.0
    */

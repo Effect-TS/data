@@ -4,7 +4,7 @@
 
 import * as Equal from "@fp-ts/data/Equal"
 import * as List from "@fp-ts/data/List"
-import * as DoublyLinkedList from "@fp-ts/data/mutable/DoublyLinkedList"
+import * as MutableList from "@fp-ts/data/mutable/MutableList"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableQueue") as TypeId
 
@@ -29,7 +29,7 @@ export interface MutableQueue<A> extends Iterable<A>, Equal.Equal {
   readonly _A: (_: never) => A
 
   /** @internal */
-  queue: DoublyLinkedList.DoublyLinkedList<A>
+  queue: MutableList.MutableList<A>
   /** @internal */
   capacity: number | undefined
 }
@@ -51,7 +51,7 @@ class MutableQueueImpl<A> implements MutableQueue<A> {
   readonly _id: TypeId = TypeId
   readonly _A: (_: never) => A = variance
 
-  queue: DoublyLinkedList.DoublyLinkedList<A> = DoublyLinkedList.empty()
+  queue: MutableList.MutableList<A> = MutableList.empty()
 
   constructor(readonly capacity: number | undefined = undefined) {}
 
@@ -90,7 +90,7 @@ export const unbounded = <A>(): MutableQueue<A> => new MutableQueueImpl()
  * @since 1.0.0
  * @category getters
  */
-export const length = <A>(self: MutableQueue<A>): number => DoublyLinkedList.length(self.queue)
+export const length = <A>(self: MutableQueue<A>): number => MutableList.length(self.queue)
 
 /**
  * Returns `true` if the queue is empty, `false` otherwise.
@@ -98,7 +98,7 @@ export const length = <A>(self: MutableQueue<A>): number => DoublyLinkedList.len
  * @since 1.0.0
  * @category getters
  */
-export const isEmpty = <A>(self: MutableQueue<A>): boolean => DoublyLinkedList.isEmpty(self.queue)
+export const isEmpty = <A>(self: MutableQueue<A>): boolean => MutableList.isEmpty(self.queue)
 
 /**
  * Returns `true` if the queue is full, `false` otherwise.
@@ -107,7 +107,7 @@ export const isEmpty = <A>(self: MutableQueue<A>): boolean => DoublyLinkedList.i
  * @category getters
  */
 export const isFull = <A>(self: MutableQueue<A>): boolean =>
-  self.capacity === undefined ? false : DoublyLinkedList.length(self.queue) === self.capacity
+  self.capacity === undefined ? false : MutableList.length(self.queue) === self.capacity
 
 /**
  * The **maximum** number of elements that a queue can hold.
@@ -131,11 +131,11 @@ export const capacity = <A>(self: MutableQueue<A>): number =>
  */
 export const offer = <A>(value: A) =>
   (self: MutableQueue<A>): boolean => {
-    const queueLength = DoublyLinkedList.length((self as MutableQueueImpl<A>).queue)
+    const queueLength = MutableList.length((self as MutableQueueImpl<A>).queue)
     if (self.capacity !== undefined && queueLength === self.capacity) {
       return false
     }
-    DoublyLinkedList.append(value)(self.queue)
+    MutableList.append(value)(self.queue)
     return true
   }
 
@@ -176,10 +176,10 @@ export const offerAll = <A>(values: Iterable<A>) =>
  */
 export const poll = <D>(def: D) =>
   <A>(self: MutableQueue<A>): A | D => {
-    if (DoublyLinkedList.isEmpty(self.queue)) {
+    if (MutableList.isEmpty(self.queue)) {
       return def
     }
-    return DoublyLinkedList.shift(self.queue)!
+    return MutableList.shift(self.queue)!
   }
 
 /**

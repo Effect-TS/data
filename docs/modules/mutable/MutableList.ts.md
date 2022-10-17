@@ -1,10 +1,10 @@
 ---
-title: mutable/DoublyLinkedList.ts
-nav_order: 19
+title: mutable/MutableList.ts
+nav_order: 21
 parent: Modules
 ---
 
-## DoublyLinkedList overview
+## MutableList overview
 
 Added in v1.0.0
 
@@ -22,7 +22,7 @@ Added in v1.0.0
   - [length](#length)
   - [tail](#tail)
 - [model](#model)
-  - [DoublyLinkedList (interface)](#doublylinkedlist-interface)
+  - [MutableList (interface)](#mutablelist-interface)
 - [mutations](#mutations)
   - [append](#append)
   - [pop](#pop)
@@ -39,36 +39,36 @@ Added in v1.0.0
 
 ## empty
 
-Creates an empty `DoublyLinkedList`.
+Creates an empty `MutableList`.
 
 **Signature**
 
 ```ts
-export declare const empty: <A>() => DoublyLinkedList<A>
+export declare const empty: <A>() => MutableList<A>
 ```
 
 Added in v1.0.0
 
 ## from
 
-Creates a new `DoublyLinkedList` from an `Iterable`.
+Creates a new `MutableList` from an `Iterable`.
 
 **Signature**
 
 ```ts
-export declare const from: <A>(iterable: Iterable<A>) => DoublyLinkedList<A>
+export declare const from: <A>(iterable: Iterable<A>) => MutableList<A>
 ```
 
 Added in v1.0.0
 
 ## make
 
-Creates a new `DoublyLinkedList` from the specified elements.
+Creates a new `MutableList` from the specified elements.
 
 **Signature**
 
 ```ts
-export declare const make: <A>(...elements: readonly A[]) => DoublyLinkedList<A>
+export declare const make: <A>(...elements: readonly A[]) => MutableList<A>
 ```
 
 Added in v1.0.0
@@ -82,7 +82,7 @@ Returns the first element of the list, if it exists.
 **Signature**
 
 ```ts
-export declare const head: <A>(self: DoublyLinkedList<A>) => A | undefined
+export declare const head: <A>(self: MutableList<A>) => A | undefined
 ```
 
 Added in v1.0.0
@@ -94,7 +94,7 @@ Returns `true` if the list contains zero elements, `false`, otherwise.
 **Signature**
 
 ```ts
-export declare const isEmpty: <A>(self: DoublyLinkedList<A>) => boolean
+export declare const isEmpty: <A>(self: MutableList<A>) => boolean
 ```
 
 Added in v1.0.0
@@ -106,7 +106,7 @@ Returns the length of the list.
 **Signature**
 
 ```ts
-export declare const length: <A>(self: DoublyLinkedList<A>) => number
+export declare const length: <A>(self: MutableList<A>) => number
 ```
 
 Added in v1.0.0
@@ -118,19 +118,19 @@ Returns the last element of the list, if it exists.
 **Signature**
 
 ```ts
-export declare const tail: <A>(self: DoublyLinkedList<A>) => A | undefined
+export declare const tail: <A>(self: MutableList<A>) => A | undefined
 ```
 
 Added in v1.0.0
 
 # model
 
-## DoublyLinkedList (interface)
+## MutableList (interface)
 
 **Signature**
 
 ```ts
-export interface DoublyLinkedList<A> extends Iterable<A>, Equal.Equal {
+export interface MutableList<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
   readonly _A: (_: never) => A
 
@@ -152,7 +152,7 @@ Appends the specified value to the end of the list.
 **Signature**
 
 ```ts
-export declare const append: <A>(value: A) => (self: DoublyLinkedList<A>) => DoublyLinkedList<A>
+export declare const append: <A>(value: A) => (self: MutableList<A>) => MutableList<A>
 ```
 
 Added in v1.0.0
@@ -164,7 +164,7 @@ Removes the last value from the list and returns it, if it exists.
 **Signature**
 
 ```ts
-export declare const pop: <A>(self: DoublyLinkedList<A>) => A | undefined
+export declare const pop: <A>(self: MutableList<A>) => A | undefined
 ```
 
 Added in v0.0.1
@@ -176,7 +176,7 @@ Removes all elements from the doubly-linked list.
 **Signature**
 
 ```ts
-export declare const reset: <A>(self: DoublyLinkedList<A>) => DoublyLinkedList<A>
+export declare const reset: <A>(self: MutableList<A>) => MutableList<A>
 ```
 
 Added in v1.0.0
@@ -188,7 +188,7 @@ Removes the first value from the list and returns it, if it exists.
 **Signature**
 
 ```ts
-export declare const shift: <A>(self: DoublyLinkedList<A>) => A | undefined
+export declare const shift: <A>(self: MutableList<A>) => A | undefined
 ```
 
 Added in v0.0.1
@@ -214,7 +214,7 @@ Executes the specified function `f` for each element in the list.
 **Signature**
 
 ```ts
-export declare const forEach: <A>(f: (element: A) => void) => (self: DoublyLinkedList<A>) => void
+export declare const forEach: <A>(f: (element: A) => void) => (self: MutableList<A>) => void
 ```
 
 Added in v1.0.0
