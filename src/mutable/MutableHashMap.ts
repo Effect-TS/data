@@ -260,17 +260,6 @@ export const make: <Entries extends Array<readonly [any, any]>>(
 
 /**
  * @since 1.0.0
- * @category constructors
- */
-export const MutableHashMap: <Entries extends Array<readonly [any, any]>>(
-  ...entries: Entries
-) => MutableHashMap<
-  Entries[number] extends readonly [infer K, any] ? K : never,
-  Entries[number] extends readonly [any, infer V] ? V : never
-> = make
-
-/**
- * @since 1.0.0
  * @category conversions
  */
 export const fromIterable = <K, V>(

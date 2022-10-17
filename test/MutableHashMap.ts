@@ -67,7 +67,7 @@ describe.concurrent("MutableHashMap", () => {
   })
 
   it("has", () => {
-    const map = HM.MutableHashMap(
+    const map = HM.make(
       [key(0, 0), value(0, 0)],
       [key(0, 0), value(1, 1)],
       [key(1, 1), value(2, 2)],
