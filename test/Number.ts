@@ -2,7 +2,7 @@ import { pipe } from "@fp-ts/data/Function"
 import * as Number from "@fp-ts/data/Number"
 import { deepStrictEqual } from "@fp-ts/data/test/util"
 
-describe("number", () => {
+describe.concurrent("Number", () => {
   it("sum", () => {
     deepStrictEqual(Number.sum(1)(2), 3)
   })
@@ -28,11 +28,6 @@ describe("number", () => {
     deepStrictEqual(pipe(2, Number.Ord.compare(1)), 1)
     deepStrictEqual(pipe(2, Number.Ord.compare(2)), 0)
   })
-
-  // TODO
-  // it("Show", () => {
-  //   deepStrictEqual(Number.Show.show(1), "1")
-  // })
 
   it("SemigroupMultiply", () => {
     deepStrictEqual(pipe(2, Number.SemigroupMultiply.combine(3)), 6)

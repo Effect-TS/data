@@ -2,7 +2,7 @@ import * as C from "@fp-ts/data/Chunk"
 import { equals } from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
 
-describe("Chunk", () => {
+describe.concurrent("Chunk", () => {
   it("append", () => {
     pipe(
       C.empty,

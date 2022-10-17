@@ -4,7 +4,7 @@ import * as LB from "@fp-ts/data/mutable/MutableListBuilder"
 import * as R from "@fp-ts/data/Result"
 import { assertTrue } from "@fp-ts/data/test/util"
 
-describe("Equal", () => {
+describe.concurrent("Equal", () => {
   it("List", () => {
     assertTrue(equals(L.make(0, 1, 2), L.make(0, 1, 2)))
   })

@@ -7,9 +7,9 @@ import { deepStrictEqual, double } from "@fp-ts/data/test/util"
 
 const p = (n: number): boolean => n > 2
 
-describe("Option", () => {
+describe.concurrent("Option", () => {
   // TODO
-  // describe("firstSuccessOf", () => {
+  // describe.concurrent("firstSuccessOf", () => {
   //   it("baseline", () => {
   //     deepStrictEqual(O.firstSuccessOf([]), O.none)
   //     deepStrictEqual(O.firstSuccessOf([O.none]), O.none)
@@ -90,7 +90,7 @@ describe("Option", () => {
     deepStrictEqual(g(Option.some(1), Option.some(2), Option.some(3)), Option.some(6))
   })
 
-  describe("pipeables", () => {
+  describe.concurrent("pipeables", () => {
     it("map", () => {
       deepStrictEqual(pipe(Option.some(2), Option.map(double)), Option.some(4))
       deepStrictEqual(pipe(Option.none, Option.map(double)), Option.none)

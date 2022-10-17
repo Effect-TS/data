@@ -25,11 +25,17 @@ Added in v1.0.0
   - [endsWith](#endswith)
   - [includes](#includes)
   - [isEmpty](#isempty)
+  - [linesIterator](#linesiterator)
+  - [linesWithSeparators](#lineswithseparators)
   - [replace](#replace)
   - [size](#size)
   - [slice](#slice)
   - [split](#split)
   - [startsWith](#startswith)
+  - [stripMargin](#stripmargin)
+  - [stripMarginWith](#stripmarginwith)
+  - [takeLeft](#takeleft)
+  - [takeRight](#takeright)
   - [toLowerCase](#tolowercase)
   - [toUpperCase](#touppercase)
   - [trim](#trim)
@@ -154,6 +160,32 @@ export declare const isEmpty: (s: string) => boolean
 
 Added in v1.0.0
 
+## linesIterator
+
+Returns an `IterableIterator` which yields each line contained within the
+string, trimming off the trailing newline character.
+
+**Signature**
+
+```ts
+export declare const linesIterator: (self: string) => LinesIterator
+```
+
+Added in v1.0.0
+
+## linesWithSeparators
+
+Returns an `IterableIterator` which yields each line contained within the
+string as well as the trailing newline character.
+
+**Signature**
+
+```ts
+export declare const linesWithSeparators: (s: string) => LinesIterator
+```
+
+Added in v1.0.0
+
 ## replace
 
 **Signature**
@@ -202,6 +234,71 @@ Added in v1.0.0
 
 ```ts
 export declare const startsWith: (searchString: string, position?: number | undefined) => (s: string) => boolean
+```
+
+Added in v1.0.0
+
+## stripMargin
+
+For every line in this string, strip a leading prefix consisting of blanks
+or control characters followed by the `"|"` character from the line.
+
+**Signature**
+
+```ts
+export declare const stripMargin: (self: string) => string
+```
+
+Added in v1.0.0
+
+## stripMarginWith
+
+For every line in this string, strip a leading prefix consisting of blanks
+or control characters followed by the character specified by `marginChar`
+from the line.
+
+**Signature**
+
+```ts
+export declare const stripMarginWith: (marginChar: string) => (self: string) => string
+```
+
+Added in v1.0.0
+
+## takeLeft
+
+Keep the specified number of characters from the start of a string.
+
+If `n` is larger than the available number of characters, the string will
+be returned whole.
+
+If `n` is not a positive number, an empty string will be returned.
+
+If `n` is a float, it will be rounded down to the nearest integer.
+
+**Signature**
+
+```ts
+export declare const takeLeft: (n: number) => (self: string) => string
+```
+
+Added in v1.0.0
+
+## takeRight
+
+Keep the specified number of characters from the end of a string.
+
+If `n` is larger than the available number of characters, the string will
+be returned whole.
+
+If `n` is not a positive number, an empty string will be returned.
+
+If `n` is a float, it will be rounded down to the nearest integer.
+
+**Signature**
+
+```ts
+export declare const takeRight: (n: number) => (s: string) => string
 ```
 
 Added in v1.0.0
