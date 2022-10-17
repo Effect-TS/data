@@ -76,7 +76,7 @@ function randomChunk(): Chunk.Chunk<number> {
 function randomHashMap(): HashMap.HashMap<number, number> {
   return pipe(
     Chunk.fromIterable(Array.from({ length: 2 }, smallInt)),
-    Chunk.zip(Chunk.fromIterable(Array.from({ length: 2 }, smallInt))),
+    Chunk.cross(Chunk.fromIterable(Array.from({ length: 2 }, smallInt))),
     HashMap.from
   )
 }
