@@ -101,7 +101,7 @@ export const MonoidSum: monoid.Monoid<number> = {
 export const MonoidMultiply: monoid.Monoid<number> = {
   combine: SemigroupMultiply.combine,
   combineMany: SemigroupMultiply.combineMany,
-  combineAll: (all) => SemigroupMultiply.combineMany(all)(0),
+  combineAll: (all) => SemigroupMultiply.combineMany(all)(1),
   empty: 1
 }
 
