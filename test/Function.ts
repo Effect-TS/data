@@ -1,9 +1,10 @@
 import * as Function from "@fp-ts/data/Function"
+import * as Number from "@fp-ts/data/Number"
 import * as String from "@fp-ts/data/String"
 import { deepStrictEqual, double } from "@fp-ts/data/test/util"
 import * as assert from "assert"
 
-const f = Function.increment
+const f = Number.increment
 const g = double
 
 describe.concurrent("Function", () => {
@@ -43,14 +44,6 @@ describe.concurrent("Function", () => {
 
   it("constVoid", () => {
     deepStrictEqual(Function.constVoid(), undefined)
-  })
-
-  it("increment", () => {
-    deepStrictEqual(Function.increment(2), 3)
-  })
-
-  it("decrement", () => {
-    deepStrictEqual(Function.decrement(2), 1)
   })
 
   it("absurd", () => {

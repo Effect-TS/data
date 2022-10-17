@@ -30,6 +30,16 @@ export const multiply = (that: number) => (self: number): number => self * that
 export const sub = (that: number) => (self: number): number => self - that
 
 /**
+ * @since 1.0.0
+ */
+export const increment = (n: number): number => n + 1
+
+/**
+ * @since 1.0.0
+ */
+export const decrement = (n: number): number => n - 1
+
+/**
  * @category instances
  * @since 1.0.0
  */
