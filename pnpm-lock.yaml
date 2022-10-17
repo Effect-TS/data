@@ -30,8 +30,8 @@ importers:
       '@types/rimraf': ^3.0.2
       '@typescript-eslint/eslint-plugin': ^5.36.2
       '@typescript-eslint/parser': ^5.36.2
+      '@vitest/coverage-c8': ^0.24.3
       babel-plugin-annotate-pure-calls: ^0.4.0
-      c8: ^7.11.3
       concurrently: ^7.2.2
       cpx: ^1.5.0
       docs-ts: ^0.6.10
@@ -74,8 +74,8 @@ importers:
       '@types/rimraf': 3.0.2
       '@typescript-eslint/eslint-plugin': 5.38.1_c7qepppml3d4ahu5cnfwqe6ltq
       '@typescript-eslint/parser': 5.38.1_ypn2ylkkyfa5i233caldtndbqa
+      '@vitest/coverage-c8': 0.24.3
       babel-plugin-annotate-pure-calls: 0.4.0_@babel+core@7.19.3
-      c8: 7.12.0
       concurrently: 7.4.0
       cpx: 1.5.0
       docs-ts: 0.6.10_hxi4q35dpslvaqd64zvxr4fn6m_dmjzcauo3cshxeipj7bv64ktgm
@@ -1255,6 +1255,24 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.39.0
       eslint-visitor-keys: 3.3.0
+    dev: true
+
+  /@vitest/coverage-c8/0.24.3:
+    resolution: {integrity: sha512-tAmMyHxWYnAwGeJb7QgTuEX8aLasTg4X1/6INobXa/7wYGEJ28CACFO5iLn1HzFVPoLvhsS3luQjiflGjjSMRQ==}
+    dependencies:
+      c8: 7.12.0
+      vitest: 0.24.3
+    transitivePeerDependencies:
+      - '@edge-runtime/vm'
+      - '@vitest/browser'
+      - '@vitest/ui'
+      - happy-dom
+      - jsdom
+      - less
+      - sass
+      - stylus
+      - supports-color
+      - terser
     dev: true
 
   /acorn-jsx/5.3.2_acorn@8.8.0:
