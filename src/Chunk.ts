@@ -1147,11 +1147,7 @@ export const reverse = <A>(self: Chunk<A>): Chunk<A> => unsafeFromArray(RA.rever
  * @since 1.0.0
  * @category constructors
  */
-export const single = <A>(a: A): Chunk<A> =>
-  new ChunkImpl({
-    _tag: "ISingleton",
-    a
-  })
+export const single = <A>(a: A): Chunk<A> => new ChunkImpl({ _tag: "ISingleton", a })
 
 /**
  * Retireves the size of the chunk
@@ -1355,35 +1351,34 @@ export const unzip = <A, B>(as: Chunk<readonly [A, B]>): readonly [Chunk<A>, Chu
 }
 
 /**
- * Zips this chunk with the specified chunk using the specified combiner.
+ * Zips this chunk pointwise with the specified chunk.
  *
  * @since 1.0.0
  * @category elements
  */
 export const zip = <B>(that: Chunk<B>) =>
-  <A>(self: Chunk<A>): Chunk<readonly [A, B]> =>
-    pipe(
-      toArray(self),
-      RA.zip(toArray(that)),
-      unsafeFromArray
-    )
+  <A>(self: Chunk<A>): Chunk<readonly [A, B]> => pipe(self, zipWith(that, (a, b) => [a, b]))
 
 /**
- * Zips this chunk with the specified chunk using the specified combiner.
+ * Zips this chunk pointwise with the specified chunk using the specified combiner.
  *
  * @since 1.0.0
  * @category elements
  */
 export const zipWith = <A, B, C>(that: Chunk<B>, f: (a: A, b: B) => C) =>
-  (self: Chunk<A>): Chunk<C> =>
-    pipe(
-      toArray(self),
-      RA.zipWith(toArray(that), f),
-      unsafeFromArray
-    )
+  (self: Chunk<A>): Chunk<C> => {
+    const selfA = toArray(self)
+    const thatA = toArray(that)
+    const len = Math.min(selfA.length, thatA.length)
+    const res: Array<C> = new Array(len)
+    for (let i = 0; i < len; i++) {
+      res.push(f(selfA[i], thatA[i]))
+    }
+    return unsafeFromArray(res)
+  }
 
 /**
- * Zips this chunk with the specified chunk to produce a new chunk with
+ * Zips this chunk pointwise with the specified chunk to produce a new chunk with
  * pairs of elements from each chunk, filling in missing values from the
  * shorter chunk with `None`. The returned chunk will have the length of the
  * longer chunk.
@@ -1450,3 +1445,21 @@ export const zipAllWith = <A, B, C, D, E>(
     }
     return unsafeFromArray(builder)
   }
+
+/**
+ * Zips this chunk crosswise with the specified chunk using the specified combiner.
+ *
+ * @since 1.0.0
+ * @category elements
+ */
+export const crossWith = <A, B, C>(that: Chunk<B>, f: (a: A, b: B) => C) =>
+  (self: Chunk<A>): Chunk<C> => pipe(self, flatMap((a) => pipe(that, map((b) => f(a, b)))))
+
+/**
+ * Zips this chunk crosswise with the specified chunk.
+ *
+ * @since 1.0.0
+ * @category elements
+ */
+export const cross = <B>(that: Chunk<B>) =>
+  <A>(self: Chunk<A>): Chunk<readonly [A, B]> => pipe(self, crossWith(that, (a, b) => [a, b]))
