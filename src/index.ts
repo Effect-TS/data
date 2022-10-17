@@ -4,6 +4,7 @@
 
 import * as boolean from "@fp-ts/data/Boolean"
 import * as chunk from "@fp-ts/data/Chunk"
+import * as const_ from "@fp-ts/data/Const"
 import * as context from "@fp-ts/data/Context"
 import * as differ from "@fp-ts/data/Differ"
 import * as chunkPatch from "@fp-ts/data/Differ/ChunkPatch"
@@ -66,6 +67,10 @@ export {
    * @since 1.0.0
    */
   compactable,
+  /**
+   * @since 1.0.0
+   */
+  const_,
   /**
    * @since 1.0.0
    */
