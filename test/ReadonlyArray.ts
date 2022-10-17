@@ -11,8 +11,8 @@ import { deepStrictEqual, double, strictEqual } from "@fp-ts/data/test/util"
 import * as assert from "assert"
 import * as fc from "fast-check"
 
-describe("ReadonlyArray", () => {
-  describe("pipeables", () => {
+describe.concurrent("ReadonlyArray", () => {
+  describe.concurrent("pipeables", () => {
     it("traverse", () => {
       const traverse = ReadonlyArray.traverse(Option.Monoidal)((
         n: number
@@ -1026,7 +1026,7 @@ describe("ReadonlyArray", () => {
     assertSplitAt(empty, 3, empty, ReadonlyArray.empty)
   })
 
-  describe("chunksOf", () => {
+  describe.concurrent("chunksOf", () => {
     it("should split a `ReadonlyArray` into length-n pieces", () => {
       deepStrictEqual(ReadonlyArray.chunksOf(2)([1, 2, 3, 4, 5]), [[1, 2], [3, 4], [5]])
       deepStrictEqual(ReadonlyArray.chunksOf(2)([1, 2, 3, 4, 5, 6]), [

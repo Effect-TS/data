@@ -53,13 +53,42 @@ export const append = <B>(end: B) =>
   <A>(init: ReadonlyArray<A>): NonEmptyReadonlyArray<A | B> => concat([end])(init)
 
 /**
- * Builds a `NonEmptyReadonlyArray` from an array returning `none` if `as` is an empty array.
+ * Builds a `NonEmptyReadonlyArray` from an `Iterable` returning `None` if `as`
+ * is an empty array.
  *
  * @category constructors
  * @since 1.0.0
  */
-export const fromReadonlyArray = <A>(as: ReadonlyArray<A>): Option<NonEmptyReadonlyArray<A>> =>
-  internal.isNonEmpty(as) ? internal.some(as) : internal.none
+export const from = <A>(iterable: Iterable<A>): Option<NonEmptyReadonlyArray<A>> => {
+  const array = Array.from(iterable)
+  return internal.isNonEmpty(array) ? internal.some(array) : internal.none
+}
+
+/**
+ * Unsafely builds a `NonEmptyReadonlyArray` from an `Iterable`.
+ *
+ * **Note**: this method will throw an error if an empty `Iterable` is provided.
+ *
+ * @category unsafe
+ * @since 1.0.0
+ */
+export const unsafeFrom = <A>(iterable: Iterable<A>): NonEmptyReadonlyArray<A> => {
+  const array = Array.from(iterable)
+  if (array.length === 0) {
+    throw new Error("Cannot construct a NonEmptyReadonlyArray from an empty collection")
+  }
+  return array as unknown as NonEmptyReadonlyArray<A>
+}
+
+/**
+ * Builds a `NonEmptyReadonlyArray` from an non-empty collection of elements.
+ *
+ * @category constructors
+ * @since 1.0.0
+ */
+export const make = <As extends NonEmptyReadonlyArray<any>>(
+  ...as: As
+): NonEmptyReadonlyArray<As[number]> => as
 
 /**
  * Return a `NonEmptyReadonlyArray` of length `n` with element `i` initialized with `f(i)`.

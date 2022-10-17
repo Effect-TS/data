@@ -5,7 +5,7 @@ import * as Result from "@fp-ts/data/Result"
 import { deepStrictEqual } from "@fp-ts/data/test/util"
 import * as Filterable from "@fp-ts/data/typeclasses/Filterable"
 
-describe("Filterable", () => {
+describe.concurrent("Filterable", () => {
   it("getFilterableComposition", () => {
     const filter = Filterable.filter(ReadonlyArray.Filterable)
 

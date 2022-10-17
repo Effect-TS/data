@@ -4,7 +4,7 @@ import * as O from "@fp-ts/data/Option"
 import * as S from "@fp-ts/data/String"
 import * as U from "./util"
 
-describe("Identity", () => {
+describe.concurrent("Identity", () => {
   it("toReadonlyArray", () => {
     U.deepStrictEqual(
       pipe(
@@ -119,7 +119,7 @@ describe("Identity", () => {
     U.deepStrictEqual(pipe("a", _.Foldable.reduceRight("", f)), "a")
   })
 
-  describe("pipeables", () => {
+  describe.concurrent("pipeables", () => {
     it("map", () => {
       U.deepStrictEqual(pipe(1, _.map(U.double)), 2)
     })
@@ -184,7 +184,7 @@ describe("Identity", () => {
     U.deepStrictEqual(_.Zip, [])
   })
 
-  describe("do notation", () => {
+  describe.concurrent("do notation", () => {
     it("Do", () => {
       U.deepStrictEqual(_.Do, {})
     })
