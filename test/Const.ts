@@ -4,7 +4,7 @@ import * as number from "@fp-ts/data/Number"
 import * as string from "@fp-ts/data/String"
 import * as U from "./util"
 
-describe("Const", () => {
+describe.concurrent("Const", () => {
   it("execute", () => {
     U.deepStrictEqual(pipe(_.make("a"), _.execute), "a")
   })
