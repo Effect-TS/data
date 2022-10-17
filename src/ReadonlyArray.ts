@@ -70,6 +70,19 @@ export const makeBy = <A>(f: (i: number) => A) =>
   (n: number): ReadonlyArray<A> => n <= 0 ? empty : nonEmptyReadonlyArray.makeBy(f)(n)
 
 /**
+ * Create a `ReadonlyArray` containing a range of integers, including both endpoints.
+ *
+ * @exampleTodo
+ * import { range } from '@fp-ts/data/ReadonlyArray'
+ *
+ * assert.deepStrictEqual(range(1, 5), [1, 2, 3, 4, 5])
+ *
+ * @category constructors
+ * @since 1.0.0
+ */
+export const range = nonEmptyReadonlyArray.range
+
+/**
  * Create a `ReadonlyArray` containing a value repeated the specified number of times.
  *
  * **Note**. `n` is normalized to a non negative integer.
