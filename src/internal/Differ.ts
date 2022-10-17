@@ -8,7 +8,6 @@ import * as HashSetPatch from "@fp-ts/data/Differ/HashSetPatch"
 import * as OrPatch from "@fp-ts/data/Differ/OrPatch"
 import * as Equal from "@fp-ts/data/Equal"
 import { constant, identity } from "@fp-ts/data/Function"
-import * as Hash from "@fp-ts/data/Hash"
 import type { HashMap } from "@fp-ts/data/HashMap"
 import type { HashSet } from "@fp-ts/data/HashSet"
 import type { Result } from "@fp-ts/data/Result"
@@ -36,11 +35,11 @@ class DifferImpl<Value, Patch> implements D.Differ<Value, Patch> {
     this.combine = params.combine
     this.patch = params.patch
   }
-  [Equal.symbol](that: unknown) {
+  [Equal.symbolEqual](that: unknown) {
     return this === that
   }
-  [Hash.symbol]() {
-    return Hash.random(this)
+  [Equal.symbolHash]() {
+    return Equal.hashRandom(this)
   }
 }
 

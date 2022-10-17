@@ -5,7 +5,6 @@
 import type { Sortable } from "@fp-ts/core/Sortable"
 import * as Equal from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
-import * as Hash from "@fp-ts/data/Hash"
 import * as MRef from "@fp-ts/data/mutable/MutableRef"
 import type { Option } from "@fp-ts/data/Option"
 import * as O from "@fp-ts/data/Option"
@@ -186,12 +185,12 @@ class ChunkImpl<A> implements Chunk<A> {
     }
   }
 
-  [Equal.symbol](that: unknown): boolean {
+  [Equal.symbolEqual](that: unknown): boolean {
     return isChunk(that) && Equal.equals(toArray(this), toArray(that))
   }
 
-  [Hash.symbol](): number {
-    return Hash.evaluate(toArray(this))
+  [Equal.symbolHash](): number {
+    return Equal.hash(toArray(this))
   }
 
   [Symbol.iterator](): Iterator<A> {

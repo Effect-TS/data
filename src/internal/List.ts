@@ -16,7 +16,6 @@ import type { Refinement } from "@fp-ts/data/Refinement"
 import * as R from "@fp-ts/data/Result"
 
 import * as DE from "@fp-ts/data/Equal"
-import * as DH from "@fp-ts/data/Hash"
 
 /** @internal */
 export const ListTypeId: L.TypeId = Symbol.for("@fp-ts/data/List") as L.TypeId
@@ -27,13 +26,13 @@ export class ConsImpl<A> implements Iterable<A>, L.Cons<A>, DE.Equal {
   readonly _A: (_: never) => A = (_) => _
   readonly _id: L.TypeId = ListTypeId
   constructor(readonly head: A, public tail: L.List<A>) {}
-  [DH.Hash.symbol](): number {
+  [DE.symbolHash](): number {
     return pipe(
       this,
-      reduce(DH.evaluate(this._tag), (h, a) => pipe(h, DH.combine(DH.evaluate(a))))
+      reduce(DE.hash(this._tag), (h, a) => pipe(h, DE.hashCombine(DE.hash(a))))
     )
   }
-  [DE.Equal.symbol](that: unknown): boolean {
+  [DE.symbolEqual](that: unknown): boolean {
     return isList(that) && that._tag === "Cons"
       ? DE.equals(that.head)(this.head) && DE.equals(that.tail)(this.tail)
       : false
@@ -71,11 +70,11 @@ export class NilImpl<A> implements Iterable<A>, L.Nil<A>, DE.Equal {
   readonly _A: (_: never) => A = (_) => _
   readonly _id: L.TypeId = ListTypeId;
 
-  [DH.Hash.symbol](): number {
-    return DH.evaluate(this._tag)
+  [DE.symbolHash](): number {
+    return DE.hash(this._tag)
   }
 
-  [DE.Equal.symbol](that: unknown): boolean {
+  [DE.symbolEqual](that: unknown): boolean {
     return isList(that) && that._tag === "Nil"
   }
 

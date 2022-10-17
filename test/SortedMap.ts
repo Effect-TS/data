@@ -1,6 +1,5 @@
 import * as Eq from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
-import * as H from "@fp-ts/data/Hash"
 import * as N from "@fp-ts/data/Number"
 import * as O from "@fp-ts/data/Option"
 import * as SM from "@fp-ts/data/SortedMap"
@@ -8,11 +7,11 @@ import * as SM from "@fp-ts/data/SortedMap"
 class Key implements Eq.Equal {
   constructor(readonly id: number) {}
 
-  [H.symbol](): number {
-    return H.evaluate(this.id)
+  [Eq.symbolHash](): number {
+    return Eq.hash(this.id)
   }
 
-  [Eq.symbol](u: unknown): boolean {
+  [Eq.symbolEqual](u: unknown): boolean {
     return u instanceof Key && this.id === u.id
   }
 }
@@ -20,11 +19,11 @@ class Key implements Eq.Equal {
 class Value implements Eq.Equal {
   constructor(readonly id: number) {}
 
-  [H.symbol](): number {
-    return H.evaluate(this.id)
+  [Eq.symbolHash](): number {
+    return Eq.hash(this.id)
   }
 
-  [Eq.symbol](u: unknown): boolean {
+  [Eq.symbolEqual](u: unknown): boolean {
     return u instanceof Value && this.id === u.id
   }
 }

@@ -2,7 +2,6 @@
  * @since 1.0.0
  */
 import * as Equal from "@fp-ts/data/Equal"
-import * as Hash from "@fp-ts/data/Hash"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableRef") as TypeId
 
@@ -28,11 +27,11 @@ class MutableRefImpl<T> implements MutableRef<T> {
   _T: (_: never) => T = (_) => _
   _id: typeof TypeId = TypeId
   constructor(public current: T) {}
-  [Equal.symbol](that: unknown) {
+  [Equal.symbolEqual](that: unknown) {
     return this === that
   }
-  [Hash.symbol]() {
-    return Hash.random(this)
+  [Equal.symbolHash]() {
+    return Equal.hashRandom(this)
   }
 }
 

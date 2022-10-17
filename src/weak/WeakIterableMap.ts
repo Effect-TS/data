@@ -3,7 +3,6 @@
  */
 import * as Equal from "@fp-ts/data/Equal"
 import { identity } from "@fp-ts/data/Function"
-import * as Hash from "@fp-ts/data/Hash"
 import * as O from "@fp-ts/data/Option"
 
 /**
@@ -144,12 +143,12 @@ class WeakImpl<K extends object, V> implements WeakIterableMap<K, V> {
     }
   }
 
-  [Equal.symbol](that: unknown) {
+  [Equal.symbolEqual](that: unknown) {
     return this === that
   }
 
-  [Hash.symbol]() {
-    return Hash.random(this)
+  [Equal.symbolHash]() {
+    return Equal.hashRandom(this)
   }
 
   _K: (_: K) => K = identity
@@ -252,12 +251,12 @@ class PlainImpl<K extends object, V> implements WeakIterableMap<K, V> {
     return true
   }
 
-  [Equal.symbol](that: unknown) {
+  [Equal.symbolEqual](that: unknown) {
     return this === that
   }
 
-  [Hash.symbol]() {
-    return Hash.random(this)
+  [Equal.symbolHash]() {
+    return Equal.hashRandom(this)
   }
 
   [Symbol.iterator](this: this): IterableIterator<readonly [K, V]> {

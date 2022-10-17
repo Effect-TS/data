@@ -14,12 +14,16 @@ Added in v1.0.0
 
 - [equality](#equality)
   - [equals](#equals)
+- [hashing](#hashing)
+  - [hash](#hash)
+  - [hashCombine](#hashcombine)
+  - [hashOptimize](#hashoptimize)
+  - [hashRandom](#hashrandom)
 - [models](#models)
-  - [Equal](#equal)
   - [Equal (interface)](#equal-interface)
-  - [EqualConstructor (interface)](#equalconstructor-interface)
-- [symbol](#symbol)
-  - [symbol](#symbol-1)
+- [symbols](#symbols)
+  - [symbolEqual](#symbolequal)
+  - [symbolHash](#symbolhash)
 
 ---
 
@@ -36,50 +40,81 @@ export declare function equals<A, B>(self: A, that: B): boolean
 
 Added in v1.0.0
 
-# models
+# hashing
 
-## Equal
+## hash
 
 **Signature**
 
 ```ts
-export declare const Equal: EqualConstructor
+export declare const hash: <A>(self: A) => number
 ```
 
 Added in v1.0.0
+
+## hashCombine
+
+**Signature**
+
+```ts
+export declare const hashCombine: (b: number) => (self: number) => number
+```
+
+Added in v1.0.0
+
+## hashOptimize
+
+**Signature**
+
+```ts
+export declare const hashOptimize: (n: number) => number
+```
+
+Added in v1.0.0
+
+## hashRandom
+
+**Signature**
+
+```ts
+export declare const hashRandom: <A extends object>(self: A) => number
+```
+
+Added in v1.0.0
+
+# models
 
 ## Equal (interface)
 
 **Signature**
 
 ```ts
-export interface Equal extends DH.Hash {
-  readonly [Equal.symbol]: (that: unknown) => boolean
+export interface Equal {
+  [symbolEqual](that: unknown): boolean
+  [symbolHash](): number
 }
 ```
 
 Added in v1.0.0
 
-## EqualConstructor (interface)
+# symbols
+
+## symbolEqual
 
 **Signature**
 
 ```ts
-export interface EqualConstructor {
-  readonly symbol: unique symbol
-}
+export declare const symbolEqual: typeof symbolEqual
 ```
 
 Added in v1.0.0
 
-# symbol
-
-## symbol
+## symbolHash
 
 **Signature**
 
 ```ts
-export declare const symbol: EqualConstructor['symbol']
+export declare const symbolHash: typeof symbolHash
 ```
 
 Added in v1.0.0

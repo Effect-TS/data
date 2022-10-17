@@ -1,6 +1,5 @@
 import * as Equal from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
-import * as Hash from "@fp-ts/data/Hash"
 import type * as HM from "@fp-ts/data/HashMap"
 import { fromBitmap, hashFragment, toBitmap } from "@fp-ts/data/internal/HashMap/bitwise"
 import { SIZE } from "@fp-ts/data/internal/HashMap/config"
@@ -47,15 +46,15 @@ export class HashMapImpl<K, V> implements HM.HashMap<K, V> {
   [Symbol.iterator](): Iterator<readonly [K, V]> {
     return new HashMapIterator(this, (k, v) => [k, v])
   }
-  [Hash.symbol](): number {
-    let hash = Hash.evaluate("HashMap")
+  [Equal.symbolHash](): number {
+    let hash = Equal.hash("HashMap")
     for (const item of this) {
-      hash ^= Hash.combine(Hash.evaluate(item[0]))(Hash.evaluate(item[1]))
+      hash ^= Equal.hashCombine(Equal.hash(item[0]))(Equal.hash(item[1]))
     }
     return hash
   }
 
-  [Equal.symbol](that: unknown): boolean {
+  [Equal.symbolEqual](that: unknown): boolean {
     if (isHashMap(that)) {
       if ((that as HashMapImpl<K, V>)._size !== this._size) {
         return false
@@ -63,7 +62,7 @@ export class HashMapImpl<K, V> implements HM.HashMap<K, V> {
       for (const item of this) {
         const elem = pipe(
           that as HM.HashMap<K, V>,
-          getHash(item[0], Hash.evaluate(item[0]))
+          getHash(item[0], Equal.hash(item[0]))
         )
         if (Option.isNone(elem)) {
           return false
@@ -186,7 +185,7 @@ export function isEmpty<K, V>(self: HM.HashMap<K, V>): boolean {
 
 /** @internal */
 export function get<K, V>(key: K) {
-  return (self: HM.HashMap<K, V>): Option.Option<V> => pipe(self, getHash(key, Hash.evaluate(key)))
+  return (self: HM.HashMap<K, V>): Option.Option<V> => pipe(self, getHash(key, Equal.hash(key)))
 }
 
 /** @internal */
@@ -238,7 +237,7 @@ export function getHash<K, V>(key: K, hash: number) {
 /** @internal */
 export function unsafeGet<K, V>(key: K) {
   return (self: HM.HashMap<K, V>): V => {
-    const element = pipe(self, getHash(key, Hash.evaluate(key)))
+    const element = pipe(self, getHash(key, Equal.hash(key)))
     if (Option.isNone(element)) {
       throw new Error("Expected map to contain key")
     }
@@ -249,7 +248,7 @@ export function unsafeGet<K, V>(key: K) {
 /** @internal */
 export function has<K, V>(key: K) {
   return (self: HM.HashMap<K, V>): boolean => {
-    return Option.isSome(pipe(self, getHash(key, Hash.evaluate(key))))
+    return Option.isSome(pipe(self, getHash(key, Equal.hash(key))))
   }
 }
 
@@ -328,7 +327,7 @@ export function mutate<K, V>(f: (self: HM.HashMap<K, V>) => void) {
 
 /** @internal */
 export function modify<K, V>(key: K, f: Node.UpdateFn<V>) {
-  return (self: HM.HashMap<K, V>): HM.HashMap<K, V> => modifyHash(key, Hash.evaluate(key), f)(self)
+  return (self: HM.HashMap<K, V>): HM.HashMap<K, V> => modifyHash(key, Equal.hash(key), f)(self)
 }
 
 /** @internal */

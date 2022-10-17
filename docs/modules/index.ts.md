@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 17
+nav_order: 16
 parent: Modules
 ---
 
@@ -27,7 +27,6 @@ Added in v1.0.0
   - [fromOption](#fromoption)
   - [fromResult](#fromresult)
   - [function](#function)
-  - [hash](#hash)
   - [hashMap](#hashmap)
   - [hashMapPatch](#hashmappatch)
   - [hashSet](#hashset)
@@ -194,16 +193,6 @@ Added in v1.0.0
 
 ```ts
 export declare const function: typeof _function
-```
-
-Added in v1.0.0
-
-## hash
-
-**Signature**
-
-```ts
-export declare const hash: typeof hash
 ```
 
 Added in v1.0.0

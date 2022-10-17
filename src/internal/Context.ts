@@ -1,6 +1,5 @@
 import type * as C from "@fp-ts/data/Context"
-import { Equal } from "@fp-ts/data/Equal"
-import { evaluate, Hash, random } from "@fp-ts/data/Hash"
+import * as Equal from "@fp-ts/data/Equal"
 import * as O from "@fp-ts/data/Option"
 
 /** @internal */
@@ -11,12 +10,12 @@ export class TagImpl<Service> implements C.Tag<Service> {
   readonly _id: typeof TagTypeId = TagTypeId
   readonly _S: (_: Service) => Service = (_) => _;
 
-  [Equal.symbol](that: unknown) {
+  [Equal.symbolEqual](that: unknown) {
     return this === that
   }
 
-  [Hash.symbol](): number {
-    return random(this)
+  [Equal.symbolHash](): number {
+    return Equal.hashRandom(this)
   }
 }
 
@@ -28,7 +27,7 @@ export class ContextImpl<Services> implements C.Context<Services> {
   _id: C.TypeId = ContextTypeId
   _S = (_: Services) => _;
 
-  [Equal.symbol](that: unknown): boolean {
+  [Equal.symbolEqual](that: unknown): boolean {
     if (isContext(that)) {
       if (this.unsafeMap.size === that.unsafeMap.size) {
         for (const k of this.unsafeMap.keys()) {
@@ -42,8 +41,8 @@ export class ContextImpl<Services> implements C.Context<Services> {
     return false
   }
 
-  [Hash.symbol](): number {
-    return evaluate(this.unsafeMap.size)
+  [Equal.symbolHash](): number {
+    return Equal.hash(this.unsafeMap.size)
   }
 
   constructor(readonly unsafeMap: Map<C.Tag<any>, any>) {}

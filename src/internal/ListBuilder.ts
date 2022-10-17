@@ -4,7 +4,6 @@ import type { Cons, List } from "@fp-ts/data/List"
 import type * as LB from "@fp-ts/data/mutable/MutableListBuilder"
 
 import * as DE from "@fp-ts/data/Equal"
-import * as DH from "@fp-ts/data/Hash"
 
 /** @internal */
 export class MutableListBuilder<A> implements LB.MutableListBuilder<A>, DE.Equal {
@@ -20,11 +19,11 @@ export class MutableListBuilder<A> implements LB.MutableListBuilder<A>, DE.Equal
     return this.first[Symbol.iterator]()
   }
 
-  [DH.Hash.symbol](): number {
-    return DH.random(this)
+  [DE.symbolHash](): number {
+    return DE.hashRandom(this)
   }
 
-  [DE.Equal.symbol](that: unknown) {
+  [DE.symbolEqual](that: unknown) {
     return this === that
   }
 

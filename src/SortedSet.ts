@@ -5,7 +5,6 @@
 import type { Sortable } from "@fp-ts/core/Sortable"
 import * as Eq from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
-import * as H from "@fp-ts/data/Hash"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import * as RBT from "@fp-ts/data/RedBlackTree"
 import type { Refinement } from "@fp-ts/data/Refinement"
@@ -36,12 +35,12 @@ class SortedSetImpl<A> implements Iterable<A>, Eq.Equal {
 
   constructor(readonly keyTree: RBT.RedBlackTree<A, boolean>) {}
 
-  [H.symbol](): number {
-    return this.keyTree[H.symbol]()
+  [Eq.symbolHash](): number {
+    return pipe(Eq.hash(this.keyTree), Eq.hashCombine(Eq.hash("@fp-ts/data/SortedSet")))
   }
 
-  [Eq.symbol](that: unknown): boolean {
-    return isSortedSet(that) && this.keyTree[Eq.symbol](that.keyTree)
+  [Eq.symbolEqual](that: unknown): boolean {
+    return isSortedSet(that) && Eq.equals(this.keyTree, that.keyTree)
   }
 
   [Symbol.iterator](): Iterator<A> {

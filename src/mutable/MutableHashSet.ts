@@ -2,7 +2,6 @@
  * @since 1.0.0
  */
 import * as Equal from "@fp-ts/data/Equal"
-import * as Hash from "@fp-ts/data/Hash"
 import * as MHashMap from "@fp-ts/data/mutable/MutableHashMap"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableHashSet") as TypeId
@@ -34,11 +33,11 @@ class MutableHashSetImpl<K> implements MutableHashSet<K> {
 
   length = 0;
 
-  [Hash.Hash.symbol]() {
-    return Hash.random(this)
+  [Equal.symbolHash]() {
+    return Equal.hash(this)
   }
 
-  [Equal.Equal.symbol](that: unknown) {
+  [Equal.symbolEqual](that: unknown) {
     return this === that
   }
 

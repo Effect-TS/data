@@ -1,17 +1,16 @@
 import * as Equal from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
-import * as Hash from "@fp-ts/data/Hash"
 import * as HM from "@fp-ts/data/mutable/MutableHashMap"
 import * as O from "@fp-ts/data/Option"
 
 class Key implements Equal.Equal {
   constructor(readonly a: number, readonly b: number) {}
 
-  [Hash.Hash.symbol]() {
-    return Hash.evaluate(`${this.a}-${this.b}`)
+  [Equal.symbolHash]() {
+    return Equal.hash(`${this.a}-${this.b}`)
   }
 
-  [Equal.Equal.symbol](that: unknown): boolean {
+  [Equal.symbolEqual](that: unknown): boolean {
     return that instanceof Key && this.a === that.a && this.b === that.b
   }
 }
@@ -19,11 +18,11 @@ class Key implements Equal.Equal {
 class Value implements Equal.Equal {
   constructor(readonly c: number, readonly d: number) {}
 
-  [Hash.Hash.symbol]() {
-    return Hash.evaluate(`${this.c}-${this.d}`)
+  [Equal.symbolHash]() {
+    return Equal.hash(`${this.c}-${this.d}`)
   }
 
-  [Equal.Equal.symbol](that: unknown): boolean {
+  [Equal.symbolEqual](that: unknown): boolean {
     return that instanceof Value && this.c === that.c && this.d === that.d
   }
 }
