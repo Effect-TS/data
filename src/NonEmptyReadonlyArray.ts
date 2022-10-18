@@ -508,6 +508,16 @@ export const zipWith = <B, A, C>(bs: NonEmptyReadonlyArray<B>, f: (a: A, b: B) =
 /**
  * @since 1.0.0
  */
+export const zip = <B>(bs: NonEmptyReadonlyArray<B>) =>
+  <A>(as: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<readonly [A, B]> =>
+    pipe(
+      as,
+      zipWith(bs, (a, b) => [a, b])
+    )
+
+/**
+ * @since 1.0.0
+ */
 export const zipMany = <A>(
   collection: Iterable<readonly [A, ...Array<A>]>
 ) =>
@@ -556,16 +566,6 @@ export const zipAll = <A>(
 /**
  * @since 1.0.0
  */
-export const zip = <B>(bs: NonEmptyReadonlyArray<B>) =>
-  <A>(as: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<readonly [A, B]> =>
-    pipe(
-      as,
-      zipWith(bs, (a, b) => [a, b])
-    )
-
-/**
- * @since 1.0.0
- */
 export const unzip = <A, B>(
   abs: NonEmptyReadonlyArray<readonly [A, B]>
 ): readonly [NonEmptyReadonlyArray<A>, NonEmptyReadonlyArray<B>] => {
@@ -576,6 +576,86 @@ export const unzip = <A, B>(
     fb[i] = abs[i][1]
   }
   return [fa, fb]
+}
+
+/**
+ * @since 1.0.0
+ */
+export const crossWith = <B, A, C>(that: NonEmptyReadonlyArray<B>, f: (a: A, b: B) => C) =>
+  (self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<C> => {
+    const first = head(self)
+    const out: internal.NonEmptyArray<C> = [
+      f(first, head(that)),
+      ...tail(that).map((b) => f(first, b))
+    ]
+
+    const rest = tail(self)
+    if (rest.length === 0) {
+      return out
+    }
+
+    for (let i = 0; i < rest.length; i++) {
+      for (let j = 0; j < that.length; j++) {
+        out.push(f(rest[i], that[j]))
+      }
+    }
+
+    return out
+  }
+
+/**
+ * @since 1.0.0
+ */
+export const cross = <B>(
+  that: NonEmptyReadonlyArray<B>
+): (<A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<readonly [A, B]>) =>
+  crossWith(that, (a, b) => [a, b])
+
+/**
+ * @since 1.0.0
+ */
+export const crossMany = <A>(
+  collection: Iterable<NonEmptyReadonlyArray<A>>
+) =>
+  (self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<NonEmptyReadonlyArray<A>> => {
+    const arrays = Array.from(collection)
+
+    if (arrays.length === 0) {
+      return [self]
+    }
+
+    const first: [A, ...Array<A>] = [head(self)]
+    for (const array of arrays) {
+      first.push(...array)
+    }
+
+    const rest = tail(self)
+    const out: internal.NonEmptyArray<internal.NonEmptyArray<A>> = [first]
+
+    for (let i = 0; i < rest.length; i++) {
+      const inner: [A, ...Array<A>] = [rest[i]]
+      for (const array of arrays) {
+        for (let j = 0; j < array.length; j++) {
+          inner.push(array[j])
+        }
+      }
+      out.push(inner)
+    }
+
+    return out
+  }
+
+/**
+ * @since 1.0.0
+ */
+export const crossAll = <A>(
+  collection: Iterable<NonEmptyReadonlyArray<A>>
+): NonEmptyReadonlyArray<ReadonlyArray<A>> => {
+  const arrays = Array.from(collection)
+  if (arrays.length === 0) {
+    return [[]]
+  }
+  return crossMany(arrays.slice(1))(arrays[0])
 }
 
 /**
@@ -934,8 +1014,8 @@ export const unit: (self: NonEmptyReadonlyArray<unknown>) => NonEmptyReadonlyArr
  */
 export const Semigroupal: semigroupal.Semigroupal<NonEmptyReadonlyArrayTypeLambda> = {
   map,
-  zipWith,
-  zipMany
+  zipWith: crossWith,
+  zipMany: crossMany
 }
 
 /**
@@ -972,7 +1052,7 @@ export const Monoidal: monoidal.Monoidal<NonEmptyReadonlyArrayTypeLambda> = {
   of,
   zipMany: Semigroupal.zipMany,
   zipWith: Semigroupal.zipWith,
-  zipAll
+  zipAll: crossAll
 }
 
 /**

@@ -907,6 +907,23 @@ export const zipWith = <B, A, C>(fb: ReadonlyArray<B>, f: (a: A, b: B) => C) =>
   }
 
 /**
+ * Takes two `ReadonlyArray`s and returns a `ReadonlyArray` of corresponding pairs. If one input `ReadonlyArray` is short, excess elements of the
+ * longer `ReadonlyArray` are discarded.
+ *
+ * @exampleTodo
+ * import { zip } from '@fp-ts/core/data/ReadonlyArray'
+ * import { pipe } from '@fp-ts/core/data/Function'
+ *
+ * assert.deepStrictEqual(pipe([1, 2, 3], zip(['a', 'b', 'c', 'd'])), [[1, 'a'], [2, 'b'], [3, 'c']])
+ *
+ * @since 1.0.0
+ */
+export const zip: <B>(
+  bs: ReadonlyArray<B>
+) => <A>(as: ReadonlyArray<A>) => ReadonlyArray<readonly [A, B]> = (bs) =>
+  zipWith(bs, (a, b) => [a, b])
+
+/**
  * @since 1.0.0
  */
 export const zipMany = <A>(collection: Iterable<ReadonlyArray<A>>) =>
@@ -946,23 +963,6 @@ export const zipAll = <A>(
 }
 
 /**
- * Takes two `ReadonlyArray`s and returns a `ReadonlyArray` of corresponding pairs. If one input `ReadonlyArray` is short, excess elements of the
- * longer `ReadonlyArray` are discarded.
- *
- * @exampleTodo
- * import { zip } from '@fp-ts/core/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/core/data/Function'
- *
- * assert.deepStrictEqual(pipe([1, 2, 3], zip(['a', 'b', 'c', 'd'])), [[1, 'a'], [2, 'b'], [3, 'c']])
- *
- * @since 1.0.0
- */
-export const zip: <B>(
-  bs: ReadonlyArray<B>
-) => <A>(as: ReadonlyArray<A>) => ReadonlyArray<readonly [A, B]> = (bs) =>
-  zipWith(bs, (a, b) => [a, b])
-
-/**
  * This function is the inverse of `zip`. Takes a `ReadonlyArray` of pairs and return two corresponding `ReadonlyArray`s.
  *
  * @exampleTodo
@@ -982,6 +982,71 @@ export const unzip = <A, B>(
     fb[i] = as[i][1]
   }
   return [fa, fb]
+}
+
+/**
+ * @since 1.0.0
+ */
+export const crossWith = <B, A, C>(
+  that: ReadonlyArray<B>,
+  f: (a: A, b: B) => C
+) =>
+  (self: ReadonlyArray<A>): ReadonlyArray<C> => {
+    if (isEmpty(self) || isEmpty(that)) {
+      return empty
+    }
+    const out: Array<C> = []
+    for (let i = 0; i < self.length; i++) {
+      for (let j = 0; j < that.length; j++) {
+        out.push(f(self[i], that[j]))
+      }
+    }
+    return out
+  }
+
+/**
+ * @since 1.0.0
+ */
+export const cross = <B>(
+  fb: ReadonlyArray<B>
+): (<A>(fa: ReadonlyArray<A>) => ReadonlyArray<readonly [A, B]>) => crossWith(fb, (a, b) => [a, b])
+
+/**
+ * @since 1.0.0
+ */
+export const crossMany = <A>(collection: Iterable<ReadonlyArray<A>>) =>
+  (self: ReadonlyArray<A>): ReadonlyArray<readonly [A, ...Array<A>]> => {
+    if (isEmpty(self)) {
+      return empty
+    }
+
+    const arrays = Array.from(collection)
+    const out: Array<[A, ...Array<A>]> = []
+
+    for (let i = 0; i < self.length; i++) {
+      const inner: [A, ...Array<A>] = [self[i]]
+      for (const array of arrays) {
+        for (let j = 0; j < array.length; j++) {
+          inner.push(array[j])
+        }
+      }
+      out.push(inner)
+    }
+
+    return out
+  }
+
+/**
+ * @since 1.0.0
+ */
+export const crossAll = <A>(
+  collection: Iterable<ReadonlyArray<A>>
+): ReadonlyArray<ReadonlyArray<A>> => {
+  const arrays = Array.from(collection)
+  if (isEmpty(arrays)) {
+    return empty
+  }
+  return crossMany(arrays.slice(1))(arrays[0])
 }
 
 /**
@@ -1668,8 +1733,8 @@ export const unit: (self: ReadonlyArray<unknown>) => ReadonlyArray<void> = funct
  */
 export const Semigroupal: semigroupal.Semigroupal<ReadonlyArrayTypeLambda> = {
   map,
-  zipWith,
-  zipMany
+  zipWith: crossWith,
+  zipMany: crossMany
 }
 
 /**
@@ -1705,7 +1770,7 @@ export const Monoidal: monoidal.Monoidal<ReadonlyArrayTypeLambda> = {
   of,
   zipMany: Semigroupal.zipMany,
   zipWith: Semigroupal.zipWith,
-  zipAll
+  zipAll: crossAll
 }
 
 /**

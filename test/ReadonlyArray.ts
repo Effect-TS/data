@@ -1254,7 +1254,7 @@ describe.concurrent("ReadonlyArray", () => {
       [1, 2, 3, 4, 5]
     ]
 
-    const actual = pipe(start, ReadonlyArray.Semigroupal.zipMany(others))
+    const actual = pipe(start, ReadonlyArray.zipMany(others))
     const expected = [[1, 1, 1, 1], [2, 2, 2, 2], [3, 3, 3, 3], [4, 4, 4, 4]]
 
     expect(actual).toStrictEqual(expected)
@@ -1270,6 +1270,39 @@ describe.concurrent("ReadonlyArray", () => {
     const actual = ReadonlyArray.zipAll(arrays)
     const expected = [[1, 1, 1], [2, 2, 2], [3, 3, 3], [4, 4, 4]]
 
+    expect(actual).toStrictEqual(expected)
+  })
+
+  test("crossWith", () => {
+    const self = [1, 2, 3]
+    const that = [2, 3, 4]
+
+    const actual = pipe(self, ReadonlyArray.crossWith(that, (a, b) => a * b))
+    const expected = [2, 3, 4, 4, 6, 8, 6, 9, 12]
+
+    expect(actual).toStrictEqual(expected)
+  })
+
+  test("crossMany", () => {
+    const self = [1, 2, 3]
+    const arrays = [
+      [2],
+      [4, 5],
+      [8, 9, 10]
+    ]
+    const actual = pipe(self, ReadonlyArray.crossMany(arrays))
+    const expected = [[1, 2, 4, 5, 8, 9, 10], [2, 2, 4, 5, 8, 9, 10], [3, 2, 4, 5, 8, 9, 10]]
+    expect(actual).toStrictEqual(expected)
+  })
+
+  test("crossAll", () => {
+    const arrays = [
+      [2, 3],
+      [4, 5],
+      [8, 9, 10]
+    ]
+    const actual = ReadonlyArray.crossAll(arrays)
+    const expected = [[2, 4, 5, 8, 9, 10], [3, 4, 5, 8, 9, 10]]
     expect(actual).toStrictEqual(expected)
   })
 })

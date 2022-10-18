@@ -850,4 +850,25 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
 
     expect(actual).toStrictEqual(expected)
   })
+
+  test("crossWith", () => {
+    const self = NonEmptyReadonlyArray.make(1, 2, 3)
+    const that = NonEmptyReadonlyArray.make(2, 3, 4)
+
+    const actual = pipe(self, NonEmptyReadonlyArray.crossWith(that, (a, b) => a * b))
+    const expected = [2, 3, 4, 4, 6, 8, 6, 9, 12]
+
+    expect(actual).toStrictEqual(expected)
+  })
+
+  test("crossAll", () => {
+    const arrays: ReadonlyArray<NonEmptyReadonlyArray.NonEmptyReadonlyArray<number>> = [
+      [2, 3],
+      [4, 5],
+      [8, 9, 10]
+    ]
+    const actual = NonEmptyReadonlyArray.crossAll(arrays)
+    const expected = [[2, 4, 5, 8, 9, 10], [3, 4, 5, 8, 9, 10]]
+    expect(actual).toStrictEqual(expected)
+  })
 })
