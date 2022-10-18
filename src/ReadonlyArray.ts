@@ -907,6 +907,45 @@ export const zipWith = <B, A, C>(fb: ReadonlyArray<B>, f: (a: A, b: B) => C) =>
   }
 
 /**
+ * @since 1.0.0
+ */
+export const zipMany = <A>(collection: Iterable<ReadonlyArray<A>>) =>
+  (self: ReadonlyArray<A>): ReadonlyArray<readonly [A, ...Array<A>]> => {
+    if (self.length === 0) {
+      return []
+    }
+
+    const arrays = Array.from(collection)
+    const out: Array<[A, ...Array<A>]> = []
+
+    for (let i = 0; i < self.length; i++) {
+      const inner: [A, ...Array<A>] = [self[i]]
+      for (const array of arrays) {
+        if (i > array.length - 1) {
+          return out
+        }
+        inner.push(array[i])
+      }
+      out.push(inner)
+    }
+
+    return out
+  }
+
+/**
+ * @since 1.0.0
+ */
+export const zipAll = <A>(
+  collection: Iterable<ReadonlyArray<A>>
+): ReadonlyArray<ReadonlyArray<A>> => {
+  const arrays = Array.from(collection)
+  if (arrays.length === 0) {
+    return []
+  }
+  return zipMany(arrays.slice(1))(arrays[0])
+}
+
+/**
  * Takes two `ReadonlyArray`s and returns a `ReadonlyArray` of corresponding pairs. If one input `ReadonlyArray` is short, excess elements of the
  * longer `ReadonlyArray` are discarded.
  *
@@ -1630,14 +1669,7 @@ export const unit: (self: ReadonlyArray<unknown>) => ReadonlyArray<void> = funct
 export const Semigroupal: semigroupal.Semigroupal<ReadonlyArrayTypeLambda> = {
   map,
   zipWith,
-  zipMany: <A>(others: Iterable<ReadonlyArray<A>>) =>
-    (start: ReadonlyArray<A>): ReadonlyArray<[A, ...Array<A>]> => {
-      let c: ReadonlyArray<[A, ...Array<A>]> = pipe(start, map((a) => [a]))
-      for (const o of others) {
-        c = pipe(c, zipWith(o, (a, b) => [...a, b]))
-      }
-      return c
-    }
+  zipMany
 }
 
 /**
@@ -1673,13 +1705,7 @@ export const Monoidal: monoidal.Monoidal<ReadonlyArrayTypeLambda> = {
   of,
   zipMany: Semigroupal.zipMany,
   zipWith: Semigroupal.zipWith,
-  zipAll: <A>(collection: Iterable<ReadonlyArray<A>>): ReadonlyArray<ReadonlyArray<A>> => {
-    let c: ReadonlyArray<ReadonlyArray<A>> = [[], ...[]]
-    for (const o of collection) {
-      c = pipe(c, zipWith(o, (a, b) => [...a, b]))
-    }
-    return c
-  }
+  zipAll
 }
 
 /**

@@ -1245,4 +1245,31 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(pipe(ReadonlyArray.empty, f), "empty")
     deepStrictEqual(pipe([1, 2, 3], f), "nonEmpty 3")
   })
+
+  test("zipMany", () => {
+    const start = [1, 2, 3, 4, 5]
+    const others = [
+      [1, 2, 3, 4, 5, 6],
+      [1, 2, 3, 4],
+      [1, 2, 3, 4, 5]
+    ]
+
+    const actual = pipe(start, ReadonlyArray.Semigroupal.zipMany(others))
+    const expected = [[1, 1, 1, 1], [2, 2, 2, 2], [3, 3, 3, 3], [4, 4, 4, 4]]
+
+    expect(actual).toStrictEqual(expected)
+  })
+
+  test("zipAll", () => {
+    const arrays = [
+      [1, 2, 3, 4, 5, 6],
+      [1, 2, 3, 4],
+      [1, 2, 3, 4, 5]
+    ]
+
+    const actual = ReadonlyArray.zipAll(arrays)
+    const expected = [[1, 1, 1], [2, 2, 2], [3, 3, 3], [4, 4, 4]]
+
+    expect(actual).toStrictEqual(expected)
+  })
 })

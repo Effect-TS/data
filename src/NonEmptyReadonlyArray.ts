@@ -508,6 +508,54 @@ export const zipWith = <B, A, C>(bs: NonEmptyReadonlyArray<B>, f: (a: A, b: B) =
 /**
  * @since 1.0.0
  */
+export const zipMany = <A>(
+  collection: Iterable<readonly [A, ...Array<A>]>
+) =>
+  (self: readonly [A, ...Array<A>]): NonEmptyReadonlyArray<readonly [A, ...ReadonlyArray<A>]> => {
+    const arrays = Array.from(collection)
+
+    if (arrays.length === 0) {
+      return [self]
+    }
+
+    const first: [A, ...Array<A>] = [head(self)]
+    for (const array of arrays) {
+      first.push(array[0])
+    }
+
+    const rest = tail(self)
+    const out: [[A, ...Array<A>], ...Array<[A, ...Array<A>]>] = [first]
+
+    for (let i = 0; i < rest.length; i++) {
+      const inner: [A, ...Array<A>] = [rest[i]]
+      for (const array of arrays) {
+        if (i > array.length - 2) {
+          return out
+        }
+        inner.push(rest[i])
+      }
+      out.push(inner)
+    }
+
+    return out
+  }
+
+/**
+ * @since 1.0.0
+ */
+export const zipAll = <A>(
+  collection: Iterable<NonEmptyReadonlyArray<A>>
+): NonEmptyReadonlyArray<ReadonlyArray<A>> => {
+  const arrays = Array.from(collection)
+  if (arrays.length === 0) {
+    return [[]]
+  }
+  return zipMany(arrays.slice(1))(arrays[0])
+}
+
+/**
+ * @since 1.0.0
+ */
 export const zip = <B>(bs: NonEmptyReadonlyArray<B>) =>
   <A>(as: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<readonly [A, B]> =>
     pipe(
@@ -887,16 +935,7 @@ export const unit: (self: NonEmptyReadonlyArray<unknown>) => NonEmptyReadonlyArr
 export const Semigroupal: semigroupal.Semigroupal<NonEmptyReadonlyArrayTypeLambda> = {
   map,
   zipWith,
-  zipMany: <A>(
-    others: Iterable<readonly [A, ...Array<A>]>
-  ) =>
-    (start: readonly [A, ...Array<A>]): readonly [[A, ...Array<A>], ...Array<[A, ...Array<A>]>] => {
-      let c: readonly [[A, ...Array<A>], ...Array<[A, ...Array<A>]>] = pipe(start, map((a) => [a]))
-      for (const o of others) {
-        c = pipe(c, zipWith(o, (a, b) => [...a, b]))
-      }
-      return c
-    }
+  zipMany
 }
 
 /**
@@ -933,15 +972,7 @@ export const Monoidal: monoidal.Monoidal<NonEmptyReadonlyArrayTypeLambda> = {
   of,
   zipMany: Semigroupal.zipMany,
   zipWith: Semigroupal.zipWith,
-  zipAll: <A>(
-    all: Iterable<readonly [A, ...Array<A>]>
-  ): readonly [ReadonlyArray<A>, ...Array<ReadonlyArray<A>>] => {
-    let c: readonly [ReadonlyArray<A>, ...Array<ReadonlyArray<A>>] = [[], ...[]]
-    for (const o of all) {
-      c = pipe(c, zipWith(o, (a, b) => [...a, b]))
-    }
-    return c
-  }
+  zipAll
 }
 
 /**
