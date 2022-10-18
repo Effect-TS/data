@@ -823,4 +823,31 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
     deepStrictEqual(NonEmptyReadonlyArray.concat([])(["a"]), ["a"])
     deepStrictEqual(NonEmptyReadonlyArray.concat(["b"])([]), ["b"])
   })
+
+  test("zipMany", () => {
+    const start = NonEmptyReadonlyArray.make(1, 2, 3, 4, 5)
+    const others = [
+      NonEmptyReadonlyArray.make(1, 2, 3, 4, 5, 6),
+      NonEmptyReadonlyArray.make(1, 2, 3, 4),
+      NonEmptyReadonlyArray.make(1, 2, 3, 4, 5)
+    ]
+
+    const actual = pipe(start, NonEmptyReadonlyArray.zipMany(others))
+    const expected = [[1, 1, 1, 1], [2, 2, 2, 2], [3, 3, 3, 3], [4, 4, 4, 4]]
+
+    expect(actual).toStrictEqual(expected)
+  })
+
+  test("zipAll", () => {
+    const arrays = [
+      NonEmptyReadonlyArray.make(1, 2, 3, 4, 5, 6),
+      NonEmptyReadonlyArray.make(1, 2, 3, 4),
+      NonEmptyReadonlyArray.make(1, 2, 3, 4, 5)
+    ]
+
+    const actual = NonEmptyReadonlyArray.zipAll(arrays)
+    const expected = [[1, 1, 1], [2, 2, 2], [3, 3, 3], [4, 4, 4]]
+
+    expect(actual).toStrictEqual(expected)
+  })
 })
