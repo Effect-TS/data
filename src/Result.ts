@@ -132,9 +132,9 @@ export const succeed: <A>(a: A) => Result<never, A> = internal.succeed
  * Takes two functions and an `Result` value, if the value is a `Failure` the inner value is applied to the first function,
  * if the value is a `Success` the inner value is applied to the second function.
  *
- * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import * as E from '@fp-ts/data/Result'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * const onError  = (errors: ReadonlyArray<string>): string => `Errors: ${errors.join(', ')}`
  *
@@ -164,9 +164,9 @@ export const match = <E, B, A, C = B>(onError: (e: E) => B, onSuccess: (a: A) =>
 /**
  * Returns the wrapped value if it's a `Success` or a default value if is a `Failure`.
  *
- * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import * as E from '@fp-ts/data/Result'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(
  *   pipe(
@@ -193,8 +193,8 @@ export const getOrElse = <B>(onError: B) =>
  * Takes a lazy default and a nullable value, if the value is not nully, turn it into a `Success`, if the value is nully use
  * the provided default as a `Failure`.
  *
- * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
+ * @example
+ * import * as E from '@fp-ts/data/Result'
  *
  * const parse = E.fromNullable('nully')
  *
@@ -232,9 +232,9 @@ export const flatMapNullable = <A, B, E2>(
 /**
  * Constructs a new `Result` from a function that might throw.
  *
- * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
- * import { identity } from '@fp-ts/core/data/Function'
+ * @example
+ * import * as E from '@fp-ts/data/Result'
+ * import { identity } from '@fp-ts/data/Function'
  *
  * const unsafeHead = <A>(as: ReadonlyArray<A>): A => {
  *   if (as.length > 0) {
@@ -322,9 +322,9 @@ export const mapBoth: <E, G, A, B>(
  * | succeed(1) | fail(b)    | succeed(1)        |
  * | succeed(1) | succeed(2) | succeed(1)        |
  *
- * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import * as E from '@fp-ts/data/Result'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(
  *   pipe(
@@ -377,11 +377,11 @@ export const duplicate: <E, A>(ma: Result<E, A>) => Result<E, Result<E, A>> = ex
 /**
  * Map each element of a structure to an action, evaluate these actions from left to right, and collect the results.
  *
- * @exampleTodo
- * import { pipe } from '@fp-ts/core/data/Function'
- * import * as RA from '@fp-ts/core/data/ReadonlyArray'
- * import * as E from '@fp-ts/core/data/Result'
- * import * as O from '@fp-ts/core/data/Option'
+ * @example
+ * import { pipe } from '@fp-ts/data/Function'
+ * import * as RA from '@fp-ts/data/ReadonlyArray'
+ * import * as E from '@fp-ts/data/Result'
+ * import * as O from '@fp-ts/data/Option'
  *
  * assert.deepStrictEqual(
  *   pipe(E.succeed(['a']), E.traverse(O.Monoidal)(RA.head)),
@@ -405,10 +405,10 @@ export const traverse = <F extends TypeLambda>(Monoidal: monoidal.Monoidal<F>) =
  * Semigroup returning the left-most non-`Failure` value. If both operands are `Success`es then the inner values are
  * combined using the provided `Semigroup`.
  *
- * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
- * import * as N from '@fp-ts/core/data/number'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import * as E from '@fp-ts/data/Result'
+ * import * as N from '@fp-ts/data/number'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * const S = E.getSemigroup(N.SemigroupSum)<string>()
  * assert.deepStrictEqual(pipe(E.fail('a'), S.combine(E.fail('b'))), E.fail('a'))
@@ -606,8 +606,8 @@ export const flatMap: <A, E2, B>(
 /**
  * The `flatten` function is the conventional monad join operator. It is used to remove one level of monadic structure, projecting its bound argument into the outer level.
  *
- * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
+ * @example
+ * import * as E from '@fp-ts/data/Result'
  *
  * assert.deepStrictEqual(E.flatten(E.succeed(E.succeed('a'))), E.succeed('a'))
  * assert.deepStrictEqual(E.flatten(E.succeed(E.fail('e'))), E.fail('e'))
@@ -745,12 +745,12 @@ export const Monoidal: monoidal.Monoidal<ResultTypeLambda> = {
  * The default [`Monoidal`](#monoidal) instance returns the first error, if you want to
  * get all errors you need to provide a way to combine them via a `Semigroup`.
  *
- * @exampleTodo
- * import * as A from '@fp-ts/core/typeclasses/Semigroupal'
- * import * as E from '@fp-ts/core/data/Result'
- * import { pipe } from '@fp-ts/core/data/Function'
- * import * as S from '@fp-ts/core/typeclasses/Semigroup'
- * import * as string from '@fp-ts/core/data/string'
+ * @example
+ * import * as A from '@fp-ts/core/Semigroupal'
+ * import * as E from '@fp-ts/data/Result'
+ * import { pipe } from '@fp-ts/data/Function'
+ * import * as S from '@fp-ts/core/Semigroup'
+ * import * as string from '@fp-ts/data/string'
  *
  * const parseString = (u: unknown): E.Result<string, string> =>
  *   typeof u === 'string' ? E.succeed(u) : E.fail('not a string')
@@ -962,10 +962,10 @@ export const FromResult: fromResult_.FromResult<ResultTypeLambda> = {
 }
 
 /**
- * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
- * import { pipe } from '@fp-ts/core/data/Function'
- * import * as O from '@fp-ts/core/data/Option'
+ * @example
+ * import * as E from '@fp-ts/data/Result'
+ * import { pipe } from '@fp-ts/data/Function'
+ * import * as O from '@fp-ts/data/Option'
  *
  * assert.deepStrictEqual(
  *   pipe(
@@ -991,9 +991,9 @@ export const fromOption: <E>(onNone: E) => <A>(fa: Option<A>) => Result<E, A> =
 /**
  * Converts a `Result` to an `Option` discarding the success.
  *
- * @exampleTodo
- * import * as O from '@fp-ts/core/data/Option'
- * import * as R from '@fp-ts/core/data/Result'
+ * @example
+ * import * as O from '@fp-ts/data/Option'
+ * import * as R from '@fp-ts/data/Result'
  *
  * assert.deepStrictEqual(R.getFailure(R.succeed('ok')), O.none)
  * assert.deepStrictEqual(R.getFailure(R.fail('err')), O.some('err'))
@@ -1006,9 +1006,9 @@ export const getFailure: <E, A>(self: Result<E, A>) => Option<E> = internal.getF
 /**
  * Converts a `Result` to an `Option` discarding the error.
  *
- * @exampleTodo
- * import * as O from '@fp-ts/core/data/Option'
- * import * as R from '@fp-ts/core/data/Result'
+ * @example
+ * import * as O from '@fp-ts/data/Option'
+ * import * as R from '@fp-ts/data/Result'
  *
  * assert.deepStrictEqual(R.getSuccess(R.succeed('ok')), O.some('ok'))
  * assert.deepStrictEqual(R.getSuccess(R.fail('err')), O.none)
@@ -1031,9 +1031,9 @@ export const toNull: <E, A>(self: Result<E, A>) => A | null = getOrElse(null)
 export const toUndefined: <E, A>(self: Result<E, A>) => A | undefined = getOrElse(undefined)
 
 /**
- * @exampleTodo
- * import { liftPredicate, fail, succeed } from '@fp-ts/core/data/Result'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import { liftPredicate, fail, succeed } from '@fp-ts/data/Result'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(
  *   pipe(
@@ -1071,9 +1071,9 @@ export const liftOption: <A extends ReadonlyArray<unknown>, B, E>(
 ) => (...a: A) => Result<E, B> = fromResult_.liftOption(FromResult)
 
 /**
- * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import * as E from '@fp-ts/data/Result'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(
  *   pipe(
@@ -1167,8 +1167,8 @@ export const elem = <B>(a: B) =>
 /**
  * Returns `false` if `Failure` or returns the result of the application of the given predicate to the `Success` value.
  *
- * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
+ * @example
+ * import * as E from '@fp-ts/data/Result'
  *
  * const f = E.exists((n: number) => n > 2)
  *
