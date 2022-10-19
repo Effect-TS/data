@@ -80,8 +80,8 @@ export interface OptionTypeLambda extends TypeLambda {
 /**
  * Returns `true` if the option is `None`, `false` otherwise.
  *
- * @exampleTodo
- * import { some, none, isNone } from '@fp-ts/core/data/Option'
+ * @example
+ * import { some, none, isNone } from '@fp-ts/data/Option'
  *
  * assert.strictEqual(isNone(some(1)), false)
  * assert.strictEqual(isNone(none), true)
@@ -94,8 +94,8 @@ export const isNone: (fa: Option<unknown>) => fa is None = internal.isNone
 /**
  * Returns `true` if the option is an instance of `Some`, `false` otherwise.
  *
- * @exampleTodo
- * import { some, none, isSome } from '@fp-ts/core/data/Option'
+ * @example
+ * import { some, none, isSome } from '@fp-ts/data/Option'
  *
  * assert.strictEqual(isSome(some(1)), true)
  * assert.strictEqual(isSome(none), false)
@@ -135,9 +135,9 @@ export const fromIterable = <A>(collection: Iterable<A>): Option<A> => {
 /**
  * Converts a `Result` to an `Option` discarding the error.
  *
- * @exampleTodo
- * import * as O from '@fp-ts/core/data/Option'
- * import * as R from '@fp-ts/core/data/Result'
+ * @example
+ * import * as O from '@fp-ts/data/Option'
+ * import * as R from '@fp-ts/data/Result'
  *
  * assert.deepStrictEqual(O.fromResult(R.succeed(1)), O.some(1))
  * assert.deepStrictEqual(O.fromResult(R.fail('a')), O.none)
@@ -158,9 +158,9 @@ export const toResult: <E>(onNone: E) => <A>(self: Option<A>) => Result<E, A> =
  * Takes a (lazy) default value, a function, and an `Option` value, if the `Option` value is `None` the default value is
  * returned, otherwise the function is applied to the value inside the `Some` and the result is returned.
  *
- * @exampleTodo
- * import { some, none, match } from '@fp-ts/core/data/Option'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import { some, none, match } from '@fp-ts/data/Option'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.strictEqual(
  *   pipe(
@@ -187,9 +187,9 @@ export const match = <B, A, C = B>(onNone: LazyArg<B>, onSome: (a: A) => C) =>
 /**
  * Extracts the value out of the structure, if it exists. Otherwise returns the given default value
  *
- * @exampleTodo
- * import { some, none, getOrElse } from '@fp-ts/core/data/Option'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import { some, none, getOrElse } from '@fp-ts/data/Option'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.strictEqual(
  *   pipe(
@@ -216,8 +216,8 @@ export const getOrElse = <B>(onNone: B) =>
  * Converts an exception into an `Option`. If `f` throws, returns `None`, otherwise returns the output wrapped in a
  * `Some`.
  *
- * @exampleTodo
- * import { none, some, fromThrowable } from '@fp-ts/core/data/Option'
+ * @example
+ * import { none, some, fromThrowable } from '@fp-ts/data/Option'
  *
  * assert.deepStrictEqual(
  *   fromThrowable(() => {
@@ -253,8 +253,8 @@ export const liftThrowable = <A extends ReadonlyArray<unknown>, B>(
  * Constructs a new `Option` from a nullable type. If the value is `null` or `undefined`, returns `None`, otherwise
  * returns the value wrapped in a `Some`.
  *
- * @exampleTodo
- * import { none, some, fromNullable } from '@fp-ts/core/data/Option'
+ * @example
+ * import { none, some, fromNullable } from '@fp-ts/data/Option'
  *
  * assert.deepStrictEqual(fromNullable(undefined), none)
  * assert.deepStrictEqual(fromNullable(null), none)
@@ -268,8 +268,8 @@ export const fromNullable: <A>(a: A) => Option<NonNullable<A>> = internal.fromNu
 /**
  * Returns a *smart constructor* from a function that returns a nullable value.
  *
- * @exampleTodo
- * import { liftNullable, none, some } from '@fp-ts/core/data/Option'
+ * @example
+ * import { liftNullable, none, some } from '@fp-ts/data/Option'
  *
  * const f = (s: string): number | undefined => {
  *   const n = parseFloat(s)
@@ -291,9 +291,9 @@ export const liftNullable = <A extends ReadonlyArray<unknown>, B>(
 /**
  * This is `flatMap` + `fromNullable`, useful when working with optional values.
  *
- * @exampleTodo
- * import { some, none, fromNullable, flatMapNullable } from '@fp-ts/core/data/Option'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import { some, none, fromNullable, flatMapNullable } from '@fp-ts/data/Option'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * interface Employee {
  *   company?: {
@@ -338,9 +338,9 @@ export const flatMapNullable = <A, B>(f: (a: A) => B | null | undefined) =>
 /**
  * Extracts the value out of the structure, if it exists. Otherwise returns `null`.
  *
- * @exampleTodo
- * import { some, none, toNull } from '@fp-ts/core/data/Option'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import { some, none, toNull } from '@fp-ts/data/Option'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.strictEqual(
  *   pipe(
@@ -365,9 +365,9 @@ export const toNull: <A>(self: Option<A>) => A | null = getOrElse(null)
 /**
  * Extracts the value out of the structure, if it exists. Otherwise returns `undefined`.
  *
- * @exampleTodo
- * import { some, none, toUndefined } from '@fp-ts/core/data/Option'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import { some, none, toUndefined } from '@fp-ts/data/Option'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.strictEqual(
  *   pipe(
@@ -474,9 +474,9 @@ export const catchAll = <B>(that: LazyArg<Option<B>>) =>
  * | none    | some(b) | some(b)           |
  * | some(a) | some(b) | some(a)           |
  *
- * @exampleTodo
- * import * as O from '@fp-ts/core/data/Option'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import * as O from '@fp-ts/data/Option'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(
  *   pipe(
@@ -576,10 +576,10 @@ export const traverse: <F extends TypeLambda>(
  *
  * `None` is considered to be less than any `Some` value.
  *
- * @exampleTodo
- * import { none, some, liftSortable } from '@fp-ts/core/data/Option'
- * import * as N from '@fp-ts/core/data/number'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import { none, some, liftSortable } from '@fp-ts/data/Option'
+ * import * as N from '@fp-ts/data/number'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * const O = liftSortable(N.Sortable)
  * assert.strictEqual(pipe(none, O.compare(none)), 0)
@@ -607,10 +607,10 @@ export const liftSortable = <A>(O: sortable.Sortable<A>): sortable.Sortable<Opti
  * | none    | some(a) | some(a)             |
  * | some(a) | some(b) | some(combine(b)(a)) |
  *
- * @exampleTodo
- * import { getMonoid, some, none } from '@fp-ts/core/data/Option'
- * import * as N from '@fp-ts/core/data/number'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import { getMonoid, some, none } from '@fp-ts/data/Option'
+ * import * as N from '@fp-ts/data/number'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * const M = getMonoid(N.SemigroupSum)
  * assert.deepStrictEqual(pipe(none, M.combine(none)), none)
@@ -935,8 +935,8 @@ export const FromOption: fromOption_.FromOption<OptionTypeLambda> = {
 /**
  * Returns a *smart constructor* based on the given predicate.
  *
- * @exampleTodo
- * import * as O from '@fp-ts/core/data/Option'
+ * @example
+ * import * as O from '@fp-ts/data/Option'
  *
  * const getOption = O.liftPredicate((n: number) => n >= 0)
  *
@@ -977,14 +977,13 @@ export const flatMapResult: <A, E, B>(f: (a: A) => Result<E, B>) => (ma: Option<
 /**
  * Tests whether a value is a member of a `Option`.
  *
- * @exampleTodo
- * import * as O from '@fp-ts/core/data/Option'
- * import * as N from '@fp-ts/core/data/number'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import * as O from '@fp-ts/data/Option'
+ * import { pipe } from '@fp-ts/data/Function'
  *
- * assert.strictEqual(pipe(O.some(1), O.elem(N.Eq)(1)), true)
- * assert.strictEqual(pipe(O.some(1), O.elem(N.Eq)(2)), false)
- * assert.strictEqual(pipe(O.none, O.elem(N.Eq)(1)), false)
+ * assert.strictEqual(pipe(O.some(1), O.elem(1)), true)
+ * assert.strictEqual(pipe(O.some(1), O.elem(2)), false)
+ * assert.strictEqual(pipe(O.none, O.elem(1)), false)
  *
  * @since 1.0.0
  */
@@ -994,9 +993,9 @@ export const elem = <A>(a: A) =>
 /**
  * Returns `true` if the predicate is satisfied by the wrapped value
  *
- * @exampleTodo
- * import { some, none, exists } from '@fp-ts/core/data/Option'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import { some, none, exists } from '@fp-ts/data/Option'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.strictEqual(
  *   pipe(
