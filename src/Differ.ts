@@ -9,11 +9,11 @@ import type { ContextPatch } from "@fp-ts/data/Differ/ContextPatch"
 import type { HashMapPatch } from "@fp-ts/data/Differ/HashMapPatch"
 import type { HashSetPatch } from "@fp-ts/data/Differ/HashSetPatch"
 import type { OrPatch } from "@fp-ts/data/Differ/OrPatch"
+import type { Either } from "@fp-ts/data/Either"
 import type { Equal } from "@fp-ts/data/Equal"
 import type { HashMap } from "@fp-ts/data/HashMap"
 import type { HashSet } from "@fp-ts/data/HashSet"
 import * as D from "@fp-ts/data/internal/Differ"
-import type { Result } from "@fp-ts/data/Result"
 
 const TypeId: unique symbol = D.DifferTypeId as TypeId
 
@@ -189,7 +189,7 @@ export const orElseResult: <Value2, Patch2>(
   that: Differ<Value2, Patch2>
 ) => <Value, Patch>(
   self: Differ<Value, Patch>
-) => Differ<Result<Value, Value2>, OrPatch<Value, Value2, Patch, Patch2>> = D.orElseResult
+) => Differ<Either<Value, Value2>, OrPatch<Value, Value2, Patch, Patch2>> = D.orElseResult
 
 /**
  * Transforms the type of values that this differ knows how to differ using

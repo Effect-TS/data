@@ -3,6 +3,7 @@
  */
 
 import type { Sortable } from "@fp-ts/core/Sortable"
+import type { Either } from "@fp-ts/data/Either"
 import * as Equal from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
 import * as MRef from "@fp-ts/data/mutable/MutableRef"
@@ -11,7 +12,6 @@ import * as O from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import * as RA from "@fp-ts/data/ReadonlyArray"
 import type { Refinement } from "@fp-ts/data/Refinement"
-import type { Result } from "@fp-ts/data/Result"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/Chunk") as TypeId
 
@@ -1087,7 +1087,7 @@ export const partition: {
  * @since 1.0.0
  */
 export const partitionMap = <A, B, C>(
-  f: (a: A) => Result<B, C>
+  f: (a: A) => Either<B, C>
 ) =>
   (fa: Chunk<A>): readonly [Chunk<B>, Chunk<C>] =>
     pipe(
@@ -1103,7 +1103,7 @@ export const partitionMap = <A, B, C>(
  * @category filtering
  * @since 1.0.0
  */
-export const separate = <A, B>(fa: Chunk<Result<A, B>>): readonly [Chunk<A>, Chunk<B>] =>
+export const separate = <A, B>(fa: Chunk<Either<A, B>>): readonly [Chunk<A>, Chunk<B>] =>
   pipe(
     fa,
     toArray,

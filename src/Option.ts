@@ -24,18 +24,18 @@ import type * as semigroup from "@fp-ts/core/Semigroup"
 import * as semigroupal from "@fp-ts/core/Semigroupal"
 import * as sortable from "@fp-ts/core/Sortable"
 import * as traversable from "@fp-ts/core/Traversable"
+import type { Either } from "@fp-ts/data/Either"
 import { equals } from "@fp-ts/data/Equal"
 import type { LazyArg } from "@fp-ts/data/Function"
 import { flow, identity, pipe, SK } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
+import * as either from "@fp-ts/data/internal/Either"
 import type { NonEmptyReadonlyArray } from "@fp-ts/data/NonEmptyReadonlyArray"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
-import type { Result } from "@fp-ts/data/Result"
 import type * as compactable from "@fp-ts/data/typeclasses/Compactable"
 import * as filterable from "@fp-ts/data/typeclasses/Filterable"
 import * as fromOption_ from "@fp-ts/data/typeclasses/FromOption"
-import * as fromResult_ from "@fp-ts/data/typeclasses/FromResult"
 import * as traversableFilterable from "@fp-ts/data/typeclasses/TraversableFilterable"
 
 /**
@@ -133,26 +133,25 @@ export const fromIterable = <A>(collection: Iterable<A>): Option<A> => {
 }
 
 /**
- * Converts a `Result` to an `Option` discarding the error.
+ * Converts a `Either` to an `Option` discarding the error.
  *
  * @example
  * import * as O from '@fp-ts/data/Option'
  * import * as R from '@fp-ts/data/Result'
  *
- * assert.deepStrictEqual(O.fromResult(R.succeed(1)), O.some(1))
- * assert.deepStrictEqual(O.fromResult(R.fail('a')), O.none)
+ * assert.deepStrictEqual(O.fromEither(R.succeed(1)), O.some(1))
+ * assert.deepStrictEqual(O.fromEither(R.fail('a')), O.none)
  *
  * @category conversions
  * @since 1.0.0
  */
-export const fromResult: <E, A>(self: Result<E, A>) => Option<A> = internal.getSuccess
+export const fromEither: <E, A>(self: Either<E, A>) => Option<A> = either.getRight
 
 /**
  * @category conversions
  * @since 1.0.0
  */
-export const toResult: <E>(onNone: E) => <A>(self: Option<A>) => Result<E, A> =
-  internal.fromOptionToResult
+export const toEither: <E>(onNone: E) => <A>(self: Option<A>) => Either<E, A> = either.fromOption
 
 /**
  * Takes a (lazy) default value, a function, and an `Option` value, if the `Option` value is `None` the default value is
@@ -536,8 +535,8 @@ const defaultSeparated = [none, none] as const
  * @category filtering
  * @since 1.0.0
  */
-export const separate: <A, B>(fe: Option<Result<A, B>>) => readonly [Option<A>, Option<B>] = (ma) =>
-  isNone(ma) ? defaultSeparated : [internal.getFailure(ma.value), fromResult(ma.value)]
+export const separate: <A, B>(fe: Option<Either<A, B>>) => readonly [Option<A>, Option<B>] = (ma) =>
+  isNone(ma) ? defaultSeparated : [either.getLeft(ma.value), fromEither(ma.value)]
 
 /**
  * @category filtering
@@ -551,7 +550,7 @@ export const filterMap: <A, B>(f: (a: A) => Option<B>) => (fa: Option<A>) => Opt
  * @since 1.0.0
  */
 export const partitionMap: <A, B, C>(
-  f: (a: A) => Result<B, C>
+  f: (a: A) => Either<B, C>
 ) => (fa: Option<A>) => readonly [Option<B>, Option<C>] = (f) => flow(map(f), separate)
 
 /**
@@ -753,7 +752,7 @@ export const Monoidal: monoidal.Monoidal<OptionTypeLambda> = {
       }
       res.push(o.value)
     }
-    return res.length > 0 ? some(res) : none
+    return some(res)
   }
 }
 
@@ -886,7 +885,7 @@ export const traverseFilterMap: <F extends TypeLambda>(
 export const traversePartitionMap: <F extends TypeLambda>(
   F: monoidal.Monoidal<F>
 ) => <A, S, R, O, E, B, C>(
-  f: (a: A) => Kind<F, S, R, O, E, Result<B, C>>
+  f: (a: A) => Kind<F, S, R, O, E, Either<B, C>>
 ) => (wa: Option<A>) => Kind<F, S, R, O, E, readonly [Option<B>, Option<C>]> = traversableFilterable
   .traversePartitionMap(Traversable, Functor, Compactable)
 
@@ -952,27 +951,19 @@ export const liftPredicate: {
 } = fromOption_.liftPredicate(FromOption)
 
 /**
- * @category instances
- * @since 1.0.0
- */
-export const FromResult: fromResult_.FromResult<OptionTypeLambda> = {
-  fromResult
-}
-
-/**
  * @category lifting
  * @since 1.0.0
  */
-export const liftResult: <A extends ReadonlyArray<unknown>, E, B>(
-  f: (...a: A) => Result<E, B>
-) => (...a: A) => Option<B> = fromResult_.liftResult(FromResult)
+export const liftEither = <A extends ReadonlyArray<unknown>, E, B>(
+  f: (...a: A) => Either<E, B>
+) => (...a: A): Option<B> => fromEither(f(...a))
 
 /**
  * @category sequencing
  * @since 1.0.0
  */
-export const flatMapResult: <A, E, B>(f: (a: A) => Result<E, B>) => (ma: Option<A>) => Option<B> =
-  fromResult_.flatMapResult(FromResult, FlatMap)
+export const flatMapEither = <A, E, B>(f: (a: A) => Either<E, B>) =>
+  (self: Option<A>): Option<B> => pipe(self, flatMap(liftEither(f)))
 
 /**
  * Tests whether a value is a member of a `Option`.

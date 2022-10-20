@@ -1,7 +1,7 @@
+import * as Either from "@fp-ts/data/Either"
 import { pipe } from "@fp-ts/data/Function"
 import * as Option from "@fp-ts/data/Option"
 import * as ReadonlyArray from "@fp-ts/data/ReadonlyArray"
-import * as Result from "@fp-ts/data/Result"
 import { deepStrictEqual } from "@fp-ts/data/test/util"
 import * as TraversableFilterable from "@fp-ts/data/typeclasses/TraversableFilterable"
 
@@ -38,7 +38,7 @@ describe.concurrent("TraversableFilterable", () => {
       pipe(
         ["a", "bb", "ccc", "dddd"],
         traversePartitionMap((n) =>
-          n.length < 3 ? Option.some(Result.fail(n)) : Option.some(Result.succeed(n.length))
+          n.length < 3 ? Option.some(Either.left(n)) : Option.some(Either.right(n.length))
         )
       ),
       Option.some([["a", "bb"], [3, 4]] as const)
@@ -77,28 +77,28 @@ describe.concurrent("TraversableFilterable", () => {
     const traverseFilterMap = TraversableFilterable.traverseFilterMap(
       ReadonlyArray.Traversable,
       ReadonlyArray.Compactable
-    )(Result.Monoidal)
+    )(Either.Monoidal)
 
     deepStrictEqual(
       pipe(
         [1, 2, 3, 4],
-        traverseFilterMap((_) => Result.succeed(Option.none))
+        traverseFilterMap((_) => Either.right(Option.none))
       ),
-      Result.succeed([])
+      Either.right([])
     )
     deepStrictEqual(
       pipe(
         [1, 2, 3, 4],
-        traverseFilterMap((n) => Result.succeed(Option.some(n)))
+        traverseFilterMap((n) => Either.right(Option.some(n)))
       ),
-      Result.succeed([1, 2, 3, 4])
+      Either.right([1, 2, 3, 4])
     )
     deepStrictEqual(
       pipe(
         [1, 2, 3, 4],
-        traverseFilterMap((n) => Result.fail(n))
+        traverseFilterMap((n) => Either.left(n))
       ),
-      Result.fail(1)
+      Either.left(1)
     )
   })
 })

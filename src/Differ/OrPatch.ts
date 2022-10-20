@@ -3,8 +3,8 @@
  */
 
 import type { Differ } from "@fp-ts/data/Differ"
+import type { Either } from "@fp-ts/data/Either"
 import * as OP from "@fp-ts/data/internal/Differ/OrPatch"
-import type { Result } from "@fp-ts/data/Result"
 
 const TypeId: unique symbol = OP.OrPatchTypeId as TypeId
 
@@ -49,8 +49,8 @@ export const empty: <Value, Value2, Patch, Patch2>() => OrPatch<
  * @category constructors
  */
 export const diff: <Value, Value2, Patch, Patch2>(
-  oldValue: Result<Value, Value2>,
-  newValue: Result<Value, Value2>,
+  oldValue: Either<Value, Value2>,
+  newValue: Either<Value, Value2>,
   left: Differ<Value, Patch>,
   right: Differ<Value2, Patch2>
 ) => OrPatch<Value, Value2, Patch, Patch2> = OP.diff
@@ -76,9 +76,9 @@ export const combine: <Value, Value2, Patch, Patch2>(
  * @category destructors
  */
 export const patch: <Value, Value2, Patch, Patch2>(
-  oldValue: Result<Value, Value2>,
+  oldValue: Either<Value, Value2>,
   left: Differ<Value, Patch>,
   right: Differ<Value2, Patch2>
 ) => (
   self: OrPatch<Value, Value2, Patch, Patch2>
-) => Result<Value, Value2> = OP.patch
+) => Either<Value, Value2> = OP.patch

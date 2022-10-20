@@ -29,10 +29,10 @@ export const or = (that: boolean) => (self: boolean): boolean => self || that
  * Takes two thunks `onTrue`, `onFalse` and a `boolean` value.
  * If `value` is `false`, `onFalse()` is returned, otherwise `onTrue()`.
  *
- * @exampleTodo
- * import { some, map } from '@fp-ts/core/data/Option'
- * import { pipe } from '@fp-ts/core/data/Function'
- * import { match } from '@fp-ts/core/data/boolean'
+ * @example
+ * import { some, map } from '@fp-ts/data/Option'
+ * import { pipe } from '@fp-ts/data/Function'
+ * import { match } from '@fp-ts/data/boolean'
  *
  * assert.deepStrictEqual(
  *  pipe(
@@ -51,9 +51,9 @@ export const match = <A, B = A>(onFalse: LazyArg<A>, onTrue: LazyArg<B>) =>
 /**
  * `boolean` semigroup under conjunction.
  *
- * @exampleTodo
- * import { SemigroupAll } from '@fp-ts/core/data/boolean'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import { SemigroupAll } from '@fp-ts/data/boolean'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(pipe(true, SemigroupAll.combine(true)), true)
  * assert.deepStrictEqual(pipe(true, SemigroupAll.combine(false)), false)
@@ -76,9 +76,9 @@ export const SemigroupAll: semigroup.Semigroup<boolean> = {
 /**
  * `boolean` semigroup under disjunction.
  *
- * @exampleTodo
- * import { SemigroupAny } from '@fp-ts/core/data/boolean'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import { SemigroupAny } from '@fp-ts/data/boolean'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(pipe(true, SemigroupAny.combine(true)), true)
  * assert.deepStrictEqual(pipe(true, SemigroupAny.combine(false)), true)

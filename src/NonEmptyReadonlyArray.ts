@@ -97,9 +97,9 @@ export const make = <As extends NonEmptyReadonlyArray<any>>(
  *
  * **Note**. `n` is normalized to a natural number.
  *
- * @exampleTodo
- * import { makeBy } from '@fp-ts/core/data/NonEmptyReadonlyArray'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import { makeBy } from '@fp-ts/data/NonEmptyReadonlyArray'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * const double = (n: number): number => n * 2
  * assert.deepStrictEqual(pipe(5, makeBy(double)), [0, 2, 4, 6, 8])
@@ -122,9 +122,9 @@ export const makeBy = <A>(f: (i: number) => A) =>
  *
  * **Note**. `n` is normalized to a natural number.
  *
- * @exampleTodo
- * import { replicate } from '@fp-ts/core/data/NonEmptyReadonlyArray'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import { replicate } from '@fp-ts/data/NonEmptyReadonlyArray'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(pipe(3, replicate('a')), ['a', 'a', 'a'])
  *
@@ -136,8 +136,8 @@ export const replicate = <A>(a: A): ((n: number) => NonEmptyReadonlyArray<A>) =>
 /**
  * Create a `NonEmptyReadonlyArray` containing a range of integers, including both endpoints.
  *
- * @exampleTodo
- * import { range } from '@fp-ts/core/data/NonEmptyReadonlyArray'
+ * @example
+ * import { range } from '@fp-ts/data/NonEmptyReadonlyArray'
  *
  * assert.deepStrictEqual(range(1, 5), [1, 2, 3, 4, 5])
  *
@@ -154,8 +154,8 @@ export const range = (start: number, end: number): NonEmptyReadonlyArray<number>
 /**
  * Produces a couple of the first element of the array, and a new array of the remaining elements, if any.
  *
- * @exampleTodo
- * import { unprepend } from '@fp-ts/core/data/NonEmptyReadonlyArray'
+ * @example
+ * import { unprepend } from '@fp-ts/data/NonEmptyReadonlyArray'
  *
  * assert.deepStrictEqual(unprepend([1, 2, 3, 4]), [1, [2, 3, 4]])
  *
@@ -169,8 +169,8 @@ export const unprepend = <A>(
 /**
  * Produces a couple of a copy of the array without its last element, and that last element.
  *
- * @exampleTodo
- * import { unappend } from '@fp-ts/core/data/NonEmptyReadonlyArray'
+ * @example
+ * import { unappend } from '@fp-ts/data/NonEmptyReadonlyArray'
  *
  * assert.deepStrictEqual(unappend([1, 2, 3, 4]), [[1, 2, 3], 4])
  *
@@ -217,11 +217,10 @@ export function concat<B>(
 /**
  * Remove duplicates from a `NonEmptyReadonlyArray`, keeping the first occurrence of an element.
  *
- * @exampleTodo
- * import { uniq } from '@fp-ts/core/data/NonEmptyReadonlyArray'
- * import * as N from '@fp-ts/core/data/number'
+ * @example
+ * import { uniq } from '@fp-ts/data/NonEmptyReadonlyArray'
  *
- * assert.deepStrictEqual(uniq(N.Eq)([1, 2, 1]), [1, 2])
+ * assert.deepStrictEqual(uniq([1, 2, 1]), [1, 2])
  *
  * @since 1.0.0
  */
@@ -243,12 +242,12 @@ export const uniq = <A>(self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A
  * Sort the elements of a `NonEmptyReadonlyArray` in increasing order, where elements are compared using first `ords[0]`, then `ords[1]`,
  * etc...
  *
- * @exampleTodo
- * import * as RNEA from '@fp-ts/core/data/NonEmptyReadonlyArray'
+ * @example
+ * import * as RNEA from '@fp-ts/data/NonEmptyReadonlyArray'
  * import { contramap } from '@fp-ts/core/Sortable'
- * import * as S from '@fp-ts/core/data/string'
- * import * as N from '@fp-ts/core/data/number'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * import * as S from '@fp-ts/data/string'
+ * import * as N from '@fp-ts/data/number'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * interface Person {
  *   name: string
@@ -289,12 +288,11 @@ export const sortBy = <B>(
 /**
  * Creates a `ReadonlyArray` of unique values, in order, from all given `ReadonlyArray`s using a `Eq` for equality comparisons.
  *
- * @exampleTodo
- * import { union } from '@fp-ts/core/data/ReadonlyArray'
- * import * as N from '@fp-ts/core/data/number'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import { union } from '@fp-ts/data/ReadonlyArray'
+ * import { pipe } from '@fp-ts/data/Function'
  *
- * assert.deepStrictEqual(pipe([1, 2], union(N.Eq)([2, 3])), [1, 2, 3])
+ * assert.deepStrictEqual(pipe([1, 2], union([2, 3])), [1, 2, 3])
  *
  * @since 1.0.0
  */
@@ -304,8 +302,8 @@ export const union = <B>(that: ReadonlyArray<B>) =>
 /**
  * Rotate a `NonEmptyReadonlyArray` by `n` steps.
  *
- * @exampleTodo
- * import { rotate } from '@fp-ts/core/data/NonEmptyReadonlyArray'
+ * @example
+ * import { rotate } from '@fp-ts/data/NonEmptyReadonlyArray'
  *
  * assert.deepStrictEqual(rotate(2)([1, 2, 3, 4, 5]), [4, 5, 1, 2, 3])
  * assert.deepStrictEqual(rotate(-2)([1, 2, 3, 4, 5]), [3, 4, 5, 1, 2])
@@ -362,9 +360,9 @@ export const updateLast = <A>(a: A): ((as: NonEmptyReadonlyArray<A>) => NonEmpty
 /**
  * Places an element in between members of a `NonEmptyReadonlyArray`, then folds the results using the provided `Semigroup`.
  *
- * @exampleTodo
- * import * as S from '@fp-ts/core/data/string'
- * import { intercalate } from '@fp-ts/core/data/NonEmptyReadonlyArray'
+ * @example
+ * import * as S from '@fp-ts/data/string'
+ * import { intercalate } from '@fp-ts/data/NonEmptyReadonlyArray'
  *
  * assert.deepStrictEqual(intercalate(S.Semigroup)('-')(['a', 'b', 'c']), 'a-b-c')
  *
@@ -386,11 +384,10 @@ export const reverse = <A>(as: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<
 /**
  * Group equal, consecutive elements of an array into non empty arrays.
  *
- * @exampleTodo
- * import { group } from '@fp-ts/core/data/NonEmptyReadonlyArray'
- * import * as N from '@fp-ts/core/data/number'
+ * @example
+ * import { group } from '@fp-ts/data/NonEmptyReadonlyArray'
  *
- * assert.deepStrictEqual(group(N.Eq)([1, 2, 1, 1]), [
+ * assert.deepStrictEqual(group([1, 2, 1, 1]), [
  *   [1],
  *   [2],
  *   [1, 1]
@@ -423,8 +420,8 @@ export const group = <A>(
  * Splits an array into sub-non-empty-arrays stored in an object, based on the result of calling a `string`-returning
  * function on each element, and grouping the results according to values returned
  *
- * @exampleTodo
- * import { groupBy } from '@fp-ts/core/data/NonEmptyReadonlyArray'
+ * @example
+ * import { groupBy } from '@fp-ts/data/NonEmptyReadonlyArray'
  *
  * assert.deepStrictEqual(groupBy((s: string) => String(s.length))(['foo', 'bar', 'foobar']), {
  *   '3': ['foo', 'bar'],
@@ -518,6 +515,54 @@ export const zip = <B>(bs: NonEmptyReadonlyArray<B>) =>
 /**
  * @since 1.0.0
  */
+export const zipMany = <A>(
+  collection: Iterable<readonly [A, ...Array<A>]>
+) =>
+  (self: readonly [A, ...Array<A>]): NonEmptyReadonlyArray<readonly [A, ...ReadonlyArray<A>]> => {
+    const arrays = Array.from(collection)
+
+    if (arrays.length === 0) {
+      return [self]
+    }
+
+    const first: [A, ...Array<A>] = [head(self)]
+    for (const array of arrays) {
+      first.push(array[0])
+    }
+
+    const rest = tail(self)
+    const out: [[A, ...Array<A>], ...Array<[A, ...Array<A>]>] = [first]
+
+    for (let i = 0; i < rest.length; i++) {
+      const inner: [A, ...Array<A>] = [rest[i]]
+      for (const array of arrays) {
+        if (i > array.length - 2) {
+          return out
+        }
+        inner.push(rest[i])
+      }
+      out.push(inner)
+    }
+
+    return out
+  }
+
+/**
+ * @since 1.0.0
+ */
+export const zipAll = <A>(
+  collection: Iterable<NonEmptyReadonlyArray<A>>
+): NonEmptyReadonlyArray<ReadonlyArray<A>> => {
+  const arrays = Array.from(collection)
+  if (arrays.length === 0) {
+    return [[]]
+  }
+  return zipMany(arrays.slice(1))(arrays[0])
+}
+
+/**
+ * @since 1.0.0
+ */
 export const unzip = <A, B>(
   abs: NonEmptyReadonlyArray<readonly [A, B]>
 ): readonly [NonEmptyReadonlyArray<A>, NonEmptyReadonlyArray<B>] => {
@@ -531,11 +576,91 @@ export const unzip = <A, B>(
 }
 
 /**
+ * @since 1.0.0
+ */
+export const crossWith = <B, A, C>(that: NonEmptyReadonlyArray<B>, f: (a: A, b: B) => C) =>
+  (self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<C> => {
+    const first = head(self)
+    const out: internal.NonEmptyArray<C> = [
+      f(first, head(that)),
+      ...tail(that).map((b) => f(first, b))
+    ]
+
+    const rest = tail(self)
+    if (rest.length === 0) {
+      return out
+    }
+
+    for (let i = 0; i < rest.length; i++) {
+      for (let j = 0; j < that.length; j++) {
+        out.push(f(rest[i], that[j]))
+      }
+    }
+
+    return out
+  }
+
+/**
+ * @since 1.0.0
+ */
+export const cross = <B>(
+  that: NonEmptyReadonlyArray<B>
+): (<A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<readonly [A, B]>) =>
+  crossWith(that, (a, b) => [a, b])
+
+/**
+ * @since 1.0.0
+ */
+export const crossMany = <A>(
+  collection: Iterable<NonEmptyReadonlyArray<A>>
+) =>
+  (self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<NonEmptyReadonlyArray<A>> => {
+    const arrays = Array.from(collection)
+
+    if (arrays.length === 0) {
+      return [self]
+    }
+
+    const first: [A, ...Array<A>] = [head(self)]
+    for (const array of arrays) {
+      first.push(...array)
+    }
+
+    const rest = tail(self)
+    const out: internal.NonEmptyArray<internal.NonEmptyArray<A>> = [first]
+
+    for (let i = 0; i < rest.length; i++) {
+      const inner: [A, ...Array<A>] = [rest[i]]
+      for (const array of arrays) {
+        for (let j = 0; j < array.length; j++) {
+          inner.push(array[j])
+        }
+      }
+      out.push(inner)
+    }
+
+    return out
+  }
+
+/**
+ * @since 1.0.0
+ */
+export const crossAll = <A>(
+  collection: Iterable<NonEmptyReadonlyArray<A>>
+): NonEmptyReadonlyArray<ReadonlyArray<A>> => {
+  const arrays = Array.from(collection)
+  if (arrays.length === 0) {
+    return [[]]
+  }
+  return crossMany(arrays.slice(1))(arrays[0])
+}
+
+/**
  * Prepend an element to every member of an array
  *
- * @exampleTodo
- * import { prependAll } from '@fp-ts/core/data/NonEmptyReadonlyArray'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import { prependAll } from '@fp-ts/data/NonEmptyReadonlyArray'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(pipe([1, 2, 3, 4], prependAll(9)), [9, 1, 9, 2, 9, 3, 9, 4])
  *
@@ -553,9 +678,9 @@ export const prependAll = <A>(middle: A) =>
 /**
  * Places an element in between members of an array
  *
- * @exampleTodo
- * import { intersperse } from '@fp-ts/core/data/NonEmptyReadonlyArray'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import { intersperse } from '@fp-ts/data/NonEmptyReadonlyArray'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(pipe([1, 2, 3, 4], intersperse(9)), [1, 9, 2, 9, 3, 9, 4])
  *
@@ -629,9 +754,9 @@ export const chunksOf = (
  *
  * In case of `NonEmptyReadonlyArray` concatenates the inputs into a single array.
  *
- * @exampleTodo
- * import * as RNEA from '@fp-ts/core/data/NonEmptyReadonlyArray'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import * as RNEA from '@fp-ts/data/NonEmptyReadonlyArray'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(
  *   pipe(
@@ -664,9 +789,9 @@ export const map: <A, B>(
 export const of: <A>(a: A) => NonEmptyReadonlyArray<A> = internal.toNonEmptyArray
 
 /**
- * @exampleTodo
- * import * as RNEA from '@fp-ts/core/data/NonEmptyReadonlyArray'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import * as RNEA from '@fp-ts/data/NonEmptyReadonlyArray'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(
  *   pipe(
@@ -886,17 +1011,8 @@ export const unit: (self: NonEmptyReadonlyArray<unknown>) => NonEmptyReadonlyArr
  */
 export const Semigroupal: semigroupal.Semigroupal<NonEmptyReadonlyArrayTypeLambda> = {
   map,
-  zipWith,
-  zipMany: <A>(
-    others: Iterable<readonly [A, ...Array<A>]>
-  ) =>
-    (start: readonly [A, ...Array<A>]): readonly [[A, ...Array<A>], ...Array<[A, ...Array<A>]>] => {
-      let c: readonly [[A, ...Array<A>], ...Array<[A, ...Array<A>]>] = pipe(start, map((a) => [a]))
-      for (const o of others) {
-        c = pipe(c, zipWith(o, (a, b) => [...a, b]))
-      }
-      return c
-    }
+  zipWith: crossWith,
+  zipMany: crossMany
 }
 
 /**
@@ -933,15 +1049,7 @@ export const Monoidal: monoidal.Monoidal<NonEmptyReadonlyArrayTypeLambda> = {
   of,
   zipMany: Semigroupal.zipMany,
   zipWith: Semigroupal.zipWith,
-  zipAll: <A>(
-    all: Iterable<readonly [A, ...Array<A>]>
-  ): readonly [ReadonlyArray<A>, ...Array<ReadonlyArray<A>>] => {
-    let c: readonly [ReadonlyArray<A>, ...Array<ReadonlyArray<A>>] = [[], ...[]]
-    for (const o of all) {
-      c = pipe(c, zipWith(o, (a, b) => [...a, b]))
-    }
-    return c
-  }
+  zipAll: crossAll
 }
 
 /**
@@ -957,9 +1065,9 @@ export const Monad: monad.Monad<NonEmptyReadonlyArrayTypeLambda> = {
 /**
  * Returns an effect that effectfully "peeks" at the success of this effect.
  *
- * @exampleTodo
- * import * as RA from '@fp-ts/core/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/core/data/Function'
+ * @example
+ * import * as RA from '@fp-ts/data/ReadonlyArray'
+ * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(
  *   pipe(
@@ -1178,8 +1286,8 @@ export const last = <A>(as: NonEmptyReadonlyArray<A>): A => as[as.length - 1]
 /**
  * Get all but the last element of a non empty array, creating a new array.
  *
- * @exampleTodo
- * import { init } from '@fp-ts/core/data/NonEmptyReadonlyArray'
+ * @example
+ * import { init } from '@fp-ts/data/NonEmptyReadonlyArray'
  *
  * assert.deepStrictEqual(init([1, 2, 3]), [1, 2])
  * assert.deepStrictEqual(init([1]), [])

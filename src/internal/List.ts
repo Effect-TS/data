@@ -8,12 +8,12 @@
  * Licensed under Apache License 2.0
  * (http://www.apache.org/licenses/LICENSE-2.0).
  */
+import * as E from "@fp-ts/data/Either"
 import { pipe, unsafeCoerce } from "@fp-ts/data/Function"
 import type * as L from "@fp-ts/data/List"
 import * as O from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
-import * as R from "@fp-ts/data/Result"
 
 import * as DE from "@fp-ts/data/Equal"
 
@@ -551,16 +551,16 @@ export function partition<A>(f: Predicate<A>) {
 }
 
 /** @internal */
-export function partitionMap<A, B, C>(f: (a: A) => R.Result<B, C>) {
+export function partitionMap<A, B, C>(f: (a: A) => E.Either<B, C>) {
   return (self: L.List<A>): readonly [L.List<B>, L.List<C>] => {
     const left: Array<B> = []
     const right: Array<C> = []
     for (const a of self) {
       const e = f(a)
-      if (R.isFailure(e)) {
-        left.push(e.failure)
+      if (E.isLeft(e)) {
+        left.push(e.left)
       } else {
-        right.push(e.success)
+        right.push(e.right)
       }
     }
     return [from(left), from(right)]

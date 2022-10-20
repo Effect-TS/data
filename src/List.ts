@@ -4,6 +4,7 @@
 
 import type * as HKT from "@fp-ts/core/HKT"
 import type { Sortable } from "@fp-ts/core/Sortable"
+import type { Either } from "@fp-ts/data/Either"
 import type * as Equal from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
 import * as LI from "@fp-ts/data/internal/List"
@@ -11,7 +12,6 @@ import * as _sortWith from "@fp-ts/data/internal/List/sortWith"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
-import type { Result } from "@fp-ts/data/Result"
 
 type LCons<A> = Cons<A>
 type LNil<A> = Nil<A>
@@ -177,7 +177,7 @@ export const partition: <A>(
  * @category partitioning
  */
 export const partitionMap: <A, B, C>(
-  f: (a: A) => Result<B, C>
+  f: (a: A) => Either<B, C>
 ) => (self: List<A>) => readonly [List<B>, List<C>] = LI.partitionMap
 
 /**

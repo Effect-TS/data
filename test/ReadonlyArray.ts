@@ -1,11 +1,11 @@
 import * as Sortable from "@fp-ts/core/Sortable"
+import * as Either from "@fp-ts/data/Either"
 import * as Equal from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
 import * as Number from "@fp-ts/data/Number"
 import * as Option from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import * as ReadonlyArray from "@fp-ts/data/ReadonlyArray"
-import * as Result from "@fp-ts/data/Result"
 import * as String from "@fp-ts/data/String"
 import { deepStrictEqual, double, strictEqual } from "@fp-ts/data/test/util"
 import * as assert from "assert"
@@ -208,7 +208,7 @@ describe.concurrent("ReadonlyArray", () => {
     it("separate", () => {
       deepStrictEqual(ReadonlyArray.separate([]), [[], []])
       deepStrictEqual(
-        ReadonlyArray.separate([Result.fail(123), Result.succeed("123")]),
+        ReadonlyArray.separate([Either.left(123), Either.right("123")]),
         [[123], ["123"]]
       )
     })
@@ -259,7 +259,7 @@ describe.concurrent("ReadonlyArray", () => {
       deepStrictEqual(pipe([], ReadonlyArray.partitionMap(identity)), [[], []])
       deepStrictEqual(
         pipe(
-          [Result.succeed(1), Result.fail("foo"), Result.succeed(2)],
+          [Either.right(1), Either.left("foo"), Either.right(2)],
           ReadonlyArray.partitionMap(identity)
         ),
         [["foo"], [1, 2]]
@@ -284,8 +284,8 @@ describe.concurrent("ReadonlyArray", () => {
       )
       deepStrictEqual(
         pipe(
-          [Result.succeed(1), Result.fail("foo"), Result.succeed(2)],
-          ReadonlyArray.partitionMapWithIndex((i, a) => pipe(a, Result.filter((n) => n > i, "err")))
+          [Either.right(1), Either.left("foo"), Either.right(2)],
+          ReadonlyArray.partitionMapWithIndex((i, a) => pipe(a, Either.filter((n) => n > i, "err")))
         ),
         [["foo", "err"], [1]]
       )
@@ -794,18 +794,18 @@ describe.concurrent("ReadonlyArray", () => {
 
   it("successes", () => {
     deepStrictEqual(
-      ReadonlyArray.successes([Result.succeed(1), Result.fail("foo"), Result.succeed(2)]),
+      ReadonlyArray.rights([Either.right(1), Either.left("foo"), Either.right(2)]),
       [1, 2]
     )
-    deepStrictEqual(ReadonlyArray.successes([]), [])
+    deepStrictEqual(ReadonlyArray.rights([]), [])
   })
 
   it("failures", () => {
     deepStrictEqual(
-      ReadonlyArray.failures([Result.succeed(1), Result.fail("foo"), Result.succeed(2)]),
+      ReadonlyArray.lefts([Either.right(1), Either.left("foo"), Either.right(2)]),
       ["foo"]
     )
-    deepStrictEqual(ReadonlyArray.failures([]), [])
+    deepStrictEqual(ReadonlyArray.lefts([]), [])
   })
 
   it("flatten", () => {
@@ -1233,8 +1233,8 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("fromResult", () => {
-    deepStrictEqual(ReadonlyArray.fromResult(Result.succeed(1)), [1])
-    strictEqual(ReadonlyArray.fromResult(Result.fail("a")), ReadonlyArray.empty)
+    deepStrictEqual(ReadonlyArray.fromEither(Either.right(1)), [1])
+    strictEqual(ReadonlyArray.fromEither(Either.left("a")), ReadonlyArray.empty)
   })
 
   it("match", () => {
@@ -1244,5 +1244,65 @@ describe.concurrent("ReadonlyArray", () => {
     )
     deepStrictEqual(pipe(ReadonlyArray.empty, f), "empty")
     deepStrictEqual(pipe([1, 2, 3], f), "nonEmpty 3")
+  })
+
+  test("zipMany", () => {
+    const start = [1, 2, 3, 4, 5]
+    const others = [
+      [1, 2, 3, 4, 5, 6],
+      [1, 2, 3, 4],
+      [1, 2, 3, 4, 5]
+    ]
+
+    const actual = pipe(start, ReadonlyArray.zipMany(others))
+    const expected = [[1, 1, 1, 1], [2, 2, 2, 2], [3, 3, 3, 3], [4, 4, 4, 4]]
+
+    expect(actual).toStrictEqual(expected)
+  })
+
+  test("zipAll", () => {
+    const arrays = [
+      [1, 2, 3, 4, 5, 6],
+      [1, 2, 3, 4],
+      [1, 2, 3, 4, 5]
+    ]
+
+    const actual = ReadonlyArray.zipAll(arrays)
+    const expected = [[1, 1, 1], [2, 2, 2], [3, 3, 3], [4, 4, 4]]
+
+    expect(actual).toStrictEqual(expected)
+  })
+
+  test("crossWith", () => {
+    const self = [1, 2, 3]
+    const that = [2, 3, 4]
+
+    const actual = pipe(self, ReadonlyArray.crossWith(that, (a, b) => a * b))
+    const expected = [2, 3, 4, 4, 6, 8, 6, 9, 12]
+
+    expect(actual).toStrictEqual(expected)
+  })
+
+  test("crossMany", () => {
+    const self = [1, 2, 3]
+    const arrays = [
+      [2],
+      [4, 5],
+      [8, 9, 10]
+    ]
+    const actual = pipe(self, ReadonlyArray.crossMany(arrays))
+    const expected = [[1, 2, 4, 5, 8, 9, 10], [2, 2, 4, 5, 8, 9, 10], [3, 2, 4, 5, 8, 9, 10]]
+    expect(actual).toStrictEqual(expected)
+  })
+
+  test("crossAll", () => {
+    const arrays = [
+      [2, 3],
+      [4, 5],
+      [8, 9, 10]
+    ]
+    const actual = ReadonlyArray.crossAll(arrays)
+    const expected = [[2, 4, 5, 8, 9, 10], [3, 4, 5, 8, 9, 10]]
+    expect(actual).toStrictEqual(expected)
   })
 })
