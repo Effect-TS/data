@@ -134,7 +134,7 @@ export const right: <A>(a: A) => Either<never, A> = either.right
  * if the value is a `Right` the inner value is applied to the second function.
  *
  * @example
- * import * as E from '@fp-ts/data/Result'
+ * import * as E from '@fp-ts/data/Either'
  * import { pipe } from '@fp-ts/data/Function'
  *
  * const onError  = (errors: ReadonlyArray<string>): string => `Errors: ${errors.join(', ')}`
@@ -143,14 +143,14 @@ export const right: <A>(a: A) => Either<never, A> = either.right
  *
  * assert.strictEqual(
  *   pipe(
- *     E.succeed(1),
+ *     E.right(1),
  *     E.match(onError , onRight)
  *   ),
  *   'Ok: 1'
  * )
  * assert.strictEqual(
  *   pipe(
- *     E.fail(['error 1', 'error 2']),
+ *     E.left(['error 1', 'error 2']),
  *     E.match(onError , onRight)
  *   ),
  *   'Errors: error 1, error 2'
@@ -166,19 +166,19 @@ export const match = <E, B, A, C = B>(onError: (e: E) => B, onRight: (a: A) => C
  * Returns the wrapped value if it's a `Right` or a default value if is a `Left`.
  *
  * @example
- * import * as E from '@fp-ts/data/Result'
+ * import * as E from '@fp-ts/data/Either'
  * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(
  *   pipe(
- *     E.succeed(1),
+ *     E.right(1),
  *     E.getOrElse(0)
  *   ),
  *   1
  * )
  * assert.deepStrictEqual(
  *   pipe(
- *     E.fail('error'),
+ *     E.left('error'),
  *     E.getOrElse(0)
  *   ),
  *   0
@@ -195,12 +195,12 @@ export const getOrElse = <B>(onError: B) =>
  * the provided default as a `Left`.
  *
  * @example
- * import * as E from '@fp-ts/data/Result'
+ * import * as E from '@fp-ts/data/Either'
  *
  * const parse = E.fromNullable('nully')
  *
- * assert.deepStrictEqual(parse(1), E.succeed(1))
- * assert.deepStrictEqual(parse(null), E.fail('nully'))
+ * assert.deepStrictEqual(parse(1), E.right(1))
+ * assert.deepStrictEqual(parse(null), E.left('nully'))
  *
  * @category conversions
  * @since 1.0.0
@@ -234,7 +234,7 @@ export const flatMapNullable = <A, B, E2>(
  * Constructs a new `Either` from a function that might throw.
  *
  * @example
- * import * as E from '@fp-ts/data/Result'
+ * import * as E from '@fp-ts/data/Either'
  * import { identity } from '@fp-ts/data/Function'
  *
  * const unsafeHead = <A>(as: ReadonlyArray<A>): A => {
@@ -248,8 +248,8 @@ export const flatMapNullable = <A, B, E2>(
  * const head = <A>(as: ReadonlyArray<A>): E.Either<unknown, A> =>
  *   E.fromThrowable(() => unsafeHead(as), identity)
  *
- * assert.deepStrictEqual(head([]), E.fail(new Error('empty array')))
- * assert.deepStrictEqual(head([1, 2, 3]), E.succeed(1))
+ * assert.deepStrictEqual(head([]), E.left(new Error('empty array')))
+ * assert.deepStrictEqual(head([1, 2, 3]), E.right(1))
  *
  * @see {@link liftThrowable}
  * @category interop
@@ -318,42 +318,42 @@ export const mapBoth: <E, G, A, B>(
  *
  * | x          | y          | pipe(x, orElse(y) |
  * | ---------- | ---------- | ------------------|
- * | fail(a)    | fail(b)    | fail(b)           |
- * | fail(a)    | succeed(2) | succeed(2)        |
- * | succeed(1) | fail(b)    | succeed(1)        |
- * | succeed(1) | succeed(2) | succeed(1)        |
+ * | left(a)    | left(b)    | left(b)           |
+ * | left(a)    | right(2)   | right(2)          |
+ * | right(1)   | left(b)    | right(1)          |
+ * | right(1)   | right(2)   | right(1)          |
  *
  * @example
- * import * as E from '@fp-ts/data/Result'
+ * import * as E from '@fp-ts/data/Either'
  * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(
  *   pipe(
- *     E.fail('a'),
- *     E.orElse(E.fail('b'))
+ *     E.left('a'),
+ *     E.orElse(E.left('b'))
  *   ),
- *   E.fail('b')
+ *   E.left('b')
  * )
  * assert.deepStrictEqual(
  *   pipe(
- *     E.fail('a'),
- *     E.orElse(E.succeed(2))
+ *     E.left('a'),
+ *     E.orElse(E.right(2))
  *   ),
- *   E.succeed(2)
+ *   E.right(2)
  * )
  * assert.deepStrictEqual(
  *   pipe(
- *     E.succeed(1),
- *     E.orElse(E.fail('b'))
+ *     E.right(1),
+ *     E.orElse(E.left('b'))
  *   ),
- *   E.succeed(1)
+ *   E.right(1)
  * )
  * assert.deepStrictEqual(
  *   pipe(
- *     E.succeed(1),
- *     E.orElse(E.succeed(2))
+ *     E.right(1),
+ *     E.orElse(E.right(2))
  *   ),
- *   E.succeed(1)
+ *   E.right(1)
  * )
  *
  * @category error handling
@@ -381,16 +381,16 @@ export const duplicate: <E, A>(ma: Either<E, A>) => Either<E, Either<E, A>> = ex
  * @example
  * import { pipe } from '@fp-ts/data/Function'
  * import * as RA from '@fp-ts/data/ReadonlyArray'
- * import * as E from '@fp-ts/data/Result'
+ * import * as E from '@fp-ts/data/Either'
  * import * as O from '@fp-ts/data/Option'
  *
  * assert.deepStrictEqual(
- *   pipe(E.succeed(['a']), E.traverse(O.Monoidal)(RA.head)),
- *   O.some(E.succeed('a')),
+ *   pipe(E.right(['a']), E.traverse(O.Monoidal)(RA.head)),
+ *   O.some(E.right('a')),
  *  )
  *
  * assert.deepStrictEqual(
- *   pipe(E.succeed([]), E.traverse(O.Monoidal)(RA.head)),
+ *   pipe(E.right([]), E.traverse(O.Monoidal)(RA.head)),
  *   O.none,
  * )
  *
@@ -407,15 +407,15 @@ export const traverse = <F extends TypeLambda>(Monoidal: monoidal.Monoidal<F>) =
  * combined using the provided `Semigroup`.
  *
  * @example
- * import * as E from '@fp-ts/data/Result'
- * import * as N from '@fp-ts/data/number'
+ * import * as E from '@fp-ts/data/Either'
+ * import * as N from '@fp-ts/data/Number'
  * import { pipe } from '@fp-ts/data/Function'
  *
  * const S = E.getSemigroup(N.SemigroupSum)<string>()
- * assert.deepStrictEqual(pipe(E.fail('a'), S.combine(E.fail('b'))), E.fail('a'))
- * assert.deepStrictEqual(pipe(E.fail('a'), S.combine(E.succeed(2))), E.succeed(2))
- * assert.deepStrictEqual(pipe(E.succeed(1), S.combine(E.fail('b'))), E.succeed(1))
- * assert.deepStrictEqual(pipe(E.succeed(1), S.combine(E.succeed(2))), E.succeed(3))
+ * assert.deepStrictEqual(pipe(E.left('a'), S.combine(E.left('b'))), E.left('a'))
+ * assert.deepStrictEqual(pipe(E.left('a'), S.combine(E.right(2))), E.right(2))
+ * assert.deepStrictEqual(pipe(E.right(1), S.combine(E.left('b'))), E.right(1))
+ * assert.deepStrictEqual(pipe(E.right(1), S.combine(E.right(2))), E.right(3))
  *
  * @category instances
  * @since 1.0.0
@@ -607,11 +607,11 @@ export const flatMap: <A, E2, B>(
  * The `flatten` function is the conventional monad join operator. It is used to remove one level of monadic structure, projecting its bound argument into the outer level.
  *
  * @example
- * import * as E from '@fp-ts/data/Result'
+ * import * as E from '@fp-ts/data/Either'
  *
- * assert.deepStrictEqual(E.flatten(E.succeed(E.succeed('a'))), E.succeed('a'))
- * assert.deepStrictEqual(E.flatten(E.succeed(E.fail('e'))), E.fail('e'))
- * assert.deepStrictEqual(E.flatten(E.fail('e')), E.fail('e'))
+ * assert.deepStrictEqual(E.flatten(E.right(E.right('a'))), E.right('a'))
+ * assert.deepStrictEqual(E.flatten(E.right(E.left('e'))), E.left('e'))
+ * assert.deepStrictEqual(E.flatten(E.left('e')), E.left('e'))
  *
  * @category sequencing
  * @since 1.0.0
@@ -747,16 +747,16 @@ export const Monoidal: monoidal.Monoidal<EitherTypeLambda> = {
  *
  * @example
  * import * as A from '@fp-ts/core/Semigroupal'
- * import * as E from '@fp-ts/data/Result'
+ * import * as E from '@fp-ts/data/Either'
  * import { pipe } from '@fp-ts/data/Function'
  * import * as S from '@fp-ts/core/Semigroup'
- * import * as string from '@fp-ts/data/string'
+ * import * as string from '@fp-ts/data/String'
  *
  * const parseString = (u: unknown): E.Either<string, string> =>
- *   typeof u === 'string' ? E.succeed(u) : E.fail('not a string')
+ *   typeof u === 'string' ? E.right(u) : E.left('not a string')
  *
  * const parseNumber = (u: unknown): E.Either<string, number> =>
- *   typeof u === 'number' ? E.succeed(u) : E.fail('not a number')
+ *   typeof u === 'number' ? E.right(u) : E.left('not a number')
  *
  * interface Person {
  *   readonly name: string
@@ -772,7 +772,7 @@ export const Monoidal: monoidal.Monoidal<EitherTypeLambda> = {
  *     E.bindRight('age', parseNumber(input.age))
  *   )
  *
- * assert.deepStrictEqual(parsePerson({}), E.fail('not a string')) // <= first error
+ * assert.deepStrictEqual(parsePerson({}), E.left('not a string')) // <= first error
  *
  * const Monoidal = E.getValidatedMonoidal(
  *   pipe(string.Semigroup, S.intercalate(', '))
@@ -789,7 +789,7 @@ export const Monoidal: monoidal.Monoidal<EitherTypeLambda> = {
  *     bindRight('age', parseNumber(input.age))
  *   )
  *
- * assert.deepStrictEqual(parsePersonAll({}), E.fail('not a string, not a number')) // <= all errors
+ * assert.deepStrictEqual(parsePersonAll({}), E.left('not a string, not a number')) // <= all errors
  *
  * @category error handling
  * @since 1.0.0
@@ -954,7 +954,7 @@ export const Extendable: extendable.Extendable<EitherTypeLambda> = {
 
 /**
  * @example
- * import * as E from '@fp-ts/data/Result'
+ * import * as E from '@fp-ts/data/Either'
  * import { pipe } from '@fp-ts/data/Function'
  * import * as O from '@fp-ts/data/Option'
  *
@@ -963,14 +963,14 @@ export const Extendable: extendable.Extendable<EitherTypeLambda> = {
  *     O.some(1),
  *     E.fromOption('error')
  *   ),
- *   E.succeed(1)
+ *   E.right(1)
  * )
  * assert.deepStrictEqual(
  *   pipe(
  *     O.none,
  *     E.fromOption('error')
  *   ),
- *   E.fail('error')
+ *   E.left('error')
  * )
  *
  * @category conversions
@@ -983,10 +983,10 @@ export const fromOption: <E>(onNone: E) => <A>(fa: Option<A>) => Either<E, A> = 
  *
  * @example
  * import * as O from '@fp-ts/data/Option'
- * import * as R from '@fp-ts/data/Result'
+ * import * as E from '@fp-ts/data/Either'
  *
- * assert.deepStrictEqual(R.getLeft(R.succeed('ok')), O.none)
- * assert.deepStrictEqual(R.getLeft(R.fail('err')), O.some('err'))
+ * assert.deepStrictEqual(E.getLeft(E.right('ok')), O.none)
+ * assert.deepStrictEqual(E.getLeft(E.left('err')), O.some('err'))
  *
  * @category conversions
  * @since 1.0.0
@@ -998,10 +998,10 @@ export const getLeft: <E, A>(self: Either<E, A>) => Option<E> = either.getLeft
  *
  * @example
  * import * as O from '@fp-ts/data/Option'
- * import * as R from '@fp-ts/data/Result'
+ * import * as E from '@fp-ts/data/Either'
  *
- * assert.deepStrictEqual(R.getRight(R.succeed('ok')), O.some('ok'))
- * assert.deepStrictEqual(R.getRight(R.fail('err')), O.none)
+ * assert.deepStrictEqual(E.getRight(E.right('ok')), O.some('ok'))
+ * assert.deepStrictEqual(E.getRight(E.left('err')), O.none)
  *
  * @category conversions
  * @since 1.0.0
@@ -1022,7 +1022,7 @@ export const toUndefined: <E, A>(self: Either<E, A>) => A | undefined = getOrEls
 
 /**
  * @example
- * import { liftPredicate, fail, succeed } from '@fp-ts/data/Result'
+ * import { liftPredicate, left, right } from '@fp-ts/data/Either'
  * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(
@@ -1030,14 +1030,14 @@ export const toUndefined: <E, A>(self: Either<E, A>) => A | undefined = getOrEls
  *     1,
  *     liftPredicate((n) => n > 0, 'error')
  *   ),
- *   succeed(1)
+ *   right(1)
  * )
  * assert.deepStrictEqual(
  *   pipe(
  *     -1,
  *     liftPredicate((n) => n > 0, 'error')
  *   ),
- *   fail('error')
+ *   left('error')
  * )
  *
  * @category lifting
@@ -1063,29 +1063,29 @@ export const liftOption = <A extends ReadonlyArray<unknown>, B, E>(
 
 /**
  * @example
- * import * as E from '@fp-ts/data/Result'
+ * import * as E from '@fp-ts/data/Either'
  * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(
  *   pipe(
- *     E.succeed(1),
+ *     E.right(1),
  *     E.filter((n) => n > 0, 'error')
  *   ),
- *   E.succeed(1)
+ *   E.right(1)
  * )
  * assert.deepStrictEqual(
  *   pipe(
- *     E.succeed(-1),
+ *     E.right(-1),
  *     E.filter((n) => n > 0, 'error')
  *   ),
- *   E.fail('error')
+ *   E.left('error')
  * )
  * assert.deepStrictEqual(
  *   pipe(
- *     E.fail('a'),
+ *     E.left('a'),
  *     E.filter((n) => n > 0, 'error')
  *   ),
- *   E.fail('a')
+ *   E.left('a')
  * )
  *
  * @category filtering
@@ -1175,13 +1175,13 @@ export const elem = <B>(a: B) =>
  * Returns `false` if `Left` or returns the Either of the application of the given predicate to the `Right` value.
  *
  * @example
- * import * as E from '@fp-ts/data/Result'
+ * import * as E from '@fp-ts/data/Either'
  *
  * const f = E.exists((n: number) => n > 2)
  *
- * assert.strictEqual(f(E.fail('a')), false)
- * assert.strictEqual(f(E.succeed(1)), false)
- * assert.strictEqual(f(E.succeed(3)), true)
+ * assert.strictEqual(f(E.left('a')), false)
+ * assert.strictEqual(f(E.right(1)), false)
+ * assert.strictEqual(f(E.right(3)), true)
  *
  * @since 1.0.0
  */

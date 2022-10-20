@@ -59,7 +59,7 @@ export const Category: category.Category<FunctionTypeLambda> = {
  * @example
  * import { Predicate } from '@fp-ts/data/Predicate'
  * import { pipe, getSemigroup } from '@fp-ts/data/Function'
- * import * as B from '@fp-ts/data/boolean'
+ * import * as B from '@fp-ts/data/Boolean'
  *
  * const f: Predicate<number> = (n) => n <= 2
  * const g: Predicate<number> = (n) => n >= 0
@@ -87,7 +87,7 @@ export const getSemigroup = <S>(Semigroup: semigroup.Semigroup<S>) =>
  * @example
  * import { Predicate } from '@fp-ts/data/Predicate'
  * import { getMonoid, pipe } from '@fp-ts/data/Function'
- * import * as B from '@fp-ts/data/boolean'
+ * import * as B from '@fp-ts/data/Boolean'
  *
  * const f: Predicate<number> = (n) => n <= 2
  * const g: Predicate<number> = (n) => n >= 0
