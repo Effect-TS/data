@@ -7,10 +7,11 @@ import type { Functor } from "@fp-ts/core/Functor"
 import type { Kind, TypeClass, TypeLambda } from "@fp-ts/core/HKT"
 import type { Monoidal } from "@fp-ts/core/Monoidal"
 import type { Traversable } from "@fp-ts/core/Traversable"
+import type { Either } from "@fp-ts/data/Either"
 import { flow, pipe } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
+import * as either from "@fp-ts/data/internal/Either"
 import type { Option } from "@fp-ts/data/Option"
-import type { Result } from "@fp-ts/data/Result"
 import * as compactable from "@fp-ts/data/typeclasses/Compactable"
 import type { Compactable } from "@fp-ts/data/typeclasses/Compactable"
 
@@ -22,7 +23,7 @@ export interface TraversableFilterable<T extends TypeLambda> extends TypeClass<T
   readonly traversePartitionMap: <F extends TypeLambda>(
     Monoidal: Monoidal<F>
   ) => <A, S, R, O, E, B, C>(
-    f: (a: A) => Kind<F, S, R, O, E, Result<B, C>>
+    f: (a: A) => Kind<F, S, R, O, E, Either<B, C>>
   ) => <TS, TR, TO, TE>(
     self: Kind<T, TS, TR, TO, TE, A>
   ) => Kind<F, S, R, O, E, readonly [Kind<T, TS, TR, TO, TE, B>, Kind<T, TS, TR, TO, TE, C>]>
@@ -97,6 +98,6 @@ export const traversePartition = <T extends TypeLambda>(
       TraversableFilterable.traversePartitionMap(Monoidal)((b) =>
         pipe(
           predicate(b),
-          Monoidal.map((ok) => (ok ? internal.succeed(b) : internal.fail(b)))
+          Monoidal.map((ok) => (ok ? either.right(b) : either.left(b)))
         )
       )

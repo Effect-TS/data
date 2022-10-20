@@ -1,10 +1,10 @@
 import * as Chunk from "@fp-ts/data/Chunk"
 import * as Differ from "@fp-ts/data/Differ"
+import * as Either from "@fp-ts/data/Either"
 import { equals } from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
 import * as HashMap from "@fp-ts/data/HashMap"
 import * as HashSet from "@fp-ts/data/HashSet"
-import * as Result from "@fp-ts/data/Result"
 import { it as it_ } from "vitest"
 
 function diffLaws<Value, Patch>(
@@ -85,8 +85,8 @@ function randomHashSet(): HashSet.HashSet<number> {
   return HashSet.from(Array.from({ length: 20 }, smallInt))
 }
 
-function randomResult(): Result.Result<number, number> {
-  return Math.random() < 0.5 ? Result.fail(smallInt()) : Result.succeed(smallInt())
+function randomResult(): Either.Either<number, number> {
+  return Math.random() < 0.5 ? Either.left(smallInt()) : Either.right(smallInt())
 }
 
 function randomTuple(): readonly [number, number] {

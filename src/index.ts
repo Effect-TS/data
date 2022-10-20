@@ -13,6 +13,7 @@ import * as hashMapPatch from "@fp-ts/data/Differ/HashMapPatch"
 import * as hashSetPatch from "@fp-ts/data/Differ/HashSetPatch"
 import * as orPatch from "@fp-ts/data/Differ/OrPatch"
 import * as duration from "@fp-ts/data/Duration"
+import * as either from "@fp-ts/data/Either"
 import * as endomorphism from "@fp-ts/data/Endomorphism"
 import * as equal from "@fp-ts/data/Equal"
 import * as _function from "@fp-ts/data/Function"
@@ -34,7 +35,6 @@ import * as queue from "@fp-ts/data/Queue"
 import * as readonlyArray from "@fp-ts/data/ReadonlyArray"
 import * as redBlackTree from "@fp-ts/data/RedBlackTree"
 import * as refinement from "@fp-ts/data/Refinement"
-import * as result from "@fp-ts/data/Result"
 import * as safeEval from "@fp-ts/data/SafeEval"
 import * as sortedMap from "@fp-ts/data/SortedMap"
 import * as sortedSet from "@fp-ts/data/SortedSet"
@@ -42,7 +42,6 @@ import * as string from "@fp-ts/data/String"
 import * as compactable from "@fp-ts/data/typeclasses/Compactable"
 import * as filterable from "@fp-ts/data/typeclasses/Filterable"
 import * as fromOption from "@fp-ts/data/typeclasses/FromOption"
-import * as fromResult from "@fp-ts/data/typeclasses/FromResult"
 import * as traversableFilterable from "@fp-ts/data/typeclasses/TraversableFilterable"
 import * as weakIterableMap from "@fp-ts/data/weak/WeakIterableMap"
 
@@ -90,6 +89,10 @@ export {
   /**
    * @since 1.0.0
    */
+  either,
+  /**
+   * @since 1.0.0
+   */
   endomorphism,
   /**
    * @since 1.0.0
@@ -103,10 +106,6 @@ export {
    * @since 1.0.0
    */
   fromOption,
-  /**
-   * @since 1.0.0
-   */
-  fromResult,
   /**
    * @since 1.0.0
    */
@@ -191,10 +190,6 @@ export {
    * @since 1.0.0
    */
   refinement,
-  /**
-   * @since 1.0.0
-   */
-  result,
   /**
    * @since 1.0.0
    */

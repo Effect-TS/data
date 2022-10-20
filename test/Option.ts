@@ -1,7 +1,7 @@
+import * as Either from "@fp-ts/data/Either"
 import { identity, pipe } from "@fp-ts/data/Function"
 import * as Option from "@fp-ts/data/Option"
 import * as ReadonlyArray from "@fp-ts/data/ReadonlyArray"
-import * as Result from "@fp-ts/data/Result"
 import * as String from "@fp-ts/data/String"
 import { deepStrictEqual, double } from "@fp-ts/data/test/util"
 
@@ -153,11 +153,11 @@ describe.concurrent("Option", () => {
 
     it("separate", () => {
       deepStrictEqual(Option.separate(Option.none), [Option.none, Option.none])
-      deepStrictEqual(Option.separate(Option.some(Result.fail("123"))), [
+      deepStrictEqual(Option.separate(Option.some(Either.left("123"))), [
         Option.some("123"),
         Option.none
       ])
-      deepStrictEqual(Option.separate(Option.some(Result.succeed("123"))), [
+      deepStrictEqual(Option.separate(Option.some(Either.right("123"))), [
         Option.none,
         Option.some("123")
       ])
@@ -184,7 +184,7 @@ describe.concurrent("Option", () => {
     })
 
     it("partitionMap", () => {
-      const f = (n: number) => (p(n) ? Result.succeed(n + 1) : Result.fail(n - 1))
+      const f = (n: number) => (p(n) ? Either.right(n + 1) : Either.left(n - 1))
       deepStrictEqual(pipe(Option.none, Option.partitionMap(f)), [Option.none, Option.none])
       deepStrictEqual(pipe(Option.some(1), Option.partitionMap(f)), [Option.some(0), Option.none])
       deepStrictEqual(pipe(Option.some(3), Option.partitionMap(f)), [Option.none, Option.some(4)])
@@ -242,8 +242,8 @@ describe.concurrent("Option", () => {
   })
 
   it("toResult", () => {
-    deepStrictEqual(pipe(Option.none, Option.toResult("e")), Result.fail("e"))
-    deepStrictEqual(pipe(Option.some(1), Option.toResult("e")), Result.succeed(1))
+    deepStrictEqual(pipe(Option.none, Option.toEither("e")), Either.left("e"))
+    deepStrictEqual(pipe(Option.some(1), Option.toEither("e")), Either.right(1))
   })
 
   it("match", () => {
@@ -391,8 +391,8 @@ describe.concurrent("Option", () => {
   // })
 
   it("fromResult", () => {
-    deepStrictEqual(Option.fromResult(Result.succeed(1)), Option.some(1))
-    deepStrictEqual(Option.fromResult(Result.fail("e")), Option.none)
+    deepStrictEqual(Option.fromEither(Either.right(1)), Option.some(1))
+    deepStrictEqual(Option.fromEither(Either.left("e")), Option.none)
   })
 
   it("do notation", () => {

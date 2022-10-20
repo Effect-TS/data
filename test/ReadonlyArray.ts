@@ -1,11 +1,11 @@
 import * as Sortable from "@fp-ts/core/Sortable"
+import * as Either from "@fp-ts/data/Either"
 import * as Equal from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
 import * as Number from "@fp-ts/data/Number"
 import * as Option from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import * as ReadonlyArray from "@fp-ts/data/ReadonlyArray"
-import * as Result from "@fp-ts/data/Result"
 import * as String from "@fp-ts/data/String"
 import { deepStrictEqual, double, strictEqual } from "@fp-ts/data/test/util"
 import * as assert from "assert"
@@ -208,7 +208,7 @@ describe.concurrent("ReadonlyArray", () => {
     it("separate", () => {
       deepStrictEqual(ReadonlyArray.separate([]), [[], []])
       deepStrictEqual(
-        ReadonlyArray.separate([Result.fail(123), Result.succeed("123")]),
+        ReadonlyArray.separate([Either.left(123), Either.right("123")]),
         [[123], ["123"]]
       )
     })
@@ -259,7 +259,7 @@ describe.concurrent("ReadonlyArray", () => {
       deepStrictEqual(pipe([], ReadonlyArray.partitionMap(identity)), [[], []])
       deepStrictEqual(
         pipe(
-          [Result.succeed(1), Result.fail("foo"), Result.succeed(2)],
+          [Either.right(1), Either.left("foo"), Either.right(2)],
           ReadonlyArray.partitionMap(identity)
         ),
         [["foo"], [1, 2]]
@@ -284,8 +284,8 @@ describe.concurrent("ReadonlyArray", () => {
       )
       deepStrictEqual(
         pipe(
-          [Result.succeed(1), Result.fail("foo"), Result.succeed(2)],
-          ReadonlyArray.partitionMapWithIndex((i, a) => pipe(a, Result.filter((n) => n > i, "err")))
+          [Either.right(1), Either.left("foo"), Either.right(2)],
+          ReadonlyArray.partitionMapWithIndex((i, a) => pipe(a, Either.filter((n) => n > i, "err")))
         ),
         [["foo", "err"], [1]]
       )
@@ -794,18 +794,18 @@ describe.concurrent("ReadonlyArray", () => {
 
   it("successes", () => {
     deepStrictEqual(
-      ReadonlyArray.successes([Result.succeed(1), Result.fail("foo"), Result.succeed(2)]),
+      ReadonlyArray.rights([Either.right(1), Either.left("foo"), Either.right(2)]),
       [1, 2]
     )
-    deepStrictEqual(ReadonlyArray.successes([]), [])
+    deepStrictEqual(ReadonlyArray.rights([]), [])
   })
 
   it("failures", () => {
     deepStrictEqual(
-      ReadonlyArray.failures([Result.succeed(1), Result.fail("foo"), Result.succeed(2)]),
+      ReadonlyArray.lefts([Either.right(1), Either.left("foo"), Either.right(2)]),
       ["foo"]
     )
-    deepStrictEqual(ReadonlyArray.failures([]), [])
+    deepStrictEqual(ReadonlyArray.lefts([]), [])
   })
 
   it("flatten", () => {
@@ -1233,8 +1233,8 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("fromResult", () => {
-    deepStrictEqual(ReadonlyArray.fromResult(Result.succeed(1)), [1])
-    strictEqual(ReadonlyArray.fromResult(Result.fail("a")), ReadonlyArray.empty)
+    deepStrictEqual(ReadonlyArray.fromEither(Either.right(1)), [1])
+    strictEqual(ReadonlyArray.fromEither(Either.left("a")), ReadonlyArray.empty)
   })
 
   it("match", () => {

@@ -3,7 +3,6 @@
  */
 import type { NonEmptyReadonlyArray } from "@fp-ts/data/NonEmptyReadonlyArray"
 import type { None, Option, Some } from "@fp-ts/data/Option"
-import type { Failure, Result, Success } from "@fp-ts/data/Result"
 
 // -------------------------------------------------------------------------------------
 // Option
@@ -25,41 +24,6 @@ export const some = <A>(a: A): Option<A> => ({ _tag: "Some", value: a })
 export const fromNullableToOption = <A>(
   a: A
 ): Option<NonNullable<A>> => (a == null ? none : some(a as NonNullable<A>))
-
-// -------------------------------------------------------------------------------------
-// Result
-// -------------------------------------------------------------------------------------
-
-/** @internal */
-export const isFailure = <E, A>(ma: Result<E, A>): ma is Failure<E> => ma._tag === "Failure"
-
-/** @internal */
-export const isSuccess = <E, A>(ma: Result<E, A>): ma is Success<A> => ma._tag === "Success"
-
-/** @internal */
-export const fail = <E>(e: E): Result<E, never> => ({ _tag: "Failure", failure: e })
-
-/** @internal */
-export const succeed = <A>(a: A): Result<never, A> => ({ _tag: "Success", success: a })
-
-/** @internal */
-export const getFailure = <E, A>(
-  self: Result<E, A>
-): Option<E> => (isSuccess(self) ? none : some(self.failure))
-
-/** @internal */
-export const getSuccess = <E, A>(
-  self: Result<E, A>
-): Option<A> => (isFailure(self) ? none : some(self.success))
-
-/** @internal */
-export const fromNullableToResult = <E>(onNullable: E) =>
-  <A>(a: A): Result<E, NonNullable<A>> =>
-    a == null ? fail(onNullable) : succeed(a as NonNullable<A>)
-
-/** @internal */
-export const fromOptionToResult = <E>(onNone: E) =>
-  <A>(fa: Option<A>): Result<E, A> => isNone(fa) ? fail(onNone) : succeed(fa.value)
 
 // -------------------------------------------------------------------------------------
 // ReadonlyArray

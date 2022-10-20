@@ -1,7 +1,7 @@
+import * as Either from "@fp-ts/data/Either"
 import { pipe } from "@fp-ts/data/Function"
 import * as Option from "@fp-ts/data/Option"
 import * as ReadonlyArray from "@fp-ts/data/ReadonlyArray"
-import * as Result from "@fp-ts/data/Result"
 import { deepStrictEqual } from "@fp-ts/data/test/util"
 import * as Filterable from "@fp-ts/data/typeclasses/Filterable"
 
@@ -42,7 +42,7 @@ describe.concurrent("Filterable", () => {
       pipe(
         ["a", "bb", "ccc", "dddd"],
         partitionMap(
-          (a) => (a.length % 2 === 0 ? Result.succeed(a.length) : Result.fail(a))
+          (a) => (a.length % 2 === 0 ? Either.right(a.length) : Either.left(a))
         )
       ),
       [["a", "ccc"], [2, 4]]

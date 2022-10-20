@@ -5,12 +5,13 @@
  */
 import type { Functor } from "@fp-ts/core/Functor"
 import type { Kind, TypeClass, TypeLambda } from "@fp-ts/core/HKT"
+import type { Either } from "@fp-ts/data/Either"
 import { flow, pipe } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
+import * as either from "@fp-ts/data/internal/Either"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
-import type { Result } from "@fp-ts/data/Result"
 
 /**
  * @category models
@@ -60,13 +61,13 @@ export const filter: <F extends TypeLambda>(
  * @since 1.0.0
  */
 export const partitionMap = <F extends TypeLambda>(Filterable: Filterable<F>) =>
-  <A, B, C>(f: (a: A) => Result<B, C>) =>
+  <A, B, C>(f: (a: A) => Either<B, C>) =>
     <S, R, O, E>(
       self: Kind<F, S, R, O, E, A>
     ): readonly [Kind<F, S, R, O, E, B>, Kind<F, S, R, O, E, C>] => {
       return [
-        pipe(self, Filterable.filterMap(flow(f, internal.getFailure))),
-        pipe(self, Filterable.filterMap(flow(f, internal.getSuccess)))
+        pipe(self, Filterable.filterMap(flow(f, either.getLeft))),
+        pipe(self, Filterable.filterMap(flow(f, either.getRight)))
       ]
     }
 
@@ -89,5 +90,5 @@ export const partition: <F extends TypeLambda>(
   ): (<S, R, O, E>(
     self: Kind<F, S, R, O, E, B>
   ) => readonly [Kind<F, S, R, O, E, B>, Kind<F, S, R, O, E, B>]) =>
-    partitionMap_((b) => (predicate(b) ? internal.succeed(b) : internal.fail(b)))
+    partitionMap_((b) => (predicate(b) ? either.right(b) : either.left(b)))
 }
