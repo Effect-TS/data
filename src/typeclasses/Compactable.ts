@@ -5,10 +5,10 @@
  */
 import type { Functor } from "@fp-ts/core/Functor"
 import type { Kind, TypeClass, TypeLambda } from "@fp-ts/core/HKT"
+import type { Either } from "@fp-ts/data/Either"
 import { pipe } from "@fp-ts/data/Function"
-import * as internal from "@fp-ts/data/internal/Common"
+import * as either from "@fp-ts/data/internal/Either"
 import type { Option } from "@fp-ts/data/Option"
-import type { Result } from "@fp-ts/data/Result"
 
 /**
  * @category models
@@ -23,11 +23,11 @@ export interface Compactable<F extends TypeLambda> extends TypeClass<F> {
  */
 export const separate = <F extends TypeLambda>(Functor: Functor<F>, Compactable: Compactable<F>) =>
   <S, R, O, E, A, B>(
-    self: Kind<F, S, R, O, E, Result<A, B>>
+    self: Kind<F, S, R, O, E, Either<A, B>>
   ): readonly [Kind<F, S, R, O, E, A>, Kind<F, S, R, O, E, B>] => {
     return [
-      pipe(self, Functor.map(internal.getFailure), Compactable.compact),
-      pipe(self, Functor.map(internal.getSuccess), Compactable.compact)
+      pipe(self, Functor.map(either.getLeft), Compactable.compact),
+      pipe(self, Functor.map(either.getRight), Compactable.compact)
     ]
   }
 

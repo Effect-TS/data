@@ -6,11 +6,11 @@ import * as ContextPatch from "@fp-ts/data/Differ/ContextPatch"
 import * as HashMapPatch from "@fp-ts/data/Differ/HashMapPatch"
 import * as HashSetPatch from "@fp-ts/data/Differ/HashSetPatch"
 import * as OrPatch from "@fp-ts/data/Differ/OrPatch"
+import type { Either } from "@fp-ts/data/Either"
 import * as Equal from "@fp-ts/data/Equal"
 import { constant, identity } from "@fp-ts/data/Function"
 import type { HashMap } from "@fp-ts/data/HashMap"
 import type { HashSet } from "@fp-ts/data/HashSet"
-import type { Result } from "@fp-ts/data/Result"
 
 /** @internal */
 export const DifferTypeId: D.TypeId = Symbol.for("@fp-ts/data/Differ") as D.TypeId
@@ -101,7 +101,7 @@ export function hashSet<Value>(): D.Differ<HashSet<Value>, HashSetPatch.HashSetP
 export function orElseResult<Value2, Patch2>(that: D.Differ<Value2, Patch2>) {
   return <Value, Patch>(
     self: D.Differ<Value, Patch>
-  ): D.Differ<Result<Value, Value2>, OrPatch.OrPatch<Value, Value2, Patch, Patch2>> =>
+  ): D.Differ<Either<Value, Value2>, OrPatch.OrPatch<Value, Value2, Patch, Patch2>> =>
     make({
       empty: OrPatch.empty(),
       combine: (first, second) => OrPatch.combine(second)(first),

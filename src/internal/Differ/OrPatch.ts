@@ -1,9 +1,9 @@
 import type { Differ } from "@fp-ts/data/Differ"
 import type * as OP from "@fp-ts/data/Differ/OrPatch"
+import type { Either } from "@fp-ts/data/Either"
+import * as E from "@fp-ts/data/Either"
 import { equals } from "@fp-ts/data/Equal"
 import * as L from "@fp-ts/data/internal/List"
-import type { Result } from "@fp-ts/data/Result"
-import * as R from "@fp-ts/data/Result"
 
 /** @internal */
 export const OrPatchTypeId: OP.TypeId = Symbol.for("@fp-ts/data/Differ/OrPatch") as OP.TypeId
@@ -112,33 +112,33 @@ export function empty<Value, Value2, Patch, Patch2>(): OP.OrPatch<
 
 /** @internal */
 export function diff<Value, Value2, Patch, Patch2>(
-  oldValue: Result<Value, Value2>,
-  newValue: Result<Value, Value2>,
+  oldValue: Either<Value, Value2>,
+  newValue: Either<Value, Value2>,
   left: Differ<Value, Patch>,
   right: Differ<Value2, Patch2>
 ): OP.OrPatch<Value, Value2, Patch, Patch2> {
   switch (oldValue._tag) {
-    case "Failure": {
+    case "Left": {
       switch (newValue._tag) {
-        case "Failure": {
-          const valuePatch = left.diff(oldValue.failure, newValue.failure)
+        case "Left": {
+          const valuePatch = left.diff(oldValue.left, newValue.left)
           if (equals(valuePatch, left.empty)) {
             return new Empty()
           }
           return new UpdateLeft(valuePatch)
         }
-        case "Success": {
-          return new SetRight(newValue.success)
+        case "Right": {
+          return new SetRight(newValue.right)
         }
       }
     }
-    case "Success": {
+    case "Right": {
       switch (newValue._tag) {
-        case "Failure": {
-          return new SetLeft(newValue.failure)
+        case "Left": {
+          return new SetLeft(newValue.left)
         }
-        case "Success": {
-          const valuePatch = right.diff(oldValue.success, newValue.success)
+        case "Right": {
+          const valuePatch = right.diff(oldValue.right, newValue.right)
           if (equals(valuePatch, right.empty)) {
             return new Empty()
           }
@@ -160,11 +160,11 @@ export function combine<Value, Value2, Patch, Patch2>(
 
 /** @internal */
 export function patch<Value, Value2, Patch, Patch2>(
-  oldValue: Result<Value, Value2>,
+  oldValue: Either<Value, Value2>,
   left: Differ<Value, Patch>,
   right: Differ<Value2, Patch2>
 ) {
-  return (self: OP.OrPatch<Value, Value2, Patch, Patch2>): Result<Value, Value2> => {
+  return (self: OP.OrPatch<Value, Value2, Patch, Patch2>): Either<Value, Value2> => {
     let patches = L.of(self)
     let result = oldValue
     while (L.isCons(patches)) {
@@ -180,26 +180,26 @@ export function patch<Value, Value2, Patch, Patch2>(
           break
         }
         case "UpdateLeft": {
-          if (result._tag === "Failure") {
-            result = R.fail(left.patch(head.patch, result.failure))
+          if (result._tag === "Left") {
+            result = E.left(left.patch(head.patch, result.left))
           }
           patches = tail
           break
         }
         case "UpdateRight": {
-          if (result._tag === "Success") {
-            result = R.succeed(right.patch(head.patch, result.success))
+          if (result._tag === "Right") {
+            result = E.right(right.patch(head.patch, result.right))
           }
           patches = tail
           break
         }
         case "SetLeft": {
-          result = R.fail(head.value)
+          result = E.left(head.value)
           patches = tail
           break
         }
         case "SetRight": {
-          result = R.succeed(head.value)
+          result = E.right(head.value)
           patches = tail
           break
         }

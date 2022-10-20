@@ -1,9 +1,9 @@
 import * as Boolean from "@fp-ts/data/Boolean"
+import * as Either from "@fp-ts/data/Either"
 import { pipe } from "@fp-ts/data/Function"
 import * as Number from "@fp-ts/data/Number"
 import * as Option from "@fp-ts/data/Option"
 import * as Refinement from "@fp-ts/data/Refinement"
-import * as Result from "@fp-ts/data/Result"
 import * as String from "@fp-ts/data/String"
 import { deepStrictEqual, strictEqual } from "@fp-ts/data/test/util"
 
@@ -83,17 +83,17 @@ describe.concurrent("Refinement", () => {
   })
 
   it("liftResult", () => {
-    const f = (s: string | number): Result.Result<string, string> =>
-      typeof s === "string" ? Result.succeed(s) : Result.fail("not a string")
-    const isString = Refinement.liftResult(f)
+    const f = (s: string | number): Either.Either<string, string> =>
+      typeof s === "string" ? Either.right(s) : Either.left("not a string")
+    const isString = Refinement.liftEither(f)
     deepStrictEqual(isString("s"), true)
     deepStrictEqual(isString(1), false)
     type A = { readonly type: "A" }
     type B = { readonly type: "B" }
     type C = A | B
-    const isA = Refinement.liftResult<C, A>((
+    const isA = Refinement.liftEither<C, A>((
       c
-    ) => (c.type === "A" ? Result.succeed(c) : Result.fail("not as A")))
+    ) => (c.type === "A" ? Either.right(c) : Either.left("not as A")))
     deepStrictEqual(isA({ type: "A" }), true)
     deepStrictEqual(isA({ type: "B" }), false)
   })

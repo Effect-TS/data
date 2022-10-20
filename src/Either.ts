@@ -1,15 +1,15 @@
 /**
  * ```ts
- * type Result<E, A> = Failure<E> | Success<A>
+ * type Either<E, A> = Left<E> | Right<A>
  * ```
  *
  * Represents a value of one of two possible types (a disjoint union).
  *
- * An instance of `Result` is either an instance of `Failure` or `Success`.
+ * An instance of `Either` is either an instance of `Left` or `Right`.
  *
- * A common use of `Result` is as an alternative to `Option` for dealing with possible missing values. In this usage,
- * `None` is replaced with a `Failure` which can contain useful information. `Success` takes the place of `Some`. Convention
- * dictates that `Failure` is used for failure and `Success` is used for success.
+ * A common use of `Either` is as an alternative to `Option` for dealing with possible missing values. In this usage,
+ * `None` is replaced with a `Left` which can contain useful information. `Right` takes the place of `Some`. Convention
+ * dictates that `Left` is used for Left and `Right` is used for Right.
  *
  * @since 1.0.0
  */
@@ -29,38 +29,39 @@ import * as traversable from "@fp-ts/core/Traversable"
 import { equals } from "@fp-ts/data/Equal"
 import { flow, identity, pipe, SK } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
+import * as either from "@fp-ts/data/internal/Either"
 import type { NonEmptyReadonlyArray } from "@fp-ts/data/NonEmptyReadonlyArray"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
+import { not } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
 import type { Compactable } from "@fp-ts/data/typeclasses/Compactable"
 import type * as filterable from "@fp-ts/data/typeclasses/Filterable"
-import * as fromResult_ from "@fp-ts/data/typeclasses/FromResult"
 import type { TraversableFilterable } from "@fp-ts/data/typeclasses/TraversableFilterable"
 
 /**
  * @category models
  * @since 1.0.0
  */
-export interface Failure<E> {
-  readonly _tag: "Failure"
-  readonly failure: E
+export interface Left<E> {
+  readonly _tag: "Left"
+  readonly left: E
 }
 
 /**
  * @category models
  * @since 1.0.0
  */
-export interface Success<A> {
-  readonly _tag: "Success"
-  readonly success: A
+export interface Right<A> {
+  readonly _tag: "Right"
+  readonly right: A
 }
 
 /**
  * @category models
  * @since 1.0.0
  */
-export type Result<E, A> = Failure<E> | Success<A>
+export type Either<E, A> = Left<E> | Right<A>
 
 // -------------------------------------------------------------------------------------
 // type lambdas
@@ -70,16 +71,16 @@ export type Result<E, A> = Failure<E> | Success<A>
  * @category type lambdas
  * @since 1.0.0
  */
-export interface ResultTypeLambda extends TypeLambda {
-  readonly type: Result<this["Out2"], this["Out1"]>
+export interface EitherTypeLambda extends TypeLambda {
+  readonly type: Either<this["Out2"], this["Out1"]>
 }
 
 /**
  * @category type lambdas
  * @since 1.0.0
  */
-export interface ResultTypeLambdaFix<E> extends TypeLambda {
-  readonly type: Result<E, this["Out1"]>
+export interface EitherTypeLambdaFix<E> extends TypeLambda {
+  readonly type: Either<E, this["Out1"]>
 }
 
 /**
@@ -91,66 +92,66 @@ export interface ValidatedT<F extends TypeLambda, E> extends TypeLambda {
 }
 
 /**
- * Returns `true` if the either is an instance of `Failure`, `false` otherwise.
+ * Returns `true` if the either is an instance of `Left`, `false` otherwise.
  *
  * @category refinements
  * @since 1.0.0
  */
-export const isFailure: <E, A>(self: Result<E, A>) => self is Failure<E> = internal.isFailure
+export const isLeft: <E, A>(self: Either<E, A>) => self is Left<E> = either.isLeft
 
 /**
- * Returns `true` if the either is an instance of `Success`, `false` otherwise.
+ * Returns `true` if the either is an instance of `Right`, `false` otherwise.
  *
  * @category refinements
  * @since 1.0.0
  */
-export const isSuccess: <E, A>(self: Result<E, A>) => self is Success<A> = internal.isSuccess
+export const isRight: <E, A>(self: Either<E, A>) => self is Right<A> = either.isRight
 
 /**
- * Constructs a new `Result` holding a `Failure` value. This usually represents a failure, due to the right-bias of this
+ * Constructs a new `Either` holding a `Left` value. This usually represents a Left, due to the right-bias of this
  * structure.
  *
  * @category constructors
  * @since 1.0.0
  */
-export const fail: <E>(e: E) => Result<E, never> = internal.fail
+export const left: <E>(e: E) => Either<E, never> = either.left
 
 /**
- * Constructs a new `Result` holding a `Success` value. This usually represents a successful value due to the right bias
+ * Constructs a new `Either` holding a `Right` value. This usually represents a Rightful value due to the right bias
  * of this structure.
  *
  * @category constructors
  * @since 1.0.0
  */
-export const succeed: <A>(a: A) => Result<never, A> = internal.succeed
+export const right: <A>(a: A) => Either<never, A> = either.right
 
 // -------------------------------------------------------------------------------------
 // pattern matching
 // -------------------------------------------------------------------------------------
 
 /**
- * Takes two functions and an `Result` value, if the value is a `Failure` the inner value is applied to the first function,
- * if the value is a `Success` the inner value is applied to the second function.
+ * Takes two functions and an `Either` value, if the value is a `Left` the inner value is applied to the first function,
+ * if the value is a `Right` the inner value is applied to the second function.
  *
  * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
+ * import * as E from '@fp-ts/core/data/Either'
  * import { pipe } from '@fp-ts/core/data/Function'
  *
  * const onError  = (errors: ReadonlyArray<string>): string => `Errors: ${errors.join(', ')}`
  *
- * const onSuccess = (value: number): string => `Ok: ${value}`
+ * const onRight = (value: number): string => `Ok: ${value}`
  *
  * assert.strictEqual(
  *   pipe(
  *     E.succeed(1),
- *     E.match(onError , onSuccess)
+ *     E.match(onError , onRight)
  *   ),
  *   'Ok: 1'
  * )
  * assert.strictEqual(
  *   pipe(
  *     E.fail(['error 1', 'error 2']),
- *     E.match(onError , onSuccess)
+ *     E.match(onError , onRight)
  *   ),
  *   'Errors: error 1, error 2'
  * )
@@ -158,14 +159,14 @@ export const succeed: <A>(a: A) => Result<never, A> = internal.succeed
  * @category pattern matching
  * @since 1.0.0
  */
-export const match = <E, B, A, C = B>(onError: (e: E) => B, onSuccess: (a: A) => C) =>
-  (self: Result<E, A>): B | C => isFailure(self) ? onError(self.failure) : onSuccess(self.success)
+export const match = <E, B, A, C = B>(onError: (e: E) => B, onRight: (a: A) => C) =>
+  (self: Either<E, A>): B | C => isLeft(self) ? onError(self.left) : onRight(self.right)
 
 /**
- * Returns the wrapped value if it's a `Success` or a default value if is a `Failure`.
+ * Returns the wrapped value if it's a `Right` or a default value if is a `Left`.
  *
  * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
+ * import * as E from '@fp-ts/core/data/Either'
  * import { pipe } from '@fp-ts/core/data/Function'
  *
  * assert.deepStrictEqual(
@@ -187,14 +188,14 @@ export const match = <E, B, A, C = B>(onError: (e: E) => B, onSuccess: (a: A) =>
  * @since 1.0.0
  */
 export const getOrElse = <B>(onError: B) =>
-  <A>(self: Result<unknown, A>): A | B => isFailure(self) ? onError : self.success
+  <A>(self: Either<unknown, A>): A | B => isLeft(self) ? onError : self.right
 
 /**
- * Takes a lazy default and a nullable value, if the value is not nully, turn it into a `Success`, if the value is nully use
- * the provided default as a `Failure`.
+ * Takes a lazy default and a nullable value, if the value is not nully, turn it into a `Right`, if the value is nully use
+ * the provided default as a `Left`.
  *
  * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
+ * import * as E from '@fp-ts/core/data/Either'
  *
  * const parse = E.fromNullable('nully')
  *
@@ -204,8 +205,8 @@ export const getOrElse = <B>(onError: B) =>
  * @category conversions
  * @since 1.0.0
  */
-export const fromNullable: <E>(onNullable: E) => <A>(a: A) => Result<E, NonNullable<A>> =
-  internal.fromNullableToResult
+export const fromNullable: <E>(onNullable: E) => <A>(a: A) => Either<E, NonNullable<A>> =
+  either.fromNullable
 
 /**
  * @category lifting
@@ -216,7 +217,7 @@ export const liftNullable = <A extends ReadonlyArray<unknown>, B, E>(
   onNullable: E
 ) => {
   const from = fromNullable(onNullable)
-  return (...a: A): Result<E, NonNullable<B>> => from(f(...a))
+  return (...a: A): Either<E, NonNullable<B>> => from(f(...a))
 }
 
 /**
@@ -226,14 +227,14 @@ export const liftNullable = <A extends ReadonlyArray<unknown>, B, E>(
 export const flatMapNullable = <A, B, E2>(
   f: (a: A) => B | null | undefined,
   onNullable: E2
-): (<E1>(self: Result<E1, A>) => Result<E1 | E2, NonNullable<B>>) =>
+): (<E1>(self: Either<E1, A>) => Either<E1 | E2, NonNullable<B>>) =>
   flatMap(liftNullable(f, onNullable))
 
 /**
- * Constructs a new `Result` from a function that might throw.
+ * Constructs a new `Either` from a function that might throw.
  *
  * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
+ * import * as E from '@fp-ts/core/data/Either'
  * import { identity } from '@fp-ts/core/data/Function'
  *
  * const unsafeHead = <A>(as: ReadonlyArray<A>): A => {
@@ -244,7 +245,7 @@ export const flatMapNullable = <A, B, E2>(
  *   }
  * }
  *
- * const head = <A>(as: ReadonlyArray<A>): E.Result<unknown, A> =>
+ * const head = <A>(as: ReadonlyArray<A>): E.Either<unknown, A> =>
  *   E.fromThrowable(() => unsafeHead(as), identity)
  *
  * assert.deepStrictEqual(head([]), E.fail(new Error('empty array')))
@@ -254,16 +255,16 @@ export const flatMapNullable = <A, B, E2>(
  * @category interop
  * @since 1.0.0
  */
-export const fromThrowable = <A, E>(f: () => A, onThrow: (error: unknown) => E): Result<E, A> => {
+export const fromThrowable = <A, E>(f: () => A, onThrow: (error: unknown) => E): Either<E, A> => {
   try {
-    return succeed(f())
+    return right(f())
   } catch (e) {
-    return fail(onThrow(e))
+    return left(onThrow(e))
   }
 }
 
 /**
- * Lifts a function that may throw to one returning a `Result`.
+ * Lifts a function that may throw to one returning a `Either`.
  *
  * @category interop
  * @since 1.0.0
@@ -271,19 +272,19 @@ export const fromThrowable = <A, E>(f: () => A, onThrow: (error: unknown) => E):
 export const liftThrowable = <A extends ReadonlyArray<unknown>, B, E>(
   f: (...a: A) => B,
   onThrow: (error: unknown) => E
-): ((...a: A) => Result<E, B>) => (...a) => fromThrowable(() => f(...a), onThrow)
+): ((...a: A) => Either<E, B>) => (...a) => fromThrowable(() => f(...a), onThrow)
 
 /**
  * @category conversions
  * @since 1.0.0
  */
-export const toUnion: <E, A>(fa: Result<E, A>) => E | A = match(identity, identity)
+export const toUnion: <E, A>(fa: Either<E, A>) => E | A = match(identity, identity)
 
 /**
  * @since 1.0.0
  */
-export const reverse = <E, A>(ma: Result<E, A>): Result<A, E> =>
-  isFailure(ma) ? succeed(ma.failure) : fail(ma.success)
+export const reverse = <E, A>(ma: Either<E, A>): Either<A, E> =>
+  isLeft(ma) ? right(ma.left) : left(ma.right)
 
 /**
  * Recovers from all errors.
@@ -292,12 +293,12 @@ export const reverse = <E, A>(ma: Result<E, A>): Result<A, E> =>
  * @since 1.0.0
  */
 export const catchAll: <E1, E2, B>(
-  onError: (e: E1) => Result<E2, B>
-) => <A>(self: Result<E1, A>) => Result<E2, A | B> = (onError) =>
-  (self) => isFailure(self) ? onError(self.failure) : self
+  onError: (e: E1) => Either<E2, B>
+) => <A>(self: Either<E1, A>) => Either<E2, A | B> = (onError) =>
+  (self) => isLeft(self) ? onError(self.left) : self
 
 /**
- * Returns an effect whose failure and success channels have been mapped by
+ * Returns an effect whose Left and Right channels have been mapped by
  * the specified pair of functions, `f` and `g`.
  *
  * @category mapping
@@ -306,14 +307,14 @@ export const catchAll: <E1, E2, B>(
 export const mapBoth: <E, G, A, B>(
   f: (e: E) => G,
   g: (a: A) => B
-) => (self: Result<E, A>) => Result<G, B> = (f, g) =>
-  (fa) => isFailure(fa) ? fail(f(fa.failure)) : succeed(g(fa.success))
+) => (self: Either<E, A>) => Either<G, B> = (f, g) =>
+  (fa) => isLeft(fa) ? left(f(fa.left)) : right(g(fa.right))
 
 /**
  * Identifies an associative operation on a type constructor. It is similar to `Semigroup`, except that it applies to
  * types of kind `* -> *`.
  *
- * In case of `Result` returns the left-most non-`Failure` value (or the right-most `Failure` value if both values are `Failure`).
+ * In case of `Either` returns the left-most non-`Left` value (or the right-most `Left` value if both values are `Left`).
  *
  * | x          | y          | pipe(x, orElse(y) |
  * | ---------- | ---------- | ------------------|
@@ -323,7 +324,7 @@ export const mapBoth: <E, G, A, B>(
  * | succeed(1) | succeed(2) | succeed(1)        |
  *
  * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
+ * import * as E from '@fp-ts/core/data/Either'
  * import { pipe } from '@fp-ts/core/data/Function'
  *
  * assert.deepStrictEqual(
@@ -359,28 +360,28 @@ export const mapBoth: <E, G, A, B>(
  * @since 1.0.0
  */
 export const orElse: <E2, B>(
-  that: Result<E2, B>
-) => <E1, A>(self: Result<E1, A>) => Result<E2, A | B> = (that) => (fa) => isFailure(fa) ? that : fa
+  that: Either<E2, B>
+) => <E1, A>(self: Either<E1, A>) => Either<E2, A | B> = (that) => (fa) => isLeft(fa) ? that : fa
 
 /**
  * @since 1.0.0
  */
-export const extend: <E, A, B>(f: (wa: Result<E, A>) => B) => (wa: Result<E, A>) => Result<E, B> = (
+export const extend: <E, A, B>(f: (wa: Either<E, A>) => B) => (wa: Either<E, A>) => Either<E, B> = (
   f
-) => (wa) => isFailure(wa) ? wa : succeed(f(wa))
+) => (wa) => isLeft(wa) ? wa : right(f(wa))
 
 /**
  * @since 1.0.0
  */
-export const duplicate: <E, A>(ma: Result<E, A>) => Result<E, Result<E, A>> = extend(identity)
+export const duplicate: <E, A>(ma: Either<E, A>) => Either<E, Either<E, A>> = extend(identity)
 
 /**
- * Map each element of a structure to an action, evaluate these actions from left to right, and collect the results.
+ * Map each element of a structure to an action, evaluate these actions from left to right, and collect the Eithers.
  *
  * @exampleTodo
  * import { pipe } from '@fp-ts/core/data/Function'
  * import * as RA from '@fp-ts/core/data/ReadonlyArray'
- * import * as E from '@fp-ts/core/data/Result'
+ * import * as E from '@fp-ts/core/data/Either'
  * import * as O from '@fp-ts/core/data/Option'
  *
  * assert.deepStrictEqual(
@@ -398,15 +399,15 @@ export const duplicate: <E, A>(ma: Result<E, A>) => Result<E, Result<E, A>> = ex
  */
 export const traverse = <F extends TypeLambda>(Monoidal: monoidal.Monoidal<F>) =>
   <A, FS, FR, FO, FE, B>(f: (a: A) => Kind<F, FS, FR, FO, FE, B>) =>
-    <E>(ta: Result<E, A>): Kind<F, FS, FR, FO, FE, Result<E, B>> =>
-      isFailure(ta) ? Monoidal.of(fail(ta.failure)) : pipe(f(ta.success), Monoidal.map(succeed))
+    <E>(ta: Either<E, A>): Kind<F, FS, FR, FO, FE, Either<E, B>> =>
+      isLeft(ta) ? Monoidal.of(left(ta.left)) : pipe(f(ta.right), Monoidal.map(right))
 
 /**
- * Semigroup returning the left-most non-`Failure` value. If both operands are `Success`es then the inner values are
+ * Semigroup returning the left-most non-`Left` value. If both operands are `Right`es then the inner values are
  * combined using the provided `Semigroup`.
  *
  * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
+ * import * as E from '@fp-ts/core/data/Either'
  * import * as N from '@fp-ts/core/data/number'
  * import { pipe } from '@fp-ts/core/data/Function'
  *
@@ -420,23 +421,22 @@ export const traverse = <F extends TypeLambda>(Monoidal: monoidal.Monoidal<F>) =
  * @since 1.0.0
  */
 export const getSemigroup = <A>(Semigroup: Semigroup<A>) =>
-  <E>(): Semigroup<Result<E, A>> =>
+  <E>(): Semigroup<Either<E, A>> =>
     fromCombine((that) =>
       (self) =>
-        isFailure(that) ?
+        isLeft(that) ?
           self :
-          isFailure(self) ?
+          isLeft(self) ?
           that :
-          succeed(Semigroup.combine(that.success)(self.success))
+          right(Semigroup.combine(that.right)(self.right))
     )
 
 /**
  * @category filtering
  * @since 1.0.0
  */
-export const compact: <E>(onNone: E) => <A>(self: Result<E, Option<A>>) => Result<E, A> = (e) =>
-  (self) =>
-    isFailure(self) ? self : internal.isNone(self.success) ? fail(e) : succeed(self.success.value)
+export const compact: <E>(onNone: E) => <A>(self: Either<E, Option<A>>) => Either<E, A> = (e) =>
+  (self) => isLeft(self) ? self : internal.isNone(self.right) ? left(e) : right(self.right.value)
 
 /**
  * @category filtering
@@ -444,20 +444,20 @@ export const compact: <E>(onNone: E) => <A>(self: Result<E, Option<A>>) => Resul
  */
 export const separate: <E>(
   onEmpty: E
-) => <A, B>(self: Result<E, Result<A, B>>) => readonly [Result<E, A>, Result<E, B>] = (onEmpty) => {
+) => <A, B>(self: Either<E, Either<A, B>>) => readonly [Either<E, A>, Either<E, B>] = (onEmpty) => {
   return (self) =>
-    isFailure(self)
+    isLeft(self)
       ? [self, self]
-      : isFailure(self.success)
-      ? [succeed(self.success.failure), fail(onEmpty)]
-      : [fail(onEmpty), succeed(self.success.success)]
+      : isLeft(self.right)
+      ? [right(self.right.left), left(onEmpty)]
+      : [left(onEmpty), right(self.right.right)]
 }
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const getCompactable = <E>(onNone: E): Compactable<ValidatedT<ResultTypeLambda, E>> => {
+export const getCompactable = <E>(onNone: E): Compactable<ValidatedT<EitherTypeLambda, E>> => {
   return {
     compact: compact(onNone)
   }
@@ -469,7 +469,7 @@ export const getCompactable = <E>(onNone: E): Compactable<ValidatedT<ResultTypeL
  */
 export const getFilterable = <E>(
   onEmpty: E
-): filterable.Filterable<ValidatedT<ResultTypeLambda, E>> => {
+): filterable.Filterable<ValidatedT<EitherTypeLambda, E>> => {
   return {
     filterMap: (f) => filterMap(f, onEmpty)
   }
@@ -486,7 +486,7 @@ export const traverseFilterMap = <F extends TypeLambda>(
   return <A, S, R, O, FE, B, E>(
     f: (a: A) => Kind<F, S, R, O, FE, Option<B>>,
     onNone: E
-  ): ((self: Result<E, A>) => Kind<F, S, R, O, FE, Result<E, B>>) => {
+  ): ((self: Either<E, A>) => Kind<F, S, R, O, FE, Either<E, B>>) => {
     return flow(traverse_(f), Monoidal.map(compact(onNone)))
   }
 }
@@ -500,9 +500,9 @@ export const traversePartitionMap = <F extends TypeLambda>(
 ) => {
   const traverse_ = traverse(Monoidal)
   return <A, S, R, O, FE, B, C, E>(
-    f: (a: A) => Kind<F, S, R, O, FE, Result<B, C>>,
+    f: (a: A) => Kind<F, S, R, O, FE, Either<B, C>>,
     onNone: E
-  ): ((self: Result<E, A>) => Kind<F, S, R, O, FE, readonly [Result<E, B>, Result<E, C>]>) => {
+  ): ((self: Either<E, A>) => Kind<F, S, R, O, FE, readonly [Either<E, B>, Either<E, C>]>) => {
     return flow(traverse_(f), Monoidal.map(separate(onNone)))
   }
 }
@@ -513,7 +513,7 @@ export const traversePartitionMap = <F extends TypeLambda>(
  */
 export const getTraversableFilterable = <E>(
   onEmpty: E
-): TraversableFilterable<ValidatedT<ResultTypeLambda, E>> => {
+): TraversableFilterable<ValidatedT<EitherTypeLambda, E>> => {
   return {
     traverseFilterMap: (Monoidal) => {
       const traverseFilterMap_ = traverseFilterMap(Monoidal)
@@ -530,7 +530,7 @@ export const getTraversableFilterable = <E>(
  * @category instances
  * @since 1.0.0
  */
-export const Bifunctor: bifunctor.Bifunctor<ResultTypeLambda> = {
+export const Bifunctor: bifunctor.Bifunctor<EitherTypeLambda> = {
   mapBoth
 }
 
@@ -541,16 +541,16 @@ export const Bifunctor: bifunctor.Bifunctor<ResultTypeLambda> = {
  * @category error handling
  * @since 1.0.0
  */
-export const mapError: <E, G>(f: (e: E) => G) => <A>(self: Result<E, A>) => Result<G, A> = bifunctor
+export const mapError: <E, G>(f: (e: E) => G) => <A>(self: Either<E, A>) => Either<G, A> = bifunctor
   .mapLeft(Bifunctor)
 
 /**
- * Returns an effect whose success is mapped by the specified `f` function.
+ * Returns an effect whose Right is mapped by the specified `f` function.
  *
  * @category mapping
  * @since 1.0.0
  */
-export const map: <A, B>(f: (a: A) => B) => <E>(fa: Result<E, A>) => Result<E, B> = bifunctor.map(
+export const map: <A, B>(f: (a: A) => B) => <E>(fa: Either<E, A>) => Either<E, B> = bifunctor.map(
   Bifunctor
 )
 
@@ -558,7 +558,7 @@ export const map: <A, B>(f: (a: A) => B) => <E>(fa: Result<E, A>) => Result<E, B
  * @category instances
  * @since 1.0.0
  */
-export const Functor: functor.Functor<ResultTypeLambda> = {
+export const Functor: functor.Functor<EitherTypeLambda> = {
   map
 }
 
@@ -566,32 +566,32 @@ export const Functor: functor.Functor<ResultTypeLambda> = {
  * @category mapping
  * @since 1.0.0
  */
-export const flap: <A>(a: A) => <E, B>(fab: Result<E, (a: A) => B>) => Result<E, B> = functor.flap(
+export const flap: <A>(a: A) => <E, B>(fab: Either<E, (a: A) => B>) => Either<E, B> = functor.flap(
   Functor
 )
 
 /**
- * Maps the success value of this effect to the specified constant value.
+ * Maps the Right value of this effect to the specified constant value.
  *
  * @category mapping
  * @since 1.0.0
  */
-export const as: <B>(b: B) => <E>(self: Result<E, unknown>) => Result<E, B> = functor.as(Functor)
+export const as: <B>(b: B) => <E>(self: Either<E, unknown>) => Either<E, B> = functor.as(Functor)
 
 /**
- * Returns the effect resulting from mapping the success of this effect to unit.
+ * Returns the effect Eithering from mapping the Right of this effect to unit.
  *
  * @category mapping
  * @since 1.0.0
  */
-export const unit: <E>(self: Result<E, unknown>) => Result<E, void> = functor.unit(Functor)
+export const unit: <E>(self: Either<E, unknown>) => Either<E, void> = functor.unit(Functor)
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const Succeed: pointed.Pointed<ResultTypeLambda> = {
-  of: succeed
+export const Succeed: pointed.Pointed<EitherTypeLambda> = {
+  of: right
 }
 
 /**
@@ -599,15 +599,15 @@ export const Succeed: pointed.Pointed<ResultTypeLambda> = {
  * @since 1.0.0
  */
 export const flatMap: <A, E2, B>(
-  f: (a: A) => Result<E2, B>
-) => <E1>(self: Result<E1, A>) => Result<E1 | E2, B> = (f) =>
-  (self) => isFailure(self) ? self : f(self.success)
+  f: (a: A) => Either<E2, B>
+) => <E1>(self: Either<E1, A>) => Either<E1 | E2, B> = (f) =>
+  (self) => isLeft(self) ? self : f(self.right)
 
 /**
  * The `flatten` function is the conventional monad join operator. It is used to remove one level of monadic structure, projecting its bound argument into the outer level.
  *
  * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
+ * import * as E from '@fp-ts/core/data/Either'
  *
  * assert.deepStrictEqual(E.flatten(E.succeed(E.succeed('a'))), E.succeed('a'))
  * assert.deepStrictEqual(E.flatten(E.succeed(E.fail('e'))), E.fail('e'))
@@ -616,7 +616,7 @@ export const flatMap: <A, E2, B>(
  * @category sequencing
  * @since 1.0.0
  */
-export const flatten: <E1, E2, A>(mma: Result<E1, Result<E2, A>>) => Result<E1 | E2, A> = flatMap(
+export const flatten: <E1, E2, A>(mma: Either<E1, Either<E2, A>>) => Either<E1 | E2, A> = flatMap(
   identity
 )
 
@@ -624,7 +624,7 @@ export const flatten: <E1, E2, A>(mma: Result<E1, Result<E2, A>>) => Result<E1 |
  * @category instances
  * @since 1.0.0
  */
-export const FlatMap: flatMap_.FlatMap<ResultTypeLambda> = {
+export const FlatMap: flatMap_.FlatMap<EitherTypeLambda> = {
   map,
   flatMap
 }
@@ -637,8 +637,8 @@ export const FlatMap: flatMap_.FlatMap<ResultTypeLambda> = {
  * @since 1.0.0
  */
 export const zipLeft: <E2>(
-  that: Result<E2, unknown>
-) => <E1, A>(self: Result<E1, A>) => Result<E2 | E1, A> = flatMap_.zipLeft(FlatMap)
+  that: Either<E2, unknown>
+) => <E1, A>(self: Either<E1, A>) => Either<E2 | E1, A> = flatMap_.zipLeft(FlatMap)
 
 /**
  * A variant of `flatMap` that ignores the value produced by this effect.
@@ -647,8 +647,8 @@ export const zipLeft: <E2>(
  * @since 1.0.0
  */
 export const zipRight: <E2, A>(
-  that: Result<E2, A>
-) => <E1>(self: Result<E1, unknown>) => Result<E2 | E1, A> = flatMap_.zipRight(FlatMap)
+  that: Either<E2, A>
+) => <E1>(self: Either<E1, unknown>) => Either<E2 | E1, A> = flatMap_.zipRight(FlatMap)
 
 /**
  * Sequentially zips this effect with the specified effect using the specified combiner function.
@@ -657,33 +657,33 @@ export const zipRight: <E2, A>(
  * @since 1.0.0
  */
 export const zipWith: <E2, B, A, C>(
-  that: Result<E2, B>,
+  that: Either<E2, B>,
   f: (a: A, b: B) => C
-) => <E1>(self: Result<E1, A>) => Result<E2 | E1, C> = (that, f) =>
+) => <E1>(self: Either<E1, A>) => Either<E2 | E1, C> = (that, f) =>
   (self) => pipe(self, flatMap((a) => pipe(that, map((b) => f(a, b)))))
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const Semigroupal: semigroupal.Semigroupal<ResultTypeLambda> = {
+export const Semigroupal: semigroupal.Semigroupal<EitherTypeLambda> = {
   map,
   zipWith,
   zipMany: <E, A>(
-    others: Iterable<Result<E, A>>
+    others: Iterable<Either<E, A>>
   ) =>
-    (start: Result<E, A>): Result<E, [A, ...Array<A>]> => {
-      if (isFailure(start)) {
-        return fail(start.failure)
+    (start: Either<E, A>): Either<E, [A, ...Array<A>]> => {
+      if (isLeft(start)) {
+        return left(start.left)
       }
-      const res: [A, ...Array<A>] = [start.success]
+      const res: [A, ...Array<A>] = [start.right]
       for (const o of others) {
-        if (isFailure(o)) {
-          return fail(o.failure)
+        if (isLeft(o)) {
+          return left(o.left)
         }
-        res.push(o.success)
+        res.push(o.right)
       }
-      return succeed(res)
+      return right(res)
     }
 }
 
@@ -691,23 +691,23 @@ export const Semigroupal: semigroupal.Semigroupal<ResultTypeLambda> = {
  * @since 1.0.0
  */
 export const ap: <E2, A>(
-  fa: Result<E2, A>
-) => <E1, B>(fab: Result<E1, (a: A) => B>) => Result<E1 | E2, B> = semigroupal.ap(Semigroupal)
+  fa: Either<E2, A>
+) => <E1, B>(fab: Either<E1, (a: A) => B>) => Either<E1 | E2, B> = semigroupal.ap(Semigroupal)
 
 /**
- * Lifts a binary function into `Result`.
+ * Lifts a binary function into `Either`.
  *
  * @category lifting
  * @since 1.0.0
  */
 export const lift2: <A, B, C>(
   f: (a: A, b: B) => C
-) => <E1, E2>(fa: Result<E1, A>, fb: Result<E2, B>) => Result<E1 | E2, C> = semigroupal.lift2(
+) => <E1, E2>(fa: Either<E1, A>, fb: Either<E2, B>) => Either<E1 | E2, C> = semigroupal.lift2(
   Semigroupal
 )
 
 /**
- * Lifts a ternary function into `Result`.
+ * Lifts a ternary function into `Either`.
  *
  * @category lifting
  * @since 1.0.0
@@ -715,29 +715,29 @@ export const lift2: <A, B, C>(
 export const lift3: <A, B, C, D>(
   f: (a: A, b: B, c: C) => D
 ) => <E1, E2, E3>(
-  fa: Result<E1, A>,
-  fb: Result<E2, B>,
-  fc: Result<E3, C>
-) => Result<E1 | E2 | E3, D> = semigroupal.lift3(Semigroupal)
+  fa: Either<E1, A>,
+  fb: Either<E2, B>,
+  fc: Either<E3, C>
+) => Either<E1 | E2 | E3, D> = semigroupal.lift3(Semigroupal)
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const Monoidal: monoidal.Monoidal<ResultTypeLambda> = {
+export const Monoidal: monoidal.Monoidal<EitherTypeLambda> = {
   map,
-  of: succeed,
+  of: right,
   zipMany: Semigroupal.zipMany,
   zipWith: Semigroupal.zipWith,
-  zipAll: <E, A>(collection: Iterable<Result<E, A>>): Result<E, ReadonlyArray<A>> => {
+  zipAll: <E, A>(collection: Iterable<Either<E, A>>): Either<E, ReadonlyArray<A>> => {
     const res: Array<A> = []
     for (const o of collection) {
-      if (isFailure(o)) {
-        return fail(o.failure)
+      if (isLeft(o)) {
+        return left(o.left)
       }
-      res.push(o.success)
+      res.push(o.right)
     }
-    return succeed(res)
+    return right(res)
   }
 }
 
@@ -747,15 +747,15 @@ export const Monoidal: monoidal.Monoidal<ResultTypeLambda> = {
  *
  * @exampleTodo
  * import * as A from '@fp-ts/core/typeclasses/Semigroupal'
- * import * as E from '@fp-ts/core/data/Result'
+ * import * as E from '@fp-ts/core/data/Either'
  * import { pipe } from '@fp-ts/core/data/Function'
  * import * as S from '@fp-ts/core/typeclasses/Semigroup'
  * import * as string from '@fp-ts/core/data/string'
  *
- * const parseString = (u: unknown): E.Result<string, string> =>
+ * const parseString = (u: unknown): E.Either<string, string> =>
  *   typeof u === 'string' ? E.succeed(u) : E.fail('not a string')
  *
- * const parseNumber = (u: unknown): E.Result<string, number> =>
+ * const parseNumber = (u: unknown): E.Either<string, number> =>
  *   typeof u === 'number' ? E.succeed(u) : E.fail('not a number')
  *
  * interface Person {
@@ -765,7 +765,7 @@ export const Monoidal: monoidal.Monoidal<ResultTypeLambda> = {
  *
  * const parsePerson = (
  *   input: Record<string, unknown>
- * ): E.Result<string, Person> =>
+ * ): E.Either<string, Person> =>
  *   pipe(
  *     E.Do,
  *     E.bindRight('name', parseString(input.name)),
@@ -782,7 +782,7 @@ export const Monoidal: monoidal.Monoidal<ResultTypeLambda> = {
  *
  * const parsePersonAll = (
  *   input: Record<string, unknown>
- * ): E.Result<string, Person> =>
+ * ): E.Either<string, Person> =>
  *   pipe(
  *     E.Do,
  *     bindRight('name', parseString(input.name)),
@@ -796,68 +796,68 @@ export const Monoidal: monoidal.Monoidal<ResultTypeLambda> = {
  */
 export const getValidatedMonoidal = <E>(
   Semigroup: Semigroup<E>
-): monoidal.Monoidal<ValidatedT<ResultTypeLambda, E>> => ({
+): monoidal.Monoidal<ValidatedT<EitherTypeLambda, E>> => ({
   map,
-  of: succeed,
+  of: right,
   zipWith: <A, B, C>(
-    fb: Result<E, B>,
+    fb: Either<E, B>,
     f: (a: A, b: B) => C
   ) =>
-    (fa: Result<E, A>): Result<E, C> => {
-      if (isFailure(fa)) {
-        if (isFailure(fb)) {
-          return fail(Semigroup.combine(fb.failure)(fa.failure))
+    (fa: Either<E, A>): Either<E, C> => {
+      if (isLeft(fa)) {
+        if (isLeft(fb)) {
+          return left(Semigroup.combine(fb.left)(fa.left))
         } else {
-          return fail(fa.failure)
+          return left(fa.left)
         }
-      } else if (isFailure(fb)) {
-        return fail(fb.failure)
+      } else if (isLeft(fb)) {
+        return left(fb.left)
       }
-      return succeed(f(fa.success, fb.success))
+      return right(f(fa.right, fb.right))
     },
   zipMany: <A>(
-    others: Iterable<Result<E, A>>
+    others: Iterable<Either<E, A>>
   ) =>
-    (start: Result<E, A>): Result<E, [A, ...Array<A>]> => {
-      const failures: Array<E> = []
+    (start: Either<E, A>): Either<E, [A, ...Array<A>]> => {
+      const Lefts: Array<E> = []
       const res: Array<A> = []
-      if (isFailure(start)) {
-        failures.push(start.failure)
+      if (isLeft(start)) {
+        Lefts.push(start.left)
       } else {
-        res.push(start.success)
+        res.push(start.right)
       }
       for (const o of others) {
-        if (isFailure(o)) {
-          failures.push(o.failure)
+        if (isLeft(o)) {
+          Lefts.push(o.left)
         } else {
-          res.push(o.success)
+          res.push(o.right)
         }
       }
-      if (failures.length > 0) {
-        if (failures.length > 1) {
-          return fail(Semigroup.combineMany((failures.shift(), failures))(failures[0]))
+      if (Lefts.length > 0) {
+        if (Lefts.length > 1) {
+          return left(Semigroup.combineMany((Lefts.shift(), Lefts))(Lefts[0]))
         }
-        return fail(failures[0])
+        return left(Lefts[0])
       }
-      return succeed(res as [A, ...Array<A>])
+      return right(res as [A, ...Array<A>])
     },
-  zipAll: <A>(collection: Iterable<Result<E, A>>): Result<E, ReadonlyArray<A>> => {
-    const failures: Array<E> = []
+  zipAll: <A>(collection: Iterable<Either<E, A>>): Either<E, ReadonlyArray<A>> => {
+    const Lefts: Array<E> = []
     const res: Array<A> = []
     for (const o of collection) {
-      if (isFailure(o)) {
-        failures.push(o.failure)
+      if (isLeft(o)) {
+        Lefts.push(o.left)
       } else {
-        res.push(o.success)
+        res.push(o.right)
       }
     }
-    if (failures.length > 0) {
-      if (failures.length > 1) {
-        return fail(Semigroup.combineMany((failures.shift(), failures))(failures[0]))
+    if (Lefts.length > 0) {
+      if (Lefts.length > 1) {
+        return left(Semigroup.combineMany((Lefts.shift(), Lefts))(Lefts[0]))
       }
-      return fail(failures[0])
+      return left(Lefts[0])
     }
-    return succeed(res as [A, ...Array<A>])
+    return right(res as [A, ...Array<A>])
   }
 })
 
@@ -865,72 +865,71 @@ export const getValidatedMonoidal = <E>(
  * @category instances
  * @since 1.0.0
  */
-export const Monad: monad.Monad<ResultTypeLambda> = {
+export const Monad: monad.Monad<EitherTypeLambda> = {
   map,
-  of: succeed,
+  of: right,
   flatMap
 }
 
 /**
- * Returns an effect that effectfully "peeks" at the failure of this effect.
+ * Returns an effect that effectfully "peeks" at the Left of this effect.
  *
  * @category error handling
  * @since 1.0.0
  */
 export const tapError: <E1, E2>(
-  onError: (e: E1) => Result<E2, unknown>
-) => <A>(self: Result<E1, A>) => Result<E1 | E2, A> = (onError) =>
+  onError: (e: E1) => Either<E2, unknown>
+) => <A>(self: Either<E1, A>) => Either<E1 | E2, A> = (onError) =>
   (self) => {
-    if (isSuccess(self)) {
+    if (isRight(self)) {
       return self
     }
-    const out = onError(self.failure)
-    return isFailure(out) ? out : self
+    const out = onError(self.left)
+    return isLeft(out) ? out : self
   }
 
 /**
- * Returns an effect that effectfully "peeks" at the success of this effect.
+ * Returns an effect that effectfully "peeks" at the Right of this effect.
  *
  * @since 1.0.0
  */
 export const tap: <A, E2>(
-  f: (a: A) => Result<E2, unknown>
-) => <E1>(self: Result<E1, A>) => Result<E1 | E2, A> = flatMap_.tap(FlatMap)
+  f: (a: A) => Either<E2, unknown>
+) => <E1>(self: Either<E1, A>) => Either<E1 | E2, A> = flatMap_.tap(FlatMap)
 
 /**
  * @category conversions
  * @since 1.0.0
  */
-export const toReadonlyArray = <E, A>(self: Result<E, A>): ReadonlyArray<A> =>
-  isFailure(self) ? internal.empty : [self.success]
+export const toReadonlyArray = <E, A>(self: Either<E, A>): ReadonlyArray<A> =>
+  isLeft(self) ? internal.empty : [self.right]
 
 /**
  * @category folding
  * @since 1.0.0
  */
 export const reduce = <B, A>(b: B, f: (b: B, a: A) => B) =>
-  <E>(self: Result<E, A>): B => isFailure(self) ? b : f(b, self.success)
+  <E>(self: Either<E, A>): B => isLeft(self) ? b : f(b, self.right)
 
 /**
  * @category folding
  * @since 1.0.0
  */
 export const foldMap = <M>(Monoid: Monoid<M>) =>
-  <A>(f: (a: A) => M) =>
-    <E>(self: Result<E, A>): M => isFailure(self) ? Monoid.empty : f(self.success)
+  <A>(f: (a: A) => M) => <E>(self: Either<E, A>): M => isLeft(self) ? Monoid.empty : f(self.right)
 
 /**
  * @category folding
  * @since 1.0.0
  */
 export const reduceRight = <B, A>(b: B, f: (a: A, b: B) => B) =>
-  <E>(self: Result<E, A>): B => isFailure(self) ? b : f(self.success, b)
+  <E>(self: Either<E, A>): B => isLeft(self) ? b : f(self.right, b)
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const Traversable: traversable.Traversable<ResultTypeLambda> = {
+export const Traversable: traversable.Traversable<EitherTypeLambda> = {
   traverse
 }
 
@@ -941,29 +940,21 @@ export const Traversable: traversable.Traversable<ResultTypeLambda> = {
 export const sequence: <F extends TypeLambda>(
   F: monoidal.Monoidal<F>
 ) => <E, FS, FR, FO, FE, A>(
-  fa: Result<E, Kind<F, FS, FR, FO, FE, A>>
-) => Kind<F, FS, FR, FO, FE, Result<E, A>> = traversable.sequence(Traversable)
+  fa: Either<E, Kind<F, FS, FR, FO, FE, A>>
+) => Kind<F, FS, FR, FO, FE, Either<E, A>> = traversable.sequence(Traversable)
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const Extendable: extendable.Extendable<ResultTypeLambda> = {
+export const Extendable: extendable.Extendable<EitherTypeLambda> = {
   map,
   extend
 }
 
 /**
- * @category instances
- * @since 1.0.0
- */
-export const FromResult: fromResult_.FromResult<ResultTypeLambda> = {
-  fromResult: identity
-}
-
-/**
  * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
+ * import * as E from '@fp-ts/core/data/Either'
  * import { pipe } from '@fp-ts/core/data/Function'
  * import * as O from '@fp-ts/core/data/Option'
  *
@@ -985,54 +976,53 @@ export const FromResult: fromResult_.FromResult<ResultTypeLambda> = {
  * @category conversions
  * @since 1.0.0
  */
-export const fromOption: <E>(onNone: E) => <A>(fa: Option<A>) => Result<E, A> =
-  internal.fromOptionToResult
+export const fromOption: <E>(onNone: E) => <A>(fa: Option<A>) => Either<E, A> = either.fromOption
 
 /**
- * Converts a `Result` to an `Option` discarding the success.
+ * Converts a `Either` to an `Option` discarding the Right.
  *
  * @exampleTodo
  * import * as O from '@fp-ts/core/data/Option'
- * import * as R from '@fp-ts/core/data/Result'
+ * import * as R from '@fp-ts/core/data/Either'
  *
- * assert.deepStrictEqual(R.getFailure(R.succeed('ok')), O.none)
- * assert.deepStrictEqual(R.getFailure(R.fail('err')), O.some('err'))
+ * assert.deepStrictEqual(R.getLeft(R.succeed('ok')), O.none)
+ * assert.deepStrictEqual(R.getLeft(R.fail('err')), O.some('err'))
  *
  * @category conversions
  * @since 1.0.0
  */
-export const getFailure: <E, A>(self: Result<E, A>) => Option<E> = internal.getFailure
+export const getLeft: <E, A>(self: Either<E, A>) => Option<E> = either.getLeft
 
 /**
- * Converts a `Result` to an `Option` discarding the error.
+ * Converts a `Either` to an `Option` discarding the error.
  *
  * @exampleTodo
  * import * as O from '@fp-ts/core/data/Option'
- * import * as R from '@fp-ts/core/data/Result'
+ * import * as R from '@fp-ts/core/data/Either'
  *
- * assert.deepStrictEqual(R.getSuccess(R.succeed('ok')), O.some('ok'))
- * assert.deepStrictEqual(R.getSuccess(R.fail('err')), O.none)
+ * assert.deepStrictEqual(R.getRight(R.succeed('ok')), O.some('ok'))
+ * assert.deepStrictEqual(R.getRight(R.fail('err')), O.none)
  *
  * @category conversions
  * @since 1.0.0
  */
-export const getSuccess: <E, A>(self: Result<E, A>) => Option<A> = internal.getSuccess
+export const getRight: <E, A>(self: Either<E, A>) => Option<A> = either.getRight
 
 /**
  * @category conversions
  * @since 1.0.0
  */
-export const toNull: <E, A>(self: Result<E, A>) => A | null = getOrElse(null)
+export const toNull: <E, A>(self: Either<E, A>) => A | null = getOrElse(null)
 
 /**
  * @category conversions
  * @since 1.0.0
  */
-export const toUndefined: <E, A>(self: Result<E, A>) => A | undefined = getOrElse(undefined)
+export const toUndefined: <E, A>(self: Either<E, A>) => A | undefined = getOrElse(undefined)
 
 /**
  * @exampleTodo
- * import { liftPredicate, fail, succeed } from '@fp-ts/core/data/Result'
+ * import { liftPredicate, fail, succeed } from '@fp-ts/core/data/Either'
  * import { pipe } from '@fp-ts/core/data/Function'
  *
  * assert.deepStrictEqual(
@@ -1057,22 +1047,23 @@ export const liftPredicate: {
   <C extends A, B extends A, E, A = C>(
     refinement: Refinement<A, B>,
     onFalse: E
-  ): (c: C) => Result<E, B>
-  <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: E): (b: B) => Result<E, B>
-} = fromResult_.liftPredicate(FromResult)
+  ): (c: C) => Either<E, B>
+  <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: E): (b: B) => Either<E, B>
+} = <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: E) =>
+  (b: B) => predicate(b) ? right(b) : left(onFalse)
 
 /**
  * @category lifting
  * @since 1.0.0
  */
-export const liftOption: <A extends ReadonlyArray<unknown>, B, E>(
+export const liftOption = <A extends ReadonlyArray<unknown>, B, E>(
   f: (...a: A) => Option<B>,
   onNone: E
-) => (...a: A) => Result<E, B> = fromResult_.liftOption(FromResult)
+) => (...a: A): Either<E, B> => fromOption(onNone)(f(...a))
 
 /**
  * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
+ * import * as E from '@fp-ts/core/data/Either'
  * import { pipe } from '@fp-ts/core/data/Function'
  *
  * assert.deepStrictEqual(
@@ -1102,22 +1093,34 @@ export const liftOption: <A extends ReadonlyArray<unknown>, B, E>(
  */
 export const filter: {
   <C extends A, B extends A, E2, A = C>(refinement: Refinement<A, B>, onFalse: E2): <E1>(
-    self: Result<E1, C>
-  ) => Result<E2 | E1, B>
+    self: Either<E1, C>
+  ) => Either<E2 | E1, B>
   <B extends A, E2, A = B>(
     predicate: Predicate<A>,
     onFalse: E2
-  ): <E1>(self: Result<E1, B>) => Result<E2 | E1, B>
-} = fromResult_.filter(FromResult, FlatMap)
+  ): <E1>(self: Either<E1, B>) => Either<E2 | E1, B>
+} = <B extends A, E2, A = B>(
+  predicate: Predicate<A>,
+  onFalse: E2
+) =>
+  <E1>(self: Either<E1, B>) => pipe(self, flatMap((b) => predicate(b) ? right(b) : left(onFalse)))
 
 /**
  * @category filtering
  * @since 1.0.0
  */
-export const filterMap: <A, B, E>(
+export const filterMap = <A, B, E>(
   f: (a: A) => Option<B>,
   onNone: E
-) => (self: Result<E, A>) => Result<E, B> = fromResult_.filterMap(FromResult, FlatMap)
+) =>
+  (self: Either<E, A>): Either<E, B> =>
+    pipe(
+      self,
+      flatMap((a) => {
+        const ob = f(a)
+        return internal.isNone(ob) ? left(onNone) : right(ob.value)
+      })
+    )
 
 /**
  * @category filtering
@@ -1125,50 +1128,54 @@ export const filterMap: <A, B, E>(
  */
 export const partition: {
   <C extends A, B extends A, E, A = C>(refinement: Refinement<A, B>, onFalse: E): (
-    self: Result<E, C>
-  ) => readonly [Result<E, C>, Result<E, B>]
+    self: Either<E, C>
+  ) => readonly [Either<E, C>, Either<E, B>]
   <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: E): (
-    self: Result<E, B>
-  ) => readonly [Result<E, B>, Result<E, B>]
-} = fromResult_.partition(FromResult, FlatMap)
+    self: Either<E, B>
+  ) => readonly [Either<E, B>, Either<E, B>]
+} = <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: E) =>
+  (
+    self: Either<E, B>
+  ): readonly [Either<E, B>, Either<E, B>] => [
+    pipe(self, filter(not(predicate), onFalse)),
+    pipe(self, filter(predicate, onFalse))
+  ]
 
 /**
  * @category filtering
  * @since 1.0.0
  */
-export const partitionMap: <A, B, C, E>(
-  f: (a: A) => Result<B, C>,
+export const partitionMap = <A, B, C, E>(
+  f: (a: A) => Either<B, C>,
   onEmpty: E
-) => (self: Result<E, A>) => readonly [Result<E, B>, Result<E, C>] = fromResult_.partitionMap(
-  FromResult,
-  FlatMap
-)
+) =>
+  (self: Either<E, A>): readonly [Either<E, B>, Either<E, C>] => [
+    pipe(self, filterMap(flow(f, getLeft), onEmpty)),
+    pipe(self, filterMap(flow(f, getRight), onEmpty))
+  ]
 
 /**
  * @category sequencing
  * @since 1.0.0
  */
-export const flatMapOption: <A, B, E2>(
+export const flatMapOption = <A, B, E2>(
   f: (a: A) => Option<B>,
   onNone: E2
-) => <E1>(self: Result<E1, A>) => Result<E2 | E1, B> = fromResult_.flatMapOption(
-  FromResult,
-  FlatMap
-)
+) => <E1>(self: Either<E1, A>): Either<E2 | E1, B> => pipe(self, flatMap(liftOption(f, onNone)))
 
 /**
- * Tests whether a value is a member of a `Result`.
+ * Tests whether a value is a member of a `Either`.
  *
  * @since 1.0.0
  */
 export const elem = <B>(a: B) =>
-  <A, E>(ma: Result<E, A>): boolean => isFailure(ma) ? false : equals(ma.success)(a)
+  <A, E>(ma: Either<E, A>): boolean => isLeft(ma) ? false : equals(ma.right)(a)
 
 /**
- * Returns `false` if `Failure` or returns the result of the application of the given predicate to the `Success` value.
+ * Returns `false` if `Left` or returns the Either of the application of the given predicate to the `Right` value.
  *
  * @exampleTodo
- * import * as E from '@fp-ts/core/data/Result'
+ * import * as E from '@fp-ts/core/data/Either'
  *
  * const f = E.exists((n: number) => n > 2)
  *
@@ -1179,7 +1186,7 @@ export const elem = <B>(a: B) =>
  * @since 1.0.0
  */
 export const exists = <A>(predicate: Predicate<A>) =>
-  (ma: Result<unknown, A>): boolean => isFailure(ma) ? false : predicate(ma.success)
+  (ma: Either<unknown, A>): boolean => isLeft(ma) ? false : predicate(ma.right)
 
 // -------------------------------------------------------------------------------------
 // do notation
@@ -1189,7 +1196,7 @@ export const exists = <A>(predicate: Predicate<A>) =>
  * @category do notation
  * @since 1.0.0
  */
-export const Do: Result<never, {}> = succeed(internal.Do)
+export const Do: Either<never, {}> = right(internal.Do)
 
 /**
  * @category do notation
@@ -1197,14 +1204,14 @@ export const Do: Result<never, {}> = succeed(internal.Do)
  */
 export const bindTo: <N extends string>(
   name: N
-) => <E, A>(self: Result<E, A>) => Result<E, { readonly [K in N]: A }> = functor.bindTo(Functor)
+) => <E, A>(self: Either<E, A>) => Either<E, { readonly [K in N]: A }> = functor.bindTo(Functor)
 
 const let_: <N extends string, A extends object, B>(
   name: Exclude<N, keyof A>,
   f: (a: A) => B
 ) => <E>(
-  self: Result<E, A>
-) => Result<E, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = functor.let(Functor)
+  self: Either<E, A>
+) => Either<E, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = functor.let(Functor)
 
 export {
   /**
@@ -1220,10 +1227,10 @@ export {
  */
 export const bind: <N extends string, A extends object, E2, B>(
   name: Exclude<N, keyof A>,
-  f: (a: A) => Result<E2, B>
+  f: (a: A) => Either<E2, B>
 ) => <E1>(
-  self: Result<E1, A>
-) => Result<E1 | E2, { readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }> = flatMap_
+  self: Either<E1, A>
+) => Either<E1 | E2, { readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }> = flatMap_
   .bind(FlatMap)
 
 /**
@@ -1234,10 +1241,10 @@ export const bind: <N extends string, A extends object, E2, B>(
  */
 export const bindRight: <N extends string, A extends object, E2, B>(
   name: Exclude<N, keyof A>,
-  fb: Result<E2, B>
+  fb: Either<E2, B>
 ) => <E1>(
-  self: Result<E1, A>
-) => Result<E1 | E2, { readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }> = semigroupal
+  self: Either<E1, A>
+) => Either<E1 | E2, { readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }> = semigroupal
   .bindRight(Semigroupal)
 
 // -------------------------------------------------------------------------------------
@@ -1248,13 +1255,13 @@ export const bindRight: <N extends string, A extends object, E2, B>(
  * @category tuple sequencing
  * @since 1.0.0
  */
-export const Zip: Result<never, readonly []> = succeed(internal.empty)
+export const Zip: Either<never, readonly []> = right(internal.empty)
 
 /**
  * @category tuple sequencing
  * @since 1.0.0
  */
-export const tupled: <E, A>(self: Result<E, A>) => Result<E, readonly [A]> = functor.tupled(Functor)
+export const tupled: <E, A>(self: Either<E, A>) => Either<E, readonly [A]> = functor.tupled(Functor)
 
 /**
  * Sequentially zips this effect with the specified effect.
@@ -1263,10 +1270,10 @@ export const tupled: <E, A>(self: Result<E, A>) => Result<E, readonly [A]> = fun
  * @since 1.0.0
  */
 export const zipFlatten: <E2, B>(
-  fb: Result<E2, B>
+  fb: Either<E2, B>
 ) => <E1, A extends ReadonlyArray<unknown>>(
-  self: Result<E1, A>
-) => Result<E1 | E2, readonly [...A, B]> = semigroupal.zipFlatten(Semigroupal)
+  self: Either<E1, A>
+) => Either<E1 | E2, readonly [...A, B]> = semigroupal.zipFlatten(Semigroupal)
 
 // -------------------------------------------------------------------------------------
 // array utils
@@ -1279,22 +1286,22 @@ export const zipFlatten: <E2, B>(
  * @since 1.0.0
  */
 export const traverseNonEmptyReadonlyArrayWithIndex = <A, E, B>(
-  f: (index: number, a: A) => Result<E, B>
+  f: (index: number, a: A) => Either<E, B>
 ) =>
-  (as: NonEmptyReadonlyArray<A>): Result<E, NonEmptyReadonlyArray<B>> => {
+  (as: NonEmptyReadonlyArray<A>): Either<E, NonEmptyReadonlyArray<B>> => {
     const e = f(0, internal.head(as))
-    if (isFailure(e)) {
+    if (isLeft(e)) {
       return e
     }
-    const out: internal.NonEmptyArray<B> = [e.success]
+    const out: internal.NonEmptyArray<B> = [e.right]
     for (let i = 1; i < as.length; i++) {
       const e = f(i, as[i])
-      if (isFailure(e)) {
+      if (isLeft(e)) {
         return e
       }
-      out.push(e.success)
+      out.push(e.right)
     }
-    return succeed(out)
+    return right(out)
   }
 
 /**
@@ -1304,8 +1311,8 @@ export const traverseNonEmptyReadonlyArrayWithIndex = <A, E, B>(
  * @since 1.0.0
  */
 export const traverseReadonlyArrayWithIndex = <A, E, B>(
-  f: (index: number, a: A) => Result<E, B>
-): ((as: ReadonlyArray<A>) => Result<E, ReadonlyArray<B>>) => {
+  f: (index: number, a: A) => Either<E, B>
+): ((as: ReadonlyArray<A>) => Either<E, ReadonlyArray<B>>) => {
   const g = traverseNonEmptyReadonlyArrayWithIndex(f)
   return (as) => (internal.isNonEmpty(as) ? g(as) : Zip)
 }
@@ -1317,8 +1324,8 @@ export const traverseReadonlyArrayWithIndex = <A, E, B>(
  * @since 1.0.0
  */
 export const traverseNonEmptyReadonlyArray = <A, E, B>(
-  f: (a: A) => Result<E, B>
-): ((as: NonEmptyReadonlyArray<A>) => Result<E, NonEmptyReadonlyArray<B>>) => {
+  f: (a: A) => Either<E, B>
+): ((as: NonEmptyReadonlyArray<A>) => Either<E, NonEmptyReadonlyArray<B>>) => {
   return traverseNonEmptyReadonlyArrayWithIndex(flow(SK, f))
 }
 
@@ -1329,8 +1336,8 @@ export const traverseNonEmptyReadonlyArray = <A, E, B>(
  * @since 1.0.0
  */
 export const traverseReadonlyArray = <A, E, B>(
-  f: (a: A) => Result<E, B>
-): ((as: ReadonlyArray<A>) => Result<E, ReadonlyArray<B>>) => {
+  f: (a: A) => Either<E, B>
+): ((as: ReadonlyArray<A>) => Either<E, ReadonlyArray<B>>) => {
   return traverseReadonlyArrayWithIndex(flow(SK, f))
 }
 
@@ -1341,5 +1348,5 @@ export const traverseReadonlyArray = <A, E, B>(
  * @since 1.0.0
  */
 export const sequenceReadonlyArray: <E, A>(
-  arr: ReadonlyArray<Result<E, A>>
-) => Result<E, ReadonlyArray<A>> = traverseReadonlyArray(identity)
+  arr: ReadonlyArray<Either<E, A>>
+) => Either<E, ReadonlyArray<A>> = traverseReadonlyArray(identity)

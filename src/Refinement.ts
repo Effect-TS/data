@@ -2,10 +2,10 @@
  * @since 1.0.0
  */
 
+import type { Either } from "@fp-ts/data/Either"
+import * as either from "@fp-ts/data/internal/Either"
 import type { Option } from "@fp-ts/data/Option"
 import { isSome } from "@fp-ts/data/Option"
-import type { Result } from "@fp-ts/data/Result"
-import { isSuccess } from "@fp-ts/data/Result"
 
 /**
  * @since 1.0.0
@@ -28,8 +28,8 @@ export const liftOption = <A, B extends A>(f: (a: A) => Option<B>): Refinement<A
  * @category lifting
  * @since 1.0.0
  */
-export const liftResult = <A, B extends A>(f: (a: A) => Result<unknown, B>): Refinement<A, B> =>
-  (a: A): a is B => isSuccess(f(a))
+export const liftEither = <A, B extends A>(f: (a: A) => Either<unknown, B>): Refinement<A, B> =>
+  (a: A): a is B => either.isRight(f(a))
 
 /**
  * @category constructors

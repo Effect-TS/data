@@ -17,22 +17,22 @@ import * as sortable from "@fp-ts/core/Sortable"
 import type { Sortable } from "@fp-ts/core/Sortable"
 import * as traversable from "@fp-ts/core/Traversable"
 import type * as traversableWithIndex from "@fp-ts/core/TraversableWithIndex"
+import type { Either } from "@fp-ts/data/Either"
 import type { Endomorphism } from "@fp-ts/data/Endomorphism"
 import { equals } from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
 import type { LazyArg } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
+import * as either from "@fp-ts/data/internal/Either"
 import * as nonEmptyReadonlyArray from "@fp-ts/data/NonEmptyReadonlyArray"
 import type { NonEmptyReadonlyArray } from "@fp-ts/data/NonEmptyReadonlyArray"
 import * as number from "@fp-ts/data/Number"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
-import type { Result } from "@fp-ts/data/Result"
 import type * as compactable from "@fp-ts/data/typeclasses/Compactable"
 import * as filterable from "@fp-ts/data/typeclasses/Filterable"
 import * as fromOption_ from "@fp-ts/data/typeclasses/FromOption"
-import * as fromResult_ from "@fp-ts/data/typeclasses/FromResult"
 import * as traversableFilterable from "@fp-ts/data/typeclasses/TraversableFilterable"
 
 // -------------------------------------------------------------------------------------
@@ -109,14 +109,14 @@ export const fromOption: <A>(fa: Option<A>) => ReadonlyArray<A> = (
 ) => (internal.isNone(ma) ? empty : [ma.value])
 
 /**
- * Converts an `Result` to a `ReadonlyArray`.
+ * Converts an `Either` to a `ReadonlyArray`.
  *
  * @category conversions
  * @since 1.0.0
  */
-export const fromResult: <A>(fa: Result<unknown, A>) => ReadonlyArray<A> = (
+export const fromEither: <A>(fa: Either<unknown, A>) => ReadonlyArray<A> = (
   e
-) => (internal.isFailure(e) ? empty : [e.success])
+) => (either.isLeft(e) ? empty : [e.right])
 
 // -------------------------------------------------------------------------------------
 // pattern matching
@@ -824,46 +824,46 @@ export const reverse = <A>(
 ): ReadonlyArray<A> => (as.length <= 1 ? as : as.slice().reverse())
 
 /**
- * Extracts from a `ReadonlyArray` of `Result`s all the `Success` elements.
+ * Extracts from a `ReadonlyArray` of `Either`s all the `Success` elements.
  *
  * @exampleTodo
- * import { successes } from '@fp-ts/core/data/ReadonlyArray'
- * import { succeed, fail } from '@fp-ts/core/data/Result'
+ * import { rights } from '@fp-ts/core/data/ReadonlyArray'
+ * import { right, left } from '@fp-ts/core/data/Either'
  *
- * assert.deepStrictEqual(successes([succeed(1), fail('foo'), succeed(2)]), [1, 2])
+ * assert.deepStrictEqual(rights([succeed(1), left('foo'), right(2)]), [1, 2])
  *
  * @since 1.0.0
  */
-export const successes = <E, A>(as: ReadonlyArray<Result<E, A>>): ReadonlyArray<A> => {
+export const rights = <E, A>(as: ReadonlyArray<Either<E, A>>): ReadonlyArray<A> => {
   const len = as.length
   const out: Array<A> = []
   for (let i = 0; i < len; i++) {
     const a = as[i]
-    if (internal.isSuccess(a)) {
-      out.push(a.success)
+    if (either.isRight(a)) {
+      out.push(a.right)
     }
   }
   return out
 }
 
 /**
- * Extracts from a `ReadonlyArray` of `Result` all the `Failure` elements. All the `Failure` elements are extracted in order
+ * Extracts from a `ReadonlyArray` of `Either` all the `Failure` elements. All the `Failure` elements are extracted in order
  *
  * @exampleTodo
- * import { failures } from '@fp-ts/core/data/ReadonlyArray'
- * import { fail, succeed } from '@fp-ts/core/data/Result'
+ * import { lefts } from '@fp-ts/core/data/ReadonlyArray'
+ * import { left, right } from '@fp-ts/core/data/Either'
  *
- * assert.deepStrictEqual(failures([succeed(1), fail('foo'), succeed(2)]), ['foo'])
+ * assert.deepStrictEqual(failures([right(1), left('foo'), right(2)]), ['foo'])
  *
  * @since 1.0.0
  */
-export const failures = <E, A>(as: ReadonlyArray<Result<E, A>>): ReadonlyArray<E> => {
+export const lefts = <E, A>(as: ReadonlyArray<Either<E, A>>): ReadonlyArray<E> => {
   const out: Array<E> = []
   const len = as.length
   for (let i = 0; i < len; i++) {
     const a = as[i]
-    if (internal.isFailure(a)) {
-      out.push(a.failure)
+    if (either.isLeft(a)) {
+      out.push(a.left)
     }
   }
   return out
@@ -1494,20 +1494,20 @@ export const compact: <A>(foa: ReadonlyArray<Option<A>>) => ReadonlyArray<A> = f
  * @since 1.0.0
  */
 export const separate: <A, B>(
-  fe: ReadonlyArray<Result<A, B>>
+  fe: ReadonlyArray<Either<A, B>>
 ) => readonly [ReadonlyArray<A>, ReadonlyArray<B>] = <
   A,
   B
 >(
-  fa: ReadonlyArray<Result<A, B>>
+  fa: ReadonlyArray<Either<A, B>>
 ) => {
   const left: Array<A> = []
   const right: Array<B> = []
   for (const e of fa) {
-    if (internal.isFailure(e)) {
-      left.push(e.failure)
+    if (either.isLeft(e)) {
+      left.push(e.left)
     } else {
-      right.push(e.success)
+      right.push(e.right)
     }
   }
   return [left, right]
@@ -1518,7 +1518,7 @@ export const separate: <A, B>(
  * @since 1.0.0
  */
 export const partitionMap: <A, B, C>(
-  f: (a: A) => Result<B, C>
+  f: (a: A) => Either<B, C>
 ) => (fa: ReadonlyArray<A>) => readonly [ReadonlyArray<B>, ReadonlyArray<C>] = (f) =>
   partitionMapWithIndex((_, a) => f(a))
 
@@ -1526,16 +1526,16 @@ export const partitionMap: <A, B, C>(
  * @category filtering
  * @since 1.0.0
  */
-export const partitionMapWithIndex = <A, B, C>(f: (i: number, a: A) => Result<B, C>) =>
+export const partitionMapWithIndex = <A, B, C>(f: (i: number, a: A) => Either<B, C>) =>
   (fa: ReadonlyArray<A>): readonly [ReadonlyArray<B>, ReadonlyArray<C>] => {
     const left: Array<B> = []
     const right: Array<C> = []
     for (let i = 0; i < fa.length; i++) {
       const e = f(i, fa[i])
-      if (internal.isFailure(e)) {
-        left.push(e.failure)
+      if (either.isLeft(e)) {
+        left.push(e.left)
       } else {
-        right.push(e.success)
+        right.push(e.right)
       }
     }
     return [left, right]
@@ -1891,7 +1891,7 @@ export const partitionWithIndex: {
 } = <B extends A, A = B>(
   predicate: (i: number, a: A) => boolean
 ): ((fb: ReadonlyArray<B>) => readonly [ReadonlyArray<B>, ReadonlyArray<B>]) =>
-  partitionMapWithIndex((i, b) => (predicate(i, b) ? internal.succeed(b) : internal.fail(b)))
+  partitionMapWithIndex((i, b) => (predicate(i, b) ? either.right(b) : either.left(b)))
 
 /**
  * @category folding
@@ -2000,7 +2000,7 @@ export const traverseFilterMap: <F extends TypeLambda>(
 export const traversePartitionMap: <F extends TypeLambda>(
   F: monoidal.Monoidal<F>
 ) => <A, S, R, O, E, B, C>(
-  f: (a: A) => Kind<F, S, R, O, E, Result<B, C>>
+  f: (a: A) => Kind<F, S, R, O, E, Either<B, C>>
 ) => (wa: ReadonlyArray<A>) => Kind<F, S, R, O, E, readonly [ReadonlyArray<B>, ReadonlyArray<C>]> =
   traversableFilterable.traversePartitionMap(Traversable, Functor, Compactable)
 
@@ -2109,20 +2109,16 @@ export const flatMapNullable: <A, B>(
 )
 
 /**
- * @category instances
- * @since 1.0.0
- */
-export const FromResult: fromResult_.FromResult<ReadonlyArrayTypeLambda> = {
-  fromResult
-}
-
-/**
  * @category lifting
  * @since 1.0.0
  */
-export const liftResult: <A extends ReadonlyArray<unknown>, E, B>(
-  f: (...a: A) => Result<E, B>
-) => (...a: A) => ReadonlyArray<B> = fromResult_.liftResult(FromResult)
+export const liftEither = <A extends ReadonlyArray<unknown>, E, B>(
+  f: (...a: A) => Either<E, B>
+) =>
+  (...a: A): ReadonlyArray<B> => {
+    const e = f(...a)
+    return either.isLeft(e) ? [] : [e.right]
+  }
 
 /**
  * Check if a predicate holds true for every `ReadonlyArray` member.
