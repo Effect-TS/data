@@ -137,10 +137,10 @@ export const fromIterable = <A>(collection: Iterable<A>): Option<A> => {
  *
  * @example
  * import * as O from '@fp-ts/data/Option'
- * import * as R from '@fp-ts/data/Result'
+ * import * as E from '@fp-ts/data/Either'
  *
- * assert.deepStrictEqual(O.fromEither(R.succeed(1)), O.some(1))
- * assert.deepStrictEqual(O.fromEither(R.fail('a')), O.none)
+ * assert.deepStrictEqual(O.fromEither(E.right(1)), O.some(1))
+ * assert.deepStrictEqual(O.fromEither(E.left('a')), O.none)
  *
  * @category conversions
  * @since 1.0.0
@@ -577,7 +577,7 @@ export const traverse: <F extends TypeLambda>(
  *
  * @example
  * import { none, some, liftSortable } from '@fp-ts/data/Option'
- * import * as N from '@fp-ts/data/number'
+ * import * as N from '@fp-ts/data/Number'
  * import { pipe } from '@fp-ts/data/Function'
  *
  * const O = liftSortable(N.Sortable)
@@ -608,7 +608,7 @@ export const liftSortable = <A>(O: sortable.Sortable<A>): sortable.Sortable<Opti
  *
  * @example
  * import { getMonoid, some, none } from '@fp-ts/data/Option'
- * import * as N from '@fp-ts/data/number'
+ * import * as N from '@fp-ts/data/Number'
  * import { pipe } from '@fp-ts/data/Function'
  *
  * const M = getMonoid(N.SemigroupSum)

@@ -245,8 +245,8 @@ export const uniq = <A>(self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A
  * @example
  * import * as RNEA from '@fp-ts/data/NonEmptyReadonlyArray'
  * import { contramap } from '@fp-ts/core/Sortable'
- * import * as S from '@fp-ts/data/string'
- * import * as N from '@fp-ts/data/number'
+ * import * as S from '@fp-ts/data/String'
+ * import * as N from '@fp-ts/data/Number'
  * import { pipe } from '@fp-ts/data/Function'
  *
  * interface Person {
@@ -361,7 +361,7 @@ export const updateLast = <A>(a: A): ((as: NonEmptyReadonlyArray<A>) => NonEmpty
  * Places an element in between members of a `NonEmptyReadonlyArray`, then folds the results using the provided `Semigroup`.
  *
  * @example
- * import * as S from '@fp-ts/data/string'
+ * import * as S from '@fp-ts/data/String'
  * import { intercalate } from '@fp-ts/data/NonEmptyReadonlyArray'
  *
  * assert.deepStrictEqual(intercalate(S.Semigroup)('-')(['a', 'b', 'c']), 'a-b-c')

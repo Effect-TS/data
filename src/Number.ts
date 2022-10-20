@@ -61,7 +61,7 @@ export const Bounded: bounded.Bounded<number> = {
  * `number` semigroup under addition.
  *
  * @example
- * import { SemigroupSum } from '@fp-ts/data/number'
+ * import { SemigroupSum } from '@fp-ts/data/Number'
  * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(pipe(2, SemigroupSum.combine(3)), 5)
@@ -75,7 +75,7 @@ export const SemigroupSum: semigroup.Semigroup<number> = semigroup.fromCombine(s
  * `number` semigroup under multiplication.
  *
  * @example
- * import { SemigroupMultiply } from '@fp-ts/data/number'
+ * import { SemigroupMultiply } from '@fp-ts/data/Number'
  * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(pipe(2, SemigroupMultiply.combine(3)), 6)

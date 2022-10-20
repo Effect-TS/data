@@ -32,7 +32,7 @@ export const or = (that: boolean) => (self: boolean): boolean => self || that
  * @example
  * import { some, map } from '@fp-ts/data/Option'
  * import { pipe } from '@fp-ts/data/Function'
- * import { match } from '@fp-ts/data/boolean'
+ * import { match } from '@fp-ts/data/Boolean'
  *
  * assert.deepStrictEqual(
  *  pipe(
@@ -52,7 +52,7 @@ export const match = <A, B = A>(onFalse: LazyArg<A>, onTrue: LazyArg<B>) =>
  * `boolean` semigroup under conjunction.
  *
  * @example
- * import { SemigroupAll } from '@fp-ts/data/boolean'
+ * import { SemigroupAll } from '@fp-ts/data/Boolean'
  * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(pipe(true, SemigroupAll.combine(true)), true)
@@ -77,7 +77,7 @@ export const SemigroupAll: semigroup.Semigroup<boolean> = {
  * `boolean` semigroup under disjunction.
  *
  * @example
- * import { SemigroupAny } from '@fp-ts/data/boolean'
+ * import { SemigroupAny } from '@fp-ts/data/Boolean'
  * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(pipe(true, SemigroupAny.combine(true)), true)
