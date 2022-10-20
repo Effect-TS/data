@@ -753,7 +753,7 @@ export const Monoidal: monoidal.Monoidal<OptionTypeLambda> = {
       }
       res.push(o.value)
     }
-    return res.length > 0 ? some(res) : none
+    return some(res)
   }
 }
 
