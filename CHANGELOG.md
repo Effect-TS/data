@@ -1,5 +1,15 @@
 # @fp-ts/data
 
+## 0.0.4
+
+### Patch Changes
+
+- [#62](https://github.com/fp-ts/data/pull/62) [`e6c20ca`](https://github.com/fp-ts/data/commit/e6c20ca47e0e59f1c6261921633facb155837617) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Remve redundant constructors
+
+- [#59](https://github.com/fp-ts/data/pull/59) [`38fb4d3`](https://github.com/fp-ts/data/commit/38fb4d386d632141f12a3c08e265c75717a53b6a) Thanks [@gcanti](https://github.com/gcanti)! - NonEmptyReadonlyArray / ReadonlyArray: add TraversableWithIndex, FunctorWithIndex instances
+
+- [#73](https://github.com/fp-ts/data/pull/73) [`74497d1`](https://github.com/fp-ts/data/commit/74497d1f565ee86f8cfb816edb3d7fca286c100f) Thanks [@gcanti](https://github.com/gcanti)! - replace Result with Either and remove FromResult typeclass
+
 ## 0.0.3
 
 ### Patch Changes
