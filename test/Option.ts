@@ -21,6 +21,11 @@ describe.concurrent("Option", () => {
   //   })
   // })
 
+  it("zipAll", () => {
+    const zipAll = Option.Monoidal.zipAll
+    deepStrictEqual(zipAll([]), Option.some([]))
+  })
+
   it("reduce", () => {
     deepStrictEqual(
       pipe(
