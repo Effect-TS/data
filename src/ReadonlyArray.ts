@@ -1670,7 +1670,7 @@ export const liftSortable = <A>(Sortable: Sortable<A>): Sortable<ReadonlyArray<A
           return o
         }
       }
-      return number.Sortable.compare(bLen)(aLen)
+      return number.Order.compare(bLen)(aLen)
     }
   )
 

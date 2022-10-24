@@ -129,16 +129,16 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
   })
 
   it("min", () => {
-    deepStrictEqual(NonEmptyReadonlyArray.min(Number.Sortable)([2, 1, 3]), 1)
-    deepStrictEqual(NonEmptyReadonlyArray.min(Number.Sortable)([3]), 3)
+    deepStrictEqual(NonEmptyReadonlyArray.min(Number.Order)([2, 1, 3]), 1)
+    deepStrictEqual(NonEmptyReadonlyArray.min(Number.Order)([3]), 3)
   })
 
   it("max", () => {
     deepStrictEqual(
-      NonEmptyReadonlyArray.max(Number.Sortable)(NonEmptyReadonlyArray.make(1, 2, 3)),
+      NonEmptyReadonlyArray.max(Number.Order)(NonEmptyReadonlyArray.make(1, 2, 3)),
       3
     )
-    deepStrictEqual(NonEmptyReadonlyArray.max(Number.Sortable)([1]), 1)
+    deepStrictEqual(NonEmptyReadonlyArray.max(Number.Order)([1]), 1)
   })
 
   it("reduce", () => {
@@ -209,7 +209,7 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
   })
 
   it("sort", () => {
-    const sort = NonEmptyReadonlyArray.sort(Number.Sortable)
+    const sort = NonEmptyReadonlyArray.sort(Number.Order)
     deepStrictEqual(sort([3, 2, 1]), NonEmptyReadonlyArray.make(1, 2, 3))
     // should optimize `1`-length `NonEmptyReadonlyArray`s
     const singleton: NonEmptyReadonlyArray.NonEmptyReadonlyArray<number> = [1]
@@ -708,7 +708,7 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
       Sortable.contramap((p: { readonly a: string; readonly b: number }) => p.a)
     )
     const byAge = pipe(
-      Number.Sortable,
+      Number.Order,
       Sortable.contramap((p: { readonly a: string; readonly b: number }) => p.b)
     )
     const f = NonEmptyReadonlyArray.sortBy([byName, byAge])

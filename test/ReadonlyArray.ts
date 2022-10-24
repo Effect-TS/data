@@ -720,7 +720,7 @@ describe.concurrent("ReadonlyArray", () => {
 
   it("sort", () => {
     const S = pipe(
-      Number.Sortable,
+      Number.Order,
       Sortable.contramap((x: { readonly a: number }) => x.a)
     )
     deepStrictEqual(
@@ -738,9 +738,9 @@ describe.concurrent("ReadonlyArray", () => {
         { a: 3, b: "b1" }
       ]
     )
-    strictEqual(ReadonlyArray.sort(Number.Sortable)(ReadonlyArray.empty), ReadonlyArray.empty)
+    strictEqual(ReadonlyArray.sort(Number.Order)(ReadonlyArray.empty), ReadonlyArray.empty)
     const as: ReadonlyArray<number> = [1]
-    strictEqual(ReadonlyArray.sort(Number.Sortable)(as), as)
+    strictEqual(ReadonlyArray.sort(Number.Order)(as), as)
   })
 
   it("zipWith", () => {
@@ -958,7 +958,7 @@ describe.concurrent("ReadonlyArray", () => {
       Sortable.contramap((p: { readonly a: string; readonly b: number }) => p.a)
     )
     const byAge = pipe(
-      Number.Sortable,
+      Number.Order,
       Sortable.contramap((p: { readonly a: string; readonly b: number }) => p.b)
     )
     const f = ReadonlyArray.sortBy([byName, byAge])
