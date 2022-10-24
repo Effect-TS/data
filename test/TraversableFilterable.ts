@@ -30,7 +30,7 @@ describe.concurrent("TraversableFilterable", () => {
   it("traversePartitionMap", () => {
     const traversePartitionMap = TraversableFilterable.traversePartitionMap(
       ReadonlyArray.Traversable,
-      ReadonlyArray.Functor,
+      ReadonlyArray.Covariant,
       ReadonlyArray.Compactable
     )(Option.Monoidal)
 

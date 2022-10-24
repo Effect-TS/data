@@ -11,7 +11,7 @@ describe.concurrent("Const", () => {
 
   it("map", () => {
     U.deepStrictEqual(pipe(_.make("a"), _.map(U.double)), _.make("a"))
-    U.deepStrictEqual(pipe(_.make("a"), _.Functor.map(U.double)), _.make("a"))
+    U.deepStrictEqual(pipe(_.make("a"), _.Covariant.map(U.double)), _.make("a"))
   })
 
   it("flap", () => {

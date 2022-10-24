@@ -44,14 +44,14 @@ import * as traversableFilterable from "@fp-ts/data/typeclasses/TraversableFilte
  * @since 1.0.0
  */
 export interface ReadonlyArrayTypeLambda extends TypeLambda {
-  readonly type: ReadonlyArray<this["Out1"]>
+  readonly type: ReadonlyArray<this["Target"]>
 }
 
 /**
  * @category conversions
  * @since 1.0.0
  */
-export const fromIterable: <A>(collection: Iterable<A>) => ReadonlyArray<A> = internal.Arrayfrom
+export const fromIterable: <A>(collection: Iterable<A>) => ReadonlyArray<A> = internal.fromIterable
 
 /**
  * Return a `ReadonlyArray` of length `n` with element `i` initialized with `f(i)`.
@@ -1449,23 +1449,12 @@ export const mapWithIndex = <A, B>(
 ) => (self: ReadonlyArray<A>): ReadonlyArray<B> => self.map(f)
 
 /**
- * @category instances
- * @since 1.0.0
- */
-export const FunctorWithIndex: functorWithIndex.FunctorWithIndex<
-  ReadonlyArrayTypeLambda,
-  number
-> = {
-  mapWithIndex
-}
-
-/**
  * @category filtering
  * @since 1.0.0
  */
 export const filterMapWithIndex = <A, B>(f: (i: number, a: A) => Option<B>) =>
   (self: Iterable<A>): ReadonlyArray<B> => {
-    const as = internal.Arrayfrom(self)
+    const as = internal.fromIterable(self)
     const out: Array<B> = []
     for (let i = 0; i < as.length; i++) {
       const o = f(i, as[i])
@@ -1545,24 +1534,17 @@ export const partitionMapWithIndex = <A, B, C>(f: (i: number, a: A) => Either<B,
  * @since 1.0.0
  */
 export const extend: <A, B>(
-  f: (wa: ReadonlyArray<A>) => B
-) => (wa: ReadonlyArray<A>) => ReadonlyArray<B> = (f) =>
+  f: (fa: ReadonlyArray<A>) => B
+) => (self: ReadonlyArray<A>) => ReadonlyArray<B> = (f) =>
   (wa) => wa.map((_, i, as) => f(as.slice(i)))
-
-/**
- * @since 1.0.0
- */
-export const duplicate: <A>(wa: ReadonlyArray<A>) => ReadonlyArray<ReadonlyArray<A>> = extend(
-  identity
-)
 
 /**
  * @category traversing
  * @since 1.0.0
  */
 export const traverseWithIndex = <F extends TypeLambda>(Monoidal: monoidal.Monoidal<F>) =>
-  <A, S, R, O, E, B>(f: (a: A, i: number) => Kind<F, S, R, O, E, B>) =>
-    (self: ReadonlyArray<A>): Kind<F, S, R, O, E, ReadonlyArray<B>> => Monoidal.zipAll(self.map(f))
+  <A, S, R, O, E, B>(f: (a: A, i: number) => Kind<F, R, O, E, B>) =>
+    (self: ReadonlyArray<A>): Kind<F, R, O, E, ReadonlyArray<B>> => Monoidal.zipAll(self.map(f))
 
 /**
  * @category traversing
@@ -1570,8 +1552,8 @@ export const traverseWithIndex = <F extends TypeLambda>(Monoidal: monoidal.Monoi
  */
 export const traverse = <F extends TypeLambda>(Monoidal: monoidal.Monoidal<F>) =>
   <A, S, R, O, E, B>(
-    f: (a: A) => Kind<F, S, R, O, E, B>
-  ): ((self: ReadonlyArray<A>) => Kind<F, S, R, O, E, ReadonlyArray<B>>) =>
+    f: (a: A) => Kind<F, R, O, E, B>
+  ): ((self: ReadonlyArray<A>) => Kind<F, R, O, E, ReadonlyArray<B>>) =>
     traverseWithIndex(Monoidal)(f)
 
 /**
@@ -1696,7 +1678,7 @@ export const liftSortable = <A>(Sortable: Sortable<A>): Sortable<ReadonlyArray<A
  * @category instances
  * @since 1.0.0
  */
-export const Functor: functor.Functor<ReadonlyArrayTypeLambda> = {
+export const Covariant: functor.Covariant<ReadonlyArrayTypeLambda> = {
   map
 }
 
@@ -1707,7 +1689,7 @@ export const Functor: functor.Functor<ReadonlyArrayTypeLambda> = {
 export const flap: <A>(a: A) => <B>(
   fab: ReadonlyArray<(a: A) => B>
 ) => ReadonlyArray<B> = functor
-  .flap(Functor)
+  .flap(Covariant)
 
 /**
  * Maps the success value of this effect to the specified constant value.
@@ -1716,7 +1698,7 @@ export const flap: <A>(a: A) => <B>(
  * @since 1.0.0
  */
 export const as: <B>(b: B) => (self: ReadonlyArray<unknown>) => ReadonlyArray<B> = functor.as(
-  Functor
+  Covariant
 )
 
 /**
@@ -1725,7 +1707,7 @@ export const as: <B>(b: B) => (self: ReadonlyArray<unknown>) => ReadonlyArray<B>
  * @category mapping
  * @since 1.0.0
  */
-export const unit: (self: ReadonlyArray<unknown>) => ReadonlyArray<void> = functor.unit(Functor)
+export const unit: (self: ReadonlyArray<unknown>) => ReadonlyArray<void> = functor.unit(Covariant)
 
 /**
  * @category instances
@@ -1944,9 +1926,9 @@ export const reduceRightWithIndex = <B, A>(b: B, f: (i: number, a: A, b: B) => B
  */
 export const reduceKind = <F extends TypeLambda>(Flattenable: flatMap_.FlatMap<F>) =>
   <S, R, O, E, B, A>(
-    fb: Kind<F, S, R, O, E, B>,
-    f: (b: B, a: A) => Kind<F, S, R, O, E, B>
-  ): ((self: ReadonlyArray<A>) => Kind<F, S, R, O, E, B>) =>
+    fb: Kind<F, R, O, E, B>,
+    f: (b: B, a: A) => Kind<F, R, O, E, B>
+  ): ((self: ReadonlyArray<A>) => Kind<F, R, O, E, B>) =>
     reduce(fb, (fb, a) =>
       pipe(
         fb,
@@ -1979,8 +1961,8 @@ export const TraversableWithIndex: traversableWithIndex.TraversableWithIndex<
 export const sequence: <F extends TypeLambda>(
   F: monoidal.Monoidal<F>
 ) => <S, R, O, E, A>(
-  fas: ReadonlyArray<Kind<F, S, R, O, E, A>>
-) => Kind<F, S, R, O, E, ReadonlyArray<A>> = traversable.sequence(Traversable)
+  fas: ReadonlyArray<Kind<F, R, O, E, A>>
+) => Kind<F, R, O, E, ReadonlyArray<A>> = traversable.sequence(Traversable)
 
 /**
  * @category filtering
@@ -1989,8 +1971,8 @@ export const sequence: <F extends TypeLambda>(
 export const traverseFilterMap: <F extends TypeLambda>(
   F: monoidal.Monoidal<F>
 ) => <A, S, R, O, E, B>(
-  f: (a: A) => Kind<F, S, R, O, E, Option<B>>
-) => (ta: ReadonlyArray<A>) => Kind<F, S, R, O, E, ReadonlyArray<B>> = traversableFilterable
+  f: (a: A) => Kind<F, R, O, E, Option<B>>
+) => (ta: ReadonlyArray<A>) => Kind<F, R, O, E, ReadonlyArray<B>> = traversableFilterable
   .traverseFilterMap(Traversable, Compactable)
 
 /**
@@ -2000,9 +1982,9 @@ export const traverseFilterMap: <F extends TypeLambda>(
 export const traversePartitionMap: <F extends TypeLambda>(
   F: monoidal.Monoidal<F>
 ) => <A, S, R, O, E, B, C>(
-  f: (a: A) => Kind<F, S, R, O, E, Either<B, C>>
-) => (wa: ReadonlyArray<A>) => Kind<F, S, R, O, E, readonly [ReadonlyArray<B>, ReadonlyArray<C>]> =
-  traversableFilterable.traversePartitionMap(Traversable, Functor, Compactable)
+  f: (a: A) => Kind<F, R, O, E, Either<B, C>>
+) => (wa: ReadonlyArray<A>) => Kind<F, R, O, E, readonly [ReadonlyArray<B>, ReadonlyArray<C>]> =
+  traversableFilterable.traversePartitionMap(Traversable, Covariant, Compactable)
 
 /**
  * @category instances
@@ -2040,8 +2022,8 @@ export const TraversableFilterable: traversableFilterable.TraversableFilterable<
 export const traverseFilter: <F extends TypeLambda>(
   F: monoidal.Monoidal<F>
 ) => <B extends A, S, R, O, E, A = B>(
-  predicate: (a: A) => Kind<F, S, R, O, E, boolean>
-) => (self: ReadonlyArray<B>) => Kind<F, S, R, O, E, ReadonlyArray<B>> = traversableFilterable
+  predicate: (a: A) => Kind<F, R, O, E, boolean>
+) => (self: ReadonlyArray<B>) => Kind<F, R, O, E, ReadonlyArray<B>> = traversableFilterable
   .traverseFilter(TraversableFilterable)
 
 /**
@@ -2050,10 +2032,10 @@ export const traverseFilter: <F extends TypeLambda>(
 export const traversePartition: <F extends TypeLambda>(
   Monoidal: monoidal.Monoidal<F>
 ) => <B extends A, S, R, O, E, A = B>(
-  predicate: (a: A) => Kind<F, S, R, O, E, boolean>
+  predicate: (a: A) => Kind<F, R, O, E, boolean>
 ) => (
   self: ReadonlyArray<B>
-) => Kind<F, S, R, O, E, readonly [ReadonlyArray<B>, ReadonlyArray<B>]> = traversableFilterable
+) => Kind<F, R, O, E, readonly [ReadonlyArray<B>, ReadonlyArray<B>]> = traversableFilterable
   .traversePartition(TraversableFilterable)
 
 /**
@@ -2200,7 +2182,7 @@ export const Do: ReadonlyArray<{}> = of(internal.Do)
 export const bindTo: <N extends string>(
   name: N
 ) => <A>(self: ReadonlyArray<A>) => ReadonlyArray<{ readonly [K in N]: A }> = functor.bindTo(
-  Functor
+  Covariant
 )
 
 const let_: <N extends string, A extends object, B>(
@@ -2209,7 +2191,7 @@ const let_: <N extends string, A extends object, B>(
 ) => (
   self: ReadonlyArray<A>
 ) => ReadonlyArray<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = functor.let(
-  Functor
+  Covariant
 )
 
 export {
@@ -2248,28 +2230,14 @@ export const bindRight: <N extends string, A extends object, B>(
     Semigroupal
   )
 
-// -------------------------------------------------------------------------------------
-// tuple sequencing
-// -------------------------------------------------------------------------------------
-
 /**
- * @category tuple sequencing
- * @since 1.0.0
- */
-export const Zip: ReadonlyArray<readonly []> = empty
-
-/**
- * @category tuple sequencing
  * @since 1.0.0
  */
 export const tupled: <A>(self: ReadonlyArray<A>) => ReadonlyArray<readonly [A]> = functor.tupled(
-  Functor
+  Covariant
 )
 
 /**
- * Sequentially zips this effect with the specified effect.
- *
- * @category tuple sequencing
  * @since 1.0.0
  */
 export const zipFlatten: <B>(

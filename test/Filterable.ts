@@ -12,7 +12,7 @@ describe.concurrent("Filterable", () => {
     deepStrictEqual(pipe([1, 2, 3, 4], filter((a) => a > 1)), [2, 3, 4])
 
     const filterMap = Filterable.filterMapComposition(
-      ReadonlyArray.Functor,
+      ReadonlyArray.Covariant,
       ReadonlyArray.Filterable
     )
 

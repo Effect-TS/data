@@ -72,7 +72,7 @@ export type Either<E, A> = Left<E> | Right<A>
  * @since 1.0.0
  */
 export interface EitherTypeLambda extends TypeLambda {
-  readonly type: Either<this["Out2"], this["Out1"]>
+  readonly type: Either<this["Out1"], this["Target"]>
 }
 
 /**
@@ -88,7 +88,7 @@ export interface EitherTypeLambdaFix<E> extends TypeLambda {
  * @since 1.0.0
  */
 export interface ValidatedT<F extends TypeLambda, E> extends TypeLambda {
-  readonly type: Kind<F, this["InOut1"], this["In1"], this["Out3"], E, this["Out1"]>
+  readonly type: Kind<F, this["In"], this["Out2"], E, this["Target"]>
 }
 
 /**
@@ -373,18 +373,6 @@ export const orElse: <E2, B>(
 ) => <E1, A>(self: Either<E1, A>) => Either<E2, A | B> = (that) => (fa) => isLeft(fa) ? that : fa
 
 /**
- * @since 1.0.0
- */
-export const extend: <E, A, B>(f: (wa: Either<E, A>) => B) => (wa: Either<E, A>) => Either<E, B> = (
-  f
-) => (wa) => isLeft(wa) ? wa : right(f(wa))
-
-/**
- * @since 1.0.0
- */
-export const duplicate: <E, A>(ma: Either<E, A>) => Either<E, Either<E, A>> = extend(identity)
-
-/**
  * Map each element of a structure to an action, evaluate these actions from left to right, and collect the Eithers.
  *
  * @example
@@ -567,7 +555,7 @@ export const map: <A, B>(f: (a: A) => B) => <E>(fa: Either<E, A>) => Either<E, B
  * @category instances
  * @since 1.0.0
  */
-export const Functor: functor.Functor<EitherTypeLambda> = {
+export const Covariant: functor.Covariant<EitherTypeLambda> = {
   map
 }
 
@@ -576,7 +564,7 @@ export const Functor: functor.Functor<EitherTypeLambda> = {
  * @since 1.0.0
  */
 export const flap: <A>(a: A) => <E, B>(fab: Either<E, (a: A) => B>) => Either<E, B> = functor.flap(
-  Functor
+  Covariant
 )
 
 /**
@@ -585,7 +573,7 @@ export const flap: <A>(a: A) => <E, B>(fab: Either<E, (a: A) => B>) => Either<E,
  * @category mapping
  * @since 1.0.0
  */
-export const as: <B>(b: B) => <E>(self: Either<E, unknown>) => Either<E, B> = functor.as(Functor)
+export const as: <B>(b: B) => <E>(self: Either<E, unknown>) => Either<E, B> = functor.as(Covariant)
 
 /**
  * Returns the effect Eithering from mapping the Right of this effect to unit.
@@ -593,7 +581,7 @@ export const as: <B>(b: B) => <E>(self: Either<E, unknown>) => Either<E, B> = fu
  * @category mapping
  * @since 1.0.0
  */
-export const unit: <E>(self: Either<E, unknown>) => Either<E, void> = functor.unit(Functor)
+export const asUnit = functor.asUnit(Covariant)
 
 /**
  * @category instances
@@ -660,9 +648,6 @@ export const zipRight: <E2, A>(
 ) => <E1>(self: Either<E1, unknown>) => Either<E2 | E1, A> = flatMap_.zipRight(FlatMap)
 
 /**
- * Sequentially zips this effect with the specified effect using the specified combiner function.
- *
- * @category tuple sequencing
  * @since 1.0.0
  */
 export const zipWith: <E2, B, A, C>(
@@ -1213,14 +1198,16 @@ export const Do: Either<never, {}> = right(internal.Do)
  */
 export const bindTo: <N extends string>(
   name: N
-) => <E, A>(self: Either<E, A>) => Either<E, { readonly [K in N]: A }> = functor.bindTo(Functor)
+) => <E, A>(self: Either<E, A>) => Either<E, { readonly [K in N]: A }> = functor.bindTo(Covariant)
 
 const let_: <N extends string, A extends object, B>(
   name: Exclude<N, keyof A>,
   f: (a: A) => B
 ) => <E>(
   self: Either<E, A>
-) => Either<E, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = functor.let(Functor)
+) => Either<E, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = functor.let(
+  Covariant
+)
 
 export {
   /**
@@ -1256,26 +1243,14 @@ export const bindRight: <N extends string, A extends object, E2, B>(
 ) => Either<E1 | E2, { readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }> = semigroupal
   .bindRight(Semigroupal)
 
-// -------------------------------------------------------------------------------------
-// tuple sequencing
-// -------------------------------------------------------------------------------------
-
 /**
- * @category tuple sequencing
  * @since 1.0.0
  */
-export const Zip: Either<never, readonly []> = right(internal.empty)
+export const tupled: <E, A>(self: Either<E, A>) => Either<E, readonly [A]> = functor.tupled(
+  Covariant
+)
 
 /**
- * @category tuple sequencing
- * @since 1.0.0
- */
-export const tupled: <E, A>(self: Either<E, A>) => Either<E, readonly [A]> = functor.tupled(Functor)
-
-/**
- * Sequentially zips this effect with the specified effect.
- *
- * @category tuple sequencing
  * @since 1.0.0
  */
 export const zipFlatten: <E2, B>(
