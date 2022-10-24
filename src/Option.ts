@@ -406,7 +406,7 @@ export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<Option
  * assert.deepStrictEqual(pipe(none, M.combine(some(1))), some(1))
  * assert.deepStrictEqual(pipe(some(1), M.combine(some(2))), some(3))
  *
- * @category instances
+ * @category lifting
  * @since 1.0.0
  */
 export const liftSemigroup: <A>(S: Semigroup<A>) => Semigroup<Option<A>> = nonEmptyApplicative
