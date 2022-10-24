@@ -1,9 +1,9 @@
 /**
  * @since 1.0.0
  */
-import type * as monoid from "@fp-ts/core/Monoid"
-import type * as semigroup from "@fp-ts/core/Semigroup"
-import type * as sortable from "@fp-ts/core/Sortable"
+import type * as monoid from "@fp-ts/core/typeclass/Monoid"
+import type * as order from "@fp-ts/core/typeclass/Order"
+import type * as semigroup from "@fp-ts/core/typeclass/Semigroup"
 import type { LazyArg } from "@fp-ts/data/Function"
 import type { Refinement } from "@fp-ts/data/Refinement"
 
@@ -133,7 +133,7 @@ export const MonoidAny: monoid.Monoid<boolean> = {
  * @category instances
  * @since 1.0.0
  */
-export const Sortable: sortable.Sortable<boolean> = {
+export const Order: order.Order<boolean> = {
   compare: (that) => (self) => self < that ? -1 : self > that ? 1 : 0
 }
 
