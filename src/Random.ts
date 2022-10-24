@@ -7,6 +7,8 @@
  * Adapted for TypeScript from Thom's original code at https://github.com/thomcc/pcg-random
  *
  * forked from https://github.com/frptools
+ *
+ * @since 1.0.0
  */
 
 /** @internal */
@@ -37,6 +39,9 @@ export type OptionalNumber = number | null | undefined
  * PCG is a family of simple fast space-efficient statistically good algorithms
  * for random number generation. Unlike many general-purpose RNGs, they are also
  * hard to predict.
+ *
+ * @category model
+ * @since 1.0.0
  */
 export class PCGRandom {
   private _state: Int32Array
@@ -112,14 +117,21 @@ export class PCGRandom {
   }
 
   /**
-   * @returns A copy of the internal state of this random number generator as a JavaScript Array
+   * Returns a copy of the internal state of this random number generator as a
+   * JavaScript Array.
+   *
+   * @category getters
+   * @since 1.0.0
    */
   getState(): PCGRandomState {
     return [this._state[0]!, this._state[1]!, this._state[2]!, this._state[3]!]
   }
 
   /**
-   * Restore state previously retrieved using getState()
+   * Restore state previously retrieved using `getState()`.
+   *
+   * @category mutations
+   * @since 1.0.0
    */
   setState(state: PCGRandomState) {
     this._state[0] = state[0]
@@ -128,7 +140,12 @@ export class PCGRandom {
     this._state[3] = state[3] | 1
   }
 
-  /// Get a uniformly distributed 32 bit integer between [0, max).
+  /**
+   * Get a uniformly distributed 32 bit integer between [0, max).
+   *
+   * @category getter
+   * @since 1.0.0
+   */
   integer(max: number) {
     if (!max) {
       return this._next()
@@ -147,14 +164,20 @@ export class PCGRandom {
     return num % max
   }
 
-  /// Get a uniformly distributed IEEE-754 double between 0.0 and 1.0, with
-  /// 53 bits of precision (every bit of the mantissa is randomized).
+  /**
+   * Get a uniformly distributed IEEE-754 double between 0.0 and 1.0, with
+   * 53 bits of precision (every bit of the mantissa is randomized).
+   *
+   * @category getters
+   * @since 1.0.0
+   */
   number() {
     const hi = (this._next() & 0x03ffffff) * 1.0
     const lo = (this._next() & 0x07ffffff) * 1.0
     return (hi * BIT_27 + lo) / BIT_53
   }
 
+  /** @internal */
   private _next() {
     // save current state (what we'll use for this number)
     const oldHi = this._state[0]! >>> 0
