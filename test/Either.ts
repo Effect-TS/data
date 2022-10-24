@@ -210,12 +210,12 @@ describe.concurrent("Either", () => {
     })
 
     it("mapBoth", () => {
-      const f = Either.mapBoth(String.size, (n: number) => n > 2)
+      const f = Either.bimap(String.size, (n: number) => n > 2)
       deepStrictEqual(pipe(Either.right(1), f), Either.right(false))
     })
 
     it("mapError", () => {
-      const f = Either.mapError(double)
+      const f = Either.mapLeft(double)
       deepStrictEqual(pipe(Either.right("a"), f), Either.right("a"))
       deepStrictEqual(pipe(Either.left(1), f), Either.left(2))
     })
