@@ -33,4 +33,33 @@ describe.concurrent("Chunk", () => {
       assert.isTrue
     )
   })
+
+  it("zipWithIndex", () => {
+    pipe(
+      C.empty,
+      C.zipWithIndex,
+      equals(C.unsafeFromArray([])),
+      assert.isTrue
+    )
+    pipe(
+      C.unsafeFromArray([1, 2, 3, 4]),
+      C.zipWithIndex,
+      equals(C.unsafeFromArray([[1, 0], [2, 1], [3, 2], [4, 3]])),
+      assert.isTrue
+    )
+  })
+
+  it("zipWithIndexOffset", () => {
+    pipe(
+      C.empty,
+      C.zipWithIndexOffset(5),
+      equals(C.unsafeFromArray([]))
+    )
+    pipe(
+      C.unsafeFromArray([1, 2, 3, 4]),
+      C.zipWithIndexOffset(5),
+      equals(C.unsafeFromArray([[1, 5], [2, 6], [3, 7], [4, 8]])),
+      assert.isTrue
+    )
+  })
 })
