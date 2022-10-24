@@ -1455,3 +1455,33 @@ export const crossWith = <A, B, C>(that: Chunk<B>, f: (a: A, b: B) => C) =>
  */
 export const cross = <B>(that: Chunk<B>) =>
   <A>(self: Chunk<A>): Chunk<readonly [A, B]> => pipe(self, crossWith(that, (a, b) => [a, b]))
+
+/**
+ * Zips this chunk with the index of every element, starting from the initial
+ * index value.
+ *
+ * @category elements
+ * @since 1.0.0
+ */
+export const zipWithIndex = <A>(self: Chunk<A>): Chunk<readonly [A, number]> =>
+  zipWithIndexOffset(0)(self)
+
+/**
+ * Zips this chunk with the index of every element, starting from the initial
+ * index value.
+ *
+ * @category elements
+ * @since 1.0.0
+ */
+export const zipWithIndexOffset = (offset: number) =>
+  <A>(self: Chunk<A>): Chunk<[A, number]> => {
+    const iterator = self[Symbol.iterator]()
+    let next: IteratorResult<A>
+    let i = offset
+    const builder: Array<[A, number]> = []
+    while (!(next = iterator.next()).done) {
+      builder.push([next.value, i])
+      i = i + 1
+    }
+    return unsafeFromArray(builder)
+  }
