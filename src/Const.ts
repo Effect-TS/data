@@ -137,7 +137,7 @@ export const map: <A, B>(f: (a: A) => B) => <S>(self: Const<S, A>) => Const<S, B
  * @category instances
  * @since 1.0.0
  */
-export const Functor: functor.Functor<ConstTypeLambda> = {
+export const Covariant: functor.Covariant<ConstTypeLambda> = {
   map
 }
 
@@ -146,7 +146,7 @@ export const Functor: functor.Functor<ConstTypeLambda> = {
  * @since 1.0.0
  */
 export const flap: <A>(a: A) => <S, B>(self: Const<S, (a: A) => B>) => Const<S, B> = functor.flap(
-  Functor
+  Covariant
 )
 
 /**

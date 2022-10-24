@@ -77,7 +77,7 @@ describe.concurrent("Identity", () => {
 
   it("map", () => {
     U.deepStrictEqual(pipe("aaa", _.map((s) => s.length)), 3)
-    U.deepStrictEqual(pipe("aaa", _.Functor.map((s) => s.length)), 3)
+    U.deepStrictEqual(pipe("aaa", _.Covariant.map((s) => s.length)), 3)
   })
 
   it("flap", () => {

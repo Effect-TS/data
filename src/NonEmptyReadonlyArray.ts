@@ -856,10 +856,10 @@ export const ap: <A>(
 /**
  * @since 1.0.0
  */
-export const extend = <A, B>(f: (as: NonEmptyReadonlyArray<A>) => B) =>
-  (as: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<B> => {
-    let next: ReadonlyArray<A> = tail(as)
-    const out: internal.NonEmptyArray<B> = [f(as)]
+export const extend = <A, B>(f: (fa: NonEmptyReadonlyArray<A>) => B) =>
+  (self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<B> => {
+    let next: ReadonlyArray<A> = tail(self)
+    const out: internal.NonEmptyArray<B> = [f(self)]
     while (internal.isNonEmpty(next)) {
       out.push(f(next))
       next = tail(next)
@@ -870,15 +870,8 @@ export const extend = <A, B>(f: (as: NonEmptyReadonlyArray<A>) => B) =>
 /**
  * @since 1.0.0
  */
-export const duplicate: <A>(
-  ma: NonEmptyReadonlyArray<A>
-) => NonEmptyReadonlyArray<NonEmptyReadonlyArray<A>> = extend(identity)
-
-/**
- * @since 1.0.0
- */
 export const flatten: <A>(
-  mma: NonEmptyReadonlyArray<NonEmptyReadonlyArray<A>>
+  self: NonEmptyReadonlyArray<NonEmptyReadonlyArray<A>>
 ) => NonEmptyReadonlyArray<A> = flatMap(identity)
 
 /**
@@ -896,23 +889,12 @@ export const mapWithIndex = <A, B>(
   }
 
 /**
- * @category instances
- * @since 1.0.0
- */
-export const FunctorWithIndex: functorWithIndex.FunctorWithIndex<
-  NonEmptyReadonlyArrayTypeLambda,
-  number
-> = {
-  mapWithIndex
-}
-
-/**
  * @category traversing
  * @since 1.0.0
  */
 export const traverseWithIndex = <F extends TypeLambda>(Semigroupal: semigroupal.Semigroupal<F>) =>
-  <A, S, R, O, E, B>(f: (a: A, i: number) => Kind<F, S, R, O, E, B>) =>
-    (self: NonEmptyReadonlyArray<A>): Kind<F, S, R, O, E, NonEmptyReadonlyArray<B>> => {
+  <A, S, R, O, E, B>(f: (a: A, i: number) => Kind<F, R, O, E, B>) =>
+    (self: NonEmptyReadonlyArray<A>): Kind<F, R, O, E, NonEmptyReadonlyArray<B>> => {
       const fbs = pipe(self, mapWithIndex(f))
       return pipe(head(fbs), Semigroupal.zipMany(tail(fbs)))
     }
@@ -923,8 +905,8 @@ export const traverseWithIndex = <F extends TypeLambda>(Semigroupal: semigroupal
  */
 export const traverse = <F extends TypeLambda>(Semigroupal: semigroupal.Semigroupal<F>) =>
   <A, S, R, O, E, B>(
-    f: (a: A) => Kind<F, S, R, O, E, B>
-  ): ((self: NonEmptyReadonlyArray<A>) => Kind<F, S, R, O, E, NonEmptyReadonlyArray<B>>) =>
+    f: (a: A) => Kind<F, R, O, E, B>
+  ): ((self: NonEmptyReadonlyArray<A>) => Kind<F, R, O, E, NonEmptyReadonlyArray<B>>) =>
     traverseWithIndex(Semigroupal)(f)
 
 /**
@@ -934,13 +916,8 @@ export const traverse = <F extends TypeLambda>(Semigroupal: semigroupal.Semigrou
 export const sequence = <F extends TypeLambda>(
   Semigroupal: semigroupal.Semigroupal<F>
 ): (<S, R, O, E, A>(
-  self: NonEmptyReadonlyArray<Kind<F, S, R, O, E, A>>
-) => Kind<F, S, R, O, E, NonEmptyReadonlyArray<A>>) => traverse(Semigroupal)(identity)
-
-/**
- * @since 1.0.0
- */
-export const extract: <A>(self: NonEmptyReadonlyArray<A>) => A = internal.head
+  self: NonEmptyReadonlyArray<Kind<F, R, O, E, A>>
+) => Kind<F, R, O, E, NonEmptyReadonlyArray<A>>) => traverse(Semigroupal)(identity)
 
 // -------------------------------------------------------------------------------------
 // type lambdas
@@ -951,7 +928,7 @@ export const extract: <A>(self: NonEmptyReadonlyArray<A>) => A = internal.head
  * @since 1.0.0
  */
 export interface NonEmptyReadonlyArrayTypeLambda extends TypeLambda {
-  readonly type: NonEmptyReadonlyArray<this["Out1"]>
+  readonly type: NonEmptyReadonlyArray<this["Target"]>
 }
 
 // -------------------------------------------------------------------------------------
@@ -973,7 +950,7 @@ export declare const getUnionSemigroup: <A>() => Semigroup<NonEmptyReadonlyArray
  * @category instances
  * @since 1.0.0
  */
-export const Functor: functor.Functor<NonEmptyReadonlyArrayTypeLambda> = {
+export const Covariant: functor.Covariant<NonEmptyReadonlyArrayTypeLambda> = {
   map
 }
 
@@ -984,7 +961,7 @@ export const Functor: functor.Functor<NonEmptyReadonlyArrayTypeLambda> = {
 export const flap: <A>(
   a: A
 ) => <B>(fab: NonEmptyReadonlyArray<(a: A) => B>) => NonEmptyReadonlyArray<B> = functor.flap(
-  Functor
+  Covariant
 )
 
 /**
@@ -994,7 +971,7 @@ export const flap: <A>(
  * @since 1.0.0
  */
 export const as: <B>(b: B) => (self: NonEmptyReadonlyArray<unknown>) => NonEmptyReadonlyArray<B> =
-  functor.as(Functor)
+  functor.as(Covariant)
 
 /**
  * Returns the effect resulting from mapping the success of this effect to unit.
@@ -1003,7 +980,7 @@ export const as: <B>(b: B) => (self: NonEmptyReadonlyArray<unknown>) => NonEmpty
  * @since 1.0.0
  */
 export const unit: (self: NonEmptyReadonlyArray<unknown>) => NonEmptyReadonlyArray<void> = functor
-  .unit(Functor)
+  .unit(Covariant)
 
 /**
  * @category instances
@@ -1139,9 +1116,9 @@ export const reduceRightWithIndex = <B, A>(b: B, f: (i: number, a: A, b: B) => B
  */
 export const reduceKind = <F extends TypeLambda>(Flattenable: flatMap_.FlatMap<F>) =>
   <S, R, O, E, B, A>(
-    fb: Kind<F, S, R, O, E, B>,
-    f: (b: B, a: A) => Kind<F, S, R, O, E, B>
-  ): ((self: NonEmptyReadonlyArray<A>) => Kind<F, S, R, O, E, B>) =>
+    fb: Kind<F, R, O, E, B>,
+    f: (b: B, a: A) => Kind<F, R, O, E, B>
+  ): ((self: NonEmptyReadonlyArray<A>) => Kind<F, R, O, E, B>) =>
     reduce(fb, (fb, a) =>
       pipe(
         fb,
@@ -1194,7 +1171,7 @@ export const Do: NonEmptyReadonlyArray<{}> = of(internal.Do)
 export const bindTo: <N extends string>(
   name: N
 ) => <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<{ readonly [K in N]: A }> =
-  functor.bindTo(Functor)
+  functor.bindTo(Covariant)
 
 const let_: <N extends string, A extends object, B>(
   name: Exclude<N, keyof A>,
@@ -1202,7 +1179,7 @@ const let_: <N extends string, A extends object, B>(
 ) => (
   self: NonEmptyReadonlyArray<A>
 ) => NonEmptyReadonlyArray<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = functor
-  .let(Functor)
+  .let(Covariant)
 
 export {
   /**
@@ -1239,27 +1216,13 @@ export const bindRight: <N extends string, A extends object, B>(
   semigroupal
     .bindRight(Semigroupal)
 
-// -------------------------------------------------------------------------------------
-// tuple sequencing
-// -------------------------------------------------------------------------------------
-
 /**
- * @category tuple sequencing
- * @since 1.0.0
- */
-export const Zip: NonEmptyReadonlyArray<readonly []> = of(internal.empty)
-
-/**
- * @category tuple sequencing
  * @since 1.0.0
  */
 export const tupled: <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<readonly [A]> =
-  functor.tupled(Functor)
+  functor.tupled(Covariant)
 
 /**
- * Sequentially zips this effect with the specified effect.
- *
- * @category tuple sequencing
  * @since 1.0.0
  */
 export const zipFlatten: <B>(

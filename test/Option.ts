@@ -327,7 +327,7 @@ describe.concurrent("Option", () => {
   })
 
   it("getMonoid", () => {
-    const M = Option.getMonoid(String.Semigroup)
+    const M = Option.liftSemigroup(String.Semigroup)
     deepStrictEqual(pipe(Option.none, M.combine(Option.none)), Option.none)
     deepStrictEqual(pipe(Option.none, M.combine(Option.some("a"))), Option.some("a"))
     deepStrictEqual(pipe(Option.some("a"), M.combine(Option.none)), Option.some("a"))
