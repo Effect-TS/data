@@ -2,7 +2,7 @@
  * @since 1.0.0
  */
 
-import type { Sortable } from "@fp-ts/core/Sortable"
+import type { Order } from "@fp-ts/core/typeclass/Order"
 import type { Either } from "@fp-ts/data/Either"
 import * as Equal from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
@@ -1155,7 +1155,7 @@ export const size = <A>(self: Chunk<A>): number => self.length
  * @since 1.0.0
  * @category elements
  */
-export const sort = <B>(O: Sortable<B>) =>
+export const sort = <B>(O: Order<B>) =>
   <A extends B>(as: Chunk<A>): Chunk<A> =>
     pipe(
       toArray(as),
