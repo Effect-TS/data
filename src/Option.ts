@@ -209,8 +209,8 @@ export const Pointed: pointed.Pointed<OptionTypeLambda> = {
  * @category sequencing
  * @since 1.0.0
  */
-export const flatMap: <A, B>(f: (a: A) => Option<B>) => (self: Option<A>) => Option<B> = (f) =>
-  (self) => isNone(self) ? none : f(self.value)
+export const flatMap = <A, B>(f: (a: A) => Option<B>) =>
+  (self: Option<A>): Option<B> => isNone(self) ? none : f(self.value)
 
 /**
  * @category instances

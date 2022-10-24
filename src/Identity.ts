@@ -2,19 +2,27 @@
  * @since 1.0.0
  */
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
-import type * as applicative from "@fp-ts/core/typeclass/Applicative"
+import * as applicative from "@fp-ts/core/typeclass/Applicative"
 import * as chainable from "@fp-ts/core/typeclass/Chainable"
+import type * as coproduct from "@fp-ts/core/typeclass/Coproduct"
 import * as covariant from "@fp-ts/core/typeclass/Covariant"
 import * as flatMap_ from "@fp-ts/core/typeclass/FlatMap"
-import type * as foldable from "@fp-ts/core/typeclass/Foldable"
+import * as foldable from "@fp-ts/core/typeclass/Foldable"
 import * as invariant from "@fp-ts/core/typeclass/Invariant"
 import type * as monad from "@fp-ts/core/typeclass/Monad"
 import type { Monoid } from "@fp-ts/core/typeclass/Monoid"
+import type * as nonEmptyAlternative from "@fp-ts/core/typeclass/NonEmptyAlternative"
+import * as nonEmptyApplicative from "@fp-ts/core/typeclass/NonEmptyApplicative"
+import * as nonEmptyCoproduct from "@fp-ts/core/typeclass/NonEmptyCoproduct"
 import * as nonEmptyProduct from "@fp-ts/core/typeclass/NonEmptyProduct"
 import * as of_ from "@fp-ts/core/typeclass/Of"
 import type * as pointed from "@fp-ts/core/typeclass/Pointed"
-import type * as traversable from "@fp-ts/core/typeclass/Traversable"
-import { flow, identity } from "@fp-ts/data/Function"
+import * as product_ from "@fp-ts/core/typeclass/Product"
+import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
+import * as traversable from "@fp-ts/core/typeclass/Traversable"
+import type { Either } from "@fp-ts/data/Either"
+import { identity } from "@fp-ts/data/Function"
+import * as internal from "@fp-ts/data/internal/Common"
 
 /**
  * @category models
@@ -31,16 +39,9 @@ export interface IdentityTypeLambda extends TypeLambda {
 }
 
 /**
- * @category constructors
  * @since 1.0.0
  */
-export const of: <A>(a: A) => Identity<A> = identity
-
-/**
- * @category conversions
- * @since 1.0.0
- */
-export const toReadonlyArray = <A>(self: Identity<A>): ReadonlyArray<A> => [self]
+export const map = <A, B>(f: (a: A) => B) => (self: Identity<A>): Identity<B> => f(self)
 
 /**
  * @category instances
@@ -72,6 +73,47 @@ export const Covariant: covariant.Covariant<IdentityTypeLambda> = {
   map
 }
 
+const let_: <N extends string, A extends object, B>(
+  name: Exclude<N, keyof A>,
+  f: (a: A) => B
+) => (
+  self: Identity<A>
+) => Identity<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = covariant.let(
+  Covariant
+)
+
+export { let_ as let }
+
+/**
+ * @category mapping
+ * @since 1.0.0
+ */
+export const flap: <A>(a: A) => <B>(fab: Identity<(a: A) => B>) => Identity<B> = covariant.flap(
+  Covariant
+)
+
+/**
+ * Maps the success value of this effect to the specified constant value.
+ *
+ * @category mapping
+ * @since 1.0.0
+ */
+export const as: <B>(b: B) => <_>(self: Identity<_>) => Identity<B> = covariant.as(Covariant)
+
+/**
+ * Returns the effect resulting from mapping the success of this effect to unit.
+ *
+ * @category mapping
+ * @since 1.0.0
+ */
+export const asUnit: <_>(self: Identity<_>) => Identity<void> = covariant.asUnit(Covariant)
+
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+export const of: <A>(a: A) => Identity<A> = identity
+
 /**
  * @category instances
  * @since 1.0.0
@@ -79,6 +121,11 @@ export const Covariant: covariant.Covariant<IdentityTypeLambda> = {
 export const Of: of_.Of<IdentityTypeLambda> = {
   of
 }
+
+/**
+ * @since 1.0.0
+ */
+export const unit: Identity<void> = of_.unit(Of)
 
 /**
  * @category do notation
@@ -96,30 +143,6 @@ export const Pointed: pointed.Pointed<IdentityTypeLambda> = {
 }
 
 /**
- * @category mapping
- * @since 1.0.0
- */
-export const flap: <A>(a: A) => <B>(self: Identity<(a: A) => B>) => Identity<B> = covariant.flap(
-  Covariant
-)
-
-/**
- * Maps the success value of this effect to the specified constant value.
- *
- * @category mapping
- * @since 1.0.0
- */
-export const as: <B>(b: B) => <A>(self: Identity<A>) => Identity<B> = covariant.as(Covariant)
-
-/**
- * Returns the effect resulting from mapping the success of this effect to unit.
- *
- * @category mapping
- * @since 1.0.0
- */
-export const asUnit: <A>(self: Identity<A>) => Identity<void> = covariant.asUnit(Covariant)
-
-/**
  * @category sequencing
  * @since 1.0.0
  */
@@ -135,14 +158,24 @@ export const FlatMap: flatMap_.FlatMap<IdentityTypeLambda> = {
 }
 
 /**
- * Sequences the specified effect after this effect, but ignores the value
- * produced by the effect.
- *
- * @category sequencing
  * @since 1.0.0
  */
-export const andThen: <B>(that: B) => <_>(self: _) => B = flatMap_
+export const flatten: <A>(self: Identity<Identity<A>>) => Identity<A> = flatMap_
+  .flatten(FlatMap)
+
+/**
+ * @since 1.0.0
+ */
+export const andThen: <B>(that: Identity<B>) => <_>(self: Identity<_>) => Identity<B> = flatMap_
   .andThen(FlatMap)
+
+/**
+ * @since 1.0.0
+ */
+export const composeKleisliArrow: <B, C>(
+  bfc: (b: B) => Identity<C>
+) => <A>(afb: (a: A) => Identity<B>) => (a: A) => Identity<C> = flatMap_
+  .composeKleisliArrow(FlatMap)
 
 /**
  * @category instances
@@ -154,7 +187,31 @@ export const Chainable: chainable.Chainable<IdentityTypeLambda> = {
 }
 
 /**
- * A variant of `flatMap` that ignores the value produced by this effect.
+ * @category do notation
+ * @since 1.0.0
+ */
+export const bind: <N extends string, A extends object, B>(
+  name: Exclude<N, keyof A>,
+  f: (a: A) => Identity<B>
+) => (
+  self: Identity<A>
+) => Identity<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = chainable.bind(
+  Chainable
+)
+
+/**
+ * Returns an effect that effectfully "peeks" at the success of this effect.
+ *
+ * @since 1.0.0
+ */
+export const tap: <A, _>(f: (a: A) => Identity<_>) => (self: Identity<A>) => Identity<A> = chainable
+  .tap(
+    Chainable
+  )
+
+/**
+ * Sequences the specified effect after this effect, but ignores the value
+ * produced by the effect.
  *
  * @category sequencing
  * @since 1.0.0
@@ -164,10 +221,20 @@ export const andThenDiscard: <_>(that: Identity<_>) => <A>(self: Identity<A>) =>
     .andThenDiscard(Chainable)
 
 /**
+ * @category instances
  * @since 1.0.0
  */
-export const product = <B>(that: Identity<B>) =>
-  <A>(self: Identity<A>): Identity<readonly [A, B]> => [self, that]
+export const Monad: monad.Monad<IdentityTypeLambda> = {
+  ...Pointed,
+  ...FlatMap
+}
+
+/**
+ * @since 1.0.0
+ */
+export const product = <B>(
+  that: Identity<B>
+) => <A>(self: Identity<A>): Identity<readonly [A, B]> => [self, that]
 
 /**
  * @category instances
@@ -177,21 +244,97 @@ export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<IdentityTypeLambda
   ...Invariant,
   product,
   productMany: <A>(collection: Iterable<Identity<A>>) =>
-    (self: Identity<A>): Identity<readonly [A, ...Array<A>]> => {
-      const out: [A, ...Array<A>] = [self]
-      for (const a of collection) {
-        out.push(a)
-      }
-      return out
-    }
+    (self: Identity<A>): Identity<readonly [A, ...Array<A>]> => [self, ...collection]
+}
+
+/**
+ * A variant of `bind` that sequentially ignores the scope.
+ *
+ * @category do notation
+ * @since 1.0.0
+ */
+export const bindIdentity: <N extends string, A extends object, B>(
+  name: Exclude<N, keyof A>,
+  fb: Identity<B>
+) => (
+  self: Identity<A>
+) => Identity<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = nonEmptyProduct
+  .bindKind(NonEmptyProduct)
+
+/**
+ * @since 1.0.0
+ */
+export const productFlatten: <B>(
+  fb: Identity<B>
+) => <A extends ReadonlyArray<unknown>>(self: Identity<A>) => Identity<readonly [...A, B]> =
+  nonEmptyProduct
+    .productFlatten(NonEmptyProduct)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const Product: product_.Product<IdentityTypeLambda> = {
+  ...Of,
+  ...NonEmptyProduct,
+  productAll: <A>(collection: Iterable<Identity<A>>): Identity<ReadonlyArray<A>> =>
+    internal.fromIterable(collection)
 }
 
 /**
  * @since 1.0.0
  */
-export const ap: <A>(fa: Identity<A>) => <B>(self: Identity<(a: A) => B>) => Identity<B> =
-  nonEmptyProduct
-    .ap(Semigroupal)
+export const tuple: <T extends ReadonlyArray<Identity<any>>>(
+  ...tuple: T
+) => Identity<Readonly<{ [I in keyof T]: [T[I]] extends [Identity<infer A>] ? A : never }>> =
+  product_
+    .tuple(Product)
+
+/**
+ * @since 1.0.0
+ */
+export const struct: <R extends Record<string, Identity<any>>>(
+  r: R
+) => Identity<{ readonly [K in keyof R]: [R[K]] extends [Identity<infer A>] ? A : never }> =
+  product_
+    .struct(Product)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<IdentityTypeLambda> = {
+  ...NonEmptyProduct,
+  ...Covariant
+}
+
+/**
+ * Monoid returning the left-most non-`None` value. If both operands are `Some`s then the inner values are
+ * combined using the provided `Semigroup`
+ *
+ * | x       | y       | combine(y)(x)       |
+ * | ------- | ------- | ------------------- |
+ * | none    | none    | none                |
+ * | some(a) | none    | some(a)             |
+ * | none    | some(a) | some(a)             |
+ * | some(a) | some(b) | some(combine(b)(a)) |
+ *
+ * @example
+ * import { liftSemigroup, some, none } from '@fp-ts/data/Identity'
+ * import * as N from '@fp-ts/data/Number'
+ * import { pipe } from '@fp-ts/data/Function'
+ *
+ * const M = liftSemigroup(N.SemigroupSum)
+ * assert.deepStrictEqual(pipe(none, M.combine(none)), none)
+ * assert.deepStrictEqual(pipe(some(1), M.combine(none)), some(1))
+ * assert.deepStrictEqual(pipe(none, M.combine(some(1))), some(1))
+ * assert.deepStrictEqual(pipe(some(1), M.combine(some(2))), some(3))
+ *
+ * @category instances
+ * @since 1.0.0
+ */
+export const liftSemigroup: <A>(S: Semigroup<A>) => Semigroup<Identity<A>> = nonEmptyApplicative
+  .liftSemigroup(NonEmptyApplicative)
 
 /**
  * Lifts a binary function into `Identity`.
@@ -199,10 +342,11 @@ export const ap: <A>(fa: Identity<A>) => <B>(self: Identity<(a: A) => B>) => Ide
  * @category lifting
  * @since 1.0.0
  */
-export const lift2: <A, B, C>(f: (a: A, b: B) => C) => (fa: A, fb: B) => C = nonEmptyProduct
-  .lift2(
-    Semigroupal
-  )
+export const lift2: <A, B, C>(
+  f: (a: A, b: B) => C
+) => (fa: Identity<A>, fb: Identity<B>) => Identity<C> = nonEmptyApplicative.lift2(
+  NonEmptyApplicative
+)
 
 /**
  * Lifts a ternary function into `Identity`.
@@ -210,41 +354,70 @@ export const lift2: <A, B, C>(f: (a: A, b: B) => C) => (fa: A, fb: B) => C = non
  * @category lifting
  * @since 1.0.0
  */
-export const lift3: <A, B, C, D>(f: (a: A, b: B, c: C) => D) => (fa: A, fb: B, fc: C) => D =
-  nonEmptyProduct
-    .lift3(Semigroupal)
+export const lift3: <A, B, C, D>(
+  f: (a: A, b: B, c: C) => D
+) => (fa: Identity<A>, fb: Identity<B>, fc: Identity<C>) => Identity<D> = nonEmptyApplicative.lift3(
+  NonEmptyApplicative
+)
 
 /**
  * @since 1.0.0
  */
-export const zipAll = <A>(collection: Iterable<Identity<A>>): Identity<ReadonlyArray<A>> =>
-  Array.from(collection)
+export const ap: <A>(
+  fa: Identity<A>
+) => <B>(self: Identity<(a: A) => B>) => Identity<B> = nonEmptyApplicative.ap(
+  NonEmptyApplicative
+)
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const Monoidal: applicative.Monoidal<IdentityTypeLambda> = {
-  map,
-  of,
-  zipAll,
-  zipMany,
-  zipWith
+export const Applicative: applicative.Applicative<IdentityTypeLambda> = {
+  ...NonEmptyApplicative,
+  ...Product
 }
 
 /**
  * @since 1.0.0
  */
-export const flatten: <A>(self: Identity<Identity<A>>) => Identity<A> = flatMap(identity)
+export const liftMonoid: <A>(M: Monoid<A>) => Monoid<Identity<A>> = applicative.liftMonoid(
+  Applicative
+)
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const Monad: monad.Monad<IdentityTypeLambda> = {
-  map,
-  of,
-  flatMap
+export const NonEmptyCoproduct: nonEmptyCoproduct.NonEmptyCoproduct<IdentityTypeLambda> = {
+  ...Invariant,
+  coproduct: () => identity,
+  coproductMany: () => identity
+}
+
+/**
+ * @since 1.0.0
+ */
+export const getSemigroup: <A>() => Semigroup<Identity<A>> = nonEmptyCoproduct.getSemigroup(
+  NonEmptyCoproduct
+)
+
+/**
+ * @since 1.0.0
+ */
+export const coproductEither: <B>(
+  that: Identity<B>
+) => <A>(self: Identity<A>) => Identity<Either<A, B>> = nonEmptyCoproduct.coproductEither(
+  NonEmptyCoproduct
+)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const NonEmptyAlternative: nonEmptyAlternative.NonEmptyAlternative<IdentityTypeLambda> = {
+  ...Covariant,
+  ...NonEmptyCoproduct
 }
 
 /**
@@ -252,12 +425,6 @@ export const Monad: monad.Monad<IdentityTypeLambda> = {
  * @since 1.0.0
  */
 export const reduce = <B, A>(b: B, f: (b: B, a: A) => B) => (self: Identity<A>): B => f(b, self)
-
-/**
- * @category folding
- * @since 1.0.0
- */
-export const foldMap = <M>(_: Monoid<M>) => <A>(f: (a: A) => M) => (self: Identity<A>): M => f(self)
 
 /**
  * @category folding
@@ -276,15 +443,77 @@ export const Foldable: foldable.Foldable<IdentityTypeLambda> = {
 }
 
 /**
+ * @category folding
+ * @since 1.0.0
+ */
+export const foldMap: <M>(M: Monoid<M>) => <A>(f: (a: A) => M) => (self: Identity<A>) => M =
+  foldable
+    .foldMap(Foldable)
+
+/**
+ * @category conversions
+ * @since 1.0.0
+ */
+export const toReadonlyArray: <A>(
+  self: Identity<A>
+) => ReadonlyArray<A> = foldable.toReadonlyArray(Foldable)
+
+/**
+ * @category conversions
+ * @since 1.0.0
+ */
+export const toReadonlyArrayWith: <A, B>(
+  f: (a: A) => B
+) => (self: Identity<A>) => ReadonlyArray<B> = foldable.toReadonlyArrayWith(Foldable)
+
+/**
+ * @category folding
+ * @since 1.0.0
+ */
+export const reduceKind: <G extends TypeLambda>(
+  G: monad.Monad<G>
+) => <B, A, R, O, E>(
+  b: B,
+  f: (b: B, a: A) => Kind<G, R, O, E, B>
+) => (self: Identity<A>) => Kind<G, R, O, E, B> = foldable.reduceKind(Foldable)
+
+/**
+ * @category folding
+ * @since 1.0.0
+ */
+export const reduceRightKind: <G extends TypeLambda>(
+  G: monad.Monad<G>
+) => <B, A, R, O, E>(
+  b: B,
+  f: (b: B, a: A) => Kind<G, R, O, E, B>
+) => (self: Identity<A>) => Kind<G, R, O, E, B> = foldable.reduceRightKind(Foldable)
+
+/**
+ * @category folding
+ * @since 1.0.0
+ */
+export const foldMapKind: <G extends TypeLambda>(
+  G: coproduct.Coproduct<G>
+) => <A, R, O, E, B>(
+  f: (a: A) => Kind<G, R, O, E, B>
+) => (self: Identity<A>) => Kind<G, R, O, E, B> = foldable.foldMapKind(Foldable)
+
+/**
+ * @category filtering
+ * @since 1.0.0
+ */
+export const compact: <A>(foa: Identity<Identity<A>>) => Identity<A> = flatten
+
+/**
  * @category traversing
  * @since 1.0.0
  */
 export const traverse = <F extends TypeLambda>(
-  Monoidal: applicative.Monoidal<F>
+  F: applicative.Applicative<F>
 ) =>
-  <A, S, R, O, E, B>(
-    f: (a: A) => Kind<F, S, R, O, E, B>
-  ): (self: Identity<A>) => Kind<F, S, R, O, E, Identity<B>> => flow(f, Monoidal.map(identity))
+  <A, R, O, E, B>(
+    f: (a: A) => Kind<F, R, O, E, B>
+  ) => (self: Identity<A>): Kind<F, R, O, E, Identity<B>> => f(self)
 
 /**
  * @category instances
@@ -298,66 +527,18 @@ export const Traversable: traversable.Traversable<IdentityTypeLambda> = {
  * @category traversing
  * @since 1.0.0
  */
-export const sequence = <F extends TypeLambda>(
-  _: applicative.Monoidal<F>
-) =>
-  <S, R, O, E, A>(self: Identity<Kind<F, S, R, O, E, A>>): Kind<F, S, R, O, E, Identity<A>> => self
-
-// -------------------------------------------------------------------------------------
-// do notation
-// -------------------------------------------------------------------------------------
-
-const let_: <N extends string, A extends object, B>(
-  name: Exclude<N, keyof A>,
-  f: (a: A) => B
-) => (
-  self: Identity<A>
-) => Identity<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = covariant
-  .let(
-    Covariant
-  )
-
-export {
-  /**
-   * @category do notation
-   * @since 1.0.0
-   */
-  let_ as let
-}
+export const sequence: <F extends TypeLambda>(
+  F: applicative.Applicative<F>
+) => <R, O, E, A>(fas: Identity<Kind<F, R, O, E, A>>) => Kind<F, R, O, E, Identity<A>> = traversable
+  .sequence(Traversable)
 
 /**
- * @category do notation
+ * @category traversing
  * @since 1.0.0
  */
-export const bind: <N extends string, A extends object, B>(
-  name: Exclude<N, keyof A>,
-  f: (a: A) => Identity<B>
-) => (
-  self: Identity<A>
-) => Identity<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = flatMap_
-  .bind(FlatMap)
-
-/**
- * A variant of `bind` that sequentially ignores the scope.
- *
- * @category do notation
- * @since 1.0.0
- */
-export const bindRight: <N extends string, A extends object, B>(
-  name: Exclude<N, keyof A>,
-  fb: Identity<B>
-) => (
-  self: Identity<A>
-) => Identity<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = nonEmptyProduct
-  .bindRight(Semigroupal)
-
-/**
- * @since 1.0.0
- */
-export const zipFlatten: <B>(
-  fb: B
-) => <A extends ReadonlyArray<unknown>>(self: Identity<A>) => Identity<readonly [...A, B]> =
-  nonEmptyProduct
-    .zipFlatten(
-      Semigroupal
-    )
+export const traverseTap: <F extends TypeLambda>(
+  F: applicative.Applicative<F>
+) => <A, R, O, E, B>(
+  f: (a: A) => Kind<F, R, O, E, B>
+) => (self: Identity<A>) => Kind<F, R, O, E, Identity<A>> = traversable
+  .traverseTap(Traversable)
