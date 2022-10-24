@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.6
+
+### Patch Changes
+
+- [#79](https://github.com/fp-ts/data/pull/79) [`7752dd7`](https://github.com/fp-ts/data/commit/7752dd78535e65f36373b919025820e3c2ae5825) Thanks [@IMax153](https://github.com/IMax153)! - fix documentation in CI
+
 ## 0.0.5
 
 ### Patch Changes
