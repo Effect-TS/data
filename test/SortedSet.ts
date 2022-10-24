@@ -16,7 +16,7 @@ class Member implements Eq.Equal {
   }
 }
 
-const OrdMember: Ord.Sortable<Member> = pipe(Str.Sortable, Ord.contramap((member) => member.id))
+const OrdMember: Ord.Sortable<Member> = pipe(Str.Order, Ord.contramap((member) => member.id))
 
 describe.concurrent("SortedSet", () => {
   it("add", () => {
@@ -243,7 +243,7 @@ describe.concurrent("SortedSet", () => {
 
     const result = pipe(
       set,
-      SortedSet.map(Str.Sortable)((member) => member.id.replace(/_\d+/g, ""))
+      SortedSet.map(Str.Order)((member) => member.id.replace(/_\d+/g, ""))
     )
 
     assert.deepEqual(Array.from(result), ["worker"])

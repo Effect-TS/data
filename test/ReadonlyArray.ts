@@ -954,7 +954,7 @@ describe.concurrent("ReadonlyArray", () => {
       readonly c: boolean
     }
     const byName = pipe(
-      String.Sortable,
+      String.Order,
       Sortable.contramap((p: { readonly a: string; readonly b: number }) => p.a)
     )
     const byAge = pipe(
