@@ -199,28 +199,28 @@ describe.concurrent("Option", () => {
       deepStrictEqual(
         pipe(
           Option.some("hello"),
-          Option.traverse(ReadonlyArray.Monoidal)(() => [])
+          Option.traverse(ReadonlyArray.Product)(() => [])
         ),
         []
       )
       deepStrictEqual(
         pipe(
           Option.some("hello"),
-          Option.traverse(ReadonlyArray.Monoidal)((s) => [s.length])
+          Option.traverse(ReadonlyArray.Product)((s) => [s.length])
         ),
         [Option.some(5)]
       )
       deepStrictEqual(
         pipe(
           Option.none,
-          Option.traverse(ReadonlyArray.Monoidal)((s) => [s])
+          Option.traverse(ReadonlyArray.Product)((s) => [s])
         ),
         [Option.none]
       )
     })
 
     it("sequence", () => {
-      const sequence = Option.sequence(ReadonlyArray.Monoidal)
+      const sequence = Option.sequence(ReadonlyArray.Product)
       deepStrictEqual(sequence(Option.some([1, 2])), [Option.some(1), Option.some(2)])
       deepStrictEqual(sequence(Option.none), [Option.none])
     })

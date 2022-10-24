@@ -1,12 +1,12 @@
 /**
  * @since 1.0.0
  */
-import * as contravariant from "@fp-ts/core/typeclass/Contravariant"
 import type { TypeLambda } from "@fp-ts/core/HKT"
+import * as contravariant from "@fp-ts/core/typeclass/Contravariant"
+import type * as invariant from "@fp-ts/core/typeclass/Invariant"
 import type * as monoid from "@fp-ts/core/typeclass/Monoid"
 import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
 import { constFalse, constTrue, flow } from "@fp-ts/data/Function"
-import * as invariant from "@fp-ts/core/typeclass/Invariant"
 
 /**
  * @category models
@@ -92,7 +92,7 @@ export const contramap = <B, A>(f: (b: B) => A) =>
  * @category instances
  * @since 1.0.0
  */
- export const Invariant: invariant.Invariant<PredicateTypeLambda> = {
+export const Invariant: invariant.Invariant<PredicateTypeLambda> = {
   imap: contravariant.imap<PredicateTypeLambda>(contramap)
 }
 

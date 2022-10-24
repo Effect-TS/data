@@ -14,14 +14,18 @@
  */
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import type * as applicative from "@fp-ts/core/typeclass/Applicative"
+import * as chainable from "@fp-ts/core/typeclass/Chainable"
 import * as covariant from "@fp-ts/core/typeclass/Covariant"
-import * as flatMap_ from "@fp-ts/core/typeclass/FlatMap"
+import type * as flatMap_ from "@fp-ts/core/typeclass/FlatMap"
+import * as invariant from "@fp-ts/core/typeclass/Invariant"
 import type * as monad from "@fp-ts/core/typeclass/Monad"
-import * as nonEmptyProduct from "@fp-ts/core/typeclass/NonEmptyProduct"
-import * as product_ from "@fp-ts/core/typeclass/Product"
 import * as nonEmptyApplicative from "@fp-ts/core/typeclass/NonEmptyApplicative"
+import * as nonEmptyProduct from "@fp-ts/core/typeclass/NonEmptyProduct"
+import type * as of_ from "@fp-ts/core/typeclass/Of"
 import * as order from "@fp-ts/core/typeclass/Order"
 import type { Order } from "@fp-ts/core/typeclass/Order"
+import type * as pointed from "@fp-ts/core/typeclass/Pointed"
+import type * as product_ from "@fp-ts/core/typeclass/Product"
 import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
 import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
 import type * as traversable from "@fp-ts/core/typeclass/Traversable"
@@ -30,10 +34,6 @@ import { equals } from "@fp-ts/data/Equal"
 import { flow, identity, pipe } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
 import type { Option } from "@fp-ts/data/Option"
-import * as invariant from "@fp-ts/core/typeclass/Invariant"
-import * as of_ from "@fp-ts/core/typeclass/Of"
-import type * as pointed from "@fp-ts/core/typeclass/Pointed"
-import * as chainable from "@fp-ts/core/typeclass/Chainable"
 
 /**
  * @category models
@@ -862,7 +862,7 @@ export const mapWithIndex = <A, B>(
 export const traverseWithIndex = <F extends TypeLambda>(
   F: nonEmptyApplicative.NonEmptyApplicative<F>
 ) =>
-  <A, S, R, O, E, B>(f: (a: A, i: number) => Kind<F, R, O, E, B>) =>
+  <A, R, O, E, B>(f: (a: A, i: number) => Kind<F, R, O, E, B>) =>
     (self: NonEmptyReadonlyArray<A>): Kind<F, R, O, E, NonEmptyReadonlyArray<B>> => {
       const fbs = pipe(self, mapWithIndex(f))
       return pipe(head(fbs), F.productMany(tail(fbs)))
@@ -873,7 +873,7 @@ export const traverseWithIndex = <F extends TypeLambda>(
  * @since 1.0.0
  */
 export const traverse = <F extends TypeLambda>(F: nonEmptyApplicative.NonEmptyApplicative<F>) =>
-  <A, S, R, O, E, B>(
+  <A, R, O, E, B>(
     f: (a: A) => Kind<F, R, O, E, B>
   ): ((self: NonEmptyReadonlyArray<A>) => Kind<F, R, O, E, NonEmptyReadonlyArray<B>>) =>
     traverseWithIndex(F)(f)
@@ -884,7 +884,7 @@ export const traverse = <F extends TypeLambda>(F: nonEmptyApplicative.NonEmptyAp
  */
 export const sequence = <F extends TypeLambda>(
   F: nonEmptyApplicative.NonEmptyApplicative<F>
-): (<S, R, O, E, A>(
+): (<R, O, E, A>(
   self: NonEmptyReadonlyArray<Kind<F, R, O, E, A>>
 ) => Kind<F, R, O, E, NonEmptyReadonlyArray<A>>) => traverse(F)(identity)
 
@@ -919,7 +919,7 @@ export declare const getUnionSemigroup: <A>() => Semigroup<NonEmptyReadonlyArray
  * @category instances
  * @since 1.0.0
  */
- export const Invariant: invariant.Invariant<NonEmptyReadonlyArrayTypeLambda> = {
+export const Invariant: invariant.Invariant<NonEmptyReadonlyArrayTypeLambda> = {
   imap: covariant.imap<NonEmptyReadonlyArrayTypeLambda>(map)
 }
 
@@ -927,7 +927,7 @@ export declare const getUnionSemigroup: <A>() => Semigroup<NonEmptyReadonlyArray
  * @category do notation
  * @since 1.0.0
  */
- export const bindTo: <N extends string>(
+export const bindTo: <N extends string>(
   name: N
 ) => <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<{ readonly [K in N]: A }> =
   invariant.bindTo(Invariant)
@@ -935,9 +935,8 @@ export declare const getUnionSemigroup: <A>() => Semigroup<NonEmptyReadonlyArray
 /**
  * @since 1.0.0
  */
- export const tupled: <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<readonly [A]> =
- invariant.tupled(Invariant)
-
+export const tupled: <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<readonly [A]> =
+  invariant.tupled(Invariant)
 
 /**
  * @category instances
@@ -977,7 +976,9 @@ export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<NonEmptyReadonlyAr
   ...Covariant
 }
 
-export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<NonEmptyReadonlyArrayTypeLambda> = {
+export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<
+  NonEmptyReadonlyArrayTypeLambda
+> = {
   ...NonEmptyProduct,
   ...Covariant
 }
@@ -1011,7 +1012,7 @@ export const lift3: <A, B, C, D>(
  * @category instances
  * @since 1.0.0
  */
- export const Of: of_.Of<NonEmptyReadonlyArrayTypeLambda> = {
+export const Of: of_.Of<NonEmptyReadonlyArrayTypeLambda> = {
   of
 }
 
@@ -1019,7 +1020,7 @@ export const lift3: <A, B, C, D>(
  * @category instances
  * @since 1.0.0
  */
- export const Product: product_.Product<NonEmptyReadonlyArrayTypeLambda> = {
+export const Product: product_.Product<NonEmptyReadonlyArrayTypeLambda> = {
   ...Of,
   ...NonEmptyProduct,
   productAll
@@ -1038,7 +1039,7 @@ export const Applicative: applicative.Applicative<NonEmptyReadonlyArrayTypeLambd
  * @category instances
  * @since 1.0.0
  */
- export const Pointed: pointed.Pointed<NonEmptyReadonlyArrayTypeLambda> = {
+export const Pointed: pointed.Pointed<NonEmptyReadonlyArrayTypeLambda> = {
   ...Of,
   ...Covariant
 }
@@ -1056,7 +1057,7 @@ export const Monad: monad.Monad<NonEmptyReadonlyArrayTypeLambda> = {
  * @category instances
  * @since 1.0.0
  */
- export const Chainable: chainable.Chainable<NonEmptyReadonlyArrayTypeLambda> = {
+export const Chainable: chainable.Chainable<NonEmptyReadonlyArrayTypeLambda> = {
   ...FlatMap,
   ...Covariant
 }
@@ -1065,15 +1066,14 @@ export const Monad: monad.Monad<NonEmptyReadonlyArrayTypeLambda> = {
  * @category do notation
  * @since 1.0.0
  */
- export const bind: <N extends string, A extends object, B>(
+export const bind: <N extends string, A extends object, B>(
   name: Exclude<N, keyof A>,
   f: (a: A) => NonEmptyReadonlyArray<B>
 ) => (
   self: NonEmptyReadonlyArray<A>
-) => NonEmptyReadonlyArray<{ readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }> = chainable
-  .bind(Chainable)
-
-
+) => NonEmptyReadonlyArray<{ readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }> =
+  chainable
+    .bind(Chainable)
 
 /**
  * Returns an effect that effectfully "peeks" at the success of this effect.
@@ -1092,7 +1092,9 @@ export const Monad: monad.Monad<NonEmptyReadonlyArrayTypeLambda> = {
  *
  * @since 1.0.0
  */
- export const tap: <A, _>(f: (a: A) => NonEmptyReadonlyArray<_>) => (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A> = chainable.tap(
+export const tap: <A, _>(
+  f: (a: A) => NonEmptyReadonlyArray<_>
+) => (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A> = chainable.tap(
   Chainable
 )
 
@@ -1151,7 +1153,7 @@ export const reduceRightWithIndex = <B, A>(b: B, f: (i: number, a: A, b: B) => B
  * @since 1.0.0
  */
 export const reduceKind = <F extends TypeLambda>(Flattenable: flatMap_.FlatMap<F>) =>
-  <S, R, O, E, B, A>(
+  <R, O, E, B, A>(
     fb: Kind<F, R, O, E, B>,
     f: (b: B, a: A) => Kind<F, R, O, E, B>
   ): ((self: NonEmptyReadonlyArray<A>) => Kind<F, R, O, E, B>) =>
