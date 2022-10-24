@@ -32,6 +32,7 @@ import * as number from "@fp-ts/data/Number"
 import * as option from "@fp-ts/data/Option"
 import * as predicate from "@fp-ts/data/Predicate"
 import * as queue from "@fp-ts/data/Queue"
+import * as random from "@fp-ts/data/Random"
 import * as readonlyArray from "@fp-ts/data/ReadonlyArray"
 import * as redBlackTree from "@fp-ts/data/RedBlackTree"
 import * as refinement from "@fp-ts/data/Refinement"
@@ -178,6 +179,10 @@ export {
    * @since 1.0.0
    */
   queue,
+  /**
+   * @since 1.0.0
+   */
+  random,
   /**
    * @since 1.0.0
    */

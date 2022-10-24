@@ -37,8 +37,6 @@ export type OptionalNumber = number | null | undefined
  * PCG is a family of simple fast space-efficient statistically good algorithms
  * for random number generation. Unlike many general-purpose RNGs, they are also
  * hard to predict.
- *
- * @internal
  */
 export class PCGRandom {
   private _state: Int32Array

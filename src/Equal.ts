@@ -2,7 +2,7 @@
  * @since 1.0.0
  */
 import { absurd, pipe } from "@fp-ts/data/Function"
-import { PCGRandom } from "@fp-ts/data/internal/Random"
+import { PCGRandom } from "@fp-ts/data/Random"
 
 /**
  * @since 1.0.0
