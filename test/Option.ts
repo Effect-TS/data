@@ -275,7 +275,7 @@ describe.concurrent("Option", () => {
   })
 
   it("getOrd", () => {
-    const OS = Option.liftSortable(String.Sortable)
+    const OS = Option.liftSortable(String.Order)
     deepStrictEqual(pipe(Option.none, OS.compare(Option.none)), 0)
     deepStrictEqual(pipe(Option.some("a"), OS.compare(Option.none)), 1)
     deepStrictEqual(pipe(Option.none, OS.compare(Option.some("a"))), -1)

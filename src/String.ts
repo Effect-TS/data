@@ -2,9 +2,9 @@
  * @since 1.0.0
  */
 
-import type * as monoid from "@fp-ts/core/Monoid"
-import * as semigroup from "@fp-ts/core/Semigroup"
-import type * as sortable from "@fp-ts/core/Sortable"
+import type * as monoid from "@fp-ts/core/typeclass/Monoid"
+import type * as order from "@fp-ts/core/typeclass/Order"
+import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
 import type { NonEmptyReadonlyArray } from "@fp-ts/data/NonEmptyReadonlyArray"
 import * as RA from "@fp-ts/data/ReadonlyArray"
 import type { Refinement } from "@fp-ts/data/Refinement"
@@ -78,7 +78,7 @@ export const concatAll: (collection: Iterable<string>) => string = Monoid.combin
  * @category instances
  * @since 1.0.0
  */
-export const Sortable: sortable.Sortable<string> = {
+export const Order: order.Order<string> = {
   compare: (that) => (self) => self < that ? -1 : self > that ? 1 : 0
 }
 
