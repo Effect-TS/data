@@ -7,19 +7,20 @@
  *
  * @since 1.0.0
  */
-import type * as bifunctor from "@fp-ts/core/Bifunctor"
-import type { Bounded } from "@fp-ts/core/Bounded"
-import type * as contravariant from "@fp-ts/core/Contravariant"
-import * as functor from "@fp-ts/core/Functor"
 import type { TypeLambda } from "@fp-ts/core/HKT"
-import type { Monoid } from "@fp-ts/core/Monoid"
-import * as monoid from "@fp-ts/core/Monoid"
-import type { Monoidal } from "@fp-ts/core/Monoidal"
-import type { Pointed } from "@fp-ts/core/Pointed"
-import type { Semigroup } from "@fp-ts/core/Semigroup"
-import type { Semigroupal } from "@fp-ts/core/Semigroupal"
-import type { Sortable } from "@fp-ts/core/Sortable"
-import * as sortable from "@fp-ts/core/Sortable"
+import type { Applicative } from "@fp-ts/core/typeclass/Applicative"
+import type * as bicovariant from "@fp-ts/core/typeclass/Bicovariant"
+import type { Bounded } from "@fp-ts/core/typeclass/Bounded"
+import type * as contravariant from "@fp-ts/core/typeclass/Contravariant"
+import * as covariant from "@fp-ts/core/typeclass/Covariant"
+import type * as invariant from "@fp-ts/core/typeclass/Invariant"
+import type { Monoid } from "@fp-ts/core/typeclass/Monoid"
+import * as monoid from "@fp-ts/core/typeclass/Monoid"
+import type { NonEmptyApplicative } from "@fp-ts/core/typeclass/NonEmptyApplicative"
+import type { Order } from "@fp-ts/core/typeclass/Order"
+import * as order from "@fp-ts/core/typeclass/Order"
+import type { Pointed } from "@fp-ts/core/typeclass/Pointed"
+import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
 import { constant, unsafeCoerce } from "@fp-ts/data/Function"
 
 /**
@@ -31,7 +32,7 @@ export declare const phantom: unique symbol
  * @category model
  * @since 1.0.0
  */
-export interface Const</** in out */ S, /** out */ A> {
+export interface Const<S, A> {
   readonly [phantom]: A
   readonly value: S
 }
@@ -45,15 +46,7 @@ export interface Const</** in out */ S, /** out */ A> {
  * @since 1.0.0
  */
 export interface ConstTypeLambda extends TypeLambda {
-  readonly type: Const<this["InOut1"], this["Out1"]>
-}
-
-/**
- * @category type lambdas
- * @since 1.0.0
- */
-export interface ConstTypeLambdaBifunctor extends TypeLambda {
-  readonly type: Const<this["Out2"], this["Out1"]>
+  readonly type: Const<this["Out1"], this["Target"]>
 }
 
 /**
@@ -61,7 +54,7 @@ export interface ConstTypeLambdaBifunctor extends TypeLambda {
  * @since 1.0.0
  */
 export interface ConstTypeLambdaContravariant extends TypeLambda {
-  readonly type: Const<this["InOut1"], this["In1"]>
+  readonly type: Const<this["In"], this["Target"]>
 }
 
 /**
@@ -69,7 +62,7 @@ export interface ConstTypeLambdaContravariant extends TypeLambda {
  * @since 1.0.0
  */
 export interface ConstTypeLambdaFix<S> extends TypeLambda {
-  readonly type: Const<S, this["Out1"]>
+  readonly type: Const<S, this["Target"]>
 }
 
 /**
@@ -90,7 +83,7 @@ export const execute = <S, A>(self: Const<S, A>): S => self.value
  * @category instances
  * @since 1.0.0
  */
-export const liftSortable: <S>(Sortable: Sortable<S>) => Sortable<Const<S, never>> = sortable
+export const liftOrder: <S>(O: Order<S>) => Order<Const<S, never>> = order
   .contramap(execute)
 
 /**
@@ -98,9 +91,9 @@ export const liftSortable: <S>(Sortable: Sortable<S>) => Sortable<Const<S, never
  * @since 1.0.0
  */
 export const liftBounded = <S>(Bounded: Bounded<S>): Bounded<Const<S, never>> => ({
-  compare: liftSortable(Bounded).compare,
-  maximum: make(Bounded.maximum),
-  minimum: make(Bounded.minimum)
+  compare: liftOrder(Bounded).compare,
+  maxBound: make(Bounded.maxBound),
+  minBound: make(Bounded.minBound)
 })
 
 /**
@@ -124,8 +117,6 @@ export const liftMonoid = <S>(Monoid: Monoid<S>): Monoid<Const<S, never>> =>
   )
 
 /**
- * Returns an effect whose success is mapped by the specified `f` function.
- *
  * @category mapping
  * @since 1.0.0
  */
@@ -137,7 +128,16 @@ export const map: <A, B>(f: (a: A) => B) => <S>(self: Const<S, A>) => Const<S, B
  * @category instances
  * @since 1.0.0
  */
-export const Covariant: functor.Covariant<ConstTypeLambda> = {
+export const Invariant: invariant.Invariant<ConstTypeLambda> = {
+  imap: covariant.imap<ConstTypeLambda>(map)
+}
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const Covariant: covariant.Covariant<ConstTypeLambda> = {
+  ...Invariant,
   map
 }
 
@@ -145,15 +145,7 @@ export const Covariant: functor.Covariant<ConstTypeLambda> = {
  * @category mapping
  * @since 1.0.0
  */
-export const flap: <A>(a: A) => <S, B>(self: Const<S, (a: A) => B>) => Const<S, B> = functor.flap(
-  Covariant
-)
-
-/**
- * @category mapping
- * @since 1.0.0
- */
-export const contramap: <B, A>(f: (b: B) => A) => <S>(fa: Const<S, A>) => Const<S, B> = constant(
+const contramap: <B, A>(f: (b: B) => A) => <S>(self: Const<S, A>) => Const<S, B> = constant(
   unsafeCoerce
 )
 
@@ -162,6 +154,7 @@ export const contramap: <B, A>(f: (b: B) => A) => <S>(fa: Const<S, A>) => Const<
  * @since 1.0.0
  */
 export const Contravariant: contravariant.Contravariant<ConstTypeLambdaContravariant> = {
+  ...Invariant,
   contramap
 }
 
@@ -169,8 +162,8 @@ export const Contravariant: contravariant.Contravariant<ConstTypeLambdaContravar
  * @category mapping
  * @since 1.0.0
  */
-export const mapLeft = <S, G>(f: (s: S) => G) =>
-  <A>(self: Const<S, A>): Const<G, A> => make(f(self.value))
+export const mapLeft = <S, T>(f: (s: S) => T) =>
+  <A>(self: Const<S, A>): Const<T, A> => make(f(self.value))
 
 /**
  * Returns an effect whose failure and success channels have been mapped by
@@ -179,7 +172,7 @@ export const mapLeft = <S, G>(f: (s: S) => G) =>
  * @category mapping
  * @since 1.0.0
  */
-export const mapBoth: <S, T, A, B>(
+export const bimap: <S, T, A, B>(
   f: (s: S) => T,
   g: (a: A) => B
 ) => (self: Const<S, A>) => Const<T, B> = unsafeCoerce(mapLeft)
@@ -188,39 +181,43 @@ export const mapBoth: <S, T, A, B>(
  * @category instances
  * @since 1.0.0
  */
-export const Bifunctor: bifunctor.Bifunctor<ConstTypeLambdaBifunctor> = {
-  mapBoth
+export const Bicovariant: bicovariant.Bicovariant<ConstTypeLambda> = {
+  bimap
 }
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const getPointed = <S>(Monoid: Monoid<S>): Pointed<ConstTypeLambdaFix<S>> => ({
-  of: constant(make(Monoid.empty))
-})
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const getSemigroupal = <S>(Semigroup: Semigroup<S>): Semigroupal<ConstTypeLambdaFix<S>> => ({
+export const getPointed = <S>(M: Monoid<S>): Pointed<ConstTypeLambdaFix<S>> => ({
+  imap: Invariant.imap,
   map,
-  zipWith: (that) => (self) => make(Semigroup.combine(that.value)(self.value)),
-  zipMany: (collection) =>
-    (self) => make(Semigroup.combineMany(Array.from(collection).map((c) => c.value))(self.value))
+  of: constant(make(M.empty))
 })
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const getMonoidal = <S>(Monoid: Monoid<S>): Monoidal<ConstTypeLambdaFix<S>> => {
-  const Semigroupal = getSemigroupal(Monoid)
-  const Pointed = getPointed(Monoid)
+export const getNonEmptyApplicative = <S>(
+  S: Semigroup<S>
+): NonEmptyApplicative<ConstTypeLambdaFix<S>> => ({
+  imap: Invariant.imap,
+  map,
+  product: (that) => (self) => make(S.combine(that.value)(self.value)),
+  productMany: (collection) =>
+    (self) => make(S.combineMany(Array.from(collection).map((c) => c.value))(self.value))
+})
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const getApplicative = <S>(M: Monoid<S>): Applicative<ConstTypeLambdaFix<S>> => {
+  const NonEmptyApplicative = getNonEmptyApplicative(M)
   return {
-    ...Pointed,
-    ...Semigroupal,
-    zipAll: (collection) => Semigroupal.zipMany(collection)(make(Monoid.empty))
+    ...getPointed(M),
+    ...NonEmptyApplicative,
+    productAll: (collection) => NonEmptyApplicative.productMany(collection)(make(M.empty))
   }
 }
