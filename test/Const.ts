@@ -24,9 +24,9 @@ describe.concurrent("Const", () => {
   })
 
   it("mapBoth", () => {
-    U.deepStrictEqual(pipe(_.make("a"), _.mapBoth(string.toUpperCase, U.double)), _.make("A"))
+    U.deepStrictEqual(pipe(_.make("a"), _.bimap(string.toUpperCase, U.double)), _.make("A"))
     U.deepStrictEqual(
-      pipe(_.make("a"), _.Bifunctor.mapBoth(string.toUpperCase, U.double)),
+      pipe(_.make("a"), _.Bicovariant.mapBoth(string.toUpperCase, U.double)),
       _.make("A")
     )
   })
@@ -42,7 +42,7 @@ describe.concurrent("Const", () => {
   })
 
   it("getSemigroupal", () => {
-    const Semigroupal = _.getSemigroupal(string.Semigroup)
+    const Semigroupal = _.getNonEmptyApplicative(string.Semigroup)
     U.deepStrictEqual(pipe(_.make("a"), Semigroupal.zipWith(_.make("b"), absurd)), _.make("ab"))
     U.deepStrictEqual(pipe(_.make("a"), Semigroupal.zipMany([])), _.make("a"))
     U.deepStrictEqual(
@@ -52,13 +52,13 @@ describe.concurrent("Const", () => {
   })
 
   it("getMonoidal", () => {
-    const Monoidal = _.getMonoidal(string.Monoid)
+    const Monoidal = _.getApplicative(string.Monoid)
     U.deepStrictEqual(Monoidal.zipAll([]), _.make(""))
     U.deepStrictEqual(Monoidal.zipAll([_.make("a"), _.make("b")]), _.make("ab"))
   })
 
   it("liftSortable", () => {
-    const Sortable = _.liftSortable(number.Order)
+    const Sortable = _.liftOrder(number.Order)
     U.deepStrictEqual(Sortable.compare(_.make(1))(_.make(1)), 0)
     U.deepStrictEqual(Sortable.compare(_.make(1))(_.make(2)), 1)
     U.deepStrictEqual(Sortable.compare(_.make(2))(_.make(1)), -1)
@@ -92,7 +92,7 @@ describe.concurrent("Const", () => {
   })
 
   it("getSemigroupal", () => {
-    const Semigroupal = _.getSemigroupal(string.Semigroup)
+    const Semigroupal = _.getNonEmptyApplicative(string.Semigroup)
     const fa = _.make("a")
     U.deepStrictEqual(pipe(fa, Semigroupal.zipWith(_.make("b"), absurd)), _.make("ab"))
   })
