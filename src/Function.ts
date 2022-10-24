@@ -1,12 +1,9 @@
 /**
  * @since 1.0.0
  */
-import type * as category from "@fp-ts/core/Category"
-import type * as composable from "@fp-ts/core/Composable"
 import type { TypeLambda } from "@fp-ts/core/HKT"
-import type * as monoid from "@fp-ts/core/Monoid"
-import * as semigroup from "@fp-ts/core/Semigroup"
-import type { Endomorphism } from "@fp-ts/data/Endomorphism"
+import type * as monoid from "@fp-ts/core/typeclass/Monoid"
+import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
 
 // -------------------------------------------------------------------------------------
 // type lambdas
@@ -17,41 +14,14 @@ import type { Endomorphism } from "@fp-ts/data/Endomorphism"
  * @since 1.0.0
  */
 export interface FunctionTypeLambda extends TypeLambda {
-  readonly type: (a: this["In1"]) => this["Out1"]
+  readonly type: (a: this["In"]) => this["Target"]
 }
-
-/**
- * @category constructors
- * @since 1.0.0
- */
-export const id: <A>() => Endomorphism<A> = () => identity
 
 /**
  * @since 1.0.0
  */
 export const compose: <B, C>(bc: (b: B) => C) => <A>(ab: (a: A) => B) => (a: A) => C = (bc) =>
   (ab) => flow(ab, bc)
-
-// -------------------------------------------------------------------------------------
-// instances
-// -------------------------------------------------------------------------------------
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Composable: composable.Composable<FunctionTypeLambda> = {
-  compose
-}
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Category: category.Category<FunctionTypeLambda> = {
-  compose,
-  id
-}
 
 /**
  * Unary functions form a semigroup as long as you can provide a semigroup for the codomain.
@@ -110,9 +80,8 @@ export const getMonoid = <M>(Monoid: monoid.Monoid<M>) =>
     const S = getSemigroup(Monoid)<A>()
     const empty = () => Monoid.empty
     return ({
-      combine: S.combine,
-      combineMany: S.combineMany,
-      combineAll: (all) => S.combineMany(all)(empty),
+      ...S,
+      combineAll: (collection) => S.combineMany(collection)(empty),
       empty
     })
   }
