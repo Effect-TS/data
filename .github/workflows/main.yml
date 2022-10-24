@@ -44,7 +44,7 @@ jobs:
       - run: pnpm build
       - run: pnpm test
       - run: pnpm lint
-      - run: pnpm gen-docs
+      - run: pnpm run docs
       - run: mv docs dist-docs
       - name: Create Release Pull Request or Publish
         id: changesets
@@ -55,9 +55,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Deploy pages
-        uses: crazy-max/ghaction-github-pages@v2
-        with:
-          build_dir: dist-docs
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
