@@ -1,5 +1,13 @@
 # @fp-ts/data
 
+## 0.0.5
+
+### Patch Changes
+
+- [#76](https://github.com/fp-ts/data/pull/76) [`ecac740`](https://github.com/fp-ts/data/commit/ecac740cc62c33dbbe0d623634410c33b4d7106e) Thanks [@IMax153](https://github.com/IMax153)! - make Random a non-internal module
+
+- [#76](https://github.com/fp-ts/data/pull/76) [`745f3f0`](https://github.com/fp-ts/data/commit/745f3f0d45ea29f5fcdfffc75398b63ada50257b) Thanks [@IMax153](https://github.com/IMax153)! - add Chunk.zipWithIndex
+
 ## 0.0.4
 
 ### Patch Changes
