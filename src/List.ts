@@ -3,7 +3,7 @@
  */
 
 import type * as HKT from "@fp-ts/core/HKT"
-import type { Sortable } from "@fp-ts/core/Sortable"
+import type { Order } from "@fp-ts/core/typeclass/Order"
 import type { Either } from "@fp-ts/data/Either"
 import type * as Equal from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
@@ -284,4 +284,4 @@ export const unsafeLast: <A>(self: List<A>) => A = LI.unsafeLast
  * @since 1.0.0
  * @category sorting
  */
-export const sortWith: <A>(ord: Sortable<A>) => (self: List<A>) => List<A> = _sortWith.sortWith
+export const sortWith: <A>(O: Order<A>) => (self: List<A>) => List<A> = _sortWith.sortWith
