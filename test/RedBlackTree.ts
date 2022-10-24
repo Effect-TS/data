@@ -10,7 +10,7 @@ describe.concurrent("RedBlackTree", () => {
   it("forEach", () => {
     const ordered: Array<[number, string]> = []
     pipe(
-      RedBlackTree.empty<number, string>(number.Sortable),
+      RedBlackTree.empty<number, string>(number.Order),
       RedBlackTree.insert(1, "a"),
       RedBlackTree.insert(0, "b"),
       RedBlackTree.insert(-1, "c"),
@@ -32,7 +32,7 @@ describe.concurrent("RedBlackTree", () => {
 
   it("iterable", () => {
     const tree = pipe(
-      RedBlackTree.empty<number, string>(number.Sortable),
+      RedBlackTree.empty<number, string>(number.Order),
       RedBlackTree.insert(1, "a"),
       RedBlackTree.insert(0, "b"),
       RedBlackTree.insert(-1, "c"),
@@ -51,7 +51,7 @@ describe.concurrent("RedBlackTree", () => {
   })
 
   it("iterable empty", () => {
-    const tree = RedBlackTree.empty<number, string>(number.Sortable)
+    const tree = RedBlackTree.empty<number, string>(number.Order)
 
     assert.strictEqual(RedBlackTree.size(tree), 0)
     deepStrictEqual(Array.from(tree), [])
@@ -59,7 +59,7 @@ describe.concurrent("RedBlackTree", () => {
 
   it("backwards", () => {
     const tree = pipe(
-      RedBlackTree.empty<number, string>(number.Sortable),
+      RedBlackTree.empty<number, string>(number.Order),
       RedBlackTree.insert(1, "a"),
       RedBlackTree.insert(0, "b"),
       RedBlackTree.insert(-1, "c"),
@@ -78,7 +78,7 @@ describe.concurrent("RedBlackTree", () => {
   })
 
   it("backwards empty", () => {
-    const tree = RedBlackTree.empty<number, string>(number.Sortable)
+    const tree = RedBlackTree.empty<number, string>(number.Order)
 
     assert.strictEqual(RedBlackTree.size(tree), 0)
     deepStrictEqual(Array.from(RedBlackTree.backwards(tree)), [])
@@ -86,7 +86,7 @@ describe.concurrent("RedBlackTree", () => {
 
   it("values", () => {
     const tree = pipe(
-      RedBlackTree.empty<number, string>(number.Sortable),
+      RedBlackTree.empty<number, string>(number.Order),
       RedBlackTree.insert(1, "a"),
       RedBlackTree.insert(0, "b"),
       RedBlackTree.insert(-1, "c"),
@@ -100,7 +100,7 @@ describe.concurrent("RedBlackTree", () => {
 
   it("keys", () => {
     const tree = pipe(
-      RedBlackTree.empty<number, string>(number.Sortable),
+      RedBlackTree.empty<number, string>(number.Order),
       RedBlackTree.insert(1, "a"),
       RedBlackTree.insert(0, "b"),
       RedBlackTree.insert(-1, "c"),
@@ -114,7 +114,7 @@ describe.concurrent("RedBlackTree", () => {
 
   it("begin/end", () => {
     const tree = pipe(
-      RedBlackTree.empty<number, string>(number.Sortable),
+      RedBlackTree.empty<number, string>(number.Order),
       RedBlackTree.insert(1, "a"),
       RedBlackTree.insert(0, "b"),
       RedBlackTree.insert(-1, "c"),
@@ -130,7 +130,7 @@ describe.concurrent("RedBlackTree", () => {
   it("forEachGreaterThanEqual", () => {
     const ordered: Array<[number, string]> = []
     pipe(
-      RedBlackTree.empty<number, string>(number.Sortable),
+      RedBlackTree.empty<number, string>(number.Order),
       RedBlackTree.insert(1, "a"),
       RedBlackTree.insert(0, "b"),
       RedBlackTree.insert(-1, "c"),
@@ -147,7 +147,7 @@ describe.concurrent("RedBlackTree", () => {
   it("forEachLessThan", () => {
     const ordered: Array<[number, string]> = []
     pipe(
-      RedBlackTree.empty<number, string>(number.Sortable),
+      RedBlackTree.empty<number, string>(number.Order),
       RedBlackTree.insert(1, "a"),
       RedBlackTree.insert(0, "b"),
       RedBlackTree.insert(-1, "c"),
@@ -164,7 +164,7 @@ describe.concurrent("RedBlackTree", () => {
   it("forEachBetween", () => {
     const ordered: Array<[number, string]> = []
     pipe(
-      RedBlackTree.empty<number, string>(number.Sortable),
+      RedBlackTree.empty<number, string>(number.Order),
       RedBlackTree.insert(1, "a"),
       RedBlackTree.insert(0, "b"),
       RedBlackTree.insert(-1, "c"),
@@ -180,7 +180,7 @@ describe.concurrent("RedBlackTree", () => {
 
   it("greaterThanEqual", () => {
     const tree = pipe(
-      RedBlackTree.empty<number, string>(number.Sortable),
+      RedBlackTree.empty<number, string>(number.Order),
       RedBlackTree.insert(1, "a"),
       RedBlackTree.insert(0, "b"),
       RedBlackTree.insert(-1, "c"),
@@ -205,7 +205,7 @@ describe.concurrent("RedBlackTree", () => {
 
   it("find", () => {
     const tree = pipe(
-      RedBlackTree.empty<number, string>(number.Sortable),
+      RedBlackTree.empty<number, string>(number.Order),
       RedBlackTree.insert(1, "a"),
       RedBlackTree.insert(2, "c"),
       RedBlackTree.insert(1, "b"),
@@ -229,7 +229,7 @@ describe.concurrent("RedBlackTree", () => {
       }
     }
 
-    const ord = pipe(number.Sortable, Ord.contramap((key: Key) => key.n))
+    const ord = pipe(number.Order, Ord.contramap((key: Key) => key.n))
 
     const tree = pipe(
       RedBlackTree.empty<Key, string>(ord),

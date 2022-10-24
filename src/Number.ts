@@ -1,10 +1,10 @@
 /**
  * @since 1.0.0
  */
-import type * as bounded from "@fp-ts/core/Bounded"
-import type * as monoid from "@fp-ts/core/Monoid"
-import * as semigroup from "@fp-ts/core/Semigroup"
-import type * as sortable from "@fp-ts/core/Sortable"
+import type * as bounded from "@fp-ts/core/typeclass/Bounded"
+import type * as monoid from "@fp-ts/core/typeclass/Monoid"
+import type * as order from "@fp-ts/core/typeclass/Order"
+import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
 import type { Refinement } from "@fp-ts/data/Refinement"
 
 /**
@@ -43,7 +43,7 @@ export const decrement = (n: number): number => n - 1
  * @category instances
  * @since 1.0.0
  */
-export const Sortable: sortable.Sortable<number> = {
+export const Order: order.Order<number> = {
   compare: (that) => (self) => self < that ? -1 : self > that ? 1 : 0
 }
 
@@ -52,9 +52,9 @@ export const Sortable: sortable.Sortable<number> = {
  * @since 1.0.0
  */
 export const Bounded: bounded.Bounded<number> = {
-  compare: Sortable.compare,
-  maximum: Infinity,
-  minimum: -Infinity
+  compare: Order.compare,
+  maxBound: Infinity,
+  minBound: -Infinity
 }
 
 /**
