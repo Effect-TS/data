@@ -99,12 +99,6 @@ describe.concurrent("Option", () => {
     expect(_.filter).exist
     expect(_.partition).exist
     expect(_.partitionMap).exist
-
-    expect(_.TraversableFilterable).exist
-    expect(_.traverseFilterMap).exist
-    expect(_.traversePartitionMap).exist
-    expect(_.traverseFilter).exist
-    expect(_.traversePartition).exist
   })
 
   it("of", () => {

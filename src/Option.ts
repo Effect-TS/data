@@ -36,7 +36,6 @@ import type * as pointed from "@fp-ts/core/typeclass/Pointed"
 import * as product_ from "@fp-ts/core/typeclass/Product"
 import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
-import * as traversableFilterable from "@fp-ts/core/typeclass/TraversableFilterable"
 import type { Either } from "@fp-ts/data/Either"
 import { equals } from "@fp-ts/data/Equal"
 import type { LazyArg } from "@fp-ts/data/Function"
@@ -774,63 +773,6 @@ export const traverseTap: <F extends TypeLambda>(
   f: (a: A) => Kind<F, R, O, E, B>
 ) => (self: Option<A>) => Kind<F, R, O, E, Option<A>> = traversable
   .traverseTap(Traversable)
-
-/**
- * @category filtering
- * @since 1.0.0
- */
-export const traverseFilterMap: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => <A, R, O, E, B>(
-  f: (a: A) => Kind<F, R, O, E, Option<B>>
-) => (ta: Option<A>) => Kind<F, R, O, E, Option<B>> = traversableFilterable.traverseFilterMap(
-  { ...Traversable, ...Compactable }
-)
-
-/**
- * @category filtering
- * @since 1.0.0
- */
-export const traversePartitionMap: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => <A, R, O, E, B, C>(
-  f: (a: A) => Kind<F, R, O, E, Either<B, C>>
-) => (wa: Option<A>) => Kind<F, R, O, E, readonly [Option<B>, Option<C>]> = traversableFilterable
-  .traversePartitionMap({ ...Traversable, ...Covariant, ...Compactable })
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const TraversableFilterable: traversableFilterable.TraversableFilterable<
-  OptionTypeLambda
-> = {
-  traverseFilterMap,
-  traversePartitionMap
-}
-
-/**
- * @category filtering
- * @since 1.0.0
- */
-export const traverseFilter: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => <B extends A, R, O, E, A = B>(
-  predicate: (a: A) => Kind<F, R, O, E, boolean>
-) => (self: Option<B>) => Kind<F, R, O, E, Option<B>> = traversableFilterable.traverseFilter(
-  TraversableFilterable
-)
-
-/**
- * @category filtering
- * @since 1.0.0
- */
-export const traversePartition: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => <B extends A, R, O, E, A = B>(
-  predicate: (a: A) => Kind<F, R, O, E, boolean>
-) => (self: Option<B>) => Kind<F, R, O, E, readonly [Option<B>, Option<B>]> = traversableFilterable
-  .traversePartition(TraversableFilterable)
 
 /**
  * Returns `true` if the option is `None`, `false` otherwise.
