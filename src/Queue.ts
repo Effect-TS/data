@@ -36,7 +36,7 @@ export interface Queue<A> extends Iterable<A>, Equal.Equal {
  * @category type lambdas
  */
 export interface QueueTypeLambda extends HKT.TypeLambda {
-  readonly type: Queue<this["Out1"]>
+  readonly type: Queue<this["Target"]>
 }
 
 /**
