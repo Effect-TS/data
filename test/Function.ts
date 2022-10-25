@@ -8,6 +8,32 @@ const f = Number.increment
 const g = double
 
 describe.concurrent("Function", () => {
+  it("getSemigroup", () => {
+    const S = Function.getSemigroup(Number.SemigroupSum)<string>()
+    const f = (s: string) => s === "a" ? 0 : 1
+    const g = Function.pipe(String.size, S.combine(f))
+    deepStrictEqual(g(""), 1)
+    deepStrictEqual(g("a"), 1)
+    deepStrictEqual(g("b"), 2)
+    deepStrictEqual(S.combineMany([String.size, String.size])(String.size)("a"), 3)
+  })
+
+  it("getMonoid", () => {
+    const M = Function.getMonoid(Number.MonoidSum)<string>()
+    const f = (s: string) => s === "a" ? 0 : 1
+    const g = Function.pipe(String.size, M.combine(f))
+    deepStrictEqual(g(""), 1)
+    deepStrictEqual(g("a"), 1)
+    deepStrictEqual(g("b"), 2)
+    deepStrictEqual(Function.pipe(String.size, M.combine(M.empty))("a"), 1)
+    deepStrictEqual(Function.pipe(M.empty, M.combine(String.size))("a"), 1)
+    deepStrictEqual(M.combineAll([String.size, String.size])("a"), 2)
+  })
+
+  it("apply", () => {
+    deepStrictEqual(Function.apply("a")(String.size), 1)
+  })
+
   it("flip", () => {
     const f = (a: number) => (b: string) => a - b.length
     deepStrictEqual(Function.flip(f)("aaa")(2), -1)
