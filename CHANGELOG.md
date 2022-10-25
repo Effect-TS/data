@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.8
+
+### Patch Changes
+
+- [#83](https://github.com/fp-ts/data/pull/83) [`00eecff`](https://github.com/fp-ts/data/commit/00eecff04d431c95737e91b2859dee875ad079ba) Thanks [@gcanti](https://github.com/gcanti)! - upgrade to @fp-ts/core@0.0.6
+
 ## 0.0.7
 
 ### Patch Changes
