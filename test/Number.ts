@@ -39,6 +39,8 @@ describe.concurrent("Number", () => {
 
   it("SemigroupMultiply", () => {
     deepStrictEqual(pipe(2, Number.SemigroupMultiply.combine(3)), 6)
+    deepStrictEqual(pipe(0, Number.SemigroupMultiply.combineMany([1, 2, 3])), 0)
+    deepStrictEqual(pipe(2, Number.SemigroupMultiply.combineMany([1, 0, 3])), 0)
   })
 
   it("MonoidMultiply", () => {

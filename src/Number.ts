@@ -83,7 +83,23 @@ export const SemigroupSum: semigroup.Semigroup<number> = semigroup.fromCombine(s
  * @category instances
  * @since 1.0.0
  */
-export const SemigroupMultiply: semigroup.Semigroup<number> = semigroup.fromCombine(multiply)
+export const SemigroupMultiply: semigroup.Semigroup<number> = {
+  combine: multiply,
+  combineMany: (collection) =>
+    (self) => {
+      if (self === 0) {
+        return 0
+      }
+      let out = self
+      for (const n of collection) {
+        if (n === 0) {
+          return 0
+        }
+        out = out * n
+      }
+      return out
+    }
+}
 
 /**
  * `number` monoid under addition.
