@@ -108,8 +108,7 @@ export const SemigroupAny: semigroup.Semigroup<boolean> = {
  * @since 1.0.0
  */
 export const MonoidAll: monoid.Monoid<boolean> = {
-  combine: SemigroupAll.combine,
-  combineMany: SemigroupAll.combineMany,
+  ...SemigroupAll,
   combineAll: (all) => SemigroupAll.combineMany(all)(true),
   empty: true
 }
@@ -123,8 +122,7 @@ export const MonoidAll: monoid.Monoid<boolean> = {
  * @since 1.0.0
  */
 export const MonoidAny: monoid.Monoid<boolean> = {
-  combine: SemigroupAny.combine,
-  combineMany: SemigroupAny.combineMany,
+  ...SemigroupAny,
   combineAll: (all) => SemigroupAny.combineMany(all)(false),
   empty: false
 }
