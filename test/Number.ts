@@ -15,14 +15,6 @@ describe.concurrent("Number", () => {
     deepStrictEqual(Number.multiply(3)(2), 6)
   })
 
-  it("sumAll", () => {
-    deepStrictEqual(Number.sumAll([1, 2, 3]), 6)
-  })
-
-  it("multiplyAll", () => {
-    deepStrictEqual(Number.multiplyAll([2, 3, 4]), 24)
-  })
-
   it("increment", () => {
     deepStrictEqual(Number.increment(2), 3)
   })
@@ -31,17 +23,25 @@ describe.concurrent("Number", () => {
     deepStrictEqual(Number.decrement(2), 1)
   })
 
-  it("Ord", () => {
+  it("Order", () => {
     deepStrictEqual(pipe(1, Number.Order.compare(2)), -1)
     deepStrictEqual(pipe(2, Number.Order.compare(1)), 1)
     deepStrictEqual(pipe(2, Number.Order.compare(2)), 0)
+  })
+
+  it("SemigroupSum", () => {
+    deepStrictEqual(pipe(2, Number.SemigroupSum.combine(3)), 5)
+  })
+
+  it("MonoidSum", () => {
+    deepStrictEqual(Number.MonoidSum.combineAll([1, 2, 3]), 6)
   })
 
   it("SemigroupMultiply", () => {
     deepStrictEqual(pipe(2, Number.SemigroupMultiply.combine(3)), 6)
   })
 
-  it("SemigroupSum", () => {
-    deepStrictEqual(pipe(2, Number.SemigroupSum.combine(3)), 5)
+  it("MonoidMultiply", () => {
+    deepStrictEqual(Number.MonoidMultiply.combineAll([2, 3, 4]), 24)
   })
 })
