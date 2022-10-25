@@ -65,7 +65,7 @@ export type List<A> = Cons<A> | Nil<A>
  * @category type lambdas
  */
 export interface ListTypeLambda extends HKT.TypeLambda {
-  readonly type: List<this["Out1"]>
+  readonly type: List<this["Target"]>
 }
 
 /**
