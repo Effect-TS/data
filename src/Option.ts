@@ -14,10 +14,10 @@
  */
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import type * as alternative from "@fp-ts/core/typeclass/Alternative"
-import * as applicative from "@fp-ts/core/typeclass/Applicative"
+import type * as applicative from "@fp-ts/core/typeclass/Applicative"
 import * as chainable from "@fp-ts/core/typeclass/Chainable"
 import * as compactable from "@fp-ts/core/typeclass/Compactable"
-import * as coproduct from "@fp-ts/core/typeclass/Coproduct"
+import type * as coproduct from "@fp-ts/core/typeclass/Coproduct"
 import * as covariant from "@fp-ts/core/typeclass/Covariant"
 import * as filterable from "@fp-ts/core/typeclass/Filterable"
 import * as flatMap_ from "@fp-ts/core/typeclass/FlatMap"
@@ -396,11 +396,11 @@ export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<Option
  * | some(a) | some(b) | some(combine(b)(a)) |
  *
  * @example
- * import { liftSemigroup, some, none } from '@fp-ts/data/Option'
+ * import { getMonoid, some, none } from '@fp-ts/data/Option'
  * import * as N from '@fp-ts/data/Number'
  * import { pipe } from '@fp-ts/data/Function'
  *
- * const M = liftSemigroup(N.SemigroupSum)
+ * const M = getMonoid(N.SemigroupSum)
  * assert.deepStrictEqual(pipe(none, M.combine(none)), none)
  * assert.deepStrictEqual(pipe(some(1), M.combine(none)), some(1))
  * assert.deepStrictEqual(pipe(none, M.combine(some(1))), some(1))
@@ -409,8 +409,32 @@ export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<Option
  * @category lifting
  * @since 1.0.0
  */
-export const liftSemigroup: <A>(S: Semigroup<A>) => Semigroup<Option<A>> = nonEmptyApplicative
-  .liftSemigroup(NonEmptyApplicative)
+export const getMonoid = <A>(
+  Semigroup: Semigroup<A>
+): Monoid<Option<A>> => {
+  const combine = (that: Option<A>) =>
+    (self: Option<A>): Option<A> =>
+      isNone(self) ? that : isNone(that) ? self : some(Semigroup.combine(that.value)(self.value))
+  return ({
+    combine,
+    combineMany: (others) =>
+      (start) => {
+        let c = start
+        for (const o of others) {
+          c = combine(o)(c)
+        }
+        return c
+      },
+    combineAll: (collection: Iterable<Option<A>>): Option<A> => {
+      let c: Option<A> = none
+      for (const o of collection) {
+        c = combine(o)(c)
+      }
+      return c
+    },
+    empty: none
+  })
+}
 
 /**
  * Lifts a binary function into `Option`.
@@ -450,13 +474,6 @@ export const Applicative: applicative.Applicative<OptionTypeLambda> = {
   ...NonEmptyApplicative,
   ...Product
 }
-
-/**
- * @since 1.0.0
- */
-export const liftMonoid: <A>(M: Monoid<A>) => Monoid<Option<A>> = applicative.liftMonoid(
-  Applicative
-)
 
 /**
  * @category instances
@@ -508,11 +525,6 @@ export const Coproduct: coproduct.Coproduct<OptionTypeLambda> = {
     return none
   }
 }
-
-/**
- * @since 1.0.0
- */
-export const getMonoid: <A>() => Monoid<Option<A>> = coproduct.getMonoid(Coproduct)
 
 /**
  * @category instances

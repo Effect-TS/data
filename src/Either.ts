@@ -34,6 +34,7 @@ import * as of from "@fp-ts/core/typeclass/Of"
 import type * as pointed from "@fp-ts/core/typeclass/Pointed"
 import * as product_ from "@fp-ts/core/typeclass/Product"
 import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
+import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
 import * as traversableFilterable from "@fp-ts/core/typeclass/TraversableFilterable"
 import { equals } from "@fp-ts/data/Equal"
@@ -430,8 +431,14 @@ export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<Either
  */
 export const liftSemigroup = <A>(S: Semigroup<A>) =>
   <E>(): Semigroup<Either<E, A>> =>
-    nonEmptyApplicative
-      .liftSemigroup(NonEmptyApplicative)(S)
+    semigroup.fromCombine((that) =>
+      (self) =>
+        isLeft(that) ?
+          self :
+          isLeft(self) ?
+          that :
+          right(S.combine(that.right)(self.right))
+    )
 
 /**
  * @category lifting
