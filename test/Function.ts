@@ -13,11 +13,6 @@ describe.concurrent("Function", () => {
     deepStrictEqual(Function.flip(f)("aaa")(2), -1)
   })
 
-  it("id", () => {
-    const x = Function.id<number>()
-    deepStrictEqual(x(1), 1)
-  })
-
   it("compose", () => {
     deepStrictEqual(Function.pipe(String.size, Function.compose(double))("aaa"), 6)
   })

@@ -21,9 +21,9 @@ describe.concurrent("Option", () => {
   //   })
   // })
 
-  it("zipAll", () => {
-    const zipAll = Option.Monoidal.zipAll
-    deepStrictEqual(zipAll([]), Option.some([]))
+  it("productAll", () => {
+    const productAll = Option.Applicative.productAll
+    deepStrictEqual(productAll([]), Option.some([]))
   })
 
   it("reduce", () => {
@@ -122,10 +122,6 @@ describe.concurrent("Option", () => {
       deepStrictEqual(pipe(Option.some(1), Option.tap(f)), Option.some(1))
     })
 
-    it("duplicate", () => {
-      deepStrictEqual(pipe(Option.some(1), Option.duplicate), Option.some(Option.some(1)))
-    })
-
     it("flatten", () => {
       deepStrictEqual(pipe(Option.some(Option.some(1)), Option.flatten), Option.some(1))
     })
@@ -142,12 +138,6 @@ describe.concurrent("Option", () => {
       assertAlt(Option.some(1), Option.none, Option.some(1))
       assertAlt(Option.none, Option.some(2), Option.some(2))
       assertAlt(Option.none, Option.none, Option.none)
-    })
-
-    it("extend", () => {
-      const f = Option.getOrElse(() => 0)
-      deepStrictEqual(pipe(Option.some(2), Option.extend(f)), Option.some(2))
-      deepStrictEqual(pipe(Option.none, Option.extend(f)), Option.none)
     })
 
     it("compact", () => {
@@ -199,28 +189,28 @@ describe.concurrent("Option", () => {
       deepStrictEqual(
         pipe(
           Option.some("hello"),
-          Option.traverse(ReadonlyArray.Product)(() => [])
+          Option.traverse(ReadonlyArray.Applicative)(() => [])
         ),
         []
       )
       deepStrictEqual(
         pipe(
           Option.some("hello"),
-          Option.traverse(ReadonlyArray.Product)((s) => [s.length])
+          Option.traverse(ReadonlyArray.Applicative)((s) => [s.length])
         ),
         [Option.some(5)]
       )
       deepStrictEqual(
         pipe(
           Option.none,
-          Option.traverse(ReadonlyArray.Product)((s) => [s])
+          Option.traverse(ReadonlyArray.Applicative)((s) => [s])
         ),
         [Option.none]
       )
     })
 
     it("sequence", () => {
-      const sequence = Option.sequence(ReadonlyArray.Product)
+      const sequence = Option.sequence(ReadonlyArray.Applicative)
       deepStrictEqual(sequence(Option.some([1, 2])), [Option.some(1), Option.some(2)])
       deepStrictEqual(sequence(Option.none), [Option.none])
     })
@@ -274,8 +264,8 @@ describe.concurrent("Option", () => {
     deepStrictEqual(pipe(Option.none, Option.getOrElse(0)), 0)
   })
 
-  it("getOrd", () => {
-    const OS = Option.liftSortable(String.Order)
+  it("liftOrder", () => {
+    const OS = Option.liftOrder(String.Order)
     deepStrictEqual(pipe(Option.none, OS.compare(Option.none)), 0)
     deepStrictEqual(pipe(Option.some("a"), OS.compare(Option.none)), 1)
     deepStrictEqual(pipe(Option.none, OS.compare(Option.some("a"))), -1)
@@ -411,16 +401,16 @@ describe.concurrent("Option", () => {
     )
   })
 
-  it("apS", () => {
+  it("bindOption", () => {
     deepStrictEqual(
-      pipe(Option.some(1), Option.bindTo("a"), Option.bindRight("b", Option.some("b"))),
+      pipe(Option.some(1), Option.bindTo("a"), Option.bindOption("b", Option.some("b"))),
       Option.some({ a: 1, b: "b" })
     )
   })
 
-  it("zipFlatten", () => {
+  it("productFlatten", () => {
     deepStrictEqual(
-      pipe(Option.some(1), Option.tupled, Option.zipFlatten(Option.some("b"))),
+      pipe(Option.some(1), Option.tupled, Option.productFlatten(Option.some("b"))),
       Option.some([1, "b"] as const)
     )
   })

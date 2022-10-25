@@ -1,4 +1,4 @@
-import * as Ord from "@fp-ts/core/Sortable"
+import * as Order from "@fp-ts/core/typeclass/Order"
 import * as Equal from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
 import * as number from "@fp-ts/data/Number"
@@ -229,7 +229,7 @@ describe.concurrent("RedBlackTree", () => {
       }
     }
 
-    const ord = pipe(number.Order, Ord.contramap((key: Key) => key.n))
+    const ord = pipe(number.Order, Order.contramap((key: Key) => key.n))
 
     const tree = pipe(
       RedBlackTree.empty<Key, string>(ord),

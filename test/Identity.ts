@@ -20,46 +20,28 @@ describe.concurrent("Identity", () => {
     U.deepStrictEqual(pipe("a", _.Pointed.of), "a")
   })
 
-  it("idKind", () => {
-    U.deepStrictEqual(pipe("a", _.idKind()), "a")
+  it("andThenDiscard", () => {
+    U.deepStrictEqual(pipe("a", _.andThenDiscard("b")), "a")
   })
 
-  it("combineKind", () => {
-    const f = (a: string): _.Identity<number> => a.length
-    const g = (n: number): _.Identity<boolean> => n > 2
-    U.deepStrictEqual(pipe(f, _.composeKind(g))("aaa"), true)
-    U.deepStrictEqual(pipe(f, _.ComposableKind.composeKind(g))("aaa"), true)
-    U.deepStrictEqual(pipe(f, _.CategoryKind.composeKind(g))("aaa"), true)
+  it("andThen", () => {
+    U.deepStrictEqual(pipe("a", _.andThen("b")), "b")
   })
 
-  it("zipLeft", () => {
-    U.deepStrictEqual(pipe("a", _.zipLeft("b")), "a")
+  it("product", () => {
+    U.deepStrictEqual(pipe("a", _.Product.product("b")), ["a", "b"])
   })
 
-  it("zipRight", () => {
-    U.deepStrictEqual(pipe("a", _.zipRight("b")), "b")
-  })
-
-  it("combineKind", () => {
-    U.deepStrictEqual(pipe("a", _.combineKind("b")), "a")
-    U.deepStrictEqual(pipe("a", _.SemigroupKind.combineKind("b")), "a")
-  })
-
-  it("combineKindMany", () => {
-    U.deepStrictEqual(pipe("a", _.combineKindMany(["b", "c"])), "a")
-    U.deepStrictEqual(pipe("a", _.SemigroupKind.combineKindMany(["b", "c"])), "a")
+  it("productMany", () => {
+    U.deepStrictEqual(pipe("a", _.Product.productMany(["b", "c"])), ["a", "b", "c"])
   })
 
   it("zipWith", () => {
-    U.deepStrictEqual(pipe("a", _.zipWith("b", (a, b) => [a, b])), ["a", "b"])
-    U.deepStrictEqual(pipe("a", _.Semigroupal.zipWith("b", (a, b) => [a, b])), ["a", "b"])
-    U.deepStrictEqual(pipe("a", _.Monoidal.zipWith("b", (a, b) => [a, b])), ["a", "b"])
+    U.deepStrictEqual(pipe("a", _.Product.product("b")), ["a", "b"])
   })
 
   it("zipMany", () => {
-    U.deepStrictEqual(pipe("a", _.zipMany(["b", "c"])), ["a", "b", "c"])
-    U.deepStrictEqual(pipe("a", _.Semigroupal.zipMany(["b", "c"])), ["a", "b", "c"])
-    U.deepStrictEqual(pipe("a", _.Monoidal.zipMany(["b", "c"])), ["a", "b", "c"])
+    U.deepStrictEqual(pipe("a", _.Product.productMany(["b", "c"])), ["a", "b", "c"])
   })
 
   it("lift2", () => {
@@ -70,9 +52,8 @@ describe.concurrent("Identity", () => {
     U.deepStrictEqual(_.lift3((a: number, b: number, c: number): number => a + b + c)(1, 2, 3), 6)
   })
 
-  it("zipAll", () => {
-    U.deepStrictEqual(_.zipAll([1, 2, 3]), [1, 2, 3])
-    U.deepStrictEqual(_.Monoidal.zipAll([1, 2, 3]), [1, 2, 3])
+  it("productAll", () => {
+    U.deepStrictEqual(_.Product.productAll([1, 2, 3]), [1, 2, 3])
   })
 
   it("map", () => {
@@ -88,8 +69,8 @@ describe.concurrent("Identity", () => {
     U.deepStrictEqual(pipe("a", _.as("b")), "b")
   })
 
-  it("unit", () => {
-    U.deepStrictEqual(pipe("a", _.unit), undefined)
+  it("asUnit", () => {
+    U.deepStrictEqual(pipe("a", _.asUnit), undefined)
   })
 
   it("reduce", () => {
@@ -135,53 +116,35 @@ describe.concurrent("Identity", () => {
       U.deepStrictEqual(pipe(1, _.Monad.flatMap(U.double)), 2)
     })
 
-    it("extract", () => {
-      U.deepStrictEqual(pipe(1, _.extract), 1)
-      U.deepStrictEqual(pipe(1, _.Comonad.extract), 1)
-    })
-
-    it("extend", () => {
-      U.deepStrictEqual(pipe("foo", _.extend(S.size)), 3)
-      U.deepStrictEqual(pipe("foo", _.Extendable.extend(S.size)), 3)
-    })
-
-    it("duplicate", () => {
-      U.deepStrictEqual(pipe("a", _.duplicate), "a")
-    })
-
     it("flatten", () => {
       U.deepStrictEqual(pipe("a", _.flatten), "a")
     })
 
     it("traverse", () => {
-      U.deepStrictEqual(pipe(1, _.traverse(O.Monoidal)(O.some)), O.some(1))
+      U.deepStrictEqual(pipe(1, _.traverse(O.Applicative)(O.some)), O.some(1))
       U.deepStrictEqual(
         pipe(
           1,
-          _.traverse(O.Monoidal)(() => O.none)
+          _.traverse(O.Applicative)(() => O.none)
         ),
         O.none
       )
 
-      U.deepStrictEqual(pipe(1, _.Traversable.traverse(O.Monoidal)(O.some)), O.some(1))
+      U.deepStrictEqual(pipe(1, _.Traversable.traverse(O.Applicative)(O.some)), O.some(1))
       U.deepStrictEqual(
         pipe(
           1,
-          _.Traversable.traverse(O.Monoidal)(() => O.none)
+          _.Traversable.traverse(O.Applicative)(() => O.none)
         ),
         O.none
       )
     })
 
     it("sequence", () => {
-      const sequence = _.sequence(O.Monoidal)
+      const sequence = _.sequence(O.Applicative)
       U.deepStrictEqual(sequence(O.some("a")), O.some("a"))
       U.deepStrictEqual(sequence(O.none), O.none)
     })
-  })
-
-  it("Zip", () => {
-    U.deepStrictEqual(_.Zip, [])
   })
 
   describe.concurrent("do notation", () => {
@@ -224,11 +187,14 @@ describe.concurrent("Identity", () => {
     })
   })
 
-  it("bindRight", () => {
-    U.deepStrictEqual(pipe(_.of(1), _.bindTo("a"), _.bindRight("b", _.of("b"))), { a: 1, b: "b" })
+  it("bindIdentity", () => {
+    U.deepStrictEqual(pipe(_.of(1), _.bindTo("a"), _.bindIdentity("b", _.of("b"))), {
+      a: 1,
+      b: "b"
+    })
   })
 
-  it("zipFlatten", () => {
-    U.deepStrictEqual(pipe(_.of(1), _.tupled, _.zipFlatten(_.of("b"))), [1, "b"])
+  it("productFlatten", () => {
+    U.deepStrictEqual(pipe(_.of(1), _.tupled, _.productFlatten(_.of("b"))), [1, "b"])
   })
 })

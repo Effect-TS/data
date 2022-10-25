@@ -40,10 +40,7 @@ import * as safeEval from "@fp-ts/data/SafeEval"
 import * as sortedMap from "@fp-ts/data/SortedMap"
 import * as sortedSet from "@fp-ts/data/SortedSet"
 import * as string from "@fp-ts/data/String"
-import * as compactable from "@fp-ts/data/typeclasses/Compactable"
-import * as filterable from "@fp-ts/data/typeclasses/Filterable"
 import * as fromOption from "@fp-ts/data/typeclasses/FromOption"
-import * as traversableFilterable from "@fp-ts/data/typeclasses/TraversableFilterable"
 import * as weakIterableMap from "@fp-ts/data/weak/WeakIterableMap"
 
 export {
@@ -63,10 +60,6 @@ export {
    * @since 1.0.0
    */
   chunkPatch,
-  /**
-   * @since 1.0.0
-   */
-  compactable,
   /**
    * @since 1.0.0
    */
@@ -99,10 +92,6 @@ export {
    * @since 1.0.0
    */
   equal,
-  /**
-   * @since 1.0.0
-   */
-  filterable,
   /**
    * @since 1.0.0
    */
@@ -211,10 +200,6 @@ export {
    * @since 1.0.0
    */
   string,
-  /**
-   * @since 1.0.0
-   */
-  traversableFilterable,
   /**
    * @since 1.0.0
    */
