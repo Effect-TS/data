@@ -94,9 +94,8 @@ export const SemigroupMultiply: semigroup.Semigroup<number> = semigroup.fromComb
  * @since 1.0.0
  */
 export const MonoidSum: monoid.Monoid<number> = {
-  combine: SemigroupSum.combine,
-  combineMany: SemigroupSum.combineMany,
-  combineAll: (all) => SemigroupSum.combineMany(all)(0),
+  ...SemigroupSum,
+  combineAll: (collection) => SemigroupSum.combineMany(collection)(0),
   empty: 0
 }
 
@@ -109,18 +108,7 @@ export const MonoidSum: monoid.Monoid<number> = {
  * @since 1.0.0
  */
 export const MonoidMultiply: monoid.Monoid<number> = {
-  combine: SemigroupMultiply.combine,
-  combineMany: SemigroupMultiply.combineMany,
-  combineAll: (all) => SemigroupMultiply.combineMany(all)(1),
+  ...SemigroupMultiply,
+  combineAll: (collection) => SemigroupMultiply.combineMany(collection)(1),
   empty: 1
 }
-
-/**
- * @since 1.0.0
- */
-export const sumAll: (collection: Iterable<number>) => number = MonoidSum.combineAll
-
-/**
- * @since 1.0.0
- */
-export const multiplyAll: (collection: Iterable<number>) => number = MonoidMultiply.combineAll
