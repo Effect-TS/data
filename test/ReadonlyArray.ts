@@ -1281,7 +1281,7 @@ describe.concurrent("ReadonlyArray", () => {
     const that = [2, 3, 4]
 
     const actual = pipe(self, ReadonlyArray.crossWith(that))
-    const expected = [[1, 2], [1, 3], [1, 4], [2, 2], [2, 3], [2, 4], [3, 2], [2, 3], [3, 4]]
+    const expected = [[1, 2], [1, 3], [1, 4], [2, 2], [2, 3], [2, 4], [3, 2], [3, 3], [3, 4]]
 
     expect(actual).toStrictEqual(expected)
   })

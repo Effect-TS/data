@@ -30,6 +30,7 @@ import * as mutableRef from "@fp-ts/data/mutable/MutableRef"
 import * as nonEmptyReadonlyArray from "@fp-ts/data/NonEmptyReadonlyArray"
 import * as number from "@fp-ts/data/Number"
 import * as option from "@fp-ts/data/Option"
+import * as ordering from "@fp-ts/data/Ordering"
 import * as predicate from "@fp-ts/data/Predicate"
 import * as queue from "@fp-ts/data/Queue"
 import * as random from "@fp-ts/data/Random"
@@ -156,6 +157,10 @@ export {
    * @since 1.0.0
    */
   option,
+  /**
+   * @since 1.0.0
+   */
+  ordering,
   /**
    * @since 1.0.0
    */
