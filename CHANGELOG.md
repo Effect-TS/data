@@ -1,5 +1,13 @@
 # @fp-ts/data
 
+## 0.0.7
+
+### Patch Changes
+
+- [#81](https://github.com/fp-ts/data/pull/81) [`d5ec16c`](https://github.com/fp-ts/data/commit/d5ec16cab4b067f8f45d3a1855133affc24dca3c) Thanks [@IMax153](https://github.com/IMax153)! - add SortedMap.getSortable
+
+- [#81](https://github.com/fp-ts/data/pull/81) [`64dcefd`](https://github.com/fp-ts/data/commit/64dcefd23a9363939ec7c05d93469a492e259b20) Thanks [@IMax153](https://github.com/IMax153)! - add guards for Option, Either, and Tag
+
 ## 0.0.6
 
 ### Patch Changes
