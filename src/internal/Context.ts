@@ -54,6 +54,11 @@ export function isContext(u: unknown): u is C.Context<never> {
 }
 
 /** @internal */
+export function isTag(u: unknown): u is C.Tag<never> {
+  return typeof u === "object" && u !== null && "_id" in u && u["_id"] === TagTypeId
+}
+
+/** @internal */
 export function empty(): C.Context<never> {
   return new ContextImpl<never>(new Map())
 }

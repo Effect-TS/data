@@ -69,6 +69,12 @@ export const isContext: (u: unknown) => u is Context<never> = C.isContext
 
 /**
  * @since 1.0.0
+ * @category guards
+ */
+export const isTag: (u: unknown) => u is Tag<never> = C.isTag
+
+/**
+ * @since 1.0.0
  * @category constructors
  */
 export const empty: () => Context<never> = C.empty

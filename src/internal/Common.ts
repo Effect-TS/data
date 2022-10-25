@@ -9,6 +9,11 @@ import type { None, Option, Some } from "@fp-ts/data/Option"
 // -------------------------------------------------------------------------------------
 
 /** @internal */
+export const isOption = (u: unknown): u is Option<unknown> =>
+  typeof u === "object" && u != null && "_tag" in u &&
+  (u["_tag"] === "None" || u["_tag"] === "Some")
+
+/** @internal */
 export const isNone = <A>(fa: Option<A>): fa is None => fa._tag === "None"
 
 /** @internal */
