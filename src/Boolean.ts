@@ -63,13 +63,17 @@ export const match = <A, B = A>(onFalse: LazyArg<A>, onTrue: LazyArg<B>) =>
  */
 export const SemigroupAll: semigroup.Semigroup<boolean> = {
   combine: and,
-  combineMany: (others) =>
-    (start) => {
-      let c = start
-      for (const o of others) {
-        c = and(o)(c)
+  combineMany: (collection) =>
+    (self) => {
+      if (self === false) {
+        return false
       }
-      return c
+      for (const b of collection) {
+        if (b === false) {
+          return false
+        }
+      }
+      return true
     }
 }
 
