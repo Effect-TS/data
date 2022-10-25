@@ -89,7 +89,7 @@ export const getMonoid = <M>(Monoid: monoid.Monoid<M>) =>
 /**
  * @since 1.0.0
  */
-export const apply = <A>(a: A) => <B>(f: (a: A) => B): B => f(a)
+export const apply = <A>(a: A) => <B>(self: (a: A) => B): B => self(a)
 
 /**
  * A lazy argument
