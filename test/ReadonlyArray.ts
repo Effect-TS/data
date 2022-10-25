@@ -12,6 +12,82 @@ import * as assert from "assert"
 import * as fc from "fast-check"
 
 describe.concurrent("ReadonlyArray", () => {
+  it("instances and derived exports", () => {
+    expect(ReadonlyArray.Invariant).exist
+    expect(ReadonlyArray.imap).exist
+    expect(ReadonlyArray.tupled).exist
+    expect(ReadonlyArray.bindTo).exist
+
+    expect(ReadonlyArray.Covariant).exist
+    expect(ReadonlyArray.map).exist
+    expect(ReadonlyArray.let).exist
+    expect(ReadonlyArray.flap).exist
+    expect(ReadonlyArray.as).exist
+    expect(ReadonlyArray.asUnit).exist
+
+    expect(ReadonlyArray.Of).exist
+    expect(ReadonlyArray.of).exist
+    expect(ReadonlyArray.Do).exist
+
+    expect(ReadonlyArray.Pointed).exist
+
+    expect(ReadonlyArray.FlatMap).exist
+    expect(ReadonlyArray.flatMap).exist
+    expect(ReadonlyArray.flatten).exist
+    expect(ReadonlyArray.andThen).exist
+    expect(ReadonlyArray.composeKleisliArrow).exist
+
+    expect(ReadonlyArray.Chainable).exist
+    expect(ReadonlyArray.bind).exist
+    expect(ReadonlyArray.tap).exist
+    expect(ReadonlyArray.andThenDiscard).exist
+
+    expect(ReadonlyArray.Monad).exist
+
+    expect(ReadonlyArray.NonEmptyProduct).exist
+    expect(ReadonlyArray.product).exist
+    expect(ReadonlyArray.productMany).exist
+
+    expect(ReadonlyArray.Product).exist
+    expect(ReadonlyArray.productAll).exist
+    // expect(ReadonlyArray.tuple).exist
+    // expect(ReadonlyArray.struct).exist
+
+    expect(ReadonlyArray.NonEmptyApplicative).exist
+    expect(ReadonlyArray.liftSemigroup).exist
+    expect(ReadonlyArray.lift2).exist
+    expect(ReadonlyArray.lift3).exist
+    expect(ReadonlyArray.ap).exist
+    expect(ReadonlyArray.andThenDiscard).exist
+    expect(ReadonlyArray.andThen).exist
+
+    expect(ReadonlyArray.Applicative).exist
+    expect(ReadonlyArray.liftMonoid).exist
+
+    expect(ReadonlyArray.Foldable).exist
+    expect(ReadonlyArray.reduce).exist
+    expect(ReadonlyArray.reduceRight).exist
+    expect(ReadonlyArray.foldMap).exist
+    expect(ReadonlyArray.reduceKind).exist
+    expect(ReadonlyArray.reduceRightKind).exist
+    expect(ReadonlyArray.foldMapKind).exist
+
+    expect(ReadonlyArray.Traversable).exist
+    expect(ReadonlyArray.traverse).exist
+    expect(ReadonlyArray.sequence).exist
+    expect(ReadonlyArray.traverseTap).exist
+
+    expect(ReadonlyArray.Compactable).exist
+    expect(ReadonlyArray.compact).exist
+    expect(ReadonlyArray.separate).exist
+
+    expect(ReadonlyArray.Filterable).exist
+    expect(ReadonlyArray.filterMap).exist
+    expect(ReadonlyArray.filter).exist
+    expect(ReadonlyArray.partition).exist
+    expect(ReadonlyArray.partitionMap).exist
+  })
+
   describe.concurrent("pipeables", () => {
     it("traverse", () => {
       const traverse = ReadonlyArray.traverse(Option.Applicative)((
@@ -310,13 +386,13 @@ describe.concurrent("ReadonlyArray", () => {
     })
 
     it("reduce", () => {
-      deepStrictEqual(
-        pipe(
-          ["a", "b", "c"],
-          ReadonlyArray.reduce("", (acc, a) => acc + a)
-        ),
-        "abc"
-      )
+      deepStrictEqual(pipe(["a", "b", "c"], ReadonlyArray.reduce("", (b, a) => b + a)), "abc")
+    })
+
+    it("reduceRight", () => {
+      const f = (b: string, a: string) => b + a
+      deepStrictEqual(pipe(["a", "b", "c"], ReadonlyArray.reduceRight("", f)), "cba")
+      deepStrictEqual(pipe([], ReadonlyArray.reduceRight("", f)), "")
     })
 
     it("reduceWithIndex", () => {
@@ -327,15 +403,6 @@ describe.concurrent("ReadonlyArray", () => {
         ),
         "0a1b"
       )
-    })
-
-    it("reduceRight", () => {
-      const as: ReadonlyArray<string> = ["a", "b", "c"]
-      const b = ""
-      const f = (a: string, acc: string) => acc + a
-      deepStrictEqual(pipe(as, ReadonlyArray.reduceRight(b, f)), "cba")
-      const x2: ReadonlyArray<string> = []
-      deepStrictEqual(pipe(x2, ReadonlyArray.reduceRight(b, f)), "")
     })
 
     it("reduceRightWithIndex", () => {
@@ -1276,35 +1343,35 @@ describe.concurrent("ReadonlyArray", () => {
     expect(actual).toStrictEqual(expected)
   })
 
-  test("crossWith", () => {
+  test("product", () => {
     const self = [1, 2, 3]
     const that = [2, 3, 4]
 
-    const actual = pipe(self, ReadonlyArray.crossWith(that))
+    const actual = pipe(self, ReadonlyArray.product(that))
     const expected = [[1, 2], [1, 3], [1, 4], [2, 2], [2, 3], [2, 4], [3, 2], [3, 3], [3, 4]]
 
     expect(actual).toStrictEqual(expected)
   })
 
-  test("crossMany", () => {
+  test("productMany", () => {
     const self = [1, 2, 3]
     const arrays = [
       [2],
       [4, 5],
       [8, 9, 10]
     ]
-    const actual = pipe(self, ReadonlyArray.crossMany(arrays))
+    const actual = pipe(self, ReadonlyArray.productMany(arrays))
     const expected = [[1, 2, 4, 5, 8, 9, 10], [2, 2, 4, 5, 8, 9, 10], [3, 2, 4, 5, 8, 9, 10]]
     expect(actual).toStrictEqual(expected)
   })
 
-  test("crossAll", () => {
+  test("productAll", () => {
     const arrays = [
       [2, 3],
       [4, 5],
       [8, 9, 10]
     ]
-    const actual = ReadonlyArray.crossAll(arrays)
+    const actual = ReadonlyArray.productAll(arrays)
     const expected = [[2, 4, 5, 8, 9, 10], [3, 4, 5, 8, 9, 10]]
     expect(actual).toStrictEqual(expected)
   })

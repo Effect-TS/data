@@ -224,7 +224,7 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
   })
 
   it("reduceRight", () => {
-    const f = (a: string, acc: string) => acc + a
+    const f = (b: string, a: string) => b + a
     deepStrictEqual(pipe(["a", "b", "c"], NonEmptyReadonlyArray.reduceRight("", f)), "cba")
   })
 
