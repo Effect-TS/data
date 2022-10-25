@@ -78,6 +78,22 @@ export interface OptionTypeLambda extends TypeLambda {
 // -------------------------------------------------------------------------------------
 
 /**
+ * Returns `true` if the specified value is an instance of `Option`, `false`
+ * otherwise.
+ *
+ * @example
+ * import { some, none, isOption } from '@fp-ts/data/Option'
+ *
+ * assert.strictEqual(isOption(some(1)), true)
+ * assert.strictEqual(isOption(none), true)
+ * assert.strictEqual(isOption({}), false)
+ *
+ * @category guards
+ * @since 1.0.0
+ */
+export const isOption: (u: unknown) => u is Option<unknown> = internal.isOption
+
+/**
  * Returns `true` if the option is `None`, `false` otherwise.
  *
  * @example

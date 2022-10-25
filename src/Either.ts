@@ -92,6 +92,15 @@ export interface ValidatedT<F extends TypeLambda, E> extends TypeLambda {
 }
 
 /**
+ * Returns `true` if the specified value is an instance of `Either`, `false`
+ * otherwise.
+ *
+ * @category guards
+ * @since 1.0.0
+ */
+export const isEither: (u: unknown) => u is Either<unknown, unknown> = either.isEither
+
+/**
  * Returns `true` if the either is an instance of `Left`, `false` otherwise.
  *
  * @category refinements

@@ -6,6 +6,11 @@ import * as _ from "@fp-ts/data/internal/Common"
 import type { Option } from "@fp-ts/data/Option"
 
 /** @internal */
+export const isEither = (u: unknown): u is Either<unknown, unknown> =>
+  typeof u === "object" && u != null && "_tag" in u &&
+  (u["_tag"] === "Left" || u["_tag"] === "Right")
+
+/** @internal */
 export const isLeft = <E, A>(ma: Either<E, A>): ma is Left<E> => ma._tag === "Left"
 
 /** @internal */
