@@ -13,7 +13,7 @@ import type * as bicovariant from "@fp-ts/core/typeclass/Bicovariant"
 import type { Bounded } from "@fp-ts/core/typeclass/Bounded"
 import type * as contravariant from "@fp-ts/core/typeclass/Contravariant"
 import * as covariant from "@fp-ts/core/typeclass/Covariant"
-import type * as invariant from "@fp-ts/core/typeclass/Invariant"
+import * as invariant from "@fp-ts/core/typeclass/Invariant"
 import type { Monoid } from "@fp-ts/core/typeclass/Monoid"
 import * as monoid from "@fp-ts/core/typeclass/Monoid"
 import type { NonEmptyApplicative } from "@fp-ts/core/typeclass/NonEmptyApplicative"
@@ -121,12 +121,38 @@ export const map: <A, B>(f: (a: A) => B) => <S>(self: Const<S, A>) => Const<S, B
 )
 
 /**
+ * @category mapping
+ * @since 1.0.0
+ */
+export const imap: <A, B>(
+  to: (a: A) => B,
+  from: (b: B) => A
+) => <E>(self: Const<E, A>) => Const<E, B> = covariant.imap<ConstTypeLambda>(map)
+
+/**
  * @category instances
  * @since 1.0.0
  */
 export const Invariant: invariant.Invariant<ConstTypeLambda> = {
-  imap: covariant.imap<ConstTypeLambda>(map)
+  imap
 }
+
+/**
+ * @since 1.0.0
+ */
+export const tupled: <E, A>(self: Const<E, A>) => Const<E, readonly [A]> = invariant.tupled(
+  Invariant
+)
+
+/**
+ * @category do notation
+ * @since 1.0.0
+ */
+export const bindTo: <N extends string>(
+  name: N
+) => <E, A>(self: Const<E, A>) => Const<E, { readonly [K in N]: A }> = invariant.bindTo(
+  Invariant
+)
 
 /**
  * @category instances
@@ -136,6 +162,44 @@ export const Covariant: covariant.Covariant<ConstTypeLambda> = {
   ...Invariant,
   map
 }
+
+const let_: <N extends string, A extends object, B>(
+  name: Exclude<N, keyof A>,
+  f: (a: A) => B
+) => <E>(
+  self: Const<E, A>
+) => Const<E, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = covariant.let(
+  Covariant
+)
+
+export { let_ as let }
+
+/**
+ * @category mapping
+ * @since 1.0.0
+ */
+export const flap: <A>(a: A) => <E, B>(self: Const<E, (a: A) => B>) => Const<E, B> = covariant
+  .flap(
+    Covariant
+  )
+
+/**
+ * Maps the success value of this effect to the specified constant value.
+ *
+ * @category mapping
+ * @since 1.0.0
+ */
+export const as: <B>(b: B) => <E, _>(self: Const<E, _>) => Const<E, B> = covariant.as(
+  Covariant
+)
+
+/**
+ * Returns the effect resulting from mapping the success of this effect to unit.
+ *
+ * @category mapping
+ * @since 1.0.0
+ */
+export const asUnit: <E, _>(self: Const<E, _>) => Const<E, void> = covariant.asUnit(Covariant)
 
 /**
  * @category mapping

@@ -6,22 +6,17 @@ import * as U from "./util"
 
 describe.concurrent("Const", () => {
   it("instances and derived exports", () => {
-    expect(_.map).exist
-
     expect(_.Invariant).exist
-    // TODO
-    // expect(_.tupled).exist
-    // expect(_.bindTo).exist
+    expect(_.imap).exist
+    expect(_.tupled).exist
+    expect(_.bindTo).exist
 
     expect(_.Covariant).exist
-    // TODO
-    // expect(_.let).exist
-    // expect(_.flap).exist
-    // expect(_.as).exist
-    // expect(_.asUnit).exist
-
-    expect(_.liftSemigroup).exist
-    expect(_.liftMonoid).exist
+    expect(_.map).exist
+    expect(_.let).exist
+    expect(_.flap).exist
+    expect(_.as).exist
+    expect(_.asUnit).exist
   })
 
   it("execute", () => {
