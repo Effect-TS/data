@@ -4,8 +4,10 @@
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import type * as applicative from "@fp-ts/core/typeclass/Applicative"
 import * as chainable from "@fp-ts/core/typeclass/Chainable"
+import type * as compactable from "@fp-ts/core/typeclass/Compactable"
 import * as covariant from "@fp-ts/core/typeclass/Covariant"
-import type * as flatMap_ from "@fp-ts/core/typeclass/FlatMap"
+import * as filterable from "@fp-ts/core/typeclass/Filterable"
+import * as flatMap_ from "@fp-ts/core/typeclass/FlatMap"
 import * as invariant from "@fp-ts/core/typeclass/Invariant"
 import type * as monad from "@fp-ts/core/typeclass/Monad"
 import type { Monoid } from "@fp-ts/core/typeclass/Monoid"
@@ -19,6 +21,7 @@ import type * as product_ from "@fp-ts/core/typeclass/Product"
 import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
 import { fromCombine } from "@fp-ts/core/typeclass/Semigroup"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
+import * as traversableFilterable from "@fp-ts/core/typeclass/TraversableFilterable"
 import type { Either } from "@fp-ts/data/Either"
 import type { Endomorphism } from "@fp-ts/data/Endomorphism"
 import { equals } from "@fp-ts/data/Equal"
@@ -32,10 +35,7 @@ import * as number from "@fp-ts/data/Number"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
-import type * as compactable from "@fp-ts/data/typeclasses/Compactable"
-import * as filterable from "@fp-ts/data/typeclasses/Filterable"
 import * as fromOption_ from "@fp-ts/data/typeclasses/FromOption"
-import * as traversableFilterable from "@fp-ts/data/typeclasses/TraversableFilterable"
 
 // -------------------------------------------------------------------------------------
 // type lambdas
@@ -1437,6 +1437,14 @@ export const FlatMap: flatMap_.FlatMap<ReadonlyArrayTypeLambda> = {
 }
 
 /**
+ * @since 1.0.0
+ */
+export const andThen: <B>(
+  that: ReadonlyArray<B>
+) => <_>(self: ReadonlyArray<_>) => ReadonlyArray<B> = flatMap_
+  .andThen(FlatMap)
+
+/**
  * @category instances
  * @since 1.0.0
  */
@@ -1444,6 +1452,18 @@ export const Chainable: chainable.Chainable<ReadonlyArrayTypeLambda> = {
   ...FlatMap,
   ...Covariant
 }
+
+/**
+ * Sequences the specified effect after this effect, but ignores the value
+ * produced by the effect.
+ *
+ * @category sequencing
+ * @since 1.0.0
+ */
+export const andThenDiscard: <_>(
+  that: ReadonlyArray<_>
+) => <A>(self: ReadonlyArray<A>) => ReadonlyArray<A> = chainable
+  .andThenDiscard(Chainable)
 
 /**
  * @category do notation
@@ -1802,6 +1822,15 @@ export const Product: product_.Product<ReadonlyArrayTypeLambda> = {
  * @category instances
  * @since 1.0.0
  */
+export const Applicative: applicative.Applicative<ReadonlyArrayTypeLambda> = {
+  ...NonEmptyApplicative,
+  ...Product
+}
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
 export const Monad: monad.Monad<ReadonlyArrayTypeLambda> = {
   ...Pointed,
   ...FlatMap
@@ -1997,7 +2026,7 @@ export const traverseFilterMap: <F extends TypeLambda>(
 ) => <A, R, O, E, B>(
   f: (a: A) => Kind<F, R, O, E, Option<B>>
 ) => (ta: ReadonlyArray<A>) => Kind<F, R, O, E, ReadonlyArray<B>> = traversableFilterable
-  .traverseFilterMap(Traversable, Compactable)
+  .traverseFilterMap({ ...Traversable, ...Compactable })
 
 /**
  * @category filtering
@@ -2008,7 +2037,7 @@ export const traversePartitionMap: <F extends TypeLambda>(
 ) => <A, R, O, E, B, C>(
   f: (a: A) => Kind<F, R, O, E, Either<B, C>>
 ) => (wa: ReadonlyArray<A>) => Kind<F, R, O, E, readonly [ReadonlyArray<B>, ReadonlyArray<C>]> =
-  traversableFilterable.traversePartitionMap(Traversable, Covariant, Compactable)
+  traversableFilterable.traversePartitionMap({ ...Traversable, ...Covariant, ...Compactable })
 
 /**
  * @category instances

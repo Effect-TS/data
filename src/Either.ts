@@ -428,8 +428,10 @@ export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<Either
  * @category lifting
  * @since 1.0.0
  */
-export const liftSemigroup: <A, E>(S: Semigroup<A>) => Semigroup<Either<E, A>> = nonEmptyApplicative
-  .liftSemigroup(NonEmptyApplicative)
+export const liftSemigroup = <A>(S: Semigroup<A>) =>
+  <E>(): Semigroup<Either<E, A>> =>
+    nonEmptyApplicative
+      .liftSemigroup(NonEmptyApplicative)(S)
 
 /**
  * @category lifting

@@ -1,4 +1,4 @@
-import * as Sortable from "@fp-ts/core/Sortable"
+import * as Order from "@fp-ts/core/typeclass/Order"
 import type { Endomorphism } from "@fp-ts/data/Endomorphism"
 import { identity, pipe } from "@fp-ts/data/Function"
 import * as NonEmptyReadonlyArray from "@fp-ts/data/NonEmptyReadonlyArray"
@@ -11,7 +11,7 @@ import { assert } from "vitest"
 describe.concurrent("NonEmptyReadonlyArray", () => {
   describe.concurrent("pipeables", () => {
     it("traverse", () => {
-      const traverse = NonEmptyReadonlyArray.traverse(Option.Monoidal)
+      const traverse = NonEmptyReadonlyArray.traverse(Option.Applicative)
       deepStrictEqual(
         pipe(
           NonEmptyReadonlyArray.make(1, 2, 3),
@@ -29,7 +29,7 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
     })
 
     it("sequence", () => {
-      const sequence = NonEmptyReadonlyArray.sequence(Option.Monoidal)
+      const sequence = NonEmptyReadonlyArray.sequence(Option.Applicative)
       deepStrictEqual(
         sequence([Option.some(1), Option.some(2), Option.some(3)]),
         Option.some(NonEmptyReadonlyArray.make(1, 2, 3))
@@ -41,7 +41,7 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
       deepStrictEqual(
         pipe(
           NonEmptyReadonlyArray.make("a", "bb"),
-          NonEmptyReadonlyArray.traverseWithIndex(Option.Monoidal)((
+          NonEmptyReadonlyArray.traverseWithIndex(Option.Applicative)((
             s,
             i
           ) => (s.length >= 1 ? Option.some(s + i) : Option.none))
@@ -51,7 +51,7 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
       deepStrictEqual(
         pipe(
           NonEmptyReadonlyArray.make("a", "bb"),
-          NonEmptyReadonlyArray.traverseWithIndex(Option.Monoidal)((
+          NonEmptyReadonlyArray.traverseWithIndex(Option.Applicative)((
             s,
             i
           ) => (s.length > 1 ? Option.some(s + i) : Option.none))
@@ -122,10 +122,6 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
     }
     deepStrictEqual(pipe([1, 2, 3, 4], NonEmptyReadonlyArray.extend(sum)), [10, 9, 7, 4])
     deepStrictEqual(pipe([1], NonEmptyReadonlyArray.extend(sum)), [1])
-  })
-
-  it("extract", () => {
-    deepStrictEqual(NonEmptyReadonlyArray.extract(NonEmptyReadonlyArray.make(1, 2, 3)), 1)
   })
 
   it("min", () => {
@@ -705,11 +701,11 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
     }
     const byName = pipe(
       String.Order,
-      Sortable.contramap((p: { readonly a: string; readonly b: number }) => p.a)
+      Order.contramap((p: { readonly a: string; readonly b: number }) => p.a)
     )
     const byAge = pipe(
       Number.Order,
-      Sortable.contramap((p: { readonly a: string; readonly b: number }) => p.b)
+      Order.contramap((p: { readonly a: string; readonly b: number }) => p.b)
     )
     const f = NonEmptyReadonlyArray.sortBy([byName, byAge])
     const xs: NonEmptyReadonlyArray.NonEmptyReadonlyArray<X> = [
@@ -855,8 +851,8 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
     const self = NonEmptyReadonlyArray.make(1, 2, 3)
     const that = NonEmptyReadonlyArray.make(2, 3, 4)
 
-    const actual = pipe(self, NonEmptyReadonlyArray.product(that, (a, b) => a * b))
-    const expected = [2, 3, 4, 4, 6, 8, 6, 9, 12]
+    const actual = pipe(self, NonEmptyReadonlyArray.product(that))
+    const expected = [[1, 2], [1, 3], [1, 4], [2, 2], [2, 3], [2, 4], [3, 2], [2, 3], [3, 4]]
 
     expect(actual).toStrictEqual(expected)
   })

@@ -3,8 +3,8 @@
  *
  * @since 1.0.0
  */
-import type { FlatMap } from "@fp-ts/core/FlatMap"
 import type { Kind, TypeClass, TypeLambda } from "@fp-ts/core/HKT"
+import type { FlatMap } from "@fp-ts/core/typeclass/FlatMap"
 import { pipe } from "@fp-ts/data/Function"
 import * as C from "@fp-ts/data/internal/Common"
 import type * as O from "@fp-ts/data/Option"
@@ -16,7 +16,7 @@ import type { Refinement } from "@fp-ts/data/Refinement"
  * @since 1.0.0
  */
 export interface FromOption<F extends TypeLambda> extends TypeClass<F> {
-  readonly fromOption: <A, S>(fa: O.Option<A>) => Kind<F, S, unknown, never, never, A>
+  readonly fromOption: <A>(fa: O.Option<A>) => Kind<F, unknown, never, never, A>
 }
 
 // -------------------------------------------------------------------------------------
@@ -28,7 +28,7 @@ export interface FromOption<F extends TypeLambda> extends TypeClass<F> {
  * @since 1.0.0
  */
 export const fromNullable = <F extends TypeLambda>(F: FromOption<F>) =>
-  <A, S>(a: A): Kind<F, S, unknown, never, never, NonNullable<A>> =>
+  <A>(a: A): Kind<F, unknown, never, never, NonNullable<A>> =>
     F.fromOption(C.fromNullableToOption(a))
 
 // -------------------------------------------------------------------------------------
@@ -44,12 +44,11 @@ export const liftPredicate = <F extends TypeLambda>(
 ): {
   <C extends A, B extends A, A = C>(
     refinement: Refinement<A, B>
-  ): <S>(c: C) => Kind<F, S, unknown, never, never, B>
-  <B extends A, A = B>(predicate: Predicate<A>): <S>(b: B) => Kind<F, S, unknown, never, never, B>
+  ): (c: C) => Kind<F, unknown, never, never, B>
+  <B extends A, A = B>(predicate: Predicate<A>): (b: B) => Kind<F, unknown, never, never, B>
 } =>
   <B extends A, A = B>(predicate: Predicate<A>) =>
-    <S>(b: B): Kind<F, S, unknown, never, never, B> =>
-      F.fromOption(predicate(b) ? C.some(b) : C.none)
+    (b: B): Kind<F, unknown, never, never, B> => F.fromOption(predicate(b) ? C.some(b) : C.none)
 
 /**
  * @category lifting
@@ -57,7 +56,7 @@ export const liftPredicate = <F extends TypeLambda>(
  */
 export const liftOption = <F extends TypeLambda>(F: FromOption<F>) =>
   <A extends ReadonlyArray<unknown>, B>(f: (...a: A) => O.Option<B>) =>
-    <S>(...a: A): Kind<F, S, unknown, never, never, B> => F.fromOption(f(...a))
+    (...a: A): Kind<F, unknown, never, never, B> => F.fromOption(f(...a))
 
 /**
  * @category lifting
@@ -66,7 +65,7 @@ export const liftOption = <F extends TypeLambda>(F: FromOption<F>) =>
 export const liftNullable = <F extends TypeLambda>(F: FromOption<F>) => {
   const fromNullableF = fromNullable(F)
   return <A extends ReadonlyArray<unknown>, B>(f: (...a: A) => B | null | undefined) =>
-    <S, R, O, E>(...a: A): Kind<F, S, R, O, E, NonNullable<B>> => {
+    <R, O, E>(...a: A): Kind<F, R, O, E, NonNullable<B>> => {
       return fromNullableF(f(...a))
     }
 }
@@ -82,7 +81,7 @@ export const liftNullable = <F extends TypeLambda>(F: FromOption<F>) => {
 export const flatMapNullable = <F extends TypeLambda>(F: FromOption<F>, C: FlatMap<F>) => {
   const liftNullable_ = liftNullable(F)
   return <A, B>(f: (a: A) => B | null | undefined) =>
-    <S, R, O, E>(self: Kind<F, S, R, O, E, A>): Kind<F, S, R, O, E, NonNullable<B>> => {
-      return pipe(self, C.flatMap<A, S, R, O, E, NonNullable<B>>(liftNullable_(f)))
+    <R, O, E>(self: Kind<F, R, O, E, A>): Kind<F, R, O, E, NonNullable<B>> => {
+      return pipe(self, C.flatMap<A, R, O, E, NonNullable<B>>(liftNullable_(f)))
     }
 }

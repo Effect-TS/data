@@ -4,7 +4,6 @@ import * as Number from "@fp-ts/data/Number"
 import * as Option from "@fp-ts/data/Option"
 import * as ReadonlyArray from "@fp-ts/data/ReadonlyArray"
 import * as String from "@fp-ts/data/String"
-// import { gt } from "@fp-ts/data/typeclasses/Ord"
 import { deepStrictEqual, double } from "@fp-ts/data/test/util"
 
 describe.concurrent("Either", () => {
@@ -107,21 +106,27 @@ describe.concurrent("Either", () => {
     )
   })
 
-  it("zipLeft", () => {
-    deepStrictEqual(pipe(Either.right(1), Either.zipLeft(Either.right("a"))), Either.right(1))
-    deepStrictEqual(pipe(Either.right(1), Either.zipLeft(Either.left(true))), Either.left(true))
-    deepStrictEqual(pipe(Either.left(1), Either.zipLeft(Either.right("a"))), Either.left(1))
-    deepStrictEqual(pipe(Either.left(1), Either.zipLeft(Either.left(true))), Either.left(1))
+  it("andThenDiscard", () => {
+    deepStrictEqual(
+      pipe(Either.right(1), Either.andThenDiscard(Either.right("a"))),
+      Either.right(1)
+    )
+    deepStrictEqual(
+      pipe(Either.right(1), Either.andThenDiscard(Either.left(true))),
+      Either.left(true)
+    )
+    deepStrictEqual(pipe(Either.left(1), Either.andThenDiscard(Either.right("a"))), Either.left(1))
+    deepStrictEqual(pipe(Either.left(1), Either.andThenDiscard(Either.left(true))), Either.left(1))
   })
 
-  it("zipRight", () => {
+  it("andThen", () => {
     deepStrictEqual(
-      pipe(Either.right(1), Either.zipRight(Either.right("a"))),
+      pipe(Either.right(1), Either.andThen(Either.right("a"))),
       Either.right("a")
     )
-    deepStrictEqual(pipe(Either.right(1), Either.zipRight(Either.left(true))), Either.left(true))
-    deepStrictEqual(pipe(Either.left(1), Either.zipRight(Either.right("a"))), Either.left(1))
-    deepStrictEqual(pipe(Either.left(1), Either.zipRight(Either.left(true))), Either.left(1))
+    deepStrictEqual(pipe(Either.right(1), Either.andThen(Either.left(true))), Either.left(true))
+    deepStrictEqual(pipe(Either.left(1), Either.andThen(Either.right("a"))), Either.left(1))
+    deepStrictEqual(pipe(Either.left(1), Either.andThen(Either.left(true))), Either.left(1))
   })
 
   describe.concurrent("pipeables", () => {
@@ -178,30 +183,6 @@ describe.concurrent("Either", () => {
       deepStrictEqual(pipe(Either.left("maError"), f), Either.left("maError"))
     })
 
-    it("duplicate", () => {
-      deepStrictEqual(
-        pipe(Either.right("a"), Either.duplicate),
-        Either.right(Either.right("a"))
-      )
-    })
-
-    it("extend", () => {
-      deepStrictEqual(
-        pipe(
-          Either.right(1),
-          Either.extend(() => 2)
-        ),
-        Either.right(2)
-      )
-      deepStrictEqual(
-        pipe(
-          Either.left("err"),
-          Either.extend(() => 2)
-        ),
-        Either.left("err")
-      )
-    })
-
     it("flatten", () => {
       deepStrictEqual(
         pipe(Either.right(Either.right("a")), Either.flatten),
@@ -221,7 +202,7 @@ describe.concurrent("Either", () => {
     })
 
     it("traverse", () => {
-      const traverse = Either.traverse(Option.Monoidal)((
+      const traverse = Either.traverse(Option.Applicative)((
         n: number
       ) => (n >= 2 ? Option.some(n) : Option.none))
       deepStrictEqual(pipe(Either.left("a"), traverse), Option.some(Either.left("a")))
@@ -230,7 +211,7 @@ describe.concurrent("Either", () => {
     })
 
     it("sequence", () => {
-      const sequence = Either.sequence(Option.Monoidal)
+      const sequence = Either.sequence(Option.Applicative)
       deepStrictEqual(sequence(Either.right(Option.some(1))), Option.some(Either.right(1)))
       deepStrictEqual(sequence(Either.left("a")), Option.some(Either.left("a")))
       deepStrictEqual(sequence(Either.right(Option.none)), Option.none)
@@ -425,8 +406,8 @@ describe.concurrent("Either", () => {
   //   })
   // })
 
-  it("getSemigroup", () => {
-    const Semigroup = Either.getSemigroup(Number.SemigroupSum)<string>()
+  it("liftSemigroup", () => {
+    const Semigroup = Either.liftSemigroup(Number.SemigroupSum)<string>()
     deepStrictEqual(pipe(Either.left("a"), Semigroup.combine(Either.left("b"))), Either.left("a"))
     deepStrictEqual(pipe(Either.left("a"), Semigroup.combine(Either.right(2))), Either.right(2))
     deepStrictEqual(pipe(Either.right(1), Semigroup.combine(Either.left("b"))), Either.right(1))
@@ -436,29 +417,30 @@ describe.concurrent("Either", () => {
     )
   })
 
-  it("getApplicativeValidation", () => {
-    const A = Either.getValidatedMonoidal(String.Monoid)
+  // TODO
+  // it("getApplicativeValidation", () => {
+  //   const A = Either.getValidatedMonoidal(String.Monoid)
 
-    const flatZipPar = <B>(fb: Either.Either<string, B>) =>
-      <A extends ReadonlyArray<unknown>>(
-        fas: Either.Either<string, A>
-      ): Either.Either<string, readonly [...A, B]> =>
-        pipe(
-          fas,
-          Either.map((a) => (b: B): readonly [...A, B] => [...a, b]),
-          A.zipWith(
-            fb,
-            (f, b) => f(b)
-          )
-        )
+  //   const flatZipPar = <B>(fb: Either.Either<string, B>) =>
+  //     <A extends ReadonlyArray<unknown>>(
+  //       fas: Either.Either<string, A>
+  //     ): Either.Either<string, readonly [...A, B]> =>
+  //       pipe(
+  //         fas,
+  //         Either.map((a) => (b: B): readonly [...A, B] => [...a, b]),
+  //         A.zipWith(
+  //           fb,
+  //           (f, b) => f(b)
+  //         )
+  //       )
 
-    deepStrictEqual(pipe(Either.left("a"), flatZipPar(Either.left("b"))), Either.left("ab"))
-    deepStrictEqual(pipe(Either.right([1]), flatZipPar(Either.left("b"))), Either.left("b"))
-    deepStrictEqual(
-      pipe(Either.right([1]), flatZipPar(Either.right(2))),
-      Either.right([1, 2] as const)
-    )
-  })
+  //   deepStrictEqual(pipe(Either.left("a"), flatZipPar(Either.left("b"))), Either.left("ab"))
+  //   deepStrictEqual(pipe(Either.right([1]), flatZipPar(Either.left("b"))), Either.left("b"))
+  //   deepStrictEqual(
+  //     pipe(Either.right([1]), flatZipPar(Either.right(2))),
+  //     Either.right([1, 2] as const)
+  //   )
+  // })
 
   // TODO
   // it("getValidatedAlt", () => {
@@ -505,16 +487,16 @@ describe.concurrent("Either", () => {
     )
   })
 
-  it("apS", () => {
+  it("bindEither", () => {
     deepStrictEqual(
-      pipe(Either.right(1), Either.bindTo("a"), Either.bindRight("b", Either.right("b"))),
+      pipe(Either.right(1), Either.bindTo("a"), Either.bindEither("b", Either.right("b"))),
       Either.right({ a: 1, b: "b" })
     )
   })
 
-  it("zipFlatten", () => {
+  it("productFlatten", () => {
     deepStrictEqual(
-      pipe(Either.right(1), Either.tupled, Either.zipFlatten(Either.right("b"))),
+      pipe(Either.right(1), Either.tupled, Either.productFlatten(Either.right("b"))),
       Either.right([1, "b"] as const)
     )
   })

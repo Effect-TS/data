@@ -145,7 +145,7 @@ export const Covariant: covariant.Covariant<ConstTypeLambda> = {
  * @category mapping
  * @since 1.0.0
  */
-const contramap: <B, A>(f: (b: B) => A) => <S>(self: Const<S, A>) => Const<S, B> = constant(
+export const contramap: <B, A>(f: (b: B) => A) => <S>(self: Const<S, A>) => Const<S, B> = constant(
   unsafeCoerce
 )
 

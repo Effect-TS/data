@@ -1,4 +1,4 @@
-import * as Sortable from "@fp-ts/core/Sortable"
+import * as Order from "@fp-ts/core/typeclass/Order"
 import * as Either from "@fp-ts/data/Either"
 import * as Equal from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
@@ -14,7 +14,7 @@ import * as fc from "fast-check"
 describe.concurrent("ReadonlyArray", () => {
   describe.concurrent("pipeables", () => {
     it("traverse", () => {
-      const traverse = ReadonlyArray.traverse(Option.Monoidal)((
+      const traverse = ReadonlyArray.traverse(Option.Applicative)((
         n: number
       ): Option.Option<number> => (n % 2 === 0 ? Option.none : Option.some(n)))
       deepStrictEqual(traverse([1, 2]), Option.none)
@@ -22,7 +22,7 @@ describe.concurrent("ReadonlyArray", () => {
     })
 
     it("sequence", () => {
-      const sequence = ReadonlyArray.sequence(Option.Monoidal)
+      const sequence = ReadonlyArray.sequence(Option.Applicative)
       deepStrictEqual(sequence([Option.some(1), Option.some(3)]), Option.some([1, 3]))
       deepStrictEqual(sequence([Option.some(1), Option.none]), Option.none)
     })
@@ -31,7 +31,7 @@ describe.concurrent("ReadonlyArray", () => {
       deepStrictEqual(
         pipe(
           ["a", "bb"],
-          ReadonlyArray.traverseWithIndex(Option.Monoidal)((
+          ReadonlyArray.traverseWithIndex(Option.Applicative)((
             s,
             i
           ) => (s.length >= 1 ? Option.some(s + i) : Option.none))
@@ -41,7 +41,7 @@ describe.concurrent("ReadonlyArray", () => {
       deepStrictEqual(
         pipe(
           ["a", "bb"],
-          ReadonlyArray.traverseWithIndex(Option.Monoidal)((
+          ReadonlyArray.traverseWithIndex(Option.Applicative)((
             s,
             i
           ) => (s.length > 1 ? Option.some(s + i) : Option.none))
@@ -131,12 +131,19 @@ describe.concurrent("ReadonlyArray", () => {
       )
     })
 
-    it("zipLeft", () => {
-      deepStrictEqual(pipe([1, 2], ReadonlyArray.zipLeft(["a", "b", "c"])), [1, 1, 1, 2, 2, 2])
+    it("andThenDiscard", () => {
+      deepStrictEqual(pipe([1, 2], ReadonlyArray.andThenDiscard(["a", "b", "c"])), [
+        1,
+        1,
+        1,
+        2,
+        2,
+        2
+      ])
     })
 
-    it("zipRigth", () => {
-      deepStrictEqual(pipe([1, 2], ReadonlyArray.zipRight(["a", "b", "c"])), [
+    it("andThen", () => {
+      deepStrictEqual(pipe([1, 2], ReadonlyArray.andThen(["a", "b", "c"])), [
         "a",
         "b",
         "c",
@@ -339,10 +346,6 @@ describe.concurrent("ReadonlyArray", () => {
         ),
         "1b0a"
       )
-    })
-
-    it("duplicate", () => {
-      deepStrictEqual(pipe(["a", "b"], ReadonlyArray.duplicate), [["a", "b"], ["b"]])
     })
   })
 
@@ -721,7 +724,7 @@ describe.concurrent("ReadonlyArray", () => {
   it("sort", () => {
     const S = pipe(
       Number.Order,
-      Sortable.contramap((x: { readonly a: number }) => x.a)
+      Order.contramap((x: { readonly a: number }) => x.a)
     )
     deepStrictEqual(
       pipe(
@@ -955,11 +958,11 @@ describe.concurrent("ReadonlyArray", () => {
     }
     const byName = pipe(
       String.Order,
-      Sortable.contramap((p: { readonly a: string; readonly b: number }) => p.a)
+      Order.contramap((p: { readonly a: string; readonly b: number }) => p.a)
     )
     const byAge = pipe(
       Number.Order,
-      Sortable.contramap((p: { readonly a: string; readonly b: number }) => p.b)
+      Order.contramap((p: { readonly a: string; readonly b: number }) => p.b)
     )
     const f = ReadonlyArray.sortBy([byName, byAge])
     const xs: ReadonlyArray<X> = [
@@ -1277,8 +1280,8 @@ describe.concurrent("ReadonlyArray", () => {
     const self = [1, 2, 3]
     const that = [2, 3, 4]
 
-    const actual = pipe(self, ReadonlyArray.crossWith(that, (a, b) => a * b))
-    const expected = [2, 3, 4, 4, 6, 8, 6, 9, 12]
+    const actual = pipe(self, ReadonlyArray.crossWith(that))
+    const expected = [[1, 2], [1, 3], [1, 4], [2, 2], [2, 3], [2, 4], [3, 2], [2, 3], [3, 4]]
 
     expect(actual).toStrictEqual(expected)
   })
