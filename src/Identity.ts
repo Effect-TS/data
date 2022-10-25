@@ -309,27 +309,6 @@ export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<Identi
 }
 
 /**
- * Monoid returning the left-most non-`None` value. If both operands are `Some`s then the inner values are
- * combined using the provided `Semigroup`
- *
- * | x       | y       | combine(y)(x)       |
- * | ------- | ------- | ------------------- |
- * | none    | none    | none                |
- * | some(a) | none    | some(a)             |
- * | none    | some(a) | some(a)             |
- * | some(a) | some(b) | some(combine(b)(a)) |
- *
- * @example
- * import { liftSemigroup, some, none } from '@fp-ts/data/Identity'
- * import * as N from '@fp-ts/data/Number'
- * import { pipe } from '@fp-ts/data/Function'
- *
- * const M = liftSemigroup(N.SemigroupSum)
- * assert.deepStrictEqual(pipe(none, M.combine(none)), none)
- * assert.deepStrictEqual(pipe(some(1), M.combine(none)), some(1))
- * assert.deepStrictEqual(pipe(none, M.combine(some(1))), some(1))
- * assert.deepStrictEqual(pipe(some(1), M.combine(some(2))), some(3))
- *
  * @category instances
  * @since 1.0.0
  */
@@ -394,13 +373,6 @@ export const NonEmptyCoproduct: nonEmptyCoproduct.NonEmptyCoproduct<IdentityType
   coproduct: () => identity,
   coproductMany: () => identity
 }
-
-/**
- * @since 1.0.0
- */
-export const getSemigroup: <A>() => Semigroup<Identity<A>> = nonEmptyCoproduct.getSemigroup(
-  NonEmptyCoproduct
-)
 
 /**
  * @since 1.0.0
@@ -497,12 +469,6 @@ export const foldMapKind: <G extends TypeLambda>(
 ) => <A, R, O, E, B>(
   f: (a: A) => Kind<G, R, O, E, B>
 ) => (self: Identity<A>) => Kind<G, R, O, E, B> = foldable.foldMapKind(Foldable)
-
-/**
- * @category filtering
- * @since 1.0.0
- */
-export const compact: <A>(foa: Identity<Identity<A>>) => Identity<A> = flatten
 
 /**
  * @category traversing
