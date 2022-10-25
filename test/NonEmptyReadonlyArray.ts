@@ -9,6 +9,72 @@ import { assertTrue, deepStrictEqual, double, strictEqual } from "@fp-ts/data/te
 import { assert } from "vitest"
 
 describe.concurrent("NonEmptyReadonlyArray", () => {
+  it("instances and derived exports", () => {
+    expect(NonEmptyReadonlyArray.Invariant).exist
+    expect(NonEmptyReadonlyArray.imap).exist
+    expect(NonEmptyReadonlyArray.tupled).exist
+    expect(NonEmptyReadonlyArray.bindTo).exist
+
+    expect(NonEmptyReadonlyArray.Covariant).exist
+    expect(NonEmptyReadonlyArray.map).exist
+    expect(NonEmptyReadonlyArray.let).exist
+    expect(NonEmptyReadonlyArray.flap).exist
+    expect(NonEmptyReadonlyArray.as).exist
+    expect(NonEmptyReadonlyArray.asUnit).exist
+
+    expect(NonEmptyReadonlyArray.Of).exist
+    expect(NonEmptyReadonlyArray.of).exist
+    expect(NonEmptyReadonlyArray.Do).exist
+
+    expect(NonEmptyReadonlyArray.Pointed).exist
+
+    expect(NonEmptyReadonlyArray.FlatMap).exist
+    expect(NonEmptyReadonlyArray.flatMap).exist
+    expect(NonEmptyReadonlyArray.flatten).exist
+    expect(NonEmptyReadonlyArray.andThen).exist
+    expect(NonEmptyReadonlyArray.composeKleisliArrow).exist
+
+    expect(NonEmptyReadonlyArray.Chainable).exist
+    expect(NonEmptyReadonlyArray.bind).exist
+    expect(NonEmptyReadonlyArray.tap).exist
+    expect(NonEmptyReadonlyArray.andThenDiscard).exist
+
+    expect(NonEmptyReadonlyArray.Monad).exist
+
+    expect(NonEmptyReadonlyArray.NonEmptyProduct).exist
+    expect(NonEmptyReadonlyArray.product).exist
+    expect(NonEmptyReadonlyArray.productMany).exist
+
+    expect(NonEmptyReadonlyArray.Product).exist
+    expect(NonEmptyReadonlyArray.productAll).exist
+    // expect(NonEmptyReadonlyArray.tuple).exist
+    // expect(NonEmptyReadonlyArray.struct).exist
+
+    expect(NonEmptyReadonlyArray.NonEmptyApplicative).exist
+    expect(NonEmptyReadonlyArray.liftSemigroup).exist
+    expect(NonEmptyReadonlyArray.lift2).exist
+    expect(NonEmptyReadonlyArray.lift3).exist
+    expect(NonEmptyReadonlyArray.ap).exist
+    expect(NonEmptyReadonlyArray.andThenDiscard).exist
+    expect(NonEmptyReadonlyArray.andThen).exist
+
+    expect(NonEmptyReadonlyArray.Applicative).exist
+    expect(NonEmptyReadonlyArray.liftMonoid).exist
+
+    expect(NonEmptyReadonlyArray.Foldable).exist
+    expect(NonEmptyReadonlyArray.reduce).exist
+    expect(NonEmptyReadonlyArray.reduceRight).exist
+    expect(NonEmptyReadonlyArray.foldMap).exist
+    expect(NonEmptyReadonlyArray.reduceKind).exist
+    expect(NonEmptyReadonlyArray.reduceRightKind).exist
+    expect(NonEmptyReadonlyArray.foldMapKind).exist
+
+    expect(NonEmptyReadonlyArray.Traversable).exist
+    expect(NonEmptyReadonlyArray.traverse).exist
+    expect(NonEmptyReadonlyArray.sequence).exist
+    expect(NonEmptyReadonlyArray.traverseTap).exist
+  })
+
   describe.concurrent("pipeables", () => {
     it("traverse", () => {
       const traverse = NonEmptyReadonlyArray.traverse(Option.Applicative)
@@ -847,24 +913,37 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
     expect(actual).toStrictEqual(expected)
   })
 
-  test("crossWith", () => {
-    const self = NonEmptyReadonlyArray.make(1, 2, 3)
-    const that = NonEmptyReadonlyArray.make(2, 3, 4)
-
-    const actual = pipe(self, NonEmptyReadonlyArray.product(that))
-    const expected = [[1, 2], [1, 3], [1, 4], [2, 2], [2, 3], [2, 4], [3, 2], [3, 3], [3, 4]]
-
-    expect(actual).toStrictEqual(expected)
+  test("product", () => {
+    expect(pipe(
+      NonEmptyReadonlyArray.make(1),
+      NonEmptyReadonlyArray.product(NonEmptyReadonlyArray.make(2, 3, 4))
+    )).toStrictEqual([[1, 2], [1, 3], [1, 4]])
+    expect(pipe(
+      NonEmptyReadonlyArray.make(1, 2, 3),
+      NonEmptyReadonlyArray.product(NonEmptyReadonlyArray.make(2, 3, 4))
+    )).toStrictEqual([[1, 2], [1, 3], [1, 4], [2, 2], [2, 3], [2, 4], [3, 2], [3, 3], [3, 4]])
   })
 
-  test("crossAll", () => {
-    const arrays: ReadonlyArray<NonEmptyReadonlyArray.NonEmptyReadonlyArray<number>> = [
+  test("productMany", () => {
+    expect(pipe(
+      NonEmptyReadonlyArray.make(1),
+      NonEmptyReadonlyArray.productMany([])
+    )).toStrictEqual([[1]])
+  })
+
+  test("productAll", () => {
+    expect(NonEmptyReadonlyArray.productAll([])).toStrictEqual([[]])
+    expect(NonEmptyReadonlyArray.productAll([
       [2, 3],
       [4, 5],
       [8, 9, 10]
-    ]
-    const actual = NonEmptyReadonlyArray.productAll(arrays)
-    const expected = [[2, 4, 5, 8, 9, 10], [3, 4, 5, 8, 9, 10]]
-    expect(actual).toStrictEqual(expected)
+    ])).toStrictEqual([[2, 4, 5, 8, 9, 10], [3, 4, 5, 8, 9, 10]])
+  })
+
+  test("unsafeFrom", () => {
+    expect(NonEmptyReadonlyArray.unsafeFrom([1])).toStrictEqual([1])
+    expect(() => NonEmptyReadonlyArray.unsafeFrom([])).toThrow(
+      new Error("Cannot construct a NonEmptyReadonlyArray from an empty collection")
+    )
   })
 })

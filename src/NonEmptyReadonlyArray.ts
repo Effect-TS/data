@@ -13,12 +13,15 @@
  * @since 1.0.0
  */
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
-import type * as applicative from "@fp-ts/core/typeclass/Applicative"
+import * as applicative from "@fp-ts/core/typeclass/Applicative"
 import * as chainable from "@fp-ts/core/typeclass/Chainable"
+import type { Coproduct } from "@fp-ts/core/typeclass/Coproduct"
 import * as covariant from "@fp-ts/core/typeclass/Covariant"
-import type * as flatMap_ from "@fp-ts/core/typeclass/FlatMap"
+import * as flatMap_ from "@fp-ts/core/typeclass/FlatMap"
+import * as foldable from "@fp-ts/core/typeclass/Foldable"
 import * as invariant from "@fp-ts/core/typeclass/Invariant"
 import type * as monad from "@fp-ts/core/typeclass/Monad"
+import type { Monoid } from "@fp-ts/core/typeclass/Monoid"
 import * as nonEmptyApplicative from "@fp-ts/core/typeclass/NonEmptyApplicative"
 import * as nonEmptyProduct from "@fp-ts/core/typeclass/NonEmptyProduct"
 import type * as of_ from "@fp-ts/core/typeclass/Of"
@@ -28,7 +31,7 @@ import type * as pointed from "@fp-ts/core/typeclass/Pointed"
 import type * as product_ from "@fp-ts/core/typeclass/Product"
 import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
 import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
-import type * as traversable from "@fp-ts/core/typeclass/Traversable"
+import * as traversable from "@fp-ts/core/typeclass/Traversable"
 import type { Endomorphism } from "@fp-ts/data/Endomorphism"
 import { equals } from "@fp-ts/data/Equal"
 import { flow, identity, pipe } from "@fp-ts/data/Function"
@@ -610,7 +613,7 @@ export const productMany = <A>(
   collection: Iterable<NonEmptyReadonlyArray<A>>
 ) =>
   (self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<NonEmptyReadonlyArray<A>> => {
-    const arrays = Array.from(collection)
+    const arrays = internal.fromIterable(collection)
 
     if (arrays.length === 0) {
       return [self]
@@ -815,6 +818,23 @@ export const FlatMap: flatMap_.FlatMap<NonEmptyReadonlyArrayTypeLambda> = {
 /**
  * @since 1.0.0
  */
+export const andThen: <B>(
+  that: NonEmptyReadonlyArray<B>
+) => <_>(self: NonEmptyReadonlyArray<_>) => NonEmptyReadonlyArray<B> = flatMap_
+  .andThen(FlatMap)
+
+/**
+ * @since 1.0.0
+ */
+export const composeKleisliArrow: <B, C>(
+  bfc: (b: B) => NonEmptyReadonlyArray<C>
+) => <A>(
+  afb: (a: A) => NonEmptyReadonlyArray<B>
+) => (a: A) => NonEmptyReadonlyArray<C> = flatMap_.composeKleisliArrow(FlatMap)
+
+/**
+ * @since 1.0.0
+ */
 export const ap: <A>(
   fa: NonEmptyReadonlyArray<A>
 ) => <B>(self: NonEmptyReadonlyArray<(a: A) => B>) => NonEmptyReadonlyArray<B> = (fa) =>
@@ -916,11 +936,21 @@ export declare const getSemigroup: <A>() => Semigroup<NonEmptyReadonlyArray<A>>
 export declare const getUnionSemigroup: <A>() => Semigroup<NonEmptyReadonlyArray<A>>
 
 /**
+ * @since 1.0.0
+ */
+export const imap: <A, B>(
+  to: (a: A) => B,
+  from: (b: B) => A
+) => (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<B> = covariant.imap<
+  NonEmptyReadonlyArrayTypeLambda
+>(map)
+
+/**
  * @category instances
  * @since 1.0.0
  */
 export const Invariant: invariant.Invariant<NonEmptyReadonlyArrayTypeLambda> = {
-  imap: covariant.imap<NonEmptyReadonlyArrayTypeLambda>(map)
+  imap
 }
 
 /**
@@ -937,6 +967,14 @@ export const bindTo: <N extends string>(
  */
 export const tupled: <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<readonly [A]> =
   invariant.tupled(Invariant)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const Of: of_.Of<NonEmptyReadonlyArrayTypeLambda> = {
+  of
+}
 
 /**
  * @category instances
@@ -967,6 +1005,25 @@ export const as: <B>(b: B) => (self: NonEmptyReadonlyArray<unknown>) => NonEmpty
   covariant.as(Covariant)
 
 /**
+ * @category mapping
+ * @since 1.0.0
+ */
+export const asUnit: <_>(
+  self: readonly [_, ...Array<_>]
+) => readonly [void, ...Array<void>] = covariant.asUnit(
+  Covariant
+)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const Pointed: pointed.Pointed<NonEmptyReadonlyArrayTypeLambda> = {
+  ...Of,
+  ...Covariant
+}
+
+/**
  * @category instances
  * @since 1.0.0
  */
@@ -974,6 +1031,16 @@ export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<NonEmptyReadonlyAr
   product,
   productMany,
   ...Covariant
+}
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const Product: product_.Product<NonEmptyReadonlyArrayTypeLambda> = {
+  ...Of,
+  ...NonEmptyProduct,
+  productAll
 }
 
 export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<
@@ -1009,22 +1076,13 @@ export const lift3: <A, B, C, D>(
 ) => NonEmptyReadonlyArray<D> = nonEmptyApplicative.lift3(NonEmptyApplicative)
 
 /**
- * @category instances
  * @since 1.0.0
  */
-export const Of: of_.Of<NonEmptyReadonlyArrayTypeLambda> = {
-  of
-}
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Product: product_.Product<NonEmptyReadonlyArrayTypeLambda> = {
-  ...Of,
-  ...NonEmptyProduct,
-  productAll
-}
+export const liftSemigroup: <A>(
+  S: semigroup.Semigroup<A>
+) => semigroup.Semigroup<NonEmptyReadonlyArray<A>> = nonEmptyApplicative.liftSemigroup(
+  NonEmptyApplicative
+)
 
 /**
  * @category instances
@@ -1036,13 +1094,12 @@ export const Applicative: applicative.Applicative<NonEmptyReadonlyArrayTypeLambd
 }
 
 /**
- * @category instances
  * @since 1.0.0
  */
-export const Pointed: pointed.Pointed<NonEmptyReadonlyArrayTypeLambda> = {
-  ...Of,
-  ...Covariant
-}
+export const liftMonoid: <A>(M: Monoid<A>) => Monoid<NonEmptyReadonlyArray<A>> = applicative
+  .liftMonoid(
+    Applicative
+  )
 
 /**
  * @category instances
@@ -1098,12 +1155,31 @@ export const tap: <A, _>(
   Chainable
 )
 
+export const andThenDiscard: <_>(
+  that: NonEmptyReadonlyArray<_>
+) => <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A> = chainable
+  .andThenDiscard(
+    Chainable
+  )
+
 /**
  * @category folding
  * @since 1.0.0
  */
 export const reduce = <B, A>(b: B, f: (b: B, a: A) => B) =>
   (self: NonEmptyReadonlyArray<A>): B => self.reduce((b, a) => f(b, a), b)
+
+/**
+ * @category folding
+ * @since 1.0.0
+ */
+export const reduceRight = <B, A>(b: B, f: (b: B, a: A) => B) =>
+  (self: NonEmptyReadonlyArray<A>): B => self.reduceRight((b, a) => f(b, a), b)
+
+export const Foldable: foldable.Foldable<NonEmptyReadonlyArrayTypeLambda> = {
+  reduce,
+  reduceRight
+}
 
 /**
  * **Note**. The constraint is relaxed: a `Semigroup` instead of a `Monoid`.
@@ -1120,8 +1196,40 @@ export const foldMap = <S>(S: Semigroup<S>) =>
  * @category folding
  * @since 1.0.0
  */
-export const reduceRight = <B, A>(b: B, f: (a: A, b: B) => B) =>
-  (self: NonEmptyReadonlyArray<A>): B => self.reduceRight((b, a) => f(a, b), b)
+export const reduceKind: <G extends TypeLambda>(
+  G: monad.Monad<G>
+) => <B, A, R, O, E>(
+  b: B,
+  f: (b: B, a: A) => Kind<G, R, O, E, B>
+) => (self: NonEmptyReadonlyArray<A>) => Kind<G, R, O, E, B> = foldable.reduceKind(
+  Foldable
+)
+
+/**
+ * @category folding
+ * @since 1.0.0
+ */
+export const reduceRightKind: <G extends TypeLambda>(
+  G: monad.Monad<G>
+) => <B, A, R, O, E>(
+  b: B,
+  f: (b: B, a: A) => Kind<G, R, O, E, B>
+) => (self: NonEmptyReadonlyArray<A>) => Kind<G, R, O, E, B> = foldable
+  .reduceRightKind(
+    Foldable
+  )
+
+/**
+ * @category folding
+ * @since 1.0.0
+ */
+export const foldMapKind: <G extends TypeLambda>(
+  G: Coproduct<G>
+) => <A, R, O, E, B>(
+  f: (a: A) => Kind<G, R, O, E, B>
+) => (self: NonEmptyReadonlyArray<A>) => Kind<G, R, O, E, B> = foldable.foldMapKind(
+  Foldable
+)
 
 /**
  * @category folding
@@ -1149,27 +1257,22 @@ export const reduceRightWithIndex = <B, A>(b: B, f: (i: number, a: A, b: B) => B
   (self: NonEmptyReadonlyArray<A>): B => self.reduceRight((b, a, i) => f(i, a, b), b)
 
 /**
- * @category folding
- * @since 1.0.0
- */
-export const reduceKind = <F extends TypeLambda>(Flattenable: flatMap_.FlatMap<F>) =>
-  <R, O, E, B, A>(
-    fb: Kind<F, R, O, E, B>,
-    f: (b: B, a: A) => Kind<F, R, O, E, B>
-  ): ((self: NonEmptyReadonlyArray<A>) => Kind<F, R, O, E, B>) =>
-    reduce(fb, (fb, a) =>
-      pipe(
-        fb,
-        Flattenable.flatMap((b) => f(b, a))
-      ))
-
-/**
  * @category instances
  * @since 1.0.0
  */
 export const Traversable: traversable.Traversable<NonEmptyReadonlyArrayTypeLambda> = {
   traverse
 }
+
+/**
+ * @since 1.0.0
+ */
+export const traverseTap: <F extends TypeLambda>(
+  F: applicative.Applicative<F>
+) => <A, R, O, E, B>(
+  f: (a: A) => Kind<F, R, O, E, B>
+) => (self: NonEmptyReadonlyArray<A>) => Kind<F, R, O, E, NonEmptyReadonlyArray<A>> = traversable
+  .traverseTap(Traversable)
 
 /**
  * @category do notation
