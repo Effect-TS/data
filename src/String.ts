@@ -9,10 +9,6 @@ import type { NonEmptyReadonlyArray } from "@fp-ts/data/NonEmptyReadonlyArray"
 import * as RA from "@fp-ts/data/ReadonlyArray"
 import type { Refinement } from "@fp-ts/data/Refinement"
 
-// -------------------------------------------------------------------------------------
-// instances
-// -------------------------------------------------------------------------------------
-
 /**
  * @since 1.0.0
  */
@@ -55,16 +51,10 @@ export const empty = ""
  * @since 1.0.0
  */
 export const Monoid: monoid.Monoid<string> = {
-  combine: Semigroup.combine,
-  combineMany: Semigroup.combineMany,
-  combineAll: (all) => Semigroup.combineMany(all)(empty),
+  ...Semigroup,
+  combineAll: (collection) => Semigroup.combineMany(collection)(empty),
   empty
 }
-
-/**
- * @since 1.0.0
- */
-export const concatAll: (collection: Iterable<string>) => string = Monoid.combineAll
 
 /**
  * @example
@@ -81,10 +71,6 @@ export const concatAll: (collection: Iterable<string>) => string = Monoid.combin
 export const Order: order.Order<string> = {
   compare: (that) => (self) => self < that ? -1 : self > that ? 1 : 0
 }
-
-// -------------------------------------------------------------------------------------
-// refinements
-// -------------------------------------------------------------------------------------
 
 /**
  * @example
