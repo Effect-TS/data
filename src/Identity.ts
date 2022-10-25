@@ -4,7 +4,7 @@
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import * as applicative from "@fp-ts/core/typeclass/Applicative"
 import * as chainable from "@fp-ts/core/typeclass/Chainable"
-import type * as coproduct from "@fp-ts/core/typeclass/Coproduct"
+import type * as coproduct_ from "@fp-ts/core/typeclass/Coproduct"
 import * as covariant from "@fp-ts/core/typeclass/Covariant"
 import * as flatMap_ from "@fp-ts/core/typeclass/FlatMap"
 import * as foldable from "@fp-ts/core/typeclass/Foldable"
@@ -44,11 +44,20 @@ export interface IdentityTypeLambda extends TypeLambda {
 export const map = <A, B>(f: (a: A) => B) => (self: Identity<A>): Identity<B> => f(self)
 
 /**
+ * @since 1.0.0
+ */
+export const imap: <A, B>(
+  to: (a: A) => B,
+  from: (b: B) => A
+) => (self: Identity<A>) => Identity<B> = covariant
+  .imap<IdentityTypeLambda>(map)
+
+/**
  * @category instances
  * @since 1.0.0
  */
 export const Invariant: invariant.Invariant<IdentityTypeLambda> = {
-  imap: covariant.imap<IdentityTypeLambda>(map)
+  imap
 }
 
 /**
@@ -237,14 +246,19 @@ export const product = <B>(
 ) => <A>(self: Identity<A>): Identity<readonly [A, B]> => [self, that]
 
 /**
+ * @since 1.0.0
+ */
+export const productMany = <A>(collection: Iterable<Identity<A>>) =>
+  (self: Identity<A>): Identity<readonly [A, ...Array<A>]> => [self, ...collection]
+
+/**
  * @category instances
  * @since 1.0.0
  */
 export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<IdentityTypeLambda> = {
   ...Invariant,
   product,
-  productMany: <A>(collection: Iterable<Identity<A>>) =>
-    (self: Identity<A>): Identity<readonly [A, ...Array<A>]> => [self, ...collection]
+  productMany
 }
 
 /**
@@ -271,14 +285,19 @@ export const productFlatten: <B>(
     .productFlatten(NonEmptyProduct)
 
 /**
+ * @since 1.0.0
+ */
+export const productAll = <A>(collection: Iterable<Identity<A>>): Identity<ReadonlyArray<A>> =>
+  internal.fromIterable(collection)
+
+/**
  * @category instances
  * @since 1.0.0
  */
 export const Product: product_.Product<IdentityTypeLambda> = {
   ...Of,
   ...NonEmptyProduct,
-  productAll: <A>(collection: Iterable<Identity<A>>): Identity<ReadonlyArray<A>> =>
-    internal.fromIterable(collection)
+  productAll
 }
 
 /**
@@ -365,14 +384,35 @@ export const liftMonoid: <A>(M: Monoid<A>) => Monoid<Identity<A>> = applicative.
 )
 
 /**
+ * @since 1.0.0
+ */
+export const coproduct: <B>(
+  that: Identity<B>
+) => <A>(self: Identity<A>) => Identity<B | A> = () => identity
+
+/**
+ * @since 1.0.0
+ */
+export const coproductMany: <A>(
+  collection: Iterable<A>
+) => (self: Identity<A>) => Identity<A> = () => identity
+
+/**
  * @category instances
  * @since 1.0.0
  */
 export const NonEmptyCoproduct: nonEmptyCoproduct.NonEmptyCoproduct<IdentityTypeLambda> = {
   ...Invariant,
-  coproduct: () => identity,
-  coproductMany: () => identity
+  coproduct,
+  coproductMany
 }
+
+/**
+ * @since 1.0.0
+ */
+export const getSemigroup: <A>() => Semigroup<Identity<A>> = nonEmptyCoproduct.getSemigroup(
+  NonEmptyCoproduct
+)
 
 /**
  * @since 1.0.0
@@ -465,7 +505,7 @@ export const reduceRightKind: <G extends TypeLambda>(
  * @since 1.0.0
  */
 export const foldMapKind: <G extends TypeLambda>(
-  G: coproduct.Coproduct<G>
+  G: coproduct_.Coproduct<G>
 ) => <A, R, O, E, B>(
   f: (a: A) => Kind<G, R, O, E, B>
 ) => (self: Identity<A>) => Kind<G, R, O, E, B> = foldable.foldMapKind(Foldable)
