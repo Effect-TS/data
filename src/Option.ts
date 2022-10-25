@@ -1137,18 +1137,18 @@ export const orElse = <B>(that: Option<B>): (<A>(self: Option<A>) => Option<A | 
   catchAll(() => that)
 
 /**
- * The `Sortable` instance allows `Option` values to be compared with
- * `compare`, whenever there is an `Sortable` instance for
+ * The `Order` instance allows `Option` values to be compared with
+ * `compare`, whenever there is an `Order` instance for
  * the type the `Option` contains.
  *
  * `None` is considered to be less than any `Some` value.
  *
  * @example
- * import { none, some, liftSortable } from '@fp-ts/data/Option'
+ * import { none, some, liftOrder } from '@fp-ts/data/Option'
  * import * as N from '@fp-ts/data/Number'
  * import { pipe } from '@fp-ts/data/Function'
  *
- * const O = liftSortable(N.Sortable)
+ * const O = liftOrder(N.Order)
  * assert.strictEqual(pipe(none, O.compare(none)), 0)
  * assert.strictEqual(pipe(none, O.compare(some(1))), -1)
  * assert.strictEqual(pipe(some(1), O.compare(none)), 1)

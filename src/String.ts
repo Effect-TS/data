@@ -71,9 +71,9 @@ export const concatAll: (collection: Iterable<string>) => string = Monoid.combin
  * import * as S from '@fp-ts/data/String'
  * import { pipe } from '@fp-ts/data/Function'
  *
- * assert.deepStrictEqual(pipe('a', S.Sortable.compare('a')), 0)
- * assert.deepStrictEqual(pipe('a', S.Sortable.compare('b')), -1)
- * assert.deepStrictEqual(pipe('b', S.Sortable.compare('a')), 1)
+ * assert.deepStrictEqual(pipe('a', S.Order.compare('a')), 0)
+ * assert.deepStrictEqual(pipe('a', S.Order.compare('b')), -1)
+ * assert.deepStrictEqual(pipe('b', S.Order.compare('a')), 1)
  *
  * @category instances
  * @since 1.0.0

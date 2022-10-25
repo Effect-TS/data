@@ -1,11 +1,11 @@
-import type * as Ordering from "@fp-ts/core/Ordering"
-import type * as Sortable from "@fp-ts/core/Sortable"
+import type * as Order from "@fp-ts/core/typeclass/Order"
 import * as Equal from "@fp-ts/data/Equal"
 import { Direction, RedBlackTreeIterator } from "@fp-ts/data/internal/RedBlackTree/iterator"
 import * as Node from "@fp-ts/data/internal/RedBlackTree/node"
 import { Stack } from "@fp-ts/data/internal/Stack"
 import * as List from "@fp-ts/data/List"
 import * as Option from "@fp-ts/data/Option"
+import type * as Ordering from "@fp-ts/data/Ordering"
 import type * as RBT from "@fp-ts/data/RedBlackTree"
 
 const RedBlackTreeSymbolKey = "@fp-ts/data/RedBlackTree"
@@ -22,7 +22,7 @@ export class RedBlackTreeImpl<K, V> implements RBT.RedBlackTree<K, V> {
   readonly _Value: (_: never) => V = variance
 
   constructor(
-    readonly _ord: Sortable.Sortable<K>,
+    readonly _ord: Order.Order<K>,
     readonly _root: Node.Node<K, V> | undefined
   ) {}
 
@@ -59,12 +59,12 @@ export function isRedBlackTree(u: unknown): u is RBT.RedBlackTree<unknown, unkno
 }
 
 /** @internal */
-export function empty<K, V = never>(ord: Sortable.Sortable<K>): RBT.RedBlackTree<K, V> {
+export function empty<K, V = never>(ord: Order.Order<K>): RBT.RedBlackTree<K, V> {
   return new RedBlackTreeImpl<K, V>(ord, undefined)
 }
 
 /** @internal */
-export function from<K, V>(ord: Sortable.Sortable<K>) {
+export function from<K, V>(ord: Order.Order<K>) {
   return (entries: Iterable<readonly [K, V]>): RBT.RedBlackTree<K, V> => {
     let tree = empty<K, V>(ord)
     for (const [key, value] of entries) {
@@ -76,7 +76,7 @@ export function from<K, V>(ord: Sortable.Sortable<K>) {
 
 /** @internal */
 export function make<K, Entries extends Array<readonly [K, any]>>(
-  ord: Sortable.Sortable<K>
+  ord: Order.Order<K>
 ): (...entries: Entries) => RBT.RedBlackTree<
   K,
   Entries[number] extends readonly [any, infer V] ? V : never
@@ -211,7 +211,7 @@ export function getAt(index: number) {
 }
 
 /** @internal */
-export function getSortable<K, V>(tree: RBT.RedBlackTree<K, V>): Sortable.Sortable<K> {
+export function getOrder<K, V>(tree: RBT.RedBlackTree<K, V>): Order.Order<K> {
   return (tree as RedBlackTreeImpl<K, V>)._ord
 }
 
@@ -817,7 +817,7 @@ function visitFull<K, V, A>(
 function visitGreaterThanEqual<K, V, A>(
   node: Node.Node<K, V>,
   min: K,
-  ord: Sortable.Sortable<K>,
+  ord: Order.Order<K>,
   visit: (key: K, value: V) => Option.Option<A>
 ): Option.Option<A> {
   let current: Node.Node<K, V> | undefined = node
@@ -850,7 +850,7 @@ function visitGreaterThanEqual<K, V, A>(
 function visitLessThan<K, V, A>(
   node: Node.Node<K, V>,
   max: K,
-  ord: Sortable.Sortable<K>,
+  ord: Order.Order<K>,
   visit: (key: K, value: V) => Option.Option<A>
 ): Option.Option<A> {
   let current: Node.Node<K, V> | undefined = node
@@ -878,7 +878,7 @@ function visitBetween<K, V, A>(
   node: Node.Node<K, V>,
   min: K,
   max: K,
-  ord: Sortable.Sortable<K>,
+  ord: Order.Order<K>,
   visit: (key: K, value: V) => Option.Option<A>
 ): Option.Option<A> {
   let current: Node.Node<K, V> | undefined = node

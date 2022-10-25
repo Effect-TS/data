@@ -2,7 +2,7 @@
  * @since 1.0.0
  */
 
-import type { Sortable } from "@fp-ts/core/Sortable"
+import type { Order } from "@fp-ts/core/typeclass/Order"
 import * as Eq from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
 import * as O from "@fp-ts/data/Option"
@@ -63,14 +63,14 @@ export const isSortedMap: {
  * @since 1.0.0
  * @category constructors
  */
-export const empty = <K, V = never>(ord: Sortable<K>): SortedMap<K, V> =>
+export const empty = <K, V = never>(ord: Order<K>): SortedMap<K, V> =>
   new SortedMapImpl<K, V>(RBT.empty<K, V>(ord))
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const from = <K>(ord: Sortable<K>) =>
+export const from = <K>(ord: Order<K>) =>
   <V>(
     iterable: Iterable<readonly [K, V]>
   ): SortedMap<K, V> => new SortedMapImpl(RBT.from<K, V>(ord)(iterable))
@@ -79,7 +79,7 @@ export const from = <K>(ord: Sortable<K>) =>
  * @since 1.0.0
  * @category constructors
  */
-export const make = <K>(ord: Sortable<K>) =>
+export const make = <K>(ord: Order<K>) =>
   <Entries extends ReadonlyArray<readonly [K, any]>>(...entries: Entries): SortedMap<
     K,
     Entries[number] extends (readonly [any, infer V]) ? V : never
@@ -192,7 +192,7 @@ export const mapWithIndex = <K, A, B>(f: (k: K, a: A) => B) =>
   (self: SortedMap<K, A>): SortedMap<K, B> =>
     pipe(
       self,
-      reduceWithIndex(empty<K, B>(RBT.getSortable(self.tree)), (b, k, v) => set(k, f(k, v))(b))
+      reduceWithIndex(empty<K, B>(RBT.getOrder(self.tree)), (b, k, v) => set(k, f(k, v))(b))
     )
 
 /**

@@ -12,7 +12,7 @@ import type { Monoid } from "@fp-ts/core/typeclass/Monoid"
 import * as nonEmptyApplicative from "@fp-ts/core/typeclass/NonEmptyApplicative"
 import * as nonEmptyProduct from "@fp-ts/core/typeclass/NonEmptyProduct"
 import type * as of_ from "@fp-ts/core/typeclass/Of"
-import * as sortable from "@fp-ts/core/typeclass/Order"
+import * as order from "@fp-ts/core/typeclass/Order"
 import type { Order } from "@fp-ts/core/typeclass/Order"
 import type * as pointed from "@fp-ts/core/typeclass/Pointed"
 import type * as product_ from "@fp-ts/core/typeclass/Product"
@@ -878,7 +878,7 @@ export const lefts = <E, A>(as: ReadonlyArray<Either<E, A>>): ReadonlyArray<E> =
  * import { sort } from '@fp-ts/core/typeclass/data/ReadonlyArray'
  * import * as N from '@fp-ts/core/typeclass/data/number'
  *
- * assert.deepStrictEqual(sort(N.Sortable)([3, 2, 1]), [1, 2, 3])
+ * assert.deepStrictEqual(sort(N.Order)([3, 2, 1]), [1, 2, 3])
  *
  * @since 1.0.0
  */
@@ -1144,7 +1144,7 @@ export const uniq = <A>(
  *
  * @exampleTodo
  * import { sortBy } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { contramap } from '@fp-ts/core/typeclass/Sortable'
+ * import { contramap } from '@fp-ts/core/typeclass/Order'
  * import * as S from '@fp-ts/core/typeclass/data/string'
  * import * as N from '@fp-ts/core/typeclass/data/number'
  * import { pipe } from '@fp-ts/core/typeclass/data/Function'
@@ -1153,8 +1153,8 @@ export const uniq = <A>(
  *   name: string
  *   age: number
  * }
- * const byName = pipe(S.Sortable, contramap((p: Person) => p.name))
- * const byAge = pipe(N.Sortable, contramap((p: Person) => p.age))
+ * const byName = pipe(S.Order, contramap((p: Person) => p.name))
+ * const byAge = pipe(N.Order, contramap((p: Person) => p.age))
  *
  * const sortByNameByAge = sortBy([byName, byAge])
  *
@@ -1692,17 +1692,17 @@ export const getMonoid = <A>(): Monoid<ReadonlyArray<A>> => {
 }
 
 /**
- * Derives an `Sortable` over the `ReadonlyArray` of a given element type from the `Sortable` of that type. The ordering between two such
+ * Derives an `Order` over the `ReadonlyArray` of a given element type from the `Order` of that type. The ordering between two such
  * `ReadonlyArray`s is equal to: the first non equal comparison of each `ReadonlyArray`s elements taken pairwise in increasing order, in
  * case of equality over all the pairwise elements; the longest `ReadonlyArray` is considered the greatest, if both `ReadonlyArray`s have
  * the same length, the result is equality.
  *
  * @exampleTodo
- * import { liftSortable } from '@fp-ts/core/typeclass/data/ReadonlyArray'
+ * import { liftOrder } from '@fp-ts/core/typeclass/data/ReadonlyArray'
  * import * as S from '@fp-ts/core/typeclass/data/string'
  * import { pipe } from '@fp-ts/core/typeclass/data/Function'
  *
- * const O = liftSortable(S.Sortable)
+ * const O = liftOrder(S.Order)
  * assert.strictEqual(pipe(['b'], O.compare(['a'])), 1)
  * assert.strictEqual(pipe(['a'], O.compare(['a'])), 0)
  * assert.strictEqual(pipe(['a'], O.compare(['b'])), -1)
@@ -1711,7 +1711,7 @@ export const getMonoid = <A>(): Monoid<ReadonlyArray<A>> => {
  * @since 1.0.0
  */
 export const liftOrder = <A>(O: Order<A>): Order<ReadonlyArray<A>> =>
-  sortable.fromCompare((that) =>
+  order.fromCompare((that) =>
     (self) => {
       const aLen = self.length
       const bLen = that.length
