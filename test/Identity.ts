@@ -1,97 +1,106 @@
-import { identity, pipe } from "@fp-ts/data/Function"
+import { pipe } from "@fp-ts/data/Function"
 import * as _ from "@fp-ts/data/Identity"
 import * as O from "@fp-ts/data/Option"
-import * as S from "@fp-ts/data/String"
 import * as U from "./util"
 
 describe.concurrent("Identity", () => {
-  it("toReadonlyArray", () => {
-    U.deepStrictEqual(
-      pipe(
-        "a",
-        _.toReadonlyArray
-      ),
-      ["a"]
-    )
+  it("derived instances", () => {
+    expect(_.Invariant).exist
+    expect(_.Covariant).exist
+    expect(_.Of).exist
+    expect(_.Pointed).exist
+    expect(_.FlatMap).exist
+    expect(_.Chainable).exist
+    expect(_.Monad).exist
+    expect(_.NonEmptyApplicative).exist
+    expect(_.Applicative).exist
+    expect(_.NonEmptyAlternative).exist
+    expect(_.Foldable).exist
+    expect(_.Traversable).exist
+  })
+
+  it("derived functions", () => {
+    // Invariant
+    expect(_.tupled).exist
+    expect(_.bindTo).exist
+    // Covariant
+    expect(_.let).exist
+    expect(_.flap).exist
+    expect(_.as).exist
+    expect(_.asUnit).exist
+    // Of
+    expect(_.Do).exist
+    // FlatMap
+    expect(_.flatten).exist
+    expect(_.andThen).exist
+    expect(_.composeKleisliArrow).exist
+    // Chainable
+    expect(_.bind).exist
+    expect(_.tap).exist
+    expect(_.andThenDiscard).exist
+    // NonEmptyProduct
+    expect(_.bindIdentity).exist
+    expect(_.productFlatten).exist
+    // Product
+    expect(_.tuple).exist
+    expect(_.struct).exist
+    // NonEmptyApplicative
+    expect(_.liftSemigroup).exist
+    expect(_.lift2).exist
+    expect(_.lift3).exist
+    expect(_.ap).exist
+    // Applicative
+    expect(_.liftMonoid).exist
+    // NonEmptyCoproduct
+    expect(_.coproductEither).exist
+    // Foldable
+    expect(_.foldMap).exist
+    expect(_.toReadonlyArray).exist
+    expect(_.toReadonlyArrayWith).exist
+    expect(_.reduceKind).exist
+    expect(_.reduceRightKind).exist
+    expect(_.foldMapKind).exist
+    // Traversable
+    expect(_.sequence).exist
+    expect(_.traverseTap).exist
+  })
+
+  it("unit", () => {
+    U.deepStrictEqual(_.unit, undefined)
   })
 
   it("of", () => {
-    U.deepStrictEqual(pipe("a", _.of), "a")
-    U.deepStrictEqual(pipe("a", _.Pointed.of), "a")
+    U.deepStrictEqual(_.of("a"), "a")
   })
 
-  it("andThenDiscard", () => {
-    U.deepStrictEqual(pipe("a", _.andThenDiscard("b")), "a")
+  it("NonEmptyProduct", () => {
+    U.deepStrictEqual(pipe("a", _.NonEmptyProduct.productMany(["b", "c"])), ["a", "b", "c"])
   })
 
-  it("andThen", () => {
-    U.deepStrictEqual(pipe("a", _.andThen("b")), "b")
+  it("Product", () => {
+    U.deepStrictEqual(_.Product.productAll([]), [])
+    U.deepStrictEqual(_.Product.productAll(["a", "b", "c"]), ["a", "b", "c"])
+  })
+
+  it("flatMap", () => {
+    U.deepStrictEqual(
+      pipe("a", _.flatMap((a) => a + "b")),
+      "ab"
+    )
   })
 
   it("product", () => {
-    U.deepStrictEqual(pipe("a", _.Product.product("b")), ["a", "b"])
+    U.deepStrictEqual(pipe("a", _.product("b")), ["a", "b"])
   })
 
-  it("productMany", () => {
-    U.deepStrictEqual(pipe("a", _.Product.productMany(["b", "c"])), ["a", "b", "c"])
-  })
-
-  it("zipWith", () => {
-    U.deepStrictEqual(pipe("a", _.Product.product("b")), ["a", "b"])
-  })
-
-  it("zipMany", () => {
-    U.deepStrictEqual(pipe("a", _.Product.productMany(["b", "c"])), ["a", "b", "c"])
-  })
-
-  it("lift2", () => {
-    U.deepStrictEqual(_.lift2((a: number, b: number): number => a + b)(1, 2), 3)
-  })
-
-  it("lift3", () => {
-    U.deepStrictEqual(_.lift3((a: number, b: number, c: number): number => a + b + c)(1, 2, 3), 6)
-  })
-
-  it("productAll", () => {
-    U.deepStrictEqual(_.Product.productAll([1, 2, 3]), [1, 2, 3])
-  })
-
-  it("map", () => {
-    U.deepStrictEqual(pipe("aaa", _.map((s) => s.length)), 3)
-    U.deepStrictEqual(pipe("aaa", _.Covariant.map((s) => s.length)), 3)
-  })
-
-  it("flap", () => {
-    U.deepStrictEqual(pipe((s: string) => s.length, _.flap("aaa")), 3)
-  })
-
-  it("as", () => {
-    U.deepStrictEqual(pipe("a", _.as("b")), "b")
-  })
-
-  it("asUnit", () => {
-    U.deepStrictEqual(pipe("a", _.asUnit), undefined)
+  it("NonEmptyCoproduct", () => {
+    U.deepStrictEqual(pipe("a", _.NonEmptyCoproduct.coproduct("b")), "a")
+    U.deepStrictEqual(pipe("a", _.NonEmptyCoproduct.coproductMany(["b", "c"])), "a")
   })
 
   it("reduce", () => {
-    U.deepStrictEqual(
-      pipe(
-        "b",
-        _.reduce("a", (b, a) => b + a)
-      ),
-      "ab"
-    )
-    U.deepStrictEqual(
-      pipe(
-        "b",
-        _.Foldable.reduce("a", (b, a) => b + a)
-      ),
-      "ab"
-    )
-  })
-
-  it("foldMap", () => {
-    U.deepStrictEqual(pipe("a", _.foldMap(S.Monoid)(identity)), "a")
+    U.deepStrictEqual(pipe("b", _.reduce("a", (b, a) => b + a)), "ab")
+    U.deepStrictEqual(pipe("b", _.Foldable.reduce("a", (b, a) => b + a)), "ab")
   })
 
   it("reduceRight", () => {
@@ -100,101 +109,11 @@ describe.concurrent("Identity", () => {
     U.deepStrictEqual(pipe("a", _.Foldable.reduceRight("", f)), "a")
   })
 
-  describe.concurrent("pipeables", () => {
-    it("map", () => {
-      U.deepStrictEqual(pipe(1, _.map(U.double)), 2)
-    })
+  it("traverse", () => {
+    U.deepStrictEqual(pipe(1, _.traverse(O.Applicative)(O.some)), O.some(1))
+    U.deepStrictEqual(pipe(1, _.traverse(O.Applicative)(() => O.none)), O.none)
 
-    it("ap", () => {
-      const fab = U.double
-      U.deepStrictEqual(pipe(fab, _.ap(1)), 2)
-    })
-
-    it("flatMap", () => {
-      U.deepStrictEqual(pipe(1, _.flatMap(U.double)), 2)
-      U.deepStrictEqual(pipe(1, _.FlatMap.flatMap(U.double)), 2)
-      U.deepStrictEqual(pipe(1, _.Monad.flatMap(U.double)), 2)
-    })
-
-    it("flatten", () => {
-      U.deepStrictEqual(pipe("a", _.flatten), "a")
-    })
-
-    it("traverse", () => {
-      U.deepStrictEqual(pipe(1, _.traverse(O.Applicative)(O.some)), O.some(1))
-      U.deepStrictEqual(
-        pipe(
-          1,
-          _.traverse(O.Applicative)(() => O.none)
-        ),
-        O.none
-      )
-
-      U.deepStrictEqual(pipe(1, _.Traversable.traverse(O.Applicative)(O.some)), O.some(1))
-      U.deepStrictEqual(
-        pipe(
-          1,
-          _.Traversable.traverse(O.Applicative)(() => O.none)
-        ),
-        O.none
-      )
-    })
-
-    it("sequence", () => {
-      const sequence = _.sequence(O.Applicative)
-      U.deepStrictEqual(sequence(O.some("a")), O.some("a"))
-      U.deepStrictEqual(sequence(O.none), O.none)
-    })
-  })
-
-  describe.concurrent("do notation", () => {
-    it("Do", () => {
-      U.deepStrictEqual(_.Do, {})
-    })
-
-    it("bindTo", () => {
-      U.deepStrictEqual(_.Do, {})
-      U.deepStrictEqual(
-        pipe(
-          _.of(1),
-          _.bindTo("a")
-        ),
-        { a: 1 }
-      )
-    })
-
-    it("bind", () => {
-      U.deepStrictEqual(_.Do, {})
-      U.deepStrictEqual(
-        pipe(
-          _.Do,
-          _.bind("a", () => _.of(1))
-        ),
-        { a: 1 }
-      )
-    })
-
-    it("let", () => {
-      U.deepStrictEqual(_.Do, {})
-      U.deepStrictEqual(
-        pipe(
-          _.Do,
-          _.bind("a", () => _.of(1)),
-          _.let("b", ({ a }) => a * 2)
-        ),
-        { a: 1, b: 2 }
-      )
-    })
-  })
-
-  it("bindIdentity", () => {
-    U.deepStrictEqual(pipe(_.of(1), _.bindTo("a"), _.bindIdentity("b", _.of("b"))), {
-      a: 1,
-      b: "b"
-    })
-  })
-
-  it("productFlatten", () => {
-    U.deepStrictEqual(pipe(_.of(1), _.tupled, _.productFlatten(_.of("b"))), [1, "b"])
+    U.deepStrictEqual(pipe(1, _.Traversable.traverse(O.Applicative)(O.some)), O.some(1))
+    U.deepStrictEqual(pipe(1, _.Traversable.traverse(O.Applicative)(() => O.none)), O.none)
   })
 })
