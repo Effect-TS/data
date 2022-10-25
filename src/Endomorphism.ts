@@ -28,13 +28,14 @@ export const compose: <B, C>(bc: (b: B) => C) => <A>(ab: (a: A) => B) => (a: A) 
 export const getSemigroup = <A>(): semigroup.Semigroup<Endomorphism<A>> => ({
   combine: (that) => (self) => Function.flow(self, that),
   combineMany: (collection) =>
-    (self) => {
-      let c = self
-      for (const o of collection) {
-        c = (a) => o(c(a))
+    (self) =>
+      (a) => {
+        let out = self(a)
+        for (const f of collection) {
+          out = f(out)
+        }
+        return out
       }
-      return c
-    }
 })
 
 /**
@@ -45,9 +46,10 @@ export const getSemigroup = <A>(): semigroup.Semigroup<Endomorphism<A>> => ({
  */
 export const getMonoid = <A>(): monoid.Monoid<Endomorphism<A>> => {
   const S = getSemigroup<A>()
+  const empty = Function.identity
   return ({
     ...S,
-    combineAll: (collection) => S.combineMany(collection)(Function.identity),
-    empty: Function.identity
+    combineAll: (collection) => S.combineMany(collection)(empty),
+    empty
   })
 }

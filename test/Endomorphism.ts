@@ -19,6 +19,6 @@ describe.concurrent("Endomorphism", () => {
     const M = _.getMonoid<number>()
     deepStrictEqual(pipe(M.empty, M.combine(double))(2), 4)
     deepStrictEqual(pipe(double, M.combine(M.empty))(2), 4)
-    deepStrictEqual(M.combineAll([increment, double, decrement])(2), 3)
+    deepStrictEqual(M.combineAll([increment, double, decrement])(2), 5)
   })
 })

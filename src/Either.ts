@@ -18,7 +18,7 @@ import * as applicative from "@fp-ts/core/typeclass/Applicative"
 import * as bicovariant from "@fp-ts/core/typeclass/Bicovariant"
 import * as chainable from "@fp-ts/core/typeclass/Chainable"
 import * as compactable from "@fp-ts/core/typeclass/Compactable"
-import type * as coproduct from "@fp-ts/core/typeclass/Coproduct"
+import type * as coproduct_ from "@fp-ts/core/typeclass/Coproduct"
 import * as covariant from "@fp-ts/core/typeclass/Covariant"
 import * as filterable from "@fp-ts/core/typeclass/Filterable"
 import * as flatMap_ from "@fp-ts/core/typeclass/FlatMap"
@@ -30,18 +30,16 @@ import type * as nonEmptyAlternative from "@fp-ts/core/typeclass/NonEmptyAlterna
 import * as nonEmptyApplicative from "@fp-ts/core/typeclass/NonEmptyApplicative"
 import * as nonEmptyCoproduct from "@fp-ts/core/typeclass/NonEmptyCoproduct"
 import * as nonEmptyProduct from "@fp-ts/core/typeclass/NonEmptyProduct"
-import * as of from "@fp-ts/core/typeclass/Of"
+import * as of_ from "@fp-ts/core/typeclass/Of"
 import type * as pointed from "@fp-ts/core/typeclass/Pointed"
 import * as product_ from "@fp-ts/core/typeclass/Product"
 import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
 import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
-import * as traversableFilterable from "@fp-ts/core/typeclass/TraversableFilterable"
 import { equals } from "@fp-ts/data/Equal"
-import { flow, identity, pipe, SK } from "@fp-ts/data/Function"
+import { identity, pipe } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
 import * as either from "@fp-ts/data/internal/Either"
-import type { NonEmptyReadonlyArray } from "@fp-ts/data/NonEmptyReadonlyArray"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
@@ -69,10 +67,6 @@ export interface Right<A> {
  * @since 1.0.0
  */
 export type Either<E, A> = Left<E> | Right<A>
-
-// -------------------------------------------------------------------------------------
-// type lambdas
-// -------------------------------------------------------------------------------------
 
 /**
  * @category type lambdas
@@ -117,11 +111,20 @@ export const map = <A, B>(f: (a: A) => B) =>
   <E>(self: Either<E, A>): Either<E, B> => isRight(self) ? right(f(self.right)) : self
 
 /**
+ * @category mapping
+ * @since 1.0.0
+ */
+export const imap: <A, B>(
+  to: (a: A) => B,
+  from: (b: B) => A
+) => <E>(self: Either<E, A>) => Either<E, B> = covariant.imap<EitherTypeLambda>(map)
+
+/**
  * @category instances
  * @since 1.0.0
  */
 export const Invariant: invariant.Invariant<EitherTypeLambda> = {
-  imap: covariant.imap<EitherTypeLambda>(map)
+  imap
 }
 
 /**
@@ -184,13 +187,38 @@ const let_: <N extends string, A extends object, B>(
   Covariant
 )
 
-export {
-  /**
-   * @category do notation
-   * @since 1.0.0
-   */
-  let_ as let
+export { let_ as let }
+
+/**
+ * Returns an effect whose Left and Right channels have been mapped by
+ * the specified pair of functions, `f` and `g`.
+ *
+ * @category mapping
+ * @since 1.0.0
+ */
+export const bimap = <E, G, A, B>(
+  f: (e: E) => G,
+  g: (a: A) => B
+) => (self: Either<E, A>): Either<G, B> => isLeft(self) ? left(f(self.left)) : right(g(self.right))
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const Bicovariant: bicovariant.Bicovariant<EitherTypeLambda> = {
+  bimap
 }
+
+/**
+ * Returns an effect with its error channel mapped using the specified
+ * function. This can be used to lift a "smaller" error into a "larger" error.
+ *
+ * @category error handling
+ * @since 1.0.0
+ */
+export const mapLeft: <E, G>(f: (e: E) => G) => <A>(self: Either<E, A>) => Either<G, A> =
+  bicovariant
+    .mapLeft(Bicovariant)
 
 /**
  * Constructs a new `Either` holding a `Right` value. This usually represents a Rightful value due to the right bias
@@ -201,24 +229,26 @@ export {
  */
 export const right: <A>(a: A) => Either<never, A> = either.right
 
+export const of: <A>(a: A) => Either<never, A> = right
+
 /**
  * @category instances
  * @since 1.0.0
  */
-export const Of: of.Of<EitherTypeLambda> = {
-  of: right
+export const Of: of_.Of<EitherTypeLambda> = {
+  of
 }
 
 /**
  * @since 1.0.0
  */
-export const unit: Either<never, void> = of.unit(Of)
+export const unit: Either<never, void> = of_.unit(Of)
 
 /**
  * @category do notation
  * @since 1.0.0
  */
-export const Do: Either<never, {}> = of.Do(Of)
+export const Do: Either<never, {}> = of_.Do(Of)
 
 /**
  * @category instances
@@ -327,28 +357,33 @@ export const product = <E2, B>(
     isRight(self) ? (isRight(that) ? right([self.right, that.right]) : that) : self
 
 /**
+ * @since 1.0.0
+ */
+export const productMany = <E, A>(
+  collection: Iterable<Either<E, A>>
+) =>
+  (self: Either<E, A>): Either<E, [A, ...Array<A>]> => {
+    if (isLeft(self)) {
+      return self
+    }
+    const out: [A, ...Array<A>] = [self.right]
+    for (const e of collection) {
+      if (isLeft(e)) {
+        return e
+      }
+      out.push(e.right)
+    }
+    return right(out)
+  }
+
+/**
  * @category instances
  * @since 1.0.0
  */
 export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<EitherTypeLambda> = {
   ...Invariant,
   product,
-  productMany: <E, A>(
-    collection: Iterable<Either<E, A>>
-  ) =>
-    (self: Either<E, A>): Either<E, [A, ...Array<A>]> => {
-      if (isLeft(self)) {
-        return self
-      }
-      const out: [A, ...Array<A>] = [self.right]
-      for (const e of collection) {
-        if (isLeft(e)) {
-          return e
-        }
-        out.push(e.right)
-      }
-      return right(out)
-    }
+  productMany
 }
 
 /**
@@ -376,22 +411,29 @@ export const productFlatten: <E2, B>(
   .productFlatten(NonEmptyProduct)
 
 /**
+ * @since 1.0.0
+ */
+export const productAll = <E, A>(
+  collection: Iterable<Either<E, A>>
+): Either<E, ReadonlyArray<A>> => {
+  const out: Array<A> = []
+  for (const e of collection) {
+    if (isLeft(e)) {
+      return e
+    }
+    out.push(e.right)
+  }
+  return right(out)
+}
+
+/**
  * @category instances
  * @since 1.0.0
  */
 export const Product: product_.Product<EitherTypeLambda> = {
   ...Of,
   ...NonEmptyProduct,
-  productAll: <E, A>(collection: Iterable<Either<E, A>>): Either<E, ReadonlyArray<A>> => {
-    const out: Array<A> = []
-    for (const e of collection) {
-      if (isLeft(e)) {
-        return e
-      }
-      out.push(e.right)
-    }
-    return right(out)
-  }
+  productAll
 }
 
 /**
@@ -490,25 +532,36 @@ export const liftMonoid: <A, E>(M: Monoid<A>) => Monoid<Either<E, A>> = applicat
   )
 
 /**
+ * @since 1.0.0
+ */
+export const coproduct = <E2, B>(that: Either<E2, B>) =>
+  <E1, A>(self: Either<E1, A>): Either<E2 | E1, B | A> => isRight(self) ? self : that
+
+/**
+ * @since 1.0.0
+ */
+export const coproductMany = <E, A>(collection: Iterable<Either<E, A>>) =>
+  (self: Either<E, A>): Either<E, A> => {
+    let out = self
+    if (isRight(out)) {
+      return out
+    }
+    for (out of collection) {
+      if (isRight(out)) {
+        return out
+      }
+    }
+    return out
+  }
+
+/**
  * @category instances
  * @since 1.0.0
  */
 export const NonEmptyCoproduct: nonEmptyCoproduct.NonEmptyCoproduct<EitherTypeLambda> = {
   ...Invariant,
-  coproduct: (that) => (self) => isRight(self) ? self : that,
-  coproductMany: (collection) =>
-    (self) => {
-      let out = self
-      if (isRight(out)) {
-        return out
-      }
-      for (out of collection) {
-        if (isRight(out)) {
-          return out
-        }
-      }
-      return out
-    }
+  coproduct,
+  coproductMany
 }
 
 /**
@@ -610,7 +663,7 @@ export const reduceRightKind: <G extends TypeLambda>(
  * @since 1.0.0
  */
 export const foldMapKind: <G extends TypeLambda>(
-  G: coproduct.Coproduct<G>
+  G: coproduct_.Coproduct<G>
 ) => <A, R, O, E, B>(
   f: (a: A) => Kind<G, R, O, E, B>
 ) => <TE>(self: Either<TE, A>) => Kind<G, R, O, E, B> = foldable.foldMapKind(Foldable)
@@ -813,19 +866,6 @@ export const catchAll: <E1, E2, B>(
   (self) => isLeft(self) ? onError(self.left) : self
 
 /**
- * Returns an effect whose Left and Right channels have been mapped by
- * the specified pair of functions, `f` and `g`.
- *
- * @category mapping
- * @since 1.0.0
- */
-export const bimap: <E, G, A, B>(
-  f: (e: E) => G,
-  g: (a: A) => B
-) => (self: Either<E, A>) => Either<G, B> = (f, g) =>
-  (fa) => isLeft(fa) ? left(f(fa.left)) : right(g(fa.right))
-
-/**
  * Identifies an associative operation on a type constructor. It is similar to `Semigroup`, except that it applies to
  * types of kind `* -> *`.
  *
@@ -1017,139 +1057,6 @@ export const traverseTap: <F extends TypeLambda>(
   .traverseTap(Traversable)
 
 /**
- * @category filtering
- * @since 1.0.0
- */
-export const traverseFilterMap = <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) =>
-  <A, R, O, E, B, TE>(
-    f: (a: A) => Kind<F, R, O, E, Option<B>>,
-    onNone: TE
-  ): (self: Either<TE, A>) => Kind<F, R, O, E, Either<TE, B>> =>
-    traversableFilterable.traverseFilterMap(
-      { ...Traversable, ...getCompactable(onNone) }
-    )(F)(f)
-
-/**
- * @category filtering
- * @since 1.0.0
- */
-export const traversePartitionMap = <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) =>
-  <A, R, O, E, B, C, TE>(
-    f: (a: A) => Kind<F, R, O, E, Either<B, C>>,
-    onNone: TE
-  ): ((self: Either<TE, A>) => Kind<F, R, O, E, readonly [Either<TE, B>, Either<TE, C>]>) =>
-    traversableFilterable
-      .traversePartitionMap({ ...Traversable, ...Covariant, ...getCompactable(onNone) })(F)(f)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const getTraversableFilterable = <E>(
-  onEmpty: E
-): traversableFilterable.TraversableFilterable<ValidatedT<EitherTypeLambda, E>> => {
-  return {
-    traverseFilterMap: (F) => (f) => traverseFilterMap(F)(f, onEmpty),
-    traversePartitionMap: (F) => (f) => traversePartitionMap(F)(f, onEmpty)
-  }
-}
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Bicovariant: bicovariant.Bicovariant<EitherTypeLambda> = {
-  bimap
-}
-
-/**
- * Returns an effect with its error channel mapped using the specified
- * function. This can be used to lift a "smaller" error into a "larger" error.
- *
- * @category error handling
- * @since 1.0.0
- */
-export const mapLeft: <E, G>(f: (e: E) => G) => <A>(self: Either<E, A>) => Either<G, A> =
-  bicovariant
-    .mapLeft(Bicovariant)
-
-// TODO
-// /**
-//  * @category error handling
-//  * @since 1.0.0
-//  */
-// export const getValidatedMonoidal = <E>(
-//   Semigroup: Semigroup<E>
-// ): applicative.Monoidal<ValidatedT<EitherTypeLambda, E>> => ({
-//   map,
-//   of: right,
-//   zipWith: <A, B, C>(
-//     fb: Either<E, B>,
-//     f: (a: A, b: B) => C
-//   ) =>
-//     (fa: Either<E, A>): Either<E, C> => {
-//       if (isLeft(fa)) {
-//         if (isLeft(fb)) {
-//           return left(Semigroup.combine(fb.left)(fa.left))
-//         } else {
-//           return left(fa.left)
-//         }
-//       } else if (isLeft(fb)) {
-//         return left(fb.left)
-//       }
-//       return right(f(fa.right, fb.right))
-//     },
-//   zipMany: <A>(
-//     others: Iterable<Either<E, A>>
-//   ) =>
-//     (start: Either<E, A>): Either<E, [A, ...Array<A>]> => {
-//       const Lefts: Array<E> = []
-//       const res: Array<A> = []
-//       if (isLeft(start)) {
-//         Lefts.push(start.left)
-//       } else {
-//         res.push(start.right)
-//       }
-//       for (const o of others) {
-//         if (isLeft(o)) {
-//           Lefts.push(o.left)
-//         } else {
-//           res.push(o.right)
-//         }
-//       }
-//       if (Lefts.length > 0) {
-//         if (Lefts.length > 1) {
-//           return left(Semigroup.combineMany((Lefts.shift(), Lefts))(Lefts[0]))
-//         }
-//         return left(Lefts[0])
-//       }
-//       return right(res as [A, ...Array<A>])
-//     },
-//   zipAll: <A>(collection: Iterable<Either<E, A>>): Either<E, ReadonlyArray<A>> => {
-//     const Lefts: Array<E> = []
-//     const res: Array<A> = []
-//     for (const o of collection) {
-//       if (isLeft(o)) {
-//         Lefts.push(o.left)
-//       } else {
-//         res.push(o.right)
-//       }
-//     }
-//     if (Lefts.length > 0) {
-//       if (Lefts.length > 1) {
-//         return left(Semigroup.combineMany((Lefts.shift(), Lefts))(Lefts[0]))
-//       }
-//       return left(Lefts[0])
-//     }
-//     return right(res as [A, ...Array<A>])
-//   }
-// })
-
-/**
  * Returns an effect that effectfully "peeks" at the Left of this effect.
  *
  * @category error handling
@@ -1308,79 +1215,3 @@ export const elem = <B>(a: B) =>
  */
 export const exists = <A>(predicate: Predicate<A>) =>
   (ma: Either<unknown, A>): boolean => isLeft(ma) ? false : predicate(ma.right)
-
-// -------------------------------------------------------------------------------------
-// array utils
-// -------------------------------------------------------------------------------------
-
-/**
- * Equivalent to `NonEmptyReadonlyArray#traverseWithIndex(Semigroupal)`.
- *
- * @category traversing
- * @since 1.0.0
- */
-export const traverseNonEmptyReadonlyArrayWithIndex = <A, E, B>(
-  f: (index: number, a: A) => Either<E, B>
-) =>
-  (as: NonEmptyReadonlyArray<A>): Either<E, NonEmptyReadonlyArray<B>> => {
-    const e = f(0, internal.head(as))
-    if (isLeft(e)) {
-      return e
-    }
-    const out: internal.NonEmptyArray<B> = [e.right]
-    for (let i = 1; i < as.length; i++) {
-      const e = f(i, as[i])
-      if (isLeft(e)) {
-        return e
-      }
-      out.push(e.right)
-    }
-    return right(out)
-  }
-
-/**
- * Equivalent to `ReadonlyArray#traverseWithIndex(Monoidal)`.
- *
- * @category traversing
- * @since 1.0.0
- */
-export const traverseReadonlyArrayWithIndex = <A, E, B>(
-  f: (index: number, a: A) => Either<E, B>
-): ((as: ReadonlyArray<A>) => Either<E, ReadonlyArray<B>>) => {
-  const g = traverseNonEmptyReadonlyArrayWithIndex(f)
-  return (as) => (internal.isNonEmpty(as) ? g(as) : right([]))
-}
-
-/**
- * Equivalent to `NonEmptyReadonlyArray#traverse(Semigroupal)`.
- *
- * @category traversing
- * @since 1.0.0
- */
-export const traverseNonEmptyReadonlyArray = <A, E, B>(
-  f: (a: A) => Either<E, B>
-): ((as: NonEmptyReadonlyArray<A>) => Either<E, NonEmptyReadonlyArray<B>>) => {
-  return traverseNonEmptyReadonlyArrayWithIndex(flow(SK, f))
-}
-
-/**
- * Equivalent to `ReadonlyArray#traverse(Monoidal)`.
- *
- * @category traversing
- * @since 1.0.0
- */
-export const traverseReadonlyArray = <A, E, B>(
-  f: (a: A) => Either<E, B>
-): ((as: ReadonlyArray<A>) => Either<E, ReadonlyArray<B>>) => {
-  return traverseReadonlyArrayWithIndex(flow(SK, f))
-}
-
-/**
- * Equivalent to `ReadonlyArray#sequence(Monoidal)`.
- *
- * @category traversing
- * @since 1.0.0
- */
-export const sequenceReadonlyArray: <E, A>(
-  arr: ReadonlyArray<Either<E, A>>
-) => Either<E, ReadonlyArray<A>> = traverseReadonlyArray(identity)
