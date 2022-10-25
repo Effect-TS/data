@@ -5,19 +5,20 @@ import * as U from "./util"
 
 describe.concurrent("Identity", () => {
   it("instances and derived exports", () => {
-    expect(_.map).exist
-
     expect(_.Invariant).exist
+    expect(_.imap).exist
     expect(_.tupled).exist
     expect(_.bindTo).exist
 
     expect(_.Covariant).exist
+    expect(_.map).exist
     expect(_.let).exist
     expect(_.flap).exist
     expect(_.as).exist
     expect(_.asUnit).exist
 
     expect(_.Of).exist
+    expect(_.of).exist
     expect(_.Do).exist
 
     expect(_.Pointed).exist
@@ -35,8 +36,12 @@ describe.concurrent("Identity", () => {
 
     expect(_.Monad).exist
 
-    expect(_.Product).exist
+    expect(_.NonEmptyProduct).exist
     expect(_.product).exist
+    expect(_.productMany).exist
+
+    expect(_.Product).exist
+    expect(_.productAll).exist
     expect(_.tuple).exist
     expect(_.struct).exist
 
@@ -52,18 +57,12 @@ describe.concurrent("Identity", () => {
     expect(_.liftMonoid).exist
 
     expect(_.NonEmptyCoproduct).exist
-    // TODO
-    // expect(_.getSemigroup).exist
+    expect(_.coproduct).exist
+    expect(_.coproductMany).exist
+    expect(_.getSemigroup).exist
     expect(_.coproductEither).exist
 
-    // TODO
-    // expect(_.Coproduct).exist
-    // expect(_.getMonoid).exist
-
     expect(_.NonEmptyAlternative).exist
-
-    // TODO
-    // expect(_.Alternative).exist
 
     expect(_.Foldable).exist
     expect(_.reduce).exist
