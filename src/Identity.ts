@@ -91,7 +91,13 @@ const let_: <N extends string, A extends object, B>(
   Covariant
 )
 
-export { let_ as let }
+export {
+  /**
+   * @category do notation
+   * @since 1.0.0
+   */
+  let_ as let
+}
 
 /**
  * @category mapping

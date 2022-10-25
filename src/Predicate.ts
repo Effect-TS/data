@@ -147,12 +147,19 @@ export const productAll = <A>(
     return true
   }
 
+/**
+ * @category instances
+ * @since 1.0.0
+ */
 export const Product: product_.Product<PredicateTypeLambda> = {
   ...NonEmptyProduct,
   ...Of,
   productAll
 }
 
+/**
+ * @since 1.0.0
+ */
 export const bindPredicate: <N extends string, A extends object, B>(
   name: Exclude<N, keyof A>,
   fb: Predicate<B>
