@@ -93,13 +93,17 @@ export const SemigroupAll: semigroup.Semigroup<boolean> = {
  */
 export const SemigroupAny: semigroup.Semigroup<boolean> = {
   combine: or,
-  combineMany: (others) =>
-    (start) => {
-      let c = start
-      for (const o of others) {
-        c = or(o)(c)
+  combineMany: (collection) =>
+    (self) => {
+      if (self === true) {
+        return true
       }
-      return c
+      for (const b of collection) {
+        if (b === true) {
+          return true
+        }
+      }
+      return false
     }
 }
 
