@@ -3,8 +3,8 @@ import * as String from "@fp-ts/data/String"
 import { deepStrictEqual } from "@fp-ts/data/test/util"
 
 describe.concurrent("String", () => {
-  it("concatAll", () => {
-    deepStrictEqual(String.concatAll(["a", "b", "c"]), "abc")
+  it("concat", () => {
+    deepStrictEqual(pipe("a", String.concat("b")), "ab")
   })
 
   it("empty", () => {
