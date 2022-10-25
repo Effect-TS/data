@@ -5,6 +5,10 @@ import * as string from "@fp-ts/data/String"
 import * as U from "./util"
 
 describe.concurrent("Const", () => {
+  it("derived instances", () => {
+    expect(_.Invariant).exist
+  })
+
   it("execute", () => {
     U.deepStrictEqual(pipe(_.make("a"), _.execute), "a")
   })
