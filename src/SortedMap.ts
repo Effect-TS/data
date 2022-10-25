@@ -100,12 +100,12 @@ export const get = <K>(key: K) =>
   <V>(self: SortedMap<K, V>): O.Option<V> => RBT.findFirst(key)(self.tree)
 
 /**
- * Gets the `Sortable<K>` that the `SortedMap<K, V>` is using.
+ * Gets the `Order<K>` that the `SortedMap<K, V>` is using.
  *
  * @since 1.0.0
  * @category getters
  */
-export const getSortable = <K, V>(self: SortedMap<K, V>): Sortable<K> => RBT.getSortable(self.tree)
+export const getOrder = <K, V>(self: SortedMap<K, V>): Order<K> => RBT.getOrder(self.tree)
 
 /**
  * @since 1.0.0
