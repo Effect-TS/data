@@ -950,7 +950,7 @@ export const reduceWithIndex = <A, S>(s: S, f: (i: number, s: S, a: A) => S) =>
  * @category folding
  */
 export const reduceRight = <A, S>(s: S, f: (a: A, s: S) => S) =>
-  (self: Chunk<A>): S => pipe(toArray(self), RA.reduceRight(s, f))
+  (self: Chunk<A>): S => pipe(toArray(self), RA.reduceRight(s, (s, a) => f(a, s)))
 
 /**
  * Folds over the elements in this chunk from the right.

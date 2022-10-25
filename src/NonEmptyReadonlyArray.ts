@@ -1176,6 +1176,10 @@ export const reduce = <B, A>(b: B, f: (b: B, a: A) => B) =>
 export const reduceRight = <B, A>(b: B, f: (b: B, a: A) => B) =>
   (self: NonEmptyReadonlyArray<A>): B => self.reduceRight((b, a) => f(b, a), b)
 
+/**
+ * @category instances
+ * @since 1.0.0
+ */
 export const Foldable: foldable.Foldable<NonEmptyReadonlyArrayTypeLambda> = {
   reduce,
   reduceRight

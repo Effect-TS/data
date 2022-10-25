@@ -2,12 +2,14 @@
  * @since 1.0.0
  */
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
-import type * as applicative from "@fp-ts/core/typeclass/Applicative"
+import * as applicative from "@fp-ts/core/typeclass/Applicative"
 import * as chainable from "@fp-ts/core/typeclass/Chainable"
 import type * as compactable from "@fp-ts/core/typeclass/Compactable"
+import type { Coproduct } from "@fp-ts/core/typeclass/Coproduct"
 import * as covariant from "@fp-ts/core/typeclass/Covariant"
 import * as filterable from "@fp-ts/core/typeclass/Filterable"
 import * as flatMap_ from "@fp-ts/core/typeclass/FlatMap"
+import * as foldable from "@fp-ts/core/typeclass/Foldable"
 import * as invariant from "@fp-ts/core/typeclass/Invariant"
 import type * as monad from "@fp-ts/core/typeclass/Monad"
 import type { Monoid } from "@fp-ts/core/typeclass/Monoid"
@@ -989,7 +991,7 @@ export const unzip = <A, B>(
 /**
  * @since 1.0.0
  */
-export const crossWith = <B>(
+export const product = <B>(
   that: ReadonlyArray<B>
 ) =>
   <A>(self: ReadonlyArray<A>): ReadonlyArray<readonly [A, B]> => {
@@ -1010,12 +1012,12 @@ export const crossWith = <B>(
  */
 export const cross = <B>(
   fb: ReadonlyArray<B>
-): (<A>(fa: ReadonlyArray<A>) => ReadonlyArray<readonly [A, B]>) => crossWith(fb)
+): (<A>(fa: ReadonlyArray<A>) => ReadonlyArray<readonly [A, B]>) => product(fb)
 
 /**
  * @since 1.0.0
  */
-export const crossMany = <A>(collection: Iterable<ReadonlyArray<A>>) =>
+export const productMany = <A>(collection: Iterable<ReadonlyArray<A>>) =>
   (self: ReadonlyArray<A>): ReadonlyArray<readonly [A, ...Array<A>]> => {
     if (isEmpty(self)) {
       return empty
@@ -1040,14 +1042,14 @@ export const crossMany = <A>(collection: Iterable<ReadonlyArray<A>>) =>
 /**
  * @since 1.0.0
  */
-export const crossAll = <A>(
+export const productAll = <A>(
   collection: Iterable<ReadonlyArray<A>>
 ): ReadonlyArray<ReadonlyArray<A>> => {
   const arrays = Array.from(collection)
   if (isEmpty(arrays)) {
     return empty
   }
-  return crossMany(arrays.slice(1))(arrays[0])
+  return productMany(arrays.slice(1))(arrays[0])
 }
 
 /**
@@ -1349,11 +1351,21 @@ export const Of: of_.Of<ReadonlyArrayTypeLambda> = {
 }
 
 /**
+ * @since 1.0.0
+ */
+export const imap: <A, B>(
+  to: (a: A) => B,
+  from: (b: B) => A
+) => (self: ReadonlyArray<A>) => ReadonlyArray<B> = covariant.imap<
+  ReadonlyArrayTypeLambda
+>(map)
+
+/**
  * @category instances
  * @since 1.0.0
  */
 export const Invariant: invariant.Invariant<ReadonlyArrayTypeLambda> = {
-  imap: covariant.imap<ReadonlyArrayTypeLambda>(map)
+  imap
 }
 
 /**
@@ -1443,6 +1455,14 @@ export const andThen: <B>(
   that: ReadonlyArray<B>
 ) => <_>(self: ReadonlyArray<_>) => ReadonlyArray<B> = flatMap_
   .andThen(FlatMap)
+
+/**
+ * @since 1.0.0
+ */
+export const composeKleisliArrow: <B, C>(
+  bfc: (b: B) => ReadonlyArray<C>
+) => <A>(afb: (a: A) => ReadonlyArray<B>) => (a: A) => ReadonlyArray<C> = flatMap_
+  .composeKleisliArrow(FlatMap)
 
 /**
  * @category instances
@@ -1771,8 +1791,8 @@ export const as: <B>(b: B) => (self: ReadonlyArray<unknown>) => ReadonlyArray<B>
  */
 export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<ReadonlyArrayTypeLambda> = {
   ...Invariant,
-  product: crossWith,
-  productMany: crossMany
+  product,
+  productMany
 }
 
 /**
@@ -1809,13 +1829,21 @@ export const lift3: <A, B, C, D>(
   nonEmptyApplicative.lift3(NonEmptyApplicative)
 
 /**
+ * @since 1.0.0
+ */
+export const liftSemigroup: <A>(S: Semigroup<A>) => Semigroup<ReadonlyArray<A>> =
+  nonEmptyApplicative.liftSemigroup(
+    NonEmptyApplicative
+  )
+
+/**
  * @category instances
  * @since 1.0.0
  */
 export const Product: product_.Product<ReadonlyArrayTypeLambda> = {
   ...Of,
   ...NonEmptyProduct,
-  productAll: crossAll
+  productAll
 }
 
 /**
@@ -1826,6 +1854,14 @@ export const Applicative: applicative.Applicative<ReadonlyArrayTypeLambda> = {
   ...NonEmptyApplicative,
   ...Product
 }
+
+/**
+ * @since 1.0.0
+ */
+export const liftMonoid: <A>(M: Monoid<A>) => Monoid<ReadonlyArray<A>> = applicative
+  .liftMonoid(
+    Applicative
+  )
 
 /**
  * @category instances
@@ -1950,16 +1986,66 @@ export const reduce = <B, A>(b: B, f: (b: B, a: A) => B) =>
  * @category folding
  * @since 1.0.0
  */
-export const foldMap = <M>(Monoid: Monoid<M>) =>
-  <A>(f: (a: A) => M) =>
-    (self: ReadonlyArray<A>): M => self.reduce((m, a) => Monoid.combine(f(a))(m), Monoid.empty)
+export const reduceRight = <B, A>(b: B, f: (b: B, a: A) => B) =>
+  (self: ReadonlyArray<A>): B => self.reduceRight((b, a) => f(b, a), b)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const Foldable: foldable.Foldable<ReadonlyArrayTypeLambda> = {
+  reduce,
+  reduceRight
+}
 
 /**
  * @category folding
  * @since 1.0.0
  */
-export const reduceRight = <B, A>(b: B, f: (a: A, b: B) => B) =>
-  (self: ReadonlyArray<A>): B => self.reduceRight((b, a) => f(a, b), b)
+export const foldMap: <M>(
+  M: Monoid<M>
+) => <A>(f: (a: A) => M) => (self: ReadonlyArray<A>) => M = foldable.foldMap(
+  Foldable
+)
+
+/**
+ * @category folding
+ * @since 1.0.0
+ */
+export const reduceKind: <G extends TypeLambda>(
+  G: monad.Monad<G>
+) => <B, A, R, O, E>(
+  b: B,
+  f: (b: B, a: A) => Kind<G, R, O, E, B>
+) => (self: ReadonlyArray<A>) => Kind<G, R, O, E, B> = foldable.reduceKind(
+  Foldable
+)
+
+/**
+ * @category folding
+ * @since 1.0.0
+ */
+export const reduceRightKind: <G extends TypeLambda>(
+  G: monad.Monad<G>
+) => <B, A, R, O, E>(
+  b: B,
+  f: (b: B, a: A) => Kind<G, R, O, E, B>
+) => (self: ReadonlyArray<A>) => Kind<G, R, O, E, B> = foldable
+  .reduceRightKind(
+    Foldable
+  )
+
+/**
+ * @category folding
+ * @since 1.0.0
+ */
+export const foldMapKind: <G extends TypeLambda>(
+  G: Coproduct<G>
+) => <A, R, O, E, B>(
+  f: (a: A) => Kind<G, R, O, E, B>
+) => (self: ReadonlyArray<A>) => Kind<G, R, O, E, B> = foldable.foldMapKind(
+  Foldable
+)
 
 /**
  * @category folding
@@ -1985,21 +2071,6 @@ export const reduceRightWithIndex = <B, A>(b: B, f: (i: number, a: A, b: B) => B
   (self: ReadonlyArray<A>): B => self.reduceRight((b, a, i) => f(i, a, b), b)
 
 /**
- * @category folding
- * @since 1.0.0
- */
-export const reduceKind = <F extends TypeLambda>(Flattenable: flatMap_.FlatMap<F>) =>
-  <R, O, E, B, A>(
-    fb: Kind<F, R, O, E, B>,
-    f: (b: B, a: A) => Kind<F, R, O, E, B>
-  ): ((self: ReadonlyArray<A>) => Kind<F, R, O, E, B>) =>
-    reduce(fb, (fb, a) =>
-      pipe(
-        fb,
-        Flattenable.flatMap((b) => f(b, a))
-      ))
-
-/**
  * @category instances
  * @since 1.0.0
  */
@@ -2016,6 +2087,19 @@ export const sequence: <F extends TypeLambda>(
 ) => <R, O, E, A>(
   fas: ReadonlyArray<Kind<F, R, O, E, A>>
 ) => Kind<F, R, O, E, ReadonlyArray<A>> = traversable.sequence(Traversable)
+
+/**
+ * @category traversing
+ * @since 1.0.0
+ */
+export const traverseTap: <F extends TypeLambda>(
+  F: applicative.Applicative<F>
+) => <A, R, O, E, B>(
+  f: (a: A) => Kind<F, R, O, E, B>
+) => (self: ReadonlyArray<A>) => Kind<F, R, O, E, ReadonlyArray<A>> = traversable
+  .traverseTap(
+    Traversable
+  )
 
 /**
  * @category filtering
