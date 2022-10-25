@@ -142,13 +142,3 @@ export const MonoidAny: monoid.Monoid<boolean> = {
 export const Order: order.Order<boolean> = {
   compare: (that) => (self) => self < that ? -1 : self > that ? 1 : 0
 }
-
-/**
- * @since 1.0.0
- */
-export const all: (collection: Iterable<boolean>) => boolean = MonoidAll.combineAll
-
-/**
- * @since 1.0.0
- */
-export const any: (collection: Iterable<boolean>) => boolean = MonoidAny.combineAll
