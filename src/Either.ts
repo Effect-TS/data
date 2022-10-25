@@ -187,7 +187,13 @@ const let_: <N extends string, A extends object, B>(
   Covariant
 )
 
-export { let_ as let }
+export {
+  /**
+   * @category do notation
+   * @since 1.0.0
+   */
+  let_ as let
+}
 
 /**
  * Returns an effect whose Left and Right channels have been mapped by
@@ -229,6 +235,9 @@ export const mapLeft: <E, G>(f: (e: E) => G) => <A>(self: Either<E, A>) => Eithe
  */
 export const right: <A>(a: A) => Either<never, A> = either.right
 
+/**
+ * @since 1.0.0
+ */
 export const of: <A>(a: A) => Either<never, A> = right
 
 /**

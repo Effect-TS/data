@@ -1043,6 +1043,10 @@ export const Product: product_.Product<NonEmptyReadonlyArrayTypeLambda> = {
   productAll
 }
 
+/**
+ * @category instances
+ * @since 1.0.0
+ */
 export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<
   NonEmptyReadonlyArrayTypeLambda
 > = {
@@ -1155,6 +1159,10 @@ export const tap: <A, _>(
   Chainable
 )
 
+/**
+ * @category instances
+ * @since 1.0.0
+ */
 export const andThenDiscard: <_>(
   that: NonEmptyReadonlyArray<_>
 ) => <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A> = chainable
