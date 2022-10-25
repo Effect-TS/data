@@ -1,11 +1,11 @@
-import type { Sortable } from "@fp-ts/core/Sortable"
+import type { Order } from "@fp-ts/core/typeclass/Order"
 import { pipe } from "@fp-ts/data/Function"
 import * as L from "@fp-ts/data/internal/List"
 import * as LB from "@fp-ts/data/internal/ListBuilder"
 import type { List } from "@fp-ts/data/List"
 
 /** @internal */
-export function sortWith<A>(ord: Sortable<A>) {
+export function sortWith<A>(ord: Order<A>) {
   return (self: List<A>): List<A> => {
     const len = L.length(self)
     const b = LB.make<A>()

@@ -247,7 +247,7 @@ export const uniq = <A>(self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A
  *
  * @example
  * import * as RNEA from '@fp-ts/data/NonEmptyReadonlyArray'
- * import { contramap } from '@fp-ts/core/typeclass/Sortable'
+ * import { contramap } from '@fp-ts/core/typeclass/Order'
  * import * as S from '@fp-ts/data/String'
  * import * as N from '@fp-ts/data/Number'
  * import { pipe } from '@fp-ts/data/Function'
@@ -257,9 +257,9 @@ export const uniq = <A>(self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A
  *   age: number
  * }
  *
- * const byName = pipe(S.Sortable, contramap((p: Person) => p.name))
+ * const byName = pipe(S.Order, contramap((p: Person) => p.name))
  *
- * const byAge = pipe(N.Sortable, contramap((p: Person) => p.age))
+ * const byAge = pipe(N.Order, contramap((p: Person) => p.age))
  *
  * const sortByNameByAge = RNEA.sortBy([byName, byAge])
  *
