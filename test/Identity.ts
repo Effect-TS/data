@@ -4,63 +4,79 @@ import * as O from "@fp-ts/data/Option"
 import * as U from "./util"
 
 describe.concurrent("Identity", () => {
-  it("derived instances", () => {
-    expect(_.Invariant).exist
-    expect(_.Covariant).exist
-    expect(_.Of).exist
-    expect(_.Pointed).exist
-    expect(_.FlatMap).exist
-    expect(_.Chainable).exist
-    expect(_.Monad).exist
-    expect(_.NonEmptyApplicative).exist
-    expect(_.Applicative).exist
-    expect(_.NonEmptyAlternative).exist
-    expect(_.Foldable).exist
-    expect(_.Traversable).exist
-  })
+  it("instances and derived exports", () => {
+    expect(_.map).exist
 
-  it("derived functions", () => {
-    // Invariant
+    expect(_.Invariant).exist
     expect(_.tupled).exist
     expect(_.bindTo).exist
-    // Covariant
+
+    expect(_.Covariant).exist
     expect(_.let).exist
     expect(_.flap).exist
     expect(_.as).exist
     expect(_.asUnit).exist
-    // Of
+
+    expect(_.Of).exist
     expect(_.Do).exist
-    // FlatMap
+
+    expect(_.Pointed).exist
+
+    expect(_.FlatMap).exist
+    expect(_.flatMap).exist
     expect(_.flatten).exist
     expect(_.andThen).exist
     expect(_.composeKleisliArrow).exist
-    // Chainable
+
+    expect(_.Chainable).exist
     expect(_.bind).exist
     expect(_.tap).exist
     expect(_.andThenDiscard).exist
-    // NonEmptyProduct
-    expect(_.bindIdentity).exist
-    expect(_.productFlatten).exist
-    // Product
+
+    expect(_.Monad).exist
+
+    expect(_.Product).exist
+    expect(_.product).exist
     expect(_.tuple).exist
     expect(_.struct).exist
-    // NonEmptyApplicative
+
+    expect(_.NonEmptyApplicative).exist
     expect(_.liftSemigroup).exist
     expect(_.lift2).exist
     expect(_.lift3).exist
     expect(_.ap).exist
-    // Applicative
+    expect(_.andThenDiscard).exist
+    expect(_.andThen).exist
+
+    expect(_.Applicative).exist
     expect(_.liftMonoid).exist
-    // NonEmptyCoproduct
+
+    expect(_.NonEmptyCoproduct).exist
+    // TODO
+    // expect(_.getSemigroup).exist
     expect(_.coproductEither).exist
-    // Foldable
+
+    // TODO
+    // expect(_.Coproduct).exist
+    // expect(_.getMonoid).exist
+
+    expect(_.NonEmptyAlternative).exist
+
+    // TODO
+    // expect(_.Alternative).exist
+
+    expect(_.Foldable).exist
+    expect(_.reduce).exist
+    expect(_.reduceRight).exist
     expect(_.foldMap).exist
     expect(_.toReadonlyArray).exist
     expect(_.toReadonlyArrayWith).exist
     expect(_.reduceKind).exist
     expect(_.reduceRightKind).exist
     expect(_.foldMapKind).exist
-    // Traversable
+
+    expect(_.Traversable).exist
+    expect(_.traverse).exist
     expect(_.sequence).exist
     expect(_.traverseTap).exist
   })

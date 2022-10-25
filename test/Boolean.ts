@@ -3,7 +3,7 @@ import * as Boolean from "@fp-ts/data/Boolean"
 import { deepStrictEqual } from "@fp-ts/data/test/util"
 
 describe.concurrent("Boolean", () => {
-  it("derived instances", () => {
+  it("instances and derived exports", () => {
     expect(Boolean.SemigroupAll).exist
     expect(Boolean.MonoidAll).exist
     expect(Boolean.SemigroupAny).exist

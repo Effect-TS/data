@@ -14,10 +14,10 @@
  */
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import type * as alternative from "@fp-ts/core/typeclass/Alternative"
-import type * as applicative from "@fp-ts/core/typeclass/Applicative"
+import * as applicative from "@fp-ts/core/typeclass/Applicative"
 import * as chainable from "@fp-ts/core/typeclass/Chainable"
 import * as compactable from "@fp-ts/core/typeclass/Compactable"
-import type * as coproduct from "@fp-ts/core/typeclass/Coproduct"
+import type * as coproduct_ from "@fp-ts/core/typeclass/Coproduct"
 import * as covariant from "@fp-ts/core/typeclass/Covariant"
 import * as filterable from "@fp-ts/core/typeclass/Filterable"
 import * as flatMap_ from "@fp-ts/core/typeclass/FlatMap"
@@ -29,7 +29,7 @@ import type * as nonEmptyAlternative from "@fp-ts/core/typeclass/NonEmptyAlterna
 import * as nonEmptyApplicative from "@fp-ts/core/typeclass/NonEmptyApplicative"
 import * as nonEmptyCoproduct from "@fp-ts/core/typeclass/NonEmptyCoproduct"
 import * as nonEmptyProduct from "@fp-ts/core/typeclass/NonEmptyProduct"
-import * as of from "@fp-ts/core/typeclass/Of"
+import * as of_ from "@fp-ts/core/typeclass/Of"
 import type { Order } from "@fp-ts/core/typeclass/Order"
 import * as order from "@fp-ts/core/typeclass/Order"
 import type * as pointed from "@fp-ts/core/typeclass/Pointed"
@@ -40,10 +40,9 @@ import * as traversableFilterable from "@fp-ts/core/typeclass/TraversableFiltera
 import type { Either } from "@fp-ts/data/Either"
 import { equals } from "@fp-ts/data/Equal"
 import type { LazyArg } from "@fp-ts/data/Function"
-import { flow, identity, pipe, SK } from "@fp-ts/data/Function"
+import { pipe } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
 import * as either from "@fp-ts/data/internal/Either"
-import type { NonEmptyReadonlyArray } from "@fp-ts/data/NonEmptyReadonlyArray"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
 
@@ -110,11 +109,17 @@ export const map = <A, B>(f: (a: A) => B) =>
   (self: Option<A>): Option<B> => isNone(self) ? none : some(f(self.value))
 
 /**
+ * @category mapping
+ * @since 1.0.0
+ */
+export const imap = covariant.imap<OptionTypeLambda>(map)
+
+/**
  * @category instances
  * @since 1.0.0
  */
 export const Invariant: invariant.Invariant<OptionTypeLambda> = {
-  imap: covariant.imap<OptionTypeLambda>(map)
+  imap
 }
 
 /**
@@ -145,13 +150,7 @@ const let_: <N extends string, A extends object, B>(
 ) => (self: Option<A>) => Option<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> =
   covariant.let(Covariant)
 
-export {
-  /**
-   * @category do notation
-   * @since 1.0.0
-   */
-  let_ as let
-}
+export { let_ as let }
 
 /**
  * @category mapping
@@ -178,23 +177,28 @@ export const as: <B>(b: B) => <_>(self: Option<_>) => Option<B> = covariant.as(C
 export const asUnit: <_>(self: Option<_>) => Option<void> = covariant.asUnit(Covariant)
 
 /**
+ * @since 1.0.0
+ */
+export const of: <A>(a: A) => Option<A> = some
+
+/**
  * @category instances
  * @since 1.0.0
  */
-export const Of: of.Of<OptionTypeLambda> = {
+export const Of: of_.Of<OptionTypeLambda> = {
   of: some
 }
 
 /**
  * @since 1.0.0
  */
-export const unit: Option<void> = of.unit(Of)
+export const unit: Option<void> = of_.unit(Of)
 
 /**
  * @category do notation
  * @since 1.0.0
  */
-export const Do: Option<{}> = of.Do(Of)
+export const Do: Option<{}> = of_.Do(Of)
 
 /**
  * @category instances
@@ -297,26 +301,31 @@ export const product = <B>(
     isSome(self) && isSome(that) ? some([self.value, that.value]) : none
 
 /**
+ * @since 1.0.0
+ */
+export const productMany = <A>(collection: Iterable<Option<A>>) =>
+  (self: Option<A>): Option<readonly [A, ...Array<A>]> => {
+    if (isNone(self)) {
+      return none
+    }
+    const out: [A, ...Array<A>] = [self.value]
+    for (const o of collection) {
+      if (isNone(o)) {
+        return none
+      }
+      out.push(o.value)
+    }
+    return some(out)
+  }
+
+/**
  * @category instances
  * @since 1.0.0
  */
 export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<OptionTypeLambda> = {
   ...Invariant,
   product,
-  productMany: <A>(collection: Iterable<Option<A>>) =>
-    (self: Option<A>): Option<readonly [A, ...Array<A>]> => {
-      if (isNone(self)) {
-        return none
-      }
-      const out: [A, ...Array<A>] = [self.value]
-      for (const o of collection) {
-        if (isNone(o)) {
-          return none
-        }
-        out.push(o.value)
-      }
-      return some(out)
-    }
+  productMany
 }
 
 /**
@@ -341,22 +350,27 @@ export const productFlatten: <B>(
     .productFlatten(NonEmptyProduct)
 
 /**
+ * @since 1.0.0
+ */
+export const productAll = <A>(collection: Iterable<Option<A>>): Option<ReadonlyArray<A>> => {
+  const out: Array<A> = []
+  for (const o of collection) {
+    if (isNone(o)) {
+      return none
+    }
+    out.push(o.value)
+  }
+  return some(out)
+}
+
+/**
  * @category instances
  * @since 1.0.0
  */
 export const Product: product_.Product<OptionTypeLambda> = {
   ...Of,
   ...NonEmptyProduct,
-  productAll: <A>(collection: Iterable<Option<A>>): Option<ReadonlyArray<A>> => {
-    const out: Array<A> = []
-    for (const o of collection) {
-      if (isNone(o)) {
-        return none
-      }
-      out.push(o.value)
-    }
-    return some(out)
-  }
+  productAll
 }
 
 /**
@@ -467,6 +481,12 @@ export const ap: <A>(
 )
 
 /**
+ * @since 1.0.0
+ */
+export const liftSemigroup: <A>(S: Semigroup<A>) => Semigroup<Option<A>> = nonEmptyApplicative
+  .liftSemigroup(NonEmptyApplicative)
+
+/**
  * @category instances
  * @since 1.0.0
  */
@@ -476,25 +496,43 @@ export const Applicative: applicative.Applicative<OptionTypeLambda> = {
 }
 
 /**
+ * @since 1.0.0
+ */
+export const liftMonoid: <A>(M: Monoid<A>) => Monoid<Option<A>> = applicative.liftMonoid(
+  Applicative
+)
+
+/**
+ * @since 1.0.0
+ */
+export const coproduct = <B>(that: Option<B>) =>
+  <A>(self: Option<A>): Option<B | A> => isSome(self) ? self : that
+
+/**
+ * @since 1.0.0
+ */
+export const coproductMany = <A>(collection: Iterable<Option<A>>) =>
+  (self: Option<A>): Option<A> => {
+    let out = self
+    if (isSome(out)) {
+      return out
+    }
+    for (out of collection) {
+      if (isSome(out)) {
+        return out
+      }
+    }
+    return out
+  }
+
+/**
  * @category instances
  * @since 1.0.0
  */
 export const NonEmptyCoproduct: nonEmptyCoproduct.NonEmptyCoproduct<OptionTypeLambda> = {
   ...Invariant,
-  coproduct: (that) => (self) => isSome(self) ? self : that,
-  coproductMany: (collection) =>
-    (self) => {
-      let out = self
-      if (isSome(out)) {
-        return out
-      }
-      for (out of collection) {
-        if (isSome(out)) {
-          return out
-        }
-      }
-      return out
-    }
+  coproduct,
+  coproductMany
 }
 
 /**
@@ -511,19 +549,29 @@ export const coproductEither: <B>(that: Option<B>) => <A>(self: Option<A>) => Op
   nonEmptyCoproduct.coproductEither(NonEmptyCoproduct)
 
 /**
+ * @since 1.0.0
+ */
+export const coproductAll = <A>(collection: Iterable<Option<A>>): Option<A> => {
+  const options = internal.fromIterable(collection)
+  if (internal.isNonEmpty(options)) {
+    return NonEmptyCoproduct.coproductMany(internal.tail(options))(internal.head(options))
+  }
+  return none
+}
+
+/**
+ * @since 1.0.0
+ */
+export const zero = <A>(): Option<A> => none
+
+/**
  * @category instances
  * @since 1.0.0
  */
-export const Coproduct: coproduct.Coproduct<OptionTypeLambda> = {
+export const Coproduct: coproduct_.Coproduct<OptionTypeLambda> = {
   ...NonEmptyCoproduct,
-  zero: () => none,
-  coproductAll: (collection) => {
-    const options = internal.fromIterable(collection)
-    if (internal.isNonEmpty(options)) {
-      return NonEmptyCoproduct.coproductMany(internal.tail(options))(internal.head(options))
-    }
-    return none
-  }
+  zero,
+  coproductAll
 }
 
 /**
@@ -617,7 +665,7 @@ export const reduceRightKind: <G extends TypeLambda>(
  * @since 1.0.0
  */
 export const foldMapKind: <G extends TypeLambda>(
-  G: coproduct.Coproduct<G>
+  G: coproduct_.Coproduct<G>
 ) => <A, R, O, E, B>(
   f: (a: A) => Kind<G, R, O, E, B>
 ) => (self: Option<A>) => Kind<G, R, O, E, B> = foldable.foldMapKind(Foldable)
@@ -1257,78 +1305,3 @@ export const elem = <A>(a: A) =>
  */
 export const exists = <A>(predicate: Predicate<A>) =>
   (ma: Option<A>): boolean => isNone(ma) ? false : predicate(ma.value)
-
-// -------------------------------------------------------------------------------------
-// array utils
-// -------------------------------------------------------------------------------------
-
-/**
- * Equivalent to `NonEmptyReadonlyArray#traverseWithIndex(Semigroupal)`.
- *
- * @category traversing
- * @since 1.0.0
- */
-export const traverseNonEmptyReadonlyArrayWithIndex = <A, B>(
-  f: (index: number, a: A) => Option<B>
-) =>
-  (as: NonEmptyReadonlyArray<A>): Option<NonEmptyReadonlyArray<B>> => {
-    const o = f(0, internal.head(as))
-    if (isNone(o)) {
-      return none
-    }
-    const out: internal.NonEmptyArray<B> = [o.value]
-    for (let i = 1; i < as.length; i++) {
-      const o = f(i, as[i])
-      if (isNone(o)) {
-        return none
-      }
-      out.push(o.value)
-    }
-    return some(out)
-  }
-
-/**
- * Equivalent to `ReadonlyArray#traverseWithIndex(Monoidal)`.
- *
- * @category traversing
- * @since 1.0.0
- */
-export const traverseReadonlyArrayWithIndex = <A, B>(
-  f: (index: number, a: A) => Option<B>
-): ((as: ReadonlyArray<A>) => Option<ReadonlyArray<B>>) => {
-  const g = traverseNonEmptyReadonlyArrayWithIndex(f)
-  return (as) => (internal.isNonEmpty(as) ? g(as) : some([]))
-}
-
-/**
- * Equivalent to `NonEmptyReadonlyArray#traverse(Semigroupal)`.
- *
- * @category traversing
- * @since 1.0.0
- */
-export const traverseNonEmptyReadonlyArray = <A, B>(
-  f: (a: A) => Option<B>
-): ((as: NonEmptyReadonlyArray<A>) => Option<NonEmptyReadonlyArray<B>>) => {
-  return traverseNonEmptyReadonlyArrayWithIndex(flow(SK, f))
-}
-
-/**
- * Equivalent to `ReadonlyArray#traverse(Monoidal)`.
- *
- * @category traversing
- * @since 1.0.0
- */
-export const traverseReadonlyArray = <A, B>(
-  f: (a: A) => Option<B>
-): ((as: ReadonlyArray<A>) => Option<ReadonlyArray<B>>) => {
-  return traverseReadonlyArrayWithIndex(flow(SK, f))
-}
-
-/**
- * Equivalent to `ReadonlyArray#sequence(Monoidal)`.
- *
- * @category traversing
- * @since 1.0.0
- */
-export const sequenceReadonlyArray: <A>(arr: ReadonlyArray<Option<A>>) => Option<ReadonlyArray<A>> =
-  traverseReadonlyArray(identity)
