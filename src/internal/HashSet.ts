@@ -8,14 +8,9 @@ import type { Refinement } from "@fp-ts/data/Refinement"
 /** @internal */
 export const HashSetTypeId: HS.TypeId = Symbol.for("@fp-ts/data/HashSet") as HS.TypeId
 
-function variance<A, B>(_: A): B {
-  return _ as unknown as B
-}
-
 /** @internal */
 export class HashSetImpl<A> implements HS.HashSet<A> {
   readonly _id: HS.TypeId = HashSetTypeId
-  readonly _A: (_: never) => A = variance
 
   constructor(readonly _keyMap: HashMap<A, unknown>) {}
 

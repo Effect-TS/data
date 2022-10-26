@@ -23,7 +23,6 @@ export const ListTypeId: L.TypeId = Symbol.for("@fp-ts/data/List") as L.TypeId
 /** @internal */
 export class ConsImpl<A> implements Iterable<A>, L.Cons<A>, DE.Equal {
   readonly _tag = "Cons"
-  readonly _A: (_: never) => A = (_) => _
   readonly _id: L.TypeId = ListTypeId
   constructor(readonly head: A, public tail: L.List<A>) {}
   [DE.symbolHash](): number {
@@ -67,7 +66,6 @@ export class ConsImpl<A> implements Iterable<A>, L.Cons<A>, DE.Equal {
 /** @internal */
 export class NilImpl<A> implements Iterable<A>, L.Nil<A>, DE.Equal {
   readonly _tag = "Nil"
-  readonly _A: (_: never) => A = (_) => _
   readonly _id: L.TypeId = ListTypeId;
 
   [DE.symbolHash](): number {

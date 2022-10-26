@@ -39,7 +39,6 @@ export type TypeId = typeof TypeId
 export interface Cons<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
   readonly _tag: "Cons"
-  readonly _A: (_: never) => A
   readonly head: A
   readonly tail: List<A>
 }
@@ -51,7 +50,6 @@ export interface Cons<A> extends Iterable<A>, Equal.Equal {
 export interface Nil<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
   readonly _tag: "Nil"
-  readonly _A: (_: never) => A
 }
 
 /**

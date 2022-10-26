@@ -24,7 +24,6 @@ export type TypeId = typeof TypeId
  */
 export interface Queue<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
-  readonly _A: (_: never) => A
   /** @internal */
   readonly _in: L.List<A>
   /** @internal */

@@ -18,7 +18,6 @@ export type TypeId = typeof TypeId
  */
 export interface MutableList<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
-  readonly _A: (_: never) => A
 
   /** @internal */
   head: LinkedListNode<A> | undefined
@@ -26,14 +25,9 @@ export interface MutableList<A> extends Iterable<A>, Equal.Equal {
   tail: LinkedListNode<A> | undefined
 }
 
-function variance<A, B>(_: A): B {
-  return _ as unknown as B
-}
-
 /** @internal */
 class MutableListImpl<A> implements MutableList<A> {
   readonly _id: TypeId = TypeId
-  readonly _A: (_: never) => A = variance
 
   head: LinkedListNode<A> | undefined = undefined
   tail: LinkedListNode<A> | undefined = undefined

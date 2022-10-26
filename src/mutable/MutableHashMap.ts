@@ -50,9 +50,6 @@ class Node<K, V> implements Iterable<readonly [K, V]> {
 export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, Equal.Equal {
   readonly _id: TypeId
 
-  readonly _K: (_: K) => K
-  readonly _V: (_: never) => V
-
   /** @internal */
   readonly backingMap: Map<number, Node<K, V>>
   /** @internal */
@@ -62,9 +59,6 @@ export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, Equal.E
 /** @internal */
 class MutableHashMapImpl<K, V> implements MutableHashMap<K, V> {
   readonly _id: TypeId = TypeId
-
-  readonly _K: (_: K) => K = (_) => _
-  readonly _V: (_: never) => V = (_) => _
 
   readonly backingMap = new Map<number, Node<K, V>>()
   length = 0;

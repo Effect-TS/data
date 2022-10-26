@@ -22,8 +22,6 @@ export type TypeId = typeof TypeId
  */
 export interface SortedMap<K, V> extends Iterable<readonly [K, V]>, Eq.Equal {
   readonly _id: TypeId
-  readonly _K: (_: never) => K
-  readonly _V: (_: never) => V
   /** @internal */
   readonly tree: RBT.RedBlackTree<K, V>
 }
@@ -31,8 +29,6 @@ export interface SortedMap<K, V> extends Iterable<readonly [K, V]>, Eq.Equal {
 /** @internal */
 class SortedMapImpl<K, V> implements Iterable<readonly [K, V]>, Eq.Equal {
   readonly _id: TypeId = TypeId
-  readonly _K: (_: never) => K = (_) => _
-  readonly _V: (_: never) => V = (_) => _
 
   constructor(readonly tree: RBT.RedBlackTree<K, V>) {}
 
