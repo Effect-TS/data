@@ -5,6 +5,7 @@ import type * as bounded from "@fp-ts/core/typeclass/Bounded"
 import type * as monoid from "@fp-ts/core/typeclass/Monoid"
 import type * as order from "@fp-ts/core/typeclass/Order"
 import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
+import type { Ordering } from "@fp-ts/data/Ordering"
 import type { Refinement } from "@fp-ts/data/Refinement"
 
 /**
@@ -128,3 +129,8 @@ export const MonoidMultiply: monoid.Monoid<number> = {
   combineAll: (collection) => SemigroupMultiply.combineMany(collection)(1),
   empty: 1
 }
+
+/**
+ * @since 1.0.0
+ */
+export const sign = (n: number): Ordering => (n < 0 ? -1 : n > 0 ? 1 : 0)

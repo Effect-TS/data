@@ -46,4 +46,13 @@ describe.concurrent("Number", () => {
   it("MonoidMultiply", () => {
     deepStrictEqual(Number.MonoidMultiply.combineAll([2, 3, 4]), 24)
   })
+
+  it("sign", () => {
+    deepStrictEqual(Number.sign(0), 0)
+    deepStrictEqual(Number.sign(0.0), 0)
+    deepStrictEqual(Number.sign(-0.1), -1)
+    deepStrictEqual(Number.sign(-10), -1)
+    deepStrictEqual(Number.sign(10), 1)
+    deepStrictEqual(Number.sign(0.1), 1)
+  })
 })
