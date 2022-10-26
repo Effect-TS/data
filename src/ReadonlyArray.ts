@@ -1438,7 +1438,7 @@ export const Pointed: pointed.Pointed<ReadonlyArrayTypeLambda> = {
  */
 export const flatMap: <A, B>(
   f: (a: A) => ReadonlyArray<B>
-) => (self: ReadonlyArray<A>) => ReadonlyArray<B> = (f) => flatMapWithIndex((_, a) => f(a))
+) => (self: ReadonlyArray<A>) => ReadonlyArray<B> = (f) => flatMapWithIndex(f)
 
 /**
  * @category instances
@@ -1508,14 +1508,14 @@ export const ap: <A>(
 /**
  * @since 1.0.0
  */
-export const flatMapWithIndex = <A, B>(f: (i: number, a: A) => ReadonlyArray<B>) =>
+export const flatMapWithIndex = <A, B>(f: (a: A, i: number) => ReadonlyArray<B>) =>
   (as: ReadonlyArray<A>): ReadonlyArray<B> => {
     if (isEmpty(as)) {
       return empty
     }
     const out: Array<B> = []
     for (let i = 0; i < as.length; i++) {
-      out.push(...f(i, as[i]))
+      out.push(...f(as[i], i))
     }
     return out
   }
@@ -1545,12 +1545,12 @@ export const mapWithIndex = <A, B>(
  * @category filtering
  * @since 1.0.0
  */
-export const filterMapWithIndex = <A, B>(f: (i: number, a: A) => Option<B>) =>
+export const filterMapWithIndex = <A, B>(f: (a: A, i: number) => Option<B>) =>
   (self: Iterable<A>): ReadonlyArray<B> => {
     const as = internal.fromIterable(self)
     const out: Array<B> = []
     for (let i = 0; i < as.length; i++) {
-      const o = f(i, as[i])
+      const o = f(as[i], i)
       if (internal.isSome(o)) {
         out.push(o.value)
       }
@@ -1563,7 +1563,7 @@ export const filterMapWithIndex = <A, B>(f: (i: number, a: A) => Option<B>) =>
  * @since 1.0.0
  */
 export const filterMap: <A, B>(f: (a: A) => Option<B>) => (self: Iterable<A>) => ReadonlyArray<B> =
-  (f) => filterMapWithIndex((_, a) => f(a))
+  (f) => filterMapWithIndex(f)
 
 /**
  * @category filtering
@@ -1602,18 +1602,18 @@ export const separate: <A, B>(
 export const partitionMap: <A, B, C>(
   f: (a: A) => Either<B, C>
 ) => (fa: ReadonlyArray<A>) => readonly [ReadonlyArray<B>, ReadonlyArray<C>] = (f) =>
-  partitionMapWithIndex((_, a) => f(a))
+  partitionMapWithIndex(f)
 
 /**
  * @category filtering
  * @since 1.0.0
  */
-export const partitionMapWithIndex = <A, B, C>(f: (i: number, a: A) => Either<B, C>) =>
+export const partitionMapWithIndex = <A, B, C>(f: (a: A, i: number) => Either<B, C>) =>
   (fa: ReadonlyArray<A>): readonly [ReadonlyArray<B>, ReadonlyArray<C>] => {
     const left: Array<B> = []
     const right: Array<C> = []
     for (let i = 0; i < fa.length; i++) {
-      const e = f(i, fa[i])
+      const e = f(fa[i], i)
       if (either.isLeft(e)) {
         left.push(e.left)
       } else {
@@ -1949,31 +1949,31 @@ export const partition: {
  */
 export const filterWithIndex: {
   <C extends A, B extends A, A = C>(
-    refinement: (i: number, a: A) => a is B
+    refinement: (a: A, i: number) => a is B
   ): (fc: ReadonlyArray<C>) => ReadonlyArray<B>
   <B extends A, A = B>(
-    predicate: (i: number, a: A) => boolean
+    predicate: (a: A, i: number) => boolean
   ): (fb: ReadonlyArray<B>) => ReadonlyArray<B>
 } = <B extends A, A = B>(
-  predicate: (i: number, a: A) => boolean
+  predicate: (a: A, i: number) => boolean
 ): ((fb: ReadonlyArray<B>) => ReadonlyArray<B>) =>
-  filterMapWithIndex((i, b) => (predicate(i, b) ? internal.some(b) : internal.none))
+  filterMapWithIndex((b, i) => (predicate(b, i) ? internal.some(b) : internal.none))
 
 /**
  * @category filtering
  * @since 1.0.0
  */
 export const partitionWithIndex: {
-  <C extends A, B extends A, A = C>(refinement: (i: number, a: A) => a is B): (
+  <C extends A, B extends A, A = C>(refinement: (a: A, i: number) => a is B): (
     fb: ReadonlyArray<C>
   ) => readonly [ReadonlyArray<C>, ReadonlyArray<B>]
-  <B extends A, A = B>(predicate: (i: number, a: A) => boolean): (
+  <B extends A, A = B>(predicate: (a: A, i: number) => boolean): (
     fb: ReadonlyArray<B>
   ) => readonly [ReadonlyArray<B>, ReadonlyArray<B>]
 } = <B extends A, A = B>(
-  predicate: (i: number, a: A) => boolean
+  predicate: (a: A, i: number) => boolean
 ): ((fb: ReadonlyArray<B>) => readonly [ReadonlyArray<B>, ReadonlyArray<B>]) =>
-  partitionMapWithIndex((i, b) => (predicate(i, b) ? either.right(b) : either.left(b)))
+  partitionMapWithIndex((b, i) => (predicate(b, i) ? either.right(b) : either.left(b)))
 
 /**
  * @category folding
@@ -2051,24 +2051,24 @@ export const foldMapKind: <G extends TypeLambda>(
  * @category folding
  * @since 1.0.0
  */
-export const reduceWithIndex = <B, A>(b: B, f: (i: number, b: B, a: A) => B) =>
-  (self: ReadonlyArray<A>): B => self.reduce((b, a, i) => f(i, b, a), b)
+export const reduceWithIndex = <B, A>(b: B, f: (b: B, a: A, i: number) => B) =>
+  (self: ReadonlyArray<A>): B => self.reduce((b, a, i) => f(b, a, i), b)
 
 /**
  * @category folding
  * @since 1.0.0
  */
 export const foldMapWithIndex = <M>(Monoid: Monoid<M>) =>
-  <A>(f: (i: number, a: A) => M) =>
+  <A>(f: (a: A, i: number) => M) =>
     (self: ReadonlyArray<A>): M =>
-      self.reduce((m, a, i) => Monoid.combine(f(i, a))(m), Monoid.empty)
+      self.reduce((m, a, i) => Monoid.combine(f(a, i))(m), Monoid.empty)
 
 /**
  * @category folding
  * @since 1.0.0
  */
-export const reduceRightWithIndex = <B, A>(b: B, f: (i: number, a: A, b: B) => B) =>
-  (self: ReadonlyArray<A>): B => self.reduceRight((b, a, i) => f(i, a, b), b)
+export const reduceRightWithIndex = <B, A>(b: B, f: (b: B, a: A, i: number) => B) =>
+  (self: ReadonlyArray<A>): B => self.reduceRight((b, a, i) => f(b, a, i), b)
 
 /**
  * @category instances

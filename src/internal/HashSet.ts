@@ -223,7 +223,7 @@ export function flatMap<A, B>(f: (a: A) => Iterable<B>) {
 /** @internal */
 export function forEach<A>(f: (value: A) => void) {
   return (self: HS.HashSet<A>): void => {
-    HM.forEachWithIndex<A, unknown>((k) => {
+    HM.forEachWithIndex<unknown, A>((_, k) => {
       f(k)
     })((self as HashSetImpl<A>)._keyMap)
   }
@@ -232,7 +232,7 @@ export function forEach<A>(f: (value: A) => void) {
 /** @internal */
 export function reduce<A, Z>(zero: Z, f: (accumulator: Z, value: A) => Z) {
   return (self: HS.HashSet<A>): Z => {
-    return HM.reduceWithIndex<A, unknown, Z>(zero, (z, a) => f(z, a))(
+    return HM.reduceWithIndex<Z, unknown, A>(zero, (z, _, a) => f(z, a))(
       (self as HashSetImpl<A>)._keyMap
     )
   }

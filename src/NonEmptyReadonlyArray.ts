@@ -693,11 +693,11 @@ export const intersperse = <A>(middle: A) =>
 /**
  * @since 1.0.0
  */
-export const flatMapWithIndex = <A, B>(f: (i: number, a: A) => NonEmptyReadonlyArray<B>) =>
+export const flatMapWithIndex = <A, B>(f: (a: A, i: number) => NonEmptyReadonlyArray<B>) =>
   (self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<B> => {
-    const out: internal.NonEmptyArray<B> = internal.fromNonEmptyReadonlyArray(f(0, head(self)))
+    const out: internal.NonEmptyArray<B> = internal.fromNonEmptyReadonlyArray(f(head(self), 0))
     for (let i = 1; i < self.length; i++) {
-      out.push(...f(i, self[i]))
+      out.push(...f(self[i], i))
     }
     return out
   }
@@ -804,8 +804,7 @@ export const of: <A>(a: A) => NonEmptyReadonlyArray<A> = internal.toNonEmptyArra
  */
 export const flatMap: <A, B>(
   f: (a: A) => NonEmptyReadonlyArray<B>
-) => (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<B> = (f) =>
-  flatMapWithIndex((_, a) => f(a))
+) => (self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<B> = (f) => flatMapWithIndex(f)
 
 /**
  * @category instances
@@ -1247,8 +1246,8 @@ export const foldMapKind: <G extends TypeLambda>(
  * @category folding
  * @since 1.0.0
  */
-export const reduceWithIndex = <B, A>(b: B, f: (i: number, b: B, a: A) => B) =>
-  (self: NonEmptyReadonlyArray<A>): B => self.reduce((b, a, i) => f(i, b, a), b)
+export const reduceWithIndex = <B, A>(b: B, f: (b: B, a: A, i: number) => B) =>
+  (self: NonEmptyReadonlyArray<A>): B => self.reduce(f, b)
 
 /**
  * **Note**. The constraint is relaxed: a `Semigroup` instead of a `Monoid`.
@@ -1257,16 +1256,16 @@ export const reduceWithIndex = <B, A>(b: B, f: (i: number, b: B, a: A) => B) =>
  * @since 1.0.0
  */
 export const foldMapWithIndex = <S>(S: Semigroup<S>) =>
-  <A>(f: (i: number, a: A) => S) =>
+  <A>(f: (a: A, i: number) => S) =>
     (self: NonEmptyReadonlyArray<A>): S =>
-      self.slice(1).reduce((s, a, i) => S.combine(f(i + 1, a))(s), f(0, self[0]))
+      self.slice(1).reduce((s, a, i) => S.combine(f(a, i + 1))(s), f(self[0], 0))
 
 /**
  * @category folding
  * @since 1.0.0
  */
-export const reduceRightWithIndex = <B, A>(b: B, f: (i: number, a: A, b: B) => B) =>
-  (self: NonEmptyReadonlyArray<A>): B => self.reduceRight((b, a, i) => f(i, a, b), b)
+export const reduceRightWithIndex = <B, A>(b: B, f: (b: B, a: A, i: number) => B) =>
+  (self: NonEmptyReadonlyArray<A>): B => self.reduceRight(f, b)
 
 /**
  * @category instances

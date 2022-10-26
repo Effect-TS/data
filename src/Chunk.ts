@@ -704,7 +704,7 @@ export const filter = <A>(f: (a: A) => boolean) =>
  * @since 1.0.0
  * @category filtering
  */
-export const filterMapWithIndex = <A, B>(f: (i: number, a: A) => Option<B>) =>
+export const filterMapWithIndex = <A, B>(f: (a: A, i: number) => Option<B>) =>
   (self: Iterable<A>): Chunk<B> => unsafeFromArray(RA.filterMapWithIndex(f)(self))
 
 /**
@@ -938,8 +938,8 @@ export const reduce = <A, S>(s: S, f: (s: S, a: A) => S) =>
  * @since 1.0.0
  * @category folding
  */
-export const reduceWithIndex = <A, S>(s: S, f: (i: number, s: S, a: A) => S) =>
-  (self: Chunk<A>): S => pipe(toArray(self), RA.reduceWithIndex(s, f))
+export const reduceWithIndex = <B, A>(b: B, f: (b: B, a: A, i: number) => B) =>
+  (self: Chunk<A>): B => pipe(toArray(self), RA.reduceWithIndex(b, f))
 
 /**
  * Folds over the elements in this chunk from the right.
@@ -947,8 +947,8 @@ export const reduceWithIndex = <A, S>(s: S, f: (i: number, s: S, a: A) => S) =>
  * @since 1.0.0
  * @category folding
  */
-export const reduceRight = <A, S>(s: S, f: (a: A, s: S) => S) =>
-  (self: Chunk<A>): S => pipe(toArray(self), RA.reduceRight(s, (s, a) => f(a, s)))
+export const reduceRight = <A, S>(s: S, f: (s: S, a: A) => S) =>
+  (self: Chunk<A>): S => pipe(toArray(self), RA.reduceRight(s, (s, a) => f(s, a)))
 
 /**
  * Folds over the elements in this chunk from the right.
@@ -956,8 +956,8 @@ export const reduceRight = <A, S>(s: S, f: (a: A, s: S) => S) =>
  * @since 1.0.0
  * @category folding
  */
-export const reduceRightWithIndex = <A, S>(s: S, f: (i: number, a: A, s: S) => S) =>
-  (self: Chunk<A>): S => pipe(toArray(self), RA.reduceRightWithIndex(s, f))
+export const reduceRightWithIndex = <B, A>(b: B, f: (b: B, a: A, i: number) => B) =>
+  (self: Chunk<A>): B => pipe(toArray(self), RA.reduceRightWithIndex(b, f))
 
 /**
  * Joins the elements together with "sep" in the middle.
@@ -1012,9 +1012,8 @@ export const map = <A, B>(f: (a: A) => B) =>
  * @since 1.0.0
  * @category mapping
  */
-export const mapWithIndex = <A, B>(f: (i: number, a: A) => B) =>
-  (self: Chunk<A>): Chunk<B> =>
-    unsafeFromArray(pipe(toArray(self), RA.mapWithIndex((a, i) => f(i, a))))
+export const mapWithIndex = <A, B>(f: (a: A, i: number) => B) =>
+  (self: Chunk<A>): Chunk<B> => unsafeFromArray(pipe(toArray(self), RA.mapWithIndex(f)))
 
 /**
  * Statefully maps over the chunk, producing new elements of type `B`.
@@ -1042,13 +1041,13 @@ export function mapAccum<A, B, S>(s: S, f: (s: S, a: A) => readonly [S, B]) {
  * @since 1.0.0
  */
 export const partitionWithIndex: {
-  <C extends A, B extends A, A = C>(refinement: (i: number, a: A) => a is B): (
+  <C extends A, B extends A, A = C>(refinement: (a: A, i: number) => a is B): (
     fb: Chunk<C>
   ) => readonly [Chunk<C>, Chunk<B>]
-  <B extends A, A = B>(predicate: (i: number, a: A) => boolean): (
+  <B extends A, A = B>(predicate: (a: A, i: number) => boolean): (
     fb: Chunk<B>
   ) => readonly [Chunk<B>, Chunk<B>]
-} = <A>(f: (i: number, a: A) => boolean) => {
+} = <A>(f: (a: A, i: number) => boolean) => {
   return (self: Chunk<A>): readonly [Chunk<A>, Chunk<A>] =>
     pipe(
       toArray(self),

@@ -145,7 +145,7 @@ describe.concurrent("SortedMap", () => {
   it("reduceWithIndex", () => {
     const map = makeSortedMap([0, 10], [1, 20], [2, 30])
 
-    const result = pipe(map, SM.reduceWithIndex("", (acc, key, value) => acc + key.id + value.id))
+    const result = pipe(map, SM.reduceWithIndex("", (acc, value, key) => acc + key.id + value.id))
 
     assert.strictEqual(result, "010120230")
   })

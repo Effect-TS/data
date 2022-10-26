@@ -353,7 +353,7 @@ export function update<K, V>(key: K, f: (v: V) => V) {
 export function union<K1, V1>(that: HM.HashMap<K1, V1>) {
   return <K0, V0>(self: HM.HashMap<K0, V0>): HM.HashMap<K0 | K1, V0 | V1> => {
     const result: HM.HashMap<K0 | K1, V0 | V1> = beginMutation(self)
-    forEachWithIndex((k, v) => {
+    forEachWithIndex((v, k) => {
       set(k, v)(result)
     })(that)
     return endMutation(result)
@@ -381,7 +381,7 @@ export function removeMany<K>(keys: Iterable<K>) {
 /** @internal */
 export function map<V, A>(f: (value: V) => A) {
   return <K>(self: HM.HashMap<K, V>): HM.HashMap<K, A> => {
-    return mapWithIndex<K, V, A>((_, value) => f(value))(self)
+    return mapWithIndex<A, V, K>(f)(self)
   }
 }
 
@@ -391,11 +391,11 @@ export function map<V, A>(f: (value: V) => A) {
  * @since 1.0.0
  * @category mapping
  */
-export function mapWithIndex<K, V, A>(f: (key: K, value: V) => A) {
+export function mapWithIndex<A, V, K>(f: (value: V, key: K) => A) {
   return (self: HM.HashMap<K, V>): HM.HashMap<K, A> => {
-    return reduceWithIndex<K, V, HM.HashMap<K, A>>(
+    return reduceWithIndex<HM.HashMap<K, A>, V, K>(
       empty<K, A>(),
-      (map, key, value) => set(key, f(key, value))(map)
+      (map, value, key) => set(key, f(value, key))(map)
     )(self)
   }
 }
@@ -403,22 +403,22 @@ export function mapWithIndex<K, V, A>(f: (key: K, value: V) => A) {
 /** @internal */
 export function flatMap<K, A, B>(f: (value: A) => HM.HashMap<K, B>) {
   return (self: HM.HashMap<K, A>): HM.HashMap<K, B> => {
-    return pipe(self, flatMapWithIndex((_, a) => f(a)))
+    return pipe(self, flatMapWithIndex(f))
   }
 }
 
 /** @internal */
-export function flatMapWithIndex<K, A, B>(f: (key: K, value: A) => HM.HashMap<K, B>) {
+export function flatMapWithIndex<A, K, B>(f: (value: A, key: K) => HM.HashMap<K, B>) {
   return (self: HM.HashMap<K, A>): HM.HashMap<K, B> => {
     return pipe(
       self,
-      reduceWithIndex(empty<K, B>(), (zero, key, value) =>
+      reduceWithIndex(empty<K, B>(), (zero, value, key) =>
         pipe(
           zero,
           mutate((map) =>
             pipe(
-              f(key, value),
-              forEachWithIndex((key, value) => {
+              f(value, key),
+              forEachWithIndex((value, key) => {
                 pipe(map, set(key, value))
               })
             )
@@ -431,30 +431,30 @@ export function flatMapWithIndex<K, A, B>(f: (key: K, value: A) => HM.HashMap<K,
 /** @internal */
 export function forEach<V>(f: (value: V) => void) {
   return <K>(self: HM.HashMap<K, V>): void => {
-    return pipe(self, forEachWithIndex((_, value) => f(value)))
+    return pipe(self, forEachWithIndex(f))
   }
 }
 
 /** @internal */
-export function forEachWithIndex<K, V>(f: (key: K, value: V) => void) {
+export function forEachWithIndex<V, K>(f: (value: V, key: K) => void) {
   return (self: HM.HashMap<K, V>): void => {
-    return pipe(self, reduceWithIndex(undefined as void, (_, key, value) => f(key, value)))
+    return pipe(self, reduceWithIndex(undefined as void, (_, value, key) => f(value, key)))
   }
 }
 
 /** @internal */
 export function reduce<V, Z>(z: Z, f: (z: Z, v: V) => Z) {
   return <K>(self: HM.HashMap<K, V>): Z => {
-    return reduceWithIndex<K, V, Z>(z, (z, _, v) => f(z, v))(self)
+    return reduceWithIndex<Z, V, K>(z, (z, v, _) => f(z, v))(self)
   }
 }
 
 /** @internal */
-export function reduceWithIndex<K, V, Z>(zero: Z, f: (accumulator: Z, key: K, value: V) => Z) {
+export function reduceWithIndex<Z, V, K>(zero: Z, f: (accumulator: Z, value: V, key: K) => Z) {
   return (self: HM.HashMap<K, V>): Z => {
     const root = (self as HashMapImpl<K, V>)._root
     if (root._tag === "LeafNode") {
-      return Option.isSome(root.value) ? f(zero, root.key, root.value.value) : zero
+      return Option.isSome(root.value) ? f(zero, root.value.value, root.key) : zero
     }
     if (root._tag === "EmptyNode") {
       return zero
@@ -467,7 +467,7 @@ export function reduceWithIndex<K, V, Z>(zero: Z, f: (accumulator: Z, key: K, va
         if (child && !Node.isEmptyNode(child)) {
           if (child._tag === "LeafNode") {
             if (Option.isSome(child.value)) {
-              zero = f(zero, child.key, child.value.value)
+              zero = f(zero, child.value.value, child.key)
             }
           } else toVisit.push(child.children)
         }
@@ -486,24 +486,24 @@ export function filter<A>(
 ): <K>(self: HM.HashMap<K, A>) => HM.HashMap<K, A>
 export function filter<A>(f: Predicate<A>) {
   return <K>(self: HM.HashMap<K, A>): HM.HashMap<K, A> => {
-    return pipe(self, filterWithIndex((_, a) => f(a)))
+    return pipe(self, filterWithIndex(f))
   }
 }
 
 /** @internal */
 export function filterWithIndex<K, A, B extends A>(
-  f: (k: K, a: A) => a is B
+  f: (a: A, k: K) => a is B
 ): (self: HM.HashMap<K, A>) => HM.HashMap<K, B>
 export function filterWithIndex<K, A>(
-  f: (k: K, a: A) => boolean
+  f: (a: A, k: K) => boolean
 ): (self: HM.HashMap<K, A>) => HM.HashMap<K, A>
-export function filterWithIndex<K, A>(f: (k: K, a: A) => boolean) {
+export function filterWithIndex<K, A>(f: (a: A, k: K) => boolean) {
   return (self: HM.HashMap<K, A>): HM.HashMap<K, A> => {
     return pipe(
       empty<K, A>(),
       mutate((map) => {
         for (const [k, a] of self) {
-          if (f(k, a)) {
+          if (f(a, k)) {
             pipe(map, set(k, a))
           }
         }
@@ -520,18 +520,18 @@ export function compact<K, A>(self: HM.HashMap<K, Option.Option<A>>): HM.HashMap
 /** @internal */
 export function filterMap<A, B>(f: (value: A) => Option.Option<B>) {
   return <K>(self: HM.HashMap<K, A>): HM.HashMap<K, B> => {
-    return pipe(self, filterMapWithIndex((_, a) => f(a)))
+    return pipe(self, filterMapWithIndex(f))
   }
 }
 
 /** @internal */
-export function filterMapWithIndex<K, A, B>(f: (key: K, value: A) => Option.Option<B>) {
+export function filterMapWithIndex<A, K, B>(f: (value: A, key: K) => Option.Option<B>) {
   return (self: HM.HashMap<K, A>): HM.HashMap<K, B> => {
     return pipe(
       empty<K, B>(),
       mutate((map) => {
         for (const [k, a] of self) {
-          const option = f(k, a)
+          const option = f(a, k)
           if (Option.isSome(option)) {
             pipe(map, set(k, option.value))
           }

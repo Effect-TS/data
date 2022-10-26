@@ -80,7 +80,7 @@ export function diff<Key, Value, Patch>(
 ): HMP.HashMapPatch<Key, Value, Patch> {
   const [removed, patch] = HashMap.reduceWithIndex(
     [oldValue, empty<Key, Value, Patch>()] as const,
-    ([map, patch], key: Key, newValue: Value) => {
+    ([map, patch], newValue: Value, key: Key) => {
       const option = HashMap.get<Key, Value>(key)(map)
       switch (option._tag) {
         case "Some": {
@@ -101,7 +101,7 @@ export function diff<Key, Value, Patch>(
   )(newValue)
   return HashMap.reduceWithIndex(
     patch,
-    (patch, key: Key, _) => combine<Key, Value, Patch>(new Remove(key))(patch)
+    (patch, _, key: Key) => combine<Key, Value, Patch>(new Remove(key))(patch)
   )(removed)
 }
 

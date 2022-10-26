@@ -177,18 +177,18 @@ export const reduce = <V, B>(zero: B, f: (accumulator: B, value: V) => B) =>
  * @since 1.0.0
  * @category folding
  */
-export const reduceWithIndex = <K, V, B>(zero: B, f: (accumulator: B, key: K, value: V) => B) =>
-  (self: SortedMap<K, V>): B => RBT.reduceWithIndex(zero, f)(self.tree)
+export const reduceWithIndex = <B, A, K>(b: B, f: (b: B, value: A, key: K) => B) =>
+  (self: SortedMap<K, A>): B => RBT.reduceWithIndex(b, f)(self.tree)
 
 /**
  * @since 1.0.0
  * @category mapping
  */
-export const mapWithIndex = <K, A, B>(f: (k: K, a: A) => B) =>
+export const mapWithIndex = <A, K, B>(f: (a: A, k: K) => B) =>
   (self: SortedMap<K, A>): SortedMap<K, B> =>
     pipe(
       self,
-      reduceWithIndex(empty<K, B>(RBT.getOrder(self.tree)), (b, k, v) => set(k, f(k, v))(b))
+      reduceWithIndex(empty<K, B>(RBT.getOrder(self.tree)), (b, v, k) => set(k, f(v, k))(b))
     )
 
 /**
@@ -196,4 +196,4 @@ export const mapWithIndex = <K, A, B>(f: (k: K, a: A) => B) =>
  * @category mapping
  */
 export const map = <A, B>(f: (a: A) => B) =>
-  <K>(self: SortedMap<K, A>): SortedMap<K, B> => pipe(self, mapWithIndex((_, v) => f(v)))
+  <K>(self: SortedMap<K, A>): SortedMap<K, B> => pipe(self, mapWithIndex(f))

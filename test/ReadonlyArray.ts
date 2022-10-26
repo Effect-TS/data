@@ -240,7 +240,7 @@ describe.concurrent("ReadonlyArray", () => {
     })
 
     it("flatMapWithIndex", () => {
-      const f = ReadonlyArray.flatMapWithIndex((i, n: number) => [n + i])
+      const f = ReadonlyArray.flatMapWithIndex((n: number, i) => [n + i])
       deepStrictEqual(pipe([1, 2, 3], f), [1, 3, 5])
       strictEqual(pipe(ReadonlyArray.empty, f), ReadonlyArray.empty)
       const empty: ReadonlyArray<number> = []
@@ -313,7 +313,10 @@ describe.concurrent("ReadonlyArray", () => {
 
     it("filterWithIndex", () => {
       const f = (n: number) => n % 2 === 0
-      deepStrictEqual(pipe(["a", "b", "c"], ReadonlyArray.filterWithIndex(f)), ["a", "c"])
+      deepStrictEqual(pipe(["a", "b", "c"], ReadonlyArray.filterWithIndex((_, i) => f(i))), [
+        "a",
+        "c"
+      ])
     })
 
     it("filterMap", () => {
@@ -326,14 +329,14 @@ describe.concurrent("ReadonlyArray", () => {
       deepStrictEqual(
         pipe(
           ["a", "b"],
-          ReadonlyArray.foldMapWithIndex(String.Monoid)((i, a) => i + a)
+          ReadonlyArray.foldMapWithIndex(String.Monoid)((a, i) => i + a)
         ),
         "0a1b"
       )
     })
 
     it("filterMapWithIndex", () => {
-      const f = (i: number, n: number) => ((i + n) % 2 === 0 ? Option.none : Option.some(n))
+      const f = (n: number, i: number) => ((i + n) % 2 === 0 ? Option.none : Option.some(n))
       deepStrictEqual(pipe([1, 2, 4], ReadonlyArray.filterMapWithIndex(f)), [1, 2])
       deepStrictEqual(pipe([], ReadonlyArray.filterMapWithIndex(f)), [])
     })
@@ -362,13 +365,13 @@ describe.concurrent("ReadonlyArray", () => {
 
     it("partitionMapWithIndex", () => {
       deepStrictEqual(
-        pipe([], ReadonlyArray.partitionMapWithIndex((_, a) => a)),
+        pipe([], ReadonlyArray.partitionMapWithIndex((a) => a)),
         [[], []]
       )
       deepStrictEqual(
         pipe(
           [Either.right(1), Either.left("foo"), Either.right(2)],
-          ReadonlyArray.partitionMapWithIndex((i, a) => pipe(a, Either.filter((n) => n > i, "err")))
+          ReadonlyArray.partitionMapWithIndex((a, i) => pipe(a, Either.filter((n) => n > i, "err")))
         ),
         [["foo", "err"], [1]]
       )
@@ -399,7 +402,7 @@ describe.concurrent("ReadonlyArray", () => {
       deepStrictEqual(
         pipe(
           ["a", "b"],
-          ReadonlyArray.reduceWithIndex("", (i, b, a) => b + i + a)
+          ReadonlyArray.reduceWithIndex("", (b, a, i) => b + i + a)
         ),
         "0a1b"
       )
@@ -409,7 +412,7 @@ describe.concurrent("ReadonlyArray", () => {
       deepStrictEqual(
         pipe(
           ["a", "b"],
-          ReadonlyArray.reduceRightWithIndex("", (i, a, b) => b + i + a)
+          ReadonlyArray.reduceRightWithIndex("", (b, a, i) => b + i + a)
         ),
         "1b0a"
       )
