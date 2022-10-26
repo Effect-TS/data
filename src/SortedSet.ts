@@ -23,7 +23,6 @@ export type TypeId = typeof TypeId
  */
 export interface SortedSet<A> extends Iterable<A>, Eq.Equal {
   readonly _id: TypeId
-  readonly _A: (_: never) => A
   /** @internal */
   readonly keyTree: RBT.RedBlackTree<A, boolean>
 }
@@ -31,7 +30,6 @@ export interface SortedSet<A> extends Iterable<A>, Eq.Equal {
 /** @internal */
 class SortedSetImpl<A> implements Iterable<A>, Eq.Equal {
   readonly _id: TypeId = TypeId
-  readonly _A: (_: never) => A = (_) => _
 
   constructor(readonly keyTree: RBT.RedBlackTree<A, boolean>) {}
 

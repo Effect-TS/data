@@ -26,7 +26,6 @@ export const EmptyMutableQueue = Symbol.for("@fp-ts/data/mutable/MutableQueue/Em
  */
 export interface MutableQueue<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
-  readonly _A: (_: never) => A
 
   /** @internal */
   queue: MutableList.MutableList<A>
@@ -41,15 +40,10 @@ export declare namespace MutableQueue {
   export type Empty = typeof EmptyMutableQueue
 }
 
-function variance<A, B>(_: A): B {
-  return _ as unknown as B
-}
-
 /** @internal */
 class MutableQueueImpl<A> implements MutableQueue<A> {
   readonly _tag = "Bounded"
   readonly _id: TypeId = TypeId
-  readonly _A: (_: never) => A = variance
 
   queue: MutableList.MutableList<A> = MutableList.empty()
 

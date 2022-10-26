@@ -12,14 +12,8 @@ const RedBlackTreeSymbolKey = "@fp-ts/data/RedBlackTree"
 /** @internal */
 export const RedBlackTreeTypeId: RBT.TypeId = Symbol.for(RedBlackTreeSymbolKey) as RBT.TypeId
 
-function variance<A, B>(_: A): B {
-  return _ as unknown as B
-}
-
 export class RedBlackTreeImpl<K, V> implements RBT.RedBlackTree<K, V> {
   readonly _id: RBT.TypeId = RedBlackTreeTypeId
-  readonly _Key: (_: never) => K = variance
-  readonly _Value: (_: never) => V = variance
 
   constructor(
     readonly _ord: Order.Order<K>,

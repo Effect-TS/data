@@ -28,15 +28,9 @@ interface VisitResult<K, V, A> {
   cont: Cont<K, V, A>
 }
 
-function variance<A, B>(_: A): B {
-  return _ as unknown as B
-}
-
 /** @internal */
 export class HashMapImpl<K, V> implements HM.HashMap<K, V> {
   readonly _id: HM.TypeId = HashMapTypeId
-  readonly _Key: (_: never) => K = variance
-  readonly _Value: (_: never) => V = variance
   constructor(
     public _editable: boolean,
     public _edit: number,

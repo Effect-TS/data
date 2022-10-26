@@ -21,7 +21,6 @@ export type TypeId = typeof TypeId
  */
 export interface HashSet<A> extends Iterable<A>, Equal {
   readonly _id: TypeId
-  readonly _A: (_: never) => A
 }
 
 /**

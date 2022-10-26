@@ -22,7 +22,6 @@ export const QueueTypeId: Q.TypeId = Symbol.for("@fp-ts/data/Queue") as Q.TypeId
 
 class QueueImpl<A> implements Q.Queue<A>, Iterable<A>, DE.Equal {
   readonly _id: Q.TypeId = QueueTypeId
-  readonly _A: (_: never) => A = (_) => _
   constructor(public _in: L.List<A>, public _out: L.List<A>) {}
   [Symbol.iterator](): Iterator<A> {
     return pipe(this._out, II.concat(L.reverse(this._in)))[Symbol.iterator]()

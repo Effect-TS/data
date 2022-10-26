@@ -25,8 +25,6 @@ export type TypeId = typeof TypeId
  */
 export interface HashMap<Key, Value> extends Iterable<readonly [Key, Value]>, Equal {
   readonly _id: TypeId
-  readonly _Key: (_: never) => Key
-  readonly _Value: (_: never) => Value
 }
 
 /**

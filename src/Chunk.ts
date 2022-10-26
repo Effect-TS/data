@@ -27,7 +27,6 @@ export type TypeId = typeof TypeId
  */
 export interface Chunk<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
-  readonly _A: (_: never) => A
 
   readonly length: number
 
@@ -124,7 +123,6 @@ const BufferSize = 64
 /** @internal */
 class ChunkImpl<A> implements Chunk<A> {
   readonly _id: typeof TypeId = TypeId
-  readonly _A: (_: never) => A = (_) => _
 
   readonly length: number
   readonly depth: number
