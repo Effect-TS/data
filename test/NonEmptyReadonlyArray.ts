@@ -481,7 +481,7 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
     deepStrictEqual(
       pipe(
         ["a", "b"],
-        NonEmptyReadonlyArray.reduceWithIndex("", (i, b, a) => b + i + a)
+        NonEmptyReadonlyArray.reduceWithIndex("", (b, a, i) => b + i + a)
       ),
       "0a1b"
     )
@@ -491,7 +491,7 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
     deepStrictEqual(
       pipe(
         NonEmptyReadonlyArray.make("a", "b"),
-        NonEmptyReadonlyArray.foldMapWithIndex(String.Monoid)((i, a) => i + a)
+        NonEmptyReadonlyArray.foldMapWithIndex(String.Monoid)((a, i) => i + a)
       ),
       "0a1b"
     )
@@ -501,7 +501,7 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
     deepStrictEqual(
       pipe(
         ["a", "b"],
-        NonEmptyReadonlyArray.reduceRightWithIndex("", (i, a, b) => b + i + a)
+        NonEmptyReadonlyArray.reduceRightWithIndex("", (b, a, i) => b + i + a)
       ),
       "1b0a"
     )
@@ -554,7 +554,7 @@ describe.concurrent("NonEmptyReadonlyArray", () => {
   })
 
   it("foldMapWithIndex", () => {
-    const f = NonEmptyReadonlyArray.foldMapWithIndex(Number.SemigroupSum)((i: number, s: string) =>
+    const f = NonEmptyReadonlyArray.foldMapWithIndex(Number.SemigroupSum)((s: string, i: number) =>
       s.length + i
     )
     deepStrictEqual(f(["a"]), 1)

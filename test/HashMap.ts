@@ -113,7 +113,7 @@ describe.concurrent("HashMap", () => {
     const map = HashMap.make([key(1), value("a")], [key(2), value("bb")])
     const result = pipe(
       map,
-      HashMap.flatMapWithIndex(({ n }, { s }) => {
+      HashMap.flatMapWithIndex(({ s }, { n }) => {
         const newKey = key(s.length + n)
         const newValue = value(s)
         return pipe(HashMap.empty<Key, Value>(), HashMap.set(newKey, newValue))
@@ -140,7 +140,7 @@ describe.concurrent("HashMap", () => {
     const map = HashMap.make([key(0), value("a")], [key(1), value("bb")])
     const result = pipe(
       map,
-      HashMap.filterMapWithIndex(({ n }, v) => n > 0 ? Option.some(v) : Option.none)
+      HashMap.filterMapWithIndex((v, { n }) => n > 0 ? Option.some(v) : Option.none)
     )
 
     deepStrictEqual(HashMap.get(key(0))(result), Option.none)
@@ -165,7 +165,7 @@ describe.concurrent("HashMap", () => {
 
   it("filterWithIndex", () => {
     const map = HashMap.make([key(0), value("a")], [key(1), value("bb")])
-    const result = pipe(map, HashMap.filterWithIndex(({ n }, { s }) => n > 0 && s.length > 0))
+    const result = pipe(map, HashMap.filterWithIndex(({ s }, { n }) => n > 0 && s.length > 0))
 
     deepStrictEqual(HashMap.get(key(0))(result), Option.none)
     deepStrictEqual(HashMap.get(key(1))(result), Option.some(value("bb")))
@@ -189,7 +189,7 @@ describe.concurrent("HashMap", () => {
     const result: Array<readonly [number, string]> = []
     pipe(
       map,
-      HashMap.forEachWithIndex(({ n }, { s }) => {
+      HashMap.forEachWithIndex(({ s }, { n }) => {
         result.push([n, s])
       })
     )
@@ -233,7 +233,7 @@ describe.concurrent("HashMap", () => {
 
   it("mapWithIndex", () => {
     const map = HashMap.make([key(0), value("a")], [key(1), value("bb")])
-    const result = pipe(map, HashMap.mapWithIndex(({ n }, { s }) => n + s.length))
+    const result = pipe(map, HashMap.mapWithIndex(({ s }, { n }) => n + s.length))
 
     deepStrictEqual(HashMap.get(key(0))(result), Option.some(1))
     deepStrictEqual(HashMap.get(key(1))(result), Option.some(3))
@@ -283,7 +283,7 @@ describe.concurrent("HashMap", () => {
       map,
       HashMap.reduceWithIndex(
         "",
-        (acc, { n }, { s }) => acc.length > 0 ? `${acc},${n}:${s}` : `${n}:${s}`
+        (acc, { s }, { n }) => acc.length > 0 ? `${acc},${n}:${s}` : `${n}:${s}`
       )
     )
 

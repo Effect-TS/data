@@ -355,9 +355,9 @@ export const reduce: <Z, V>(
  * @since 1.0.0
  * @category folding
  */
-export const reduceWithIndex: <Z, K, V>(
-  zero: Z,
-  f: (accumulator: Z, key: K, value: V) => Z
+export const reduceWithIndex: <B, A, K>(
+  b: B,
+  f: (b: B, value: A, key: K) => B
 ) => (
-  self: RedBlackTree<K, V>
-) => Z = RBT.reduceWithIndex
+  self: RedBlackTree<K, A>
+) => B = RBT.reduceWithIndex
