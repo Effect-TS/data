@@ -8,7 +8,7 @@ import type { Either } from "@fp-ts/data/Either"
 import type * as Equal from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
 import * as LI from "@fp-ts/data/internal/List"
-import * as _sortWith from "@fp-ts/data/internal/List/sortWith"
+import * as _sort from "@fp-ts/data/internal/List/sort"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
@@ -284,4 +284,4 @@ export const unsafeLast: <A>(self: List<A>) => A = LI.unsafeLast
  * @since 1.0.0
  * @category sorting
  */
-export const sortWith: <A>(O: Order<A>) => (self: List<A>) => List<A> = _sortWith.sortWith
+export const sort: <A>(O: Order<A>) => (self: List<A>) => List<A> = _sort.sort
