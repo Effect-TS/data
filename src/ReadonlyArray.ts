@@ -168,13 +168,13 @@ export const concat = <B>(that: ReadonlyArray<B>) =>
  * Fold a `ReadonlyArray` from the left, keeping all intermediate results instead of only the final result.
  *
  * @exampleTodo
- * import { scanLeft } from '@fp-ts/core/typeclass/data/ReadonlyArray'
+ * import { scan } from '@fp-ts/core/typeclass/data/ReadonlyArray'
  *
- * assert.deepStrictEqual(scanLeft(10, (b, a: number) => b - a)([1, 2, 3]), [10, 9, 7, 4])
+ * assert.deepStrictEqual(scan(10, (b, a: number) => b - a)([1, 2, 3]), [10, 9, 7, 4])
  *
  * @since 1.0.0
  */
-export const scanLeft = <B, A>(b: B, f: (b: B, a: A) => B) =>
+export const scan = <B, A>(b: B, f: (b: B, a: A) => B) =>
   (as: ReadonlyArray<A>): NonEmptyReadonlyArray<B> => {
     const len = as.length
     const out = new Array(len + 1) as [B, ...Array<B>]
