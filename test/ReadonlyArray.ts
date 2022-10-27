@@ -557,15 +557,15 @@ describe.concurrent("ReadonlyArray", () => {
     assertSpanLeft(inputNone, RA.empty, inputNone)
   })
 
-  it("takeLeftWhile", () => {
+  it("takeWhile", () => {
     const f = (n: number) => n % 2 === 0
-    deepStrictEqual(RA.takeLeftWhile(f)([2, 4, 3, 6]), [2, 4])
+    deepStrictEqual(RA.takeWhile(f)([2, 4, 3, 6]), [2, 4])
     const empty: ReadonlyArray<number> = []
-    strictEqual(RA.takeLeftWhile(f)(empty), empty)
-    strictEqual(RA.takeLeftWhile(f)(RA.empty), RA.empty)
-    strictEqual(RA.takeLeftWhile(f)([1, 2, 4]), RA.empty)
+    strictEqual(RA.takeWhile(f)(empty), empty)
+    strictEqual(RA.takeWhile(f)(RA.empty), RA.empty)
+    strictEqual(RA.takeWhile(f)([1, 2, 4]), RA.empty)
     const input: ReadonlyArray<number> = [2, 4]
-    strictEqual(RA.takeLeftWhile(f)(input), input)
+    strictEqual(RA.takeWhile(f)(input), input)
   })
 
   it("dropLeft", () => {

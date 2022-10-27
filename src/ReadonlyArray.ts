@@ -399,16 +399,16 @@ export const takeRight = (n: number) =>
  *
  * @since 1.0.0
  */
-export function takeLeftWhile<A, B extends A>(
+export function takeWhile<A, B extends A>(
   refinement: Refinement<A, B>
 ): (as: ReadonlyArray<A>) => ReadonlyArray<B>
-export function takeLeftWhile<A>(
+export function takeWhile<A>(
   predicate: Predicate<A>
 ): <B extends A>(bs: ReadonlyArray<B>) => ReadonlyArray<B>
-export function takeLeftWhile<A>(
+export function takeWhile<A>(
   predicate: Predicate<A>
 ): (as: ReadonlyArray<A>) => ReadonlyArray<A>
-export function takeLeftWhile<A>(
+export function takeWhile<A>(
   predicate: Predicate<A>
 ): (as: ReadonlyArray<A>) => ReadonlyArray<A> {
   return (as: ReadonlyArray<A>) => {
