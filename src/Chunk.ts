@@ -357,14 +357,13 @@ export const unsafeGet = (index: number) =>
         return unsafeGet(index + self.backing.offset)(self.backing.chunk)
       }
       case "IAppend": {
-        if (index < self.backing.start.length) {
-          return unsafeGet(index)(self.backing.start)
-        }
-        const k = index - self.backing.start.length
-        if (k >= self.backing.buffer.length || k < 0) {
+        if (index < 0 || index >= self.length) {
           throw new Error(`Index out of bounds`)
+        } else if (index < self.backing.start.length) {
+          return unsafeGet(index)(self.backing.start)
+        } else {
+          return (self.backing.buffer as Array<A>)[index - self.backing.start.length]!
         }
-        return (self.backing.buffer as Array<A>)[k]!
       }
       case "IPrepend": {
         if (index < self.backing.bufferUsed) {
