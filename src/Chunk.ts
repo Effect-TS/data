@@ -2,6 +2,7 @@
  * @since 1.0.0
  */
 
+import type { TypeLambda } from "@fp-ts/core/HKT"
 import type { Order } from "@fp-ts/core/typeclass/Order"
 import type { Either } from "@fp-ts/data/Either"
 import * as Equal from "@fp-ts/data/Equal"
@@ -38,6 +39,14 @@ export interface Chunk<A> extends Iterable<A>, Equal.Equal {
   backing: Backing<A>
   /** @internal */
   depth: number
+}
+
+/**
+ * @since 1.0.0
+ * @category type lambdas
+ */
+export interface ChunkTypeLambda extends TypeLambda {
+  readonly type: Chunk<this["Target"]>
 }
 
 /** @internal */
@@ -184,11 +193,11 @@ class ChunkImpl<A> implements Chunk<A> {
   }
 
   [Equal.symbolEqual](that: unknown): boolean {
-    return isChunk(that) && Equal.equals(toArray(this), toArray(that))
+    return isChunk(that) && Equal.equals(toReadonlyArray(this), toReadonlyArray(that))
   }
 
   [Equal.symbolHash](): number {
-    return Equal.hash(toArray(this))
+    return Equal.hash(toReadonlyArray(this))
   }
 
   [Symbol.iterator](): Iterator<A> {
@@ -200,7 +209,7 @@ class ChunkImpl<A> implements Chunk<A> {
         return emptyArray[Symbol.iterator]()
       }
       default: {
-        return toArray(this)[Symbol.iterator]()
+        return toReadonlyArray(this)[Symbol.iterator]()
       }
     }
   }
@@ -288,7 +297,7 @@ export const fromIterable = <A>(self: Iterable<A>): Chunk<A> =>
  * @since 1.0.0
  * @category conversions
  */
-export const toArray = <A>(self: Chunk<A>): ReadonlyArray<A> => {
+export const toReadonlyArray = <A>(self: Chunk<A>): ReadonlyArray<A> => {
   switch (self.backing._tag) {
     case "IEmpty": {
       return emptyArray
@@ -594,7 +603,7 @@ export const dropRight = (n: number) =>
  */
 export const dropWhile = <A>(f: (a: A) => boolean) => {
   return (self: Chunk<A>): Chunk<A> => {
-    const arr = toArray(self)
+    const arr = toReadonlyArray(self)
     const len = arr.length
     let i = 0
     while (i < len && f(arr[i]!)) {
@@ -675,8 +684,8 @@ export const correspondsTo = <A, B>(that: Chunk<B>, f: (a: A, b: B) => boolean) 
     if (self.length !== that.length) {
       return false
     }
-    const selfArray = toArray(self)
-    const thatArray = toArray(that)
+    const selfArray = toReadonlyArray(self)
+    const thatArray = toReadonlyArray(that)
     return selfArray.every((v, i) => f(v, thatArray[i]))
   }
 
@@ -733,7 +742,8 @@ export const filterMapWhile = <A, B>(f: (a: A) => Option<B>) =>
  * @since 1.0.0
  * @category elements
  */
-export const elem = <A>(a: A) => (self: Chunk<A>): boolean => pipe(toArray(self), RA.elem(a))
+export const elem = <A>(a: A) =>
+  (self: Chunk<A>): boolean => pipe(toReadonlyArray(self), RA.elem(a))
 
 /**
  * Filter out optional values
@@ -770,7 +780,7 @@ export const dedupeAdjacent = <A>(self: Chunk<A>): Chunk<A> => {
  * @category elements
  */
 export const some = <A>(f: (a: A) => boolean) =>
-  (self: Chunk<A>) => toArray(self).findIndex((v) => f(v)) !== -1
+  (self: Chunk<A>) => toReadonlyArray(self).findIndex((v) => f(v)) !== -1
 
 /**
  * Check if a predicate holds true for every `Chunk` member.
@@ -779,7 +789,7 @@ export const some = <A>(f: (a: A) => boolean) =>
  * @category elements
  */
 export const every = <A>(f: (a: A) => boolean) =>
-  (self: Chunk<A>) => toArray(self).every((v) => f(v))
+  (self: Chunk<A>) => toReadonlyArray(self).every((v) => f(v))
 
 /**
  * Find the first element which satisfies a predicate (or a refinement) function.
@@ -790,7 +800,7 @@ export const every = <A>(f: (a: A) => boolean) =>
 export function findFirst<A, B extends A>(f: Refinement<A, B>): (self: Chunk<A>) => Option<B>
 export function findFirst<A>(f: Predicate<A>): (self: Chunk<A>) => Option<A>
 export function findFirst<A>(f: Predicate<A>) {
-  return (self: Chunk<A>): Option<A> => RA.findFirst(f)(toArray(self))
+  return (self: Chunk<A>): Option<A> => RA.findFirst(f)(toReadonlyArray(self))
 }
 
 /**
@@ -800,7 +810,7 @@ export function findFirst<A>(f: Predicate<A>) {
  * @category elements
  */
 export const findFirstIndex = <A>(f: Predicate<A>) =>
-  (self: Chunk<A>): Option<number> => RA.findIndex(f)(toArray(self))
+  (self: Chunk<A>): Option<number> => RA.findIndex(f)(toReadonlyArray(self))
 
 /**
  * Find the first index for which a predicate holds
@@ -809,7 +819,7 @@ export const findFirstIndex = <A>(f: Predicate<A>) =>
  * @category elements
  */
 export const findLastIndex = <A>(f: Predicate<A>) =>
-  (self: Chunk<A>): Option<number> => RA.findLastIndex(f)(toArray(self))
+  (self: Chunk<A>): Option<number> => RA.findLastIndex(f)(toReadonlyArray(self))
 
 /**
  * Find the last element which satisfies a predicate function
@@ -820,7 +830,7 @@ export const findLastIndex = <A>(f: Predicate<A>) =>
 export function findLast<A, B extends A>(f: Refinement<A, B>): (self: Chunk<A>) => Option<B>
 export function findLast<A>(f: Predicate<A>): (self: Chunk<A>) => Option<A>
 export function findLast<A>(f: Predicate<A>) {
-  return (self: Chunk<A>): Option<A> => RA.findLast(f)(toArray(self))
+  return (self: Chunk<A>): Option<A> => RA.findLast(f)(toReadonlyArray(self))
 }
 
 /**
@@ -855,7 +865,8 @@ export const flatten = <A>(self: Chunk<Chunk<A>>): Chunk<A> => pipe(self, flatMa
  * @since 1.0.0
  * @category elements
  */
-export const forEach = <A>(f: (a: A) => void) => (self: Chunk<A>): void => toArray(self).forEach(f)
+export const forEach = <A>(f: (a: A) => void) =>
+  (self: Chunk<A>): void => toReadonlyArray(self).forEach(f)
 
 /**
  * Groups elements in chunks of up to `n` elements.
@@ -868,7 +879,7 @@ export const grouped = (n: number) =>
     const gr: Array<Chunk<A>> = []
     let current: Array<A> = []
 
-    toArray(self).forEach((a) => {
+    toReadonlyArray(self).forEach((a) => {
       current.push(a)
       if (current.length >= n) {
         gr.push(unsafeFromArray(current))
@@ -902,8 +913,8 @@ export const head = <A>(self: Chunk<A>): Option<A> => get(0)(self)
 export const intersection = <A>(that: Chunk<A>) =>
   <B>(self: Chunk<B>): Chunk<A & B> =>
     pipe(
-      toArray(self),
-      RA.intersection(toArray(that)),
+      toReadonlyArray(self),
+      RA.intersection(toReadonlyArray(that)),
       unsafeFromArray
     )
 
@@ -930,7 +941,7 @@ export const isNonEmpty = <A>(self: Chunk<A>): boolean => self.length > 0
  * @category folding
  */
 export const reduce = <A, S>(s: S, f: (s: S, a: A) => S) =>
-  (self: Chunk<A>): S => pipe(toArray(self), RA.reduce(s, f))
+  (self: Chunk<A>): S => pipe(toReadonlyArray(self), RA.reduce(s, f))
 
 /**
  * Folds over the elements in this chunk from the left.
@@ -939,7 +950,7 @@ export const reduce = <A, S>(s: S, f: (s: S, a: A) => S) =>
  * @category folding
  */
 export const reduceWithIndex = <B, A>(b: B, f: (b: B, a: A, i: number) => B) =>
-  (self: Chunk<A>): B => pipe(toArray(self), RA.reduceWithIndex(b, f))
+  (self: Chunk<A>): B => pipe(toReadonlyArray(self), RA.reduceWithIndex(b, f))
 
 /**
  * Folds over the elements in this chunk from the right.
@@ -948,7 +959,7 @@ export const reduceWithIndex = <B, A>(b: B, f: (b: B, a: A, i: number) => B) =>
  * @category folding
  */
 export const reduceRight = <A, S>(s: S, f: (s: S, a: A) => S) =>
-  (self: Chunk<A>): S => pipe(toArray(self), RA.reduceRight(s, (s, a) => f(s, a)))
+  (self: Chunk<A>): S => pipe(toReadonlyArray(self), RA.reduceRight(s, (s, a) => f(s, a)))
 
 /**
  * Folds over the elements in this chunk from the right.
@@ -957,7 +968,7 @@ export const reduceRight = <A, S>(s: S, f: (s: S, a: A) => S) =>
  * @category folding
  */
 export const reduceRightWithIndex = <B, A>(b: B, f: (b: B, a: A, i: number) => B) =>
-  (self: Chunk<A>): B => pipe(toArray(self), RA.reduceRightWithIndex(b, f))
+  (self: Chunk<A>): B => pipe(toReadonlyArray(self), RA.reduceRightWithIndex(b, f))
 
 /**
  * Joins the elements together with "sep" in the middle.
@@ -1004,7 +1015,7 @@ export const makeBy = <A>(f: (i: number) => A) =>
  * @category mapping
  */
 export const map = <A, B>(f: (a: A) => B) =>
-  (self: Chunk<A>): Chunk<B> => unsafeFromArray(RA.map(f)(toArray(self)))
+  (self: Chunk<A>): Chunk<B> => unsafeFromArray(RA.map(f)(toReadonlyArray(self)))
 
 /**
  * Returns an effect whose success is mapped by the specified f function.
@@ -1013,7 +1024,7 @@ export const map = <A, B>(f: (a: A) => B) =>
  * @category mapping
  */
 export const mapWithIndex = <A, B>(f: (a: A, i: number) => B) =>
-  (self: Chunk<A>): Chunk<B> => unsafeFromArray(pipe(toArray(self), RA.mapWithIndex(f)))
+  (self: Chunk<A>): Chunk<B> => unsafeFromArray(pipe(toReadonlyArray(self), RA.mapWithIndex(f)))
 
 /**
  * Statefully maps over the chunk, producing new elements of type `B`.
@@ -1025,7 +1036,7 @@ export function mapAccum<A, B, S>(s: S, f: (s: S, a: A) => readonly [S, B]) {
   return (self: Chunk<A>): readonly [S, Chunk<B>] => {
     let s1 = s
     const res: Array<B> = []
-    for (const a of toArray(self)) {
+    for (const a of toReadonlyArray(self)) {
       const r = f(s1, a)
       s1 = r[0]
       res.push(r[1])
@@ -1050,7 +1061,7 @@ export const partitionWithIndex: {
 } = <A>(f: (a: A, i: number) => boolean) => {
   return (self: Chunk<A>): readonly [Chunk<A>, Chunk<A>] =>
     pipe(
-      toArray(self),
+      toReadonlyArray(self),
       RA.partitionWithIndex(f),
       ([l, r]) => [unsafeFromArray(l), unsafeFromArray(r)]
     )
@@ -1072,7 +1083,7 @@ export const partition: {
 } = <B extends A, A = B>(predicate: Predicate<A>) =>
   (fb: Chunk<B>): readonly [Chunk<B>, Chunk<B>] =>
     pipe(
-      toArray(fb),
+      toReadonlyArray(fb),
       RA.partition(predicate),
       ([l, r]) => [unsafeFromArray(l), unsafeFromArray(r)]
     )
@@ -1089,7 +1100,7 @@ export const partitionMap = <A, B, C>(
   (fa: Chunk<A>): readonly [Chunk<B>, Chunk<C>] =>
     pipe(
       fa,
-      toArray,
+      toReadonlyArray,
       RA.partitionMap(f),
       ([l, r]) => [unsafeFromArray(l), unsafeFromArray(r)]
     )
@@ -1103,7 +1114,7 @@ export const partitionMap = <A, B, C>(
 export const separate = <A, B>(fa: Chunk<Either<A, B>>): readonly [Chunk<A>, Chunk<B>] =>
   pipe(
     fa,
-    toArray,
+    toReadonlyArray,
     RA.separate,
     ([l, r]) => [unsafeFromArray(l), unsafeFromArray(r)]
   )
@@ -1128,7 +1139,8 @@ export const range = (min: number, max: number) => {
  * @since 1.0.0
  * @category elements
  */
-export const reverse = <A>(self: Chunk<A>): Chunk<A> => unsafeFromArray(RA.reverse(toArray(self)))
+export const reverse = <A>(self: Chunk<A>): Chunk<A> =>
+  unsafeFromArray(RA.reverse(toReadonlyArray(self)))
 
 /**
  * Creates a Chunk of a single element
@@ -1155,7 +1167,7 @@ export const size = <A>(self: Chunk<A>): number => self.length
 export const sort = <B>(O: Order<B>) =>
   <A extends B>(as: Chunk<A>): Chunk<A> =>
     pipe(
-      toArray(as),
+      toReadonlyArray(as),
       RA.sort(O),
       unsafeFromArray
     )
@@ -1187,7 +1199,7 @@ export const split = (n: number) =>
 
     let chunk: Array<A> = []
 
-    toArray(self).forEach((a) => {
+    toReadonlyArray(self).forEach((a) => {
       chunk.push(a)
       if (
         (i <= remainder && chunk.length > quotient) ||
@@ -1215,7 +1227,7 @@ export const split = (n: number) =>
 export const splitWhere = <A>(f: Predicate<A>) =>
   (self: Chunk<A>): readonly [Chunk<A>, Chunk<A>] => {
     let i = 0
-    for (const a of toArray(self)) {
+    for (const a of toReadonlyArray(self)) {
       if (f(a)) {
         break
       } else {
@@ -1252,7 +1264,7 @@ export const takeRight = (n: number) =>
 export const takeWhile = <A>(f: Predicate<A>) =>
   (self: Chunk<A>): Chunk<A> => {
     const res: Array<A> = []
-    for (const a of toArray(self)) {
+    for (const a of toReadonlyArray(self)) {
       if (f(a)) {
         res.push(a)
       } else {
@@ -1292,7 +1304,7 @@ export const unfold = <A, S>(s: S, f: (s: S) => Option<readonly [A, S]>): Chunk<
  */
 export function union<A>(that: Chunk<A>) {
   return <B>(self: Chunk<B>): Chunk<A | B> =>
-    unsafeFromArray(RA.union(toArray(that))(toArray(self)))
+    unsafeFromArray(RA.union(toReadonlyArray(that))(toReadonlyArray(self)))
 }
 
 /**
@@ -1301,7 +1313,8 @@ export function union<A>(that: Chunk<A>) {
  * @since 1.0.0
  * @category elements
  */
-export const dedupe = <A>(self: Chunk<A>): Chunk<A> => unsafeFromArray(RA.uniq(toArray(self)))
+export const dedupe = <A>(self: Chunk<A>): Chunk<A> =>
+  unsafeFromArray(RA.uniq(toReadonlyArray(self)))
 
 /**
  * Returns the first element of this chunk.
@@ -1331,7 +1344,7 @@ export const unzip = <A, B>(as: Chunk<readonly [A, B]>): readonly [Chunk<A>, Chu
   const fa: Array<A> = []
   const fb: Array<B> = []
 
-  toArray(as).forEach(([a, b]) => {
+  toReadonlyArray(as).forEach(([a, b]) => {
     fa.push(a)
     fb.push(b)
   })
@@ -1356,8 +1369,8 @@ export const zip = <B>(that: Chunk<B>) =>
  */
 export const zipWith = <A, B, C>(that: Chunk<B>, f: (a: A, b: B) => C) =>
   (self: Chunk<A>): Chunk<C> => {
-    const selfA = toArray(self)
-    const thatA = toArray(that)
+    const selfA = toReadonlyArray(self)
+    const thatA = toReadonlyArray(that)
     const len = Math.min(selfA.length, thatA.length)
     const res: Array<C> = new Array(len)
     for (let i = 0; i < len; i++) {
@@ -1408,8 +1421,8 @@ export const zipAllWith = <A, B, C, D, E>(
     if (length === 0) {
       return empty
     }
-    const leftarr = toArray(self)
-    const rightArr = toArray(that)
+    const leftarr = toReadonlyArray(self)
+    const rightArr = toReadonlyArray(that)
     let i = 0
     let j = 0
     let k = 0

@@ -122,13 +122,13 @@ export function patch<Value, Patch>(oldValue: C.Chunk<Value>, differ: Differ<Val
           break
         }
         case "Slice": {
-          const array = C.toArray(chunk)
+          const array = C.toReadonlyArray(chunk)
           chunk = C.unsafeFromArray(array.slice(head.from, head.until))
           patches = tail
           break
         }
         case "Update": {
-          const array = C.toArray(chunk) as Array<Value>
+          const array = C.toReadonlyArray(chunk) as Array<Value>
           array[head.index] = differ.patch(head.patch, array[head.index]!)
           chunk = C.unsafeFromArray(array)
           patches = tail
