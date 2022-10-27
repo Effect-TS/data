@@ -163,7 +163,7 @@ export const prependAll: <B>(prefix: List<B>) => <A>(self: List<A>) => List<A | 
  * @since 1.0.0
  * @category mutations
  */
-export const concat: <B>(prefix: List<B>) => <A>(self: List<A>) => List<A | B> = LI.concat
+export const concat: <B>(that: List<B>) => <A>(self: List<A>) => List<A | B> = LI.concat
 
 /**
  * @since 1.0.0

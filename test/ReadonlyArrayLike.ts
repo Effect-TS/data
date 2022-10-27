@@ -16,6 +16,9 @@ export interface ReadonlyArrayLike<F extends TypeLambda> extends TypeClass<F> {
   readonly prependAll: <R, O, E, B>(
     prefix: Kind<F, R, O, E, B>
   ) => <A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A | B>
+  readonly concat: <R, O, E, B>(
+    prefix: Kind<F, R, O, E, B>
+  ) => <A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A | B>
 }
 
 export const ReadonlyArray: ReadonlyArrayLike<RA.ReadonlyArrayTypeLambda> = {
@@ -25,7 +28,8 @@ export const ReadonlyArray: ReadonlyArrayLike<RA.ReadonlyArrayTypeLambda> = {
   reverse: RA.reverse,
   drop: RA.drop,
   prepend: RA.prepend,
-  prependAll: RA.prependAll
+  prependAll: RA.prependAll,
+  concat: RA.concat
 }
 
 export const List: ReadonlyArrayLike<L.ListTypeLambda> = {
@@ -35,7 +39,8 @@ export const List: ReadonlyArrayLike<L.ListTypeLambda> = {
   reverse: L.reverse,
   drop: L.drop,
   prepend: L.prepend,
-  prependAll: L.prependAll
+  prependAll: L.prependAll,
+  concat: L.concat
 }
 
 export const Chunk: ReadonlyArrayLike<C.ChunkTypeLambda> = {
@@ -45,7 +50,8 @@ export const Chunk: ReadonlyArrayLike<C.ChunkTypeLambda> = {
   reverse: C.reverse,
   drop: C.drop,
   prepend: C.prepend,
-  prependAll: hole // TODO
+  prependAll: hole, // TODO
+  concat: C.concat
 }
 
 describe.concurrent("ReadonlyArrayLike", () => {
@@ -129,5 +135,25 @@ describe.concurrent("ReadonlyArrayLike", () => {
     assert(List, "List")
     // TODO
     // assert(Chunk, "Chunk")
+  })
+
+  it("concat", () => {
+    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+      expect(
+        pipe(F.fromIterable([1, 2]), F.concat(F.fromIterable(["a", "b"])), F.toIterable),
+        message
+      ).toEqual([1, 2, "a", "b"])
+      expect(
+        pipe(F.fromIterable([1, 2]), F.concat(F.fromIterable([])), F.toIterable),
+        message
+      ).toEqual([1, 2])
+      expect(
+        pipe(F.fromIterable([]), F.concat(F.fromIterable(["a", "b"])), F.toIterable),
+        message
+      ).toEqual(["a", "b"])
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    assert(List, "List")
+    assert(Chunk, "Chunk")
   })
 })

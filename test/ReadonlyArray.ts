@@ -423,8 +423,8 @@ describe.concurrent("ReadonlyArray", () => {
     const M = RA.getMonoid<number>()
     deepStrictEqual(M.combine([3, 4])([1, 2]), [1, 2, 3, 4])
     const x = [1, 2]
-    strictEqual(M.combine(M.empty)(x), x)
-    strictEqual(M.combine(x)(M.empty), x)
+    deepStrictEqual(M.combine(M.empty)(x), x)
+    deepStrictEqual(M.combine(x)(M.empty), x)
   })
 
   it("getEq", () => {
