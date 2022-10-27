@@ -393,9 +393,9 @@ export const takeRight = (n: number) =>
  * Calculate the longest initial subarray for which all element satisfy the specified predicate, creating a new `ReadonlyArray`.
  *
  * @exampleTodo
- * import { takeLeftWhile } from '@fp-ts/core/typeclass/data/ReadonlyArray'
+ * import { takeWhile } from '@fp-ts/core/typeclass/data/ReadonlyArray'
  *
- * assert.deepStrictEqual(takeLeftWhile((n: number) => n % 2 === 0)([2, 4, 3, 6]), [2, 4])
+ * assert.deepStrictEqual(takeWhile((n: number) => n % 2 === 0)([2, 4, 3, 6]), [2, 4])
  *
  * @since 1.0.0
  */
@@ -506,22 +506,22 @@ export const dropRight = (n: number) =>
  * Remove the longest initial subarray for which all element satisfy the specified predicate, creating a new `ReadonlyArray`.
  *
  * @exampleTodo
- * import { dropLeftWhile } from '@fp-ts/core/typeclass/data/ReadonlyArray'
+ * import { dropWhile } from '@fp-ts/core/typeclass/data/ReadonlyArray'
  *
- * assert.deepStrictEqual(dropLeftWhile((n: number) => n % 2 === 1)([1, 3, 2, 4, 5]), [2, 4, 5])
+ * assert.deepStrictEqual(dropWhile((n: number) => n % 2 === 1)([1, 3, 2, 4, 5]), [2, 4, 5])
  *
  * @since 1.0.0
  */
-export function dropLeftWhile<A, B extends A>(
+export function dropWhile<A, B extends A>(
   refinement: Refinement<A, B>
 ): (as: ReadonlyArray<A>) => ReadonlyArray<B>
-export function dropLeftWhile<A>(
+export function dropWhile<A>(
   predicate: Predicate<A>
 ): <B extends A>(bs: ReadonlyArray<B>) => ReadonlyArray<B>
-export function dropLeftWhile<A>(
+export function dropWhile<A>(
   predicate: Predicate<A>
 ): (as: ReadonlyArray<A>) => ReadonlyArray<A>
-export function dropLeftWhile<A>(
+export function dropWhile<A>(
   predicate: Predicate<A>
 ): (as: ReadonlyArray<A>) => ReadonlyArray<A> {
   return (as) => {
