@@ -10,8 +10,10 @@ import * as U from "@fp-ts/data/test/util"
 describe.concurrent("List", () => {
   it("take", () => {
     expect(pipe(L.make(1, 2, 3, 4), L.take(2))).toEqual(L.make(1, 2))
-    // out of bounds tests
-    expect(pipe(L.make(1, 2, 3, 4), L.take(-2))).toEqual(L.make(1, 2, 3, 4))
+    // take(0)
+    expect(pipe(L.make(1, 2, 3, 4), L.take(0))).toEqual(L.nil())
+    // out of bounds
+    expect(pipe(L.make(1, 2, 3, 4), L.take(-10))).toEqual(L.nil())
     expect(pipe(L.make(1, 2, 3, 4), L.take(10))).toEqual(L.make(1, 2, 3, 4))
   })
 
