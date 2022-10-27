@@ -284,7 +284,7 @@ export const lookup = (i: number) =>
  * @category constructors
  * @since 1.0.0
  */
-export const prepend: <B>(head: B) => <A>(tail: ReadonlyArray<A>) => NonEmptyReadonlyArray<A | B> =
+export const prepend: <B>(elem: B) => <A>(self: ReadonlyArray<A>) => NonEmptyReadonlyArray<A | B> =
   nonEmptyReadonlyArray.prepend
 
 /**

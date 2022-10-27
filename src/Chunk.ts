@@ -455,8 +455,8 @@ export const append = <A1>(a: A1) =>
  * @since 1.0.0
  * @category mutations
  */
-export const prepend = <A1>(a: A1) =>
-  <A>(self: Chunk<A>): Chunk<A | A1> => {
+export const prepend = <B>(elem: B) =>
+  <A>(self: Chunk<A>): Chunk<A | B> => {
     switch (self.backing._tag) {
       case "IPrepend": {
         if (
@@ -465,7 +465,7 @@ export const prepend = <A1>(a: A1) =>
             self.backing.chain
           )
         ) {
-          self.backing.buffer[BufferSize - self.backing.bufferUsed - 1] = a
+          self.backing.buffer[BufferSize - self.backing.bufferUsed - 1] = elem
           return new ChunkImpl({
             _tag: "IPrepend",
             end: self.backing.end,
@@ -475,9 +475,9 @@ export const prepend = <A1>(a: A1) =>
           })
         } else {
           const buffer = new Array(BufferSize)
-          buffer[0] = a
+          buffer[0] = elem
           const chunk = take(self.backing.bufferUsed)(
-            unsafeFromArray(self.backing.buffer as Array<A1>)
+            unsafeFromArray(self.backing.buffer as Array<B>)
           )
           return new ChunkImpl({
             _tag: "IPrepend",
@@ -490,7 +490,7 @@ export const prepend = <A1>(a: A1) =>
       }
       default: {
         const buffer = new Array(BufferSize)
-        buffer[BufferSize - 1] = a
+        buffer[BufferSize - 1] = elem
         return new ChunkImpl({
           _tag: "IPrepend",
           buffer,
