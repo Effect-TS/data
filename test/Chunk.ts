@@ -107,7 +107,6 @@ describe.concurrent("Chunk", () => {
       const index = 1
 
       it("should return the value", () => {
-        console.log("chunk", chunk)
         expect(pipe(chunk, C.unsafeGet(index))).toEqual(2)
       })
     })
