@@ -218,9 +218,6 @@ class ChunkImpl<A> implements Chunk<A> {
 /** @internal */
 const copyToArray = <A>(self: Chunk<A>, array: Array<any>, n: number) => {
   switch (self.backing._tag) {
-    case "IEmpty": {
-      break
-    }
     case "IArray": {
       copy(self.backing.array, 0, array, n, self.length)
       break
@@ -366,14 +363,13 @@ export const unsafeGet = (index: number) =>
         }
       }
       case "IPrepend": {
-        if (index < self.backing.bufferUsed) {
-          const k = BufferSize - self.backing.bufferUsed + index
-          if (k >= self.backing.buffer.length || k < 0) {
-            throw new Error(`Index out of bounds`)
-          }
-          return (self.backing.buffer as Array<A>)[k]!
+        if (index < 0 || index >= self.length) {
+          throw new Error(`Index out of bounds`)
+        } else if (index < self.backing.bufferUsed) {
+          return (self.backing.buffer as Array<A>)[BufferSize - self.backing.bufferUsed + index]!
+        } else {
+          return unsafeGet(index - self.backing.bufferUsed)(self.backing.end)
         }
-        return unsafeGet(index - self.backing.bufferUsed)(self.backing.end)
       }
       case "ISingleton": {
         if (index !== 0) {
@@ -428,7 +424,7 @@ export const append = <A1>(a: A1) =>
           return new ChunkImpl({
             _tag: "IAppend",
             start: concat(chunk)(self.backing.start),
-            buffer: self.backing.buffer,
+            buffer,
             bufferUsed: 1,
             chain: MRef.make(1)
           })
@@ -474,14 +470,14 @@ export const prepend = <B>(elem: B) =>
           })
         } else {
           const buffer = new Array(BufferSize)
-          buffer[0] = elem
+          buffer[BufferSize - 1] = elem
           const chunk = take(self.backing.bufferUsed)(
             unsafeFromArray(self.backing.buffer as Array<B>)
           )
           return new ChunkImpl({
             _tag: "IPrepend",
-            end: concat(chunk)(self.backing.end),
-            buffer: self.backing.buffer,
+            end: concat(self.backing.end)(chunk),
+            buffer,
             bufferUsed: 1,
             chain: MRef.make(1)
           })
@@ -515,9 +511,6 @@ export const take = (n: number) =>
       return self
     } else {
       switch (self.backing._tag) {
-        case "IEmpty": {
-          return empty
-        }
         case "ISlice": {
           return new ChunkImpl({
             _tag: "ISlice",
@@ -525,9 +518,6 @@ export const take = (n: number) =>
             length: n,
             offset: self.backing.offset
           })
-        }
-        case "ISingleton": {
-          return self
         }
         default: {
           return new ChunkImpl({
@@ -556,9 +546,6 @@ export const drop = (n: number) =>
     } else {
       const len = self.length
       switch (self.backing._tag) {
-        case "IEmpty": {
-          return empty
-        }
         case "ISlice": {
           return new ChunkImpl({
             _tag: "ISlice",
@@ -566,12 +553,6 @@ export const drop = (n: number) =>
             length: self.backing.length - n,
             offset: self.backing.offset + n
           })
-        }
-        case "ISingleton": {
-          if (n > 0) {
-            return empty
-          }
-          return self
         }
         default: {
           return new ChunkImpl({

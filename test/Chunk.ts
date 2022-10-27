@@ -2,8 +2,31 @@ import * as C from "@fp-ts/data/Chunk"
 import { equals } from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
 import * as O from "@fp-ts/data/Option"
+import * as fc from "fast-check"
 
 describe.concurrent("Chunk", () => {
+  describe("toReadonlyArray", () => {
+    describe("Given an empty Chunk", () => {
+      const chunk = C.empty
+      it("should give back an empty readonly array", () => {
+        expect(C.toReadonlyArray(chunk)).toEqual([])
+      })
+    })
+  })
+  describe("is", () => {
+    describe("Given a chunk", () => {
+      const chunk = C.make(0, 1)
+      it("should be true", () => {
+        expect(C.isChunk(chunk)).toBe(true)
+      })
+    })
+    describe("Given an object", () => {
+      const object = {}
+      it("should be false", () => {
+        expect(C.isChunk(object)).toBe(false)
+      })
+    })
+  })
   describe("fromIterable", () => {
     describe("Given an iterable", () => {
       const myIterable = {
@@ -66,12 +89,29 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given a prepended Chunk and an index out of bounds", () => {
-      const chunk = pipe(C.empty, C.prepend(1))
-      const index = 4
+    describe("Given an appended Chunk and an index in bounds", () => {
+      it("should return the value", () => {
+        const chunk = pipe(C.make(0, 1, 2), C.append(3))
+        expect(C.unsafeGet(1)(chunk)).toEqual(1)
+      })
+    })
 
+    describe("Given a prepended Chunk and an index out of bounds", () => {
       it("should throw", () => {
-        expect(() => pipe(chunk, C.unsafeGet(index))).toThrow()
+        fc.assert(fc.property(fc.array(fc.anything()), (array) => {
+          let chunk: C.Chunk<unknown> = C.empty
+          array.forEach((e) => {
+            chunk = pipe(chunk, C.prepend(e))
+          })
+          expect(() => pipe(chunk, C.unsafeGet(array.length))).toThrow()
+        }))
+      })
+    })
+
+    describe("Given a prepended Chunk and an index in bounds", () => {
+      it("should return the value", () => {
+        const chunk = pipe(C.make(0, 1, 2), C.prepend(3))
+        expect(C.unsafeGet(1)(chunk)).toEqual(0)
       })
     })
 
@@ -94,11 +134,11 @@ describe.concurrent("Chunk", () => {
     })
 
     describe("Given a concat Chunk and an index out of bounds", () => {
-      const chunk = pipe(C.unsafeFromArray([1]), C.concat(C.unsafeFromArray([2, 3])))
-      const index = 4
-
       it("should throw", () => {
-        expect(() => pipe(chunk, C.unsafeGet(index))).toThrow()
+        fc.assert(fc.property(fc.array(fc.anything()), fc.array(fc.anything()), (arr1, arr2) => {
+          const chunk: C.Chunk<unknown> = C.concat(C.fromIterable(arr2))(C.unsafeFromArray(arr1))
+          expect(() => pipe(chunk, C.unsafeGet(arr1.length + arr2.length))).toThrow()
+        }))
       })
     })
 
@@ -139,47 +179,55 @@ describe.concurrent("Chunk", () => {
     })
 
     describe("Given a concat Chunk and an index in bounds", () => {
-      const chunk = pipe(C.unsafeFromArray([1]), C.concat(C.unsafeFromArray([2, 3])))
-      const index = 1
-
       it("should return the value", () => {
-        expect(pipe(chunk, C.unsafeGet(index))).toEqual(2)
+        fc.assert(fc.property(fc.array(fc.anything()), fc.array(fc.anything()), (a, b) => {
+          const c = [...a, ...b]
+          const d = C.concat(C.unsafeFromArray(b))(C.unsafeFromArray(a))
+          for (let i = 0; i < c.length; i++) {
+            expect(C.unsafeGet(i)(d)).toEqual(c[i])
+          }
+        }))
       })
     })
   })
 
   it("append", () => {
-    pipe(
-      C.empty,
-      C.append(0),
-      C.append(1),
-      C.append(2),
-      equals(C.unsafeFromArray([0, 1, 2])),
-      assert.isTrue
+    fc.assert(
+      fc.property(
+        fc.array(fc.integer()),
+        fc.array(fc.integer(), { minLength: 0, maxLength: 120, size: "xlarge" }),
+        (a, b) => {
+          let chunk = C.unsafeFromArray(a)
+          b.forEach((e) => {
+            chunk = C.append(e)(chunk)
+          })
+          expect(C.toReadonlyArray(chunk)).toEqual([...a, ...b])
+        }
+      )
     )
   })
 
   it("prepend", () => {
-    pipe(
-      C.empty,
-      C.prepend(0),
-      C.prepend(1),
-      C.prepend(2),
-      equals(C.unsafeFromArray([2, 1, 0])),
-      assert.isTrue
+    fc.assert(
+      fc.property(
+        fc.array(fc.integer()),
+        fc.array(fc.integer(), { minLength: 0, maxLength: 120, size: "xlarge" }),
+        (a, b) => {
+          let chunk = C.unsafeFromArray(a)
+          for (let i = b.length - 1; i >= 0; i--) {
+            chunk = C.prepend(b[i])(chunk)
+          }
+          expect(C.toReadonlyArray(chunk)).toEqual([...b, ...a])
+        }
+      )
     )
   })
 
   describe("take", () => {
     describe("Given a Chunk with more elements than the amount taken", () => {
-      const chunk = C.unsafeFromArray([1, 2, 3])
-      const amount = 2
-
       it("should return the subset", () => {
-        expect(pipe(chunk, C.take(amount))).toEqual(C.unsafeFromArray([
-          1,
-          2
-        ]))
+        expect(pipe(C.unsafeFromArray([1, 2, 3]), C.take(2)))
+          .toEqual(C.unsafeFromArray([1, 2]))
       })
     })
 
@@ -218,6 +266,17 @@ describe.concurrent("Chunk", () => {
           1
         ]))
       })
+    })
+  })
+
+  describe("drop", () => {
+    it("should return self on 0", () => {
+      const self = C.make(0, 1)
+      expect(C.drop(0)(self)).toStrictEqual(self)
+    })
+    it("should drop twice", () => {
+      const self = C.make(0, 1, 2, 3)
+      expect(C.toReadonlyArray(C.drop(1)(C.drop(1)(self)))).toEqual([2, 3])
     })
   })
 
