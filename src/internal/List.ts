@@ -223,7 +223,7 @@ export function drop(n: number) {
 export function take(n: number) {
   return <A>(self: L.List<A>): L.List<A> => {
     if (n <= 0) {
-      return self
+      return nil()
     }
 
     if (n >= length(self)) {

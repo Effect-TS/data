@@ -373,17 +373,13 @@ export const init = <A>(as: ReadonlyArray<A>): Option<ReadonlyArray<A>> =>
  * import { pipe } from '@fp-ts/core/typeclass/data/Function'
  *
  * const input: ReadonlyArray<number> = [1, 2, 3]
- * assert.deepStrictEqual(pipe(input, RA.takeLeft(2)), [1, 2])
- *
- * // out of bounds
- * assert.strictEqual(pipe(input, RA.takeLeft(4)), input)
- * assert.strictEqual(pipe(input, RA.takeLeft(-1)), input)
+ * assert.deepStrictEqual(pipe(input, RA.take(2)), [1, 2])
  *
  * @since 1.0.0
  */
-export const takeLeft = (n: number) =>
+export const take = (n: number) =>
   <A>(as: ReadonlyArray<A>): ReadonlyArray<A> =>
-    isOutOfBound(n, as) ? as : n === 0 ? empty : as.slice(0, n)
+    n <= 0 ? empty : n >= as.length ? as : as.slice(0, n)
 
 /**
  * Keep only a max number of elements from the end of an `ReadonlyArray`, creating a new `ReadonlyArray`.
