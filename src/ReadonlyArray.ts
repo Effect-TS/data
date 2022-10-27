@@ -1049,20 +1049,10 @@ export const productAll = <A>(
 }
 
 /**
- * Prepend an element to every member of a `ReadonlyArray`
- *
- * @exampleTodo
- * import { prependAll } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * assert.deepStrictEqual(pipe([1, 2, 3, 4], prependAll(9)), [9, 1, 9, 2, 9, 3, 9, 4])
- *
  * @since 1.0.0
  */
-export const prependAll = <A>(middle: A): ((as: ReadonlyArray<A>) => ReadonlyArray<A>) => {
-  const f = nonEmptyReadonlyArray.prependAll(middle)
-  return (as) => (isNonEmpty(as) ? f(as) : as)
-}
+export const prependAll = <B>(prefix: ReadonlyArray<B>) =>
+  <A>(self: ReadonlyArray<A>): ReadonlyArray<A | B> => (prefix as ReadonlyArray<A | B>).concat(self)
 
 /**
  * Places an element in between members of a `ReadonlyArray`
