@@ -212,8 +212,8 @@ export const every: <A>(p: Predicate<A>) => (self: List<A>) => boolean = LI.all
  * @category elements
  */
 export const findFirst: {
-  <A, B extends A>(p: Refinement<A, B>): (self: List<A>) => Option<B>
-  <A>(p: Predicate<A>): (self: List<A>) => Option<A>
+  <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => Option<B>
+  <A>(predicate: Predicate<A>): (self: List<A>) => Option<A>
 } = LI.find
 
 /**
