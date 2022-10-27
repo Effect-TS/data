@@ -797,10 +797,12 @@ export const every = <A>(f: (a: A) => boolean) =>
  * @since 1.0.0
  * @category elements
  */
-export function findFirst<A, B extends A>(f: Refinement<A, B>): (self: Chunk<A>) => Option<B>
-export function findFirst<A>(f: Predicate<A>): (self: Chunk<A>) => Option<A>
-export function findFirst<A>(f: Predicate<A>) {
-  return (self: Chunk<A>): Option<A> => RA.findFirst(f)(toReadonlyArray(self))
+export function findFirst<A, B extends A>(
+  refinement: Refinement<A, B>
+): (self: Chunk<A>) => Option<B>
+export function findFirst<A>(predicate: Predicate<A>): (self: Chunk<A>) => Option<A>
+export function findFirst<A>(predicate: Predicate<A>) {
+  return (self: Chunk<A>): Option<A> => RA.findFirst(predicate)(toReadonlyArray(self))
 }
 
 /**

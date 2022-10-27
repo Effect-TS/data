@@ -1005,13 +1005,6 @@ export const product = <B>(
 /**
  * @since 1.0.0
  */
-export const cross = <B>(
-  fb: ReadonlyArray<B>
-): (<A>(fa: ReadonlyArray<A>) => ReadonlyArray<readonly [A, B]>) => product(fb)
-
-/**
- * @since 1.0.0
- */
 export const productMany = <A>(collection: Iterable<ReadonlyArray<A>>) =>
   (self: ReadonlyArray<A>): ReadonlyArray<readonly [A, ...Array<A>]> => {
     if (isEmpty(self)) {
