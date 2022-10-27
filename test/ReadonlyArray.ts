@@ -570,23 +570,23 @@ describe.concurrent("ReadonlyArray", () => {
 
   it("dropLeft", () => {
     // _.empty
-    strictEqual(RA.dropLeft(0)(RA.empty), RA.empty)
+    strictEqual(RA.drop(0)(RA.empty), RA.empty)
     // empty
     const empty: ReadonlyArray<number> = []
-    strictEqual(RA.dropLeft(0)(empty), empty)
+    strictEqual(RA.drop(0)(empty), empty)
     const full: ReadonlyArray<number> = [1, 2]
     // non empty
-    strictEqual(RA.dropLeft(0)(full), full)
-    deepStrictEqual(RA.dropLeft(1)(full), [2])
+    strictEqual(RA.drop(0)(full), full)
+    deepStrictEqual(RA.drop(1)(full), [2])
     // full
-    strictEqual(RA.dropLeft(2)(full), RA.empty)
+    strictEqual(RA.drop(2)(full), RA.empty)
     // out of bound
-    strictEqual(RA.dropLeft(1)(RA.empty), RA.empty)
-    strictEqual(RA.dropLeft(1)(empty), empty)
-    strictEqual(RA.dropLeft(3)(full), RA.empty)
-    strictEqual(RA.dropLeft(-1)(RA.empty), RA.empty)
-    strictEqual(RA.dropLeft(-1)(empty), empty)
-    strictEqual(RA.dropLeft(-1)(full), full)
+    strictEqual(RA.drop(1)(RA.empty), RA.empty)
+    strictEqual(RA.drop(1)(empty), empty)
+    strictEqual(RA.drop(3)(full), RA.empty)
+    strictEqual(RA.drop(-1)(RA.empty), RA.empty)
+    strictEqual(RA.drop(-1)(empty), empty)
+    strictEqual(RA.drop(-1)(full), full)
   })
 
   it("dropRight", () => {

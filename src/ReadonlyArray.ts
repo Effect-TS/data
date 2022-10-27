@@ -486,13 +486,13 @@ export function spanLeft<A>(
  * import { pipe } from '@fp-ts/core/typeclass/data/Function'
  *
  * const input: ReadonlyArray<number> = [1, 2, 3]
- * assert.deepStrictEqual(pipe(input, RA.dropLeft(2)), [3])
- * assert.strictEqual(pipe(input, RA.dropLeft(0)), input)
- * assert.strictEqual(pipe(input, RA.dropLeft(-1)), input)
+ * assert.deepStrictEqual(pipe(input, RA.drop(2)), [3])
+ * assert.strictEqual(pipe(input, RA.drop(0)), input)
+ * assert.strictEqual(pipe(input, RA.drop(-1)), input)
  *
  * @since 1.0.0
  */
-export const dropLeft = (n: number) =>
+export const drop = (n: number) =>
   <A>(as: ReadonlyArray<A>): ReadonlyArray<A> =>
     n <= 0 || isEmpty(as) ? as : n >= as.length ? empty : as.slice(n, as.length)
 
