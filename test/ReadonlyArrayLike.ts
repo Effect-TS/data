@@ -10,6 +10,9 @@ export interface ReadonlyArrayLike<F extends TypeLambda> extends TypeClass<F> {
   readonly take: (n: number) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A>
   readonly reverse: <R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A>
   readonly drop: (n: number) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A>
+  readonly prepend: <B>(
+    b: B
+  ) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A | B>
 }
 
 export const ReadonlyArray: ReadonlyArrayLike<RA.ReadonlyArrayTypeLambda> = {
@@ -17,7 +20,8 @@ export const ReadonlyArray: ReadonlyArrayLike<RA.ReadonlyArrayTypeLambda> = {
   toIterable: identity,
   take: RA.take,
   reverse: RA.reverse,
-  drop: RA.drop
+  drop: RA.drop,
+  prepend: RA.prepend
 }
 
 export const List: ReadonlyArrayLike<L.ListTypeLambda> = {
@@ -25,7 +29,8 @@ export const List: ReadonlyArrayLike<L.ListTypeLambda> = {
   toIterable: L.toReadonlyArray,
   take: L.take,
   reverse: L.reverse,
-  drop: L.drop
+  drop: L.drop,
+  prepend: L.prepend
 }
 
 export const Chunk: ReadonlyArrayLike<C.ChunkTypeLambda> = {
@@ -33,7 +38,8 @@ export const Chunk: ReadonlyArrayLike<C.ChunkTypeLambda> = {
   toIterable: C.toReadonlyArray,
   take: C.take,
   reverse: C.reverse,
-  drop: C.drop
+  drop: C.drop,
+  prepend: C.prepend
 }
 
 describe.concurrent("ReadonlyArrayLike", () => {
@@ -45,6 +51,7 @@ describe.concurrent("ReadonlyArrayLike", () => {
     }
     assert(ReadonlyArray, "ReadonlyArray")
     assert(List, "List")
+    assert(Chunk, "Chunk")
   })
 
   it("take", () => {
@@ -59,6 +66,7 @@ describe.concurrent("ReadonlyArrayLike", () => {
     }
     assert(ReadonlyArray, "ReadonlyArray")
     assert(List, "List")
+    assert(Chunk, "Chunk")
   })
 
   it("reverse", () => {
@@ -68,6 +76,7 @@ describe.concurrent("ReadonlyArrayLike", () => {
     }
     assert(ReadonlyArray, "ReadonlyArray")
     assert(List, "List")
+    assert(Chunk, "Chunk")
   })
 
   it("drop", () => {
@@ -82,5 +91,16 @@ describe.concurrent("ReadonlyArrayLike", () => {
     }
     assert(ReadonlyArray, "ReadonlyArray")
     assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  it("prepend", () => {
+    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+      expect(pipe(F.fromIterable([1, 2, 3, 4]), F.prepend("a"), F.toIterable), message)
+        .toEqual(["a", 1, 2, 3, 4])
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    assert(List, "List")
+    assert(Chunk, "Chunk")
   })
 })
