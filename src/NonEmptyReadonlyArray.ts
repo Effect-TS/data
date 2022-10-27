@@ -42,7 +42,7 @@ import type { Option } from "@fp-ts/data/Option"
  * @category models
  * @since 1.0.0
  */
-export type NonEmptyReadonlyArray<A> = readonly [A, ...Array<A>]
+export type NonEmptyReadonlyArray<A> = readonly [A, ...ReadonlyArray<A>]
 
 // -------------------------------------------------------------------------------------
 // internal

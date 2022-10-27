@@ -1141,14 +1141,12 @@ describe.concurrent("ReadonlyArray", () => {
 
   it("makeBy", () => {
     deepStrictEqual(RA.makeBy(double)(5), [0, 2, 4, 6, 8])
-    strictEqual(RA.makeBy(double)(0), RA.empty)
-    strictEqual(RA.makeBy(double)(-1), RA.empty)
     deepStrictEqual(RA.makeBy(double)(2.2), [0, 2])
   })
 
   it("replicate", () => {
-    strictEqual(RA.replicate("a")(0), RA.empty)
-    strictEqual(RA.replicate("a")(-1), RA.empty)
+    deepStrictEqual(RA.replicate("a")(0), ["a"])
+    deepStrictEqual(RA.replicate("a")(-1), ["a"])
     deepStrictEqual(RA.replicate("a")(3), ["a", "a", "a"])
     deepStrictEqual(RA.replicate("a")(2.2), ["a", "a"])
   })
