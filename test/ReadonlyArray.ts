@@ -949,11 +949,11 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(len([1, 2, 3]), 3)
   })
 
-  it("scanLeft", () => {
+  it("scan", () => {
     const f = (b: number, a: number) => b - a
-    deepStrictEqual(RA.scanLeft(10, f)([1, 2, 3]), [10, 9, 7, 4])
-    deepStrictEqual(RA.scanLeft(10, f)([0]), [10, 10])
-    deepStrictEqual(RA.scanLeft(10, f)([]), [10])
+    deepStrictEqual(RA.scan(10, f)([1, 2, 3]), [10, 9, 7, 4])
+    deepStrictEqual(RA.scan(10, f)([0]), [10, 10])
+    deepStrictEqual(RA.scan(10, f)([]), [10])
   })
 
   it("scanRight", () => {
