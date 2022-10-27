@@ -611,7 +611,7 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("dropLeftWhile", () => {
-    const f = RA.dropLeftWhile((n: number) => n > 0)
+    const f = RA.dropWhile((n: number) => n > 0)
     strictEqual(f(RA.empty), RA.empty)
     const empty: ReadonlyArray<number> = []
     strictEqual(f(empty), empty)
