@@ -536,8 +536,8 @@ describe.concurrent("ReadonlyArray", () => {
     strictEqual(RA.takeRight(-1)(full), full)
   })
 
-  it("spanLeft", () => {
-    const f = RA.spanLeft((n: number) => n % 2 === 1)
+  it("span", () => {
+    const f = RA.span((n: number) => n % 2 === 1)
     const assertSpanLeft = (
       input: ReadonlyArray<number>,
       expectedInit: ReadonlyArray<number>,
