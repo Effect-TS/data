@@ -874,12 +874,7 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("prependAll", () => {
-    const empty: ReadonlyArray<number> = []
-    strictEqual(RA.prependAll(0)(empty), empty)
-    strictEqual(RA.prependAll(0)(RA.empty), RA.empty)
-    deepStrictEqual(RA.prependAll(0)([1, 2, 3]), [0, 1, 0, 2, 0, 3])
-    deepStrictEqual(RA.prependAll(0)([1]), [0, 1])
-    deepStrictEqual(RA.prependAll(0)([1, 2, 3, 4]), [0, 1, 0, 2, 0, 3, 0, 4])
+    deepStrictEqual(RA.prependAll([1, 2])([3, 4]), [1, 2, 3, 4])
   })
 
   it("intersperse", () => {

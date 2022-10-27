@@ -1,6 +1,6 @@
 import type { Kind, TypeClass, TypeLambda } from "@fp-ts/core/HKT"
 import * as C from "@fp-ts/data/Chunk"
-import { identity, pipe } from "@fp-ts/data/Function"
+import { hole, identity, pipe } from "@fp-ts/data/Function"
 import * as L from "@fp-ts/data/List"
 import * as RA from "@fp-ts/data/ReadonlyArray"
 
@@ -13,6 +13,9 @@ export interface ReadonlyArrayLike<F extends TypeLambda> extends TypeClass<F> {
   readonly prepend: <B>(
     b: B
   ) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A | B>
+  readonly prependAll: <R, O, E, B>(
+    prefix: Kind<F, R, O, E, B>
+  ) => <A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A | B>
 }
 
 export const ReadonlyArray: ReadonlyArrayLike<RA.ReadonlyArrayTypeLambda> = {
@@ -21,7 +24,8 @@ export const ReadonlyArray: ReadonlyArrayLike<RA.ReadonlyArrayTypeLambda> = {
   take: RA.take,
   reverse: RA.reverse,
   drop: RA.drop,
-  prepend: RA.prepend
+  prepend: RA.prepend,
+  prependAll: RA.prependAll
 }
 
 export const List: ReadonlyArrayLike<L.ListTypeLambda> = {
@@ -30,7 +34,8 @@ export const List: ReadonlyArrayLike<L.ListTypeLambda> = {
   take: L.take,
   reverse: L.reverse,
   drop: L.drop,
-  prepend: L.prepend
+  prepend: L.prepend,
+  prependAll: L.prependAll
 }
 
 export const Chunk: ReadonlyArrayLike<C.ChunkTypeLambda> = {
@@ -39,7 +44,8 @@ export const Chunk: ReadonlyArrayLike<C.ChunkTypeLambda> = {
   take: C.take,
   reverse: C.reverse,
   drop: C.drop,
-  prepend: C.prepend
+  prepend: C.prepend,
+  prependAll: hole // TODO
 }
 
 describe.concurrent("ReadonlyArrayLike", () => {
@@ -102,5 +108,26 @@ describe.concurrent("ReadonlyArrayLike", () => {
     assert(ReadonlyArray, "ReadonlyArray")
     assert(List, "List")
     assert(Chunk, "Chunk")
+  })
+
+  it("prependAll", () => {
+    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+      expect(
+        pipe(F.fromIterable([1, 2]), F.prependAll(F.fromIterable(["a", "b"])), F.toIterable),
+        message
+      ).toEqual(["a", "b", 1, 2])
+      expect(
+        pipe(F.fromIterable([1, 2]), F.prependAll(F.fromIterable([])), F.toIterable),
+        message
+      ).toEqual([1, 2])
+      expect(
+        pipe(F.fromIterable([]), F.prependAll(F.fromIterable(["a", "b"])), F.toIterable),
+        message
+      ).toEqual(["a", "b"])
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    assert(List, "List")
+    // TODO
+    // assert(Chunk, "Chunk")
   })
 })
