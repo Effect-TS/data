@@ -175,8 +175,7 @@ export const matchRight = <B, A, C = B>(
  * @since 1.0.0
  */
 export const concat = <B>(that: ReadonlyArray<B>) =>
-  <A>(self: ReadonlyArray<A>): ReadonlyArray<A | B> =>
-    isEmpty(self) ? that : isEmpty(that) ? self : (self as ReadonlyArray<A | B>).concat(that)
+  <A>(self: ReadonlyArray<A>): ReadonlyArray<A | B> => (self as ReadonlyArray<A | B>).concat(that)
 
 /**
  * Fold a `ReadonlyArray` from the left, keeping all intermediate results instead of only the final result.
