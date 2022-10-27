@@ -32,7 +32,6 @@ import type { LazyArg } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
 import * as either from "@fp-ts/data/internal/Either"
 import * as nonEmptyReadonlyArray from "@fp-ts/data/NonEmptyReadonlyArray"
-import type { NonEmptyReadonlyArray } from "@fp-ts/data/NonEmptyReadonlyArray"
 import * as number from "@fp-ts/data/Number"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
@@ -60,7 +59,7 @@ export const fromIterable: <A>(collection: Iterable<A>) => ReadonlyArray<A> = in
 /**
  * Return a `ReadonlyArray` of length `n` with element `i` initialized with `f(i)`.
  *
- * **Note**. `n` is normalized to a non negative integer.
+ * **Note**. `n` is normalized to an integer >= 1.
  *
  * @exampleTodo
  * import { makeBy } from '@fp-ts/core/typeclass/data/ReadonlyArray'
@@ -73,10 +72,17 @@ export const fromIterable: <A>(collection: Iterable<A>) => ReadonlyArray<A> = in
  * @since 1.0.0
  */
 export const makeBy = <A>(f: (i: number) => A) =>
-  (n: number): ReadonlyArray<A> => n <= 0 ? empty : nonEmptyReadonlyArray.makeBy(f)(n)
+  (n: number): readonly [A, ...ReadonlyArray<A>] => {
+    const j = Math.max(1, Math.floor(n))
+    const out: internal.NonEmptyArray<A> = [f(0)]
+    for (let i = 1; i < j; i++) {
+      out.push(f(i))
+    }
+    return out
+  }
 
 /**
- * Create a `ReadonlyArray` containing a range of integers, including both endpoints.
+ * Create a non empty `ReadonlyArray` containing a range of integers, including both endpoints.
  *
  * @exampleTodo
  * import { range } from '@fp-ts/data/ReadonlyArray'
@@ -86,12 +92,13 @@ export const makeBy = <A>(f: (i: number) => A) =>
  * @category constructors
  * @since 1.0.0
  */
-export const range = nonEmptyReadonlyArray.range
+export const range = (start: number, end: number): readonly [number, ...ReadonlyArray<number>] =>
+  start <= end ? makeBy((i) => start + i)(end - start + 1) : [start]
 
 /**
  * Create a `ReadonlyArray` containing a value repeated the specified number of times.
  *
- * **Note**. `n` is normalized to a non negative integer.
+ * **Note**. `n` is normalized to an integer >= 1.
  *
  * @exampleTodo
  * import { replicate } from '@fp-ts/core/typeclass/data/ReadonlyArray'
@@ -102,7 +109,8 @@ export const range = nonEmptyReadonlyArray.range
  * @category constructors
  * @since 1.0.0
  */
-export const replicate = <A>(a: A): ((n: number) => ReadonlyArray<A>) => makeBy(() => a)
+export const replicate = <A>(a: A): ((n: number) => readonly [A, ...ReadonlyArray<A>]) =>
+  makeBy(() => a)
 
 /**
  * @category conversions
@@ -175,7 +183,7 @@ export const concat = <B>(that: ReadonlyArray<B>) =>
  * @since 1.0.0
  */
 export const scan = <B, A>(b: B, f: (b: B, a: A) => B) =>
-  (as: ReadonlyArray<A>): NonEmptyReadonlyArray<B> => {
+  (as: ReadonlyArray<A>): readonly [B, ...ReadonlyArray<B>] => {
     const len = as.length
     const out = new Array(len + 1) as [B, ...Array<B>]
     out[0] = b
@@ -196,7 +204,7 @@ export const scan = <B, A>(b: B, f: (b: B, a: A) => B) =>
  * @since 1.0.0
  */
 export const scanRight = <B, A>(b: B, f: (a: A, b: B) => B) =>
-  (as: ReadonlyArray<A>): NonEmptyReadonlyArray<B> => {
+  (as: ReadonlyArray<A>): readonly [B, ...ReadonlyArray<B>] => {
     const len = as.length
     const out = new Array(len + 1) as [B, ...Array<B>]
     out[len] = b
@@ -224,7 +232,7 @@ export const isEmpty = <A>(as: ReadonlyArray<A>): as is readonly [] => as.length
  * @category refinements
  * @since 1.0.0
  */
-export const isNonEmpty: <A>(as: ReadonlyArray<A>) => as is NonEmptyReadonlyArray<A> =
+export const isNonEmpty: <A>(as: ReadonlyArray<A>) => as is readonly [A, ...ReadonlyArray<A>] =
   internal.isNonEmpty
 
 /**
@@ -270,7 +278,9 @@ export const lookup = (i: number) =>
  * @category constructors
  * @since 1.0.0
  */
-export const prepend: <B>(elem: B) => <A>(self: ReadonlyArray<A>) => NonEmptyReadonlyArray<A | B> =
+export const prepend: <B>(
+  elem: B
+) => <A>(self: ReadonlyArray<A>) => readonly [A | B, ...ReadonlyArray<A | B>] =
   nonEmptyReadonlyArray.prepend
 
 /**
@@ -285,7 +295,9 @@ export const prepend: <B>(elem: B) => <A>(self: ReadonlyArray<A>) => NonEmptyRea
  * @category constructors
  * @since 1.0.0
  */
-export const append: <B>(end: B) => <A>(init: ReadonlyArray<A>) => NonEmptyReadonlyArray<A | B> =
+export const append: <B>(
+  end: B
+) => <A>(init: ReadonlyArray<A>) => readonly [A | B, ...ReadonlyArray<A | B>] =
   nonEmptyReadonlyArray.append
 
 /**
@@ -715,7 +727,7 @@ export const findLastIndex = <A>(predicate: Predicate<A>) =>
  * @since 1.0.0
  */
 export const insertAt = <A>(i: number, a: A) =>
-  (as: ReadonlyArray<A>): Option<NonEmptyReadonlyArray<A>> => {
+  (as: ReadonlyArray<A>): Option<readonly [A, ...ReadonlyArray<A>]> => {
     if (i < 0 || i > as.length) {
       return internal.none
     }
@@ -1161,7 +1173,7 @@ export const sortBy = <B>(
  * @since 1.0.0
  */
 export const chop = <A, B>(
-  f: (as: NonEmptyReadonlyArray<A>) => readonly [B, ReadonlyArray<A>]
+  f: (as: readonly [A, ...ReadonlyArray<A>]) => readonly [B, ReadonlyArray<A>]
 ): ((as: ReadonlyArray<A>) => ReadonlyArray<B>) => {
   const g = nonEmptyReadonlyArray.chop(f)
   return (as) => (isNonEmpty(as) ? g(as) : empty)
@@ -1205,7 +1217,7 @@ export const splitAt = (n: number) =>
  */
 export const chunksOf = (
   n: number
-): (<A>(as: ReadonlyArray<A>) => ReadonlyArray<NonEmptyReadonlyArray<A>>) => {
+): (<A>(as: ReadonlyArray<A>) => ReadonlyArray<readonly [A, ...ReadonlyArray<A>]>) => {
   const f = nonEmptyReadonlyArray.chunksOf(n)
   return (as) => (isNonEmpty(as) ? f(as) : empty)
 }
@@ -2241,7 +2253,7 @@ export function every<A>(predicate: Predicate<A>): Predicate<ReadonlyArray<A>> {
  * @since 1.0.0
  */
 export const some = <A>(predicate: Predicate<A>) =>
-  (as: ReadonlyArray<A>): as is NonEmptyReadonlyArray<A> => as.some(predicate)
+  (as: ReadonlyArray<A>): as is readonly [A, ...ReadonlyArray<A>] => as.some(predicate)
 
 /**
  * Alias of [`some`](#some)
