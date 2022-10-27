@@ -122,32 +122,19 @@ export const fromEither: <A>(fa: Either<unknown, A>) => ReadonlyArray<A> = (
   e
 ) => (either.isLeft(e) ? empty : [e.right])
 
-// -------------------------------------------------------------------------------------
-// pattern matching
-// -------------------------------------------------------------------------------------
-
-/**
- * @category pattern matching
- * @since 1.0.0
- */
-export const match = <B, A, C = B>(
-  onEmpty: LazyArg<B>,
-  onNonEmpty: (as: NonEmptyReadonlyArray<A>) => C
-) => (as: ReadonlyArray<A>): B | C => isNonEmpty(as) ? onNonEmpty(as) : onEmpty()
-
 /**
  * Break a `ReadonlyArray` into its first element and remaining elements.
  *
  * @exampleTodo
- * import { matchLeft } from '@fp-ts/core/typeclass/data/ReadonlyArray'
+ * import { match } from '@fp-ts/core/typeclass/data/ReadonlyArray'
  *
- * const len: <A>(as: ReadonlyArray<A>) => number = matchLeft(() => 0, (_, tail) => 1 + len(tail))
+ * const len: <A>(as: ReadonlyArray<A>) => number = match(() => 0, (_, tail) => 1 + len(tail))
  * assert.strictEqual(len([1, 2, 3]), 3)
  *
  * @category pattern matching
  * @since 1.0.0
  */
-export const matchLeft = <B, A, C = B>(
+export const match = <B, A, C = B>(
   onEmpty: LazyArg<B>,
   onNonEmpty: (head: A, tail: ReadonlyArray<A>) => C
 ) =>
@@ -2275,10 +2262,18 @@ export const exists = some
  *
  * @since 1.0.0
  */
-export const intercalate = <A>(M: Monoid<A>): ((middle: A) => (as: ReadonlyArray<A>) => A) => {
-  const intercalateM = nonEmptyReadonlyArray.intercalate(M)
-  return (middle) => match(() => M.empty, intercalateM(middle))
-}
+export const intercalate = <A>(M: Monoid<A>) =>
+  (middle: A) =>
+    (as: ReadonlyArray<A>): A => {
+      let out = M.empty
+      if (isNonEmpty(as)) {
+        out = as[0]
+        for (const a of as.slice(1)) {
+          out = M.combineMany([middle, a])(out)
+        }
+      }
+      return out
+    }
 
 // -------------------------------------------------------------------------------------
 // do notation
