@@ -424,7 +424,7 @@ export function takeWhile<A>(
   }
 }
 
-const spanLeftIndex = <A>(as: ReadonlyArray<A>, predicate: Predicate<A>): number => {
+const spanIndex = <A>(as: ReadonlyArray<A>, predicate: Predicate<A>): number => {
   const l = as.length
   let i = 0
   for (; i < l; i++) {
@@ -441,25 +441,25 @@ const spanLeftIndex = <A>(as: ReadonlyArray<A>, predicate: Predicate<A>): number
  * 2. the remaining elements
  *
  * @exampleTodo
- * import { spanLeft } from '@fp-ts/core/typeclass/data/ReadonlyArray'
+ * import { span } from '@fp-ts/core/typeclass/data/ReadonlyArray'
  *
- * assert.deepStrictEqual(spanLeft((n: number) => n % 2 === 1)([1, 3, 2, 4, 5]), [[1, 3], [2, 4, 5]])
+ * assert.deepStrictEqual(span((n: number) => n % 2 === 1)([1, 3, 2, 4, 5]), [[1, 3], [2, 4, 5]])
  *
  * @since 1.0.0
  */
-export function spanLeft<A, B extends A>(
+export function span<A, B extends A>(
   refinement: Refinement<A, B>
 ): (as: ReadonlyArray<A>) => readonly [init: ReadonlyArray<B>, rest: ReadonlyArray<A>]
-export function spanLeft<A>(
+export function span<A>(
   predicate: Predicate<A>
 ): <B extends A>(bs: ReadonlyArray<B>) => readonly [init: ReadonlyArray<B>, rest: ReadonlyArray<B>]
-export function spanLeft<A>(
+export function span<A>(
   predicate: Predicate<A>
 ): (as: ReadonlyArray<A>) => readonly [init: ReadonlyArray<A>, rest: ReadonlyArray<A>]
-export function spanLeft<A>(
+export function span<A>(
   predicate: Predicate<A>
 ): (as: ReadonlyArray<A>) => readonly [init: ReadonlyArray<A>, rest: ReadonlyArray<A>] {
-  return (as) => splitAt(spanLeftIndex(as, predicate))(as)
+  return (as) => splitAt(spanIndex(as, predicate))(as)
 }
 
 /**
@@ -525,7 +525,7 @@ export function dropLeftWhile<A>(
   predicate: Predicate<A>
 ): (as: ReadonlyArray<A>) => ReadonlyArray<A> {
   return (as) => {
-    const i = spanLeftIndex(as, predicate)
+    const i = spanIndex(as, predicate)
     return i === 0 ? as : i === as.length ? empty : as.slice(i)
   }
 }
