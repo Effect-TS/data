@@ -933,8 +933,8 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(RA.reverse([1, 2, 3]), [3, 2, 1])
   })
 
-  it("matchLeft", () => {
-    const len: <A>(as: ReadonlyArray<A>) => number = RA.matchLeft(
+  it("match", () => {
+    const len: <A>(as: ReadonlyArray<A>) => number = RA.match(
       () => 0,
       (_, tail) => 1 + len(tail)
     )
@@ -1291,15 +1291,6 @@ describe.concurrent("ReadonlyArray", () => {
   it("fromResult", () => {
     deepStrictEqual(RA.fromEither(Either.right(1)), [1])
     strictEqual(RA.fromEither(Either.left("a")), RA.empty)
-  })
-
-  it("match", () => {
-    const f = RA.match(
-      () => "empty",
-      (as) => `nonEmpty ${as.length}`
-    )
-    deepStrictEqual(pipe(RA.empty, f), "empty")
-    deepStrictEqual(pipe([1, 2, 3], f), "nonEmpty 3")
   })
 
   test("zipMany", () => {
