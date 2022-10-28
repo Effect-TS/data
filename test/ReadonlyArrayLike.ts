@@ -53,7 +53,7 @@ export const ReadonlyArray: ReadonlyArrayLike<RA.ReadonlyArrayTypeLambda> = {
   drop: RA.drop,
   prepend: RA.prepend,
   prependAll: RA.prependAll,
-  concat: RA.concat,
+  concat: RA.appendAll,
   splitAt: RA.splitAt,
   head: RA.head,
   tail: RA.tail,
