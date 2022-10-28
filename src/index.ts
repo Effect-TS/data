@@ -27,7 +27,6 @@ import * as mutableList from "@fp-ts/data/mutable/MutableList"
 import * as mutableListBuilder from "@fp-ts/data/mutable/MutableListBuilder"
 import * as mutableQueue from "@fp-ts/data/mutable/MutableQueue"
 import * as mutableRef from "@fp-ts/data/mutable/MutableRef"
-import * as nonEmptyReadonlyArray from "@fp-ts/data/NonEmptyReadonlyArray"
 import * as number from "@fp-ts/data/Number"
 import * as option from "@fp-ts/data/Option"
 import * as ordering from "@fp-ts/data/Ordering"
@@ -145,10 +144,6 @@ export {
    * @since 1.0.0
    */
   mutableRef,
-  /**
-   * @since 1.0.0
-   */
-  nonEmptyReadonlyArray,
   /**
    * @since 1.0.0
    */

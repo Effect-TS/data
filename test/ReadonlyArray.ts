@@ -167,291 +167,312 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(RA.initNonEmpty([1]), [])
   })
 
-  describe.concurrent("pipeables", () => {
-    it("traverse", () => {
-      const traverse = RA.traverse(Option.Applicative)((
-        n: number
-      ): Option.Option<number> => (n % 2 === 0 ? Option.none : Option.some(n)))
-      deepStrictEqual(traverse([1, 2]), Option.none)
-      deepStrictEqual(traverse([1, 3]), Option.some([1, 3]))
-    })
+  it("traverse", () => {
+    const traverse = RA.traverse(Option.Applicative)((
+      n: number
+    ): Option.Option<number> => (n % 2 === 0 ? Option.none : Option.some(n)))
+    deepStrictEqual(traverse([1, 2]), Option.none)
+    deepStrictEqual(traverse([1, 3]), Option.some([1, 3]))
+  })
 
-    it("sequence", () => {
-      const sequence = RA.sequence(Option.Applicative)
-      deepStrictEqual(sequence([Option.some(1), Option.some(3)]), Option.some([1, 3]))
-      deepStrictEqual(sequence([Option.some(1), Option.none]), Option.none)
-    })
+  it("sequence", () => {
+    const sequence = RA.sequence(Option.Applicative)
+    deepStrictEqual(sequence([Option.some(1), Option.some(3)]), Option.some([1, 3]))
+    deepStrictEqual(sequence([Option.some(1), Option.none]), Option.none)
+  })
 
-    it("traverseWithIndex", () => {
-      deepStrictEqual(
-        pipe(
-          ["a", "bb"],
-          RA.traverseWithIndex(Option.Applicative)((
-            s,
-            i
-          ) => (s.length >= 1 ? Option.some(s + i) : Option.none))
-        ),
-        Option.some(["a0", "bb1"])
-      )
-      deepStrictEqual(
-        pipe(
-          ["a", "bb"],
-          RA.traverseWithIndex(Option.Applicative)((
-            s,
-            i
-          ) => (s.length > 1 ? Option.some(s + i) : Option.none))
-        ),
-        Option.none
-      )
-    })
+  it("traverseWithIndex", () => {
+    deepStrictEqual(
+      pipe(
+        ["a", "bb"],
+        RA.traverseWithIndex(Option.Applicative)((
+          s,
+          i
+        ) => (s.length >= 1 ? Option.some(s + i) : Option.none))
+      ),
+      Option.some(["a0", "bb1"])
+    )
+    deepStrictEqual(
+      pipe(
+        ["a", "bb"],
+        RA.traverseWithIndex(Option.Applicative)((
+          s,
+          i
+        ) => (s.length > 1 ? Option.some(s + i) : Option.none))
+      ),
+      Option.none
+    )
+  })
 
-    it("get", () => {
-      deepStrictEqual(pipe([1, 2, 3], RA.get(0)), Option.some(1))
-      deepStrictEqual(pipe([1, 2, 3], RA.get(3)), Option.none)
-    })
+  it("get", () => {
+    deepStrictEqual(pipe([1, 2, 3], RA.get(0)), Option.some(1))
+    deepStrictEqual(pipe([1, 2, 3], RA.get(3)), Option.none)
+  })
 
-    it("elem", () => {
-      deepStrictEqual(RA.elem(2)([1, 2, 3]), true)
-      deepStrictEqual(RA.elem(0)([1, 2, 3]), false)
-      deepStrictEqual(pipe([1, 2, 3], RA.elem(2)), true)
-      deepStrictEqual(pipe([1, 2, 3], RA.elem(0)), false)
-    })
+  it("elem", () => {
+    deepStrictEqual(RA.elem(2)([1, 2, 3]), true)
+    deepStrictEqual(RA.elem(0)([1, 2, 3]), false)
+    deepStrictEqual(pipe([1, 2, 3], RA.elem(2)), true)
+    deepStrictEqual(pipe([1, 2, 3], RA.elem(0)), false)
+  })
 
-    it("unfold", () => {
-      const as = RA.unfold(5, (n) => (n > 0 ? Option.some([n, n - 1]) : Option.none))
-      deepStrictEqual(as, [5, 4, 3, 2, 1])
-    })
+  it("unfold", () => {
+    const as = RA.unfold(5, (n) => (n > 0 ? Option.some([n, n - 1]) : Option.none))
+    deepStrictEqual(as, [5, 4, 3, 2, 1])
+  })
 
-    // TODO
-    // it("wither", async () => {
-    //   const wither = ReadonlyArray.wither(T.ApplicativePar)((n: number) =>
-    //     T.of(n > 2 ? Option.some(n + 1) : Option.none)
-    //   )
-    //   deepStrictEqual(await pipe([], wither)(), [])
-    //   deepStrictEqual(await pipe([1, 3], wither)(), [4])
-    // })
+  it("map", () => {
+    deepStrictEqual(
+      pipe(
+        [1, 2, 3],
+        RA.map((n) => n * 2)
+      ),
+      [2, 4, 6]
+    )
+  })
 
-    // TODO
-    // it("wilt", async () => {
-    //   const wilt = ReadonlyArray.wilt(T.ApplicativePar)((n: number) =>
-    //     T.of(n > 2 ? Result.succeed(n + 1) : Result.fail(n - 1))
-    //   )
-    //   deepStrictEqual(await pipe([], wilt)(), separated([], []))
-    //   deepStrictEqual(await pipe([1, 3], wilt)(), separated([0], [4]))
-    // })
+  it("mapWithIndex", () => {
+    deepStrictEqual(
+      pipe(
+        ["a", "b"],
+        RA.mapWithIndex((s, i) => s + i)
+      ),
+      ["a0", "b1"]
+    )
+  })
 
-    it("map", () => {
-      deepStrictEqual(
-        pipe(
-          [1, 2, 3],
-          RA.map((n) => n * 2)
-        ),
-        [2, 4, 6]
-      )
-    })
-
-    it("mapWithIndex", () => {
-      deepStrictEqual(
-        pipe(
-          ["a", "b"],
-          RA.mapWithIndex((s, i) => s + i)
-        ),
-        ["a0", "b1"]
-      )
-    })
-
-    it("ap", () => {
-      deepStrictEqual(
-        pipe([(x: number) => x * 2, (x: number) => x * 3], RA.ap([1, 2, 3])),
-        [
-          2,
-          4,
-          6,
-          3,
-          6,
-          9
-        ]
-      )
-    })
-
-    it("flatMap", () => {
-      deepStrictEqual(
-        pipe(
-          [1, 2, 3],
-          RA.flatMap((n) => [n, n + 1])
-        ),
-        [1, 2, 2, 3, 3, 4]
-      )
-    })
-
-    it("flatMapWithIndex", () => {
-      const f = RA.flatMapWithIndex((n: number, i) => [n + i])
-      deepStrictEqual(pipe([1, 2, 3], f), [1, 3, 5])
-      deepStrictEqual(pipe(RA.empty, f), RA.empty)
-      const empty: ReadonlyArray<number> = []
-      deepStrictEqual(pipe(empty, f), RA.empty)
-    })
-
-    it("extend", () => {
-      const sum = (as: ReadonlyArray<number>) => Number.MonoidSum.combineAll(as)
-      deepStrictEqual(pipe([1, 2, 3, 4], RA.extend(sum)), [10, 9, 7, 4])
-      deepStrictEqual(pipe([1, 2, 3, 4], RA.extend(identity)), [
-        [1, 2, 3, 4],
-        [2, 3, 4],
-        [3, 4],
-        [
-          4
-        ]
-      ])
-    })
-
-    it("foldMap", () => {
-      deepStrictEqual(pipe(["a", "b", "c"], RA.foldMap(String.Monoid)(identity)), "abc")
-      deepStrictEqual(pipe([], RA.foldMap(String.Monoid)(identity)), "")
-    })
-
-    it("compact", () => {
-      deepStrictEqual(RA.compact([]), [])
-      deepStrictEqual(RA.compact([Option.some(1), Option.some(2), Option.some(3)]), [
-        1,
+  it("ap", () => {
+    deepStrictEqual(
+      pipe([(x: number) => x * 2, (x: number) => x * 3], RA.ap([1, 2, 3])),
+      [
         2,
-        3
-      ])
-      deepStrictEqual(RA.compact([Option.some(1), Option.none, Option.some(3)]), [
-        1,
-        3
-      ])
-    })
+        4,
+        6,
+        3,
+        6,
+        9
+      ]
+    )
+  })
 
-    it("separate", () => {
-      deepStrictEqual(RA.separate([]), [[], []])
-      deepStrictEqual(
-        RA.separate([E.left(123), E.right("123")]),
-        [[123], ["123"]]
-      )
-    })
+  it("flatMap", () => {
+    deepStrictEqual(
+      pipe(
+        [1, 2, 3],
+        RA.flatMap((n) => [n, n + 1])
+      ),
+      [1, 2, 2, 3, 3, 4]
+    )
+  })
 
-    it("filter", () => {
-      const g = (n: number) => n % 2 === 1
-      deepStrictEqual(pipe([1, 2, 3], RA.filter(g)), [1, 3])
-      const x = pipe(
-        [Option.some(3), Option.some(2), Option.some(1)],
-        RA.filter(Option.isSome)
-      )
-      assert.deepStrictEqual(x, [Option.some(3), Option.some(2), Option.some(1)])
-      const y = pipe(
-        [Option.some(3), Option.none, Option.some(1)],
-        RA.filter(Option.isSome)
-      )
-      assert.deepStrictEqual(y, [Option.some(3), Option.some(1)])
-    })
+  it("flatMapWithIndex", () => {
+    const f = RA.flatMapWithIndex((n: number, i) => [n + i])
+    deepStrictEqual(pipe([1, 2, 3], f), [1, 3, 5])
+    deepStrictEqual(pipe(RA.empty, f), RA.empty)
+    const empty: ReadonlyArray<number> = []
+    deepStrictEqual(pipe(empty, f), RA.empty)
+  })
 
-    it("filterWithIndex", () => {
-      const f = (n: number) => n % 2 === 0
-      deepStrictEqual(pipe(["a", "b", "c"], RA.filterWithIndex((_, i) => f(i))), [
-        "a",
-        "c"
-      ])
-    })
+  it("extend", () => {
+    const sum = (as: ReadonlyArray<number>) => Number.MonoidSum.combineAll(as)
+    deepStrictEqual(pipe([1, 2, 3, 4], RA.extend(sum)), [10, 9, 7, 4])
+    deepStrictEqual(pipe([1, 2, 3, 4], RA.extend(identity)), [
+      [1, 2, 3, 4],
+      [2, 3, 4],
+      [3, 4],
+      [
+        4
+      ]
+    ])
+  })
 
-    it("filterMap", () => {
-      const f = (n: number) => (n % 2 === 0 ? Option.none : Option.some(n))
-      deepStrictEqual(pipe([1, 2, 3], RA.filterMap(f)), [1, 3])
-      deepStrictEqual(pipe([], RA.filterMap(f)), [])
-    })
+  it("foldMap", () => {
+    deepStrictEqual(pipe(["a", "b", "c"], RA.foldMap(String.Monoid)(identity)), "abc")
+    deepStrictEqual(pipe([], RA.foldMap(String.Monoid)(identity)), "")
+  })
 
-    it("foldMapWithIndex", () => {
-      deepStrictEqual(
-        pipe(
-          ["a", "b"],
-          RA.foldMapWithIndex(String.Monoid)((a, i) => i + a)
-        ),
-        "0a1b"
-      )
-    })
+  it("compact", () => {
+    deepStrictEqual(RA.compact([]), [])
+    deepStrictEqual(RA.compact([Option.some(1), Option.some(2), Option.some(3)]), [
+      1,
+      2,
+      3
+    ])
+    deepStrictEqual(RA.compact([Option.some(1), Option.none, Option.some(3)]), [
+      1,
+      3
+    ])
+  })
 
-    it("filterMapWithIndex", () => {
-      const f = (n: number, i: number) => ((i + n) % 2 === 0 ? Option.none : Option.some(n))
-      deepStrictEqual(pipe([1, 2, 4], RA.filterMapWithIndex(f)), [1, 2])
-      deepStrictEqual(pipe([], RA.filterMapWithIndex(f)), [])
-    })
+  it("separate", () => {
+    deepStrictEqual(RA.separate([]), [[], []])
+    deepStrictEqual(
+      RA.separate([E.left(123), E.right("123")]),
+      [[123], ["123"]]
+    )
+  })
 
-    it("partitionMap", () => {
-      deepStrictEqual(pipe([], RA.partitionMap(identity)), [[], []])
-      deepStrictEqual(
-        pipe(
-          [E.right(1), E.left("foo"), E.right(2)],
-          RA.partitionMap(identity)
-        ),
-        [["foo"], [1, 2]]
-      )
-    })
+  it("filter", () => {
+    const g = (n: number) => n % 2 === 1
+    deepStrictEqual(pipe([1, 2, 3], RA.filter(g)), [1, 3])
+    const x = pipe(
+      [Option.some(3), Option.some(2), Option.some(1)],
+      RA.filter(Option.isSome)
+    )
+    assert.deepStrictEqual(x, [Option.some(3), Option.some(2), Option.some(1)])
+    const y = pipe(
+      [Option.some(3), Option.none, Option.some(1)],
+      RA.filter(Option.isSome)
+    )
+    assert.deepStrictEqual(y, [Option.some(3), Option.some(1)])
+  })
 
-    it("partition", () => {
-      deepStrictEqual(
-        pipe([], RA.partition((n) => n > 2)),
-        [[], []]
-      )
-      deepStrictEqual(
-        pipe([1, 3], RA.partition((n) => n > 2)),
-        [[1], [3]]
-      )
-    })
+  it("filterWithIndex", () => {
+    const f = (n: number) => n % 2 === 0
+    deepStrictEqual(pipe(["a", "b", "c"], RA.filterWithIndex((_, i) => f(i))), [
+      "a",
+      "c"
+    ])
+  })
 
-    it("partitionMapWithIndex", () => {
-      deepStrictEqual(
-        pipe([], RA.partitionMapWithIndex((a) => a)),
-        [[], []]
-      )
-      deepStrictEqual(
-        pipe(
-          [E.right(1), E.left("foo"), E.right(2)],
-          RA.partitionMapWithIndex((a, i) => pipe(a, E.filter((n) => n > i, "err")))
-        ),
-        [["foo", "err"], [1]]
-      )
-    })
+  it("filterMap", () => {
+    const f = (n: number) => (n % 2 === 0 ? Option.none : Option.some(n))
+    deepStrictEqual(pipe([1, 2, 3], RA.filterMap(f)), [1, 3])
+    deepStrictEqual(pipe([], RA.filterMap(f)), [])
+  })
 
-    it("partitionWithIndex", () => {
-      deepStrictEqual(
-        pipe([], RA.partitionWithIndex((i, n) => i + n > 2)),
-        [[], []]
-      )
-      deepStrictEqual(
-        pipe([1, 2], RA.partitionWithIndex((i, n) => i + n > 2)),
-        [[1], [2]]
-      )
-    })
+  it("foldMapWithIndex", () => {
+    deepStrictEqual(
+      pipe(
+        ["a", "b"],
+        RA.foldMapWithIndex(String.Monoid)((a, i) => i + a)
+      ),
+      "0a1b"
+    )
+  })
 
-    it("reduce", () => {
-      deepStrictEqual(pipe(["a", "b", "c"], RA.reduce("", (b, a) => b + a)), "abc")
-    })
+  it("filterMapWithIndex", () => {
+    const f = (n: number, i: number) => ((i + n) % 2 === 0 ? Option.none : Option.some(n))
+    deepStrictEqual(pipe([1, 2, 4], RA.filterMapWithIndex(f)), [1, 2])
+    deepStrictEqual(pipe([], RA.filterMapWithIndex(f)), [])
+  })
 
-    it("reduceRight", () => {
-      const f = (b: string, a: string) => b + a
-      deepStrictEqual(pipe(["a", "b", "c"], RA.reduceRight("", f)), "cba")
-      deepStrictEqual(pipe([], RA.reduceRight("", f)), "")
-    })
+  it("partitionMap", () => {
+    deepStrictEqual(pipe([], RA.partitionMap(identity)), [[], []])
+    deepStrictEqual(
+      pipe(
+        [E.right(1), E.left("foo"), E.right(2)],
+        RA.partitionMap(identity)
+      ),
+      [["foo"], [1, 2]]
+    )
+  })
 
-    it("reduceWithIndex", () => {
-      deepStrictEqual(
-        pipe(
-          ["a", "b"],
-          RA.reduceWithIndex("", (b, a, i) => b + i + a)
-        ),
-        "0a1b"
-      )
-    })
+  it("partition", () => {
+    deepStrictEqual(
+      pipe([], RA.partition((n) => n > 2)),
+      [[], []]
+    )
+    deepStrictEqual(
+      pipe([1, 3], RA.partition((n) => n > 2)),
+      [[1], [3]]
+    )
+  })
 
-    it("reduceRightWithIndex", () => {
-      deepStrictEqual(
-        pipe(
-          ["a", "b"],
-          RA.reduceRightWithIndex("", (b, a, i) => b + i + a)
-        ),
-        "1b0a"
-      )
-    })
+  it("partitionMapWithIndex", () => {
+    deepStrictEqual(
+      pipe([], RA.partitionMapWithIndex((a) => a)),
+      [[], []]
+    )
+    deepStrictEqual(
+      pipe(
+        [E.right(1), E.left("foo"), E.right(2)],
+        RA.partitionMapWithIndex((a, i) => pipe(a, E.filter((n) => n > i, "err")))
+      ),
+      [["foo", "err"], [1]]
+    )
+  })
+
+  it("partitionWithIndex", () => {
+    deepStrictEqual(
+      pipe([], RA.partitionWithIndex((i, n) => i + n > 2)),
+      [[], []]
+    )
+    deepStrictEqual(
+      pipe([1, 2], RA.partitionWithIndex((i, n) => i + n > 2)),
+      [[1], [2]]
+    )
+  })
+
+  it("reduce", () => {
+    deepStrictEqual(pipe(["a", "b", "c"], RA.reduce("", (b, a) => b + a)), "abc")
+  })
+
+  it("reduceRight", () => {
+    const f = (b: string, a: string) => b + a
+    deepStrictEqual(pipe(["a", "b", "c"], RA.reduceRight("", f)), "cba")
+    deepStrictEqual(pipe([], RA.reduceRight("", f)), "")
+  })
+
+  it("reduceWithIndex", () => {
+    deepStrictEqual(
+      pipe(
+        ["a", "b"],
+        RA.reduceWithIndex("", (b, a, i) => b + i + a)
+      ),
+      "0a1b"
+    )
+  })
+
+  it("reduceRightWithIndex", () => {
+    deepStrictEqual(
+      pipe(
+        ["a", "b"],
+        RA.reduceRightWithIndex("", (b, a, i) => b + i + a)
+      ),
+      "1b0a"
+    )
+  })
+
+  it("traverseNonEmpty", () => {
+    const traverseNonEmpty = RA.traverseNonEmpty(Option.Applicative)
+    deepStrictEqual(
+      pipe(
+        RA.make(1, 2, 3),
+        traverseNonEmpty((n) => (n >= 0 ? Option.some(n) : Option.none))
+      ),
+      Option.some(RA.make(1, 2, 3))
+    )
+    deepStrictEqual(
+      pipe(
+        RA.make(1, 2, 3),
+        traverseNonEmpty((n) => (n >= 2 ? Option.some(n) : Option.none))
+      ),
+      Option.none
+    )
+  })
+
+  it("traverseNonEmptyWithIndex", () => {
+    deepStrictEqual(
+      pipe(
+        RA.make("a", "bb"),
+        RA.traverseNonEmptyWithIndex(Option.Applicative)((
+          s,
+          i
+        ) => (s.length >= 1 ? Option.some(s + i) : Option.none))
+      ),
+      Option.some(RA.make("a0", "bb1"))
+    )
+    deepStrictEqual(
+      pipe(
+        RA.make("a", "bb"),
+        RA.traverseNonEmptyWithIndex(Option.Applicative)((
+          s,
+          i
+        ) => (s.length > 1 ? Option.some(s + i) : Option.none))
+      ),
+      Option.none
+    )
   })
 
   it("getMonoid", () => {
@@ -880,6 +901,61 @@ describe.concurrent("ReadonlyArray", () => {
   it("flatMapNonEmpty", () => {
     const f = (a: number): RA.NonEmptyReadonlyArray<number> => [a, 4]
     deepStrictEqual(pipe(RA.make(1, 2), RA.flatMapNonEmpty(f)), [1, 4, 2, 4])
+  })
+
+  it("flatMapNonEmptyWithIndex", () => {
+    const f = (a: number, i: number): RA.NonEmptyReadonlyArray<number> => [a + i, 4]
+    deepStrictEqual(pipe(RA.make(1, 2), RA.flatMapNonEmptyWithIndex(f)), [1, 4, 3, 4])
+  })
+
+  it("chunksOfNonEmpty", () => {
+    deepStrictEqual(RA.chunksOfNonEmpty(2)([1, 2, 3, 4, 5]), [
+      RA.make(1, 2),
+      [3, 4],
+      [5]
+    ])
+    deepStrictEqual(RA.chunksOfNonEmpty(2)([1, 2, 3, 4, 5, 6]), [
+      RA.make(1, 2),
+      [3, 4],
+      [5, 6]
+    ])
+    deepStrictEqual(RA.chunksOfNonEmpty(1)([1, 2, 3, 4, 5]), [[1], [2], [3], [4], [5]])
+    deepStrictEqual(RA.chunksOfNonEmpty(5)([1, 2, 3, 4, 5]), [[1, 2, 3, 4, 5]])
+    // out of bounds
+    deepStrictEqual(RA.chunksOfNonEmpty(0)([1, 2, 3, 4, 5]), [[1], [2], [3], [4], [5]])
+    deepStrictEqual(RA.chunksOfNonEmpty(-1)([1, 2, 3, 4, 5]), [[1], [2], [3], [4], [5]])
+
+    const assertSingleChunk = (
+      input: RA.NonEmptyReadonlyArray<number>,
+      n: number
+    ) => {
+      const chunks = RA.chunksOfNonEmpty(n)(input)
+      strictEqual(chunks.length, 1)
+      strictEqual(RA.headNonEmpty(chunks), input)
+    }
+    // n = length
+    assertSingleChunk(RA.make(1, 2), 2)
+    // n out of bounds
+    assertSingleChunk(RA.make(1, 2), 3)
+  })
+
+  it("mapNonEmpty", () => {
+    deepStrictEqual(
+      pipe(
+        RA.make(RA.make(1, 2), RA.make(3, 4)),
+        RA.flattenNonEmpty
+      ),
+      [1, 2, 3, 4]
+    )
+  })
+
+  it("sequenceNonEmpty", () => {
+    const sequence = RA.sequenceNonEmpty(Option.Applicative)
+    deepStrictEqual(
+      sequence([Option.some(1), Option.some(2), Option.some(3)]),
+      Option.some(RA.make(1, 2, 3))
+    )
+    deepStrictEqual(sequence([Option.none, Option.some(2), Option.some(3)]), Option.none)
   })
 
   it("mapNonEmpty", () => {
@@ -1347,10 +1423,32 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(pipe([1, 2, -3], RA.every(isPositive)), false)
   })
 
+  it("foldMapNonEmpty", () => {
+    deepStrictEqual(
+      pipe(
+        RA.make("a", "b", "c"),
+        RA.foldMapNonEmpty(String.Semigroup)(identity)
+      ),
+      "abc"
+    )
+  })
+
+  it("foldMapNonEmptyWithIndex", () => {
+    deepStrictEqual(
+      pipe(
+        RA.make("a", "b"),
+        RA.foldMapNonEmptyWithIndex(String.Semigroup)((a, i) => i + a)
+      ),
+      "0a1b"
+    )
+  })
+
   it("some", () => {
     const isPositive: Predicate<number> = (n) => n > 0
     deepStrictEqual(pipe([-1, -2, 3], RA.some(isPositive)), true)
     deepStrictEqual(pipe([-1, -2, -3], RA.some(isPositive)), false)
+    // has is an alias of some
+    deepStrictEqual(pipe([-1, -2, -3], RA.has(isPositive)), false)
   })
 
   it("size", () => {
