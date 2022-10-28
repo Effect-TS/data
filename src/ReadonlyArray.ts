@@ -26,7 +26,6 @@ import { fromCombine } from "@fp-ts/core/typeclass/Semigroup"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
 import * as traversableFilterable from "@fp-ts/core/typeclass/TraversableFilterable"
 import type { Either } from "@fp-ts/data/Either"
-import type { Endomorphism } from "@fp-ts/data/Endomorphism"
 import { equals } from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
 import type { LazyArg } from "@fp-ts/data/Function"
@@ -146,19 +145,73 @@ export const matchRight = <B, A, C = B>(
       onEmpty()
 
 /**
+ * Prepend an element to the front of a `ReadonlyArray`, creating a new non empty `ReadonlyArray`.
+ *
  * @category mutations
  * @since 1.0.0
  */
-export const concat = <B>(that: ReadonlyArray<B>) =>
+export const prepend = <B>(
+  head: B
+) => <A>(self: ReadonlyArray<A>): NonEmptyReadonlyArray<A | B> => [head, ...self]
+
+/**
+ * @category mutations
+ * @since 1.0.0
+ */
+export const prependAll = <B>(prefix: ReadonlyArray<B>) =>
+  <A>(self: ReadonlyArray<A>): ReadonlyArray<A | B> => (prefix as ReadonlyArray<A | B>).concat(self)
+
+/**
+ * @category mutations
+ * @since 1.0.0
+ */
+export function prependAllNonEmpty<B>(
+  that: NonEmptyReadonlyArray<B>
+): <A>(self: ReadonlyArray<A>) => NonEmptyReadonlyArray<A | B>
+export function prependAllNonEmpty<B>(
+  that: ReadonlyArray<B>
+): <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A | B>
+export function prependAllNonEmpty<B>(
+  that: ReadonlyArray<B>
+): <A>(self: NonEmptyReadonlyArray<A>) => ReadonlyArray<A | B> {
+  return <A>(self: NonEmptyReadonlyArray<A | B>) => (that as ReadonlyArray<A | B>).concat(self)
+}
+
+/**
+ * Append an element to the end of a `ReadonlyArray`, creating a new non empty `ReadonlyArray`.
+ *
+ * @category mutations
+ * @since 1.0.0
+ */
+export const append = <B>(
+  last: B
+) => <A>(self: ReadonlyArray<A>): NonEmptyReadonlyArray<A | B> => [...self, last] as any
+
+/**
+ * @category mutations
+ * @since 1.0.0
+ */
+export const appendAll = <B>(that: ReadonlyArray<B>) =>
   <A>(self: ReadonlyArray<A>): ReadonlyArray<A | B> => (self as ReadonlyArray<A | B>).concat(that)
 
 /**
+ * @category mutations
+ * @since 1.0.0
+ */
+export function appendAllNonEmpty<B>(
+  that: NonEmptyReadonlyArray<B>
+): <A>(self: ReadonlyArray<A>) => NonEmptyReadonlyArray<A | B>
+export function appendAllNonEmpty<B>(
+  that: ReadonlyArray<B>
+): <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A | B>
+export function appendAllNonEmpty<B>(
+  that: ReadonlyArray<B>
+): <A>(self: NonEmptyReadonlyArray<A>) => ReadonlyArray<A | B> {
+  return <A>(self: NonEmptyReadonlyArray<A | B>) => self.concat(that)
+}
+
+/**
  * Fold a `ReadonlyArray` from the left, keeping all intermediate results instead of only the final result.
- *
- * @exampleTodo
- * import { scan } from '@fp-ts/data/ReadonlyArray'
- *
- * assert.deepStrictEqual(scan(10, (b, a: number) => b - a)([1, 2, 3]), [10, 9, 7, 4])
  *
  * @category folding
  * @since 1.0.0
@@ -176,11 +229,6 @@ export const scan = <B, A>(b: B, f: (b: B, a: A) => B) =>
 
 /**
  * Fold a `ReadonlyArray` from the right, keeping all intermediate results instead of only the final result.
- *
- * @exampleTodo
- * import { scanRight } from '@fp-ts/data/ReadonlyArray'
- *
- * assert.deepStrictEqual(scanRight(10, (b, a: number) => b - a)([1, 2, 3]), [4, 5, 7, 10])
  *
  * @category folding
  * @since 1.0.0
@@ -219,21 +267,14 @@ export const isNonEmpty: <A>(self: ReadonlyArray<A>) => self is NonEmptyReadonly
  * @category getters
  * @since 1.0.0
  */
-export const size = <A>(as: ReadonlyArray<A>): number => as.length
+export const size = <A>(self: ReadonlyArray<A>): number => self.length
 
 const isOutOfBound = <A>(i: number, as: ReadonlyArray<A>): boolean => i < 0 || i >= as.length
 
 /**
  * This function provides a safe way to read a value at a particular index from a `ReadonlyArray`
  *
- * @exampleTodo
- * import { get } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { some, none } from '@fp-ts/core/typeclass/data/Option'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * assert.deepStrictEqual(pipe([1, 2, 3], get(1)), some(2))
- * assert.deepStrictEqual(pipe([1, 2, 3], get(3)), none)
- *
+ * @category getters
  * @since 1.0.0
  */
 export const get = (i: number) =>
@@ -241,46 +282,9 @@ export const get = (i: number) =>
     isOutOfBound(i, self) ? internal.none : internal.some(self[i])
 
 /**
- * Prepend an element to the front of a `ReadonlyArray`, creating a new non empty `ReadonlyArray`.
- *
- * @exampleTodo
- * import { prepend } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * assert.deepStrictEqual(pipe([1, 2, 3], prepend(0)), [0, 1, 2, 3])
- *
- * @category constructors
- * @since 1.0.0
- */
-export const prepend = <B>(
-  head: B
-) => <A>(self: ReadonlyArray<A>): NonEmptyReadonlyArray<A | B> => [head, ...self]
-
-/**
- * Append an element to the end of a `ReadonlyArray`, creating a new non empty `ReadonlyArray`.
- *
- * @exampleTodo
- * import { append } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * assert.deepStrictEqual(pipe([1, 2, 3], append(4)), [1, 2, 3, 4])
- *
- * @category constructors
- * @since 1.0.0
- */
-export const append = <B>(
-  last: B
-) => <A>(self: ReadonlyArray<A>): NonEmptyReadonlyArray<A | B> => [...self, last] as any
-
-/**
  * Produces a couple of the first element of the array, and a new array of the remaining elements, if any.
  *
- * @example
- * import { unprepend } from '@fp-ts/data/NonEmptyReadonlyArray'
- *
- * assert.deepStrictEqual(unprepend([1, 2, 3, 4]), [1, [2, 3, 4]])
- *
- * @category pattern matching
+ * @category getters
  * @since 1.0.0
  */
 export const unprepend = <A>(
@@ -290,12 +294,7 @@ export const unprepend = <A>(
 /**
  * Produces a couple of a copy of the array without its last element, and that last element.
  *
- * @example
- * import { unappend } from '@fp-ts/data/NonEmptyReadonlyArray'
- *
- * assert.deepStrictEqual(unappend([1, 2, 3, 4]), [[1, 2, 3], 4])
- *
- * @category pattern matching
+ * @category getters
  * @since 1.0.0
  */
 export const unappend = <A>(
@@ -305,13 +304,7 @@ export const unappend = <A>(
 /**
  * Get the first element of a `ReadonlyArray`, or `None` if the `ReadonlyArray` is empty.
  *
- * @exampleTodo
- * import { head } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { some, none } from '@fp-ts/core/typeclass/data/Option'
- *
- * assert.deepStrictEqual(head([1, 2, 3]), some(1))
- * assert.deepStrictEqual(head([]), none)
- *
+ * @category getters
  * @since 1.0.0
  */
 export const head = <A>(
@@ -319,6 +312,7 @@ export const head = <A>(
 ): Option<A> => (isNonEmpty(self) ? internal.some(self[0]) : internal.none)
 
 /**
+ * @category getters
  * @since 1.0.0
  */
 export const headNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): A => self[0]
@@ -326,19 +320,14 @@ export const headNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): A => self[0]
 /**
  * Get the last element in a `ReadonlyArray`, or `None` if the `ReadonlyArray` is empty.
  *
- * @exampleTodo
- * import { last } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { some, none } from '@fp-ts/core/typeclass/data/Option'
- *
- * assert.deepStrictEqual(last([1, 2, 3]), some(3))
- * assert.deepStrictEqual(last([]), none)
- *
+ * @category getters
  * @since 1.0.0
  */
 export const last = <A>(self: ReadonlyArray<A>): Option<A> =>
   isNonEmpty(self) ? internal.some(lastNonEmpty(self)) : internal.none
 
 /**
+ * @category getters
  * @since 1.0.0
  */
 export const lastNonEmpty = <A>(as: NonEmptyReadonlyArray<A>): A => as[as.length - 1]
@@ -346,19 +335,14 @@ export const lastNonEmpty = <A>(as: NonEmptyReadonlyArray<A>): A => as[as.length
 /**
  * Get all but the first element of a `ReadonlyArray`, creating a new `ReadonlyArray`, or `None` if the `ReadonlyArray` is empty.
  *
- * @exampleTodo
- * import { tail } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { some, none } from '@fp-ts/core/typeclass/data/Option'
- *
- * assert.deepStrictEqual(tail([1, 2, 3]), some([2, 3]))
- * assert.deepStrictEqual(tail([]), none)
- *
+ * @category getters
  * @since 1.0.0
  */
 export const tail = <A>(self: ReadonlyArray<A>): Option<ReadonlyArray<A>> =>
   isNonEmpty(self) ? internal.some(tailNonEmpty(self)) : internal.none
 
 /**
+ * @category getters
  * @since 1.0.0
  */
 export const tailNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): ReadonlyArray<A> => self.slice(1)
@@ -366,13 +350,7 @@ export const tailNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): ReadonlyArray<A
 /**
  * Get all but the last element of a `ReadonlyArray`, creating a new `ReadonlyArray`, or `None` if the `ReadonlyArray` is empty.
  *
- * @exampleTodo
- * import { init } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { some, none } from '@fp-ts/core/typeclass/data/Option'
- *
- * assert.deepStrictEqual(init([1, 2, 3]), some([1, 2]))
- * assert.deepStrictEqual(init([]), none)
- *
+ * @category getters
  * @since 1.0.0
  */
 export const init = <A>(self: ReadonlyArray<A>): Option<ReadonlyArray<A>> =>
@@ -381,12 +359,7 @@ export const init = <A>(self: ReadonlyArray<A>): Option<ReadonlyArray<A>> =>
 /**
  * Get all but the last element of a non empty array, creating a new array.
  *
- * @example
- * import { init } from '@fp-ts/data/NonEmptyReadonlyArray'
- *
- * assert.deepStrictEqual(init([1, 2, 3]), [1, 2])
- * assert.deepStrictEqual(init([1]), [])
- *
+ * @category getters
  * @since 1.0.0
  */
 export const initNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): ReadonlyArray<A> =>
@@ -397,13 +370,7 @@ export const initNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): ReadonlyArray<A
  *
  * **Note**. `n` is normalized to a non negative integer.
  *
- * @exampleTodo
- * import * as RA from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * const input: ReadonlyArray<number> = [1, 2, 3]
- * assert.deepStrictEqual(pipe(input, RA.take(2)), [1, 2])
- *
+ * @category getters
  * @since 1.0.0
  */
 export const take = (n: number) =>
@@ -415,13 +382,7 @@ export const take = (n: number) =>
  *
  * **Note**. `n` is normalized to a non negative integer.
  *
- * @exampleTodo
- * import * as RA from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * const input: ReadonlyArray<number> = [1, 2, 3]
- * assert.deepStrictEqual(pipe(input, RA.takeRight(2)), [2, 3])
- *
+ * @category getters
  * @since 1.0.0
  */
 export const takeRight = (n: number) =>
@@ -431,11 +392,7 @@ export const takeRight = (n: number) =>
 /**
  * Calculate the longest initial subarray for which all element satisfy the specified predicate, creating a new `ReadonlyArray`.
  *
- * @exampleTodo
- * import { takeWhile } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- *
- * assert.deepStrictEqual(takeWhile((n: number) => n % 2 === 0)([2, 4, 3, 6]), [2, 4])
- *
+ * @category getters
  * @since 1.0.0
  */
 export function takeWhile<A, B extends A>(
@@ -475,11 +432,7 @@ const spanIndex = <A>(as: ReadonlyArray<A>, predicate: Predicate<A>): number => 
  * 1. the longest initial subarray for which all elements satisfy the specified predicate
  * 2. the remaining elements
  *
- * @exampleTodo
- * import { span } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- *
- * assert.deepStrictEqual(span((n: number) => n % 2 === 1)([1, 3, 2, 4, 5]), [[1, 3], [2, 4, 5]])
- *
+ * @category filtering
  * @since 1.0.0
  */
 export function span<A, B extends A>(
@@ -502,15 +455,7 @@ export function span<A>(
  *
  * **Note**. `n` is normalized to a non negative integer.
  *
- * @exampleTodo
- * import * as RA from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * const input: ReadonlyArray<number> = [1, 2, 3]
- * assert.deepStrictEqual(pipe(input, RA.drop(2)), [3])
- * assert.strictEqual(pipe(input, RA.drop(0)), input)
- * assert.strictEqual(pipe(input, RA.drop(-1)), input)
- *
+ * @category getters
  * @since 1.0.0
  */
 export const drop = (n: number) =>
@@ -522,15 +467,7 @@ export const drop = (n: number) =>
  *
  * **Note**. `n` is normalized to a non negative integer.
  *
- * @exampleTodo
- * import * as RA from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * const input: ReadonlyArray<number> = [1, 2, 3]
- * assert.deepStrictEqual(pipe(input, RA.dropRight(2)), [1])
- * assert.strictEqual(pipe(input, RA.dropRight(0)), input)
- * assert.strictEqual(pipe(input, RA.dropRight(-1)), input)
- *
+ * @category getters
  * @since 1.0.0
  */
 export const dropRight = (n: number) =>
@@ -540,11 +477,7 @@ export const dropRight = (n: number) =>
 /**
  * Remove the longest initial subarray for which all element satisfy the specified predicate, creating a new `ReadonlyArray`.
  *
- * @exampleTodo
- * import { dropWhile } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- *
- * assert.deepStrictEqual(dropWhile((n: number) => n % 2 === 1)([1, 3, 2, 4, 5]), [2, 4, 5])
- *
+ * @category getters
  * @since 1.0.0
  */
 export function dropWhile<A, B extends A>(
@@ -568,13 +501,7 @@ export function dropWhile<A>(
 /**
  * Find the first index for which a predicate holds
  *
- * @exampleTodo
- * import { findIndex } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { some, none } from '@fp-ts/core/typeclass/data/Option'
- *
- * assert.deepStrictEqual(findIndex((n: number) => n === 2)([1, 2, 3]), some(1))
- * assert.deepStrictEqual(findIndex((n: number) => n === 2)([]), none)
- *
+ * @category getters
  * @since 1.0.0
  */
 export const findIndex = <A>(predicate: Predicate<A>) =>
@@ -589,14 +516,26 @@ export const findIndex = <A>(predicate: Predicate<A>) =>
   }
 
 /**
- * Find the first element which satisfies a predicate (or a refinement) function
+ * Returns the index of the last element of the list which matches the predicate
  *
- * @exampleTodo
- * import { findFirst } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { some } from '@fp-ts/core/typeclass/data/Option'
+ * @category getters
+ * @since 1.0.0
+ */
+export const findLastIndex = <A>(predicate: Predicate<A>) =>
+  (as: ReadonlyArray<A>): Option<number> => {
+    const len = as.length
+    for (let i = len - 1; i >= 0; i--) {
+      if (predicate(as[i])) {
+        return internal.some(i)
+      }
+    }
+    return internal.none
+  }
+
+/**
+ * Find the first element which satisfies a predicate function.
  *
- * assert.deepStrictEqual(findFirst((x: { a: number, b: number }) => x.a === 1)([{ a: 1, b: 1 }, { a: 1, b: 2 }]), some({ a: 1, b: 1 }))
- *
+ * @category getters
  * @since 1.0.0
  */
 export function findFirst<A, B extends A>(
@@ -619,45 +558,9 @@ export function findFirst<A>(predicate: Predicate<A>): (as: ReadonlyArray<A>) =>
 }
 
 /**
- * Find the first element returned by an option based selector function
+ * Find the last element which satisfies a predicate function.
  *
- * @exampleTodo
- * import { findFirstMap } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { some, none } from '@fp-ts/core/typeclass/data/Option'
- *
- * interface Person {
- *   name: string
- *   age?: number
- * }
- *
- * const persons: ReadonlyArray<Person> = [{ name: 'John' }, { name: 'Mary', age: 45 }, { name: 'Joey', age: 28 }]
- *
- * // returns the name of the first person that has an age
- * assert.deepStrictEqual(findFirstMap((p: Person) => (p.age === undefined ? none : some(p.name)))(persons), some('Mary'))
- *
- * @since 1.0.0
- */
-export const findFirstMap = <A, B>(f: (a: A) => Option<B>) =>
-  (as: ReadonlyArray<A>): Option<B> => {
-    const len = as.length
-    for (let i = 0; i < len; i++) {
-      const v = f(as[i])
-      if (internal.isSome(v)) {
-        return v
-      }
-    }
-    return internal.none
-  }
-
-/**
- * Find the last element which satisfies a predicate function
- *
- * @exampleTodo
- * import { findLast } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { some } from '@fp-ts/core/typeclass/data/Option'
- *
- * assert.deepStrictEqual(findLast((x: { a: number, b: number }) => x.a === 1)([{ a: 1, b: 1 }, { a: 1, b: 2 }]), some({ a: 1, b: 2 }))
- *
+ * @category getters
  * @since 1.0.0
  */
 export function findLast<A, B extends A>(
@@ -680,82 +583,18 @@ export function findLast<A>(predicate: Predicate<A>): (as: ReadonlyArray<A>) => 
 }
 
 /**
- * Find the last element returned by an option based selector function
- *
- * @exampleTodo
- * import { findLastMap } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { some, none } from '@fp-ts/core/typeclass/data/Option'
- *
- * interface Person {
- *   name: string
- *   age?: number
- * }
- *
- * const persons: ReadonlyArray<Person> = [{ name: 'John' }, { name: 'Mary', age: 45 }, { name: 'Joey', age: 28 }]
- *
- * // returns the name of the last person that has an age
- * assert.deepStrictEqual(findLastMap((p: Person) => (p.age === undefined ? none : some(p.name)))(persons), some('Joey'))
- *
- * @since 1.0.0
- */
-export const findLastMap = <A, B>(f: (a: A) => Option<B>) =>
-  (as: ReadonlyArray<A>): Option<B> => {
-    const len = as.length
-    for (let i = len - 1; i >= 0; i--) {
-      const v = f(as[i])
-      if (internal.isSome(v)) {
-        return v
-      }
-    }
-    return internal.none
-  }
-
-/**
- * Returns the index of the last element of the list which matches the predicate
- *
- * @exampleTodo
- * import { findLastIndex } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { some, none } from '@fp-ts/core/typeclass/data/Option'
- *
- * interface X {
- *   a: number
- *   b: number
- * }
- * const xs: ReadonlyArray<X> = [{ a: 1, b: 0 }, { a: 1, b: 1 }]
- * assert.deepStrictEqual(findLastIndex((x: { a: number }) => x.a === 1)(xs), some(1))
- * assert.deepStrictEqual(findLastIndex((x: { a: number }) => x.a === 4)(xs), none)
- *
- * @since 1.0.0
- */
-export const findLastIndex = <A>(predicate: Predicate<A>) =>
-  (as: ReadonlyArray<A>): Option<number> => {
-    const len = as.length
-    for (let i = len - 1; i >= 0; i--) {
-      if (predicate(as[i])) {
-        return internal.some(i)
-      }
-    }
-    return internal.none
-  }
-
-/**
  * Insert an element at the specified index, creating a new `ReadonlyArray`, or returning `None` if the index is out of bounds.
  *
- * @exampleTodo
- * import { insertAt } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { some } from '@fp-ts/core/typeclass/data/Option'
- *
- * assert.deepStrictEqual(insertAt(2, 5)([1, 2, 3, 4]), some([1, 2, 5, 3, 4]))
- *
+ * @category mutations
  * @since 1.0.0
  */
-export const insertAt = <A>(i: number, a: A) =>
-  (as: ReadonlyArray<A>): Option<NonEmptyReadonlyArray<A>> => {
-    if (i < 0 || i > as.length) {
+export const insertAt = <B>(i: number, a: B) =>
+  <A>(self: ReadonlyArray<A>): Option<NonEmptyReadonlyArray<A | B>> => {
+    if (i < 0 || i > self.length) {
       return internal.none
     }
-    if (isNonEmpty(as)) {
-      const out = internal.fromNonEmptyReadonlyArray(as)
+    if (isNonEmpty(self)) {
+      const out: internal.NonEmptyArray<A | B> = internal.fromNonEmptyReadonlyArray(self)
       out.splice(i, 0, a)
       return internal.some(out)
     }
@@ -765,45 +604,29 @@ export const insertAt = <A>(i: number, a: A) =>
 /**
  * Change the element at the specified index, creating a new `ReadonlyArray`, or returning `None` if the index is out of bounds.
  *
- * @exampleTodo
- * import { updateAt } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { some, none } from '@fp-ts/core/typeclass/data/Option'
- *
- * assert.deepStrictEqual(updateAt(1, 1)([1, 2, 3]), some([1, 1, 3]))
- * assert.deepStrictEqual(updateAt(1, 1)([]), none)
- *
+ * @category mutations
  * @since 1.0.0
  */
-export const updateAt = <A>(
+export const updateAt = <B>(
   i: number,
-  a: A
-): ((as: ReadonlyArray<A>) => Option<ReadonlyArray<A>>) => modifyAt(i, () => a)
+  b: B
+): (<A>(self: ReadonlyArray<A>) => Option<ReadonlyArray<A | B>>) => modifyAt(i, () => b)
 
 /**
  * Apply a function to the element at the specified index, creating a new `ReadonlyArray`, or returning `None` if the index is out
  * of bounds.
  *
- * @exampleTodo
- * import { modifyAt } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { some, none } from '@fp-ts/core/typeclass/data/Option'
- *
- * const double = (x: number): number => x * 2
- * assert.deepStrictEqual(modifyAt(1, double)([1, 2, 3]), some([1, 4, 3]))
- * assert.deepStrictEqual(modifyAt(1, double)([]), none)
- *
+ * @category mutations
  * @since 1.0.0
  */
-export const modifyAt = <A>(i: number, f: Endomorphism<A>) =>
-  (as: ReadonlyArray<A>): Option<ReadonlyArray<A>> => {
-    if (isOutOfBound(i, as)) {
+export const modifyAt = <A, B>(i: number, f: (a: A) => B) =>
+  (self: ReadonlyArray<A>): Option<ReadonlyArray<A | B>> => {
+    if (isOutOfBound(i, self)) {
       return internal.none
     }
-    const prev = as[i]
+    const prev = self[i]
     const next = f(prev)
-    if (next === prev) {
-      return internal.some(as)
-    }
-    const out = as.slice()
+    const out: Array<A | B> = self.slice()
     out[i] = next
     return internal.some(out)
   }
@@ -817,18 +640,22 @@ const unsafeDeleteAt = <A>(i: number, as: ReadonlyArray<A>): ReadonlyArray<A> =>
 /**
  * Delete the element at the specified index, creating a new `ReadonlyArray`, or returning `None` if the index is out of bounds.
  *
- * @exampleTodo
- * import { deleteAt } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { some, none } from '@fp-ts/core/typeclass/data/Option'
- *
- * assert.deepStrictEqual(deleteAt(0)([1, 2, 3]), some([2, 3]))
- * assert.deepStrictEqual(deleteAt(1)([]), none)
- *
+ * @category mutations
  * @since 1.0.0
  */
 export const deleteAt = (i: number) =>
-  <A>(as: ReadonlyArray<A>): Option<ReadonlyArray<A>> =>
-    isOutOfBound(i, as) ? internal.none : internal.some(unsafeDeleteAt(i, as))
+  <A>(self: ReadonlyArray<A>): Option<ReadonlyArray<A>> =>
+    isOutOfBound(i, self) ? internal.none : internal.some(unsafeDeleteAt(i, self))
+
+/**
+ * Reverse a `ReadonlyArray`, creating a new `ReadonlyArray`.
+ *
+ * @category mutations
+ * @since 1.0.0
+ */
+export const reverse = <A>(
+  self: ReadonlyArray<A>
+): ReadonlyArray<A> => (self.length <= 1 ? self : self.slice().reverse())
 
 /**
  * @since 1.0.0
@@ -837,35 +664,15 @@ export const reverseNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): NonEmptyRead
   self.length === 1 ? self : [lastNonEmpty(self), ...self.slice(0, -1).reverse()]
 
 /**
- * Reverse a `ReadonlyArray`, creating a new `ReadonlyArray`.
+ * Extracts from a `ReadonlyArray` of `Either`s all the `Right` elements.
  *
- * @exampleTodo
- * import { reverse } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- *
- * assert.deepStrictEqual(reverse([1, 2, 3]), [3, 2, 1])
- *
+ * @category getters
  * @since 1.0.0
  */
-export const reverse = <A>(
-  self: ReadonlyArray<A>
-): ReadonlyArray<A> => (self.length <= 1 ? self : self.slice().reverse())
-
-/**
- * Extracts from a `ReadonlyArray` of `Either`s all the `Success` elements.
- *
- * @exampleTodo
- * import { rights } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { right, left } from '@fp-ts/core/typeclass/data/Either'
- *
- * assert.deepStrictEqual(rights([succeed(1), left('foo'), right(2)]), [1, 2])
- *
- * @since 1.0.0
- */
-export const rights = <E, A>(as: ReadonlyArray<Either<E, A>>): ReadonlyArray<A> => {
-  const len = as.length
+export const rights = <A>(self: ReadonlyArray<Either<unknown, A>>): ReadonlyArray<A> => {
   const out: Array<A> = []
-  for (let i = 0; i < len; i++) {
-    const a = as[i]
+  for (let i = 0; i < self.length; i++) {
+    const a = self[i]
     if (either.isRight(a)) {
       out.push(a.right)
     }
@@ -874,21 +681,15 @@ export const rights = <E, A>(as: ReadonlyArray<Either<E, A>>): ReadonlyArray<A> 
 }
 
 /**
- * Extracts from a `ReadonlyArray` of `Either` all the `Failure` elements. All the `Failure` elements are extracted in order
+ * Extracts from a `ReadonlyArray` of `Either` all the `Left` elements.
  *
- * @exampleTodo
- * import { lefts } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { left, right } from '@fp-ts/core/typeclass/data/Either'
- *
- * assert.deepStrictEqual(failures([right(1), left('foo'), right(2)]), ['foo'])
- *
+ * @category getters
  * @since 1.0.0
  */
-export const lefts = <E, A>(as: ReadonlyArray<Either<E, A>>): ReadonlyArray<E> => {
+export const lefts = <E>(self: ReadonlyArray<Either<E, unknown>>): ReadonlyArray<E> => {
   const out: Array<E> = []
-  const len = as.length
-  for (let i = 0; i < len; i++) {
-    const a = as[i]
+  for (let i = 0; i < self.length; i++) {
+    const a = self[i]
     if (either.isLeft(a)) {
       out.push(a.left)
     }
@@ -899,19 +700,81 @@ export const lefts = <E, A>(as: ReadonlyArray<Either<E, A>>): ReadonlyArray<E> =
 /**
  * Sort the elements of a `ReadonlyArray` in increasing order, creating a new `ReadonlyArray`.
  *
- * @exampleTodo
- * import { sort } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import * as N from '@fp-ts/core/typeclass/data/number'
- *
- * assert.deepStrictEqual(sort(N.Order)([3, 2, 1]), [1, 2, 3])
- *
+ * @category sorting
  * @since 1.0.0
  */
 export const sort = <B>(O: Order<B>) =>
-  <A extends B>(as: ReadonlyArray<A>): ReadonlyArray<A> =>
-    as.length <= 1 ? as : as.slice().sort((self, that) => O.compare(that)(self))
+  <A extends B>(self: ReadonlyArray<A>): ReadonlyArray<A> =>
+    self.length <= 1 ? self : self.slice().sort((self, that) => O.compare(that)(self))
 
 /**
+ * Sort the elements of a `NonEmptyReadonlyArray` in increasing order, creating a new `NonEmptyReadonlyArray`.
+ *
+ * @category sorting
+ * @since 1.0.0
+ */
+export const sortNonEmpty = <B>(O: Order<B>) =>
+  <A extends B>(self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A> =>
+    self.length === 1 ? self : (self.slice().sort((self, that) => O.compare(that)(self)) as any)
+
+/**
+ * Sort the elements of a `ReadonlyArray` in increasing order, where elements are compared using first `ords[0]`, then `ords[1]`,
+ * etc...
+ *
+ * @category sorting
+ * @since 1.0.0
+ */
+export const sortBy = <B>(
+  orders: ReadonlyArray<Order<B>>
+) =>
+  <A extends B>(
+    self: ReadonlyArray<A>
+  ): ReadonlyArray<A> => (isNonEmpty(self) ? sortByNonEmpty(orders)(self) : self)
+
+/**
+ * @category sorting
+ * @since 1.0.0
+ */
+export const sortByNonEmpty = <B>(
+  orders: ReadonlyArray<Order<B>>
+): (<A extends B>(as: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A>) =>
+  sortNonEmpty(order.getMonoid<B>().combineAll(orders))
+
+/**
+ * Takes two `ReadonlyArray`s and returns a `ReadonlyArray` of corresponding pairs. If one input `ReadonlyArray` is short, excess elements of the
+ * longer `ReadonlyArray` are discarded.
+ *
+ * @category mutations
+ * @since 1.0.0
+ */
+export const zip = <B>(
+  that: ReadonlyArray<B>
+): <A>(self: ReadonlyArray<A>) => ReadonlyArray<readonly [A, B]> => zipWith(that, (a, b) => [a, b])
+
+/**
+ * Apply a function to pairs of elements at the same index in two `ReadonlyArray`s, collecting the results in a new `ReadonlyArray`. If one
+ * input `ReadonlyArray` is short, excess elements of the longer `ReadonlyArray` are discarded.
+ *
+ * @category mutations
+ * @since 1.0.0
+ */
+export const zipWith = <B, A, C>(that: ReadonlyArray<B>, f: (a: A, b: B) => C) =>
+  (self: ReadonlyArray<A>): ReadonlyArray<C> =>
+    isNonEmpty(self) && isNonEmpty(that) ? zipNonEmptyWith(that, f)(self) : internal.empty
+
+/**
+ * @category mutations
+ * @since 1.0.0
+ */
+export const zipNonEmpty = <B>(that: NonEmptyReadonlyArray<B>) =>
+  <A>(self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<readonly [A, B]> =>
+    pipe(
+      self,
+      zipNonEmptyWith(that, (a, b) => [a, b])
+    )
+
+/**
+ * @category mutations
  * @since 1.0.0
  */
 export const zipNonEmptyWith = <B, A, C>(that: NonEmptyReadonlyArray<B>, f: (a: A, b: B) => C) =>
@@ -925,48 +788,18 @@ export const zipNonEmptyWith = <B, A, C>(that: NonEmptyReadonlyArray<B>, f: (a: 
   }
 
 /**
+ * This function is the inverse of `zip`. Takes a `ReadonlyArray` of pairs and return two corresponding `ReadonlyArray`s.
+ *
+ * @category mutations
  * @since 1.0.0
  */
-export const zipNonEmpty = <B>(that: NonEmptyReadonlyArray<B>) =>
-  <A>(self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<readonly [A, B]> =>
-    pipe(
-      self,
-      zipNonEmptyWith(that, (a, b) => [a, b])
-    )
+export const unzip = <A, B>(
+  self: ReadonlyArray<readonly [A, B]>
+): readonly [ReadonlyArray<A>, ReadonlyArray<B>] =>
+  isNonEmpty(self) ? unzipNonEmpty(self) : [[], []]
 
 /**
- * Apply a function to pairs of elements at the same index in two `ReadonlyArray`s, collecting the results in a new `ReadonlyArray`. If one
- * input `ReadonlyArray` is short, excess elements of the longer `ReadonlyArray` are discarded.
- *
- * @exampleTodo
- * import { zipWith } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * assert.deepStrictEqual(pipe([1, 2, 3], zipWith(['a', 'b', 'c', 'd'], (n, s) => s + n)), ['a1', 'b2', 'c3'])
- *
- * @since 1.0.0
- */
-export const zipWith = <B, A, C>(that: ReadonlyArray<B>, f: (a: A, b: B) => C) =>
-  (self: ReadonlyArray<A>): ReadonlyArray<C> =>
-    isNonEmpty(self) && isNonEmpty(that) ? zipNonEmptyWith(that, f)(self) : internal.empty
-
-/**
- * Takes two `ReadonlyArray`s and returns a `ReadonlyArray` of corresponding pairs. If one input `ReadonlyArray` is short, excess elements of the
- * longer `ReadonlyArray` are discarded.
- *
- * @exampleTodo
- * import { zip } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * assert.deepStrictEqual(pipe([1, 2, 3], zip(['a', 'b', 'c', 'd'])), [[1, 'a'], [2, 'b'], [3, 'c']])
- *
- * @since 1.0.0
- */
-export const zip = <B>(
-  that: ReadonlyArray<B>
-): <A>(self: ReadonlyArray<A>) => ReadonlyArray<readonly [A, B]> => zipWith(that, (a, b) => [a, b])
-
-/**
+ * @category mutations
  * @since 1.0.0
  */
 export const unzipNonEmpty = <A, B>(
@@ -982,40 +815,25 @@ export const unzipNonEmpty = <A, B>(
 }
 
 /**
- * This function is the inverse of `zip`. Takes a `ReadonlyArray` of pairs and return two corresponding `ReadonlyArray`s.
+ * Places an element in between members of a `ReadonlyArray`
  *
- * @exampleTodo
- * import { unzip } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- *
- * assert.deepStrictEqual(unzip([[1, 'a'], [2, 'b'], [3, 'c']]), [[1, 2, 3], ['a', 'b', 'c']])
- *
+ * @category mutations
  * @since 1.0.0
  */
-export const unzip = <A, B>(
-  self: ReadonlyArray<readonly [A, B]>
-): readonly [ReadonlyArray<A>, ReadonlyArray<B>] =>
-  isNonEmpty(self) ? unzipNonEmpty(self) : [[], []]
-
-/**
- * @since 1.0.0
- */
-export const prependAll = <B>(prefix: ReadonlyArray<B>) =>
-  <A>(self: ReadonlyArray<A>): ReadonlyArray<A | B> => (prefix as ReadonlyArray<A | B>).concat(self)
+export const intersperse = <B>(middle: B) =>
+  <A>(
+    self: ReadonlyArray<A>
+  ): ReadonlyArray<A | B> => (isNonEmpty(self) ? intersperseNonEmpty(middle)(self) : self)
 
 /**
  * Places an element in between members of a `NonEmptyReadonlyArray`
  *
- * @example
- * import { intersperse } from '@fp-ts/data/NonEmptyReadonlyArray'
- * import { pipe } from '@fp-ts/data/Function'
- *
- * assert.deepStrictEqual(pipe([1, 2, 3, 4], intersperse(9)), [1, 9, 2, 9, 3, 9, 4])
- *
+ * @category mutations
  * @since 1.0.0
  */
-export const intersperseNonEmpty = <A>(middle: A) =>
-  (self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A> => {
-    const out: [A, ...Array<A>] = [headNonEmpty(self)]
+export const intersperseNonEmpty = <B>(middle: B) =>
+  <A>(self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A | B> => {
+    const out: internal.NonEmptyArray<A | B> = [headNonEmpty(self)]
     const tail = tailNonEmpty(self)
     for (let i = 0; i < tail.length; i++) {
       if (i < tail.length) {
@@ -1027,95 +845,63 @@ export const intersperseNonEmpty = <A>(middle: A) =>
   }
 
 /**
- * Places an element in between members of a `ReadonlyArray`
- *
- * @exampleTodo
- * import { intersperse } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * assert.deepStrictEqual(pipe([1, 2, 3, 4], intersperse(9)), [1, 9, 2, 9, 3, 9, 4])
- *
- * @since 1.0.0
- */
-export const intersperse = <A>(middle: A) =>
-  (
-    self: ReadonlyArray<A>
-  ): ReadonlyArray<A> => (isNonEmpty(self) ? intersperseNonEmpty(middle)(self) : self)
-
-/**
- * @since 1.0.0
- */
-export function concatNonEmpty<B>(
-  that: NonEmptyReadonlyArray<B>
-): <A>(self: ReadonlyArray<A>) => NonEmptyReadonlyArray<A | B>
-export function concatNonEmpty<B>(
-  that: ReadonlyArray<B>
-): <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A | B>
-export function concatNonEmpty<B>(
-  that: ReadonlyArray<B>
-): <A>(self: NonEmptyReadonlyArray<A>) => ReadonlyArray<A | B> {
-  return <A>(self: NonEmptyReadonlyArray<A | B>) => self.concat(that)
-}
-
-/**
- * Splits a `NonEmptyReadonlyArray` into two pieces, the first piece has max `n` elements.
- *
- * @since 1.0.0
- */
-export const splitNonEmptyAt = (n: number) =>
-  <A>(as: NonEmptyReadonlyArray<A>): readonly [NonEmptyReadonlyArray<A>, ReadonlyArray<A>] => {
-    const m = Math.max(1, n)
-    return m >= as.length ?
-      [as, internal.empty] :
-      [pipe(as.slice(1, m), prepend(headNonEmpty(as))), as.slice(m)]
-  }
-
-/**
  * Apply a function to the head, creating a new `NonEmptyReadonlyArray`.
  *
+ * @category mutations
  * @since 1.0.0
  */
-export const modifyNonEmptyHead = <A>(f: Endomorphism<A>) =>
+export const modifyNonEmptyHead = <A, B>(f: (a: A) => B) =>
   (
-    as: NonEmptyReadonlyArray<A>
-  ): NonEmptyReadonlyArray<A> => [f(headNonEmpty(as)), ...tailNonEmpty(as)]
+    self: NonEmptyReadonlyArray<A>
+  ): NonEmptyReadonlyArray<A | B> => [f(headNonEmpty(self)), ...tailNonEmpty(self)]
 
 /**
  * Change the head, creating a new `NonEmptyReadonlyArray`.
  *
+ * @category mutations
  * @since 1.0.0
  */
-export const updateNonEmptyHead = <A>(
-  a: A
-): ((as: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A>) => modifyNonEmptyHead(() => a)
+export const updateNonEmptyHead = <B>(
+  b: B
+): (<A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A | B>) =>
+  modifyNonEmptyHead(() => b)
 
 /**
  * Apply a function to the last element, creating a new `NonEmptyReadonlyArray`.
  *
+ * @category mutations
  * @since 1.0.0
  */
-export const modifyNonEmptyLast = <A>(f: Endomorphism<A>) =>
-  (as: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A> =>
-    pipe(initNonEmpty(as), append(f(lastNonEmpty(as))))
+export const modifyNonEmptyLast = <A, B>(f: (a: A) => B) =>
+  (self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A | B> =>
+    pipe(initNonEmpty(self), append(f(lastNonEmpty(self))))
 
 /**
  * Change the last element, creating a new `NonEmptyReadonlyArray`.
  *
+ * @category mutations
  * @since 1.0.0
  */
-export const updateNonEmptyLast = <A>(
-  a: A
-): ((as: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A>) => modifyNonEmptyLast(() => a)
+export const updateNonEmptyLast = <B>(
+  b: B
+): (<A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A | B>) =>
+  modifyNonEmptyLast(() => b)
+
+/**
+ * Rotate a `ReadonlyArray` by `n` steps.
+ *
+ * @category mutations
+ * @since 1.0.0
+ */
+export const rotate = (n: number) =>
+  <A>(
+    self: ReadonlyArray<A>
+  ): ReadonlyArray<A> => (isNonEmpty(self) ? rotateNonEmpty(n)(self) : self)
 
 /**
  * Rotate a `NonEmptyReadonlyArray` by `n` steps.
  *
- * @example
- * import { rotate } from '@fp-ts/data/NonEmptyReadonlyArray'
- *
- * assert.deepStrictEqual(rotate(2)([1, 2, 3, 4, 5]), [4, 5, 1, 2, 3])
- * assert.deepStrictEqual(rotate(-2)([1, 2, 3, 4, 5]), [3, 4, 5, 1, 2])
- *
+ * @category mutations
  * @since 1.0.0
  */
 export const rotateNonEmpty = (n: number) =>
@@ -1127,47 +913,24 @@ export const rotateNonEmpty = (n: number) =>
     }
     if (m < 0) {
       const [f, s] = splitNonEmptyAt(-m)(self)
-      return concatNonEmpty(f)(s)
+      return appendAllNonEmpty(f)(s)
     } else {
       return rotateNonEmpty(m - len)(self)
     }
   }
 
 /**
- * Rotate a `ReadonlyArray` by `n` steps.
- *
- * @exampleTodo
- * import { rotate } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- *
- * assert.deepStrictEqual(rotate(2)([1, 2, 3, 4, 5]), [4, 5, 1, 2, 3])
- * assert.deepStrictEqual(rotate(-2)([1, 2, 3, 4, 5]), [3, 4, 5, 1, 2])
- *
- * @since 1.0.0
- */
-export const rotate = (n: number) =>
-  <A>(
-    self: ReadonlyArray<A>
-  ): ReadonlyArray<A> => (isNonEmpty(self) ? rotateNonEmpty(n)(self) : self)
-
-/**
  * Tests whether a value is a member of a `ReadonlyArray`.
  *
- * @exampleTodo
- * import { elem } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import * as N from '@fp-ts/core/typeclass/data/number'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * assert.strictEqual(pipe([1, 2, 3], elem(N.Eq)(2)), true)
- * assert.strictEqual(pipe([1, 2, 3], elem(N.Eq)(0)), false)
- *
+ * @category predicates
  * @since 1.0.0
  */
-export const elem = <B>(a: B) =>
+export const elem = <B>(b: B) =>
   <A>(self: ReadonlyArray<A>): boolean => {
     let i = 0
     const len = self.length
     for (; i < len; i++) {
-      if (equals(a, self[i])) {
+      if (equals(b, self[i])) {
         return true
       }
     }
@@ -1177,12 +940,7 @@ export const elem = <B>(a: B) =>
 /**
  * Remove duplicates from a `ReadonlyArray`, keeping the first occurrence of an element.
  *
- * @exampleTodo
- * import { uniq } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import * as N from '@fp-ts/core/typeclass/data/number'
- *
- * assert.deepStrictEqual(uniq(N.Eq)([1, 2, 1]), [1, 2])
- *
+ * @category mutations
  * @since 1.0.0
  */
 export const uniq = <A>(
@@ -1190,58 +948,36 @@ export const uniq = <A>(
 ) => (isNonEmpty(self) ? uniqNonEmpty(self) : self)
 
 /**
- * Sort the elements of a `NonEmptyReadonlyArray` in increasing order, creating a new `NonEmptyReadonlyArray`.
+ * Remove duplicates from a `NonEmptyReadonlyArray`, keeping the first occurrence of an element.
  *
+ * @category mutations
  * @since 1.0.0
  */
-export const sortNonEmpty = <B>(O: Order<B>) =>
-  <A extends B>(self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A> =>
-    self.length === 1 ? self : (self.slice().sort((self, that) => O.compare(that)(self)) as any)
+export const uniqNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A> => {
+  if (self.length === 1) {
+    return self
+  }
+  const out: internal.NonEmptyArray<A> = [headNonEmpty(self)]
+  const rest = tailNonEmpty(self)
+  for (const a of rest) {
+    if (out.every((o) => !equals(o)(a))) {
+      out.push(a)
+    }
+  }
+  return out
+}
 
 /**
- * @since 1.0.0
- */
-export const sortByNonEmpty = <B>(
-  orders: ReadonlyArray<Order<B>>
-): (<A extends B>(as: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A>) =>
-  sortNonEmpty(order.getMonoid<B>().combineAll(orders))
-
-/**
- * Sort the elements of a `ReadonlyArray` in increasing order, where elements are compared using first `ords[0]`, then `ords[1]`,
- * etc...
- *
- * @exampleTodo
- * import { sortBy } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { contramap } from '@fp-ts/core/typeclass/Order'
- * import * as S from '@fp-ts/core/typeclass/data/string'
- * import * as N from '@fp-ts/core/typeclass/data/number'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * interface Person {
- *   name: string
- *   age: number
- * }
- * const byName = pipe(S.Order, contramap((p: Person) => p.name))
- * const byAge = pipe(N.Order, contramap((p: Person) => p.age))
- *
- * const sortByNameByAge = sortBy([byName, byAge])
- *
- * const persons = [{ name: 'a', age: 1 }, { name: 'b', age: 3 }, { name: 'c', age: 2 }, { name: 'b', age: 2 }]
- * assert.deepStrictEqual(sortByNameByAge(persons), [
- *   { name: 'a', age: 1 },
- *   { name: 'b', age: 2 },
- *   { name: 'b', age: 3 },
- *   { name: 'c', age: 2 }
- * ])
+ * A useful recursion pattern for processing a `ReadonlyArray` to produce a new `ReadonlyArray`, often used for "chopping" up the input
+ * `ReadonlyArray`. Typically chop is called with some function that will consume an initial prefix of the `ReadonlyArray` and produce a
+ * value and the rest of the `ReadonlyArray`.
  *
  * @since 1.0.0
  */
-export const sortBy = <B>(
-  orders: ReadonlyArray<Order<B>>
+export const chop = <A, B>(
+  f: (as: NonEmptyReadonlyArray<A>) => readonly [B, ReadonlyArray<A>]
 ) =>
-  <A extends B>(
-    self: ReadonlyArray<A>
-  ): ReadonlyArray<A> => (isNonEmpty(self) ? sortByNonEmpty(orders)(self) : self)
+  (self: ReadonlyArray<A>): ReadonlyArray<B> => (isNonEmpty(self) ? chopNonEmpty(f)(self) : empty)
 
 /**
  * A useful recursion pattern for processing a `NonEmptyReadonlyArray` to produce a new `NonEmptyReadonlyArray`, often used for "chopping" up the input
@@ -1253,8 +989,8 @@ export const sortBy = <B>(
 export const chopNonEmpty = <A, B>(
   f: (as: NonEmptyReadonlyArray<A>) => readonly [B, ReadonlyArray<A>]
 ) =>
-  (as: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<B> => {
-    const [b, rest] = f(as)
+  (self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<B> => {
+    const [b, rest] = f(self)
     const out: internal.NonEmptyArray<B> = [b]
     let next: ReadonlyArray<A> = rest
     while (internal.isNonEmpty(next)) {
@@ -1266,55 +1002,32 @@ export const chopNonEmpty = <A, B>(
   }
 
 /**
- * A useful recursion pattern for processing a `ReadonlyArray` to produce a new `ReadonlyArray`, often used for "chopping" up the input
- * `ReadonlyArray`. Typically chop is called with some function that will consume an initial prefix of the `ReadonlyArray` and produce a
- * value and the rest of the `ReadonlyArray`.
- *
- * @exampleTodo
- * import { Eq } from '@fp-ts/core/typeclass/typeclasses/Eq'
- * import * as N from '@fp-ts/core/typeclass/data/number'
- * import * as RA from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * const group = <A>(E: Eq<A>): ((as: ReadonlyArray<A>) => ReadonlyArray<ReadonlyArray<A>>) => {
- *   return RA.chop(as => pipe(as, RA.spanLeft(E.equals(as[0]))))
- * }
- * assert.deepStrictEqual(group(N.Eq)([1, 1, 2, 3, 3, 4]), [[1, 1], [2], [3, 3], [4]])
- *
- * @since 1.0.0
- */
-export const chop = <A, B>(
-  f: (as: NonEmptyReadonlyArray<A>) => readonly [B, ReadonlyArray<A>]
-) => (as: ReadonlyArray<A>): ReadonlyArray<B> => (isNonEmpty(as) ? chopNonEmpty(f)(as) : empty)
-
-/**
  * Splits a `ReadonlyArray` into two pieces, the first piece has max `n` elements.
  *
- * @exampleTodo
- * import { splitAt } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- *
- * assert.deepStrictEqual(splitAt(2)([1, 2, 3, 4, 5]), [[1, 2], [3, 4, 5]])
- *
+ * @category getters
  * @since 1.0.0
  */
 export const splitAt = (n: number) =>
-  <A>(as: ReadonlyArray<A>): readonly [ReadonlyArray<A>, ReadonlyArray<A>] =>
-    n >= 1 && isNonEmpty(as) ?
-      splitNonEmptyAt(n)(as) :
-      isEmpty(as) ?
-      [as, empty] :
-      [empty, as]
+  <A>(self: ReadonlyArray<A>): readonly [ReadonlyArray<A>, ReadonlyArray<A>] =>
+    n >= 1 && isNonEmpty(self) ?
+      splitNonEmptyAt(n)(self) :
+      isEmpty(self) ?
+      [self, empty] :
+      [empty, self]
 
 /**
- * Splits a `NonEmptyReadonlyArray` into length-`n` pieces. The last piece will be shorter if `n` does not evenly divide the length of
- * the `NonEmptyReadonlyArray`.
+ * Splits a `NonEmptyReadonlyArray` into two pieces, the first piece has max `n` elements.
  *
+ * @category getters
  * @since 1.0.0
  */
-export const chunksOfNonEmpty = (
-  n: number
-): (<A>(as: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<NonEmptyReadonlyArray<A>>) =>
-  chopNonEmpty(splitNonEmptyAt(n))
+export const splitNonEmptyAt = (n: number) =>
+  <A>(self: NonEmptyReadonlyArray<A>): readonly [NonEmptyReadonlyArray<A>, ReadonlyArray<A>] => {
+    const m = Math.max(1, n)
+    return m >= self.length ?
+      [self, internal.empty] :
+      [pipe(self.slice(1, m), prepend(headNonEmpty(self))), self.slice(m)]
+  }
 
 /**
  * Splits a `ReadonlyArray` into length-`n` pieces. The last piece will be shorter if `n` does not evenly divide the length of
@@ -1327,39 +1040,39 @@ export const chunksOfNonEmpty = (
  *
  * whenever `n` evenly divides the length of `as`.
  *
- * @exampleTodo
- * import { chunksOf } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- *
- * assert.deepStrictEqual(chunksOf(2)([1, 2, 3, 4, 5]), [[1, 2], [3, 4], [5]])
- *
+ * @category getters
  * @since 1.0.0
  */
-export const chunksOf = (
-  n: number
-) =>
+export const chunksOf = (n: number) =>
   <A>(
-    as: ReadonlyArray<A>
-  ): ReadonlyArray<NonEmptyReadonlyArray<A>> => (isNonEmpty(as) ? chunksOfNonEmpty(n)(as) : empty)
+    self: ReadonlyArray<A>
+  ): ReadonlyArray<
+    NonEmptyReadonlyArray<A>
+  > => (isNonEmpty(self) ? chunksOfNonEmpty(n)(self) : empty)
 
 /**
- * Group equal, consecutive elements of an array into non empty arrays.
+ * Splits a `NonEmptyReadonlyArray` into length-`n` pieces. The last piece will be shorter if `n` does not evenly divide the length of
+ * the `NonEmptyReadonlyArray`.
  *
- * @example
- * import { group } from '@fp-ts/data/NonEmptyReadonlyArray'
+ * @category getters
+ * @since 1.0.0
+ */
+export const chunksOfNonEmpty = (
+  n: number
+): (<A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<NonEmptyReadonlyArray<A>>) =>
+  chopNonEmpty(splitNonEmptyAt(n))
+
+/**
+ * Group equal, consecutive elements of a `NonEmptyReadonlyArray` into `NonEmptyReadonlyArray`s.
  *
- * assert.deepStrictEqual(group([1, 2, 1, 1]), [
- *   [1],
- *   [2],
- *   [1, 1]
- * ])
- *
+ * @category grouping
  * @since 1.0.0
  */
 export const group = <A>(
-  as: NonEmptyReadonlyArray<A>
+  self: NonEmptyReadonlyArray<A>
 ): NonEmptyReadonlyArray<NonEmptyReadonlyArray<A>> =>
   pipe(
-    as,
+    self,
     chopNonEmpty((as) => {
       const h = headNonEmpty(as)
       const out: internal.NonEmptyArray<A> = [h]
@@ -1380,20 +1093,13 @@ export const group = <A>(
  * Splits an array into sub-non-empty-arrays stored in an object, based on the result of calling a `string`-returning
  * function on each element, and grouping the results according to values returned
  *
- * @example
- * import { groupBy } from '@fp-ts/data/NonEmptyReadonlyArray'
- *
- * assert.deepStrictEqual(groupBy((s: string) => String(s.length))(['foo', 'bar', 'foobar']), {
- *   '3': ['foo', 'bar'],
- *   '6': ['foobar']
- * })
- *
+ * @category grouping
  * @since 1.0.0
  */
 export const groupBy = <A>(f: (a: A) => string) =>
-  (as: ReadonlyArray<A>): Readonly<Record<string, NonEmptyReadonlyArray<A>>> => {
+  (self: ReadonlyArray<A>): Readonly<Record<string, NonEmptyReadonlyArray<A>>> => {
     const out: Record<string, internal.NonEmptyArray<A>> = {}
-    for (const a of as) {
+    for (const a of self) {
       const k = f(a)
       if (internal.has.call(out, k)) {
         out[k].push(a)
@@ -1405,57 +1111,11 @@ export const groupBy = <A>(f: (a: A) => string) =>
   }
 
 /**
- * Creates a `ReadonlyArray` of unique values, in order, from all given `ReadonlyArray`s using a `Eq` for equality comparisons.
- *
- * @example
- * import { union } from '@fp-ts/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/data/Function'
- *
- * assert.deepStrictEqual(pipe([1, 2], union([2, 3])), [1, 2, 3])
- *
- * @since 1.0.0
- */
-export const unionNonEmpty = <B>(that: ReadonlyArray<B>) =>
-  <A>(self: NonEmptyReadonlyArray<A>) => uniq(concatNonEmpty(that)(self))
-
-/**
- * Remove duplicates from a `NonEmptyReadonlyArray`, keeping the first occurrence of an element.
- *
- * @example
- * import { uniq } from '@fp-ts/data/NonEmptyReadonlyArray'
- *
- * assert.deepStrictEqual(uniq([1, 2, 1]), [1, 2])
- *
- * @since 1.0.0
- */
-export const uniqNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A> => {
-  if (self.length === 1) {
-    return self
-  }
-  const out: internal.NonEmptyArray<A> = [headNonEmpty(self)]
-  const rest = tailNonEmpty(self)
-  for (const a of rest) {
-    if (out.every((o) => !equals(o)(a))) {
-      out.push(a)
-    }
-  }
-  return out
-}
-
-/**
- * Creates a `ReadonlyArray` of unique values, in order, from all given `ReadonlyArray`s using a `Eq` for equality comparisons.
- *
- * @exampleTodo
- * import { union } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import * as N from '@fp-ts/core/typeclass/data/number'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * assert.deepStrictEqual(pipe([1, 2], union(N.Eq)([2, 3])), [1, 2, 3])
- *
+ * @category mutations
  * @since 1.0.0
  */
 export const union = <B>(that: ReadonlyArray<B>) =>
-  <A>(self: ReadonlyArray<A>) =>
+  <A>(self: ReadonlyArray<A>): ReadonlyArray<A | B> =>
     isNonEmpty(self) && isNonEmpty(that) ?
       unionNonEmpty(that)(self) :
       isNonEmpty(self) ?
@@ -1463,16 +1123,26 @@ export const union = <B>(that: ReadonlyArray<B>) =>
       that
 
 /**
+ * @category mutations
+ * @since 1.0.0
+ */
+export function unionNonEmpty<B>(
+  that: NonEmptyReadonlyArray<B>
+): <A>(self: ReadonlyArray<A>) => NonEmptyReadonlyArray<A | B>
+export function unionNonEmpty<B>(
+  that: ReadonlyArray<B>
+): <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A | B>
+export function unionNonEmpty<B>(
+  that: ReadonlyArray<B>
+): <A>(self: NonEmptyReadonlyArray<A>) => ReadonlyArray<A | B> {
+  return <A>(self: NonEmptyReadonlyArray<A | B>) => uniqNonEmpty(appendAllNonEmpty(that)(self))
+}
+
+/**
  * Creates a `ReadonlyArray` of unique values that are included in all given `ReadonlyArray`s using a `Eq` for equality
  * comparisons. The order and references of result values are determined by the first `ReadonlyArray`.
  *
- * @exampleTodo
- * import { intersection } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import * as N from '@fp-ts/core/typeclass/data/number'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * assert.deepStrictEqual(pipe([1, 2], intersection(N.Eq)([2, 3])), [2])
- *
+ * @category mutations
  * @since 1.0.0
  */
 export const intersection = <A>(that: ReadonlyArray<A>) =>
@@ -1482,13 +1152,7 @@ export const intersection = <A>(that: ReadonlyArray<A>) =>
  * Creates a `ReadonlyArray` of values not included in the other given `ReadonlyArray` using a `Eq` for equality
  * comparisons. The order and references of result values are determined by the first `ReadonlyArray`.
  *
- * @exampleTodo
- * import { difference } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import * as N from '@fp-ts/core/typeclass/data/number'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * assert.deepStrictEqual(pipe([1, 2], difference(N.Eq)([2, 3])), [1])
- *
+ * @category mutations
  * @since 1.0.0
  */
 export const difference = <B>(that: ReadonlyArray<B>) =>
@@ -1503,32 +1167,10 @@ export const difference = <B>(that: ReadonlyArray<B>) =>
 export const of = <A>(a: A): NonEmptyReadonlyArray<A> => [a]
 
 /**
+ * @category constructors
  * @since 1.0.0
  */
 export const empty: ReadonlyArray<never> = internal.empty
-
-/**
- * Identifies an associative operation on a type constructor. It is similar to `Semigroup`, except that it applies to
- * types of kind `* -> *`.
- *
- * In case of `ReadonlyArray` concatenates the inputs into a single array.
- *
- * @exampleTodo
- * import * as RA from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * assert.deepStrictEqual(
- *   pipe(
- *     [1, 2, 3],
- *     RA.orElse([4, 5])
- *   ),
- *   [1, 2, 3, 4, 5]
- * )
- *
- * @since 1.0.0
- */
-export const orElse = <B>(that: ReadonlyArray<B>) =>
-  <A>(self: ReadonlyArray<A>): ReadonlyArray<A | B> => (self as ReadonlyArray<A | B>).concat(that)
 
 /**
  * @category mapping
@@ -1640,25 +1282,6 @@ export const Pointed: pointed.Pointed<ReadonlyArrayTypeLambda> = {
 }
 
 /**
- * @exampleTodo
- * import * as RA from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * assert.deepStrictEqual(
- *   pipe(
- *     [1, 2, 3],
- *     RA.flatMap((n) => [`a${n}`, `b${n}`])
- *   ),
- *   ['a1', 'b1', 'a2', 'b2', 'a3', 'b3']
- * )
- * assert.deepStrictEqual(
- *   pipe(
- *     [1, 2, 3],
- *     RA.flatMap(() => [])
- *   ),
- *   []
- * )
- *
  * @category sequencing
  * @since 1.0.0
  */
@@ -1675,12 +1298,7 @@ export const FlatMap: flatMap_.FlatMap<ReadonlyArrayTypeLambda> = {
 }
 
 /**
- * Removes one level of nesting
- *
- * @exampleTodo
- * import { flatten } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- *
- * assert.deepStrictEqual(flatten([[1], [2, 3], [4]]), [1, 2, 3, 4])
+ * Removes one level of nesting.
  *
  * @since 1.0.0
  */
@@ -1759,18 +1377,6 @@ export const flatMapNonEmptyWithIndex = <A, B>(f: (a: A, i: number) => NonEmptyR
   }
 
 /**
- * @example
- * import * as RNEA from '@fp-ts/data/NonEmptyReadonlyArray'
- * import { pipe } from '@fp-ts/data/Function'
- *
- * assert.deepStrictEqual(
- *   pipe(
- *     [1, 2, 3],
- *     RNEA.flatMap((n) => [`a${n}`, `b${n}`])
- *   ),
- *   ['a1', 'b1', 'a2', 'b2', 'a3', 'b3']
- * )
- *
  * @category sequencing
  * @since 1.0.0
  */
@@ -2025,17 +1631,10 @@ export const getIntersectionSemigroup = <A>(): Semigroup<ReadonlyArray<A>> =>
 /**
  * Returns a `Semigroup` for `ReadonlyArray<A>`.
  *
- * @exampleTodo
- * import { getSemigroup } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * const S = getSemigroup<number>()
- * assert.deepStrictEqual(pipe([1, 2], S.combine([3, 4])), [1, 2, 3, 4])
- *
  * @category instances
  * @since 1.0.0
  */
-export const getSemigroup = <A>(): Semigroup<ReadonlyArray<A>> => fromCombine(concat)
+export const getSemigroup = <A>(): Semigroup<ReadonlyArray<A>> => fromCombine(appendAll)
 
 /**
  * Returns a `Monoid` for `ReadonlyArray<A>`.
@@ -2058,16 +1657,6 @@ export const getMonoid = <A>(): Monoid<ReadonlyArray<A>> => {
  * `ReadonlyArray`s is equal to: the first non equal comparison of each `ReadonlyArray`s elements taken pairwise in increasing order, in
  * case of equality over all the pairwise elements; the longest `ReadonlyArray` is considered the greatest, if both `ReadonlyArray`s have
  * the same length, the result is equality.
- *
- * @exampleTodo
- * import { liftOrder } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import * as S from '@fp-ts/core/typeclass/data/string'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * const O = liftOrder(S.Order)
- * assert.strictEqual(pipe(['b'], O.compare(['a'])), 1)
- * assert.strictEqual(pipe(['a'], O.compare(['a'])), 0)
- * assert.strictEqual(pipe(['a'], O.compare(['b'])), -1)
  *
  * @category instances
  * @since 1.0.0
@@ -2239,25 +1828,6 @@ export const Monad: monad.Monad<ReadonlyArrayTypeLambda> = {
 
 /**
  * Returns an effect that effectfully "peeks" at the success of this effect.
- *
- * @exampleTodo
- * import * as RA from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * assert.deepStrictEqual(
- *   pipe(
- *     [1, 2, 3],
- *     RA.tap(() => ['a', 'b'])
- *   ),
- *   [1, 1, 2, 2, 3, 3]
- * )
- * assert.deepStrictEqual(
- *   pipe(
- *     [1, 2, 3],
- *     RA.tap(() => [])
- *   ),
- *   []
- * )
  *
  * @since 1.0.0
  */
@@ -2501,23 +2071,6 @@ export const TraversableFilterable: traversableFilterable.TraversableFilterable<
 /**
  * Filter values inside a context.
  *
- * @exampleTodo
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- * import * as RA from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import * as T from '@fp-ts/core/typeclass/data/Async'
- *
- * const traverseFilter = RA.traverseFilter(T.MonoidalPar)
- * async function test() {
- *   assert.deepStrictEqual(
- *     await pipe(
- *       [-1, 2, 3],
- *       traverseFilter((n) => T.of(n > 0))
- *     )(),
- *     [2, 3]
- *   )
- * }
- * test()
- *
  * @since 1.0.0
  */
 export const traverseFilter: <F extends TypeLambda>(
@@ -2606,15 +2159,6 @@ export const liftEither = <A extends ReadonlyArray<unknown>, E, B>(
 /**
  * Check if a predicate holds true for every `ReadonlyArray` member.
  *
- * @exampleTodo
- * import { every } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * const isPositive = (n: number): boolean => n > 0
- *
- * assert.deepStrictEqual(pipe([1, 2, 3], every(isPositive)), true)
- * assert.deepStrictEqual(pipe([1, 2, -3], every(isPositive)), false)
- *
  * @since 1.0.0
  */
 export function every<A, B extends A>(
@@ -2628,15 +2172,6 @@ export function every<A>(predicate: Predicate<A>): Predicate<ReadonlyArray<A>> {
 /**
  * Check if a predicate holds true for any `ReadonlyArray` member.
  *
- * @exampleTodo
- * import { some } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- * import { pipe } from '@fp-ts/core/typeclass/data/Function'
- *
- * const isPositive = (n: number): boolean => n > 0
- *
- * assert.deepStrictEqual(pipe([-1, -2, 3], some(isPositive)), true)
- * assert.deepStrictEqual(pipe([-1, -2, -3], some(isPositive)), false)
- *
  * @since 1.0.0
  */
 export const some = <A>(predicate: Predicate<A>) =>
@@ -2647,16 +2182,10 @@ export const some = <A>(predicate: Predicate<A>) =>
  *
  * @since 1.0.0
  */
-export const exists = some
+export const has = some
 
 /**
  * Places an element in between members of a `NonEmptyReadonlyArray`, then folds the results using the provided `Semigroup`.
- *
- * @example
- * import * as S from '@fp-ts/data/String'
- * import { intercalate } from '@fp-ts/data/NonEmptyReadonlyArray'
- *
- * assert.deepStrictEqual(intercalate(S.Semigroup)('-')(['a', 'b', 'c']), 'a-b-c')
  *
  * @since 1.0.0
  */
@@ -2670,12 +2199,6 @@ export const intercalateNonEmpty = <A>(
 /**
  * Fold a data structure, accumulating values in some `Monoid`, combining adjacent elements
  * using the specified separator.
- *
- * @exampleTodo
- * import * as S from '@fp-ts/core/typeclass/data/string'
- * import { intercalate } from '@fp-ts/core/typeclass/data/ReadonlyArray'
- *
- * assert.deepStrictEqual(intercalate(S.Monoid)('-')(['a', 'b', 'c']), 'a-b-c')
  *
  * @since 1.0.0
  */

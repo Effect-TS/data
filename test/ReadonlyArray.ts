@@ -137,15 +137,15 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("updateNonEmptyHead", () => {
-    deepStrictEqual(pipe(["a"], RA.updateNonEmptyHead("d")), ["d"])
-    deepStrictEqual(pipe(["a", "b"], RA.updateNonEmptyHead("d")), ["d", "b"])
-    deepStrictEqual(pipe(["a", "b", "c"], RA.updateNonEmptyHead("d")), ["d", "b", "c"])
+    deepStrictEqual(pipe(RA.make("a"), RA.updateNonEmptyHead("d")), ["d"])
+    deepStrictEqual(pipe(RA.make("a", "b"), RA.updateNonEmptyHead("d")), ["d", "b"])
+    deepStrictEqual(pipe(RA.make("a", "b", "c"), RA.updateNonEmptyHead("d")), ["d", "b", "c"])
   })
 
   it("updateNonEmptyLast", () => {
-    deepStrictEqual(pipe(["a"], RA.updateNonEmptyLast("d")), ["d"])
-    deepStrictEqual(pipe(["a", "b"], RA.updateNonEmptyLast("d")), ["a", "d"])
-    deepStrictEqual(pipe(["a", "b", "c"], RA.updateNonEmptyLast("d")), ["a", "b", "d"])
+    deepStrictEqual(pipe(RA.make("a"), RA.updateNonEmptyLast("d")), ["d"])
+    deepStrictEqual(pipe(RA.make("a", "b"), RA.updateNonEmptyLast("d")), ["a", "d"])
+    deepStrictEqual(pipe(RA.make("a", "b", "c"), RA.updateNonEmptyLast("d")), ["a", "b", "d"])
   })
 
   it("liftEither", () => {
@@ -214,8 +214,6 @@ describe.concurrent("ReadonlyArray", () => {
     })
 
     it("get", () => {
-      deepStrictEqual(RA.get(0)([1, 2, 3]), Option.some(1))
-      deepStrictEqual(RA.get(3)([1, 2, 3]), Option.none)
       deepStrictEqual(pipe([1, 2, 3], RA.get(0)), Option.some(1))
       deepStrictEqual(pipe([1, 2, 3], RA.get(3)), Option.none)
     })
@@ -267,16 +265,6 @@ describe.concurrent("ReadonlyArray", () => {
           RA.mapWithIndex((s, i) => s + i)
         ),
         ["a0", "b1"]
-      )
-    })
-
-    it("orElse", () => {
-      deepStrictEqual(
-        pipe(
-          [1, 2],
-          RA.orElse([3, 4])
-        ),
-        [1, 2, 3, 4]
       )
     })
 
@@ -746,23 +734,6 @@ describe.concurrent("ReadonlyArray", () => {
     )
   })
 
-  it("findFirstMap", () => {
-    deepStrictEqual(
-      pipe(
-        [1, 2, 3],
-        RA.findFirstMap((n) => (n > 1 ? Option.some(n * 2) : Option.none))
-      ),
-      Option.some(4)
-    )
-    deepStrictEqual(
-      pipe(
-        [1],
-        RA.findFirstMap((n) => (n < 1 ? Option.some(n * 2) : Option.none))
-      ),
-      Option.none
-    )
-  })
-
   it("findLast", () => {
     deepStrictEqual(
       pipe(
@@ -782,23 +753,6 @@ describe.concurrent("ReadonlyArray", () => {
       pipe(
         [{ a: 1 }, { a: 2 }, { a: 3 }],
         RA.findLast((x) => x.a > 3)
-      ),
-      Option.none
-    )
-  })
-
-  it("findLastMap", () => {
-    deepStrictEqual(
-      pipe(
-        [1, 2, 3],
-        RA.findLastMap((n) => (n > 1 ? Option.some(n * 2) : Option.none))
-      ),
-      Option.some(6)
-    )
-    deepStrictEqual(
-      pipe(
-        [1],
-        RA.findLastMap((n) => (n > 1 ? Option.some(n * 2) : Option.none))
       ),
       Option.none
     )
@@ -855,16 +809,6 @@ describe.concurrent("ReadonlyArray", () => {
   it("modifyAt", () => {
     deepStrictEqual(RA.modifyAt(1, double)([1, 2, 3]), Option.some([1, 4, 3]))
     deepStrictEqual(RA.modifyAt(1, double)([]), Option.none)
-    // should return the same reference if nothing changed
-    const input: ReadonlyArray<number> = [1, 2, 3]
-    deepStrictEqual(
-      pipe(
-        input,
-        RA.modifyAt(1, identity),
-        Option.map((out) => out === input)
-      ),
-      Option.some(true)
-    )
   })
 
   it("sort", () => {
@@ -1031,6 +975,10 @@ describe.concurrent("ReadonlyArray", () => {
 
   it("prependAll", () => {
     deepStrictEqual(RA.prependAll([1, 2])([3, 4]), [1, 2, 3, 4])
+  })
+
+  it("prependAllNonEmpty", () => {
+    deepStrictEqual(RA.prependAllNonEmpty([1, 2])([3, 4]), [1, 2, 3, 4])
   })
 
   it("intersperse", () => {
@@ -1211,8 +1159,8 @@ describe.concurrent("ReadonlyArray", () => {
     ])
   })
 
-  it("concatNonEmpty", () => {
-    deepStrictEqual(pipe([1, 2], RA.concatNonEmpty([3, 4])), [1, 2, 3, 4])
+  it("appendAllNonEmpty", () => {
+    deepStrictEqual(pipe([1, 2], RA.appendAllNonEmpty([3, 4])), [1, 2, 3, 4])
   })
 
   it("splitAt", () => {
