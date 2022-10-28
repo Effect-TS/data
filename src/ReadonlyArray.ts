@@ -1398,6 +1398,23 @@ export const bind: <N extends string, A extends object, B>(
  * @category filtering
  * @since 1.0.0
  */
+export const filterMapWithIndex = <A, B>(f: (a: A, i: number) => Option<B>) =>
+  (self: Iterable<A>): ReadonlyArray<B> => {
+    const as = fromIterable(self)
+    const out: Array<B> = []
+    for (let i = 0; i < as.length; i++) {
+      const o = f(as[i], i)
+      if (internal.isSome(o)) {
+        out.push(o.value)
+      }
+    }
+    return out
+  }
+
+/**
+ * @category filtering
+ * @since 1.0.0
+ */
 export const filterMap: <A, B>(f: (a: A) => Option<B>) => (self: Iterable<A>) => ReadonlyArray<B> =
   (f) => filterMapWithIndex(f)
 
@@ -1446,23 +1463,6 @@ export const separate: <A, B>(
 export const Filterable: filterable.Filterable<ReadonlyArrayTypeLambda> = {
   filterMap
 }
-
-/**
- * @category filtering
- * @since 1.0.0
- */
-export const filterMapWithIndex = <A, B>(f: (a: A, i: number) => Option<B>) =>
-  (self: Iterable<A>): ReadonlyArray<B> => {
-    const as = fromIterable(self)
-    const out: Array<B> = []
-    for (let i = 0; i < as.length; i++) {
-      const o = f(as[i], i)
-      if (internal.isSome(o)) {
-        out.push(o.value)
-      }
-    }
-    return out
-  }
 
 /**
  * @category filtering
