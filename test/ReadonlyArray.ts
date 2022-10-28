@@ -8,7 +8,7 @@ import * as Option from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import * as RA from "@fp-ts/data/ReadonlyArray"
 import * as String from "@fp-ts/data/String"
-import { deepStrictEqual, double } from "@fp-ts/data/test/util"
+import { deepStrictEqual, double, strictEqual } from "@fp-ts/data/test/util"
 import * as assert from "assert"
 import * as fc from "fast-check"
 
@@ -104,6 +104,50 @@ describe.concurrent("ReadonlyArray", () => {
     expect(RA.flatMapNullable).exist
   })
 
+  it("unprepend", () => {
+    deepStrictEqual(RA.unprepend([0]), [0, []])
+    deepStrictEqual(RA.unprepend([1, 2, 3, 4]), [1, [2, 3, 4]])
+  })
+
+  it("unappend", () => {
+    deepStrictEqual(RA.unappend([0]), [[], 0])
+    deepStrictEqual(RA.unappend([1, 2, 3, 4]), [
+      RA.make(1, 2, 3),
+      4
+    ])
+    deepStrictEqual(RA.unappend([0]), [[], 0])
+    deepStrictEqual(RA.unappend([1, 2, 3, 4]), [
+      RA.make(1, 2, 3),
+      4
+    ])
+  })
+
+  it("modifyNonEmptyHead", () => {
+    const f = (s: string) => s + "!"
+    deepStrictEqual(pipe(["a"], RA.modifyNonEmptyHead(f)), ["a!"])
+    deepStrictEqual(pipe(["a", "b"], RA.modifyNonEmptyHead(f)), ["a!", "b"])
+    deepStrictEqual(pipe(["a", "b", "c"], RA.modifyNonEmptyHead(f)), ["a!", "b", "c"])
+  })
+
+  it("modifyNonEmptyLast", () => {
+    const f = (s: string) => s + "!"
+    deepStrictEqual(pipe(["a"], RA.modifyNonEmptyLast(f)), ["a!"])
+    deepStrictEqual(pipe(["a", "b"], RA.modifyNonEmptyLast(f)), ["a", "b!"])
+    deepStrictEqual(pipe(["a", "b", "c"], RA.modifyNonEmptyLast(f)), ["a", "b", "c!"])
+  })
+
+  it("updateNonEmptyHead", () => {
+    deepStrictEqual(pipe(["a"], RA.updateNonEmptyHead("d")), ["d"])
+    deepStrictEqual(pipe(["a", "b"], RA.updateNonEmptyHead("d")), ["d", "b"])
+    deepStrictEqual(pipe(["a", "b", "c"], RA.updateNonEmptyHead("d")), ["d", "b", "c"])
+  })
+
+  it("updateNonEmptyLast", () => {
+    deepStrictEqual(pipe(["a"], RA.updateNonEmptyLast("d")), ["d"])
+    deepStrictEqual(pipe(["a", "b"], RA.updateNonEmptyLast("d")), ["a", "d"])
+    deepStrictEqual(pipe(["a", "b", "c"], RA.updateNonEmptyLast("d")), ["a", "b", "d"])
+  })
+
   it("liftEither", () => {
     const f = RA.liftEither((s: string) => s.length > 2 ? E.right(s.length) : E.left("e"))
     deepStrictEqual(f("a"), [])
@@ -169,11 +213,11 @@ describe.concurrent("ReadonlyArray", () => {
       )
     })
 
-    it("lookup", () => {
-      deepStrictEqual(RA.lookup(0)([1, 2, 3]), Option.some(1))
-      deepStrictEqual(RA.lookup(3)([1, 2, 3]), Option.none)
-      deepStrictEqual(pipe([1, 2, 3], RA.lookup(0)), Option.some(1))
-      deepStrictEqual(pipe([1, 2, 3], RA.lookup(3)), Option.none)
+    it("get", () => {
+      deepStrictEqual(RA.get(0)([1, 2, 3]), Option.some(1))
+      deepStrictEqual(RA.get(3)([1, 2, 3]), Option.none)
+      deepStrictEqual(pipe([1, 2, 3], RA.get(0)), Option.some(1))
+      deepStrictEqual(pipe([1, 2, 3], RA.get(3)), Option.none)
     })
 
     it("elem", () => {
@@ -851,6 +895,13 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(RA.sortNonEmpty(Number.Order)([1]), [1])
   })
 
+  it("zipNonEmptyWith", () => {
+    deepStrictEqual(
+      pipe([1, 2, 3], RA.zipNonEmptyWith(["a", "b", "c", "d"], (n, s) => s + n)),
+      ["a1", "b2", "c3"]
+    )
+  })
+
   it("zipWith", () => {
     deepStrictEqual(
       pipe([1, 2, 3], RA.zipWith([], (n, s) => s + n)),
@@ -870,6 +921,14 @@ describe.concurrent("ReadonlyArray", () => {
     )
   })
 
+  it("zipNonEmpty", () => {
+    deepStrictEqual(pipe(RA.make(1, 2, 3), RA.zipNonEmpty(["a", "b", "c", "d"])), [
+      [1, "a"],
+      [2, "b"],
+      [3, "c"]
+    ])
+  })
+
   it("zip", () => {
     deepStrictEqual(pipe([], RA.zip(["a", "b", "c", "d"])), [])
     deepStrictEqual(pipe([1, 2, 3], RA.zip([])), [])
@@ -883,6 +942,20 @@ describe.concurrent("ReadonlyArray", () => {
       [2, "b"],
       [3, "c"]
     ])
+  })
+
+  it("unzipNonEmpty", () => {
+    deepStrictEqual(
+      RA.unzipNonEmpty([
+        [1, "a"],
+        [2, "b"],
+        [3, "c"]
+      ]),
+      [
+        [1, 2, 3],
+        ["a", "b", "c"]
+      ]
+    )
   })
 
   it("unzip", () => {
@@ -900,7 +973,43 @@ describe.concurrent("ReadonlyArray", () => {
     )
   })
 
-  it("successes", () => {
+  it("flatMapNonEmpty", () => {
+    const f = (a: number): RA.NonEmptyReadonlyArray<number> => [a, 4]
+    deepStrictEqual(pipe(RA.make(1, 2), RA.flatMapNonEmpty(f)), [1, 4, 2, 4])
+  })
+
+  it("mapNonEmpty", () => {
+    deepStrictEqual(
+      pipe(
+        RA.make(1, 2),
+        RA.mapNonEmpty((n) => n * 2)
+      ),
+      [2, 4]
+    )
+  })
+
+  it("mapNonEmptyWithIndex", () => {
+    const add = (s: string, i: number) => s + i
+    deepStrictEqual(
+      pipe(RA.make("a", "b"), RA.mapNonEmptyWithIndex(add)),
+      ["a0", "b1"]
+    )
+  })
+
+  it("min", () => {
+    deepStrictEqual(RA.min(Number.Order)([2, 1, 3]), 1)
+    deepStrictEqual(RA.min(Number.Order)([3]), 3)
+  })
+
+  it("max", () => {
+    deepStrictEqual(
+      RA.max(Number.Order)(RA.make(1, 2, 3)),
+      3
+    )
+    deepStrictEqual(RA.max(Number.Order)([1]), 1)
+  })
+
+  it("rights", () => {
     deepStrictEqual(
       RA.rights([E.right(1), E.left("foo"), E.right(2)]),
       [1, 2]
@@ -908,7 +1017,7 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(RA.rights([]), [])
   })
 
-  it("failures", () => {
+  it("lefts", () => {
     deepStrictEqual(
       RA.lefts([E.right(1), E.left("foo"), E.right(2)]),
       ["foo"]
@@ -971,6 +1080,29 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(RA.rotateNonEmpty(2)([1, 2, 3, 4, 5]), [4, 5, 1, 2, 3])
   })
 
+  it("group", () => {
+    deepStrictEqual(RA.group([1, 2, 1, 1]), [[1], [2], [1, 1]])
+    deepStrictEqual(RA.group([1, 2, 1, 1, 3]), [[1], [2], [1, 1], [3]])
+  })
+
+  it("groupBy", () => {
+    deepStrictEqual(RA.groupBy((_) => "")([]), {})
+    deepStrictEqual(RA.groupBy((a) => `${a}`)([1]), { "1": [1] })
+    deepStrictEqual(
+      RA.groupBy((s: string) => `${s.length}`)(["foo", "bar", "foobar"]),
+      {
+        "3": ["foo", "bar"],
+        "6": ["foobar"]
+      }
+    )
+  })
+
+  it("reverseNonEmpty", () => {
+    const singleton: RA.NonEmptyReadonlyArray<number> = [1]
+    strictEqual(RA.reverseNonEmpty(singleton), singleton)
+    deepStrictEqual(RA.reverseNonEmpty(RA.make(1, 2, 3)), [3, 2, 1])
+  })
+
   it("reverse", () => {
     const empty: ReadonlyArray<number> = []
     deepStrictEqual(RA.reverse(empty), empty)
@@ -1004,7 +1136,7 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("scanRight", () => {
-    const f = (b: number, a: number) => b - a
+    const f = (b: number, a: number) => a - b
     deepStrictEqual(RA.scanRight(10, f)([1, 2, 3]), [-8, 9, -7, 10])
     deepStrictEqual(RA.scanRight(10, f)([0]), [-10, 10])
     deepStrictEqual(RA.scanRight(10, f)([]), [10])
