@@ -16,15 +16,12 @@ describe.concurrent("ReadonlyArray", () => {
   it("instances and derived exports", () => {
     expect(RA.Invariant).exist
     expect(RA.imap).exist
-    expect(RA.tupled).exist
-    expect(RA.bindTo).exist
 
     expect(RA.Covariant).exist
     expect(RA.map).exist
     expect(RA.let).exist
     expect(RA.flap).exist
     expect(RA.as).exist
-    expect(RA.asUnit).exist
 
     expect(RA.Of).exist
     expect(RA.of).exist
@@ -35,13 +32,10 @@ describe.concurrent("ReadonlyArray", () => {
     expect(RA.FlatMap).exist
     expect(RA.flatMap).exist
     expect(RA.flatten).exist
-    expect(RA.andThen).exist
     expect(RA.composeKleisliArrow).exist
 
     expect(RA.Chainable).exist
     expect(RA.bind).exist
-    expect(RA.tap).exist
-    expect(RA.andThenDiscard).exist
 
     expect(RA.Monad).exist
 
@@ -61,8 +55,6 @@ describe.concurrent("ReadonlyArray", () => {
     expect(RA.lift2).exist
     expect(RA.lift3).exist
     expect(RA.ap).exist
-    expect(RA.andThenDiscard).exist
-    expect(RA.andThen).exist
 
     expect(RA.Applicative).exist
     expect(RA.liftMonoid).exist
@@ -282,28 +274,6 @@ describe.concurrent("ReadonlyArray", () => {
       )
     })
 
-    it("andThenDiscard", () => {
-      deepStrictEqual(pipe([1, 2], RA.andThenDiscard(["a", "b", "c"])), [
-        1,
-        1,
-        1,
-        2,
-        2,
-        2
-      ])
-    })
-
-    it("andThen", () => {
-      deepStrictEqual(pipe([1, 2], RA.andThen(["a", "b", "c"])), [
-        "a",
-        "b",
-        "c",
-        "a",
-        "b",
-        "c"
-      ])
-    })
-
     it("flatMap", () => {
       deepStrictEqual(
         pipe(
@@ -320,16 +290,6 @@ describe.concurrent("ReadonlyArray", () => {
       deepStrictEqual(pipe(RA.empty, f), RA.empty)
       const empty: ReadonlyArray<number> = []
       deepStrictEqual(pipe(empty, f), RA.empty)
-    })
-
-    it("chainFirst", () => {
-      deepStrictEqual(
-        pipe(
-          [1, 2, 3],
-          RA.tap((n) => [n, n + 1])
-        ),
-        [1, 1, 2, 2, 3, 3]
-      )
     })
 
     it("extend", () => {
