@@ -121,7 +121,6 @@ describe.concurrent("Identity", () => {
   it("reduceRight", () => {
     const f = (a: string, acc: string) => acc + a
     U.deepStrictEqual(pipe("a", _.reduceRight("", f)), "a")
-    U.deepStrictEqual(pipe("a", _.Foldable.reduceRight("", f)), "a")
   })
 
   it("traverse", () => {

@@ -616,8 +616,7 @@ export const reduceRight = <B, A>(b: B, f: (b: B, a: A) => B) =>
  * @since 1.0.0
  */
 export const Foldable: foldable.Foldable<EitherTypeLambda> = {
-  reduce,
-  reduceRight
+  reduce
 }
 
 /**
@@ -1037,14 +1036,6 @@ export const traverse = <F extends TypeLambda>(F: applicative.Applicative<F>) =>
         pipe(f(ta.right), F.map<B, Either<E, B>>(right))
 
 /**
- * @category instances
- * @since 1.0.0
- */
-export const Traversable: traversable.Traversable<EitherTypeLambda> = {
-  traverse
-}
-
-/**
  * @category traversing
  * @since 1.0.0
  */
@@ -1052,7 +1043,16 @@ export const sequence: <F extends TypeLambda>(
   F: applicative.Applicative<F>
 ) => <E, FR, FO, FE, A>(
   fa: Either<E, Kind<F, FR, FO, FE, A>>
-) => Kind<F, FR, FO, FE, Either<E, A>> = traversable.sequence(Traversable)
+) => Kind<F, FR, FO, FE, Either<E, A>> = traversable.sequence<EitherTypeLambda>(traverse)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const Traversable: traversable.Traversable<EitherTypeLambda> = {
+  traverse,
+  sequence
+}
 
 /**
  * @category traversing

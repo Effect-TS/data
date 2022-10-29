@@ -1591,11 +1591,22 @@ export const traverseNonEmptyWithIndex = <F extends TypeLambda>(
     }
 
 /**
+ * @category traversing
+ * @since 1.0.0
+ */
+export const sequence: <F extends TypeLambda>(
+  F: applicative.Applicative<F>
+) => <R, O, E, A>(
+  self: ReadonlyArray<Kind<F, R, O, E, A>>
+) => Kind<F, R, O, E, ReadonlyArray<A>> = traversable.sequence<ReadonlyArrayTypeLambda>(traverse)
+
+/**
  * @category instances
  * @since 1.0.0
  */
 export const Traversable: traversable.Traversable<ReadonlyArrayTypeLambda> = {
-  traverse
+  traverse,
+  sequence
 }
 
 /**
@@ -1610,16 +1621,6 @@ export const traverseTap: <F extends TypeLambda>(
   .traverseTap(
     Traversable
   )
-
-/**
- * @category traversing
- * @since 1.0.0
- */
-export const sequence: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => <R, O, E, A>(
-  self: ReadonlyArray<Kind<F, R, O, E, A>>
-) => Kind<F, R, O, E, ReadonlyArray<A>> = traversable.sequence(Traversable)
 
 /**
  * @category traversing
@@ -1821,8 +1822,7 @@ export const reduceRightWithIndex = <B, A>(b: B, f: (b: B, a: A, i: number) => B
  * @since 1.0.0
  */
 export const Foldable: foldable.Foldable<ReadonlyArrayTypeLambda> = {
-  reduce,
-  reduceRight
+  reduce
 }
 
 /**

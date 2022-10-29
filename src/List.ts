@@ -578,8 +578,7 @@ export const reduceRight: <A, B>(b: B, f: (b: B, a: A) => B) => (self: List<A>) 
  * @category instances
  */
 export const Foldable: foldable.Foldable<ListTypeLambda> = {
-  reduce,
-  reduceRight
+  reduce
 }
 
 /**
@@ -706,20 +705,21 @@ export const traverse: <F extends TypeLambda>(
 
 /**
  * @since 1.0.0
- * @category instances
- */
-export const Traversable: traversable.Traversable<ListTypeLambda> = {
-  traverse
-}
-
-/**
- * @since 1.0.0
  * @category traversing
  */
 export const sequence: <F extends TypeLambda>(
   F: applicative.Applicative<F>
 ) => <R, O, E, A>(self: List<Kind<F, R, O, E, A>>) => Kind<F, R, O, E, List<A>> = traversable
-  .sequence(Traversable)
+  .sequence<ListTypeLambda>(traverse)
+
+/**
+ * @since 1.0.0
+ * @category instances
+ */
+export const Traversable: traversable.Traversable<ListTypeLambda> = {
+  traverse,
+  sequence
+}
 
 /**
  * @since 1.0.0

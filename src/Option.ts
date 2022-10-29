@@ -616,8 +616,7 @@ export const reduceRight = <B, A>(b: B, f: (b: B, a: A) => B) =>
  * @since 1.0.0
  */
 export const Foldable: foldable.Foldable<OptionTypeLambda> = {
-  reduce,
-  reduceRight
+  reduce
 }
 
 /**
@@ -753,21 +752,22 @@ export const traverse = <F extends TypeLambda>(
       isNone(self) ? F.of<Option<B>>(none) : pipe(f(self.value), F.map(some))
 
 /**
- * @category instances
- * @since 1.0.0
- */
-export const Traversable: traversable.Traversable<OptionTypeLambda> = {
-  traverse
-}
-
-/**
  * @category traversing
  * @since 1.0.0
  */
 export const sequence: <F extends TypeLambda>(
   F: applicative.Applicative<F>
 ) => <R, O, E, A>(fas: Option<Kind<F, R, O, E, A>>) => Kind<F, R, O, E, Option<A>> = traversable
-  .sequence(Traversable)
+  .sequence<OptionTypeLambda>(traverse)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const Traversable: traversable.Traversable<OptionTypeLambda> = {
+  traverse,
+  sequence
+}
 
 /**
  * @category traversing
