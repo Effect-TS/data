@@ -1,5 +1,49 @@
 # @fp-ts/data
 
+## 0.0.9
+
+### Patch Changes
+
+- [#86](https://github.com/fp-ts/data/pull/86) [`4f773b8`](https://github.com/fp-ts/data/commit/4f773b8cedf8d47d737a43950ebcda9a5c0f28c2) Thanks [@gcanti](https://github.com/gcanti)! - move sign function from Ordering to Number
+
+- [#95](https://github.com/fp-ts/data/pull/95) [`cd68bb0`](https://github.com/fp-ts/data/commit/cd68bb059ebb1c214e85c4cc43b0505dfc4c77cf) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: rename spanLeft to span
+
+- [#94](https://github.com/fp-ts/data/pull/94) [`8839524`](https://github.com/fp-ts/data/commit/883952442cd246215bdcad20eeda7cdf6596bc02) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Fix some bugs in Chunk
+
+- [#91](https://github.com/fp-ts/data/pull/91) [`7f964da`](https://github.com/fp-ts/data/commit/7f964da1ca44f3310f5ed6e0f20cf7510d7a7e3f) Thanks [@gcanti](https://github.com/gcanti)! - Chunk: rename toArray to toReadonlyArray
+
+- [#90](https://github.com/fp-ts/data/pull/90) [`26872aa`](https://github.com/fp-ts/data/commit/26872aa22b043d434536e5859d8291bea6d254a2) Thanks [@gcanti](https://github.com/gcanti)! - List: fix take and add core@0.0.6 instances / functions
+
+- [#95](https://github.com/fp-ts/data/pull/95) [`0020df2`](https://github.com/fp-ts/data/commit/0020df26a80d27a309a9b5f8b84f1fd26dd62960) Thanks [@gcanti](https://github.com/gcanti)! - merge NonEmptyReadonlyArray module into ReadonlyArray
+
+- [#87](https://github.com/fp-ts/data/pull/87) [`438d8d1`](https://github.com/fp-ts/data/commit/438d8d19e09729cf13e0eb2b6a4b4c4acbb2216e) Thanks [@gcanti](https://github.com/gcanti)! - List: rename sortWith to sort
+
+- [#91](https://github.com/fp-ts/data/pull/91) [`251592e`](https://github.com/fp-ts/data/commit/251592e0f9edd9cd299dbb43b047ef9d9a84af6b) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: rename dropLeft to drop
+
+- [#91](https://github.com/fp-ts/data/pull/91) [`6f18168`](https://github.com/fp-ts/data/commit/6f181685b9d626c5031f9169e67e5493bbd9674c) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: modify concat behaviour
+
+- [#91](https://github.com/fp-ts/data/pull/91) [`5db1086`](https://github.com/fp-ts/data/commit/5db10867326642ba0c6f334ed269d3a2845ee9bd) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: remove cross function
+
+- [#91](https://github.com/fp-ts/data/pull/91) [`917aeeb`](https://github.com/fp-ts/data/commit/917aeeb6d5573cdd2171541c7f5d8cb6305ffa25) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: modify prependAll behavior
+
+- [#95](https://github.com/fp-ts/data/pull/95) [`ea76c9b`](https://github.com/fp-ts/data/commit/ea76c9ba2e18a990e6042d6423981e41417f2bf7) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: rename scanLeft to scan
+
+- [#85](https://github.com/fp-ts/data/pull/85) [`bc81508`](https://github.com/fp-ts/data/commit/bc81508be10e9b723abbd64fde6353668e755ffd) Thanks [@gcanti](https://github.com/gcanti)! - \*WithIndex functions: uniform argument order
+
+- [#88](https://github.com/fp-ts/data/pull/88) [`8b20082`](https://github.com/fp-ts/data/commit/8b20082d153fb3bda4c17567102f0c14d225fda4) Thanks [@gcanti](https://github.com/gcanti)! - get rid of artificial covariance fields
+
+- [#95](https://github.com/fp-ts/data/pull/95) [`301b225`](https://github.com/fp-ts/data/commit/301b2250f02e5fe418eeda03422ecb7d8dff2340) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: rename dropLeftWhile to dropWhile
+
+- [#91](https://github.com/fp-ts/data/pull/91) [`74267a5`](https://github.com/fp-ts/data/commit/74267a521439054089ddf8c68f4d643bb9baf667) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: rename takeLeft to take
+
+- [#96](https://github.com/fp-ts/data/pull/96) [`be7b138`](https://github.com/fp-ts/data/commit/be7b138f5a61b5b8b92c2444fa855729817630b8) Thanks [@gcanti](https://github.com/gcanti)! - upgrade to @fp-ts/core@0.0.7
+
+- [#95](https://github.com/fp-ts/data/pull/95) [`2c9c681`](https://github.com/fp-ts/data/commit/2c9c681e9450b6625c85f7a826a6d24ced8361fa) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: remove existing match and rename matchLeft to match
+
+- [#95](https://github.com/fp-ts/data/pull/95) [`f1c7aff`](https://github.com/fp-ts/data/commit/f1c7affb5ede8598e24d2b4ef382953f76331492) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: change makeBy, replicate behaviour
+
+- [#95](https://github.com/fp-ts/data/pull/95) [`5dac2e1`](https://github.com/fp-ts/data/commit/5dac2e19b67222f9919a28e78d74ef0dc7fae457) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: rename takeLeftWhile to takeWhile
+
 ## 0.0.8
 
 ### Patch Changes
