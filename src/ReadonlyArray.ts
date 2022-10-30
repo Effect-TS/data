@@ -1271,7 +1271,7 @@ export {
  * @since 1.0.0
  */
 export const flap: <A>(a: A) => <B>(
-  fab: ReadonlyArray<(a: A) => B>
+  self: ReadonlyArray<(a: A) => B>
 ) => ReadonlyArray<B> = covariant
   .flap(Covariant)
 

@@ -166,7 +166,7 @@ parent: Cheatsheets
 | mapWithIndex         | `RA<A>`, `(A, number) => B`   | `RA<B>`   |
 | mapNonEmptyWithIndex | `NERA<A>`, `(A, number) => B` | `NERA<B>` |
 | imap                 | `RA<A>`, `A => B`, `B => A`   | `RA<B>`   |
-| flap                 | `A`, `RA<A => B>`             | `RA<B>`   |
+| flap                 | `RA<A => B>`, `A`             | `RA<B>`   |
 | as                   | `RA<unknown>`                 | `RA<B>`   |
 
 ## Sequencing
@@ -223,18 +223,19 @@ parent: Cheatsheets
 | Name                      | Given                            | To           |
 | ------------------------- | -------------------------------- | ------------ |
 | traverse                  | `RA<A>`, `A => F<B>`             | `F<RA<B>>`   |
+| sequence                  | `RA<F<A>>`                       | `F<RA<A>>`   |
+| traverseTap               | `RA<A>`, `A => F<B>`             | `F<RA<A>>`   |
 | traverseWithIndex         | `RA<A>`, `(A, number) => F<B>`   | `F<RA<B>>`   |
 | traverseNonEmpty          | `NERA<A>`, `A => F<B>`           | `F<NERA<B>>` |
-| traverseNonEmptyWithIndex | `NERA<A>`, `(A, number) => F<B>` | `F<NERA<B>>` |
-| traverseTap               | `RA<A>`, `A => F<B>`             | `F<RA<A>>`   |
-| sequence                  | `RA<F<A>>`                       | `F<RA<A>>`   |
 | sequenceNonEmpty          | `NERA<F<A>>`                     | `F<NERA<A>>` |
+| traverseNonEmptyWithIndex | `NERA<A>`, `(A, number) => F<B>` | `F<NERA<B>>` |
 
 ## Do notation
 
 | Name              | Given                                 | To                      |
 | ----------------- | ------------------------------------- | ----------------------- |
 | Do                |                                       | `RA<{}>`                |
+| bindTo            | `RA<A>`, `name: string`               | `RA<{ [name]: A }>`     |
 | let               | `RA<A>`, `name: string`, `A => B`     | `RA<A & { [name]: B }>` |
 | bind              | `RA<A>`, `name: string`, `A => RA<B>` | `RA<A & { [name]: B }>` |
 | bindReadonlyArray | `RA<A>`, `name: string`, `RA<B>`      | `RA<A & { [name]: B }>` |

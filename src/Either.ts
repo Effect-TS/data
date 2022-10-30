@@ -9,7 +9,7 @@
  *
  * A common use of `Either` is as an alternative to `Option` for dealing with possible missing values. In this usage,
  * `None` is replaced with a `Left` which can contain useful information. `Right` takes the place of `Some`. Convention
- * dictates that `Left` is used for Left and `Right` is used for Right.
+ * dictates that `Left` is used for failure and `Right` is used for success.
  *
  * @since 1.0.0
  */
@@ -17,12 +17,9 @@ import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import * as applicative from "@fp-ts/core/typeclass/Applicative"
 import * as bicovariant from "@fp-ts/core/typeclass/Bicovariant"
 import * as chainable from "@fp-ts/core/typeclass/Chainable"
-import * as compactable from "@fp-ts/core/typeclass/Compactable"
-import type * as coproduct_ from "@fp-ts/core/typeclass/Coproduct"
 import * as covariant from "@fp-ts/core/typeclass/Covariant"
-import * as filterable from "@fp-ts/core/typeclass/Filterable"
 import * as flatMap_ from "@fp-ts/core/typeclass/FlatMap"
-import * as foldable from "@fp-ts/core/typeclass/Foldable"
+import type * as foldable from "@fp-ts/core/typeclass/Foldable"
 import * as invariant from "@fp-ts/core/typeclass/Invariant"
 import type * as monad from "@fp-ts/core/typeclass/Monad"
 import type { Monoid } from "@fp-ts/core/typeclass/Monoid"
@@ -33,8 +30,8 @@ import * as nonEmptyProduct from "@fp-ts/core/typeclass/NonEmptyProduct"
 import * as of_ from "@fp-ts/core/typeclass/Of"
 import type * as pointed from "@fp-ts/core/typeclass/Pointed"
 import * as product_ from "@fp-ts/core/typeclass/Product"
-import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
 import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
+import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
 import { equals } from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
@@ -77,20 +74,30 @@ export interface EitherTypeLambda extends TypeLambda {
 }
 
 /**
- * @category type lambdas
+ * Constructs a new `Either` holding a `Right` value. This usually represents a successful value due to the right bias
+ * of this structure.
+ *
+ * @category constructors
  * @since 1.0.0
  */
-export interface EitherTypeLambdaFix<E> extends TypeLambda {
-  readonly type: Either<E, this["Out1"]>
-}
+export const right: <A>(a: A) => Either<never, A> = either.right
 
 /**
- * @category type lambdas
+ * Constructs a new `Either` holding a `Left` value. This usually represents a failure, due to the right-bias of this
+ * structure.
+ *
+ * @category constructors
  * @since 1.0.0
  */
-export interface ValidatedT<F extends TypeLambda, E> extends TypeLambda {
-  readonly type: Kind<F, this["In"], this["Out2"], E, this["Target"]>
-}
+export const left: <E>(e: E) => Either<E, never> = either.left
+
+/**
+ * Alias of `right`.
+ *
+ * @category constructors
+ * @since 1.0.0
+ */
+export const of: <A>(a: A) => Either<never, A> = right
 
 /**
  * Returns `true` if the specified value is an instance of `Either`, `false`
@@ -100,6 +107,22 @@ export interface ValidatedT<F extends TypeLambda, E> extends TypeLambda {
  * @since 1.0.0
  */
 export const isEither: (u: unknown) => u is Either<unknown, unknown> = either.isEither
+
+/**
+ * Returns `true` if the either is an instance of `Left`, `false` otherwise.
+ *
+ * @category guards
+ * @since 1.0.0
+ */
+export const isLeft: <E, A>(self: Either<E, A>) => self is Left<E> = either.isLeft
+
+/**
+ * Returns `true` if the either is an instance of `Right`, `false` otherwise.
+ *
+ * @category guards
+ * @since 1.0.0
+ */
+export const isRight: <E, A>(self: Either<E, A>) => self is Right<A> = either.isRight
 
 /**
  * Returns an effect whose Right is mapped by the specified `f` function.
@@ -128,6 +151,7 @@ export const Invariant: invariant.Invariant<EitherTypeLambda> = {
 }
 
 /**
+ * @category mapping
  * @since 1.0.0
  */
 export const tupled: <E, A>(self: Either<E, A>) => Either<E, readonly [A]> = invariant.tupled(
@@ -155,7 +179,7 @@ export const Covariant: covariant.Covariant<EitherTypeLambda> = {
  * @category mapping
  * @since 1.0.0
  */
-export const flap: <A>(a: A) => <E, B>(fab: Either<E, (a: A) => B>) => Either<E, B> = covariant
+export const flap: <A>(a: A) => <E, B>(self: Either<E, (a: A) => B>) => Either<E, B> = covariant
   .flap(
     Covariant
   )
@@ -166,7 +190,7 @@ export const flap: <A>(a: A) => <E, B>(fab: Either<E, (a: A) => B>) => Either<E,
  * @category mapping
  * @since 1.0.0
  */
-export const as: <B>(b: B) => <E>(self: Either<E, unknown>) => Either<E, B> = covariant.as(
+export const as: <B>(b: B) => <E, _>(self: Either<E, _>) => Either<E, B> = covariant.as(
   Covariant
 )
 
@@ -176,7 +200,9 @@ export const as: <B>(b: B) => <E>(self: Either<E, unknown>) => Either<E, B> = co
  * @category mapping
  * @since 1.0.0
  */
-export const asUnit = covariant.asUnit(Covariant)
+export const asUnit: <E, _>(self: Either<E, _>) => Either<E, void> = covariant.asUnit(
+  Covariant
+)
 
 const let_: <N extends string, A extends object, B>(
   name: Exclude<N, keyof A>,
@@ -227,20 +253,6 @@ export const mapLeft: <E, G>(f: (e: E) => G) => <A>(self: Either<E, A>) => Eithe
     .mapLeft(Bicovariant)
 
 /**
- * Constructs a new `Either` holding a `Right` value. This usually represents a Rightful value due to the right bias
- * of this structure.
- *
- * @category constructors
- * @since 1.0.0
- */
-export const right: <A>(a: A) => Either<never, A> = either.right
-
-/**
- * @since 1.0.0
- */
-export const of: <A>(a: A) => Either<never, A> = right
-
-/**
  * @category instances
  * @since 1.0.0
  */
@@ -269,6 +281,7 @@ export const Pointed: pointed.Pointed<EitherTypeLambda> = {
 }
 
 /**
+ * @category sequencing
  * @since 1.0.0
  */
 export const flatMap = <A, E2, B>(
@@ -286,7 +299,7 @@ export const FlatMap: flatMap_.FlatMap<EitherTypeLambda> = {
 /**
  * @since 1.0.0
  */
-export const flatten: <E1, E2, A>(mma: Either<E1, Either<E2, A>>) => Either<E1 | E2, A> = flatMap_
+export const flatten: <E1, E2, A>(self: Either<E1, Either<E2, A>>) => Either<E1 | E2, A> = flatMap_
   .flatten(FlatMap)
 
 /**
@@ -294,7 +307,7 @@ export const flatten: <E1, E2, A>(mma: Either<E1, Either<E2, A>>) => Either<E1 |
  */
 export const andThen: <E2, B>(
   that: Either<E2, B>
-) => <E1, _>(self: Either<E1, _>) => Either<E2 | E1, B> = flatMap_
+) => <E1, _>(self: Either<E1, _>) => Either<E1 | E2, B> = flatMap_
   .andThen(FlatMap)
 
 /**
@@ -302,7 +315,7 @@ export const andThen: <E2, B>(
  */
 export const composeKleisliArrow: <B, E2, C>(
   bfc: (b: B) => Either<E2, C>
-) => <A, E1>(afb: (a: A) => Either<E1, B>) => (a: A) => Either<E2 | E1, C> = flatMap_
+) => <A, E1>(afb: (a: A) => Either<E1, B>) => (a: A) => Either<E1 | E2, C> = flatMap_
   .composeKleisliArrow(FlatMap)
 
 /**
@@ -327,24 +340,15 @@ export const bind: <N extends string, A extends object, E2, B>(
   .bind(Chainable)
 
 /**
- * Returns an effect that effectfully "peeks" at the success of this effect.
- *
- * @since 1.0.0
- */
-export const tap: <A, E2, _>(
-  f: (a: A) => Either<E2, _>
-) => <E1>(self: Either<E1, A>) => Either<E2 | E1, A> = chainable.tap(
-  Chainable
-)
-
-/**
  * Sequences the specified effect after this effect, but ignores the value
  * produced by the effect.
  *
  * @category sequencing
  * @since 1.0.0
  */
-export const andThenDiscard = chainable
+export const andThenDiscard: <E2, _>(
+  that: Either<E2, _>
+) => <E1, A>(self: Either<E1, A>) => Either<E1 | E2, A> = chainable
   .andThenDiscard(Chainable)
 
 /**
@@ -362,16 +366,17 @@ export const Monad: monad.Monad<EitherTypeLambda> = {
 export const product = <E2, B>(
   that: Either<E2, B>
 ) =>
-  <E1, A>(self: Either<E1, A>): Either<E2 | E1, readonly [A, B]> =>
+  <E1, A>(self: Either<E1, A>): Either<E1 | E2, readonly [A, B]> =>
     isRight(self) ? (isRight(that) ? right([self.right, that.right]) : that) : self
 
 /**
+ * @category error handling
  * @since 1.0.0
  */
 export const productMany = <E, A>(
   collection: Iterable<Either<E, A>>
 ) =>
-  (self: Either<E, A>): Either<E, [A, ...Array<A>]> => {
+  (self: Either<E, A>): Either<E, readonly [A, ...Array<A>]> => {
     if (isLeft(self)) {
       return self
     }
@@ -406,7 +411,7 @@ export const bindEither: <N extends string, A extends object, E2, B>(
   fb: Either<E2, B>
 ) => <E1>(
   self: Either<E1, A>
-) => Either<E2 | E1, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> =
+) => Either<E1 | E2, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> =
   nonEmptyProduct.bindKind(NonEmptyProduct)
 
 /**
@@ -416,7 +421,7 @@ export const productFlatten: <E2, B>(
   that: Either<E2, B>
 ) => <E1, A extends ReadonlyArray<any>>(
   self: Either<E1, A>
-) => Either<E2 | E1, readonly [...A, B]> = nonEmptyProduct
+) => Either<E1 | E2, readonly [...A, B]> = nonEmptyProduct
   .productFlatten(NonEmptyProduct)
 
 /**
@@ -477,19 +482,43 @@ export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<Either
 }
 
 /**
- * @category lifting
+ * | x        | y        | x |> combine(y)        |
+ * | ---------| ---------| -----------------------|
+ * | left(a)  | left(b)  | left(a |> combine(b))  |
+ * | left(a)  | right(2) | left(a)                |
+ * | right(1) | left(b)  | left(b)                |
+ * | right(1) | right(2) | right(1 |> combine(2)) |
+ *
+ * @category combining
  * @since 1.0.0
  */
-export const liftSemigroup = <A>(S: Semigroup<A>) =>
-  <E>(): Semigroup<Either<E, A>> =>
-    semigroup.fromCombine((that) =>
-      (self) =>
+export const getSemigroup = <E, A>(SE: Semigroup<E>, SA: Semigroup<A>): Semigroup<Either<E, A>> =>
+  semigroup.fromCombine((that) =>
+    (self) =>
+      isLeft(self) ?
+        isLeft(that) ? left(SE.combine(that.left)(self.left)) : self :
         isLeft(that) ?
-          self :
-          isLeft(self) ?
-          that :
-          right(S.combine(that.right)(self.right))
-    )
+        that :
+        right(SA.combine(that.right)(self.right))
+  )
+
+/**
+ * Semigroup returning the left-most `Left` value. If both operands are `Right`s then the inner values
+ * are concatenated using the provided `Semigroup`.
+ *
+ * | x        | y        | x |> combine(y)        |
+ * | ---------| ---------| -----------------------|
+ * | left(a)  | left(b)  | left(a)                |
+ * | left(a)  | right(2) | left(a)                |
+ * | right(1) | left(b)  | left(b)                |
+ * | right(1) | right(2) | right(1 |> combine(2)) |
+ *
+ * @category combining
+ * @since 1.0.0
+ */
+export const getFirstErrorSemigroup: <A, E>(S: Semigroup<A>) => Semigroup<Either<E, A>> =
+  nonEmptyApplicative
+    .liftSemigroup(NonEmptyApplicative)
 
 /**
  * @category lifting
@@ -519,7 +548,7 @@ export const lift3: <A, B, C, D>(
  */
 export const ap: <E2, A>(
   fa: Either<E2, A>
-) => <E1, B>(self: Either<E1, (a: A) => B>) => Either<E2 | E1, B> = nonEmptyApplicative.ap(
+) => <E1, B>(self: Either<E1, (a: A) => B>) => Either<E1 | E2, B> = nonEmptyApplicative.ap(
   NonEmptyApplicative
 )
 
@@ -533,23 +562,24 @@ export const Applicative: applicative.Applicative<EitherTypeLambda> = {
 }
 
 /**
+ * Monoid returning the left-most `Left` value. If both operands are `Right`s then the inner values
+ * are concatenated using the provided `Monoid`.
+ *
+ * The `empty` value is `right(M.empty)`.
+ *
+ * @category combining
  * @since 1.0.0
  */
-export const liftMonoid: <A, E>(M: Monoid<A>) => Monoid<Either<E, A>> = applicative
+export const getFirstErrorMonoid: <A, E>(M: Monoid<A>) => Monoid<Either<E, A>> = applicative
   .liftMonoid(
     Applicative
   )
 
 /**
+ * @category error handling
  * @since 1.0.0
  */
-export const coproduct = <E2, B>(that: Either<E2, B>) =>
-  <E1, A>(self: Either<E1, A>): Either<E2 | E1, B | A> => isRight(self) ? self : that
-
-/**
- * @since 1.0.0
- */
-export const coproductMany = <E, A>(collection: Iterable<Either<E, A>>) =>
+export const firstSuccessOf = <E, A>(collection: Iterable<Either<E, A>>) =>
   (self: Either<E, A>): Either<E, A> => {
     let out = self
     if (isRight(out)) {
@@ -569,174 +599,25 @@ export const coproductMany = <E, A>(collection: Iterable<Either<E, A>>) =>
  */
 export const NonEmptyCoproduct: nonEmptyCoproduct.NonEmptyCoproduct<EitherTypeLambda> = {
   ...Invariant,
-  coproduct,
-  coproductMany
+  coproduct: (that) => (self) => isRight(self) ? self : that,
+  coproductMany: firstSuccessOf
 }
 
 /**
- * @since 1.0.0
- */
-export const getSemigroup: <A>() => Semigroup<Either<never, A>> = nonEmptyCoproduct.getSemigroup(
-  NonEmptyCoproduct
-)
-
-/**
- * @since 1.0.0
- */
-export const coproductEither: <E2, B>(
-  that: Either<E2, B>
-) => <E1, A>(self: Either<E1, A>) => Either<E2 | E1, Either<A, B>> = nonEmptyCoproduct
-  .coproductEither(NonEmptyCoproduct)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const NonEmptyAlternative: nonEmptyAlternative.NonEmptyAlternative<EitherTypeLambda> = {
-  ...Covariant,
-  ...NonEmptyCoproduct
-}
-
-/**
- * @category folding
- * @since 1.0.0
- */
-export const reduce = <B, A>(b: B, f: (b: B, a: A) => B) =>
-  <E>(self: Either<E, A>): B => isLeft(self) ? b : f(b, self.right)
-
-/**
- * @category folding
- * @since 1.0.0
- */
-export const reduceRight = <B, A>(b: B, f: (b: B, a: A) => B) =>
-  <E>(self: Either<E, A>): B => isLeft(self) ? b : f(b, self.right)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Foldable: foldable.Foldable<EitherTypeLambda> = {
-  reduce
-}
-
-/**
- * @category folding
- * @since 1.0.0
- */
-export const foldMap: <M>(M: Monoid<M>) => <A>(f: (a: A) => M) => <E>(self: Either<E, A>) => M =
-  foldable
-    .foldMap(Foldable)
-
-/**
- * @category conversions
- * @since 1.0.0
- */
-export const toReadonlyArray: <E, A>(self: Either<E, A>) => ReadonlyArray<A> = foldable
-  .toReadonlyArray(
-    Foldable
-  )
-
-/**
- * @category conversions
- * @since 1.0.0
- */
-export const toReadonlyArrayWith: <A, B>(
-  f: (a: A) => B
-) => <E>(self: Either<E, A>) => ReadonlyArray<B> = foldable.toReadonlyArrayWith(Foldable)
-
-/**
- * @category folding
- * @since 1.0.0
- */
-export const reduceKind: <G extends TypeLambda>(
-  G: monad.Monad<G>
-) => <B, A, R, O, E>(
-  b: B,
-  f: (b: B, a: A) => Kind<G, R, O, E, B>
-) => <TE>(self: Either<TE, A>) => Kind<G, R, O, E, B> = foldable.reduceKind(Foldable)
-
-/**
- * @category folding
- * @since 1.0.0
- */
-export const reduceRightKind: <G extends TypeLambda>(
-  G: monad.Monad<G>
-) => <B, A, R, O, E>(
-  b: B,
-  f: (b: B, a: A) => Kind<G, R, O, E, B>
-) => <TE>(self: Either<TE, A>) => Kind<G, R, O, E, B> = foldable.reduceRightKind(Foldable)
-
-/**
- * @category folding
- * @since 1.0.0
- */
-export const foldMapKind: <G extends TypeLambda>(
-  G: coproduct_.Coproduct<G>
-) => <A, R, O, E, B>(
-  f: (a: A) => Kind<G, R, O, E, B>
-) => <TE>(self: Either<TE, A>) => Kind<G, R, O, E, B> = foldable.foldMapKind(Foldable)
-
-/**
- * Returns `true` if the either is an instance of `Left`, `false` otherwise.
+ * Semigroup returning the left-most `Right` value.
  *
- * @category refinements
+ * | x        | y        | x |> combine(y) |
+ * | ---------| ---------| ----------------|
+ * | left(a)  | left(b)  | left(b)         |
+ * | left(a)  | right(2) | right(2)        |
+ * | right(1) | left(b)  | right(1)        |
+ * | right(1) | right(2) | right(1)        |
+ *
+ * @category combining
  * @since 1.0.0
  */
-export const isLeft: <E, A>(self: Either<E, A>) => self is Left<E> = either.isLeft
-
-/**
- * Returns `true` if the either is an instance of `Right`, `false` otherwise.
- *
- * @category refinements
- * @since 1.0.0
- */
-export const isRight: <E, A>(self: Either<E, A>) => self is Right<A> = either.isRight
-
-/**
- * Constructs a new `Either` holding a `Left` value. This usually represents a Left, due to the right-bias of this
- * structure.
- *
- * @category constructors
- * @since 1.0.0
- */
-export const left: <E>(e: E) => Either<E, never> = either.left
-
-// -------------------------------------------------------------------------------------
-// pattern matching
-// -------------------------------------------------------------------------------------
-
-/**
- * Takes two functions and an `Either` value, if the value is a `Left` the inner value is applied to the first function,
- * if the value is a `Right` the inner value is applied to the second function.
- *
- * @example
- * import * as E from '@fp-ts/data/Either'
- * import { pipe } from '@fp-ts/data/Function'
- *
- * const onError  = (errors: ReadonlyArray<string>): string => `Errors: ${errors.join(', ')}`
- *
- * const onRight = (value: number): string => `Ok: ${value}`
- *
- * assert.strictEqual(
- *   pipe(
- *     E.right(1),
- *     E.match(onError , onRight)
- *   ),
- *   'Ok: 1'
- * )
- * assert.strictEqual(
- *   pipe(
- *     E.left(['error 1', 'error 2']),
- *     E.match(onError , onRight)
- *   ),
- *   'Errors: error 1, error 2'
- * )
- *
- * @category pattern matching
- * @since 1.0.0
- */
-export const match = <E, B, A, C = B>(onError: (e: E) => B, onRight: (a: A) => C) =>
-  (self: Either<E, A>): B | C => isLeft(self) ? onError(self.left) : onRight(self.right)
+export const getFirstSuccessSemigroup: <E, A>() => semigroup.Semigroup<Either<E, A>> =
+  nonEmptyCoproduct.getSemigroup(NonEmptyCoproduct)
 
 /**
  * Returns the wrapped value if it's a `Right` or a default value if is a `Left`.
@@ -760,11 +641,126 @@ export const match = <E, B, A, C = B>(onError: (e: E) => B, onRight: (a: A) => C
  *   0
  * )
  *
+ * @category getters
+ * @since 1.0.0
+ */
+export const getOrElse = <B>(onFailure: B) =>
+  <A>(self: Either<unknown, A>): A | B => isLeft(self) ? onFailure : self.right
+
+/**
+ * Recovers from all errors.
+ *
  * @category error handling
  * @since 1.0.0
  */
-export const getOrElse = <B>(onError: B) =>
-  <A>(self: Either<unknown, A>): A | B => isLeft(self) ? onError : self.right
+export const catchAll = <E1, E2, B>(
+  onFailure: (e: E1) => Either<E2, B>
+) => <A>(self: Either<E1, A>): Either<E2, A | B> => isLeft(self) ? onFailure(self.left) : self
+
+/**
+ * Executes this effect and returns its value, if it succeeds, but otherwise
+ * executes the specified effect.
+ *
+ * | x          | y          | x |> orElse(y) |
+ * | ---------- | ---------- | ---------------|
+ * | left(a)    | left(b)    | left(b)        |
+ * | left(a)    | right(2)   | right(2)       |
+ * | right(1)   | left(b)    | right(1)       |
+ * | right(1)   | right(2)   | right(1)       |
+ *
+ * @category error handling
+ * @since 1.0.0
+ */
+export const orElse = <E2, B>(
+  that: Either<E2, B>
+) => <E1, A>(self: Either<E1, A>): Either<E2, A | B> => isLeft(self) ? that : self
+
+/**
+ * Returns an effect that will produce the value of this effect, unless it
+ * fails, in which case, it will produce the value of the specified effect.
+ *
+ * @category error handling
+ * @since 1.0.0
+ */
+export const orElseEither = <E2, B>(
+  that: Either<E2, B>
+) =>
+  <E1, A>(self: Either<E1, A>): Either<E2, Either<A, B>> =>
+    isLeft(self) ?
+      pipe(that, map(right)) :
+      pipe<Right<A>, Either<E2, Either<A, B>>>(self, map(left))
+
+/**
+ * Executes this effect and returns its value, if it succeeds, but otherwise
+ * fails with the specified error.
+ *
+ * @category error handling
+ * @since 1.0.0
+ */
+export const orElseFail = <E2>(
+  onFailure: E2
+): <E1, A>(self: Either<E1, A>) => Either<E2, A> => orElse(left(onFailure))
+
+/**
+ * Executes this effect and returns its value, if it succeeds, but otherwise
+ * succeeds with the specified value.
+ *
+ * @category error handling
+ * @since 1.0.0
+ */
+export const orElseSucceed = <B>(
+  onFailure: B
+): <E, A>(self: Either<E, A>) => Either<E, A | B> => orElse(right(onFailure))
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const NonEmptyAlternative: nonEmptyAlternative.NonEmptyAlternative<EitherTypeLambda> = {
+  ...Covariant,
+  ...NonEmptyCoproduct
+}
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const Foldable: foldable.Foldable<EitherTypeLambda> = {
+  reduce: (b, f) => (self) => isLeft(self) ? b : f(b, self.right)
+}
+
+/**
+ * Takes two functions and an `Either` value, if the value is a `Left` the inner value is applied to the first function,
+ * if the value is a `Right` the inner value is applied to the second function.
+ *
+ * @example
+ * import * as E from '@fp-ts/data/Either'
+ * import { pipe } from '@fp-ts/data/Function'
+ *
+ * const onLeft  = (errors: ReadonlyArray<string>): string => `Errors: ${errors.join(', ')}`
+ *
+ * const onRight = (value: number): string => `Ok: ${value}`
+ *
+ * assert.strictEqual(
+ *   pipe(
+ *     E.right(1),
+ *     E.match(onLeft , onRight)
+ *   ),
+ *   'Ok: 1'
+ * )
+ * assert.strictEqual(
+ *   pipe(
+ *     E.left(['error 1', 'error 2']),
+ *     E.match(onLeft , onRight)
+ *   ),
+ *   'Errors: error 1, error 2'
+ * )
+ *
+ * @category pattern matching
+ * @since 1.0.0
+ */
+export const match = <E, B, A, C = B>(onLeft: (e: E) => B, onRight: (a: A) => C) =>
+  (self: Either<E, A>): B | C => isLeft(self) ? onLeft(self.left) : onRight(self.right)
 
 /**
  * Takes a lazy default and a nullable value, if the value is not nully, turn it into a `Right`, if the value is nully use
@@ -791,10 +787,7 @@ export const fromNullable: <E>(onNullable: E) => <A>(a: A) => Either<E, NonNulla
 export const liftNullable = <A extends ReadonlyArray<unknown>, B, E>(
   f: (...a: A) => B | null | undefined,
   onNullable: E
-) => {
-  const from = fromNullable(onNullable)
-  return (...a: A): Either<E, NonNullable<B>> => from(f(...a))
-}
+) => (...a: A): Either<E, NonNullable<B>> => fromNullable(onNullable)(f(...a))
 
 /**
  * @category sequencing
@@ -827,7 +820,6 @@ export const flatMapNullable = <A, B, E2>(
  * assert.deepStrictEqual(head([]), E.left(new Error('empty array')))
  * assert.deepStrictEqual(head([1, 2, 3]), E.right(1))
  *
- * @see {@link liftThrowable}
  * @category interop
  * @since 1.0.0
  */
@@ -838,6 +830,18 @@ export const fromThrowable = <A, E>(f: () => A, onThrow: (error: unknown) => E):
     return left(onThrow(e))
   }
 }
+
+/**
+ * @category interop
+ * @since 1.0.0
+ */
+export const getOrThrow = <E>(onError: (e: E) => void) =>
+  <A>(self: Either<E, A>): A => {
+    if (isRight(self)) {
+      return self.right
+    }
+    throw onError(self.left)
+  }
 
 /**
  * Lifts a function that may throw to one returning a `Either`.
@@ -851,135 +855,54 @@ export const liftThrowable = <A extends ReadonlyArray<unknown>, B, E>(
 ): ((...a: A) => Either<E, B>) => (...a) => fromThrowable(() => f(...a), onThrow)
 
 /**
- * @category conversions
+ * @category getters
  * @since 1.0.0
  */
-export const toUnion: <E, A>(fa: Either<E, A>) => E | A = match(identity, identity)
+export const merge: <E, A>(self: Either<E, A>) => E | A = match(identity, identity)
 
 /**
+ * @category mutations
  * @since 1.0.0
  */
-export const reverse = <E, A>(ma: Either<E, A>): Either<A, E> =>
-  isLeft(ma) ? right(ma.left) : left(ma.right)
-
-/**
- * Recovers from all errors.
- *
- * @category error handling
- * @since 1.0.0
- */
-export const catchAll: <E1, E2, B>(
-  onError: (e: E1) => Either<E2, B>
-) => <A>(self: Either<E1, A>) => Either<E2, A | B> = (onError) =>
-  (self) => isLeft(self) ? onError(self.left) : self
-
-/**
- * Identifies an associative operation on a type constructor. It is similar to `Semigroup`, except that it applies to
- * types of kind `* -> *`.
- *
- * In case of `Either` returns the left-most non-`Left` value (or the right-most `Left` value if both values are `Left`).
- *
- * | x          | y          | pipe(x, orElse(y) |
- * | ---------- | ---------- | ------------------|
- * | left(a)    | left(b)    | left(b)           |
- * | left(a)    | right(2)   | right(2)          |
- * | right(1)   | left(b)    | right(1)          |
- * | right(1)   | right(2)   | right(1)          |
- *
- * @example
- * import * as E from '@fp-ts/data/Either'
- * import { pipe } from '@fp-ts/data/Function'
- *
- * assert.deepStrictEqual(
- *   pipe(
- *     E.left('a'),
- *     E.orElse(E.left('b'))
- *   ),
- *   E.left('b')
- * )
- * assert.deepStrictEqual(
- *   pipe(
- *     E.left('a'),
- *     E.orElse(E.right(2))
- *   ),
- *   E.right(2)
- * )
- * assert.deepStrictEqual(
- *   pipe(
- *     E.right(1),
- *     E.orElse(E.left('b'))
- *   ),
- *   E.right(1)
- * )
- * assert.deepStrictEqual(
- *   pipe(
- *     E.right(1),
- *     E.orElse(E.right(2))
- *   ),
- *   E.right(1)
- * )
- *
- * @category error handling
- * @since 1.0.0
- */
-export const orElse: <E2, B>(
-  that: Either<E2, B>
-) => <E1, A>(self: Either<E1, A>) => Either<E2, A | B> = (that) => (fa) => isLeft(fa) ? that : fa
+export const reverse = <E, A>(self: Either<E, A>): Either<A, E> =>
+  isLeft(self) ? right(self.left) : left(self.right)
 
 /**
  * @category filtering
  * @since 1.0.0
  */
-export const compact: <E>(onNone: E) => <A>(self: Either<E, Option<A>>) => Either<E, A> = (e) =>
-  (self) => isLeft(self) ? self : internal.isNone(self.right) ? left(e) : right(self.right.value)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const getCompactable = <E>(
-  onNone: E
-): compactable.Compactable<ValidatedT<EitherTypeLambda, E>> => {
-  return {
-    compact: compact(onNone)
-  }
-}
+export const compactOrElse = <E>(onNone: E) =>
+  <A>(self: Either<E, Option<A>>): Either<E, A> =>
+    isLeft(self) ? self : internal.isNone(self.right) ? left(onNone) : right(self.right.value)
 
 /**
  * @category filtering
  * @since 1.0.0
  */
-export const separate: <E>(
-  onEmpty: E
-) => <A, B>(self: Either<E, Either<A, B>>) => readonly [Either<E, A>, Either<E, B>] = (onEmpty) =>
-  compactable.separate({ ...Covariant, ...getCompactable(onEmpty) })
-
-/**
- * @category filtering
- * @since 1.0.0
- */
-export const filter: {
+export const filterOrElse: {
   <C extends A, B extends A, E2, A = C>(refinement: Refinement<A, B>, onFalse: E2): <E1>(
     self: Either<E1, C>
-  ) => Either<E2 | E1, B>
+  ) => Either<E1 | E2, B>
   <B extends A, E2, A = B>(
     predicate: Predicate<A>,
     onFalse: E2
-  ): <E1>(self: Either<E1, B>) => Either<E2 | E1, B>
-} = <B extends A, E2, A = B>(
+  ): <E1>(self: Either<E1, B>) => Either<E1 | E2, B>
+} = <A, E>(
   predicate: Predicate<A>,
-  onFalse: E2
-) => filterable.filter(getFilterable(onFalse))(predicate)
+  onFalse: E
+) =>
+  (self: Either<E, A>): Either<E, A> =>
+    isLeft(self) ? self : predicate(self.right) ? self : left(onFalse)
 
 /**
  * @category filtering
  * @since 1.0.0
  */
-export const filterMap = <A, B, E>(
+export const filterMapOrElse = <A, B, E2>(
   f: (a: A) => Option<B>,
-  onNone: E
+  onNone: E2
 ) =>
-  (self: Either<E, A>): Either<E, B> =>
+  <E1>(self: Either<E1, A>): Either<E1 | E2, B> =>
     pipe(
       self,
       flatMap((a) => {
@@ -989,51 +912,15 @@ export const filterMap = <A, B, E>(
     )
 
 /**
- * @category filtering
- * @since 1.0.0
- */
-export const partition: {
-  <C extends A, B extends A, E, A = C>(refinement: Refinement<A, B>, onFalse: E): (
-    self: Either<E, C>
-  ) => readonly [Either<E, C>, Either<E, B>]
-  <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: E): (
-    self: Either<E, B>
-  ) => readonly [Either<E, B>, Either<E, B>]
-} = <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: E) =>
-  filterable.partition(getFilterable(onFalse))(predicate)
-
-/**
- * @category filtering
- * @since 1.0.0
- */
-export const partitionMap = <A, B, C, E>(
-  f: (a: A) => Either<B, C>,
-  onEmpty: E
-): (self: Either<E, A>) => readonly [Either<E, B>, Either<E, C>] =>
-  filterable.partitionMap(getFilterable(onEmpty))(f)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const getFilterable = <E>(
-  onEmpty: E
-): filterable.Filterable<ValidatedT<EitherTypeLambda, E>> => {
-  return {
-    filterMap: (f) => filterMap(f, onEmpty)
-  }
-}
-
-/**
  * @category traversing
  * @since 1.0.0
  */
 export const traverse = <F extends TypeLambda>(F: applicative.Applicative<F>) =>
   <A, FR, FO, FE, B>(f: (a: A) => Kind<F, FR, FO, FE, B>) =>
-    <E>(ta: Either<E, A>): Kind<F, FR, FO, FE, Either<E, B>> =>
-      isLeft(ta) ?
-        F.of<Either<E, B>>(left(ta.left)) :
-        pipe(f(ta.right), F.map<B, Either<E, B>>(right))
+    <E>(self: Either<E, A>): Kind<F, FR, FO, FE, Either<E, B>> =>
+      isLeft(self) ?
+        F.of<Either<E, B>>(left(self.left)) :
+        pipe(f(self.right), F.map<B, Either<E, B>>(right))
 
 /**
  * @category traversing
@@ -1042,7 +929,7 @@ export const traverse = <F extends TypeLambda>(F: applicative.Applicative<F>) =>
 export const sequence: <F extends TypeLambda>(
   F: applicative.Applicative<F>
 ) => <E, FR, FO, FE, A>(
-  fa: Either<E, Kind<F, FR, FO, FE, A>>
+  self: Either<E, Kind<F, FR, FO, FE, A>>
 ) => Kind<F, FR, FO, FE, Either<E, A>> = traversable.sequence<EitherTypeLambda>(traverse)
 
 /**
@@ -1066,20 +953,31 @@ export const traverseTap: <F extends TypeLambda>(
   .traverseTap(Traversable)
 
 /**
- * Returns an effect that effectfully "peeks" at the Left of this effect.
- *
- * @category error handling
+ * @category debugging
  * @since 1.0.0
  */
-export const tapError: <E1, E2>(
-  onError: (e: E1) => Either<E2, unknown>
-) => <A>(self: Either<E1, A>) => Either<E1 | E2, A> = (onError) =>
-  (self) => {
+export const tap = <A>(
+  onSuccess: (a: A) => void
+) =>
+  <E>(self: Either<E, A>): Either<E, A> => {
     if (isRight(self)) {
-      return self
+      onSuccess(self.right)
     }
-    const out = onError(self.left)
-    return isLeft(out) ? out : self
+    return self
+  }
+
+/**
+ * @category debugging
+ * @since 1.0.0
+ */
+export const tapError = <E>(
+  onError: (e: E) => void
+) =>
+  <A>(self: Either<E, A>): Either<E, A> => {
+    if (isLeft(self)) {
+      onError(self.left)
+    }
+    return self
   }
 
 /**
@@ -1106,7 +1004,7 @@ export const tapError: <E1, E2>(
  * @category conversions
  * @since 1.0.0
  */
-export const fromOption: <E>(onNone: E) => <A>(fa: Option<A>) => Either<E, A> = either.fromOption
+export const fromOption: <E>(onNone: E) => <A>(self: Option<A>) => Either<E, A> = either.fromOption
 
 /**
  * Converts a `Either` to an `Option` discarding the Right.
@@ -1118,7 +1016,7 @@ export const fromOption: <E>(onNone: E) => <A>(fa: Option<A>) => Either<E, A> = 
  * assert.deepStrictEqual(E.getLeft(E.right('ok')), O.none)
  * assert.deepStrictEqual(E.getLeft(E.left('err')), O.some('err'))
  *
- * @category conversions
+ * @category getters
  * @since 1.0.0
  */
 export const getLeft: <E, A>(self: Either<E, A>) => Option<E> = either.getLeft
@@ -1133,22 +1031,22 @@ export const getLeft: <E, A>(self: Either<E, A>) => Option<E> = either.getLeft
  * assert.deepStrictEqual(E.getRight(E.right('ok')), O.some('ok'))
  * assert.deepStrictEqual(E.getRight(E.left('err')), O.none)
  *
- * @category conversions
+ * @category getters
  * @since 1.0.0
  */
 export const getRight: <E, A>(self: Either<E, A>) => Option<A> = either.getRight
 
 /**
- * @category conversions
+ * @category getters
  * @since 1.0.0
  */
-export const toNull: <E, A>(self: Either<E, A>) => A | null = getOrElse(null)
+export const getOrNull: <E, A>(self: Either<E, A>) => A | null = getOrElse(null)
 
 /**
- * @category conversions
+ * @category getters
  * @since 1.0.0
  */
-export const toUndefined: <E, A>(self: Either<E, A>) => A | undefined = getOrElse(undefined)
+export const getOrUndefined: <E, A>(self: Either<E, A>) => A | undefined = getOrElse(undefined)
 
 /**
  * @example
@@ -1198,15 +1096,15 @@ export const liftOption = <A extends ReadonlyArray<unknown>, B, E>(
 export const flatMapOption = <A, B, E2>(
   f: (a: A) => Option<B>,
   onNone: E2
-) => <E1>(self: Either<E1, A>): Either<E2 | E1, B> => pipe(self, flatMap(liftOption(f, onNone)))
+) => <E1>(self: Either<E1, A>): Either<E1 | E2, B> => pipe(self, flatMap(liftOption(f, onNone)))
 
 /**
  * Tests whether a value is a member of a `Either`.
  *
  * @since 1.0.0
  */
-export const elem = <B>(a: B) =>
-  <A, E>(ma: Either<E, A>): boolean => isLeft(ma) ? false : equals(ma.right)(a)
+export const elem = <B>(b: B) =>
+  <E, A>(self: Either<E, A>): boolean => isLeft(self) ? false : equals(self.right)(b)
 
 /**
  * Returns `false` if `Left` or returns the Either of the application of the given predicate to the `Right` value.
@@ -1223,4 +1121,4 @@ export const elem = <B>(a: B) =>
  * @since 1.0.0
  */
 export const exists = <A>(predicate: Predicate<A>) =>
-  (ma: Either<unknown, A>): boolean => isLeft(ma) ? false : predicate(ma.right)
+  <E>(self: Either<E, A>): boolean => isLeft(self) ? false : predicate(self.right)
