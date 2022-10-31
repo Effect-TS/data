@@ -1,6 +1,7 @@
 import { pipe } from "@fp-ts/data/Function"
 import * as _ from "@fp-ts/data/Identity"
 import * as O from "@fp-ts/data/Option"
+import * as String from "@fp-ts/data/String"
 import * as U from "./util"
 
 describe.concurrent("Identity", () => {
@@ -39,6 +40,8 @@ describe.concurrent("Identity", () => {
     expect(_.NonEmptyProduct).exist
     expect(_.product).exist
     expect(_.productMany).exist
+    expect(_.bindIdentity).exist
+    expect(_.productFlatten).exist
 
     expect(_.Product).exist
     expect(_.productAll).exist
@@ -55,14 +58,6 @@ describe.concurrent("Identity", () => {
 
     expect(_.Applicative).exist
     expect(_.liftMonoid).exist
-
-    expect(_.NonEmptyCoproduct).exist
-    expect(_.coproduct).exist
-    expect(_.coproductMany).exist
-    expect(_.getSemigroup).exist
-    expect(_.coproductEither).exist
-
-    expect(_.NonEmptyAlternative).exist
 
     expect(_.Foldable).exist
     expect(_.reduce).exist
@@ -108,9 +103,10 @@ describe.concurrent("Identity", () => {
     U.deepStrictEqual(pipe("a", _.product("b")), ["a", "b"])
   })
 
-  it("NonEmptyCoproduct", () => {
-    U.deepStrictEqual(pipe("a", _.NonEmptyCoproduct.coproduct("b")), "a")
-    U.deepStrictEqual(pipe("a", _.NonEmptyCoproduct.coproductMany(["b", "c"])), "a")
+  it("getNonEmptyCoproduct", () => {
+    const F = _.getNonEmptyCoproduct(String.Semigroup)
+    U.deepStrictEqual(pipe("a", F.coproduct("b")), "ab")
+    U.deepStrictEqual(pipe("a", F.coproductMany(["b", "c"])), "abc")
   })
 
   it("reduce", () => {
