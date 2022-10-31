@@ -27,6 +27,7 @@ import * as mutableList from "@fp-ts/data/mutable/MutableList"
 import * as mutableListBuilder from "@fp-ts/data/mutable/MutableListBuilder"
 import * as mutableQueue from "@fp-ts/data/mutable/MutableQueue"
 import * as mutableRef from "@fp-ts/data/mutable/MutableRef"
+import * as nonEmptyChunk from "@fp-ts/data/NonEmptyChunk"
 import * as number from "@fp-ts/data/Number"
 import * as option from "@fp-ts/data/Option"
 import * as ordering from "@fp-ts/data/Ordering"
@@ -40,6 +41,7 @@ import * as safeEval from "@fp-ts/data/SafeEval"
 import * as sortedMap from "@fp-ts/data/SortedMap"
 import * as sortedSet from "@fp-ts/data/SortedSet"
 import * as string from "@fp-ts/data/String"
+import * as these from "@fp-ts/data/These"
 import * as fromOption from "@fp-ts/data/typeclasses/FromOption"
 import * as weakIterableMap from "@fp-ts/data/weak/WeakIterableMap"
 
@@ -147,6 +149,10 @@ export {
   /**
    * @since 1.0.0
    */
+  nonEmptyChunk,
+  /**
+   * @since 1.0.0
+   */
   number,
   /**
    * @since 1.0.0
@@ -200,6 +206,10 @@ export {
    * @since 1.0.0
    */
   string,
+  /**
+   * @since 1.0.0
+   */
+  these,
   /**
    * @since 1.0.0
    */

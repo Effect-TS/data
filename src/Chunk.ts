@@ -8,6 +8,7 @@ import type { Either } from "@fp-ts/data/Either"
 import * as Equal from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
 import * as MRef from "@fp-ts/data/mutable/MutableRef"
+import type { NonEmptyChunk } from "@fp-ts/data/NonEmptyChunk"
 import type { Option } from "@fp-ts/data/Option"
 import * as O from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
@@ -914,7 +915,7 @@ export const isEmpty = <A>(self: Chunk<A>): boolean => self.length === 0
  * @since 1.0.0
  * @category elements
  */
-export const isNonEmpty = <A>(self: Chunk<A>): boolean => self.length > 0
+export const isNonEmpty = <A>(self: Chunk<A>): self is NonEmptyChunk<A> => self.length > 0
 
 /**
  * Folds over the elements in this chunk from the left.

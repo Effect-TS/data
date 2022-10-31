@@ -13,14 +13,13 @@ import type * as monad from "@fp-ts/core/typeclass/Monad"
 import type { Monoid } from "@fp-ts/core/typeclass/Monoid"
 import type * as nonEmptyAlternative from "@fp-ts/core/typeclass/NonEmptyAlternative"
 import * as nonEmptyApplicative from "@fp-ts/core/typeclass/NonEmptyApplicative"
-import * as nonEmptyCoproduct from "@fp-ts/core/typeclass/NonEmptyCoproduct"
+import type * as nonEmptyCoproduct from "@fp-ts/core/typeclass/NonEmptyCoproduct"
 import * as nonEmptyProduct from "@fp-ts/core/typeclass/NonEmptyProduct"
 import * as of_ from "@fp-ts/core/typeclass/Of"
 import type * as pointed from "@fp-ts/core/typeclass/Pointed"
 import * as product_ from "@fp-ts/core/typeclass/Product"
 import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
-import type { Either } from "@fp-ts/data/Either"
 import { identity } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
 
@@ -36,6 +35,14 @@ export type Identity<A> = A
  */
 export interface IdentityTypeLambda extends TypeLambda {
   readonly type: Identity<this["Target"]>
+}
+
+/**
+ * @category type lambdas
+ * @since 1.0.0
+ */
+export interface IdentityTypeLambdaFix<A> extends TypeLambda {
+  readonly type: Identity<A>
 }
 
 /**
@@ -390,53 +397,27 @@ export const liftMonoid: <A>(M: Monoid<A>) => Monoid<Identity<A>> = applicative.
 )
 
 /**
+ * @category instances
  * @since 1.0.0
  */
-export const coproduct: <B>(
-  that: Identity<B>
-) => <A>(self: Identity<A>) => Identity<B | A> = () => identity
-
-/**
- * @since 1.0.0
- */
-export const coproductMany: <A>(
-  collection: Iterable<A>
-) => (self: Identity<A>) => Identity<A> = () => identity
+export const getNonEmptyCoproduct = <A>(
+  S: Semigroup<A>
+): nonEmptyCoproduct.NonEmptyCoproduct<IdentityTypeLambdaFix<A>> => ({
+  imap: Invariant.imap,
+  coproduct: S.combine,
+  coproductMany: S.combineMany
+})
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyCoproduct: nonEmptyCoproduct.NonEmptyCoproduct<IdentityTypeLambda> = {
-  ...Invariant,
-  coproduct,
-  coproductMany
-}
-
-/**
- * @since 1.0.0
- */
-export const getSemigroup: <A>() => Semigroup<Identity<A>> = nonEmptyCoproduct.getSemigroup(
-  NonEmptyCoproduct
-)
-
-/**
- * @since 1.0.0
- */
-export const coproductEither: <B>(
-  that: Identity<B>
-) => <A>(self: Identity<A>) => Identity<Either<A, B>> = nonEmptyCoproduct.coproductEither(
-  NonEmptyCoproduct
-)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const NonEmptyAlternative: nonEmptyAlternative.NonEmptyAlternative<IdentityTypeLambda> = {
-  ...Covariant,
-  ...NonEmptyCoproduct
-}
+export const getNonEmptyAlternative = <A>(
+  S: Semigroup<A>
+): nonEmptyAlternative.NonEmptyAlternative<IdentityTypeLambdaFix<A>> => ({
+  ...getNonEmptyCoproduct(S),
+  map: Covariant.map
+})
 
 /**
  * @category folding
