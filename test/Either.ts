@@ -38,6 +38,7 @@ describe.concurrent("Either", () => {
 
     expect(_.Chainable).exist
     expect(_.bind).exist
+    expect(_.tap).exist
     expect(_.andThenDiscard).exist
 
     expect(_.Monad).exist
@@ -62,7 +63,6 @@ describe.concurrent("Either", () => {
 
     expect(_.NonEmptyCoproduct).exist
     expect(_.firstSuccessOf).exist
-    expect(_.getFirstSuccessSemigroup).exist
 
     expect(_.NonEmptyAlternative).exist
 
@@ -116,47 +116,29 @@ describe.concurrent("Either", () => {
   })
 
   it("compactOrElse", () => {
-    deepStrictEqual(
-      pipe(
-        _.right(O.some(1)),
-        _.compactOrElse(() => "e2")
-      ),
-      _.right(1)
-    )
+    deepStrictEqual(pipe(_.right(O.some(1)), _.compactOrElse(() => "e2")), _.right(1))
     deepStrictEqual(pipe(_.right(O.none), _.compactOrElse("e2")), _.left("e2"))
     deepStrictEqual(pipe(_.left("e1"), _.compactOrElse("e2")), _.left("e1"))
   })
 
-  it("tap", () => {
+  it("unsafeTap", () => {
     const log: Array<number> = []
-    pipe(
-      _.right(1),
-      _.tap((e) => log.push(e))
-    )
-    pipe(
-      _.left("e"),
-      _.tap((e) => log.push(e))
-    )
-    deepStrictEqual(
-      log,
-      [1]
-    )
+    pipe(_.right(1), _.unsafeTap((e) => log.push(e)))
+    pipe(_.left("e"), _.unsafeTap((e) => log.push(e)))
+    deepStrictEqual(log, [1])
   })
 
   it("tapError", () => {
+    deepStrictEqual(pipe(_.right(1), _.tapError(() => _.right(2))), _.right(1))
+    deepStrictEqual(pipe(_.left("a"), _.tapError(() => _.right(2))), _.left("a"))
+    deepStrictEqual(pipe(_.left("a"), _.tapError(() => _.left("b"))), _.left("b"))
+  })
+
+  it("unsafeTapError", () => {
     const log: Array<string> = []
-    pipe(
-      _.right(1),
-      _.tapError((e) => log.push(e))
-    )
-    pipe(
-      _.left("e"),
-      _.tapError((e) => log.push(e))
-    )
-    deepStrictEqual(
-      log,
-      ["e"]
-    )
+    pipe(_.right(1), _.unsafeTapError((e) => log.push(e)))
+    pipe(_.left("e"), _.unsafeTapError((e) => log.push(e)))
+    deepStrictEqual(log, ["e"])
   })
 
   it("getOrThrow", () => {
@@ -167,23 +149,14 @@ describe.concurrent("Either", () => {
   })
 
   it("andThenDiscard", () => {
-    deepStrictEqual(
-      pipe(_.right(1), _.andThenDiscard(_.right("a"))),
-      _.right(1)
-    )
-    deepStrictEqual(
-      pipe(_.right(1), _.andThenDiscard(_.left(true))),
-      _.left(true)
-    )
+    deepStrictEqual(pipe(_.right(1), _.andThenDiscard(_.right("a"))), _.right(1))
+    deepStrictEqual(pipe(_.right(1), _.andThenDiscard(_.left(true))), _.left(true))
     deepStrictEqual(pipe(_.left(1), _.andThenDiscard(_.right("a"))), _.left(1))
     deepStrictEqual(pipe(_.left(1), _.andThenDiscard(_.left(true))), _.left(1))
   })
 
   it("andThen", () => {
-    deepStrictEqual(
-      pipe(_.right(1), _.andThen(_.right("a"))),
-      _.right("a")
-    )
+    deepStrictEqual(pipe(_.right(1), _.andThen(_.right("a"))), _.right("a"))
     deepStrictEqual(pipe(_.right(1), _.andThen(_.left(true))), _.left(true))
     deepStrictEqual(pipe(_.left(1), _.andThen(_.right("a"))), _.left(1))
     deepStrictEqual(pipe(_.left(1), _.andThen(_.left(true))), _.left(1))
@@ -279,34 +252,10 @@ describe.concurrent("Either", () => {
   })
 
   it("catchAll", () => {
-    deepStrictEqual(
-      pipe(
-        _.right(1),
-        _.catchAll(() => _.right(2))
-      ),
-      _.right(1)
-    )
-    deepStrictEqual(
-      pipe(
-        _.right(1),
-        _.catchAll(() => _.left("foo"))
-      ),
-      _.right(1)
-    )
-    deepStrictEqual(
-      pipe(
-        _.left("a"),
-        _.catchAll(() => _.right(1))
-      ),
-      _.right(1)
-    )
-    deepStrictEqual(
-      pipe(
-        _.left("a"),
-        _.catchAll(() => _.left("b"))
-      ),
-      _.left("b")
-    )
+    deepStrictEqual(pipe(_.right(1), _.catchAll(() => _.right(2))), _.right(1))
+    deepStrictEqual(pipe(_.right(1), _.catchAll(() => _.left("foo"))), _.right(1))
+    deepStrictEqual(pipe(_.left("a"), _.catchAll(() => _.right(1))), _.right(1))
+    deepStrictEqual(pipe(_.left("a"), _.catchAll(() => _.left("b"))), _.left("b"))
   })
 
   it("swap", () => {
@@ -314,28 +263,28 @@ describe.concurrent("Either", () => {
     deepStrictEqual(_.reverse(_.left("b")), _.right("b"))
   })
 
-  it("fromPredicate", () => {
-    const f = _.liftPredicate((n: number) => n >= 2, "e")
+  it("fromPredicateOrElse", () => {
+    const f = _.liftPredicateOrElse((n: number) => n >= 2, "e")
     deepStrictEqual(f(3), _.right(3))
     deepStrictEqual(f(1), _.left("e"))
   })
 
-  it("fromNullable", () => {
-    deepStrictEqual(_.fromNullable("default")(null), _.left("default"))
-    deepStrictEqual(_.fromNullable("default")(undefined), _.left("default"))
-    deepStrictEqual(_.fromNullable("default")(1), _.right(1))
+  it("fromNullableOrElse", () => {
+    deepStrictEqual(_.fromNullableOrElse("default")(null), _.left("default"))
+    deepStrictEqual(_.fromNullableOrElse("default")(undefined), _.left("default"))
+    deepStrictEqual(_.fromNullableOrElse("default")(1), _.right(1))
   })
 
-  it("tryCatch", () => {
+  it("fromThrowableOrElse", () => {
     deepStrictEqual(
-      _.fromThrowable(() => {
+      _.fromThrowableOrElse(() => {
         return 1
       }, identity),
       _.right(1)
     )
 
     deepStrictEqual(
-      _.fromThrowable(() => {
+      _.fromThrowableOrElse(() => {
         throw "string error"
       }, identity),
       _.left("string error")
@@ -359,6 +308,11 @@ describe.concurrent("Either", () => {
       pipe(_.right(1), S.combine(_.right(2))),
       _.right(3)
     )
+  })
+
+  it("fromIterableOrElse", () => {
+    deepStrictEqual(_.fromIterableOrElse("e")([]), _.left("e"))
+    deepStrictEqual(_.fromIterableOrElse("e")(["a"]), _.right("a"))
   })
 
   it("getFirstSuccessSemigroup", () => {
@@ -396,19 +350,19 @@ describe.concurrent("Either", () => {
     )
   })
 
-  it("fromOption", () => {
-    deepStrictEqual(_.fromOption("none")(O.none), _.left("none"))
-    deepStrictEqual(_.fromOption("none")(O.some(1)), _.right(1))
+  it("fromOptionOrElse", () => {
+    deepStrictEqual(_.fromOptionOrElse("none")(O.none), _.left("none"))
+    deepStrictEqual(_.fromOptionOrElse("none")(O.some(1)), _.right(1))
   })
 
-  it("liftOption", () => {
-    const f = _.liftOption((n: number) => (n > 0 ? O.some(n) : O.none), "a")
+  it("liftOptionOrElse", () => {
+    const f = _.liftOptionOrElse((n: number) => (n > 0 ? O.some(n) : O.none), "a")
     deepStrictEqual(f(1), _.right(1))
     deepStrictEqual(f(-1), _.left("a"))
   })
 
-  it("flatMapOption", () => {
-    const f = _.flatMapOption((n: number) => (n > 0 ? O.some(n) : O.none), "a")
+  it("flatMapOptionOrElse", () => {
+    const f = _.flatMapOptionOrElse((n: number) => (n > 0 ? O.some(n) : O.none), "a")
     deepStrictEqual(f(_.right(1)), _.right(1))
     deepStrictEqual(f(_.right(-1)), _.left("a"))
     deepStrictEqual(f(_.left("b")), _.left("b"))
@@ -511,14 +465,14 @@ describe.concurrent("Either", () => {
     )
   })
 
-  it("liftNullable", () => {
-    const f = _.liftNullable((n: number) => (n > 0 ? n : null), "error")
+  it("liftNullableOrElse", () => {
+    const f = _.liftNullableOrElse((n: number) => (n > 0 ? n : null), "error")
     deepStrictEqual(f(1), _.right(1))
     deepStrictEqual(f(-1), _.left("error"))
   })
 
-  it("flatMapNullable", () => {
-    const f = _.flatMapNullable((n: number) => (n > 0 ? n : null), "error")
+  it("flatMapNullableOrElse", () => {
+    const f = _.flatMapNullableOrElse((n: number) => (n > 0 ? n : null), "error")
     deepStrictEqual(f(_.right(1)), _.right(1))
     deepStrictEqual(f(_.right(-1)), _.left("error"))
     deepStrictEqual(f(_.left("a")), _.left("a"))
@@ -529,8 +483,8 @@ describe.concurrent("Either", () => {
     deepStrictEqual(_.merge(_.left("a")), "a")
   })
 
-  it("liftThrowable", () => {
-    const f = _.liftThrowable((s: string) => {
+  it("liftThrowableOrElse", () => {
+    const f = _.liftThrowableOrElse((s: string) => {
       const len = s.length
       if (len > 0) {
         return len

@@ -21,7 +21,7 @@ import type * as coproduct_ from "@fp-ts/core/typeclass/Coproduct"
 import * as covariant from "@fp-ts/core/typeclass/Covariant"
 import * as filterable from "@fp-ts/core/typeclass/Filterable"
 import * as flatMap_ from "@fp-ts/core/typeclass/FlatMap"
-import * as foldable from "@fp-ts/core/typeclass/Foldable"
+import type * as foldable from "@fp-ts/core/typeclass/Foldable"
 import * as invariant from "@fp-ts/core/typeclass/Invariant"
 import type * as monad from "@fp-ts/core/typeclass/Monad"
 import type { Monoid } from "@fp-ts/core/typeclass/Monoid"
@@ -77,6 +77,14 @@ export interface OptionTypeLambda extends TypeLambda {
 }
 
 /**
+ * `None` doesn't have a constructor, instead you can use it directly as a value. Represents a missing value.
+ *
+ * @category constructors
+ * @since 1.0.0
+ */
+export const none: Option<never> = internal.none
+
+/**
  * @category constructors
  * @since 1.0.0
  */
@@ -97,6 +105,70 @@ export const some: <A>(a: A) => Option<A> = internal.some
  * @since 1.0.0
  */
 export const isOption: (u: unknown) => u is Option<unknown> = internal.isOption
+
+/**
+ * Constructs a new `Option` from a nullable type. If the value is `null` or `undefined`, returns `None`, otherwise
+ * returns the value wrapped in a `Some`.
+ *
+ * @example
+ * import { none, some, fromNullable } from '@fp-ts/data/Option'
+ *
+ * assert.deepStrictEqual(fromNullable(undefined), none)
+ * assert.deepStrictEqual(fromNullable(null), none)
+ * assert.deepStrictEqual(fromNullable(1), some(1))
+ *
+ * @category conversions
+ * @since 1.0.0
+ */
+export const fromNullable: <A>(a: A) => Option<NonNullable<A>> = internal.fromNullableToOption
+
+/**
+ * Converts an exception into an `Option`. If `f` throws, returns `None`, otherwise returns the output wrapped in a
+ * `Some`.
+ *
+ * @example
+ * import { none, some, fromThrowable } from '@fp-ts/data/Option'
+ *
+ * assert.deepStrictEqual(
+ *   fromThrowable(() => {
+ *     throw new Error()
+ *   }),
+ *   none
+ * )
+ * assert.deepStrictEqual(fromThrowable(() => 1), some(1))
+ *
+ * @category interop
+ * @since 1.0.0
+ */
+export const fromThrowable = <A>(f: () => A): Option<A> => {
+  try {
+    return some(f())
+  } catch (e) {
+    return none
+  }
+}
+
+/**
+ * Lifts a function that may throw to one returning a `Option`.
+ *
+ * @category interop
+ * @since 1.0.0
+ */
+export const liftThrowable = <A extends ReadonlyArray<unknown>, B>(
+  f: (...a: A) => B
+): ((...a: A) => Option<B>) => (...a) => fromThrowable(() => f(...a))
+
+/**
+ * @category interop
+ * @since 1.0.0
+ */
+export const getOrThrow = (onError: unknown) =>
+  <A>(self: Option<A>): A => {
+    if (isSome(self)) {
+      return self.value
+    }
+    throw onError
+  }
 
 /**
  * Returns an effect whose success is mapped by the specified `f` function.
@@ -182,6 +254,7 @@ export const as: <B>(b: B) => <_>(self: Option<_>) => Option<B> = covariant.as(C
 export const asUnit: <_>(self: Option<_>) => Option<void> = covariant.asUnit(Covariant)
 
 /**
+ * @category constructors
  * @since 1.0.0
  */
 export const of: <A>(a: A) => Option<A> = some
@@ -276,6 +349,34 @@ export const bind: <N extends string, A extends object, B>(
 export const tap: <A, _>(f: (a: A) => Option<_>) => (self: Option<A>) => Option<A> = chainable.tap(
   Chainable
 )
+
+/**
+ * @category debugging
+ * @since 1.0.0
+ */
+export const unsafeTap = <A>(
+  onSuccess: (a: A) => void
+) =>
+  (self: Option<A>): Option<A> => {
+    if (isSome(self)) {
+      onSuccess(self.value)
+    }
+    return self
+  }
+
+/**
+ * @category debugging
+ * @since 1.0.0
+ */
+export const unsafeTapError = (
+  onError: () => void
+) =>
+  <A>(self: Option<A>): Option<A> => {
+    if (isNone(self)) {
+      onError()
+    }
+    return self
+  }
 
 /**
  * Sequences the specified effect after this effect, but ignores the value
@@ -486,10 +587,15 @@ export const ap: <A>(
 )
 
 /**
+ * Semigroup returning the left-most `None` value. If both operands are `Right`s then the inner values
+ * are concatenated using the provided `Semigroup`.
+ *
+ * @category combining
  * @since 1.0.0
  */
-export const liftSemigroup: <A>(S: Semigroup<A>) => Semigroup<Option<A>> = nonEmptyApplicative
-  .liftSemigroup(NonEmptyApplicative)
+export const getFirstErrorSemigroup: <A>(S: Semigroup<A>) => Semigroup<Option<A>> =
+  nonEmptyApplicative
+    .liftSemigroup(NonEmptyApplicative)
 
 /**
  * @category instances
@@ -501,9 +607,15 @@ export const Applicative: applicative.Applicative<OptionTypeLambda> = {
 }
 
 /**
+ * Monoid returning the left-most `None` value. If both operands are `Right`s then the inner values
+ * are concatenated using the provided `Monoid`.
+ *
+ * The `empty` value is `some(M.empty)`.
+ *
+ * @category combining
  * @since 1.0.0
  */
-export const liftMonoid: <A>(M: Monoid<A>) => Monoid<Option<A>> = applicative.liftMonoid(
+export const getFirstErrorMonoid: <A>(M: Monoid<A>) => Monoid<Option<A>> = applicative.liftMonoid(
   Applicative
 )
 
@@ -514,9 +626,10 @@ export const coproduct = <B>(that: Option<B>) =>
   <A>(self: Option<A>): Option<B | A> => isSome(self) ? self : that
 
 /**
+ * @category error handling
  * @since 1.0.0
  */
-export const coproductMany = <A>(collection: Iterable<Option<A>>) =>
+export const firstSuccessOf = <A>(collection: Iterable<Option<A>>) =>
   (self: Option<A>): Option<A> => {
     let out = self
     if (isSome(out)) {
@@ -537,15 +650,19 @@ export const coproductMany = <A>(collection: Iterable<Option<A>>) =>
 export const NonEmptyCoproduct: nonEmptyCoproduct.NonEmptyCoproduct<OptionTypeLambda> = {
   ...Invariant,
   coproduct,
-  coproductMany
+  coproductMany: firstSuccessOf
 }
 
 /**
+ * Semigroup returning the left-most `Some` value.
+ *
+ * @category combining
  * @since 1.0.0
  */
-export const getSemigroup: <A>() => Semigroup<Option<A>> = nonEmptyCoproduct.getSemigroup(
-  NonEmptyCoproduct
-)
+export const getFirstSuccessSemigroup: <A>() => Semigroup<Option<A>> = nonEmptyCoproduct
+  .getSemigroup(
+    NonEmptyCoproduct
+  )
 
 /**
  * @since 1.0.0
@@ -598,87 +715,20 @@ export const Alternative: alternative.Alternative<OptionTypeLambda> = {
 }
 
 /**
- * @category folding
- * @since 1.0.0
- */
-export const reduce = <B, A>(b: B, f: (b: B, a: A) => B) =>
-  (self: Option<A>): B => isNone(self) ? b : f(b, self.value)
-
-/**
- * @category folding
- * @since 1.0.0
- */
-export const reduceRight = <B, A>(b: B, f: (b: B, a: A) => B) =>
-  (self: Option<A>): B => isNone(self) ? b : f(b, self.value)
-
-/**
  * @category instances
  * @since 1.0.0
  */
 export const Foldable: foldable.Foldable<OptionTypeLambda> = {
-  reduce
+  reduce: (b, f) => (self) => isNone(self) ? b : f(b, self.value)
 }
 
 /**
- * @category folding
- * @since 1.0.0
- */
-export const foldMap: <M>(M: Monoid<M>) => <A>(f: (a: A) => M) => (self: Option<A>) => M = foldable
-  .foldMap(Foldable)
-
-/**
- * @category conversions
- * @since 1.0.0
- */
-export const toReadonlyArray: <A>(
-  self: Option<A>
-) => ReadonlyArray<A> = foldable.toReadonlyArray(Foldable)
-
-/**
- * @category conversions
- * @since 1.0.0
- */
-export const toReadonlyArrayWith: <A, B>(
-  f: (a: A) => B
-) => (self: Option<A>) => ReadonlyArray<B> = foldable.toReadonlyArrayWith(Foldable)
-
-/**
- * @category folding
- * @since 1.0.0
- */
-export const reduceKind: <G extends TypeLambda>(
-  G: monad.Monad<G>
-) => <B, A, R, O, E>(
-  b: B,
-  f: (b: B, a: A) => Kind<G, R, O, E, B>
-) => (self: Option<A>) => Kind<G, R, O, E, B> = foldable.reduceKind(Foldable)
-
-/**
- * @category folding
- * @since 1.0.0
- */
-export const reduceRightKind: <G extends TypeLambda>(
-  G: monad.Monad<G>
-) => <B, A, R, O, E>(
-  b: B,
-  f: (b: B, a: A) => Kind<G, R, O, E, B>
-) => (self: Option<A>) => Kind<G, R, O, E, B> = foldable.reduceRightKind(Foldable)
-
-/**
- * @category folding
- * @since 1.0.0
- */
-export const foldMapKind: <G extends TypeLambda>(
-  G: coproduct_.Coproduct<G>
-) => <A, R, O, E, B>(
-  f: (a: A) => Kind<G, R, O, E, B>
-) => (self: Option<A>) => Kind<G, R, O, E, B> = foldable.foldMapKind(Foldable)
-
-/**
+ * Alias of `flatten`.
+ *
  * @category filtering
  * @since 1.0.0
  */
-export const compact: <A>(foa: Option<Option<A>>) => Option<A> = flatten
+export const compact: <A>(self: Option<Option<A>>) => Option<A> = flatten
 
 /**
  * @category instances
@@ -699,8 +749,8 @@ export const separate: <A, B>(self: Option<Either<A, B>>) => readonly [Option<A>
  * @category filtering
  * @since 1.0.0
  */
-export const filterMap: <A, B>(f: (a: A) => Option<B>) => (fa: Option<A>) => Option<B> = (f) =>
-  (fa) => isNone(fa) ? none : f(fa.value)
+export const filterMap = <A, B>(f: (a: A) => Option<B>) =>
+  (self: Option<A>): Option<B> => isNone(self) ? none : f(self.value)
 
 /**
  * @category instances
@@ -718,25 +768,6 @@ export const filter: {
   <C extends A, B extends A, A = C>(refinement: Refinement<A, B>): (fc: Option<C>) => Option<B>
   <B extends A, A = B>(predicate: Predicate<A>): (fb: Option<B>) => Option<B>
 } = filterable.filter(Filterable)
-
-/**
- * @category filtering
- * @since 1.0.0
- */
-export const partition: {
-  <C extends A, B extends A, A = C>(
-    refinement: Refinement<A, B>
-  ): (fc: Option<C>) => readonly [Option<C>, Option<B>]
-  <B extends A, A = B>(predicate: Predicate<A>): (fb: Option<B>) => readonly [Option<B>, Option<B>]
-} = filterable.partition(Filterable)
-
-/**
- * @category filtering
- * @since 1.0.0
- */
-export const partitionMap: <A, B, C>(
-  f: (a: A) => Either<B, C>
-) => (fa: Option<A>) => readonly [Option<B>, Option<C>] = filterable.partitionMap(Filterable)
 
 /**
  * @category traversing
@@ -789,7 +820,7 @@ export const traverseTap: <F extends TypeLambda>(
  * assert.strictEqual(isNone(some(1)), false)
  * assert.strictEqual(isNone(none), true)
  *
- * @category refinements
+ * @category guards
  * @since 1.0.0
  */
 export const isNone: <A>(self: Option<A>) => self is None = internal.isNone
@@ -803,18 +834,10 @@ export const isNone: <A>(self: Option<A>) => self is None = internal.isNone
  * assert.strictEqual(isSome(some(1)), true)
  * assert.strictEqual(isSome(none), false)
  *
- * @category refinements
+ * @category guards
  * @since 1.0.0
  */
 export const isSome: <A>(self: Option<A>) => self is Some<A> = internal.isSome
-
-/**
- * `None` doesn't have a constructor, instead you can use it directly as a value. Represents a missing value.
- *
- * @category constructors
- * @since 1.0.0
- */
-export const none: Option<never> = internal.none
 
 /**
  * @category conversions
@@ -846,7 +869,8 @@ export const fromEither: <E, A>(self: Either<E, A>) => Option<A> = either.getRig
  * @category conversions
  * @since 1.0.0
  */
-export const toEither: <E>(onNone: E) => <A>(self: Option<A>) => Either<E, A> = either.fromOption
+export const toEither: <E>(onNone: E) => <A>(self: Option<A>) => Either<E, A> =
+  either.fromOptionOrElse
 
 /**
  * Takes a (lazy) default value, a function, and an `Option` value, if the `Option` value is `None` the default value is
@@ -859,7 +883,7 @@ export const toEither: <E>(onNone: E) => <A>(self: Option<A>) => Either<E, A> = 
  * assert.strictEqual(
  *   pipe(
  *     some(1),
- *     match(() => 'a none', a => `a some containing ${a}`)
+ *     match('a none', a => `a some containing ${a}`)
  *   ),
  *   'a some containing 1'
  * )
@@ -867,7 +891,7 @@ export const toEither: <E>(onNone: E) => <A>(self: Option<A>) => Either<E, A> = 
  * assert.strictEqual(
  *   pipe(
  *     none,
- *     match(() => 'a none', a => `a some containing ${a}`)
+ *     match('a none', a => `a some containing ${a}`)
  *   ),
  *   'a none'
  * )
@@ -875,8 +899,8 @@ export const toEither: <E>(onNone: E) => <A>(self: Option<A>) => Either<E, A> = 
  * @category pattern matching
  * @since 1.0.0
  */
-export const match = <B, A, C = B>(onNone: LazyArg<B>, onSome: (a: A) => C) =>
-  (ma: Option<A>): B | C => isNone(ma) ? onNone() : onSome(ma.value)
+export const match = <B, A, C = B>(onNone: B, onSome: (a: A) => C) =>
+  (self: Option<A>): B | C => isNone(self) ? onNone : onSome(self.value)
 
 /**
  * Extracts the value out of the structure, if it exists. Otherwise returns the given default value
@@ -885,79 +909,14 @@ export const match = <B, A, C = B>(onNone: LazyArg<B>, onSome: (a: A) => C) =>
  * import { some, none, getOrElse } from '@fp-ts/data/Option'
  * import { pipe } from '@fp-ts/data/Function'
  *
- * assert.strictEqual(
- *   pipe(
- *     some(1),
- *     getOrElse(0)
- *   ),
- *   1
- * )
- * assert.strictEqual(
- *   pipe(
- *     none,
- *     getOrElse(0)
- *   ),
- *   0
- * )
+ * assert.strictEqual(pipe(some(1), getOrElse(0)), 1)
+ * assert.strictEqual(pipe(none, getOrElse(0)), 0)
  *
  * @category error handling
  * @since 1.0.0
  */
 export const getOrElse = <B>(onNone: B) =>
   <A>(self: Option<A>): A | B => isNone(self) ? onNone : self.value
-
-/**
- * Converts an exception into an `Option`. If `f` throws, returns `None`, otherwise returns the output wrapped in a
- * `Some`.
- *
- * @example
- * import { none, some, fromThrowable } from '@fp-ts/data/Option'
- *
- * assert.deepStrictEqual(
- *   fromThrowable(() => {
- *     throw new Error()
- *   }),
- *   none
- * )
- * assert.deepStrictEqual(fromThrowable(() => 1), some(1))
- *
- * @category interop
- * @see {@link liftThrowable}
- * @since 1.0.0
- */
-export const fromThrowable = <A>(f: () => A): Option<A> => {
-  try {
-    return some(f())
-  } catch (e) {
-    return none
-  }
-}
-
-/**
- * Lifts a function that may throw to one returning a `Option`.
- *
- * @category interop
- * @since 1.0.0
- */
-export const liftThrowable = <A extends ReadonlyArray<unknown>, B>(
-  f: (...a: A) => B
-): ((...a: A) => Option<B>) => (...a) => fromThrowable(() => f(...a))
-
-/**
- * Constructs a new `Option` from a nullable type. If the value is `null` or `undefined`, returns `None`, otherwise
- * returns the value wrapped in a `Some`.
- *
- * @example
- * import { none, some, fromNullable } from '@fp-ts/data/Option'
- *
- * assert.deepStrictEqual(fromNullable(undefined), none)
- * assert.deepStrictEqual(fromNullable(null), none)
- * assert.deepStrictEqual(fromNullable(1), some(1))
- *
- * @category conversions
- * @since 1.0.0
- */
-export const fromNullable: <A>(a: A) => Option<NonNullable<A>> = internal.fromNullableToOption
 
 /**
  * Returns a *smart constructor* from a function that returns a nullable value.
@@ -1033,55 +992,31 @@ export const flatMapNullable = <A, B>(f: (a: A) => B | null | undefined) =>
  * Extracts the value out of the structure, if it exists. Otherwise returns `null`.
  *
  * @example
- * import { some, none, toNull } from '@fp-ts/data/Option'
+ * import { some, none, getOrNull } from '@fp-ts/data/Option'
  * import { pipe } from '@fp-ts/data/Function'
  *
- * assert.strictEqual(
- *   pipe(
- *     some(1),
- *     toNull
- *   ),
- *   1
- * )
- * assert.strictEqual(
- *   pipe(
- *     none,
- *     toNull
- *   ),
- *   null
- * )
+ * assert.strictEqual(pipe(some(1), getOrNull), 1)
+ * assert.strictEqual(pipe(none, getOrNull), null)
  *
  * @category conversions
  * @since 1.0.0
  */
-export const toNull: <A>(self: Option<A>) => A | null = getOrElse(null)
+export const getOrNull: <A>(self: Option<A>) => A | null = getOrElse(null)
 
 /**
  * Extracts the value out of the structure, if it exists. Otherwise returns `undefined`.
  *
  * @example
- * import { some, none, toUndefined } from '@fp-ts/data/Option'
+ * import { some, none, getOrUndefined } from '@fp-ts/data/Option'
  * import { pipe } from '@fp-ts/data/Function'
  *
- * assert.strictEqual(
- *   pipe(
- *     some(1),
- *     toUndefined
- *   ),
- *   1
- * )
- * assert.strictEqual(
- *   pipe(
- *     none,
- *     toUndefined
- *   ),
- *   undefined
- * )
+ * assert.strictEqual(pipe(some(1), getOrUndefined), 1)
+ * assert.strictEqual(pipe(none, getOrUndefined), undefined)
  *
  * @category conversions
  * @since 1.0.0
  */
-export const toUndefined: <A>(self: Option<A>) => A | undefined = getOrElse(undefined)
+export const getOrUndefined: <A>(self: Option<A>) => A | undefined = getOrElse(undefined)
 
 /**
  * Lazy version of `orElse`.
@@ -1138,11 +1073,37 @@ export const catchAll = <B>(that: LazyArg<Option<B>>) =>
  *   O.some('a')
  * )
  *
- * @category instance operations
+ * @category error handling
  * @since 1.0.0
  */
 export const orElse = <B>(that: Option<B>): (<A>(self: Option<A>) => Option<A | B>) =>
   catchAll(() => that)
+
+/**
+ * Returns an effect that will produce the value of this effect, unless it
+ * fails, in which case, it will produce the value of the specified effect.
+ *
+ * @category error handling
+ * @since 1.0.0
+ */
+export const orElseEither = <B>(
+  that: Option<B>
+) =>
+  <A>(self: Option<A>): Option<Either<A, B>> =>
+    isNone(self) ?
+      pipe(that, map(either.right)) :
+      pipe<Some<A>, Option<Either<A, B>>>(self, map(either.left))
+
+/**
+ * Executes this effect and returns its value, if it succeeds, but otherwise
+ * succeeds with the specified value.
+ *
+ * @category error handling
+ * @since 1.0.0
+ */
+export const orElseSucceed = <B>(
+  onFailure: B
+): <A>(self: Option<A>) => Option<A | B> => orElse(some(onFailure))
 
 /**
  * The `Order` instance allows `Option` values to be compared with
@@ -1163,6 +1124,7 @@ export const orElse = <B>(that: Option<B>): (<A>(self: Option<A>) => Option<A | 
  * assert.strictEqual(pipe(some(1), O.compare(some(2))), -1)
  * assert.strictEqual(pipe(some(1), O.compare(some(1))), 0)
  *
+ * @category sorting
  * @since 1.0.0
  */
 export const liftOrder = <A>(O: Order<A>): Order<Option<A>> =>
@@ -1217,8 +1179,8 @@ export const flatMapEither = <A, E, B>(f: (a: A) => Either<E, B>) =>
  *
  * @since 1.0.0
  */
-export const elem = <A>(a: A) =>
-  (ma: Option<A>): boolean => isNone(ma) ? false : equals(ma.value)(a)
+export const elem = <B>(b: B) =>
+  <A>(self: Option<A>): boolean => isNone(self) ? false : equals(self.value)(b)
 
 /**
  * Returns `true` if the predicate is satisfied by the wrapped value
@@ -1252,4 +1214,4 @@ export const elem = <A>(a: A) =>
  * @since 1.0.0
  */
 export const exists = <A>(predicate: Predicate<A>) =>
-  (ma: Option<A>): boolean => isNone(ma) ? false : predicate(ma.value)
+  (self: Option<A>): boolean => isNone(self) ? false : predicate(self.value)

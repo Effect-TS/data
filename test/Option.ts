@@ -1,5 +1,6 @@
 import * as E from "@fp-ts/data/Either"
 import { pipe } from "@fp-ts/data/Function"
+import * as Number from "@fp-ts/data/Number"
 import * as _ from "@fp-ts/data/Option"
 import * as ReadonlyArray from "@fp-ts/data/ReadonlyArray"
 import * as String from "@fp-ts/data/String"
@@ -50,7 +51,6 @@ describe.concurrent("Option", () => {
     expect(_.struct).exist
 
     expect(_.NonEmptyApplicative).exist
-    expect(_.liftSemigroup).exist
     expect(_.lift2).exist
     expect(_.lift3).exist
     expect(_.ap).exist
@@ -58,12 +58,10 @@ describe.concurrent("Option", () => {
     expect(_.andThen).exist
 
     expect(_.Applicative).exist
-    expect(_.liftMonoid).exist
+    expect(_.getFirstErrorMonoid).exist
 
     expect(_.NonEmptyCoproduct).exist
     expect(_.coproduct).exist
-    expect(_.coproductMany).exist
-    expect(_.getSemigroup).exist
     expect(_.coproductEither).exist
 
     expect(_.Coproduct).exist
@@ -76,14 +74,6 @@ describe.concurrent("Option", () => {
     expect(_.Alternative).exist
 
     expect(_.Foldable).exist
-    expect(_.reduce).exist
-    expect(_.reduceRight).exist
-    expect(_.foldMap).exist
-    expect(_.toReadonlyArray).exist
-    expect(_.toReadonlyArrayWith).exist
-    expect(_.reduceKind).exist
-    expect(_.reduceRightKind).exist
-    expect(_.foldMapKind).exist
 
     expect(_.Traversable).exist
     expect(_.traverse).exist
@@ -97,8 +87,105 @@ describe.concurrent("Option", () => {
     expect(_.Filterable).exist
     expect(_.filterMap).exist
     expect(_.filter).exist
-    expect(_.partition).exist
-    expect(_.partitionMap).exist
+  })
+
+  it("isOption", () => {
+    deepStrictEqual(pipe(_.some(1), _.isOption), true)
+    deepStrictEqual(pipe(_.none, _.isOption), true)
+    deepStrictEqual(pipe(E.right(1), _.isOption), false)
+  })
+
+  it("firstSuccessOf", () => {
+    deepStrictEqual(pipe(_.some(1), _.firstSuccessOf([])), _.some(1))
+    deepStrictEqual(pipe(_.none, _.firstSuccessOf([])), _.none)
+    deepStrictEqual(
+      pipe(_.none, _.firstSuccessOf([_.none, _.none, _.none, _.some(1)])),
+      _.some(1)
+    )
+    deepStrictEqual(
+      pipe(_.none, _.firstSuccessOf([_.none, _.none, _.none])),
+      _.none
+    )
+  })
+
+  it("getFirstErrorSemigroup", () => {
+    const S = _.getFirstErrorSemigroup<number>(Number.SemigroupSum)
+    deepStrictEqual(pipe(_.none, S.combine(_.none)), _.none)
+    deepStrictEqual(pipe(_.none, S.combine(_.some(2))), _.none)
+    deepStrictEqual(pipe(_.some(1), S.combine(_.none)), _.none)
+    deepStrictEqual(
+      pipe(_.some(1), S.combine(_.some(2))),
+      _.some(3)
+    )
+  })
+
+  it("getFirstSuccessSemigroup", () => {
+    const S = _.getFirstSuccessSemigroup<number>()
+    deepStrictEqual(pipe(_.none, S.combine(_.none)), _.none)
+    deepStrictEqual(pipe(_.none, S.combine(_.some(2))), _.some(2))
+    deepStrictEqual(pipe(_.some(1), S.combine(_.none)), _.some(1))
+    deepStrictEqual(
+      pipe(_.some(1), S.combine(_.some(2))),
+      _.some(1)
+    )
+  })
+
+  it("catchAll", () => {
+    deepStrictEqual(pipe(_.some(1), _.catchAll(() => _.some(2))), _.some(1))
+    deepStrictEqual(pipe(_.some(1), _.catchAll(() => _.none)), _.some(1))
+    deepStrictEqual(pipe(_.none, _.catchAll(() => _.some(1))), _.some(1))
+    deepStrictEqual(pipe(_.none, _.catchAll(() => _.none)), _.none)
+  })
+
+  it("orElseEither", () => {
+    expect(pipe(_.some(1), _.orElseEither(_.some(2)))).toEqual(_.some(E.left(1)))
+    expect(pipe(_.some(1), _.orElseEither(_.none))).toEqual(_.some(E.left(1)))
+    expect(pipe(_.none, _.orElseEither(_.some(2)))).toEqual(_.some(E.right(2)))
+    expect(pipe(_.none, _.orElseEither(_.none))).toEqual(_.none)
+  })
+
+  it("orElseSucceed", () => {
+    deepStrictEqual(pipe(_.some(1), _.orElseSucceed(2)), _.some(1))
+    deepStrictEqual(pipe(_.none, _.orElseSucceed(2)), _.some(2))
+  })
+
+  it("unsafeTap", () => {
+    const log: Array<number> = []
+    pipe(
+      _.some(1),
+      _.unsafeTap(() => log.push(1))
+    )
+    pipe(
+      _.none,
+      _.unsafeTap(() => log.push(2))
+    )
+    deepStrictEqual(
+      log,
+      [1]
+    )
+  })
+
+  it("unsafeTapError", () => {
+    const log: Array<number> = []
+    pipe(
+      _.some(1),
+      _.unsafeTapError(() => log.push(1))
+    )
+    pipe(
+      _.none,
+      _.unsafeTapError(() => log.push(2))
+    )
+    deepStrictEqual(
+      log,
+      [2]
+    )
+  })
+
+  it("getOrThrow", () => {
+    expect(pipe(_.some(1), _.getOrThrow(new Error("e")))).toEqual(1)
+    expect(() => pipe(_.none, _.getOrThrow(new Error("e")))).toThrow(
+      new Error("e")
+    )
   })
 
   it("of", () => {
@@ -162,17 +249,6 @@ describe.concurrent("Option", () => {
     deepStrictEqual(pipe(_.some(1), coproductMany([])), _.some(1))
     deepStrictEqual(pipe(_.some(1), coproductMany([_.none as _.Option<number>])), _.some(1))
     deepStrictEqual(pipe(_.some(1), coproductMany([_.some(2)])), _.some(1))
-  })
-
-  it("reduce", () => {
-    deepStrictEqual(pipe(_.none, _.reduce(2, (b, a) => b + a)), 2)
-    deepStrictEqual(pipe(_.some(3), _.reduce(2, (b, a) => b + a)), 5)
-  })
-
-  it("reduceRight", () => {
-    const f = (a: string, acc: string) => acc + a
-    deepStrictEqual(pipe(_.some("a"), _.reduceRight("", f)), "a")
-    deepStrictEqual(pipe(_.none, _.reduceRight("", f)), "")
   })
 
   it("fromIterable", () => {
@@ -251,26 +327,26 @@ describe.concurrent("Option", () => {
   })
 
   it("match", () => {
-    const f = () => "none"
+    const f = "none"
     const g = (s: string) => `some${s.length}`
     const match = _.match(f, g)
     deepStrictEqual(match(_.none), "none")
     deepStrictEqual(match(_.some("abc")), "some3")
   })
 
-  it("toNull", () => {
-    deepStrictEqual(_.toNull(_.none), null)
-    deepStrictEqual(_.toNull(_.some(1)), 1)
-  })
-
-  it("toUndefined", () => {
-    deepStrictEqual(_.toUndefined(_.none), undefined)
-    deepStrictEqual(_.toUndefined(_.some(1)), 1)
-  })
-
   it("getOrElse", () => {
     deepStrictEqual(pipe(_.some(1), _.getOrElse(0)), 1)
     deepStrictEqual(pipe(_.none, _.getOrElse(0)), 0)
+  })
+
+  it("getOrNull", () => {
+    deepStrictEqual(_.getOrNull(_.none), null)
+    deepStrictEqual(_.getOrNull(_.some(1)), 1)
+  })
+
+  it("getOrUndefined", () => {
+    deepStrictEqual(_.getOrUndefined(_.none), undefined)
+    deepStrictEqual(_.getOrUndefined(_.some(1)), 1)
   })
 
   it("liftOrder", () => {
