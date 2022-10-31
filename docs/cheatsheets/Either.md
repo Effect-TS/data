@@ -1,6 +1,6 @@
 ---
 title: Either Cheatsheet
-nav_order: 2
+nav_order: 1
 parent: Cheatsheets
 ---
 
@@ -10,8 +10,8 @@ parent: Cheatsheets
 
 | Name                | Given | To                 |
 | ------------------- | ----- | ------------------ |
-| right               | `A`   | `Either<never, A>` |
 | left                | `E`   | `Either<E, never>` |
+| right               | `A`   | `Either<never, A>` |
 | of (alias of right) | `A`   | `Either<never, A>` |
 
 ## Guards
@@ -20,38 +20,35 @@ parent: Cheatsheets
 | -------- | -------------- | ----------------------------- |
 | isEither | `unknown`      | `is Either<unknown, unknown>` |
 | isLeft   | `Either<E, A>` | `is Left<E>`                  |
-| isEither | `Either<E, A>` | `is Right<A>`                 |
+| isRight  | `Either<E, A>` | `is Right<A>`                 |
 
 ## Conversions
 
-| Name         | Given            | To                          |
-| ------------ | ---------------- | --------------------------- |
-| fromOption   | `Option<A>`, `E` | `Either<E, A>`              |
-| fromNullable | `A`, `E`         | `Either<E, NonNullable<A>>` |
+| Name               | Given              | To                          |
+| ------------------ | ------------------ | --------------------------- |
+| fromIterableOrElse | `Iterable<A>`, `E` | `Either<E, A>`              |
+| fromOptionOrElse   | `Option<A>`, `E`   | `Either<E, A>`              |
+| fromNullableOrElse | `A`, `E`           | `Either<E, NonNullable<A>>` |
+| getLeft            | `Either<E, A>`     | `Option<E>`                 |
+| getRight           | `Either<E, A>`     | `Option<A>`                 |
 
 ## Interop
 
-| Name          | Given                         | To                       |
-| ------------- | ----------------------------- | ------------------------ |
-| fromThrowable | `() => A`, `unknown => E`     | `Either<E, A>`           |
-| liftThrowable | `(...A) => B`, `unknown => E` | `(...A) => Either<E, B>` |
-| getOrThrow    | `(...A) => B`, `unknown => E` | `(...A) => Either<E, B>` |
-
-## Mutations
-
-| Name    | Given          | To             |
-| ------- | -------------- | -------------- |
-| reverse | `Either<E, A>` | `Either<A, E>` |
+| Name                | Given                          | To                       |
+| ------------------- | ------------------------------ | ------------------------ |
+| fromThrowableOrElse | `() => A`, `unknown => E`      | `Either<E, A>`           |
+| liftThrowableOrElse | `(...A) => B`, `unknown => E`  | `(...A) => Either<E, B>` |
+| getOrThrow          | `Either<E, A>`, `E => unknown` | `A`                      |
 
 ## Lifting
 
-| Name          | Given                                   | To                                                                             |
-| ------------- | --------------------------------------- | ------------------------------------------------------------------------------ |
-| lift2         | `(A, B) => C`                           | `(Either<E1, A>, Either<E2, B>) => Either<E1 \| E2, C>`                        |
-| lift3         | `(A, B, C) => D`                        | `(Either<E1, A>, Either<E2, B>, , Either<E3, C>) => Either<E1 \| E2 \| E3, D>` |
-| liftPredicate | `A => boolean`, `E`                     | `A => Either<E, A>`                                                            |
-| liftNullable  | `(...A) => B \| null \| undefined`, `E` | `(...A) => Either<E, NonNullable<B>>`                                          |
-| liftOption    | `(...A) => Option<B>`, `E`              | `(...A) => Either<E, B>`                                                       |
+| Name                | Given                                   | To                                                                           |
+| ------------------- | --------------------------------------- | ---------------------------------------------------------------------------- |
+| lift2               | `(A, B) => C`                           | `(Either<E1, A>, Either<E2, B>) => Either<E1 \| E2, C>`                      |
+| lift3               | `(A, B, C) => D`                        | `(Either<E1, A>, Either<E2, B>, Either<E3, C>) => Either<E1 \| E2 \| E3, D>` |
+| liftPredicateOrElse | `A => boolean`, `E`                     | `A => Either<E, A>`                                                          |
+| liftNullableOrElse  | `(...A) => B \| null \| undefined`, `E` | `(...A) => Either<E, NonNullable<B>>`                                        |
+| liftOptionOrElse    | `(...A) => Option<B>`, `E`              | `(...A) => Either<E, B>`                                                     |
 
 ## Error handling
 
@@ -63,14 +60,13 @@ parent: Cheatsheets
 | orElseEither   | `Either<E1, A>`, `Either<E2, B>`         | `Either<E2, Either<A, B>>` |
 | orElseFail     | `Either<E1, A>`, `E2`                    | `Either<E2, A>`            |
 | orElseSucceed  | `Either<E, A>`, `B`                      | `Either<E, A \| B>`        |
-| tapError       | `Either<E, A>`, `E => void`              | `Either<E, A>`             |
 
 ## Debugging
 
-| Name     | Given                       | To             |
-| -------- | --------------------------- | -------------- |
-| tap      | `Either<E, A>`, `A => void` | `Either<E, A>` |
-| tapError | `Either<E, A>`, `E => void` | `Either<E, A>` |
+| Name           | Given                       | To             |
+| -------------- | --------------------------- | -------------- |
+| unsafeTap      | `Either<E, A>`, `A => void` | `Either<E, A>` |
+| unsafeTapError | `Either<E, A>`, `E => void` | `Either<E, A>` |
 
 ## Getters
 
@@ -91,37 +87,39 @@ parent: Cheatsheets
 
 ## Mapping
 
-| Name    | Given                              | To               |
-| ------- | ---------------------------------- | ---------------- |
-| imap    | `Either<E, A>`, `A => B`, `B => A` | `Either<E, B>`   |
-| tupled  | `Either<E, A>`                     | `Either<E, [A]>` |
-| map     | `Either<E, A>`, `A => B`           | `Either<E, B>`   |
-| flap    | `Either<E, A => B>`, `A`           | `Either<E, B>`   |
-| as      | `Either<E, _>`, `B`                | `Either<E, B>`   |
-| asUnit  | `Either<E, _>`, `B`                | `Either<E, B>`   |
-| bimap   | `Either<E, A>`, `E => G`, `A => B` | `Either<G, B>`   |
-| mapLeft | `Either<E, A>`, `E => G`           | `Either<G, A>`   |
+| Name    | Given                              | To                |
+| ------- | ---------------------------------- | ----------------- |
+| imap    | `Either<E, A>`, `A => B`, `B => A` | `Either<E, B>`    |
+| tupled  | `Either<E, A>`                     | `Either<E, [A]>`  |
+| map     | `Either<E, A>`, `A => B`           | `Either<E, B>`    |
+| flap    | `Either<E, A => B>`, `A`           | `Either<E, B>`    |
+| as      | `Either<E, _>`, `B`                | `Either<E, B>`    |
+| asUnit  | `Either<E, _>`                     | `Either<E, void>` |
+| bimap   | `Either<E, A>`, `E => G`, `A => B` | `Either<G, B>`    |
+| mapLeft | `Either<E, A>`, `E => G`           | `Either<G, A>`    |
 
 ## Sequencing
 
-| Name                | Given                                                | To                                 |
-| ------------------- | ---------------------------------------------------- | ---------------------------------- |
-| flatMap             | `Either<E1, A>`, `A => Either<E2, B>`                | `Either<E1 \| E2, B>`              |
-| flatten             | `Either<E1, Either<E2, A>>`                          | `Either<E1 \| E2, A>`              |
-| andThen             | `Either<E1, _>`, `Either<E2, B>`                     | `Either<E1 \| E2, B>`              |
-| andThenDiscard      | `Either<E1, A>`, `Either<E2, _>`                     | `Either<E1 \| E2, A>`              |
-| composeKleisliArrow | `A => Either<E1, B>`, `B => Either<E2, C>`           | `A => Either<E1 \| E2, C>`         |
-| flatMapNullable     | `Either<E1, A>`, `A => B \| null \| undefined`, `E2` | `Either<E1 \| E2, NonNullable<B>>` |
-| flatMapOption       | `Either<E1, A>`, `A => Option<B>`, `E2`              | `Either<E1 \| E2, NonNullable<B>>` |
+| Name                  | Given                                                | To                                 |
+| --------------------- | ---------------------------------------------------- | ---------------------------------- |
+| flatMap               | `Either<E1, A>`, `A => Either<E2, B>`                | `Either<E1 \| E2, B>`              |
+| flatten               | `Either<E1, Either<E2, A>>`                          | `Either<E1 \| E2, A>`              |
+| andThen               | `Either<E1, _>`, `Either<E2, B>`                     | `Either<E1 \| E2, B>`              |
+| andThenDiscard        | `Either<E1, A>`, `Either<E2, _>`                     | `Either<E1 \| E2, A>`              |
+| tap                   | `Either<E1, A>`, `A => Either<E2, _>`                | `Either<E1 \| E2, A>`              |
+| tapError              | `Either<E1, A>`, `E1 => Either<E2, _>`               | `Either<E1 \| E2, A>`              |
+| composeKleisliArrow   | `A => Either<E1, B>`, `B => Either<E2, C>`           | `A => Either<E1 \| E2, C>`         |
+| flatMapNullableOrElse | `Either<E1, A>`, `A => B \| null \| undefined`, `E2` | `Either<E1 \| E2, NonNullable<B>>` |
+| flatMapOptionOrElse   | `Either<E1, A>`, `A => Option<B>`, `E2`              | `Either<E1 \| E2, NonNullable<B>>` |
 
 ## Combining
 
-| Name                       | Given                          | To                        |
-| -------------------------- | ------------------------------ | ------------------------- |
-| getSemigroup               | `Semigroup<E>`, `Semigroup<A>` | `Semigroup<Either<E, A>>` |
-| getFirstErrorSemigroup     | `Semigroup<A>`                 | `Semigroup<Either<E, A>>` |
-| getFirstFailureMonoid      | `Monoid<A>`                    | `Monoid<Either<E, A>>`    |
-| getFirstSuccessOfSemigroup |                                | `Semigroup<Either<E, A>>` |
+| Name                     | Given                          | To                        |
+| ------------------------ | ------------------------------ | ------------------------- |
+| getSemigroup             | `Semigroup<E>`, `Semigroup<A>` | `Semigroup<Either<E, A>>` |
+| getFirstErrorSemigroup   | `Semigroup<A>`                 | `Semigroup<Either<E, A>>` |
+| getFirstErrorMonoid      | `Monoid<A>`                    | `Monoid<Either<E, A>>`    |
+| getFirstSuccessSemigroup |                                | `Semigroup<Either<E, A>>` |
 
 ## Filtering
 
@@ -129,7 +127,7 @@ parent: Cheatsheets
 | --------------- | --------------------------------------- | ------------------------------ |
 | compactOrElse   | `Either<E, Option<A>>`, `E`             | `Either<E, A>`                 |
 | separateOrElse  | `Either<E, Either<A, B>>`, `E`          | `[Either<E, A>, Either<E, B>]` |
-| filterOrElse    | `Either<E1, A>`, `E2`                   | `Either<E1 \| E2, A>`          |
+| filterOrElse    | `Either<E1, A>`, `A => boolean`, `E2`   | `Either<E1 \| E2, A>`          |
 | filterMapOrElse | `Either<E1, A>`, `A => Option<B>`, `E2` | `Either<E1 \| E2, B>`          |
 
 ## Traversing
@@ -169,3 +167,4 @@ parent: Cheatsheets
 | tuple          | `[Either<E1, A>, Either<E2, B>, ...]`        | `Either<E1 \| E2 \| ..., [A, B, ...]>`        |
 | struct         | `{ a: Either<E1, A>, b: Either<E2, B>, ...}` | `Either<E1 \| E2 \| ..., { a: A, b: B, ...}>` |
 | ap             | `Either<E1, A => B>`, `Either<E2, A>`        | `Either<E1 \| E2, B>`                         |
+| reverse        | `Either<E, A>`                               | `Either<A, E>`                                |
