@@ -33,9 +33,9 @@ export const getRight = <E, A>(
 ): Option<A> => (isLeft(self) ? _.none : _.some(self.right))
 
 /** @internal */
-export const fromNullableOrElse = <E>(onNullable: E) =>
+export const fromNullable = <E>(onNullable: E) =>
   <A>(a: A): Either<E, NonNullable<A>> => a == null ? left(onNullable) : right(a as NonNullable<A>)
 
 /** @internal */
-export const fromOptionOrElse = <E>(onNone: E) =>
+export const fromOption = <E>(onNone: E) =>
   <A>(fa: Option<A>): Either<E, A> => _.isNone(fa) ? left(onNone) : right(fa.value)
