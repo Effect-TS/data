@@ -23,14 +23,14 @@ import type * as foldable from "@fp-ts/core/typeclass/Foldable"
 import * as invariant from "@fp-ts/core/typeclass/Invariant"
 import type * as monad from "@fp-ts/core/typeclass/Monad"
 import type { Monoid } from "@fp-ts/core/typeclass/Monoid"
-import type * as nonEmptyAlternative from "@fp-ts/core/typeclass/NonEmptyAlternative"
-import * as nonEmptyApplicative from "@fp-ts/core/typeclass/NonEmptyApplicative"
-import * as nonEmptyCoproduct from "@fp-ts/core/typeclass/NonEmptyCoproduct"
-import * as nonEmptyProduct from "@fp-ts/core/typeclass/NonEmptyProduct"
 import * as of_ from "@fp-ts/core/typeclass/Of"
 import type * as pointed from "@fp-ts/core/typeclass/Pointed"
 import * as product_ from "@fp-ts/core/typeclass/Product"
+import type * as semiAlternative from "@fp-ts/core/typeclass/SemiAlternative"
+import * as semiApplicative from "@fp-ts/core/typeclass/SemiApplicative"
+import * as semiCoproduct from "@fp-ts/core/typeclass/SemiCoproduct"
 import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
+import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
 import { equals } from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
@@ -393,7 +393,7 @@ export const productMany = <E, A>(
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<EitherTypeLambda> = {
+export const SemiProduct: semiProduct.SemiProduct<EitherTypeLambda> = {
   ...Invariant,
   product,
   productMany
@@ -405,13 +405,13 @@ export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<EitherTypeLambda> 
  * @category do notation
  * @since 1.0.0
  */
-export const bindEither: <N extends string, A extends object, E2, B>(
+export const andThenBind: <N extends string, A extends object, E2, B>(
   name: Exclude<N, keyof A>,
   fb: Either<E2, B>
 ) => <E1>(
   self: Either<E1, A>
-) => Either<E1 | E2, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> =
-  nonEmptyProduct.bindKind(NonEmptyProduct)
+) => Either<E1 | E2, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = semiProduct
+  .andThenBind(SemiProduct)
 
 /**
  * @since 1.0.0
@@ -420,8 +420,8 @@ export const productFlatten: <E2, B>(
   that: Either<E2, B>
 ) => <E1, A extends ReadonlyArray<any>>(
   self: Either<E1, A>
-) => Either<E1 | E2, readonly [...A, B]> = nonEmptyProduct
-  .productFlatten(NonEmptyProduct)
+) => Either<E1 | E2, readonly [...A, B]> = semiProduct
+  .productFlatten(SemiProduct)
 
 /**
  * @since 1.0.0
@@ -445,7 +445,7 @@ export const productAll = <E, A>(
  */
 export const Product: product_.Product<EitherTypeLambda> = {
   ...Of,
-  ...NonEmptyProduct,
+  ...SemiProduct,
   productAll
 }
 
@@ -475,8 +475,8 @@ export const struct: <R extends Record<string, Either<any, any>>>(
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<EitherTypeLambda> = {
-  ...NonEmptyProduct,
+export const SemiApplicative: semiApplicative.SemiApplicative<EitherTypeLambda> = {
+  ...SemiProduct,
   ...Covariant
 }
 
@@ -495,8 +495,8 @@ export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<Either
  * @since 1.0.0
  */
 export const getFirstLeftSemigroup: <A, E>(S: Semigroup<A>) => Semigroup<Either<E, A>> =
-  nonEmptyApplicative
-    .liftSemigroup(NonEmptyApplicative)
+  semiApplicative
+    .liftSemigroup(SemiApplicative)
 
 /**
  * @category lifting
@@ -504,8 +504,8 @@ export const getFirstLeftSemigroup: <A, E>(S: Semigroup<A>) => Semigroup<Either<
  */
 export const lift2: <A, B, C>(
   f: (a: A, b: B) => C
-) => <E1, E2>(fa: Either<E1, A>, fb: Either<E2, B>) => Either<E1 | E2, C> = nonEmptyApplicative
-  .lift2(NonEmptyApplicative)
+) => <E1, E2>(fa: Either<E1, A>, fb: Either<E2, B>) => Either<E1 | E2, C> = semiApplicative
+  .lift2(SemiApplicative)
 
 /**
  * @category lifting
@@ -517,8 +517,8 @@ export const lift3: <A, B, C, D>(
   fa: Either<E1, A>,
   fb: Either<E2, B>,
   fc: Either<E3, C>
-) => Either<E1 | E2 | E3, D> = nonEmptyApplicative.lift3(
-  NonEmptyApplicative
+) => Either<E1 | E2 | E3, D> = semiApplicative.lift3(
+  SemiApplicative
 )
 
 /**
@@ -526,8 +526,8 @@ export const lift3: <A, B, C, D>(
  */
 export const ap: <E2, A>(
   fa: Either<E2, A>
-) => <E1, B>(self: Either<E1, (a: A) => B>) => Either<E1 | E2, B> = nonEmptyApplicative.ap(
-  NonEmptyApplicative
+) => <E1, B>(self: Either<E1, (a: A) => B>) => Either<E1 | E2, B> = semiApplicative.ap(
+  SemiApplicative
 )
 
 /**
@@ -535,7 +535,7 @@ export const ap: <E2, A>(
  * @since 1.0.0
  */
 export const Applicative: applicative.Applicative<EitherTypeLambda> = {
-  ...NonEmptyApplicative,
+  ...SemiApplicative,
   ...Product
 }
 
@@ -575,7 +575,7 @@ export const firstSuccessOf = <E, A>(collection: Iterable<Either<E, A>>) =>
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyCoproduct: nonEmptyCoproduct.NonEmptyCoproduct<EitherTypeLambda> = {
+export const SemiCoproduct: semiCoproduct.SemiCoproduct<EitherTypeLambda> = {
   ...Invariant,
   coproduct: (that) => (self) => isRight(self) ? self : that,
   coproductMany: firstSuccessOf
@@ -594,8 +594,8 @@ export const NonEmptyCoproduct: nonEmptyCoproduct.NonEmptyCoproduct<EitherTypeLa
  * @category combining
  * @since 1.0.0
  */
-export const getFirstRightSemigroup: <E, A>() => Semigroup<Either<E, A>> = nonEmptyCoproduct
-  .getSemigroup(NonEmptyCoproduct)
+export const getFirstRightSemigroup: <E, A>() => Semigroup<Either<E, A>> = semiCoproduct
+  .getSemigroup(SemiCoproduct)
 
 /**
  * Returns the wrapped value if it's a `Right` or a default value if is a `Left`.
@@ -694,9 +694,9 @@ export const orElseSucceed = <B>(
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyAlternative: nonEmptyAlternative.NonEmptyAlternative<EitherTypeLambda> = {
+export const SemiAlternative: semiAlternative.SemiAlternative<EitherTypeLambda> = {
   ...Covariant,
-  ...NonEmptyCoproduct
+  ...SemiCoproduct
 }
 
 /**

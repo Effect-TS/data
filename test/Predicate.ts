@@ -20,10 +20,10 @@ describe.concurrent("Predicate", () => {
     expect(_.of).exist
     expect(_.Do).exist
 
-    expect(_.NonEmptyProduct).exist
+    expect(_.SemiProduct).exist
     expect(_.product).exist
     expect(_.productMany).exist
-    expect(_.bindPredicate).exist
+    expect(_.andThenBind).exist
 
     expect(_.Product).exist
     expect(_.productAll).exist

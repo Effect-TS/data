@@ -25,16 +25,16 @@ import type * as foldable from "@fp-ts/core/typeclass/Foldable"
 import * as invariant from "@fp-ts/core/typeclass/Invariant"
 import type * as monad from "@fp-ts/core/typeclass/Monad"
 import type { Monoid } from "@fp-ts/core/typeclass/Monoid"
-import type * as nonEmptyAlternative from "@fp-ts/core/typeclass/NonEmptyAlternative"
-import * as nonEmptyApplicative from "@fp-ts/core/typeclass/NonEmptyApplicative"
-import * as nonEmptyCoproduct from "@fp-ts/core/typeclass/NonEmptyCoproduct"
-import * as nonEmptyProduct from "@fp-ts/core/typeclass/NonEmptyProduct"
 import * as of_ from "@fp-ts/core/typeclass/Of"
 import type { Order } from "@fp-ts/core/typeclass/Order"
 import * as order from "@fp-ts/core/typeclass/Order"
 import type * as pointed from "@fp-ts/core/typeclass/Pointed"
 import * as product_ from "@fp-ts/core/typeclass/Product"
+import type * as semiAlternative from "@fp-ts/core/typeclass/SemiAlternative"
+import * as semiApplicative from "@fp-ts/core/typeclass/SemiApplicative"
+import * as semiCoproduct from "@fp-ts/core/typeclass/SemiCoproduct"
 import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
+import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
 import type { Either } from "@fp-ts/data/Either"
 import { equals } from "@fp-ts/data/Equal"
@@ -428,7 +428,7 @@ export const productMany = <A>(collection: Iterable<Option<A>>) =>
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<OptionTypeLambda> = {
+export const SemiProduct: semiProduct.SemiProduct<OptionTypeLambda> = {
   ...Invariant,
   product,
   productMany
@@ -440,20 +440,19 @@ export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<OptionTypeLambda> 
  * @category do notation
  * @since 1.0.0
  */
-export const bindOption: <N extends string, A extends object, B>(
+export const andThenBind: <N extends string, A extends object, B>(
   name: Exclude<N, keyof A>,
   fb: Option<B>
 ) => (self: Option<A>) => Option<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> =
-  nonEmptyProduct.bindKind(NonEmptyProduct)
+  semiProduct.andThenBind(SemiProduct)
 
 /**
  * @since 1.0.0
  */
 export const productFlatten: <B>(
   fb: Option<B>
-) => <A extends ReadonlyArray<unknown>>(self: Option<A>) => Option<readonly [...A, B]> =
-  nonEmptyProduct
-    .productFlatten(NonEmptyProduct)
+) => <A extends ReadonlyArray<unknown>>(self: Option<A>) => Option<readonly [...A, B]> = semiProduct
+  .productFlatten(SemiProduct)
 
 /**
  * @since 1.0.0
@@ -475,7 +474,7 @@ export const productAll = <A>(collection: Iterable<Option<A>>): Option<ReadonlyA
  */
 export const Product: product_.Product<OptionTypeLambda> = {
   ...Of,
-  ...NonEmptyProduct,
+  ...SemiProduct,
   productAll
 }
 
@@ -499,8 +498,8 @@ export const struct: <R extends Record<string, Option<any>>>(
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<OptionTypeLambda> = {
-  ...NonEmptyProduct,
+export const SemiApplicative: semiApplicative.SemiApplicative<OptionTypeLambda> = {
+  ...SemiProduct,
   ...Covariant
 }
 
@@ -563,7 +562,7 @@ export const getMonoid = <A>(
  * @since 1.0.0
  */
 export const lift2: <A, B, C>(f: (a: A, b: B) => C) => (fa: Option<A>, fb: Option<B>) => Option<C> =
-  nonEmptyApplicative.lift2(NonEmptyApplicative)
+  semiApplicative.lift2(SemiApplicative)
 
 /**
  * Lifts a ternary function into `Option`.
@@ -573,8 +572,8 @@ export const lift2: <A, B, C>(f: (a: A, b: B) => C) => (fa: Option<A>, fb: Optio
  */
 export const lift3: <A, B, C, D>(
   f: (a: A, b: B, c: C) => D
-) => (fa: Option<A>, fb: Option<B>, fc: Option<C>) => Option<D> = nonEmptyApplicative.lift3(
-  NonEmptyApplicative
+) => (fa: Option<A>, fb: Option<B>, fc: Option<C>) => Option<D> = semiApplicative.lift3(
+  SemiApplicative
 )
 
 /**
@@ -582,8 +581,8 @@ export const lift3: <A, B, C, D>(
  */
 export const ap: <A>(
   fa: Option<A>
-) => <B>(self: Option<(a: A) => B>) => Option<B> = nonEmptyApplicative.ap(
-  NonEmptyApplicative
+) => <B>(self: Option<(a: A) => B>) => Option<B> = semiApplicative.ap(
+  SemiApplicative
 )
 
 /**
@@ -593,16 +592,15 @@ export const ap: <A>(
  * @category combining
  * @since 1.0.0
  */
-export const getFirstNoneSemigroup: <A>(S: Semigroup<A>) => Semigroup<Option<A>> =
-  nonEmptyApplicative
-    .liftSemigroup(NonEmptyApplicative)
+export const getFirstNoneSemigroup: <A>(S: Semigroup<A>) => Semigroup<Option<A>> = semiApplicative
+  .liftSemigroup(SemiApplicative)
 
 /**
  * @category instances
  * @since 1.0.0
  */
 export const Applicative: applicative.Applicative<OptionTypeLambda> = {
-  ...NonEmptyApplicative,
+  ...SemiApplicative,
   ...Product
 }
 
@@ -647,7 +645,7 @@ export const firstSomeOf = <A>(collection: Iterable<Option<A>>) =>
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyCoproduct: nonEmptyCoproduct.NonEmptyCoproduct<OptionTypeLambda> = {
+export const SemiCoproduct: semiCoproduct.SemiCoproduct<OptionTypeLambda> = {
   ...Invariant,
   coproduct,
   coproductMany: firstSomeOf
@@ -659,16 +657,16 @@ export const NonEmptyCoproduct: nonEmptyCoproduct.NonEmptyCoproduct<OptionTypeLa
  * @category combining
  * @since 1.0.0
  */
-export const getFirstSomeSemigroup: <A>() => Semigroup<Option<A>> = nonEmptyCoproduct
+export const getFirstSomeSemigroup: <A>() => Semigroup<Option<A>> = semiCoproduct
   .getSemigroup(
-    NonEmptyCoproduct
+    SemiCoproduct
   )
 
 /**
  * @since 1.0.0
  */
 export const coproductEither: <B>(that: Option<B>) => <A>(self: Option<A>) => Option<Either<A, B>> =
-  nonEmptyCoproduct.coproductEither(NonEmptyCoproduct)
+  semiCoproduct.coproductEither(SemiCoproduct)
 
 /**
  * @since 1.0.0
@@ -676,7 +674,7 @@ export const coproductEither: <B>(that: Option<B>) => <A>(self: Option<A>) => Op
 export const coproductAll = <A>(collection: Iterable<Option<A>>): Option<A> => {
   const options = internal.fromIterable(collection)
   if (internal.isNonEmpty(options)) {
-    return NonEmptyCoproduct.coproductMany(internal.tail(options))(internal.head(options))
+    return SemiCoproduct.coproductMany(internal.tail(options))(internal.head(options))
   }
   return none
 }
@@ -691,7 +689,7 @@ export const zero = <A>(): Option<A> => none
  * @since 1.0.0
  */
 export const Coproduct: coproduct_.Coproduct<OptionTypeLambda> = {
-  ...NonEmptyCoproduct,
+  ...SemiCoproduct,
   zero,
   coproductAll
 }
@@ -700,9 +698,9 @@ export const Coproduct: coproduct_.Coproduct<OptionTypeLambda> = {
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyAlternative: nonEmptyAlternative.NonEmptyAlternative<OptionTypeLambda> = {
+export const SemiAlternative: semiAlternative.SemiAlternative<OptionTypeLambda> = {
   ...Covariant,
-  ...NonEmptyCoproduct
+  ...SemiCoproduct
 }
 
 /**
@@ -710,7 +708,7 @@ export const NonEmptyAlternative: nonEmptyAlternative.NonEmptyAlternative<Option
  * @since 1.0.0
  */
 export const Alternative: alternative.Alternative<OptionTypeLambda> = {
-  ...NonEmptyAlternative,
+  ...SemiAlternative,
   ...Coproduct
 }
 

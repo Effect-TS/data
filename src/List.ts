@@ -14,13 +14,13 @@ import * as foldable from "@fp-ts/core/typeclass/Foldable"
 import * as invariant from "@fp-ts/core/typeclass/Invariant"
 import type * as monad from "@fp-ts/core/typeclass/Monad"
 import type { Monoid } from "@fp-ts/core/typeclass/Monoid"
-import * as nonEmptyApplicative from "@fp-ts/core/typeclass/NonEmptyApplicative"
-import * as nonEmptyProduct from "@fp-ts/core/typeclass/NonEmptyProduct"
 import * as of_ from "@fp-ts/core/typeclass/Of"
 import type { Order } from "@fp-ts/core/typeclass/Order"
 import type * as pointed from "@fp-ts/core/typeclass/Pointed"
 import * as product_ from "@fp-ts/core/typeclass/Product"
+import * as semiApplicative from "@fp-ts/core/typeclass/SemiApplicative"
 import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
+import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
 import * as traversableFilterable from "@fp-ts/core/typeclass/TraversableFilterable"
 import type { Either } from "@fp-ts/data/Either"
@@ -452,7 +452,7 @@ export const productMany: <A>(
  * @since 1.0.0
  * @category instances
  */
-export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<ListTypeLambda> = {
+export const SemiProduct: semiProduct.SemiProduct<ListTypeLambda> = {
   ...Invariant,
   product,
   productMany
@@ -461,13 +461,13 @@ export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<ListTypeLambda> = 
 /**
  * @since 1.0.0
  */
-export const bindList: <N extends string, A extends object, B>(
+export const andThenBind: <N extends string, A extends object, B>(
   name: Exclude<N, keyof A>,
   fb: List<B>
 ) => (
   self: List<A>
-) => List<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = nonEmptyProduct.bindKind(
-  NonEmptyProduct
+) => List<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = semiProduct.andThenBind(
+  SemiProduct
 )
 
 /**
@@ -475,8 +475,8 @@ export const bindList: <N extends string, A extends object, B>(
  */
 export const productFlatten: <B>(
   that: List<B>
-) => <A extends ReadonlyArray<any>>(self: List<A>) => List<readonly [...A, B]> = nonEmptyProduct
-  .productFlatten(NonEmptyProduct)
+) => <A extends ReadonlyArray<any>>(self: List<A>) => List<readonly [...A, B]> = semiProduct
+  .productFlatten(SemiProduct)
 
 /**
  * @since 1.0.0
@@ -489,7 +489,7 @@ export const productAll: <A>(collection: Iterable<List<A>>) => List<ReadonlyArra
  * @category instances
  */
 export const Product: product_.Product<ListTypeLambda> = {
-  ...NonEmptyProduct,
+  ...SemiProduct,
   ...Of,
   productAll
 }
@@ -514,32 +514,32 @@ export const struct: <R extends Record<string, List<any>>>(
  * @since 1.0.0
  * @category instances
  */
-export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<ListTypeLambda> = {
-  ...NonEmptyProduct,
+export const SemiApplicative: semiApplicative.SemiApplicative<ListTypeLambda> = {
+  ...SemiProduct,
   ...Covariant
 }
 
 /**
  * @since 1.0.0
  */
-export const liftSemigroup: <A>(S: Semigroup<A>) => Semigroup<List<A>> = nonEmptyApplicative
-  .liftSemigroup(NonEmptyApplicative)
+export const liftSemigroup: <A>(S: Semigroup<A>) => Semigroup<List<A>> = semiApplicative
+  .liftSemigroup(SemiApplicative)
 
 /**
  * @since 1.0.0
  */
 export const ap: <A>(
   fa: List<A>
-) => <B>(self: List<(a: A) => B>) => List<B> = nonEmptyApplicative
-  .ap(NonEmptyApplicative)
+) => <B>(self: List<(a: A) => B>) => List<B> = semiApplicative
+  .ap(SemiApplicative)
 
 /**
  * @since 1.0.0
  */
 export const lift2: <A, B, C>(
   f: (a: A, b: B) => C
-) => (fa: List<A>, fb: List<B>) => List<C> = nonEmptyApplicative.lift2(
-  NonEmptyApplicative
+) => (fa: List<A>, fb: List<B>) => List<C> = semiApplicative.lift2(
+  SemiApplicative
 )
 
 /**
@@ -547,8 +547,8 @@ export const lift2: <A, B, C>(
  */
 export const lift3: <A, B, C, D>(
   f: (a: A, b: B, c: C) => D
-) => (fa: List<A>, fb: List<B>, fc: List<C>) => List<D> = nonEmptyApplicative.lift3(
-  NonEmptyApplicative
+) => (fa: List<A>, fb: List<B>, fc: List<C>) => List<D> = semiApplicative.lift3(
+  SemiApplicative
 )
 
 /**
@@ -556,7 +556,7 @@ export const lift3: <A, B, C, D>(
  * @category instances
  */
 export const Applicative: applicative.Applicative<ListTypeLambda> = {
-  ...NonEmptyApplicative,
+  ...SemiApplicative,
   ...Product
 }
 

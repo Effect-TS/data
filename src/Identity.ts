@@ -11,14 +11,14 @@ import * as foldable from "@fp-ts/core/typeclass/Foldable"
 import * as invariant from "@fp-ts/core/typeclass/Invariant"
 import type * as monad from "@fp-ts/core/typeclass/Monad"
 import type { Monoid } from "@fp-ts/core/typeclass/Monoid"
-import type * as nonEmptyAlternative from "@fp-ts/core/typeclass/NonEmptyAlternative"
-import * as nonEmptyApplicative from "@fp-ts/core/typeclass/NonEmptyApplicative"
-import type * as nonEmptyCoproduct from "@fp-ts/core/typeclass/NonEmptyCoproduct"
-import * as nonEmptyProduct from "@fp-ts/core/typeclass/NonEmptyProduct"
 import * as of_ from "@fp-ts/core/typeclass/Of"
 import type * as pointed from "@fp-ts/core/typeclass/Pointed"
 import * as product_ from "@fp-ts/core/typeclass/Product"
+import type * as semiAlternative from "@fp-ts/core/typeclass/SemiAlternative"
+import * as semiApplicative from "@fp-ts/core/typeclass/SemiApplicative"
+import type * as semiCoproduct from "@fp-ts/core/typeclass/SemiCoproduct"
 import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
+import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
 import { identity } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
@@ -268,7 +268,7 @@ export const productMany = <A>(collection: Iterable<Identity<A>>) =>
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<IdentityTypeLambda> = {
+export const SemiProduct: semiProduct.SemiProduct<IdentityTypeLambda> = {
   ...Invariant,
   product,
   productMany
@@ -280,13 +280,13 @@ export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<IdentityTypeLambda
  * @category do notation
  * @since 1.0.0
  */
-export const bindIdentity: <N extends string, A extends object, B>(
+export const andThenBind: <N extends string, A extends object, B>(
   name: Exclude<N, keyof A>,
   fb: Identity<B>
 ) => (
   self: Identity<A>
-) => Identity<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = nonEmptyProduct
-  .bindKind(NonEmptyProduct)
+) => Identity<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = semiProduct
+  .andThenBind(SemiProduct)
 
 /**
  * @since 1.0.0
@@ -294,8 +294,8 @@ export const bindIdentity: <N extends string, A extends object, B>(
 export const productFlatten: <B>(
   fb: Identity<B>
 ) => <A extends ReadonlyArray<unknown>>(self: Identity<A>) => Identity<readonly [...A, B]> =
-  nonEmptyProduct
-    .productFlatten(NonEmptyProduct)
+  semiProduct
+    .productFlatten(SemiProduct)
 
 /**
  * @since 1.0.0
@@ -309,7 +309,7 @@ export const productAll = <A>(collection: Iterable<Identity<A>>): Identity<Reado
  */
 export const Product: product_.Product<IdentityTypeLambda> = {
   ...Of,
-  ...NonEmptyProduct,
+  ...SemiProduct,
   productAll
 }
 
@@ -335,8 +335,8 @@ export const struct: <R extends Record<string, Identity<any>>>(
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<IdentityTypeLambda> = {
-  ...NonEmptyProduct,
+export const SemiApplicative: semiApplicative.SemiApplicative<IdentityTypeLambda> = {
+  ...SemiProduct,
   ...Covariant
 }
 
@@ -344,8 +344,8 @@ export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<Identi
  * @category instances
  * @since 1.0.0
  */
-export const liftSemigroup: <A>(S: Semigroup<A>) => Semigroup<Identity<A>> = nonEmptyApplicative
-  .liftSemigroup(NonEmptyApplicative)
+export const liftSemigroup: <A>(S: Semigroup<A>) => Semigroup<Identity<A>> = semiApplicative
+  .liftSemigroup(SemiApplicative)
 
 /**
  * Lifts a binary function into `Identity`.
@@ -355,8 +355,8 @@ export const liftSemigroup: <A>(S: Semigroup<A>) => Semigroup<Identity<A>> = non
  */
 export const lift2: <A, B, C>(
   f: (a: A, b: B) => C
-) => (fa: Identity<A>, fb: Identity<B>) => Identity<C> = nonEmptyApplicative.lift2(
-  NonEmptyApplicative
+) => (fa: Identity<A>, fb: Identity<B>) => Identity<C> = semiApplicative.lift2(
+  SemiApplicative
 )
 
 /**
@@ -367,8 +367,8 @@ export const lift2: <A, B, C>(
  */
 export const lift3: <A, B, C, D>(
   f: (a: A, b: B, c: C) => D
-) => (fa: Identity<A>, fb: Identity<B>, fc: Identity<C>) => Identity<D> = nonEmptyApplicative.lift3(
-  NonEmptyApplicative
+) => (fa: Identity<A>, fb: Identity<B>, fc: Identity<C>) => Identity<D> = semiApplicative.lift3(
+  SemiApplicative
 )
 
 /**
@@ -376,8 +376,8 @@ export const lift3: <A, B, C, D>(
  */
 export const ap: <A>(
   fa: Identity<A>
-) => <B>(self: Identity<(a: A) => B>) => Identity<B> = nonEmptyApplicative.ap(
-  NonEmptyApplicative
+) => <B>(self: Identity<(a: A) => B>) => Identity<B> = semiApplicative.ap(
+  SemiApplicative
 )
 
 /**
@@ -385,7 +385,7 @@ export const ap: <A>(
  * @since 1.0.0
  */
 export const Applicative: applicative.Applicative<IdentityTypeLambda> = {
-  ...NonEmptyApplicative,
+  ...SemiApplicative,
   ...Product
 }
 
@@ -400,9 +400,9 @@ export const liftMonoid: <A>(M: Monoid<A>) => Monoid<Identity<A>> = applicative.
  * @category instances
  * @since 1.0.0
  */
-export const getNonEmptyCoproduct = <A>(
+export const getSemiCoproduct = <A>(
   S: Semigroup<A>
-): nonEmptyCoproduct.NonEmptyCoproduct<IdentityTypeLambdaFix<A>> => ({
+): semiCoproduct.SemiCoproduct<IdentityTypeLambdaFix<A>> => ({
   imap: Invariant.imap,
   coproduct: S.combine,
   coproductMany: S.combineMany
@@ -412,10 +412,10 @@ export const getNonEmptyCoproduct = <A>(
  * @category instances
  * @since 1.0.0
  */
-export const getNonEmptyAlternative = <A>(
+export const getSemiAlternative = <A>(
   S: Semigroup<A>
-): nonEmptyAlternative.NonEmptyAlternative<IdentityTypeLambdaFix<A>> => ({
-  ...getNonEmptyCoproduct(S),
+): semiAlternative.SemiAlternative<IdentityTypeLambdaFix<A>> => ({
+  ...getSemiCoproduct(S),
   map: Covariant.map
 })
 

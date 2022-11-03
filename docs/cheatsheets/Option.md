@@ -131,13 +131,13 @@ parent: Cheatsheets
 
 ## Do notation
 
-| Name       | Given                                         | To                          |
-| ---------- | --------------------------------------------- | --------------------------- |
-| Do         |                                               | `Option<{}>`                |
-| bindTo     | `Option<A>`, `name: string`                   | `Option<{ [name]: A }>`     |
-| let        | `Option<A>`, `name: string`, `A => B`         | `Option<A & { [name]: B }>` |
-| bind       | `Option<A>`, `name: string`, `A => Option<B>` | `Option<A & { [name]: B }>` |
-| bindOption | `Option<E1, A>`, `name: string`, `Option<B>`  | `Option<A & { [name]: B }>` |
+| Name        | Given                                         | To                          |
+| ----------- | --------------------------------------------- | --------------------------- |
+| Do          |                                               | `Option<{}>`                |
+| bindTo      | `Option<A>`, `name: string`                   | `Option<{ [name]: A }>`     |
+| let         | `Option<A>`, `name: string`, `A => B`         | `Option<A & { [name]: B }>` |
+| bind        | `Option<A>`, `name: string`, `A => Option<B>` | `Option<A & { [name]: B }>` |
+| andThenBind | `Option<E1, A>`, `name: string`, `Option<B>`  | `Option<A & { [name]: B }>` |
 
 ## Predicates
 

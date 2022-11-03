@@ -29,14 +29,14 @@ import type * as foldable from "@fp-ts/core/typeclass/Foldable"
 import * as invariant from "@fp-ts/core/typeclass/Invariant"
 import type * as monad from "@fp-ts/core/typeclass/Monad"
 import type { Monoid } from "@fp-ts/core/typeclass/Monoid"
-import type * as nonEmptyAlternative from "@fp-ts/core/typeclass/NonEmptyAlternative"
-import * as nonEmptyApplicative from "@fp-ts/core/typeclass/NonEmptyApplicative"
-import * as nonEmptyCoproduct from "@fp-ts/core/typeclass/NonEmptyCoproduct"
-import * as nonEmptyProduct from "@fp-ts/core/typeclass/NonEmptyProduct"
 import * as of_ from "@fp-ts/core/typeclass/Of"
 import type * as pointed from "@fp-ts/core/typeclass/Pointed"
 import * as product_ from "@fp-ts/core/typeclass/Product"
+import type * as semiAlternative from "@fp-ts/core/typeclass/SemiAlternative"
+import * as semiApplicative from "@fp-ts/core/typeclass/SemiApplicative"
+import * as semiCoproduct from "@fp-ts/core/typeclass/SemiCoproduct"
 import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
+import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
 import type { NonEmptyChunk } from "@fp-ts/data/Chunk"
 import * as chunk from "@fp-ts/data/Chunk"
@@ -877,7 +877,7 @@ export const firstRightOrBothOf = <E, A>(collection: Iterable<These<E, A>>) =>
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyCoproduct: nonEmptyCoproduct.NonEmptyCoproduct<TheseTypeLambda> = {
+export const SemiCoproduct: semiCoproduct.SemiCoproduct<TheseTypeLambda> = {
   ...Invariant,
   coproduct: (that) => (self) => isRightOrBoth(self) ? self : that,
   coproductMany: firstRightOrBothOf
@@ -887,16 +887,16 @@ export const NonEmptyCoproduct: nonEmptyCoproduct.NonEmptyCoproduct<TheseTypeLam
  * @category combining
  * @since 1.0.0
  */
-export const getFirstRightOrBothSemigroup: <E, A>() => Semigroup<These<E, A>> = nonEmptyCoproduct
-  .getSemigroup(NonEmptyCoproduct)
+export const getFirstRightOrBothSemigroup: <E, A>() => Semigroup<These<E, A>> = semiCoproduct
+  .getSemigroup(SemiCoproduct)
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyAlternative: nonEmptyAlternative.NonEmptyAlternative<TheseTypeLambda> = {
+export const SemiAlternative: semiAlternative.SemiAlternative<TheseTypeLambda> = {
   ...Covariant,
-  ...NonEmptyCoproduct
+  ...SemiCoproduct
 }
 
 /**
@@ -995,7 +995,7 @@ export const productMany = <E, A>(
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<ValidatedTypeLambda> = {
+export const SemiProduct: semiProduct.SemiProduct<ValidatedTypeLambda> = {
   imap,
   product,
   productMany
@@ -1005,9 +1005,9 @@ export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<ValidatedTypeLambd
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<ValidatedTypeLambda> = {
+export const SemiApplicative: semiApplicative.SemiApplicative<ValidatedTypeLambda> = {
   map,
-  ...NonEmptyProduct
+  ...SemiProduct
 }
 
 /**
@@ -1019,8 +1019,8 @@ export const lift2: <A, B, C>(
 ) => <E1, E2>(
   fa: Validated<E1, A>,
   fb: Validated<E2, B>
-) => Validated<E1 | E2, C> = nonEmptyApplicative
-  .lift2(NonEmptyApplicative)
+) => Validated<E1 | E2, C> = semiApplicative
+  .lift2(SemiApplicative)
 
 /**
  * @category lifting
@@ -1032,8 +1032,8 @@ export const lift3: <A, B, C, D>(
   fa: Validated<E1, A>,
   fb: Validated<E2, B>,
   fc: Validated<E3, C>
-) => Validated<E1 | E2 | E3, D> = nonEmptyApplicative.lift3(
-  NonEmptyApplicative
+) => Validated<E1 | E2 | E3, D> = semiApplicative.lift3(
+  SemiApplicative
 )
 
 /**
@@ -1041,8 +1041,8 @@ export const lift3: <A, B, C, D>(
  */
 export const ap: <E2, A>(
   fa: Validated<E2, A>
-) => <E1, B>(self: Validated<E1, (a: A) => B>) => Validated<E1 | E2, B> = nonEmptyApplicative.ap(
-  NonEmptyApplicative
+) => <E1, B>(self: Validated<E1, (a: A) => B>) => Validated<E1 | E2, B> = semiApplicative.ap(
+  SemiApplicative
 )
 
 /**
@@ -1051,8 +1051,8 @@ export const ap: <E2, A>(
  */
 export const getFirstLeftSemigroup: <A, E>(
   S: Semigroup<A>
-) => Semigroup<Validated<E, A>> = nonEmptyApplicative
-  .liftSemigroup(NonEmptyApplicative)
+) => Semigroup<Validated<E, A>> = semiApplicative
+  .liftSemigroup(SemiApplicative)
 
 /**
  * @since 1.0.0
@@ -1090,9 +1090,8 @@ export const andThenBind: <N extends string, A extends object, E2, B>(
   fb: Validated<E2, B>
 ) => <E1>(
   self: Validated<E1, A>
-) => Validated<E1 | E2, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> =
-  nonEmptyProduct
-    .bindKind(NonEmptyProduct)
+) => Validated<E1 | E2, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = semiProduct
+  .andThenBind(SemiProduct)
 
 /**
  * @category do notation
@@ -1125,15 +1124,15 @@ export const productFlatten: <E2, B>(
   that: Validated<E2, B>
 ) => <E1, A extends ReadonlyArray<any>>(
   self: Validated<E1, A>
-) => Validated<E1 | E2, readonly [...A, B]> = nonEmptyProduct
-  .productFlatten(NonEmptyProduct)
+) => Validated<E1 | E2, readonly [...A, B]> = semiProduct
+  .productFlatten(SemiProduct)
 
 /**
  * @category instances
  * @since 1.0.0
  */
 export const Product: product_.Product<ValidatedTypeLambda> = {
-  ...NonEmptyProduct,
+  ...SemiProduct,
   of,
   productAll
 }
@@ -1189,7 +1188,7 @@ export const flatMap = <A, E2, B>(
  * @since 1.0.0
  */
 export const Applicative: applicative.Applicative<ValidatedTypeLambda> = {
-  ...NonEmptyApplicative,
+  ...SemiApplicative,
   ...Product
 }
 

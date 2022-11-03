@@ -136,13 +136,13 @@ parent: Cheatsheets
 
 ## Do notation
 
-| Name       | Given                                                 | To                                    |
-| ---------- | ----------------------------------------------------- | ------------------------------------- |
-| Do         |                                                       | `Either<never, {}>`                   |
-| bindTo     | `Either<E, A>`, `name: string`                        | `Either<E, { [name]: A }>`            |
-| let        | `Either<E, A>`, `name: string`, `A => B`              | `Either<E, A & { [name]: B }>`        |
-| bind       | `Either<E1, A>`, `name: string`, `A => Either<E2, B>` | `Either<E1 \| E2, A & { [name]: B }>` |
-| bindEither | `Either<E1, A>`, `name: string`, `Either<E2, B>`      | `Either<E1 \| E2, A & { [name]: B }>` |
+| Name        | Given                                                 | To                                    |
+| ----------- | ----------------------------------------------------- | ------------------------------------- |
+| Do          |                                                       | `Either<never, {}>`                   |
+| bindTo      | `Either<E, A>`, `name: string`                        | `Either<E, { [name]: A }>`            |
+| let         | `Either<E, A>`, `name: string`, `A => B`              | `Either<E, A & { [name]: B }>`        |
+| bind        | `Either<E1, A>`, `name: string`, `A => Either<E2, B>` | `Either<E1 \| E2, A & { [name]: B }>` |
+| andThenBind | `Either<E1, A>`, `name: string`, `Either<E2, B>`      | `Either<E1 \| E2, A & { [name]: B }>` |
 
 ## Predicates
 

@@ -13,16 +13,16 @@ import * as foldable from "@fp-ts/core/typeclass/Foldable"
 import type * as invariant from "@fp-ts/core/typeclass/Invariant"
 import type * as monad from "@fp-ts/core/typeclass/Monad"
 import type { Monoid } from "@fp-ts/core/typeclass/Monoid"
-import * as nonEmptyApplicative from "@fp-ts/core/typeclass/NonEmptyApplicative"
-import * as nonEmptyProduct from "@fp-ts/core/typeclass/NonEmptyProduct"
 import * as of_ from "@fp-ts/core/typeclass/Of"
 import * as order from "@fp-ts/core/typeclass/Order"
 import type { Order } from "@fp-ts/core/typeclass/Order"
 import type * as pointed from "@fp-ts/core/typeclass/Pointed"
 import type * as product_ from "@fp-ts/core/typeclass/Product"
+import * as semiApplicative from "@fp-ts/core/typeclass/SemiApplicative"
 import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
 import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
 import { fromCombine } from "@fp-ts/core/typeclass/Semigroup"
+import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
 import * as traversableFilterable from "@fp-ts/core/typeclass/TraversableFilterable"
 import type { Either } from "@fp-ts/data/Either"
@@ -1570,7 +1570,7 @@ export const traverseWithIndex = <F extends TypeLambda>(F: applicative.Applicati
  * @since 1.0.0
  */
 export const traverseNonEmpty = <F extends TypeLambda>(
-  F: nonEmptyApplicative.NonEmptyApplicative<F>
+  F: semiApplicative.SemiApplicative<F>
 ) =>
   <A, R, O, E, B>(
     f: (a: A) => Kind<F, R, O, E, B>
@@ -1582,7 +1582,7 @@ export const traverseNonEmpty = <F extends TypeLambda>(
  * @since 1.0.0
  */
 export const traverseNonEmptyWithIndex = <F extends TypeLambda>(
-  F: nonEmptyApplicative.NonEmptyApplicative<F>
+  F: semiApplicative.SemiApplicative<F>
 ) =>
   <A, R, O, E, B>(f: (a: A, i: number) => Kind<F, R, O, E, B>) =>
     (self: NonEmptyReadonlyArray<A>): Kind<F, R, O, E, NonEmptyReadonlyArray<B>> => {
@@ -1627,7 +1627,7 @@ export const traverseTap: <F extends TypeLambda>(
  * @since 1.0.0
  */
 export const sequenceNonEmpty = <F extends TypeLambda>(
-  F: nonEmptyApplicative.NonEmptyApplicative<F>
+  F: semiApplicative.SemiApplicative<F>
 ): (<R, O, E, A>(
   self: NonEmptyReadonlyArray<Kind<F, R, O, E, A>>
 ) => Kind<F, R, O, E, NonEmptyReadonlyArray<A>>) => traverseNonEmpty(F)(identity)
@@ -1656,7 +1656,7 @@ export const product = <B>(
  */
 export const productMany: <A>(
   collection: Iterable<ReadonlyArray<A>>
-) => (self: ReadonlyArray<A>) => ReadonlyArray<NonEmptyReadonlyArray<A>> = nonEmptyProduct
+) => (self: ReadonlyArray<A>) => ReadonlyArray<NonEmptyReadonlyArray<A>> = semiProduct
   .productMany(
     Covariant,
     product
@@ -1679,7 +1679,7 @@ export const productAll = <A>(
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<ReadonlyArrayTypeLambda> = {
+export const SemiProduct: semiProduct.SemiProduct<ReadonlyArrayTypeLambda> = {
   ...Invariant,
   product,
   productMany
@@ -1691,33 +1691,32 @@ export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<ReadonlyArrayTypeL
  * @category do notation
  * @since 1.0.0
  */
-export const bindReadonlyArray: <N extends string, A extends object, B>(
+export const andThenBind: <N extends string, A extends object, B>(
   name: Exclude<N, keyof A>,
   fb: ReadonlyArray<B>
 ) => (
   self: ReadonlyArray<A>
-) => ReadonlyArray<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = nonEmptyProduct
-  .bindKind(
-    NonEmptyProduct
+) => ReadonlyArray<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = semiProduct
+  .andThenBind(
+    SemiProduct
   )
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<ReadonlyArrayTypeLambda> =
-  {
-    ...NonEmptyProduct,
-    ...Covariant
-  }
+export const SemiApplicative: semiApplicative.SemiApplicative<ReadonlyArrayTypeLambda> = {
+  ...SemiProduct,
+  ...Covariant
+}
 
 /**
  * @since 1.0.0
  */
 export const ap: <A>(
   fa: ReadonlyArray<A>
-) => <B>(self: ReadonlyArray<(a: A) => B>) => ReadonlyArray<B> = nonEmptyApplicative.ap(
-  NonEmptyApplicative
+) => <B>(self: ReadonlyArray<(a: A) => B>) => ReadonlyArray<B> = semiApplicative.ap(
+  SemiApplicative
 )
 
 /**
@@ -1728,8 +1727,8 @@ export const ap: <A>(
  */
 export const lift2: <A, B, C>(
   f: (a: A, b: B) => C
-) => (fa: ReadonlyArray<A>, fb: ReadonlyArray<B>) => ReadonlyArray<C> = nonEmptyApplicative.lift2(
-  NonEmptyApplicative
+) => (fa: ReadonlyArray<A>, fb: ReadonlyArray<B>) => ReadonlyArray<C> = semiApplicative.lift2(
+  SemiApplicative
 )
 
 /**
@@ -1741,15 +1740,15 @@ export const lift2: <A, B, C>(
 export const lift3: <A, B, C, D>(
   f: (a: A, b: B, c: C) => D
 ) => (fa: ReadonlyArray<A>, fb: ReadonlyArray<B>, fc: ReadonlyArray<C>) => ReadonlyArray<D> =
-  nonEmptyApplicative.lift3(NonEmptyApplicative)
+  semiApplicative.lift3(SemiApplicative)
 
 /**
  * @category lifting
  * @since 1.0.0
  */
-export const liftSemigroup: <A>(S: Semigroup<A>) => Semigroup<ReadonlyArray<A>> =
-  nonEmptyApplicative.liftSemigroup(
-    NonEmptyApplicative
+export const liftSemigroup: <A>(S: Semigroup<A>) => Semigroup<ReadonlyArray<A>> = semiApplicative
+  .liftSemigroup(
+    SemiApplicative
   )
 
 /**
@@ -1758,7 +1757,7 @@ export const liftSemigroup: <A>(S: Semigroup<A>) => Semigroup<ReadonlyArray<A>> 
  */
 export const Product: product_.Product<ReadonlyArrayTypeLambda> = {
   ...Of,
-  ...NonEmptyProduct,
+  ...SemiProduct,
   productAll
 }
 
@@ -1767,7 +1766,7 @@ export const Product: product_.Product<ReadonlyArrayTypeLambda> = {
  * @since 1.0.0
  */
 export const Applicative: applicative.Applicative<ReadonlyArrayTypeLambda> = {
-  ...NonEmptyApplicative,
+  ...SemiApplicative,
   ...Product
 }
 
@@ -2079,7 +2078,7 @@ export const productFlatten: <B>(
   that: ReadonlyArray<B>
 ) => <A extends ReadonlyArray<unknown>>(
   self: ReadonlyArray<A>
-) => ReadonlyArray<readonly [...A, B]> = nonEmptyProduct.productFlatten(NonEmptyProduct)
+) => ReadonlyArray<readonly [...A, B]> = semiProduct.productFlatten(SemiProduct)
 
 /**
  * @since 1.0.0

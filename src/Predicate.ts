@@ -5,10 +5,10 @@ import type { TypeLambda } from "@fp-ts/core/HKT"
 import * as contravariant from "@fp-ts/core/typeclass/Contravariant"
 import * as invariant from "@fp-ts/core/typeclass/Invariant"
 import type * as monoid from "@fp-ts/core/typeclass/Monoid"
-import * as nonEmptyProduct from "@fp-ts/core/typeclass/NonEmptyProduct"
 import * as of_ from "@fp-ts/core/typeclass/Of"
 import * as product_ from "@fp-ts/core/typeclass/Product"
 import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
+import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import { constFalse, constTrue, flow } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
 
@@ -125,7 +125,7 @@ export const productMany = <A>(collection: Iterable<Predicate<A>>) =>
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<PredicateTypeLambda> = {
+export const SemiProduct: semiProduct.SemiProduct<PredicateTypeLambda> = {
   ...Contravariant,
   product,
   productMany
@@ -152,7 +152,7 @@ export const productAll = <A>(
  * @since 1.0.0
  */
 export const Product: product_.Product<PredicateTypeLambda> = {
-  ...NonEmptyProduct,
+  ...SemiProduct,
   ...Of,
   productAll
 }
@@ -160,14 +160,14 @@ export const Product: product_.Product<PredicateTypeLambda> = {
 /**
  * @since 1.0.0
  */
-export const bindPredicate: <N extends string, A extends object, B>(
+export const andThenBind: <N extends string, A extends object, B>(
   name: Exclude<N, keyof A>,
   fb: Predicate<B>
 ) => (
   self: Predicate<A>
-) => Predicate<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = nonEmptyProduct
-  .bindKind(
-    NonEmptyProduct
+) => Predicate<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = semiProduct
+  .andThenBind(
+    SemiProduct
   )
 
 /**

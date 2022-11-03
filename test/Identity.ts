@@ -37,10 +37,10 @@ describe.concurrent("Identity", () => {
 
     expect(_.Monad).exist
 
-    expect(_.NonEmptyProduct).exist
+    expect(_.SemiProduct).exist
     expect(_.product).exist
     expect(_.productMany).exist
-    expect(_.bindIdentity).exist
+    expect(_.andThenBind).exist
     expect(_.productFlatten).exist
 
     expect(_.Product).exist
@@ -48,7 +48,7 @@ describe.concurrent("Identity", () => {
     expect(_.tuple).exist
     expect(_.struct).exist
 
-    expect(_.NonEmptyApplicative).exist
+    expect(_.SemiApplicative).exist
     expect(_.liftSemigroup).exist
     expect(_.lift2).exist
     expect(_.lift3).exist
@@ -83,8 +83,8 @@ describe.concurrent("Identity", () => {
     U.deepStrictEqual(_.of("a"), "a")
   })
 
-  it("NonEmptyProduct", () => {
-    U.deepStrictEqual(pipe("a", _.NonEmptyProduct.productMany(["b", "c"])), ["a", "b", "c"])
+  it("SemiProduct", () => {
+    U.deepStrictEqual(pipe("a", _.SemiProduct.productMany(["b", "c"])), ["a", "b", "c"])
   })
 
   it("Product", () => {
@@ -103,8 +103,8 @@ describe.concurrent("Identity", () => {
     U.deepStrictEqual(pipe("a", _.product("b")), ["a", "b"])
   })
 
-  it("getNonEmptyCoproduct", () => {
-    const F = _.getNonEmptyCoproduct(String.Semigroup)
+  it("getSemiCoproduct", () => {
+    const F = _.getSemiCoproduct(String.Semigroup)
     U.deepStrictEqual(pipe("a", F.coproduct("b")), "ab")
     U.deepStrictEqual(pipe("a", F.coproductMany(["b", "c"])), "abc")
   })
