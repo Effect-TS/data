@@ -869,8 +869,7 @@ export const fromEither: <E, A>(self: Either<E, A>) => Option<A> = either.getRig
  * @category conversions
  * @since 1.0.0
  */
-export const toEither: <E>(onNone: E) => <A>(self: Option<A>) => Either<E, A> =
-  either.fromOptionOrElse
+export const toEither: <E>(onNone: E) => <A>(self: Option<A>) => Either<E, A> = either.fromOption
 
 /**
  * Takes a (lazy) default value, a function, and an `Option` value, if the `Option` value is `None` the default value is

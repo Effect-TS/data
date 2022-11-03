@@ -30,7 +30,6 @@ import * as nonEmptyProduct from "@fp-ts/core/typeclass/NonEmptyProduct"
 import * as of_ from "@fp-ts/core/typeclass/Of"
 import type * as pointed from "@fp-ts/core/typeclass/Pointed"
 import * as product_ from "@fp-ts/core/typeclass/Product"
-import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
 import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
 import { equals } from "@fp-ts/data/Equal"
@@ -482,27 +481,6 @@ export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<Either
 }
 
 /**
- * | x        | y        | x |> combine(y)        |
- * | ---------| ---------| -----------------------|
- * | left(a)  | left(b)  | left(a |> combine(b))  |
- * | left(a)  | right(2) | left(a)                |
- * | right(1) | left(b)  | left(b)                |
- * | right(1) | right(2) | right(1 |> combine(2)) |
- *
- * @category combining
- * @since 1.0.0
- */
-export const getSemigroup = <E, A>(SE: Semigroup<E>, SA: Semigroup<A>): Semigroup<Either<E, A>> =>
-  semigroup.fromCombine((that) =>
-    (self) =>
-      isLeft(self) ?
-        isLeft(that) ? left(SE.combine(that.left)(self.left)) : self :
-        isLeft(that) ?
-        that :
-        right(SA.combine(that.right)(self.right))
-  )
-
-/**
  * Semigroup returning the left-most `Left` value. If both operands are `Right`s then the inner values
  * are concatenated using the provided `Semigroup`.
  *
@@ -516,7 +494,7 @@ export const getSemigroup = <E, A>(SE: Semigroup<E>, SA: Semigroup<A>): Semigrou
  * @category combining
  * @since 1.0.0
  */
-export const getFirstErrorSemigroup: <A, E>(S: Semigroup<A>) => Semigroup<Either<E, A>> =
+export const getFirstLeftSemigroup: <A, E>(S: Semigroup<A>) => Semigroup<Either<E, A>> =
   nonEmptyApplicative
     .liftSemigroup(NonEmptyApplicative)
 
@@ -570,7 +548,7 @@ export const Applicative: applicative.Applicative<EitherTypeLambda> = {
  * @category combining
  * @since 1.0.0
  */
-export const getFirstErrorMonoid: <A, E>(M: Monoid<A>) => Monoid<Either<E, A>> = applicative
+export const getFirstLeftMonoid: <A, E>(M: Monoid<A>) => Monoid<Either<E, A>> = applicative
   .liftMonoid(
     Applicative
   )
@@ -616,8 +594,8 @@ export const NonEmptyCoproduct: nonEmptyCoproduct.NonEmptyCoproduct<EitherTypeLa
  * @category combining
  * @since 1.0.0
  */
-export const getFirstSuccessSemigroup: <E, A>() => semigroup.Semigroup<Either<E, A>> =
-  nonEmptyCoproduct.getSemigroup(NonEmptyCoproduct)
+export const getFirstRightSemigroup: <E, A>() => Semigroup<Either<E, A>> = nonEmptyCoproduct
+  .getSemigroup(NonEmptyCoproduct)
 
 /**
  * Returns the wrapped value if it's a `Right` or a default value if is a `Left`.
@@ -644,8 +622,8 @@ export const getFirstSuccessSemigroup: <E, A>() => semigroup.Semigroup<Either<E,
  * @category getters
  * @since 1.0.0
  */
-export const getOrElse = <B>(onFailure: B) =>
-  <A>(self: Either<unknown, A>): A | B => isLeft(self) ? onFailure : self.right
+export const getOrElse = <B>(onLeft: B) =>
+  <E, A>(self: Either<E, A>): A | B => isLeft(self) ? onLeft : self.right
 
 /**
  * Recovers from all errors.
@@ -654,8 +632,8 @@ export const getOrElse = <B>(onFailure: B) =>
  * @since 1.0.0
  */
 export const catchAll = <E1, E2, B>(
-  onFailure: (e: E1) => Either<E2, B>
-) => <A>(self: Either<E1, A>): Either<E2, A | B> => isLeft(self) ? onFailure(self.left) : self
+  onLeft: (e: E1) => Either<E2, B>
+) => <A>(self: Either<E1, A>): Either<E2, A | B> => isLeft(self) ? onLeft(self.left) : self
 
 /**
  * Executes this effect and returns its value, if it succeeds, but otherwise
@@ -698,8 +676,8 @@ export const orElseEither = <E2, B>(
  * @since 1.0.0
  */
 export const orElseFail = <E2>(
-  onFailure: E2
-): <E1, A>(self: Either<E1, A>) => Either<E2, A> => orElse(left(onFailure))
+  onLeft: E2
+): <E1, A>(self: Either<E1, A>) => Either<E2, A> => orElse(left(onLeft))
 
 /**
  * Executes this effect and returns its value, if it succeeds, but otherwise
@@ -709,8 +687,8 @@ export const orElseFail = <E2>(
  * @since 1.0.0
  */
 export const orElseSucceed = <B>(
-  onFailure: B
-): <E, A>(self: Either<E, A>) => Either<E, A | B> => orElse(right(onFailure))
+  onLeft: B
+): <E, A>(self: Either<E, A>) => Either<E, A | B> => orElse(right(onLeft))
 
 /**
  * @category instances
@@ -769,7 +747,7 @@ export const match = <E, B, A, C = B>(onLeft: (e: E) => B, onRight: (a: A) => C)
  * @example
  * import * as E from '@fp-ts/data/Either'
  *
- * const parse = E.fromNullableOrElse('nully')
+ * const parse = E.fromNullable('nully')
  *
  * assert.deepStrictEqual(parse(1), E.right(1))
  * assert.deepStrictEqual(parse(null), E.left('nully'))
@@ -777,27 +755,27 @@ export const match = <E, B, A, C = B>(onLeft: (e: E) => B, onRight: (a: A) => C)
  * @category conversions
  * @since 1.0.0
  */
-export const fromNullableOrElse: <E>(onNullable: E) => <A>(a: A) => Either<E, NonNullable<A>> =
-  either.fromNullableOrElse
+export const fromNullable: <E>(onNullable: E) => <A>(a: A) => Either<E, NonNullable<A>> =
+  either.fromNullable
 
 /**
  * @category lifting
  * @since 1.0.0
  */
-export const liftNullableOrElse = <A extends ReadonlyArray<unknown>, B, E>(
+export const liftNullable = <A extends ReadonlyArray<unknown>, B, E>(
   f: (...a: A) => B | null | undefined,
   onNullable: E
-) => (...a: A): Either<E, NonNullable<B>> => fromNullableOrElse(onNullable)(f(...a))
+) => (...a: A): Either<E, NonNullable<B>> => fromNullable(onNullable)(f(...a))
 
 /**
  * @category sequencing
  * @since 1.0.0
  */
-export const flatMapNullableOrElse = <A, B, E2>(
+export const flatMapNullable = <A, B, E2>(
   f: (a: A) => B | null | undefined,
   onNullable: E2
 ): (<E1>(self: Either<E1, A>) => Either<E1 | E2, NonNullable<B>>) =>
-  flatMap(liftNullableOrElse(f, onNullable))
+  flatMap(liftNullable(f, onNullable))
 
 /**
  * Constructs a new `Either` from a function that might throw.
@@ -815,7 +793,7 @@ export const flatMapNullableOrElse = <A, B, E2>(
  * }
  *
  * const head = <A>(as: ReadonlyArray<A>): E.Either<unknown, A> =>
- *   E.fromThrowableOrElse(() => unsafeHead(as), identity)
+ *   E.fromThrowable(() => unsafeHead(as), identity)
  *
  * assert.deepStrictEqual(head([]), E.left(new Error('empty array')))
  * assert.deepStrictEqual(head([1, 2, 3]), E.right(1))
@@ -823,7 +801,7 @@ export const flatMapNullableOrElse = <A, B, E2>(
  * @category interop
  * @since 1.0.0
  */
-export const fromThrowableOrElse = <A, E>(
+export const fromThrowable = <A, E>(
   f: () => A,
   onThrow: (error: unknown) => E
 ): Either<E, A> => {
@@ -838,12 +816,12 @@ export const fromThrowableOrElse = <A, E>(
  * @category interop
  * @since 1.0.0
  */
-export const getOrThrow = <E>(onError: (e: E) => unknown) =>
+export const getOrThrow = <E>(onLeft: (e: E) => unknown) =>
   <A>(self: Either<E, A>): A => {
     if (isRight(self)) {
       return self.right
     }
-    throw onError(self.left)
+    throw onLeft(self.left)
   }
 
 /**
@@ -852,10 +830,10 @@ export const getOrThrow = <E>(onError: (e: E) => unknown) =>
  * @category interop
  * @since 1.0.0
  */
-export const liftThrowableOrElse = <A extends ReadonlyArray<unknown>, B, E>(
+export const liftThrowable = <A extends ReadonlyArray<unknown>, B, E>(
   f: (...a: A) => B,
   onThrow: (error: unknown) => E
-): ((...a: A) => Either<E, B>) => (...a) => fromThrowableOrElse(() => f(...a), onThrow)
+): ((...a: A) => Either<E, B>) => (...a) => fromThrowable(() => f(...a), onThrow)
 
 /**
  * @category getters
@@ -874,15 +852,15 @@ export const reverse = <E, A>(self: Either<E, A>): Either<A, E> =>
  * @category filtering
  * @since 1.0.0
  */
-export const compactOrElse = <E>(onNone: E) =>
-  <A>(self: Either<E, Option<A>>): Either<E, A> =>
+export const compact = <E2>(onNone: E2) =>
+  <E1, A>(self: Either<E1, Option<A>>): Either<E1 | E2, A> =>
     isLeft(self) ? self : internal.isNone(self.right) ? left(onNone) : right(self.right.value)
 
 /**
  * @category filtering
  * @since 1.0.0
  */
-export const filterOrElse: {
+export const filter: {
   <C extends A, B extends A, E2, A = C>(refinement: Refinement<A, B>, onFalse: E2): <E1>(
     self: Either<E1, C>
   ) => Either<E1 | E2, B>
@@ -901,7 +879,7 @@ export const filterOrElse: {
  * @category filtering
  * @since 1.0.0
  */
-export const filterMapOrElse = <A, B, E2>(
+export const filterMap = <A, B, E2>(
   f: (a: A) => Option<B>,
   onNone: E2
 ) =>
@@ -970,12 +948,12 @@ export const tap: <A, E2, _>(
  * @category debugging
  * @since 1.0.0
  */
-export const unsafeTap = <A>(
-  onSuccess: (a: A) => void
+export const inspectRight = <A>(
+  onRight: (a: A) => void
 ) =>
   <E>(self: Either<E, A>): Either<E, A> => {
     if (isRight(self)) {
-      onSuccess(self.right)
+      onRight(self.right)
     }
     return self
   }
@@ -986,14 +964,14 @@ export const unsafeTap = <A>(
  * @category error handling
  * @since 1.0.0
  */
-export const tapError: <E1, E2, _>(
-  onError: (e: E1) => Either<E2, _>
-) => <A>(self: Either<E1, A>) => Either<E1 | E2, A> = (onError) =>
-  (self) => {
+export const tapError = <E1, E2, _>(
+  onLeft: (e: E1) => Either<E2, _>
+) =>
+  <A>(self: Either<E1, A>): Either<E1 | E2, A> => {
     if (isRight(self)) {
       return self
     }
-    const out = onError(self.left)
+    const out = onLeft(self.left)
     return isLeft(out) ? out : self
   }
 
@@ -1001,12 +979,12 @@ export const tapError: <E1, E2, _>(
  * @category debugging
  * @since 1.0.0
  */
-export const unsafeTapError = <E>(
-  onError: (e: E) => void
+export const inspectLeft = <E>(
+  onLeft: (e: E) => void
 ) =>
   <A>(self: Either<E, A>): Either<E, A> => {
     if (isLeft(self)) {
-      onError(self.left)
+      onLeft(self.left)
     }
     return self
   }
@@ -1015,7 +993,7 @@ export const unsafeTapError = <E>(
  * @category conversions
  * @since 1.0.0
  */
-export const fromIterableOrElse = <E>(onEmpty: E) =>
+export const fromIterable = <E>(onEmpty: E) =>
   <A>(collection: Iterable<A>): Either<E, A> => {
     for (const a of collection) {
       return right(a)
@@ -1029,14 +1007,13 @@ export const fromIterableOrElse = <E>(onEmpty: E) =>
  * import { pipe } from '@fp-ts/data/Function'
  * import * as O from '@fp-ts/data/Option'
  *
- * assert.deepStrictEqual(pipe(O.some(1), E.fromOptionOrElse('error')), E.right(1))
- * assert.deepStrictEqual(pipe(O.none, E.fromOptionOrElse('error')), E.left('error'))
+ * assert.deepStrictEqual(pipe(O.some(1), E.fromOption('error')), E.right(1))
+ * assert.deepStrictEqual(pipe(O.none, E.fromOption('error')), E.left('error'))
  *
  * @category conversions
  * @since 1.0.0
  */
-export const fromOptionOrElse: <E>(onNone: E) => <A>(self: Option<A>) => Either<E, A> =
-  either.fromOptionOrElse
+export const fromOption: <E>(onNone: E) => <A>(self: Option<A>) => Either<E, A> = either.fromOption
 
 /**
  * Converts a `Either` to an `Option` discarding the Right.
@@ -1082,20 +1059,20 @@ export const getOrUndefined: <E, A>(self: Either<E, A>) => A | undefined = getOr
 
 /**
  * @example
- * import { liftPredicateOrElse, left, right } from '@fp-ts/data/Either'
+ * import { liftPredicate, left, right } from '@fp-ts/data/Either'
  * import { pipe } from '@fp-ts/data/Function'
  *
  * assert.deepStrictEqual(
  *   pipe(
  *     1,
- *     liftPredicateOrElse((n) => n > 0, 'error')
+ *     liftPredicate((n) => n > 0, 'error')
  *   ),
  *   right(1)
  * )
  * assert.deepStrictEqual(
  *   pipe(
  *     -1,
- *     liftPredicateOrElse((n) => n > 0, 'error')
+ *     liftPredicate((n) => n > 0, 'error')
  *   ),
  *   left('error')
  * )
@@ -1103,7 +1080,7 @@ export const getOrUndefined: <E, A>(self: Either<E, A>) => A | undefined = getOr
  * @category lifting
  * @since 1.0.0
  */
-export const liftPredicateOrElse: {
+export const liftPredicate: {
   <C extends A, B extends A, E, A = C>(
     refinement: Refinement<A, B>,
     onFalse: E
@@ -1116,20 +1093,19 @@ export const liftPredicateOrElse: {
  * @category lifting
  * @since 1.0.0
  */
-export const liftOptionOrElse = <A extends ReadonlyArray<unknown>, B, E>(
+export const liftOption = <A extends ReadonlyArray<unknown>, B, E>(
   f: (...a: A) => Option<B>,
   onNone: E
-) => (...a: A): Either<E, B> => fromOptionOrElse(onNone)(f(...a))
+) => (...a: A): Either<E, B> => fromOption(onNone)(f(...a))
 
 /**
  * @category sequencing
  * @since 1.0.0
  */
-export const flatMapOptionOrElse = <A, B, E2>(
+export const flatMapOption = <A, B, E2>(
   f: (a: A) => Option<B>,
   onNone: E2
-) =>
-  <E1>(self: Either<E1, A>): Either<E1 | E2, B> => pipe(self, flatMap(liftOptionOrElse(f, onNone)))
+) => <E1>(self: Either<E1, A>): Either<E1 | E2, B> => pipe(self, flatMap(liftOption(f, onNone)))
 
 /**
  * Tests whether a value is a member of a `Either`.
