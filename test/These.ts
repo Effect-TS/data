@@ -1,3 +1,4 @@
+import { nonEmptyChunk } from "@fp-ts/data"
 import * as E from "@fp-ts/data/Either"
 import { identity, pipe } from "@fp-ts/data/Function"
 import * as nec from "@fp-ts/data/NonEmptyChunk"
@@ -46,7 +47,7 @@ describe("These", () => {
     expect(_.NonEmptyProduct).exist
     expect(_.product).exist
     expect(_.productMany).exist
-    expect(_.bindThese).exist
+    expect(_.andThenBind).exist
     expect(_.productFlatten).exist
 
     expect(_.Product).exist
@@ -119,6 +120,75 @@ describe("These", () => {
         _.traverse(O.Applicative)((n) => (n >= 2 ? O.some(n) : O.none))
       ),
       O.none
+    )
+  })
+
+  it("andThenBindEither", () => {
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.succeed(1)), _.andThenBindEither("b", E.right(2))),
+      _.succeed({ a: 1, b: 2 })
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.succeed(1)), _.andThenBindEither("b", E.left("e2"))),
+      _.fail("e2")
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.fail("e1")), _.andThenBindEither("b", E.right(2))),
+      _.fail("e1")
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.fail("e1")), _.andThenBindEither("b", E.left("e2"))),
+      _.fail("e1")
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.warn("e1", 1)), _.andThenBindEither("b", E.right(2))),
+      _.warn("e1", { a: 1, b: 2 })
+    )
+    expect(
+      pipe(_.Do, _.bind("a", () => _.warn("e1", 1)), _.andThenBindEither("b", E.left("e2")))
+    ).toEqual(
+      _.left(nonEmptyChunk.makeNonEmpty("e1", "e2"))
+    )
+  })
+
+  it("andThenBindThese", () => {
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.succeed(1)), _.andThenBindThese("b", _.right(2))),
+      _.succeed({ a: 1, b: 2 })
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.succeed(1)), _.andThenBindThese("b", _.left("e2"))),
+      _.fail("e2")
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.succeed(1)), _.andThenBindThese("b", _.both("e2", 2))),
+      _.warn("e2", { a: 1, b: 2 })
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.fail("e1")), _.andThenBindThese("b", _.right(2))),
+      _.fail("e1")
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.fail("e1")), _.andThenBindThese("b", _.left("e2"))),
+      _.fail("e1")
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.fail("e1")), _.andThenBindThese("b", _.both("e2", 2))),
+      _.fail("e1")
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.warn("e1", 1)), _.andThenBindThese("b", _.right(2))),
+      _.warn("e1", { a: 1, b: 2 })
+    )
+    expect(
+      pipe(_.Do, _.bind("a", () => _.warn("e1", 1)), _.andThenBindThese("b", _.left("e2")))
+    ).toEqual(
+      _.left(nonEmptyChunk.makeNonEmpty("e1", "e2"))
+    )
+    expect(
+      pipe(_.Do, _.bind("a", () => _.warn("e1", 1)), _.andThenBindThese("b", _.both("e2", 2)))
+    ).toEqual(
+      _.both(nonEmptyChunk.makeNonEmpty("e1", "e2"), { a: 1, b: 2 })
     )
   })
 
@@ -200,22 +270,22 @@ describe("These", () => {
     const f = (
       n: number
     ) => (n >= 2 ?
-      (n <= 5 ? _.right(n * 2) : _.both(nec.makeNonEmpty("e2"), n)) :
-      _.left(nec.makeNonEmpty("e3")))
+      (n <= 5 ? _.succeed(n * 2) : _.warn("e2", n)) :
+      _.fail("e3"))
     U.deepStrictEqual(
-      pipe(_.left(nec.makeNonEmpty("e1")), _.flatMap(f)),
-      _.left(nec.makeNonEmpty("e1"))
+      pipe(_.fail("e1"), _.flatMap(f)),
+      _.fail("e1")
     )
-    U.deepStrictEqual(pipe(_.right(2), _.flatMap(f)), _.right(4))
-    U.deepStrictEqual(pipe(_.right(1), _.flatMap(f)), _.left(nec.makeNonEmpty("e3")))
-    U.deepStrictEqual(pipe(_.right(6), _.flatMap(f)), _.both(nec.makeNonEmpty("e2"), 6))
+    U.deepStrictEqual(pipe(_.succeed(2), _.flatMap(f)), _.succeed(4))
+    U.deepStrictEqual(pipe(_.succeed(1), _.flatMap(f)), _.fail("e3"))
+    U.deepStrictEqual(pipe(_.succeed(6), _.flatMap(f)), _.warn("e2", 6))
     U.deepStrictEqual(
-      pipe(_.both(nec.makeNonEmpty("e1"), 2), _.flatMap(f)),
-      _.both(nec.makeNonEmpty("e1"), 4)
+      pipe(_.warn("e1", 2), _.flatMap(f)),
+      _.warn("e1", 4)
     )
     U.deepStrictEqual(
       pipe(
-        _.both(nec.makeNonEmpty("e1"), 1),
+        _.warn("e1", 1),
         _.flatMap(f),
         _.mapLeft(nec.toNonEmptyReadonlyArray)
       ),
@@ -223,12 +293,52 @@ describe("These", () => {
     )
     U.deepStrictEqual(
       pipe(
-        _.both(nec.makeNonEmpty("e1"), 6),
+        _.warn("e1", 6),
         _.flatMap(f),
         _.mapLeft(nec.toNonEmptyReadonlyArray)
       ),
       _.both(["e1", "e2"] as const, 6)
     )
+  })
+
+  it("flatMapNullable", () => {
+    const f = _.flatMapNullable((n: number) => (n > 0 ? n : null), "e2")
+    U.deepStrictEqual(f(_.succeed(1)), _.succeed(1))
+    U.deepStrictEqual(f(_.succeed(-1)), _.fail("e2"))
+    U.deepStrictEqual(f(_.fail("e1")), _.fail("e1"))
+    U.deepStrictEqual(f(_.warn("e1", 1)), _.warn("e1", 1))
+    expect(f(_.warn("e1", -1))).toEqual(_.left(nonEmptyChunk.makeNonEmpty("e1", "e2")))
+  })
+
+  it("flatMapOption", () => {
+    const f = _.flatMapOption((n: number) => (n > 0 ? O.some(n) : O.none), "e2")
+    U.deepStrictEqual(f(_.succeed(1)), _.succeed(1))
+    U.deepStrictEqual(f(_.succeed(-1)), _.fail("e2"))
+    U.deepStrictEqual(f(_.fail("e1")), _.fail("e1"))
+    U.deepStrictEqual(f(_.warn("e1", 1)), _.warn("e1", 1))
+    expect(f(_.warn("e1", -1))).toEqual(_.left(nonEmptyChunk.makeNonEmpty("e1", "e2")))
+  })
+
+  it("flatMapEither", () => {
+    const f = _.flatMapEither((n: number) => (n > 0 ? E.right(n) : E.left("e2")))
+    U.deepStrictEqual(f(_.succeed(1)), _.succeed(1))
+    U.deepStrictEqual(f(_.succeed(-1)), _.fail("e2"))
+    U.deepStrictEqual(f(_.fail("e1")), _.fail("e1"))
+    U.deepStrictEqual(f(_.warn("e1", 1)), _.warn("e1", 1))
+    expect(f(_.warn("e1", -1))).toEqual(_.left(nonEmptyChunk.makeNonEmpty("e1", "e2")))
+  })
+
+  it("flatMapThese", () => {
+    const f = _.flatMapThese((
+      n: number
+    ) => (n > 10 ? _.both("e3", n) : n > 0 ? _.right(n) : _.left("e2")))
+    U.deepStrictEqual(f(_.succeed(1)), _.succeed(1))
+    U.deepStrictEqual(f(_.succeed(-1)), _.fail("e2"))
+    U.deepStrictEqual(f(_.succeed(11)), _.warn("e3", 11))
+    U.deepStrictEqual(f(_.fail("e1")), _.fail("e1"))
+    U.deepStrictEqual(f(_.warn("e1", 1)), _.warn("e1", 1))
+    expect(f(_.warn("e1", -1))).toEqual(_.left(nonEmptyChunk.makeNonEmpty("e1", "e2")))
+    expect(f(_.warn("e1", 11))).toEqual(_.both(nonEmptyChunk.makeNonEmpty("e1", "e3"), 11))
   })
 
   it("leftOrBoth", () => {
@@ -449,10 +559,49 @@ describe("These", () => {
     U.deepStrictEqual(_.fromOption("e")(O.some(1)), _.right(1))
   })
 
+  it("fromEither", () => {
+    U.deepStrictEqual(_.fromEither(E.right(1)), _.right(1))
+    U.deepStrictEqual(_.fromEither(E.left("e")), _.left(nonEmptyChunk.makeNonEmpty("e")))
+  })
+
+  it("fromThese", () => {
+    U.deepStrictEqual(_.fromThese(_.right(1)), _.succeed(1))
+    U.deepStrictEqual(_.fromThese(_.left("e")), _.fail("e"))
+    U.deepStrictEqual(_.fromThese(_.both("e", 1)), _.warn("e", 1))
+  })
+
+  it("toEither", () => {
+    expect(_.toEither).exist
+  })
+
+  it("absolve", () => {
+    U.deepStrictEqual(_.absolve(_.right(1)), E.right(1))
+    U.deepStrictEqual(_.absolve(_.left("e")), E.left("e"))
+    U.deepStrictEqual(_.absolve(_.both("e", 1)), E.right(1))
+  })
+
+  it("condemn", () => {
+    U.deepStrictEqual(_.condemn(_.right(1)), E.right(1))
+    U.deepStrictEqual(_.condemn(_.left("e")), E.left("e"))
+    U.deepStrictEqual(_.condemn(_.both("e", 1)), E.left("e"))
+  })
+
   it("liftOption", () => {
     const f = _.liftOption((n: number) => (n > 0 ? O.some(n) : O.none), "e")
     U.deepStrictEqual(f(1), _.right(1))
     U.deepStrictEqual(f(-1), _.left("e"))
+  })
+
+  it("liftEither", () => {
+    const f = _.liftEither((n: number) => (n > 0 ? E.right(n) : E.left("e")))
+    U.deepStrictEqual(f(1), _.succeed(1))
+    U.deepStrictEqual(f(-1), _.fail("e"))
+  })
+
+  it("liftThese", () => {
+    const f = _.liftThese((n: number) => (n > 0 ? _.right(n) : _.left("e")))
+    U.deepStrictEqual(f(1), _.succeed(1))
+    U.deepStrictEqual(f(-1), _.fail("e"))
   })
 
   it("fromTuple", () => {
