@@ -1,7 +1,6 @@
-import { nonEmptyChunk } from "@fp-ts/data"
+import * as chunk from "@fp-ts/data/Chunk"
 import * as E from "@fp-ts/data/Either"
 import { identity, pipe } from "@fp-ts/data/Function"
-import * as nec from "@fp-ts/data/NonEmptyChunk"
 import * as O from "@fp-ts/data/Option"
 import * as S from "@fp-ts/data/String"
 import * as _ from "@fp-ts/data/These"
@@ -147,7 +146,7 @@ describe("These", () => {
     expect(
       pipe(_.Do, _.bind("a", () => _.warn("e1", 1)), _.andThenBindEither("b", E.left("e2")))
     ).toEqual(
-      _.left(nonEmptyChunk.makeNonEmpty("e1", "e2"))
+      _.left(chunk.make("e1", "e2"))
     )
   })
 
@@ -183,12 +182,81 @@ describe("These", () => {
     expect(
       pipe(_.Do, _.bind("a", () => _.warn("e1", 1)), _.andThenBindThese("b", _.left("e2")))
     ).toEqual(
-      _.left(nonEmptyChunk.makeNonEmpty("e1", "e2"))
+      _.left(chunk.make("e1", "e2"))
     )
     expect(
       pipe(_.Do, _.bind("a", () => _.warn("e1", 1)), _.andThenBindThese("b", _.both("e2", 2)))
     ).toEqual(
-      _.both(nonEmptyChunk.makeNonEmpty("e1", "e2"), { a: 1, b: 2 })
+      _.both(chunk.make("e1", "e2"), { a: 1, b: 2 })
+    )
+  })
+
+  it("bindEither", () => {
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.succeed(1)), _.bindEither("b", () => E.right(2))),
+      _.succeed({ a: 1, b: 2 })
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.succeed(1)), _.bindEither("b", () => E.left("e2"))),
+      _.fail("e2")
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.fail("e1")), _.bindEither("b", () => E.right(2))),
+      _.fail("e1")
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.fail("e1")), _.bindEither("b", () => E.left("e2"))),
+      _.fail("e1")
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.warn("e1", 1)), _.bindEither("b", () => E.right(2))),
+      _.warn("e1", { a: 1, b: 2 })
+    )
+    expect(
+      pipe(_.Do, _.bind("a", () => _.warn("e1", 1)), _.bindEither("b", () => E.left("e2")))
+    ).toEqual(
+      _.left(chunk.make("e1", "e2"))
+    )
+  })
+
+  it("bindThese", () => {
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.succeed(1)), _.bindThese("b", () => _.right(2))),
+      _.succeed({ a: 1, b: 2 })
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.succeed(1)), _.bindThese("b", () => _.left("e2"))),
+      _.fail("e2")
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.succeed(1)), _.bindThese("b", () => _.both("e2", 2))),
+      _.warn("e2", { a: 1, b: 2 })
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.fail("e1")), _.bindThese("b", () => _.right(2))),
+      _.fail("e1")
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.fail("e1")), _.bindThese("b", () => _.left("e2"))),
+      _.fail("e1")
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.fail("e1")), _.bindThese("b", () => _.both("e2", 2))),
+      _.fail("e1")
+    )
+    U.deepStrictEqual(
+      pipe(_.Do, _.bind("a", () => _.warn("e1", 1)), _.bindThese("b", () => _.right(2))),
+      _.warn("e1", { a: 1, b: 2 })
+    )
+    expect(
+      pipe(_.Do, _.bind("a", () => _.warn("e1", 1)), _.bindThese("b", () => _.left("e2")))
+    ).toEqual(
+      _.left(chunk.make("e1", "e2"))
+    )
+    expect(
+      pipe(_.Do, _.bind("a", () => _.warn("e1", 1)), _.bindThese("b", () => _.both("e2", 2)))
+    ).toEqual(
+      _.both(chunk.make("e1", "e2"), { a: 1, b: 2 })
     )
   })
 
@@ -202,9 +270,9 @@ describe("These", () => {
   })
 
   it("product", () => {
-    const a = nec.makeNonEmpty("a")
-    const b = nec.makeNonEmpty("b")
-    const ab = nec.makeNonEmpty("a", "b")
+    const a = chunk.make("a")
+    const b = chunk.make("b")
+    const ab = chunk.make("a", "b")
 
     U.deepStrictEqual(pipe(_.right(1), _.product(_.right(2))), _.right([1, 2] as const))
     U.deepStrictEqual(pipe(_.right(1), _.product(_.left(b))), _.left(b))
@@ -220,9 +288,9 @@ describe("These", () => {
   })
 
   it("productMany", () => {
-    const a = nec.makeNonEmpty("a")
-    const b = nec.makeNonEmpty("b")
-    const ab = nec.makeNonEmpty("a", "b")
+    const a = chunk.make("a")
+    const b = chunk.make("b")
+    const ab = chunk.make("a", "b")
 
     U.deepStrictEqual(pipe(_.right(1), _.productMany([_.right(2)])), _.right([1, 2] as const))
     U.deepStrictEqual(
@@ -249,9 +317,9 @@ describe("These", () => {
   })
 
   it("productAll", () => {
-    const a = nec.makeNonEmpty("a")
-    const b = nec.makeNonEmpty("b")
-    const ab = nec.makeNonEmpty("a", "b")
+    const a = chunk.make("a")
+    const b = chunk.make("b")
+    const ab = chunk.make("a", "b")
 
     U.deepStrictEqual(_.productAll([_.right(1), _.right(2)]), _.right([1, 2] as const))
     U.deepStrictEqual(_.productAll([_.right(1), _.left(b)]), _.left(b))
@@ -287,7 +355,7 @@ describe("These", () => {
       pipe(
         _.warn("e1", 1),
         _.flatMap(f),
-        _.mapLeft(nec.toNonEmptyReadonlyArray)
+        _.mapLeft(chunk.toReadonlyArray)
       ),
       _.left(["e1", "e3"] as const)
     )
@@ -295,7 +363,7 @@ describe("These", () => {
       pipe(
         _.warn("e1", 6),
         _.flatMap(f),
-        _.mapLeft(nec.toNonEmptyReadonlyArray)
+        _.mapLeft(chunk.toReadonlyArray)
       ),
       _.both(["e1", "e2"] as const, 6)
     )
@@ -307,7 +375,7 @@ describe("These", () => {
     U.deepStrictEqual(f(_.succeed(-1)), _.fail("e2"))
     U.deepStrictEqual(f(_.fail("e1")), _.fail("e1"))
     U.deepStrictEqual(f(_.warn("e1", 1)), _.warn("e1", 1))
-    expect(f(_.warn("e1", -1))).toEqual(_.left(nonEmptyChunk.makeNonEmpty("e1", "e2")))
+    expect(f(_.warn("e1", -1))).toEqual(_.left(chunk.make("e1", "e2")))
   })
 
   it("flatMapOption", () => {
@@ -316,7 +384,7 @@ describe("These", () => {
     U.deepStrictEqual(f(_.succeed(-1)), _.fail("e2"))
     U.deepStrictEqual(f(_.fail("e1")), _.fail("e1"))
     U.deepStrictEqual(f(_.warn("e1", 1)), _.warn("e1", 1))
-    expect(f(_.warn("e1", -1))).toEqual(_.left(nonEmptyChunk.makeNonEmpty("e1", "e2")))
+    expect(f(_.warn("e1", -1))).toEqual(_.left(chunk.make("e1", "e2")))
   })
 
   it("flatMapEither", () => {
@@ -325,7 +393,7 @@ describe("These", () => {
     U.deepStrictEqual(f(_.succeed(-1)), _.fail("e2"))
     U.deepStrictEqual(f(_.fail("e1")), _.fail("e1"))
     U.deepStrictEqual(f(_.warn("e1", 1)), _.warn("e1", 1))
-    expect(f(_.warn("e1", -1))).toEqual(_.left(nonEmptyChunk.makeNonEmpty("e1", "e2")))
+    expect(f(_.warn("e1", -1))).toEqual(_.left(chunk.make("e1", "e2")))
   })
 
   it("flatMapThese", () => {
@@ -337,8 +405,8 @@ describe("These", () => {
     U.deepStrictEqual(f(_.succeed(11)), _.warn("e3", 11))
     U.deepStrictEqual(f(_.fail("e1")), _.fail("e1"))
     U.deepStrictEqual(f(_.warn("e1", 1)), _.warn("e1", 1))
-    expect(f(_.warn("e1", -1))).toEqual(_.left(nonEmptyChunk.makeNonEmpty("e1", "e2")))
-    expect(f(_.warn("e1", 11))).toEqual(_.both(nonEmptyChunk.makeNonEmpty("e1", "e3"), 11))
+    expect(f(_.warn("e1", -1))).toEqual(_.left(chunk.make("e1", "e2")))
+    expect(f(_.warn("e1", 11))).toEqual(_.both(chunk.make("e1", "e3"), 11))
   })
 
   it("leftOrBoth", () => {
@@ -561,7 +629,7 @@ describe("These", () => {
 
   it("fromEither", () => {
     U.deepStrictEqual(_.fromEither(E.right(1)), _.right(1))
-    U.deepStrictEqual(_.fromEither(E.left("e")), _.left(nonEmptyChunk.makeNonEmpty("e")))
+    U.deepStrictEqual(_.fromEither(E.left("e")), _.left(chunk.make("e")))
   })
 
   it("fromThese", () => {

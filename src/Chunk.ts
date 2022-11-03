@@ -8,7 +8,7 @@ import type { Either } from "@fp-ts/data/Either"
 import * as Equal from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
 import * as MRef from "@fp-ts/data/mutable/MutableRef"
-import type { NonEmptyChunk } from "@fp-ts/data/NonEmptyChunk"
+import type { nonEmpty } from "@fp-ts/data/NonEmpty"
 import type { Option } from "@fp-ts/data/Option"
 import * as O from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
@@ -22,6 +22,14 @@ const TypeId: unique symbol = Symbol.for("@fp-ts/data/Chunk") as TypeId
  * @category symbol
  */
 export type TypeId = typeof TypeId
+
+/**
+ * @category model
+ * @since 1.0.0
+ */
+export interface NonEmptyChunk<A> extends Chunk<A> {
+  readonly [nonEmpty]: A
+}
 
 /**
  * @since 1.0.0
@@ -595,6 +603,22 @@ export const dropWhile = <A>(f: (a: A) => boolean) => {
 }
 
 /**
+ * @category mutations
+ * @since 1.0.0
+ */
+export function prependAllNonEmpty<B>(
+  that: NonEmptyChunk<B>
+): <A>(self: Chunk<A>) => NonEmptyChunk<A | B>
+export function prependAllNonEmpty<B>(
+  that: Chunk<B>
+): <A>(self: NonEmptyChunk<A>) => NonEmptyChunk<A | B>
+export function prependAllNonEmpty<B>(
+  that: Chunk<B>
+): <A>(self: NonEmptyChunk<A>) => Chunk<A | B> {
+  return concat(that)
+}
+
+/**
  * Concatenates the two chunks
  *
  * @since 1.0.0
@@ -972,13 +996,14 @@ export const join = (sep: string) =>
 export const last = <A>(self: Chunk<A>): Option<A> => get(self.length - 1)(self)
 
 /**
- * Build a chunk from a sequence of elements.
+ * Builds a `NonEmptyChunk` from an non-empty collection of elements.
  *
  * @since 1.0.0
  * @category constructors
  */
-export const make = <Elem extends ReadonlyArray<any>>(...elements: Elem): Chunk<Elem[number]> =>
-  unsafeFromArray(elements)
+export const make = <As extends readonly [any, ...ReadonlyArray<any>]>(
+  ...as: As
+): NonEmptyChunk<As[number]> => unsafeFromArray(as) as any
 
 /**
  * Return a Chunk of length n with element i initialized with f(i).

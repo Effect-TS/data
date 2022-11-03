@@ -1,7 +1,7 @@
 /**
- * A data structure providing "inclusive-or" as opposed to `Result`'s "exclusive-or".
+ * A data structure providing "inclusive-or" as opposed to `Either`'s "exclusive-or".
  *
- * If you interpret `Result<E, A>` as suggesting the computation may either fail or of (exclusively), then
+ * If you interpret `Either<E, A>` as suggesting the computation may either fail or of (exclusively), then
  * `These<E, A>` may fail, of, or do both at the same time.
  *
  * There are a few ways to interpret the both case:
@@ -38,14 +38,14 @@ import type * as pointed from "@fp-ts/core/typeclass/Pointed"
 import * as product_ from "@fp-ts/core/typeclass/Product"
 import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
+import type { NonEmptyChunk } from "@fp-ts/data/Chunk"
 import * as chunk from "@fp-ts/data/Chunk"
 import type { Either, Left, Right } from "@fp-ts/data/Either"
 import { equals } from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
 import * as either from "@fp-ts/data/internal/Either"
-import * as nonEmptyChunk from "@fp-ts/data/NonEmptyChunk"
-import type { NonEmptyChunk } from "@fp-ts/data/NonEmptyChunk"
+import * as these from "@fp-ts/data/internal/These"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
@@ -122,7 +122,7 @@ export const both = <E, A>(left: E, right: A): These<E, A> => ({
  * @category constructors
  * @since 1.0.0
  */
-export const fail = <E>(e: E): Validated<E, never> => left(nonEmptyChunk.makeNonEmpty(e))
+export const fail = <E>(e: E): Validated<E, never> => left(chunk.make(e))
 
 /**
  * Alias of `right`.
@@ -136,16 +136,9 @@ export const succeed: <A>(a: A) => Validated<never, A> = right
  * @category constructors
  * @since 1.0.0
  */
-export const warn = <E, A>(e: E, a: A): Validated<E, A> => both(nonEmptyChunk.makeNonEmpty(e), a)
+export const warn = <E, A>(e: E, a: A): Validated<E, A> => both(chunk.make(e), a)
 
 /**
- * @example
- * import { leftOrBoth, fail, both } from '@fp-ts/data/These'
- * import { none, some } from '@fp-ts/data/Option'
- *
- * assert.deepStrictEqual(leftOrBoth('a')(none), fail('a'))
- * assert.deepStrictEqual(leftOrBoth('a')(some(1)), both('a', 1))
- *
  * @category constructors
  * @since 1.0.0
  */
@@ -153,13 +146,6 @@ export const leftOrBoth = <E>(e: E) =>
   <A>(self: Option<A>): These<E, A> => internal.isNone(self) ? left(e) : both(e, self.value)
 
 /**
- * @example
- * import { rightOrBoth, succeed, both } from '@fp-ts/data/These'
- * import { none, some } from '@fp-ts/data/Option'
- *
- * assert.deepStrictEqual(rightOrBoth(1)(none), succeed(1))
- * assert.deepStrictEqual(rightOrBoth(1)(some('a')), both('a', 1))
- *
  * @category constructors
  * @since 1.0.0
  */
@@ -240,10 +226,7 @@ export const isBoth = <E, A>(self: These<E, A>): self is Both<E, A> => self._tag
  * @category guards
  * @since 1.0.0
  */
-export const isThese = (u: unknown): u is These<unknown, unknown> =>
-  typeof u === "object" &&
-  u != null && "_tag" in u &&
-  (u["_tag"] === "Left" || u["_tag"] === "Right" || u["_tag"] === "Both")
+export const isThese: (u: unknown) => u is These<unknown, unknown> = these.isThese
 
 /**
  * Constructs a new `These` from a function that might throw.
@@ -309,7 +292,7 @@ export const fromNullable = <E>(onNullable: E) =>
  * @since 1.0.0
  */
 export const fromEither = <E, A>(self: Either<E, A>): Validated<E, A> =>
-  either.isLeft(self) ? left(nonEmptyChunk.makeNonEmpty(self.left)) : self
+  either.isLeft(self) ? left(chunk.make(self.left)) : self
 
 /**
  * @category conversions
@@ -354,7 +337,7 @@ export const flatMapNullable = <A, B, E2>(
   f: (a: A) => B | null | undefined,
   onNullable: E2
 ): (<E1>(self: Validated<E1, A>) => Validated<E1 | E2, NonNullable<B>>) =>
-  flatMap(liftNullable(f, nonEmptyChunk.makeNonEmpty(onNullable)))
+  flatMap(liftNullable(f, chunk.make(onNullable)))
 
 /**
  * @category lifting
@@ -428,7 +411,7 @@ export const flatMapOption = <A, B, E2>(
   onNone: E2
 ) =>
   <E1>(self: Validated<E1, A>): Validated<E1 | E2, B> =>
-    pipe(self, flatMap(liftOption(f, nonEmptyChunk.makeNonEmpty(onNone))))
+    pipe(self, flatMap(liftOption(f, chunk.make(onNone))))
 
 /**
  * @category sequencing
@@ -619,9 +602,7 @@ export const mapLeft: <E, G>(f: (e: E) => G) => <A>(self: These<E, A>) => These<
  * @category conversions
  * @since 1.0.0
  */
-export const fromThese: <E, A>(self: These<E, A>) => Validated<E, A> = mapLeft(
-  nonEmptyChunk.makeNonEmpty
-)
+export const fromThese: <E, A>(self: These<E, A>) => Validated<E, A> = mapLeft(chunk.make)
 
 /**
  * Returns an effect whose right is mapped by the specified `f` function.
@@ -991,12 +972,12 @@ export const product = <E2, B>(that: Validated<E2, B>) =>
       return both(that.left, [self.right, that.right])
     }
     if (isLeft(that)) {
-      return left(nonEmptyChunk.concatNonEmpty(that.left)(self.left))
+      return left(chunk.prependAllNonEmpty(that.left)(self.left))
     }
     if (isRight(that)) {
       return both(self.left, [self.right, that.right])
     }
-    return both(nonEmptyChunk.concatNonEmpty(that.left)(self.left), [self.right, that.right])
+    return both(chunk.prependAllNonEmpty(that.left)(self.left), [self.right, that.right])
   }
 
 /**
@@ -1073,6 +1054,9 @@ export const getFirstLeftSemigroup: <A, E>(
 ) => Semigroup<Validated<E, A>> = nonEmptyApplicative
   .liftSemigroup(NonEmptyApplicative)
 
+/**
+ * @since 1.0.0
+ */
 export const productAll = <E, A>(
   collection: Iterable<Validated<E, A>>
 ): Validated<E, ReadonlyArray<A>> => {
@@ -1192,12 +1176,12 @@ export const flatMap = <A, E2, B>(
     }
     const that = f(self.right)
     if (isLeft(that)) {
-      return left(nonEmptyChunk.concatNonEmpty(that.left)(self.left))
+      return left(chunk.prependAllNonEmpty(that.left)(self.left))
     }
     if (isRight(that)) {
       return both(self.left, that.right)
     }
-    return both(nonEmptyChunk.concatNonEmpty(that.left)(self.left), that.right)
+    return both(chunk.prependAllNonEmpty(that.left)(self.left), that.right)
   }
 
 /**
@@ -1275,6 +1259,30 @@ export const bind: <N extends string, A extends object, E2, B>(
   self: Validated<E1, A>
 ) => Validated<E1 | E2, { readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }> = chainable
   .bind(Chainable)
+
+/**
+ * @category do notation
+ * @since 1.0.0
+ */
+export const bindEither = <N extends string, A extends object, E2, B>(
+  name: Exclude<N, keyof A>,
+  f: (a: A) => Either<E2, B>
+): <E1>(
+  self: Validated<E1, A>
+) => Validated<E1 | E2, { readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }> =>
+  bind(name, (a) => fromEither(f(a)))
+
+/**
+ * @category do notation
+ * @since 1.0.0
+ */
+export const bindThese = <N extends string, A extends object, E2, B>(
+  name: Exclude<N, keyof A>,
+  f: (a: A) => These<E2, B>
+): <E1>(
+  self: Validated<E1, A>
+) => Validated<E1 | E2, { readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }> =>
+  bind(name, (a) => fromThese(f(a)))
 
 /**
  * Sequences the specified effect after this effect, but ignores the value
