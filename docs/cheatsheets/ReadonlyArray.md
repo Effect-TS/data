@@ -232,13 +232,13 @@ parent: Cheatsheets
 
 ## Do notation
 
-| Name              | Given                                 | To                      |
-| ----------------- | ------------------------------------- | ----------------------- |
-| Do                |                                       | `RA<{}>`                |
-| bindTo            | `RA<A>`, `name: string`               | `RA<{ [name]: A }>`     |
-| let               | `RA<A>`, `name: string`, `A => B`     | `RA<A & { [name]: B }>` |
-| bind              | `RA<A>`, `name: string`, `A => RA<B>` | `RA<A & { [name]: B }>` |
-| bindReadonlyArray | `RA<A>`, `name: string`, `RA<B>`      | `RA<A & { [name]: B }>` |
+| Name        | Given                                 | To                      |
+| ----------- | ------------------------------------- | ----------------------- |
+| Do          |                                       | `RA<{}>`                |
+| bindTo      | `RA<A>`, `name: string`               | `RA<{ [name]: A }>`     |
+| let         | `RA<A>`, `name: string`, `A => B`     | `RA<A & { [name]: B }>` |
+| bind        | `RA<A>`, `name: string`, `A => RA<B>` | `RA<A & { [name]: B }>` |
+| andThenBind | `RA<A>`, `name: string`, `RA<B>`      | `RA<A & { [name]: B }>` |
 
 ## Utils
 

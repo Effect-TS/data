@@ -16,10 +16,10 @@ import * as covariant from "@fp-ts/core/typeclass/Covariant"
 import * as invariant from "@fp-ts/core/typeclass/Invariant"
 import type { Monoid } from "@fp-ts/core/typeclass/Monoid"
 import * as monoid from "@fp-ts/core/typeclass/Monoid"
-import type { NonEmptyApplicative } from "@fp-ts/core/typeclass/NonEmptyApplicative"
 import type { Order } from "@fp-ts/core/typeclass/Order"
 import * as order from "@fp-ts/core/typeclass/Order"
 import type { Pointed } from "@fp-ts/core/typeclass/Pointed"
+import type { SemiApplicative } from "@fp-ts/core/typeclass/SemiApplicative"
 import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
 import { constant, unsafeCoerce } from "@fp-ts/data/Function"
 
@@ -265,9 +265,9 @@ export const getPointed = <S>(M: Monoid<S>): Pointed<ConstTypeLambdaFix<S>> => (
  * @category instances
  * @since 1.0.0
  */
-export const getNonEmptyApplicative = <S>(
+export const getSemiApplicative = <S>(
   S: Semigroup<S>
-): NonEmptyApplicative<ConstTypeLambdaFix<S>> => ({
+): SemiApplicative<ConstTypeLambdaFix<S>> => ({
   imap: Invariant.imap,
   map,
   product: (that) => (self) => make(S.combine(that.value)(self.value)),
@@ -280,10 +280,10 @@ export const getNonEmptyApplicative = <S>(
  * @since 1.0.0
  */
 export const getApplicative = <S>(M: Monoid<S>): Applicative<ConstTypeLambdaFix<S>> => {
-  const NonEmptyApplicative = getNonEmptyApplicative(M)
+  const SemiApplicative = getSemiApplicative(M)
   return {
     ...getPointed(M),
-    ...NonEmptyApplicative,
-    productAll: (collection) => NonEmptyApplicative.productMany(collection)(make(M.empty))
+    ...SemiApplicative,
+    productAll: (collection) => SemiApplicative.productMany(collection)(make(M.empty))
   }
 }

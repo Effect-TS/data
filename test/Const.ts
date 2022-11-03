@@ -51,15 +51,15 @@ describe.concurrent("Const", () => {
     U.deepStrictEqual(Pointed.of(1), _.make(""))
   })
 
-  it("getNonEmptyApplicative", () => {
-    const NonEmptyApplicative = _.getNonEmptyApplicative(string.Semigroup)
+  it("getSemiApplicative", () => {
+    const SemiApplicative = _.getSemiApplicative(string.Semigroup)
     U.deepStrictEqual(
-      pipe(_.make("a"), NonEmptyApplicative.product(_.make("b"))),
+      pipe(_.make("a"), SemiApplicative.product(_.make("b"))),
       _.make("ab")
     )
-    U.deepStrictEqual(pipe(_.make("a"), NonEmptyApplicative.productMany([])), _.make("a"))
+    U.deepStrictEqual(pipe(_.make("a"), SemiApplicative.productMany([])), _.make("a"))
     U.deepStrictEqual(
-      pipe(_.make("a"), NonEmptyApplicative.productMany([_.make("b"), _.make("c")])),
+      pipe(_.make("a"), SemiApplicative.productMany([_.make("b"), _.make("c")])),
       _.make("abc")
     )
   })

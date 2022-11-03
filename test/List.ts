@@ -159,10 +159,10 @@ describe.concurrent("List", () => {
 
     expect(L.Monad).exist
 
-    expect(L.NonEmptyProduct).exist
+    expect(L.SemiProduct).exist
     expect(L.product).exist
     expect(L.productMany).exist
-    expect(L.bindList).exist
+    expect(L.andThenBind).exist
     expect(L.productFlatten).exist
 
     expect(L.Product).exist
@@ -170,7 +170,7 @@ describe.concurrent("List", () => {
     expect(L.tuple).exist
     expect(L.struct).exist
 
-    expect(L.NonEmptyApplicative).exist
+    expect(L.SemiApplicative).exist
     expect(L.liftSemigroup).exist
     expect(L.lift2).exist
     expect(L.lift3).exist

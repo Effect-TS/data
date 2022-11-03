@@ -1,5 +1,5 @@
-import * as nonEmptyProduct from "@fp-ts/core/typeclass/NonEmptyProduct"
 import * as Order from "@fp-ts/core/typeclass/Order"
+import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as E from "@fp-ts/data/Either"
 import * as Equal from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
@@ -39,10 +39,10 @@ describe.concurrent("ReadonlyArray", () => {
 
     expect(RA.Monad).exist
 
-    expect(RA.NonEmptyProduct).exist
+    expect(RA.SemiProduct).exist
     expect(RA.product).exist
     expect(RA.productMany).exist
-    expect(RA.bindReadonlyArray).exist
+    expect(RA.andThenBind).exist
     expect(RA.productFlatten).exist
 
     expect(RA.Product).exist
@@ -50,7 +50,7 @@ describe.concurrent("ReadonlyArray", () => {
     // expect(ReadonlyArray.tuple).exist
     // expect(ReadonlyArray.struct).exist
 
-    expect(RA.NonEmptyApplicative).exist
+    expect(RA.SemiApplicative).exist
     expect(RA.liftSemigroup).exist
     expect(RA.lift2).exist
     expect(RA.lift3).exist
@@ -1479,7 +1479,7 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   test("productMany", () => {
-    const productMany = nonEmptyProduct.productMany(RA.Covariant, RA.product)
+    const productMany = semiProduct.productMany(RA.Covariant, RA.product)
     expect(pipe(
       [],
       RA.productMany([

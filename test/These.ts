@@ -43,7 +43,7 @@ describe("These", () => {
 
     expect(_.Monad).exist
 
-    expect(_.NonEmptyProduct).exist
+    expect(_.SemiProduct).exist
     expect(_.product).exist
     expect(_.productMany).exist
     expect(_.andThenBind).exist
@@ -54,7 +54,7 @@ describe("These", () => {
     expect(_.tuple).exist
     expect(_.struct).exist
 
-    expect(_.NonEmptyApplicative).exist
+    expect(_.SemiApplicative).exist
     expect(_.getFirstLeftSemigroup).exist // liftSemigroup
     expect(_.lift2).exist
     expect(_.lift3).exist
@@ -65,13 +65,13 @@ describe("These", () => {
     expect(_.Applicative).exist
     expect(_.getFirstLeftMonoid).exist // liftMonoid
 
-    expect(_.NonEmptyCoproduct).exist
+    expect(_.SemiCoproduct).exist
     // expect(_.coproduct).exist
     expect(_.firstRightOrBothOf).exist // coproductMany
     expect(_.getFirstRightOrBothSemigroup).exist // getSemigroup
     // expect(_.coproductEither).exist // orElseEither
 
-    expect(_.NonEmptyAlternative).exist
+    expect(_.SemiAlternative).exist
 
     expect(_.Foldable).exist
 
@@ -191,7 +191,7 @@ describe("These", () => {
     )
   })
 
-  it("bindEither", () => {
+  it("andThenBind", () => {
     U.deepStrictEqual(
       pipe(_.Do, _.bind("a", () => _.succeed(1)), _.bindEither("b", () => E.right(2))),
       _.succeed({ a: 1, b: 2 })
@@ -219,7 +219,7 @@ describe("These", () => {
     )
   })
 
-  it("bindThese", () => {
+  it("andThenBind", () => {
     U.deepStrictEqual(
       pipe(_.Do, _.bind("a", () => _.succeed(1)), _.bindThese("b", () => _.right(2))),
       _.succeed({ a: 1, b: 2 })
@@ -775,16 +775,16 @@ describe("These", () => {
   })
 
   it("coproduct", () => {
-    U.deepStrictEqual(pipe(_.right(1), _.NonEmptyCoproduct.coproduct(_.right(2))), _.right(1))
-    U.deepStrictEqual(pipe(_.right(1), _.NonEmptyCoproduct.coproduct(_.left("e2"))), _.right(1))
-    U.deepStrictEqual(pipe(_.left("e1"), _.NonEmptyCoproduct.coproduct(_.right(2))), _.right(2))
-    U.deepStrictEqual(pipe(_.left("e1"), _.NonEmptyCoproduct.coproduct(_.left("e2"))), _.left("e2"))
+    U.deepStrictEqual(pipe(_.right(1), _.SemiCoproduct.coproduct(_.right(2))), _.right(1))
+    U.deepStrictEqual(pipe(_.right(1), _.SemiCoproduct.coproduct(_.left("e2"))), _.right(1))
+    U.deepStrictEqual(pipe(_.left("e1"), _.SemiCoproduct.coproduct(_.right(2))), _.right(2))
+    U.deepStrictEqual(pipe(_.left("e1"), _.SemiCoproduct.coproduct(_.left("e2"))), _.left("e2"))
     U.deepStrictEqual(
-      pipe(_.both("e1", 1), _.NonEmptyCoproduct.coproduct(_.right(2))),
+      pipe(_.both("e1", 1), _.SemiCoproduct.coproduct(_.right(2))),
       _.both("e1", 1)
     )
     U.deepStrictEqual(
-      pipe(_.both("e1", 1), _.NonEmptyCoproduct.coproduct(_.left("e2"))),
+      pipe(_.both("e1", 1), _.SemiCoproduct.coproduct(_.left("e2"))),
       _.both("e1", 1)
     )
   })

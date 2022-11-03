@@ -12,7 +12,7 @@ import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import type { Applicative } from "@fp-ts/core/typeclass/Applicative"
 import * as covariant from "@fp-ts/core/typeclass/Covariant"
 import type * as invariant from "@fp-ts/core/typeclass/Invariant"
-import * as nonEmptyProduct from "@fp-ts/core/typeclass/NonEmptyProduct"
+import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as E from "@fp-ts/data/Either"
 import * as DE from "@fp-ts/data/Equal"
 import { identity, pipe, unsafeCoerce } from "@fp-ts/data/Function"
@@ -593,7 +593,7 @@ export const product = <B>(that: L.List<B>) =>
 /** @internal */
 export const productMany: <A>(
   collection: Iterable<L.List<A>>
-) => (self: L.List<A>) => L.List<readonly [A, ...Array<A>]> = nonEmptyProduct.productMany(
+) => (self: L.List<A>) => L.List<readonly [A, ...Array<A>]> = semiProduct.productMany(
   Covariant,
   product
 )

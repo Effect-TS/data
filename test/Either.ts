@@ -42,7 +42,7 @@ describe.concurrent("Either", () => {
 
     expect(_.Monad).exist
 
-    expect(_.NonEmptyProduct).exist
+    expect(_.SemiProduct).exist
     expect(_.product).exist
 
     expect(_.Product).exist
@@ -50,7 +50,7 @@ describe.concurrent("Either", () => {
     expect(_.tuple).exist
     expect(_.struct).exist
 
-    expect(_.NonEmptyApplicative).exist
+    expect(_.SemiApplicative).exist
     expect(_.getFirstLeftSemigroup).exist // liftSemigroup
     expect(_.lift2).exist
     expect(_.lift3).exist
@@ -61,11 +61,11 @@ describe.concurrent("Either", () => {
     expect(_.Applicative).exist
     expect(_.getFirstLeftMonoid).exist // liftMonoid
 
-    expect(_.NonEmptyCoproduct).exist
+    expect(_.SemiCoproduct).exist
     expect(_.getFirstRightSemigroup).exist // getSemigroup
     expect(_.firstSuccessOf).exist
 
-    expect(_.NonEmptyAlternative).exist
+    expect(_.SemiAlternative).exist
 
     expect(_.Foldable).exist
 
@@ -355,9 +355,9 @@ describe.concurrent("Either", () => {
     )
   })
 
-  it("bindEither", () => {
+  it("andThenBind", () => {
     deepStrictEqual(
-      pipe(_.right(1), _.bindTo("a"), _.bindEither("b", _.right("b"))),
+      pipe(_.right(1), _.bindTo("a"), _.andThenBind("b", _.right("b"))),
       _.right({ a: 1, b: "b" })
     )
   })
@@ -398,30 +398,30 @@ describe.concurrent("Either", () => {
   })
 
   it("coproduct", () => {
-    deepStrictEqual(pipe(_.right(1), _.NonEmptyCoproduct.coproduct(_.right(2))), _.right(1))
-    deepStrictEqual(pipe(_.right(1), _.NonEmptyCoproduct.coproduct(_.left("e2"))), _.right(1))
-    deepStrictEqual(pipe(_.left("e1"), _.NonEmptyCoproduct.coproduct(_.right(2))), _.right(2))
-    deepStrictEqual(pipe(_.left("e1"), _.NonEmptyCoproduct.coproduct(_.left("e2"))), _.left("e2"))
+    deepStrictEqual(pipe(_.right(1), _.SemiCoproduct.coproduct(_.right(2))), _.right(1))
+    deepStrictEqual(pipe(_.right(1), _.SemiCoproduct.coproduct(_.left("e2"))), _.right(1))
+    deepStrictEqual(pipe(_.left("e1"), _.SemiCoproduct.coproduct(_.right(2))), _.right(2))
+    deepStrictEqual(pipe(_.left("e1"), _.SemiCoproduct.coproduct(_.left("e2"))), _.left("e2"))
   })
 
   it("coproductMany", () => {
-    deepStrictEqual(pipe(_.right(1), _.NonEmptyCoproduct.coproductMany([_.right(2)])), _.right(1))
+    deepStrictEqual(pipe(_.right(1), _.SemiCoproduct.coproductMany([_.right(2)])), _.right(1))
     deepStrictEqual(
       pipe(
         _.right(1) as _.Either<string, number>,
-        _.NonEmptyCoproduct.coproductMany([_.left("e2") as _.Either<string, number>])
+        _.SemiCoproduct.coproductMany([_.left("e2") as _.Either<string, number>])
       ),
       _.right(1)
     )
     deepStrictEqual(
       pipe(
         _.left("e1") as _.Either<string, number>,
-        _.NonEmptyCoproduct.coproductMany([_.right(2) as _.Either<string, number>])
+        _.SemiCoproduct.coproductMany([_.right(2) as _.Either<string, number>])
       ),
       _.right(2)
     )
     deepStrictEqual(
-      pipe(_.left("e1"), _.NonEmptyCoproduct.coproductMany([_.left("e2")])),
+      pipe(_.left("e1"), _.SemiCoproduct.coproductMany([_.left("e2")])),
       _.left("e2")
     )
   })
