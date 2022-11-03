@@ -167,6 +167,8 @@ parent: Cheatsheets
 | bindTo            | `These<E, A>`, `name: string`                               | `These<E, { [name]: A }>`                |
 | let               | `These<E, A>`, `name: string`, `A => B`                     | `These<E, A & { [name]: B }>`            |
 | bind              | `Validated<E1, A>`, `name: string`, `A => Validated<E2, B>` | `Validated<E1 \| E2, A & { [name]: B }>` |
+| bindEither        | `Validated<E1, A>`, `name: string`, `A => Either<E2, B>`    | `Validated<E1 \| E2, A & { [name]: B }>` |
+| bindThese         | `Validated<E1, A>`, `name: string`, `A => These<E2, B>`     | `Validated<E1 \| E2, A & { [name]: B }>` |
 | andThenBind       | `Validated<E1, A>`, `name: string`, `Validated<E2, B>`      | `Validated<E1 \| E2, A & { [name]: B }>` |
 | andThenBindEither | `Validated<E1, A>`, `name: string`, `Either<E2, B>`         | `Validated<E1 \| E2, A & { [name]: B }>` |
 | andThenBindThese  | `Validated<E1, A>`, `name: string`, `These<E2, B>`          | `Validated<E1 \| E2, A & { [name]: B }>` |
