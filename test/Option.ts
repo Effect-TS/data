@@ -1,6 +1,5 @@
 import * as E from "@fp-ts/data/Either"
 import { pipe } from "@fp-ts/data/Function"
-import * as Number from "@fp-ts/data/Number"
 import * as _ from "@fp-ts/data/Option"
 import * as ReadonlyArray from "@fp-ts/data/ReadonlyArray"
 import * as String from "@fp-ts/data/String"
@@ -51,6 +50,7 @@ describe.concurrent("Option", () => {
     expect(_.struct).exist
 
     expect(_.NonEmptyApplicative).exist
+    expect(_.getFirstNoneSemigroup).exist // liftSemigroup
     expect(_.lift2).exist
     expect(_.lift3).exist
     expect(_.ap).exist
@@ -58,16 +58,16 @@ describe.concurrent("Option", () => {
     expect(_.andThen).exist
 
     expect(_.Applicative).exist
-    expect(_.getFirstErrorMonoid).exist
+    expect(_.getFirstNoneMonoid).exist // liftMonoid
 
     expect(_.NonEmptyCoproduct).exist
+    expect(_.getFirstSomeSemigroup).exist // getSemigroup
     expect(_.coproduct).exist
     expect(_.coproductEither).exist
 
     expect(_.Coproduct).exist
     expect(_.zero).exist
     expect(_.coproductAll).exist
-    expect(_.getMonoid).exist
 
     expect(_.NonEmptyAlternative).exist
 
@@ -95,38 +95,16 @@ describe.concurrent("Option", () => {
     deepStrictEqual(pipe(E.right(1), _.isOption), false)
   })
 
-  it("firstSuccessOf", () => {
-    deepStrictEqual(pipe(_.some(1), _.firstSuccessOf([])), _.some(1))
-    deepStrictEqual(pipe(_.none, _.firstSuccessOf([])), _.none)
+  it("firstSomeOf", () => {
+    deepStrictEqual(pipe(_.some(1), _.firstSomeOf([])), _.some(1))
+    deepStrictEqual(pipe(_.none, _.firstSomeOf([])), _.none)
     deepStrictEqual(
-      pipe(_.none, _.firstSuccessOf([_.none, _.none, _.none, _.some(1)])),
+      pipe(_.none, _.firstSomeOf([_.none, _.none, _.none, _.some(1)])),
       _.some(1)
     )
     deepStrictEqual(
-      pipe(_.none, _.firstSuccessOf([_.none, _.none, _.none])),
+      pipe(_.none, _.firstSomeOf([_.none, _.none, _.none])),
       _.none
-    )
-  })
-
-  it("getFirstErrorSemigroup", () => {
-    const S = _.getFirstErrorSemigroup<number>(Number.SemigroupSum)
-    deepStrictEqual(pipe(_.none, S.combine(_.none)), _.none)
-    deepStrictEqual(pipe(_.none, S.combine(_.some(2))), _.none)
-    deepStrictEqual(pipe(_.some(1), S.combine(_.none)), _.none)
-    deepStrictEqual(
-      pipe(_.some(1), S.combine(_.some(2))),
-      _.some(3)
-    )
-  })
-
-  it("getFirstSuccessSemigroup", () => {
-    const S = _.getFirstSuccessSemigroup<number>()
-    deepStrictEqual(pipe(_.none, S.combine(_.none)), _.none)
-    deepStrictEqual(pipe(_.none, S.combine(_.some(2))), _.some(2))
-    deepStrictEqual(pipe(_.some(1), S.combine(_.none)), _.some(1))
-    deepStrictEqual(
-      pipe(_.some(1), S.combine(_.some(2))),
-      _.some(1)
     )
   })
 
@@ -149,15 +127,15 @@ describe.concurrent("Option", () => {
     deepStrictEqual(pipe(_.none, _.orElseSucceed(2)), _.some(2))
   })
 
-  it("unsafeTap", () => {
+  it("inspectSome", () => {
     const log: Array<number> = []
     pipe(
       _.some(1),
-      _.unsafeTap(() => log.push(1))
+      _.inspectSome(() => log.push(1))
     )
     pipe(
       _.none,
-      _.unsafeTap(() => log.push(2))
+      _.inspectSome(() => log.push(2))
     )
     deepStrictEqual(
       log,
@@ -165,15 +143,15 @@ describe.concurrent("Option", () => {
     )
   })
 
-  it("unsafeTapError", () => {
+  it("inspectNone", () => {
     const log: Array<number> = []
     pipe(
       _.some(1),
-      _.unsafeTapError(() => log.push(1))
+      _.inspectNone(() => log.push(1))
     )
     pipe(
       _.none,
-      _.unsafeTapError(() => log.push(2))
+      _.inspectNone(() => log.push(2))
     )
     deepStrictEqual(
       log,

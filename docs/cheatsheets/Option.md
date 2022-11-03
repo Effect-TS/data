@@ -51,20 +51,20 @@ parent: Cheatsheets
 
 ## Error handling
 
-| Name           | Given                              | To                     |
-| -------------- | ---------------------------------- | ---------------------- |
-| firstSuccessOf | `Option<A>`, `Iterable<Option<A>>` | `Option<A>`            |
-| catchAll       | `Option<A>`, `=> Option<B>`        | `Option<A \| B>`       |
-| orElse         | `Option<A>`, `Option<B>`           | `Option<A \| B>`       |
-| orElseEither   | `Option<A>`, `Option<B>`           | `Option<Either<A, B>>` |
-| orElseSucceed  | `Option<A>`, `B`                   | `Option<A \| B>`       |
+| Name          | Given                              | To                     |
+| ------------- | ---------------------------------- | ---------------------- |
+| firstSomeOf   | `Option<A>`, `Iterable<Option<A>>` | `Option<A>`            |
+| catchAll      | `Option<A>`, `=> Option<B>`        | `Option<A \| B>`       |
+| orElse        | `Option<A>`, `Option<B>`           | `Option<A \| B>`       |
+| orElseEither  | `Option<A>`, `Option<B>`           | `Option<Either<A, B>>` |
+| orElseSucceed | `Option<A>`, `B`                   | `Option<A \| B>`       |
 
 ## Debugging
 
-| Name     | Given                    | To          |
-| -------- | ------------------------ | ----------- |
-| tap      | `Option<A>`, `A => void` | `Option<A>` |
-| tapError | `Option<A>`, `=> void`   | `Option<A>` |
+| Name        | Given                    | To          |
+| ----------- | ------------------------ | ----------- |
+| inspectSome | `Option<A>`, `A => void` | `Option<A>` |
+| inspectNone | `Option<A>`, `=> void`   | `Option<A>` |
 
 ## Getters
 
@@ -106,11 +106,11 @@ parent: Cheatsheets
 
 ## Combining
 
-| Name                     | Given          | To                     |
-| ------------------------ | -------------- | ---------------------- |
-| getFirstErrorSemigroup   | `Semigroup<A>` | `Semigroup<Option<A>>` |
-| getFirstErrorMonoid      | `Monoid<A>`    | `Monoid<Option<A>>`    |
-| getFirstSuccessSemigroup |                | `Semigroup<Option<A>>` |
+| Name                  | Given          | To                     |
+| --------------------- | -------------- | ---------------------- |
+| getFirstNoneSemigroup | `Semigroup<A>` | `Semigroup<Option<A>>` |
+| getFirstNoneMonoid    | `Monoid<A>`    | `Monoid<Option<A>>`    |
+| getFirstSomeSemigroup |                | `Semigroup<Option<A>>` |
 
 ## Filtering
 

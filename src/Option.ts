@@ -354,12 +354,12 @@ export const tap: <A, _>(f: (a: A) => Option<_>) => (self: Option<A>) => Option<
  * @category debugging
  * @since 1.0.0
  */
-export const unsafeTap = <A>(
-  onSuccess: (a: A) => void
+export const inspectSome = <A>(
+  onSome: (a: A) => void
 ) =>
   (self: Option<A>): Option<A> => {
     if (isSome(self)) {
-      onSuccess(self.value)
+      onSome(self.value)
     }
     return self
   }
@@ -368,12 +368,12 @@ export const unsafeTap = <A>(
  * @category debugging
  * @since 1.0.0
  */
-export const unsafeTapError = (
-  onError: () => void
+export const inspectNone = (
+  onNone: () => void
 ) =>
   <A>(self: Option<A>): Option<A> => {
     if (isNone(self)) {
-      onError()
+      onNone()
     }
     return self
   }
@@ -593,7 +593,7 @@ export const ap: <A>(
  * @category combining
  * @since 1.0.0
  */
-export const getFirstErrorSemigroup: <A>(S: Semigroup<A>) => Semigroup<Option<A>> =
+export const getFirstNoneSemigroup: <A>(S: Semigroup<A>) => Semigroup<Option<A>> =
   nonEmptyApplicative
     .liftSemigroup(NonEmptyApplicative)
 
@@ -615,7 +615,7 @@ export const Applicative: applicative.Applicative<OptionTypeLambda> = {
  * @category combining
  * @since 1.0.0
  */
-export const getFirstErrorMonoid: <A>(M: Monoid<A>) => Monoid<Option<A>> = applicative.liftMonoid(
+export const getFirstNoneMonoid: <A>(M: Monoid<A>) => Monoid<Option<A>> = applicative.liftMonoid(
   Applicative
 )
 
@@ -629,7 +629,7 @@ export const coproduct = <B>(that: Option<B>) =>
  * @category error handling
  * @since 1.0.0
  */
-export const firstSuccessOf = <A>(collection: Iterable<Option<A>>) =>
+export const firstSomeOf = <A>(collection: Iterable<Option<A>>) =>
   (self: Option<A>): Option<A> => {
     let out = self
     if (isSome(out)) {
@@ -650,7 +650,7 @@ export const firstSuccessOf = <A>(collection: Iterable<Option<A>>) =>
 export const NonEmptyCoproduct: nonEmptyCoproduct.NonEmptyCoproduct<OptionTypeLambda> = {
   ...Invariant,
   coproduct,
-  coproductMany: firstSuccessOf
+  coproductMany: firstSomeOf
 }
 
 /**
@@ -659,7 +659,7 @@ export const NonEmptyCoproduct: nonEmptyCoproduct.NonEmptyCoproduct<OptionTypeLa
  * @category combining
  * @since 1.0.0
  */
-export const getFirstSuccessSemigroup: <A>() => Semigroup<Option<A>> = nonEmptyCoproduct
+export const getFirstSomeSemigroup: <A>() => Semigroup<Option<A>> = nonEmptyCoproduct
   .getSemigroup(
     NonEmptyCoproduct
   )
@@ -1101,8 +1101,8 @@ export const orElseEither = <B>(
  * @since 1.0.0
  */
 export const orElseSucceed = <B>(
-  onFailure: B
-): <A>(self: Option<A>) => Option<A | B> => orElse(some(onFailure))
+  onNone: B
+): <A>(self: Option<A>) => Option<A | B> => orElse(some(onNone))
 
 /**
  * The `Order` instance allows `Option` values to be compared with
