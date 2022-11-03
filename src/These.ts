@@ -67,6 +67,12 @@ export interface Both<E, A> {
 export type These<E, A> = Either<E, A> | Both<E, A>
 
 /**
+ * @category model
+ * @since 1.0.0
+ */
+export type Validated<E, A> = These<NonEmptyChunk<E>, A>
+
+/**
  * @category type lambdas
  * @since 1.0.0
  */
@@ -78,8 +84,8 @@ export interface TheseTypeLambda extends TypeLambda {
  * @category type lambdas
  * @since 3.0.0
  */
-export interface NonEmptyTheseTypeLambda extends TypeLambda {
-  readonly type: These<NonEmptyChunk<this["Out1"]>, this["Target"]>
+export interface ValidatedTypeLambda extends TypeLambda {
+  readonly type: Validated<this["Out1"], this["Target"]>
 }
 
 /**
@@ -111,6 +117,26 @@ export const both = <E, A>(left: E, right: A): These<E, A> => ({
   left,
   right
 })
+
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+export const fail = <E>(e: E): Validated<E, never> => left(nonEmptyChunk.makeNonEmpty(e))
+
+/**
+ * Alias of `right`.
+ *
+ * @category constructors
+ * @since 1.0.0
+ */
+export const succeed: <A>(a: A) => Validated<never, A> = right
+
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+export const warn = <E, A>(e: E, a: A): Validated<E, A> => both(nonEmptyChunk.makeNonEmpty(e), a)
 
 /**
  * @example
@@ -279,6 +305,39 @@ export const fromNullable = <E>(onNullable: E) =>
   <A>(a: A): These<E, NonNullable<A>> => a == null ? left(onNullable) : right(a as NonNullable<A>)
 
 /**
+ * @category conversions
+ * @since 1.0.0
+ */
+export const fromEither = <E, A>(self: Either<E, A>): Validated<E, A> =>
+  either.isLeft(self) ? left(nonEmptyChunk.makeNonEmpty(self.left)) : self
+
+/**
+ * @category conversions
+ * @since 1.0.0
+ */
+export const toEither = <E, A>(
+  onBoth: (e: E, a: A) => Either<E, A>
+) => (self: These<E, A>): Either<E, A> => isBoth(self) ? onBoth(self.left, self.right) : self
+
+/**
+ * @category conversions
+ * @since 1.0.0
+ */
+export const absolve: <E, A>(self: These<E, A>) => Either<E, A> = toEither((
+  _,
+  a
+) => either.right(a))
+
+/**
+ * @category conversions
+ * @since 1.0.0
+ */
+export const condemn: <E, A>(self: These<E, A>) => Either<E, A> = toEither((
+  e,
+  _
+) => either.left(e))
+
+/**
  * @category lifting
  * @since 1.0.0
  */
@@ -294,7 +353,7 @@ export const liftNullable = <A extends ReadonlyArray<unknown>, B, E>(
 export const flatMapNullable = <A, B, E2>(
   f: (a: A) => B | null | undefined,
   onNullable: E2
-): (<E1>(self: These<NonEmptyChunk<E1>, A>) => These<NonEmptyChunk<E1 | E2>, NonNullable<B>>) =>
+): (<E1>(self: Validated<E1, A>) => Validated<E1 | E2, NonNullable<B>>) =>
   flatMap(liftNullable(f, nonEmptyChunk.makeNonEmpty(onNullable)))
 
 /**
@@ -345,6 +404,22 @@ export const liftOption = <A extends ReadonlyArray<unknown>, B, E>(
 ) => (...a: A): These<E, B> => fromOption(onNone)(f(...a))
 
 /**
+ * @category lifting
+ * @since 1.0.0
+ */
+export const liftEither = <A extends ReadonlyArray<unknown>, E, B>(
+  f: (...a: A) => Either<E, B>
+) => (...a: A): Validated<E, B> => fromEither(f(...a))
+
+/**
+ * @category lifting
+ * @since 1.0.0
+ */
+export const liftThese = <A extends ReadonlyArray<unknown>, E, B>(
+  f: (...a: A) => These<E, B>
+) => (...a: A): Validated<E, B> => fromThese(f(...a))
+
+/**
  * @category sequencing
  * @since 1.0.0
  */
@@ -352,8 +427,24 @@ export const flatMapOption = <A, B, E2>(
   f: (a: A) => Option<B>,
   onNone: E2
 ) =>
-  <E1>(self: These<NonEmptyChunk<E1>, A>): These<NonEmptyChunk<E1 | E2>, B> =>
+  <E1>(self: Validated<E1, A>): Validated<E1 | E2, B> =>
     pipe(self, flatMap(liftOption(f, nonEmptyChunk.makeNonEmpty(onNone))))
+
+/**
+ * @category sequencing
+ * @since 1.0.0
+ */
+export const flatMapEither = <A, E2, B>(
+  f: (a: A) => Either<E2, B>
+) => <E1>(self: Validated<E1, A>): Validated<E1 | E2, B> => pipe(self, flatMap(liftEither(f)))
+
+/**
+ * @category sequencing
+ * @since 1.0.0
+ */
+export const flatMapThese = <A, E2, B>(
+  f: (a: A) => These<E2, B>
+) => <E1>(self: Validated<E1, A>): Validated<E1 | E2, B> => pipe(self, flatMap(liftThese(f)))
 
 /**
  * @category getters
@@ -523,6 +614,14 @@ export const Bicovariant: bicovariant.Bicovariant<TheseTypeLambda> = {
  */
 export const mapLeft: <E, G>(f: (e: E) => G) => <A>(self: These<E, A>) => These<G, A> = bicovariant
   .mapLeft(Bicovariant)
+
+/**
+ * @category conversions
+ * @since 1.0.0
+ */
+export const fromThese: <E, A>(self: These<E, A>) => Validated<E, A> = mapLeft(
+  nonEmptyChunk.makeNonEmpty
+)
 
 /**
  * Returns an effect whose right is mapped by the specified `f` function.
@@ -875,10 +974,10 @@ export const filterMap = <A, B, E2>(
 /**
  * @since 1.0.0
  */
-export const product = <E2, B>(that: These<NonEmptyChunk<E2>, B>) =>
+export const product = <E2, B>(that: Validated<E2, B>) =>
   <E1, A>(
-    self: These<NonEmptyChunk<E1>, A>
-  ): These<NonEmptyChunk<E1 | E2>, readonly [A, B]> => {
+    self: Validated<E1, A>
+  ): Validated<E1 | E2, readonly [A, B]> => {
     if (isLeft(self)) {
       return self
     }
@@ -904,18 +1003,18 @@ export const product = <E2, B>(that: These<NonEmptyChunk<E2>, B>) =>
  * @since 1.0.0
  */
 export const productMany = <E, A>(
-  collection: Iterable<These<NonEmptyChunk<E>, A>>
+  collection: Iterable<Validated<E, A>>
 ) =>
   (
-    self: These<NonEmptyChunk<E>, A>
-  ): These<NonEmptyChunk<E>, readonly [A, ...Array<A>]> =>
+    self: Validated<E, A>
+  ): Validated<E, readonly [A, ...Array<A>]> =>
     pipe(self, product(productAll(collection)), map(([a, as]) => [a, ...as]))
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<NonEmptyTheseTypeLambda> = {
+export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<ValidatedTypeLambda> = {
   imap,
   product,
   productMany
@@ -925,11 +1024,10 @@ export const NonEmptyProduct: nonEmptyProduct.NonEmptyProduct<NonEmptyTheseTypeL
  * @category instances
  * @since 1.0.0
  */
-export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<NonEmptyTheseTypeLambda> =
-  {
-    map,
-    ...NonEmptyProduct
-  }
+export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<ValidatedTypeLambda> = {
+  map,
+  ...NonEmptyProduct
+}
 
 /**
  * @category lifting
@@ -938,9 +1036,9 @@ export const NonEmptyApplicative: nonEmptyApplicative.NonEmptyApplicative<NonEmp
 export const lift2: <A, B, C>(
   f: (a: A, b: B) => C
 ) => <E1, E2>(
-  fa: These<NonEmptyChunk<E1>, A>,
-  fb: These<NonEmptyChunk<E2>, B>
-) => These<NonEmptyChunk<E1 | E2>, C> = nonEmptyApplicative
+  fa: Validated<E1, A>,
+  fb: Validated<E2, B>
+) => Validated<E1 | E2, C> = nonEmptyApplicative
   .lift2(NonEmptyApplicative)
 
 /**
@@ -950,10 +1048,10 @@ export const lift2: <A, B, C>(
 export const lift3: <A, B, C, D>(
   f: (a: A, b: B, c: C) => D
 ) => <E1, E2, E3>(
-  fa: These<NonEmptyChunk<E1>, A>,
-  fb: These<NonEmptyChunk<E2>, B>,
-  fc: These<NonEmptyChunk<E3>, C>
-) => These<NonEmptyChunk<E1 | E2 | E3>, D> = nonEmptyApplicative.lift3(
+  fa: Validated<E1, A>,
+  fb: Validated<E2, B>,
+  fc: Validated<E3, C>
+) => Validated<E1 | E2 | E3, D> = nonEmptyApplicative.lift3(
   NonEmptyApplicative
 )
 
@@ -961,11 +1059,10 @@ export const lift3: <A, B, C, D>(
  * @since 1.0.0
  */
 export const ap: <E2, A>(
-  fa: These<NonEmptyChunk<E2>, A>
-) => <E1, B>(self: These<NonEmptyChunk<E1>, (a: A) => B>) => These<NonEmptyChunk<E1 | E2>, B> =
-  nonEmptyApplicative.ap(
-    NonEmptyApplicative
-  )
+  fa: Validated<E2, A>
+) => <E1, B>(self: Validated<E1, (a: A) => B>) => Validated<E1 | E2, B> = nonEmptyApplicative.ap(
+  NonEmptyApplicative
+)
 
 /**
  * @category combining
@@ -973,12 +1070,12 @@ export const ap: <E2, A>(
  */
 export const getFirstLeftSemigroup: <A, E>(
   S: Semigroup<A>
-) => Semigroup<These<NonEmptyChunk<E>, A>> = nonEmptyApplicative
+) => Semigroup<Validated<E, A>> = nonEmptyApplicative
   .liftSemigroup(NonEmptyApplicative)
 
 export const productAll = <E, A>(
-  collection: Iterable<These<NonEmptyChunk<E>, A>>
-): These<NonEmptyChunk<E>, ReadonlyArray<A>> => {
+  collection: Iterable<Validated<E, A>>
+): Validated<E, ReadonlyArray<A>> => {
   const rights: Array<A> = []
   let lefts: chunk.Chunk<E> = chunk.empty
   let isFatal = false
@@ -1004,30 +1101,54 @@ export const productAll = <E, A>(
  * @category do notation
  * @since 1.0.0
  */
-export const bindThese: <N extends string, A extends object, E2, B>(
+export const andThenBind: <N extends string, A extends object, E2, B>(
   name: Exclude<N, keyof A>,
-  fb: These<NonEmptyChunk<E2>, B>
+  fb: Validated<E2, B>
 ) => <E1>(
-  self: These<NonEmptyChunk<E1>, A>
-) => These<NonEmptyChunk<E1 | E2>, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> =
+  self: Validated<E1, A>
+) => Validated<E1 | E2, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> =
   nonEmptyProduct
     .bindKind(NonEmptyProduct)
+
+/**
+ * @category do notation
+ * @since 1.0.0
+ */
+export const andThenBindEither = <N extends string, A extends object, E2, B>(
+  name: Exclude<N, keyof A>,
+  fb: Either<E2, B>
+): <E1>(
+  self: Validated<E1, A>
+) => Validated<E1 | E2, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> =>
+  andThenBind(name, fromEither(fb))
+
+/**
+ * @category do notation
+ * @since 1.0.0
+ */
+export const andThenBindThese = <N extends string, A extends object, E2, B>(
+  name: Exclude<N, keyof A>,
+  fb: These<E2, B>
+): <E1>(
+  self: Validated<E1, A>
+) => Validated<E1 | E2, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> =>
+  andThenBind(name, fromThese(fb))
 
 /**
  * @since 1.0.0
  */
 export const productFlatten: <E2, B>(
-  that: These<NonEmptyChunk<E2>, B>
+  that: Validated<E2, B>
 ) => <E1, A extends ReadonlyArray<any>>(
-  self: These<NonEmptyChunk<E1>, A>
-) => These<NonEmptyChunk<E1 | E2>, readonly [...A, B]> = nonEmptyProduct
+  self: Validated<E1, A>
+) => Validated<E1 | E2, readonly [...A, B]> = nonEmptyProduct
   .productFlatten(NonEmptyProduct)
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const Product: product_.Product<NonEmptyTheseTypeLambda> = {
+export const Product: product_.Product<ValidatedTypeLambda> = {
   ...NonEmptyProduct,
   of,
   productAll
@@ -1036,22 +1157,22 @@ export const Product: product_.Product<NonEmptyTheseTypeLambda> = {
 /**
  * @since 1.0.0
  */
-export const tuple: <T extends ReadonlyArray<These<NonEmptyChunk<any>, any>>>(
+export const tuple: <T extends ReadonlyArray<Validated<any, any>>>(
   ...tuple: T
-) => These<
-  NonEmptyChunk<[T[number]] extends [These<NonEmptyChunk<infer E>, any>] ? E : never>,
-  Readonly<{ [I in keyof T]: [T[I]] extends [These<NonEmptyChunk<any>, infer A>] ? A : never }>
+) => Validated<
+  [T[number]] extends [Validated<infer E, any>] ? E : never,
+  Readonly<{ [I in keyof T]: [T[I]] extends [Validated<any, infer A>] ? A : never }>
 > = product_
   .tuple(Product)
 
 /**
  * @since 1.0.0
  */
-export const struct: <R extends Record<string, These<NonEmptyChunk<any>, any>>>(
+export const struct: <R extends Record<string, Validated<any, any>>>(
   r: R
-) => These<
-  NonEmptyChunk<[R[keyof R]] extends [These<NonEmptyChunk<infer E>, any>] ? E : never>,
-  { readonly [K in keyof R]: [R[K]] extends [These<NonEmptyChunk<any>, infer A>] ? A : never }
+) => Validated<
+  [R[keyof R]] extends [Validated<infer E, any>] ? E : never,
+  { readonly [K in keyof R]: [R[K]] extends [Validated<any, infer A>] ? A : never }
 > = product_
   .struct(Product)
 
@@ -1060,9 +1181,9 @@ export const struct: <R extends Record<string, These<NonEmptyChunk<any>, any>>>(
  * @since 1.0.0
  */
 export const flatMap = <A, E2, B>(
-  f: (a: A) => These<NonEmptyChunk<E2>, B>
+  f: (a: A) => Validated<E2, B>
 ) =>
-  <E1>(self: These<NonEmptyChunk<E1>, A>): These<NonEmptyChunk<E1 | E2>, B> => {
+  <E1>(self: Validated<E1, A>): Validated<E1 | E2, B> => {
     if (isLeft(self)) {
       return self
     }
@@ -1083,7 +1204,7 @@ export const flatMap = <A, E2, B>(
  * @category instances
  * @since 1.0.0
  */
-export const Applicative: applicative.Applicative<NonEmptyTheseTypeLambda> = {
+export const Applicative: applicative.Applicative<ValidatedTypeLambda> = {
   ...NonEmptyApplicative,
   ...Product
 }
@@ -1092,17 +1213,16 @@ export const Applicative: applicative.Applicative<NonEmptyTheseTypeLambda> = {
  * @category combining
  * @since 1.0.0
  */
-export const getFirstLeftMonoid: <A, E>(M: Monoid<A>) => Monoid<These<NonEmptyChunk<E>, A>> =
-  applicative
-    .liftMonoid(
-      Applicative
-    )
+export const getFirstLeftMonoid: <A, E>(M: Monoid<A>) => Monoid<Validated<E, A>> = applicative
+  .liftMonoid(
+    Applicative
+  )
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const FlatMap: flatMap_.FlatMap<NonEmptyTheseTypeLambda> = {
+export const FlatMap: flatMap_.FlatMap<ValidatedTypeLambda> = {
   flatMap
 }
 
@@ -1110,35 +1230,35 @@ export const FlatMap: flatMap_.FlatMap<NonEmptyTheseTypeLambda> = {
  * @since 1.0.0
  */
 export const flatten: <E2, E1, A>(
-  self: These<NonEmptyChunk<E2>, These<NonEmptyChunk<E1>, A>>
-) => These<NonEmptyChunk<E2 | E1>, A> = flatMap_
+  self: Validated<E2, Validated<E1, A>>
+) => Validated<E2 | E1, A> = flatMap_
   .flatten(FlatMap)
 
 /**
  * @since 1.0.0
  */
 export const andThen: <E2, B>(
-  that: These<NonEmptyChunk<E2>, B>
+  that: Validated<E2, B>
 ) => <E1, _>(
-  self: These<NonEmptyChunk<E1>, _>
-) => These<NonEmptyChunk<E1 | E2>, B> = flatMap_
+  self: Validated<E1, _>
+) => Validated<E1 | E2, B> = flatMap_
   .andThen(FlatMap)
 
 /**
  * @since 1.0.0
  */
 export const composeKleisliArrow: <B, E2, C>(
-  bfc: (b: B) => These<NonEmptyChunk<E2>, C>
+  bfc: (b: B) => Validated<E2, C>
 ) => <A, E1>(
-  afb: (a: A) => These<NonEmptyChunk<E1>, B>
-) => (a: A) => These<NonEmptyChunk<E1 | E2>, C> = flatMap_
+  afb: (a: A) => Validated<E1, B>
+) => (a: A) => Validated<E1 | E2, C> = flatMap_
   .composeKleisliArrow(FlatMap)
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const Chainable: chainable.Chainable<NonEmptyTheseTypeLambda> = {
+export const Chainable: chainable.Chainable<ValidatedTypeLambda> = {
   imap,
   map,
   flatMap
@@ -1150,12 +1270,11 @@ export const Chainable: chainable.Chainable<NonEmptyTheseTypeLambda> = {
  */
 export const bind: <N extends string, A extends object, E2, B>(
   name: Exclude<N, keyof A>,
-  f: (a: A) => These<NonEmptyChunk<E2>, B>
+  f: (a: A) => Validated<E2, B>
 ) => <E1>(
-  self: These<NonEmptyChunk<E1>, A>
-) => These<NonEmptyChunk<E1 | E2>, { readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }> =
-  chainable
-    .bind(Chainable)
+  self: Validated<E1, A>
+) => Validated<E1 | E2, { readonly [K in keyof A | N]: K extends keyof A ? A[K] : B }> = chainable
+  .bind(Chainable)
 
 /**
  * Sequences the specified effect after this effect, but ignores the value
@@ -1165,8 +1284,8 @@ export const bind: <N extends string, A extends object, E2, B>(
  * @since 1.0.0
  */
 export const andThenDiscard: <E2, _>(
-  that: These<NonEmptyChunk<E2>, _>
-) => <E1, A>(self: These<NonEmptyChunk<E1>, A>) => These<NonEmptyChunk<E1 | E2>, A> = chainable
+  that: Validated<E2, _>
+) => <E1, A>(self: Validated<E1, A>) => Validated<E1 | E2, A> = chainable
   .andThenDiscard(Chainable)
 
 /**
@@ -1175,8 +1294,8 @@ export const andThenDiscard: <E2, _>(
  * @since 1.0.0
  */
 export const tap: <A, E2, _>(
-  f: (a: A) => These<NonEmptyChunk<E2>, _>
-) => <E1>(self: These<NonEmptyChunk<E1>, A>) => These<NonEmptyChunk<E1 | E2>, A> = chainable.tap(
+  f: (a: A) => Validated<E2, _>
+) => <E1>(self: Validated<E1, A>) => Validated<E1 | E2, A> = chainable.tap(
   Chainable
 )
 
@@ -1184,7 +1303,7 @@ export const tap: <A, E2, _>(
  * @category instances
  * @since 1.0.0
  */
-export const Monad: monad.Monad<NonEmptyTheseTypeLambda> = {
+export const Monad: monad.Monad<ValidatedTypeLambda> = {
   imap,
   map,
   of,
