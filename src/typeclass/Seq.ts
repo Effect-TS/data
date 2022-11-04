@@ -12,6 +12,7 @@ import type { FlatMap } from "@fp-ts/core/typeclass/FlatMap"
 import type { Foldable } from "@fp-ts/core/typeclass/Foldable"
 import type { Order } from "@fp-ts/core/typeclass/Order"
 import type { Predicate } from "@fp-ts/data/Predicate"
+import type { CovariantWithIndex } from "@fp-ts/data/typeclass/CovariantWithIndex"
 import type { FilterableWithIndex } from "@fp-ts/data/typeclass/FilterableWithIndex"
 
 /**
@@ -25,7 +26,8 @@ export interface Seq<F extends TypeLambda>
     Foldable<F>,
     Filterable<F>,
     FilterableWithIndex<F, number>,
-    Compactable<F>
+    Compactable<F>,
+    CovariantWithIndex<F, number>
 {
   readonly fromIterable: <A>(self: Iterable<A>) => Kind<F, unknown, never, never, A>
   readonly toIterable: <R, O, E, A>(self: Kind<F, R, O, E, A>) => Iterable<A>
@@ -89,4 +91,5 @@ export interface Seq<F extends TypeLambda>
   readonly isEmpty: <R, O, E, A>(self: Kind<F, R, O, E, A>) => boolean
   readonly isNonEmpty: <R, O, E, A>(self: Kind<F, R, O, E, A>) => boolean
   readonly join: (sep: string) => <R, O, E>(self: Kind<F, R, O, E, string>) => string
+  readonly last: <R, O, E, A>(self: Kind<F, R, O, E, A>) => Option<A>
 }

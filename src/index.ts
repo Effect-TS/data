@@ -42,6 +42,7 @@ import * as sortedMap from "@fp-ts/data/SortedMap"
 import * as sortedSet from "@fp-ts/data/SortedSet"
 import * as string from "@fp-ts/data/String"
 import * as these from "@fp-ts/data/These"
+import * as covariantWithIndex from "@fp-ts/data/typeclass/CovariantWithIndex"
 import * as filterableWithIndex from "@fp-ts/data/typeclass/FilterableWithIndex"
 import * as fromOption from "@fp-ts/data/typeclass/FromOption"
 import * as seq from "@fp-ts/data/typeclass/Seq"
@@ -76,6 +77,10 @@ export {
    * @since 1.0.0
    */
   contextPatch,
+  /**
+   * @since 1.0.0
+   */
+  covariantWithIndex,
   /**
    * @since 1.0.0
    */
