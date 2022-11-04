@@ -34,8 +34,8 @@ import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
 import { equals } from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
-import * as internal from "@fp-ts/data/internal/Common"
 import * as either from "@fp-ts/data/internal/Either"
+import * as option from "@fp-ts/data/internal/Option"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
@@ -854,7 +854,7 @@ export const reverse = <E, A>(self: Either<E, A>): Either<A, E> =>
  */
 export const compact = <E2>(onNone: E2) =>
   <E1, A>(self: Either<E1, Option<A>>): Either<E1 | E2, A> =>
-    isLeft(self) ? self : internal.isNone(self.right) ? left(onNone) : right(self.right.value)
+    isLeft(self) ? self : option.isNone(self.right) ? left(onNone) : right(self.right.value)
 
 /**
  * @category filtering
@@ -888,7 +888,7 @@ export const filterMap = <A, B, E2>(
       self,
       flatMap((a) => {
         const ob = f(a)
-        return internal.isNone(ob) ? left(onNone) : right(ob.value)
+        return option.isNone(ob) ? left(onNone) : right(ob.value)
       })
     )
 

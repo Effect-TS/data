@@ -42,8 +42,9 @@ import * as sortedMap from "@fp-ts/data/SortedMap"
 import * as sortedSet from "@fp-ts/data/SortedSet"
 import * as string from "@fp-ts/data/String"
 import * as these from "@fp-ts/data/These"
-import * as fromOption from "@fp-ts/data/typeclasses/FromOption"
-import * as seq from "@fp-ts/data/typeclasses/Seq"
+import * as filterableWithIndex from "@fp-ts/data/typeclass/FilterableWithIndex"
+import * as fromOption from "@fp-ts/data/typeclass/FromOption"
+import * as seq from "@fp-ts/data/typeclass/Seq"
 import * as weakIterableMap from "@fp-ts/data/weak/WeakIterableMap"
 
 export {
@@ -95,6 +96,10 @@ export {
    * @since 1.0.0
    */
   equal,
+  /**
+   * @since 1.0.0
+   */
+  filterableWithIndex,
   /**
    * @since 1.0.0
    */

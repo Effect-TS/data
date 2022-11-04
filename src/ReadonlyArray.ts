@@ -31,11 +31,12 @@ import { identity, pipe } from "@fp-ts/data/Function"
 import type { LazyArg } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
 import * as either from "@fp-ts/data/internal/Either"
+import * as option from "@fp-ts/data/internal/Option"
 import * as number from "@fp-ts/data/Number"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
-import * as fromOption_ from "@fp-ts/data/typeclasses/FromOption"
+import * as fromOption_ from "@fp-ts/data/typeclass/FromOption"
 
 /**
  * @category type lambdas
@@ -110,7 +111,7 @@ export const fromIterable: <A>(collection: Iterable<A>) => ReadonlyArray<A> = in
  */
 export const fromOption = <A>(
   o: Option<A>
-): ReadonlyArray<A> => (internal.isNone(o) ? empty : [o.value])
+): ReadonlyArray<A> => (option.isNone(o) ? empty : [o.value])
 
 /**
  * @category conversions
@@ -279,7 +280,7 @@ const isOutOfBound = <A>(i: number, as: ReadonlyArray<A>): boolean => i < 0 || i
  */
 export const get = (i: number) =>
   <A>(self: ReadonlyArray<A>): Option<A> =>
-    isOutOfBound(i, self) ? internal.none : internal.some(self[i])
+    isOutOfBound(i, self) ? option.none : option.some(self[i])
 
 /**
  * Produces a couple of the first element of the array, and a new array of the remaining elements, if any.
@@ -309,7 +310,7 @@ export const unappend = <A>(
  */
 export const head = <A>(
   self: ReadonlyArray<A>
-): Option<A> => (isNonEmpty(self) ? internal.some(self[0]) : internal.none)
+): Option<A> => (isNonEmpty(self) ? option.some(self[0]) : option.none)
 
 /**
  * @category getters
@@ -324,7 +325,7 @@ export const headNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): A => self[0]
  * @since 1.0.0
  */
 export const last = <A>(self: ReadonlyArray<A>): Option<A> =>
-  isNonEmpty(self) ? internal.some(lastNonEmpty(self)) : internal.none
+  isNonEmpty(self) ? option.some(lastNonEmpty(self)) : option.none
 
 /**
  * @category getters
@@ -339,7 +340,7 @@ export const lastNonEmpty = <A>(as: NonEmptyReadonlyArray<A>): A => as[as.length
  * @since 1.0.0
  */
 export const tail = <A>(self: ReadonlyArray<A>): Option<ReadonlyArray<A>> =>
-  isNonEmpty(self) ? internal.some(tailNonEmpty(self)) : internal.none
+  isNonEmpty(self) ? option.some(tailNonEmpty(self)) : option.none
 
 /**
  * @category getters
@@ -354,7 +355,7 @@ export const tailNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): ReadonlyArray<A
  * @since 1.0.0
  */
 export const init = <A>(self: ReadonlyArray<A>): Option<ReadonlyArray<A>> =>
-  isNonEmpty(self) ? internal.some(initNonEmpty(self)) : internal.none
+  isNonEmpty(self) ? option.some(initNonEmpty(self)) : option.none
 
 /**
  * Get all but the last element of a non empty array, creating a new array.
@@ -509,10 +510,10 @@ export const findIndex = <A>(predicate: Predicate<A>) =>
     const len = as.length
     for (let i = 0; i < len; i++) {
       if (predicate(as[i])) {
-        return internal.some(i)
+        return option.some(i)
       }
     }
-    return internal.none
+    return option.none
   }
 
 /**
@@ -526,10 +527,10 @@ export const findLastIndex = <A>(predicate: Predicate<A>) =>
     const len = as.length
     for (let i = len - 1; i >= 0; i--) {
       if (predicate(as[i])) {
-        return internal.some(i)
+        return option.some(i)
       }
     }
-    return internal.none
+    return option.none
   }
 
 /**
@@ -550,10 +551,10 @@ export function findFirst<A>(predicate: Predicate<A>): (as: ReadonlyArray<A>) =>
     const len = as.length
     for (let i = 0; i < len; i++) {
       if (predicate(as[i])) {
-        return internal.some(as[i])
+        return option.some(as[i])
       }
     }
-    return internal.none
+    return option.none
   }
 }
 
@@ -575,10 +576,10 @@ export function findLast<A>(predicate: Predicate<A>): (as: ReadonlyArray<A>) => 
     const len = as.length
     for (let i = len - 1; i >= 0; i--) {
       if (predicate(as[i])) {
-        return internal.some(as[i])
+        return option.some(as[i])
       }
     }
-    return internal.none
+    return option.none
   }
 }
 
@@ -591,14 +592,14 @@ export function findLast<A>(predicate: Predicate<A>): (as: ReadonlyArray<A>) => 
 export const insertAt = <B>(i: number, a: B) =>
   <A>(self: ReadonlyArray<A>): Option<NonEmptyReadonlyArray<A | B>> => {
     if (i < 0 || i > self.length) {
-      return internal.none
+      return option.none
     }
     if (isNonEmpty(self)) {
       const out: internal.NonEmptyArray<A | B> = internal.fromNonEmptyReadonlyArray(self)
       out.splice(i, 0, a)
-      return internal.some(out)
+      return option.some(out)
     }
-    return internal.some([a])
+    return option.some([a])
   }
 
 /**
@@ -622,13 +623,13 @@ export const updateAt = <B>(
 export const modifyAt = <A, B>(i: number, f: (a: A) => B) =>
   (self: ReadonlyArray<A>): Option<ReadonlyArray<A | B>> => {
     if (isOutOfBound(i, self)) {
-      return internal.none
+      return option.none
     }
     const prev = self[i]
     const next = f(prev)
     const out: Array<A | B> = self.slice()
     out[i] = next
-    return internal.some(out)
+    return option.some(out)
   }
 
 const unsafeDeleteAt = <A>(i: number, as: ReadonlyArray<A>): ReadonlyArray<A> => {
@@ -645,7 +646,7 @@ const unsafeDeleteAt = <A>(i: number, as: ReadonlyArray<A>): ReadonlyArray<A> =>
  */
 export const deleteAt = (i: number) =>
   <A>(self: ReadonlyArray<A>): Option<ReadonlyArray<A>> =>
-    isOutOfBound(i, self) ? internal.none : internal.some(unsafeDeleteAt(i, self))
+    isOutOfBound(i, self) ? option.none : option.some(unsafeDeleteAt(i, self))
 
 /**
  * Reverse a `ReadonlyArray`, creating a new `ReadonlyArray`.
@@ -1404,7 +1405,7 @@ export const filterMapWithIndex = <A, B>(f: (a: A, i: number) => Option<B>) =>
     const out: Array<B> = []
     for (let i = 0; i < as.length; i++) {
       const o = f(as[i], i)
-      if (internal.isSome(o)) {
+      if (option.isSome(o)) {
         out.push(o.value)
       }
     }
@@ -1489,7 +1490,7 @@ export const filterWithIndex: {
 } = <B extends A, A = B>(
   predicate: (a: A, i: number) => boolean
 ): ((fb: ReadonlyArray<B>) => ReadonlyArray<B>) =>
-  filterMapWithIndex((b, i) => (predicate(b, i) ? internal.some(b) : internal.none))
+  filterMapWithIndex((b, i) => (predicate(b, i) ? option.some(b) : option.none))
 
 /**
  * @category filtering
@@ -2111,7 +2112,7 @@ export const unfold = <B, A>(b: B, f: (b: B) => Option<readonly [A, B]>): Readon
   const out: Array<A> = []
   let next: B = b
   let o: Option<readonly [A, B]>
-  while (internal.isSome(o = f(next))) {
+  while (option.isSome(o = f(next))) {
     const [a, b] = o.value
     out.push(a)
     next = b

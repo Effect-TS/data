@@ -43,8 +43,8 @@ import * as chunk from "@fp-ts/data/Chunk"
 import type { Either, Left, Right } from "@fp-ts/data/Either"
 import { equals } from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
-import * as internal from "@fp-ts/data/internal/Common"
 import * as either from "@fp-ts/data/internal/Either"
+import * as option from "@fp-ts/data/internal/Option"
 import * as these from "@fp-ts/data/internal/These"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
@@ -143,14 +143,14 @@ export const warn = <E, A>(e: E, a: A): Validated<E, A> => both(chunk.make(e), a
  * @since 1.0.0
  */
 export const leftOrBoth = <E>(e: E) =>
-  <A>(self: Option<A>): These<E, A> => internal.isNone(self) ? left(e) : both(e, self.value)
+  <A>(self: Option<A>): These<E, A> => option.isNone(self) ? left(e) : both(e, self.value)
 
 /**
  * @category constructors
  * @since 1.0.0
  */
 export const rightOrBoth = <A>(a: A) =>
-  <E>(self: Option<E>): These<E, A> => internal.isNone(self) ? right(a) : both(self.value, a)
+  <E>(self: Option<E>): These<E, A> => option.isNone(self) ? right(a) : both(self.value, a)
 
 /**
  * @category pattern matching
@@ -369,7 +369,7 @@ export const fromIterable = <E>(onEmpty: E) =>
  * @since 1.0.0
  */
 export const fromOption = <E>(onNone: E) =>
-  <A>(self: Option<A>): These<E, A> => internal.isNone(self) ? left(onNone) : right(self.value)
+  <A>(self: Option<A>): These<E, A> => option.isNone(self) ? left(onNone) : right(self.value)
 
 /**
  * @category conversions
@@ -435,7 +435,7 @@ export const flatMapThese = <A, E2, B>(
  */
 export const getRight = <E, A>(
   self: These<E, A>
-): Option<A> => isLeft(self) ? internal.none : internal.some(self.right)
+): Option<A> => isLeft(self) ? option.none : option.some(self.right)
 
 /**
  * Returns the `A` value if and only if the value is constructed with `Right`
@@ -445,7 +445,7 @@ export const getRight = <E, A>(
  */
 export const getRightOnly = <E, A>(
   self: These<E, A>
-): Option<A> => isRight(self) ? internal.some(self.right) : internal.none
+): Option<A> => isRight(self) ? option.some(self.right) : option.none
 
 /**
  * @category getters
@@ -453,7 +453,7 @@ export const getRightOnly = <E, A>(
  */
 export const getLeft = <E, A>(
   self: These<E, A>
-): Option<E> => isRight(self) ? internal.none : internal.some(self.left)
+): Option<E> => isRight(self) ? option.none : option.some(self.left)
 
 /**
  * Returns the `E` value if and only if the value is constructed with `Left`
@@ -463,7 +463,7 @@ export const getLeft = <E, A>(
  */
 export const getLeftOnly = <E, A>(
   self: These<E, A>
-): Option<E> => isLeft(self) ? internal.some(self.left) : internal.none
+): Option<E> => isLeft(self) ? option.some(self.left) : option.none
 
 /**
  * @category getters
@@ -471,7 +471,7 @@ export const getLeftOnly = <E, A>(
  */
 export const getBoth = <E, A>(
   self: These<E, A>
-): Option<readonly [E, A]> => isBoth(self) ? internal.some([self.left, self.right]) : internal.none
+): Option<readonly [E, A]> => isBoth(self) ? option.some([self.left, self.right]) : option.none
 
 /**
  * @category getters
@@ -907,7 +907,7 @@ export const compact = <E>(onNone: E) =>
   <A>(self: These<E, Option<A>>): These<E, A> =>
     isLeft(self) ?
       self :
-      internal.isNone(self.right) ?
+      option.isNone(self.right) ?
       left(onNone) :
       isBoth(self) ?
       both(self.left, self.right.value) :
@@ -946,10 +946,10 @@ export const filterMap = <A, B, E2>(
     }
     if (isRight(self)) {
       const ob = f(self.right)
-      return internal.isNone(ob) ? left(onNone) : right(ob.value)
+      return option.isNone(ob) ? left(onNone) : right(ob.value)
     }
     const ob = f(self.right)
-    return internal.isNone(ob) ? left(onNone) : both(self.left, ob.value)
+    return option.isNone(ob) ? left(onNone) : both(self.left, ob.value)
   }
 
 /**
