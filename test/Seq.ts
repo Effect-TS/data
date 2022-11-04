@@ -22,13 +22,20 @@ export const ReadonlyArray: Seq<RA.ReadonlyArrayTypeLambda> = {
   some: RA.some,
   every: RA.every,
   findFirst: RA.findFirst,
+  imap: RA.imap,
   map: RA.map,
   flatMap: RA.flatMap,
   reduce: RA.reduce,
   sort: RA.sort,
   get: RA.get,
   unsafeGet: hole, // TODO
-  size: RA.size
+  size: RA.size,
+  empty: RA.empty,
+  append: RA.append,
+  dropRight: RA.dropRight,
+  dropWhile: RA.dropWhile,
+  filterMap: RA.filterMap,
+  filter: RA.filter
 }
 
 export const List: Seq<L.ListTypeLambda> = {
@@ -46,13 +53,20 @@ export const List: Seq<L.ListTypeLambda> = {
   some: L.some,
   every: L.every,
   findFirst: L.findFirst,
+  imap: L.imap,
   map: L.map,
   flatMap: L.flatMap,
   reduce: L.reduce,
   sort: L.sort,
   get: hole, // TODO
   unsafeGet: hole, // TODO
-  size: hole // TODO
+  size: hole, // TODO
+  empty: L.empty(), // TODO
+  append: hole, // TODO
+  dropRight: hole, // TODO
+  dropWhile: hole, // TODO
+  filterMap: hole, // TODO
+  filter: L.filter
 }
 
 export const Chunk: Seq<C.ChunkTypeLambda> = {
@@ -70,13 +84,20 @@ export const Chunk: Seq<C.ChunkTypeLambda> = {
   some: C.some,
   every: C.every,
   findFirst: C.findFirst,
+  imap: hole, // TODO
   map: C.map,
   flatMap: C.flatMap,
   reduce: C.reduce,
   sort: C.sort,
   get: C.get,
   unsafeGet: C.unsafeGet,
-  size: C.size
+  size: C.size,
+  empty: C.empty,
+  append: C.append,
+  dropRight: C.dropRight,
+  dropWhile: C.dropWhile,
+  filterMap: C.filterMap,
+  filter: C.filter
 }
 
 describe.concurrent("Seq", () => {
@@ -141,6 +162,8 @@ describe.concurrent("Seq", () => {
   describe("prepend", () => {
     const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
       it(message, () => {
+        expect(pipe(F.fromIterable([]), F.prepend("a"), F.toIterable))
+          .toEqual(["a"])
         expect(pipe(F.fromIterable([1, 2, 3, 4]), F.prepend("a"), F.toIterable))
           .toEqual(["a", 1, 2, 3, 4])
       })
@@ -433,6 +456,104 @@ describe.concurrent("Seq", () => {
     assert(ReadonlyArray, "ReadonlyArray")
     // TODO
     // assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("empty", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        expect(pipe(F.toIterable(F.empty))).toEqual([])
+        expect(pipe(F.empty, F.size)).toEqual(0)
+      })
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    // TODO
+    // assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("append", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        expect(pipe(F.fromIterable([]), F.append("a"), F.toIterable))
+          .toEqual(["a"])
+        expect(pipe(F.fromIterable([1, 2, 3, 4]), F.append("a"), F.toIterable))
+          .toEqual([1, 2, 3, 4, "a"])
+      })
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    // TODO
+    // assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("dropRight", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        const as = [1, 2, 3, 4]
+        expect(pipe(F.fromIterable(as), F.dropRight(2), F.toIterable)).toEqual([1, 2])
+        // dropRight(0)
+        expect(pipe(F.fromIterable(as), F.dropRight(0), F.toIterable)).toEqual(as)
+        // out of bounds
+        expect(pipe(F.fromIterable(as), F.dropRight(-10), F.toIterable)).toEqual(as)
+        expect(pipe(F.fromIterable(as), F.dropRight(10), F.toIterable)).toEqual([])
+      })
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    // TODO
+    // assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("dropWhile", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        const as = [1, 2, 3, 4]
+        expect(pipe(F.fromIterable(as), F.dropWhile((n) => n < 3), F.toIterable)).toEqual([3, 4])
+        expect(pipe(F.fromIterable(as), F.dropWhile((n) => n > 0), F.toIterable)).toEqual([])
+        expect(pipe(F.fromIterable(as), F.dropWhile((n) => n < 0), F.toIterable)).toEqual(as)
+      })
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    // TODO
+    // assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("filterMap", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        const as = [1, 2, 3, 4]
+        expect(
+          pipe(
+            F.fromIterable(as),
+            F.filterMap((n) => n > 2 ? O.some("a" + n) : O.none),
+            F.toIterable
+          )
+        ).toEqual(["a3", "a4"])
+      })
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    // TODO
+    // assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("filter", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        const as = [1, 2, 3, 4]
+        expect(
+          pipe(
+            F.fromIterable(as),
+            F.filter((n) => n % 2 === 0),
+            F.toIterable
+          )
+        ).toEqual([2, 4])
+      })
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 })

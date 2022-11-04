@@ -4,8 +4,9 @@
  * @since 1.0.0
  */
 import type { Option } from "@fp-ts/core/data/Option"
-import type { Kind, TypeClass, TypeLambda } from "@fp-ts/core/HKT"
+import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import type { Covariant } from "@fp-ts/core/typeclass/Covariant"
+import type { Filterable } from "@fp-ts/core/typeclass/Filterable"
 import type { FlatMap } from "@fp-ts/core/typeclass/FlatMap"
 import type { Foldable } from "@fp-ts/core/typeclass/Foldable"
 import type { Order } from "@fp-ts/core/typeclass/Order"
@@ -15,7 +16,9 @@ import type { Predicate } from "@fp-ts/data/Predicate"
  * @category models
  * @since 1.0.0
  */
-export interface Seq<F extends TypeLambda> extends TypeClass<F> {
+export interface Seq<F extends TypeLambda>
+  extends Covariant<F>, FlatMap<F>, Foldable<F>, Filterable<F>
+{
   readonly fromIterable: <A>(self: Iterable<A>) => Kind<F, unknown, never, never, A>
   readonly toIterable: <R, O, E, A>(self: Kind<F, R, O, E, A>) => Iterable<A>
   readonly take: (n: number) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A>
@@ -42,11 +45,24 @@ export interface Seq<F extends TypeLambda> extends TypeClass<F> {
   readonly findFirst: <A>(
     predicate: Predicate<A>
   ) => <R, O, E>(self: Kind<F, R, O, E, A>) => Option<A>
-  readonly map: Covariant<F>["map"]
-  readonly flatMap: FlatMap<F>["flatMap"]
-  readonly reduce: Foldable<F>["reduce"]
   readonly sort: <A>(O: Order<A>) => <R, O, E>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A>
   readonly get: (index: number) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => Option<A>
   readonly unsafeGet: (index: number) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => A
   readonly size: <R, O, E, A>(self: Kind<F, R, O, E, A>) => number
+  readonly empty: Kind<F, unknown, never, never, never>
+  readonly append: <B>(
+    b: B
+  ) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A | B>
+  readonly dropRight: (n: number) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A>
+  readonly dropWhile: <A>(
+    f: (a: A) => boolean
+  ) => <R, O, E>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A>
+  readonly filter: {
+    <C extends A, B extends A, A = C>(refinement: (a: A) => a is B): <R, O, E>(
+      self: Kind<F, R, O, E, C>
+    ) => Kind<F, R, O, E, B>
+    <B extends A, A = B>(
+      predicate: (a: A) => boolean
+    ): <R, O, E>(self: Kind<F, R, O, E, B>) => Kind<F, R, O, E, B>
+  }
 }
