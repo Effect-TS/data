@@ -41,7 +41,8 @@ export const ReadonlyArray: Seq<RA.ReadonlyArrayTypeLambda> = {
   // TODO
   filterMapWhile: hole,
   elem: RA.elem,
-  compact: RA.compact
+  compact: RA.compact,
+  findFirstIndex: RA.findFirstIndex
 }
 
 export const List: Seq<L.ListTypeLambda> = {
@@ -87,7 +88,9 @@ export const List: Seq<L.ListTypeLambda> = {
   filterMapWhile: hole,
   // TODO
   elem: hole,
-  compact: L.compact
+  compact: L.compact,
+  // TODO
+  findFirstIndex: hole
 }
 
 export const Chunk: Seq<C.ChunkTypeLambda> = {
@@ -124,7 +127,8 @@ export const Chunk: Seq<C.ChunkTypeLambda> = {
   filterMapWithIndex: C.filterMapWithIndex,
   filterMapWhile: C.filterMapWhile,
   elem: C.elem,
-  compact: C.compact
+  compact: C.compact,
+  findFirstIndex: C.findFirstIndex
 }
 
 describe.concurrent("Seq", () => {
@@ -645,6 +649,22 @@ describe.concurrent("Seq", () => {
     }
     assert(ReadonlyArray, "ReadonlyArray")
     assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("findFirstIndex", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        const p = (n: number): boolean => n > 0
+        expect(pipe(F.fromIterable<number>([]), F.findFirstIndex(p))).toEqual(O.none)
+        expect(pipe(F.fromIterable<number>([-1, 1]), F.findFirstIndex(p))).toEqual(O.some(1))
+        expect(pipe(F.fromIterable<number>([1, 2]), F.findFirstIndex(p))).toEqual(O.some(0))
+        expect(pipe(F.fromIterable<number>([-1, -2, 3]), F.findFirstIndex(p))).toEqual(O.some(2))
+      })
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    // TODO
+    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 })

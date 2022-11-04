@@ -686,9 +686,9 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(RA.init([]), Option.none)
   })
 
-  it("findIndex", () => {
-    deepStrictEqual(RA.findIndex((x) => x === 2)([1, 2, 3]), Option.some(1))
-    deepStrictEqual(RA.findIndex((x) => x === 2)([]), Option.none)
+  it("findFirstIndex", () => {
+    deepStrictEqual(RA.findFirstIndex((x) => x === 2)([1, 2, 3]), Option.some(1))
+    deepStrictEqual(RA.findFirstIndex((x) => x === 2)([]), Option.none)
   })
 
   it("findFirst", () => {

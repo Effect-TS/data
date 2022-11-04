@@ -77,4 +77,7 @@ export interface Seq<F extends TypeLambda>
     f: (a: A) => Option<B>
   ) => (self: Iterable<A>) => Kind<F, unknown, never, never, B>
   readonly elem: <B>(b: B) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => boolean
+  readonly findFirstIndex: <A>(
+    predicate: Predicate<A>
+  ) => <R, O, E>(self: Kind<F, R, O, E, A>) => Option<number>
 }

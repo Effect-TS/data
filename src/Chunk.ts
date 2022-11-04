@@ -790,7 +790,7 @@ export const dedupeAdjacent = <A>(self: Chunk<A>): Chunk<A> => {
  * @category elements
  */
 export const some = <A>(f: (a: A) => boolean) =>
-  (self: Chunk<A>) => toReadonlyArray(self).findIndex((v) => f(v)) !== -1
+  (self: Chunk<A>): boolean => toReadonlyArray(self).findIndex((v) => f(v)) !== -1
 
 /**
  * Check if a predicate holds true for every `Chunk` member.
@@ -799,7 +799,7 @@ export const some = <A>(f: (a: A) => boolean) =>
  * @category elements
  */
 export const every = <A>(f: (a: A) => boolean) =>
-  (self: Chunk<A>) => toReadonlyArray(self).every((v) => f(v))
+  (self: Chunk<A>): boolean => toReadonlyArray(self).every((v) => f(v))
 
 /**
  * Find the first element which satisfies a predicate (or a refinement) function.
@@ -822,7 +822,7 @@ export function findFirst<A>(predicate: Predicate<A>) {
  * @category elements
  */
 export const findFirstIndex = <A>(f: Predicate<A>) =>
-  (self: Chunk<A>): Option<number> => RA.findIndex(f)(toReadonlyArray(self))
+  (self: Chunk<A>): Option<number> => RA.findFirstIndex(f)(toReadonlyArray(self))
 
 /**
  * Find the first index for which a predicate holds
