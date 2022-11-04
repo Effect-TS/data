@@ -5,6 +5,34 @@ import * as O from "@fp-ts/data/Option"
 import * as fc from "fast-check"
 
 describe.concurrent("Chunk", () => {
+  it("chunksOf", () => {
+    expect(pipe(C.empty, C.chunksOf(2))).toEqual(
+      C.empty
+    )
+    expect(pipe(C.make(1, 2, 3, 4, 5), C.chunksOf(2))).toEqual(
+      C.make(C.make(1, 2), C.make(3, 4), C.make(5))
+    )
+    expect(pipe(C.make(1, 2, 3, 4, 5, 6), C.chunksOf(2))).toEqual(
+      C.make(C.make(1, 2), C.make(3, 4), C.make(5, 6))
+    )
+    expect(pipe(C.make(1, 2, 3, 4, 5), C.chunksOf(1))).toEqual(
+      C.make(C.make(1), C.make(2), C.make(3), C.make(4), C.make(5))
+    )
+    expect(pipe(C.make(1, 2, 3, 4, 5), C.chunksOf(5))).toEqual(
+      C.make(C.make(1, 2, 3, 4, 5))
+    )
+    // out of bounds
+    expect(pipe(C.make(1, 2, 3, 4, 5), C.chunksOf(0))).toEqual(
+      C.make(C.make(1), C.make(2), C.make(3), C.make(4), C.make(5))
+    )
+    expect(pipe(C.make(1, 2, 3, 4, 5), C.chunksOf(-1))).toEqual(
+      C.make(C.make(1), C.make(2), C.make(3), C.make(4), C.make(5))
+    )
+    expect(pipe(C.make(1, 2, 3, 4, 5), C.chunksOf(10))).toEqual(
+      C.make(C.make(1, 2, 3, 4, 5))
+    )
+  })
+
   describe("toReadonlyArray", () => {
     describe("Given an empty Chunk", () => {
       const chunk = C.empty

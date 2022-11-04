@@ -869,7 +869,7 @@ export const flatMap = <A, B>(f: (a: A) => Chunk<B>) =>
  * @since 1.0.0
  * @category sequencing
  */
-export const flatten = <A>(self: Chunk<Chunk<A>>): Chunk<A> => pipe(self, flatMap(identity))
+export const flatten: <A>(self: Chunk<Chunk<A>>) => Chunk<A> = flatMap(identity)
 
 /**
  * Iterate over the chunk applying `f`.
@@ -886,7 +886,7 @@ export const forEach = <A>(f: (a: A) => void) =>
  * @since 1.0.0
  * @category elements
  */
-export const grouped = (n: number) =>
+export const chunksOf = (n: number) =>
   <A>(self: Chunk<A>): Chunk<Chunk<A>> => {
     const gr: Array<Chunk<A>> = []
     let current: Array<A> = []
