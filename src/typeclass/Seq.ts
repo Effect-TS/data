@@ -11,6 +11,7 @@ import type { Filterable } from "@fp-ts/core/typeclass/Filterable"
 import type { FlatMap } from "@fp-ts/core/typeclass/FlatMap"
 import type { Foldable } from "@fp-ts/core/typeclass/Foldable"
 import type { Order } from "@fp-ts/core/typeclass/Order"
+import type { Either } from "@fp-ts/data/Either"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { CovariantWithIndex } from "@fp-ts/data/typeclass/CovariantWithIndex"
 import type { FilterableWithIndex } from "@fp-ts/data/typeclass/FilterableWithIndex"
@@ -94,4 +95,43 @@ export interface Seq<F extends TypeLambda>
   readonly last: <R, O, E, A>(self: Kind<F, R, O, E, A>) => Option<A>
   readonly range: (start: number, end: number) => Kind<F, unknown, never, never, number>
   readonly makeBy: <A>(f: (i: number) => A) => (n: number) => Kind<F, unknown, never, never, A>
+  readonly splitWhere: <A>(
+    f: Predicate<A>
+  ) => <R, O, E>(self: Kind<F, R, O, E, A>) => readonly [Kind<F, R, O, E, A>, Kind<F, R, O, E, A>]
+  readonly split: (
+    n: number
+  ) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, Kind<F, R, O, E, A>>
+  readonly separate: <R, O, E, A, B>(
+    self: Kind<F, R, O, E, Either<A, B>>
+  ) => readonly [Kind<F, R, O, E, A>, Kind<F, R, O, E, B>]
+  /*
+
+  TODO
+
+  - separate
+  - partition
+  - partitionMap
+  - takeRight
+  - takeWhile
+  - unfold
+  - union
+  - intersection
+  - dedupeAdjacent
+  - forEach
+  - mapAccum
+  - filterMapWhile
+  - dedupe
+  - unsafeHead
+  - unsafeLast
+  - unzip
+  - zip
+  - zipWith
+  - zipAll
+  - zipAllWith
+  - crossWith
+  - cross
+  - zipWithIndex
+  - zipWithIndexOffset
+
+  */
 }
