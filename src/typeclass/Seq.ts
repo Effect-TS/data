@@ -5,6 +5,7 @@
  */
 import type { Option } from "@fp-ts/core/data/Option"
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
+import type { Compactable } from "@fp-ts/core/typeclass/Compactable"
 import type { Covariant } from "@fp-ts/core/typeclass/Covariant"
 import type { Filterable } from "@fp-ts/core/typeclass/Filterable"
 import type { FlatMap } from "@fp-ts/core/typeclass/FlatMap"
@@ -18,7 +19,13 @@ import type { FilterableWithIndex } from "@fp-ts/data/typeclass/FilterableWithIn
  * @since 1.0.0
  */
 export interface Seq<F extends TypeLambda>
-  extends Covariant<F>, FlatMap<F>, Foldable<F>, Filterable<F>, FilterableWithIndex<F, number>
+  extends
+    Covariant<F>,
+    FlatMap<F>,
+    Foldable<F>,
+    Filterable<F>,
+    FilterableWithIndex<F, number>,
+    Compactable<F>
 {
   readonly fromIterable: <A>(self: Iterable<A>) => Kind<F, unknown, never, never, A>
   readonly toIterable: <R, O, E, A>(self: Kind<F, R, O, E, A>) => Iterable<A>

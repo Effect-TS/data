@@ -1423,7 +1423,7 @@ export const filterMap: <A, B>(f: (a: A) => Option<B>) => (self: Iterable<A>) =>
  * @category filtering
  * @since 1.0.0
  */
-export const compact: <A>(self: ReadonlyArray<Option<A>>) => ReadonlyArray<A> = filterMap(identity)
+export const compact: <A>(self: Iterable<Option<A>>) => ReadonlyArray<A> = filterMap(identity)
 
 /**
  * @category instances

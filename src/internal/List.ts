@@ -616,7 +616,7 @@ export const reduceRight = <A, B>(b: B, f: (b: B, a: A) => B) =>
 
 /** @internal */
 export const filterMap = <A, B>(f: (a: A) => Option<B>) =>
-  (self: L.List<A>): L.List<B> => {
+  (self: Iterable<A>): L.List<B> => {
     const bs: Array<B> = []
     for (const a of self) {
       const oa = f(a)
@@ -628,7 +628,7 @@ export const filterMap = <A, B>(f: (a: A) => Option<B>) =>
   }
 
 /** @internal */
-export const compact: <A>(self: L.List<Option<A>>) => L.List<A> = filterMap(identity)
+export const compact: <A>(self: Iterable<Option<A>>) => L.List<A> = filterMap(identity)
 
 /** @internal */
 export const traverse = <F extends TypeLambda>(
@@ -638,10 +638,6 @@ export const traverse = <F extends TypeLambda>(
     f: (a: A) => Kind<F, R, O, E, B>
   ) =>
     (self: L.List<A>): Kind<F, R, O, E, L.List<B>> => pipe(self, map(f), F.productAll, F.map(from))
-
-// ----------------------------
-// TODO: remove the following functions? filter, partition and partitionMap are now derived
-// ----------------------------
 
 /** @internal */
 export function filter<A, B extends A>(
