@@ -952,8 +952,8 @@ export const isNonEmpty = <A>(self: Chunk<A>): self is NonEmptyChunk<A> => self.
  * @since 1.0.0
  * @category folding
  */
-export const reduce = <A, S>(s: S, f: (s: S, a: A) => S) =>
-  (self: Chunk<A>): S => pipe(toReadonlyArray(self), RA.reduce(s, f))
+export const reduce = <A, B>(b: B, f: (s: B, a: A) => B) =>
+  (self: Chunk<A>): B => pipe(toReadonlyArray(self), RA.reduce(b, f))
 
 /**
  * Folds over the elements in this chunk from the left.

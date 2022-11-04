@@ -86,4 +86,7 @@ export interface Seq<F extends TypeLambda>
   readonly findLast: <A>(
     predicate: Predicate<A>
   ) => <R, O, E>(self: Kind<F, R, O, E, A>) => Option<A>
+  readonly isEmpty: <R, O, E, A>(self: Kind<F, R, O, E, A>) => boolean
+  readonly isNonEmpty: <R, O, E, A>(self: Kind<F, R, O, E, A>) => boolean
+  readonly join: (sep: string) => <R, O, E>(self: Kind<F, R, O, E, string>) => string
 }
