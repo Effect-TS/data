@@ -43,6 +43,7 @@ import * as sortedSet from "@fp-ts/data/SortedSet"
 import * as string from "@fp-ts/data/String"
 import * as these from "@fp-ts/data/These"
 import * as fromOption from "@fp-ts/data/typeclasses/FromOption"
+import * as seq from "@fp-ts/data/typeclasses/Seq"
 import * as weakIterableMap from "@fp-ts/data/weak/WeakIterableMap"
 
 export {
@@ -194,6 +195,10 @@ export {
    * @since 1.0.0
    */
   safeEval,
+  /**
+   * @since 1.0.0
+   */
+  seq,
   /**
    * @since 1.0.0
    */

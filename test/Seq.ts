@@ -1,51 +1,13 @@
-import type { Option } from "@fp-ts/core/data/Option"
-import type { Kind, TypeClass, TypeLambda } from "@fp-ts/core/HKT"
-import type { Covariant } from "@fp-ts/core/typeclass/Covariant"
-import type { FlatMap } from "@fp-ts/core/typeclass/FlatMap"
-import type { Foldable } from "@fp-ts/core/typeclass/Foldable"
-import type { Order } from "@fp-ts/core/typeclass/Order"
+import type { TypeLambda } from "@fp-ts/core/HKT"
 import * as C from "@fp-ts/data/Chunk"
 import { hole, identity, pipe } from "@fp-ts/data/Function"
 import * as L from "@fp-ts/data/List"
 import * as O from "@fp-ts/data/Option"
-import type { Predicate } from "@fp-ts/data/Predicate"
 import * as RA from "@fp-ts/data/ReadonlyArray"
 import * as S from "@fp-ts/data/String"
+import type { Seq } from "@fp-ts/data/typeclasses/Seq"
 
-export interface ReadonlyArrayLike<F extends TypeLambda> extends TypeClass<F> {
-  readonly fromIterable: <A>(self: Iterable<A>) => Kind<F, unknown, never, never, A>
-  readonly toIterable: <R, O, E, A>(self: Kind<F, R, O, E, A>) => Iterable<A>
-  readonly take: (n: number) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A>
-  readonly reverse: <R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A>
-  readonly drop: (n: number) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A>
-  readonly prepend: <B>(
-    b: B
-  ) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A | B>
-  readonly prependAll: <R, O, E, B>(
-    prefix: Kind<F, R, O, E, B>
-  ) => <A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A | B>
-  readonly concat: <R, O, E, B>(
-    prefix: Kind<F, R, O, E, B>
-  ) => <A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A | B>
-  readonly splitAt: (
-    n: number
-  ) => <R, O, E, A>(
-    self: Kind<F, R, O, E, A>
-  ) => readonly [Kind<F, R, O, E, A>, Kind<F, R, O, E, A>]
-  readonly head: <R, O, E, A>(self: Kind<F, R, O, E, A>) => Option<A>
-  readonly tail: <R, O, E, A>(self: Kind<F, R, O, E, A>) => Option<Kind<F, R, O, E, A>>
-  readonly some: <A>(predicate: Predicate<A>) => <R, O, E>(self: Kind<F, R, O, E, A>) => boolean
-  readonly every: <A>(predicate: Predicate<A>) => <R, O, E>(self: Kind<F, R, O, E, A>) => boolean
-  readonly findFirst: <A>(
-    predicate: Predicate<A>
-  ) => <R, O, E>(self: Kind<F, R, O, E, A>) => Option<A>
-  readonly map: Covariant<F>["map"]
-  readonly flatMap: FlatMap<F>["flatMap"]
-  readonly reduce: Foldable<F>["reduce"]
-  readonly sort: <A>(O: Order<A>) => <R, O, E>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A>
-}
-
-export const ReadonlyArray: ReadonlyArrayLike<RA.ReadonlyArrayTypeLambda> = {
+export const ReadonlyArray: Seq<RA.ReadonlyArrayTypeLambda> = {
   fromIterable: RA.fromIterable,
   toIterable: identity,
   take: RA.take,
@@ -66,7 +28,7 @@ export const ReadonlyArray: ReadonlyArrayLike<RA.ReadonlyArrayTypeLambda> = {
   sort: RA.sort
 }
 
-export const List: ReadonlyArrayLike<L.ListTypeLambda> = {
+export const List: Seq<L.ListTypeLambda> = {
   fromIterable: L.fromIterable,
   toIterable: L.toReadonlyArray,
   take: L.take,
@@ -87,7 +49,7 @@ export const List: ReadonlyArrayLike<L.ListTypeLambda> = {
   sort: L.sort
 }
 
-export const Chunk: ReadonlyArrayLike<C.ChunkTypeLambda> = {
+export const Chunk: Seq<C.ChunkTypeLambda> = {
   fromIterable: C.fromIterable,
   toIterable: C.toReadonlyArray,
   take: C.take,
@@ -108,9 +70,9 @@ export const Chunk: ReadonlyArrayLike<C.ChunkTypeLambda> = {
   sort: C.sort
 }
 
-describe.concurrent("ReadonlyArrayLike", () => {
+describe.concurrent("Seq", () => {
   it("fromIterable / toIterable", () => {
-    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
       const as = [1, 2, 3, 4]
       // roundtrip
       expect(F.toIterable(F.fromIterable(as)), message).toEqual(as)
@@ -121,7 +83,7 @@ describe.concurrent("ReadonlyArrayLike", () => {
   })
 
   it("take", () => {
-    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
       const as = [1, 2, 3, 4]
       expect(pipe(F.fromIterable(as), F.take(2), F.toIterable), message).toEqual([1, 2])
       // take(0)
@@ -136,7 +98,7 @@ describe.concurrent("ReadonlyArrayLike", () => {
   })
 
   it("reverse", () => {
-    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
       const as = [1, 2, 3, 4]
       expect(pipe(F.fromIterable(as), F.reverse, F.toIterable), message).toEqual([4, 3, 2, 1])
     }
@@ -146,7 +108,7 @@ describe.concurrent("ReadonlyArrayLike", () => {
   })
 
   it("drop", () => {
-    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
       const as = [1, 2, 3, 4]
       expect(pipe(F.fromIterable(as), F.drop(2), F.toIterable), message).toEqual([3, 4])
       // drop(0)
@@ -161,7 +123,7 @@ describe.concurrent("ReadonlyArrayLike", () => {
   })
 
   it("prepend", () => {
-    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
       expect(pipe(F.fromIterable([1, 2, 3, 4]), F.prepend("a"), F.toIterable), message)
         .toEqual(["a", 1, 2, 3, 4])
     }
@@ -171,7 +133,7 @@ describe.concurrent("ReadonlyArrayLike", () => {
   })
 
   it("prependAll", () => {
-    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
       expect(
         pipe(F.fromIterable([1, 2]), F.prependAll(F.fromIterable(["a", "b"])), F.toIterable),
         message
@@ -192,7 +154,7 @@ describe.concurrent("ReadonlyArrayLike", () => {
   })
 
   it("concat", () => {
-    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
       expect(
         pipe(F.fromIterable([1, 2]), F.concat(F.fromIterable(["a", "b"])), F.toIterable),
         message
@@ -212,7 +174,7 @@ describe.concurrent("ReadonlyArrayLike", () => {
   })
 
   it("splitAt", () => {
-    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
       expect(
         pipe(
           F.fromIterable([1, 2, 3, 4]),
@@ -260,7 +222,7 @@ describe.concurrent("ReadonlyArrayLike", () => {
   })
 
   it("head", () => {
-    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
       expect(pipe(F.fromIterable([]), F.head), message).toEqual(O.none)
       expect(pipe(F.fromIterable([1, 2, 3, 4]), F.head), message).toEqual(O.some(1))
     }
@@ -270,7 +232,7 @@ describe.concurrent("ReadonlyArrayLike", () => {
   })
 
   it("tail", () => {
-    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
       expect(pipe(F.fromIterable([]), F.tail), message).toEqual(O.none)
       expect(pipe(F.fromIterable([1, 2, 3, 4]), F.tail, O.map(F.toIterable)), message).toEqual(
         O.some([2, 3, 4])
@@ -282,7 +244,7 @@ describe.concurrent("ReadonlyArrayLike", () => {
   })
 
   it("some", () => {
-    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
       const p = (n: number): boolean => n > 0
       expect(pipe(F.fromIterable<number>([]), F.some(p)), message).toEqual(false)
       expect(pipe(F.fromIterable<number>([-1, 1]), F.some(p)), message).toEqual(true)
@@ -295,7 +257,7 @@ describe.concurrent("ReadonlyArrayLike", () => {
   })
 
   it("every", () => {
-    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
       const p = (n: number): boolean => n > 0
       expect(pipe(F.fromIterable<number>([]), F.every(p)), message).toEqual(true)
       expect(pipe(F.fromIterable<number>([-1, 1]), F.every(p)), message).toEqual(false)
@@ -308,7 +270,7 @@ describe.concurrent("ReadonlyArrayLike", () => {
   })
 
   it("findFirst", () => {
-    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
       const p = (n: number): boolean => n > 0
       expect(pipe(F.fromIterable<number>([]), F.findFirst(p)), message).toEqual(O.none)
       expect(pipe(F.fromIterable<number>([-1, 1]), F.findFirst(p)), message).toEqual(O.some(1))
@@ -321,7 +283,7 @@ describe.concurrent("ReadonlyArrayLike", () => {
   })
 
   it("map", () => {
-    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
       expect(pipe(F.fromIterable<number>([]), F.map((n) => n * 2), F.toIterable), message)
         .toEqual([])
       expect(pipe(F.fromIterable<number>([1, 2, 3, 4]), F.map((n) => n * 2), F.toIterable), message)
@@ -333,7 +295,7 @@ describe.concurrent("ReadonlyArrayLike", () => {
   })
 
   it("flatMap", () => {
-    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
       expect(
         pipe(
           F.fromIterable<number>([]),
@@ -359,7 +321,7 @@ describe.concurrent("ReadonlyArrayLike", () => {
   })
 
   it("reduce", () => {
-    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
       expect(
         pipe(F.fromIterable<string>([]), F.reduce("-", (b, a) => b + a)),
         message
@@ -375,7 +337,7 @@ describe.concurrent("ReadonlyArrayLike", () => {
   })
 
   it("sort", () => {
-    const assert = <F extends TypeLambda>(F: ReadonlyArrayLike<F>, message: string) => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
       expect(
         pipe(F.fromIterable<string>([]), F.sort(S.Order), F.toIterable),
         message
