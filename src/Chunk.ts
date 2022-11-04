@@ -1125,9 +1125,9 @@ export const partitionMap = <A, B, C>(
  * @category filtering
  * @since 1.0.0
  */
-export const separate = <A, B>(fa: Chunk<Either<A, B>>): readonly [Chunk<A>, Chunk<B>] =>
+export const separate = <A, B>(self: Chunk<Either<A, B>>): readonly [Chunk<A>, Chunk<B>] =>
   pipe(
-    fa,
+    self,
     toReadonlyArray,
     RA.separate,
     ([l, r]) => [unsafeFromArray(l), unsafeFromArray(r)]

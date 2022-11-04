@@ -1450,17 +1450,12 @@ export const Compactable: compactable.Compactable<ReadonlyArrayTypeLambda> = {
  * @category filtering
  * @since 1.0.0
  */
-export const separate: <A, B>(
-  fe: ReadonlyArray<Either<A, B>>
-) => readonly [ReadonlyArray<A>, ReadonlyArray<B>] = <
-  A,
-  B
->(
-  fa: ReadonlyArray<Either<A, B>>
-) => {
+export const separate = <A, B>(
+  self: ReadonlyArray<Either<A, B>>
+): readonly [ReadonlyArray<A>, ReadonlyArray<B>] => {
   const left: Array<A> = []
   const right: Array<B> = []
-  for (const e of fa) {
+  for (const e of self) {
     if (either.isLeft(e)) {
       left.push(e.left)
     } else {

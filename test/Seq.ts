@@ -1,5 +1,7 @@
 import type { TypeLambda } from "@fp-ts/core/HKT"
 import * as C from "@fp-ts/data/Chunk"
+import type { Either } from "@fp-ts/data/Either"
+import * as E from "@fp-ts/data/Either"
 import { hole, identity, pipe } from "@fp-ts/data/Function"
 import * as L from "@fp-ts/data/List"
 import * as O from "@fp-ts/data/Option"
@@ -37,8 +39,6 @@ export const ReadonlyArray: Seq<RA.ReadonlyArrayTypeLambda> = {
   filterMap: RA.filterMap,
   filterMapWithIndex: RA.filterMapWithIndex,
   filter: RA.filter,
-  // TODO
-  filterMapWhile: hole,
   elem: RA.elem,
   compact: RA.compact,
   findFirstIndex: RA.findFirstIndex,
@@ -50,7 +50,12 @@ export const ReadonlyArray: Seq<RA.ReadonlyArrayTypeLambda> = {
   last: RA.last,
   mapWithIndex: RA.mapWithIndex,
   range: RA.range,
-  makeBy: RA.makeBy
+  makeBy: RA.makeBy,
+  separate: RA.separate,
+  // TODO
+  filterMapWhile: hole,
+  splitWhere: hole,
+  split: hole
 }
 
 export const List: Seq<L.ListTypeLambda> = {
@@ -73,50 +78,33 @@ export const List: Seq<L.ListTypeLambda> = {
   flatMap: L.flatMap,
   reduce: L.reduce,
   sort: L.sort,
-  // TODO
-  get: hole,
-  // TODO
-  unsafeGet: hole,
-  // TODO
-  size: hole,
-  // TODO
-  empty: L.empty(),
-  // TODO
-  append: hole,
-  // TODO
-  dropRight: hole,
-  // TODO
-  dropWhile: hole,
-  // TODO
-  filterMap: hole,
-  // TODO
-  filterMapWithIndex: hole,
   filter: L.filter,
-  // TODO
-  filterMapWhile: hole,
-  // TODO
-  elem: hole,
   compact: L.compact,
   // TODO
+  get: hole,
+  unsafeGet: hole,
+  size: hole,
+  empty: L.empty(),
+  append: hole,
+  dropRight: hole,
+  dropWhile: hole,
+  filterMap: hole,
+  filterMapWithIndex: hole,
+  filterMapWhile: hole,
+  elem: hole,
   findFirstIndex: hole,
-  // TODO
   findLastIndex: hole,
-  // TODO
   findLast: hole,
-  // TODO
   isEmpty: hole,
-  // TODO
   isNonEmpty: hole,
-  // TODO
   join: hole,
-  // TODO
   last: hole,
-  // TODO
   mapWithIndex: hole,
-  // TODO
   range: hole,
-  // TODO
-  makeBy: hole
+  makeBy: hole,
+  splitWhere: hole,
+  split: hole,
+  separate: hole
 }
 
 export const Chunk: Seq<C.ChunkTypeLambda> = {
@@ -126,8 +114,6 @@ export const Chunk: Seq<C.ChunkTypeLambda> = {
   reverse: C.reverse,
   drop: C.drop,
   prepend: C.prepend,
-  // TODO
-  prependAll: hole,
   concat: C.concat,
   splitAt: C.splitAt,
   head: C.head,
@@ -135,8 +121,6 @@ export const Chunk: Seq<C.ChunkTypeLambda> = {
   some: C.some,
   every: C.every,
   findFirst: C.findFirst,
-  // TODO
-  imap: hole,
   map: C.map,
   flatMap: C.flatMap,
   reduce: C.reduce,
@@ -163,7 +147,13 @@ export const Chunk: Seq<C.ChunkTypeLambda> = {
   last: C.last,
   mapWithIndex: C.mapWithIndex,
   range: C.range,
-  makeBy: C.makeBy
+  makeBy: C.makeBy,
+  splitWhere: C.splitWhere,
+  split: C.split,
+  separate: C.separate,
+  // TODO
+  imap: hole,
+  prependAll: hole
 }
 
 describe.concurrent("Seq", () => {
@@ -837,6 +827,101 @@ describe.concurrent("Seq", () => {
         expect(pipe(F.makeBy((n) => n * 2)(-1), F.toIterable)).toEqual([0])
         expect(pipe(F.makeBy((n) => n * 2)(5), F.toIterable)).toEqual([0, 2, 4, 6, 8])
         expect(pipe(F.makeBy((n) => n * 2)(2.2), F.toIterable)).toEqual([0, 2])
+      })
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    // TODO
+    // assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("splitWhere", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        expect(
+          pipe(
+            F.fromIterable([1, 2, 3, 4]),
+            F.splitWhere((n) => n > 2),
+            ([left, right]) => [F.toIterable(left), F.toIterable(right)]
+          ),
+          message
+        ).toEqual([[1, 2], [3, 4]])
+      })
+    }
+    // TODO
+    // assert(ReadonlyArray, "ReadonlyArray")
+    // TODO
+    // assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("split", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        expect(
+          pipe(
+            F.fromIterable([1, 2, 3, 4]),
+            F.split(2),
+            F.map(F.toIterable),
+            F.toIterable
+          ),
+          message
+        ).toEqual([[1, 2], [3, 4]])
+        expect(
+          pipe(
+            F.fromIterable([1, 2, 3, 4, 5, 6]),
+            F.split(3),
+            F.map(F.toIterable),
+            F.toIterable
+          ),
+          message
+        ).toEqual([[1, 2], [3, 4], [5, 6]])
+        expect(
+          pipe(
+            F.fromIterable([1, 2, 3, 4, 5]),
+            F.split(2),
+            F.map(F.toIterable),
+            F.toIterable
+          ),
+          message
+        ).toEqual([[1, 2, 3], [4, 5]])
+        expect(
+          pipe(
+            F.fromIterable([1, 2, 3, 4, 5]),
+            F.split(3),
+            F.map(F.toIterable),
+            F.toIterable
+          ),
+          message
+        ).toEqual([[1, 2], [3, 4], [5]])
+      })
+    }
+    // TODO
+    // assert(ReadonlyArray, "ReadonlyArray")
+    // TODO
+    // assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("separate", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        expect(
+          pipe(
+            F.fromIterable<Either<string, number>>([]),
+            F.separate,
+            ([left, right]) => [F.toIterable(left), F.toIterable(right)]
+          ),
+          message
+        ).toEqual([[], []])
+        expect(
+          pipe(
+            F.fromIterable<Either<string, number>>([E.left("e"), E.right(1)]),
+            F.separate,
+            ([left, right]) => [F.toIterable(left), F.toIterable(right)]
+          ),
+          message
+        ).toEqual([["e"], [1]])
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
