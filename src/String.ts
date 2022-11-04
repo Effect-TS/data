@@ -4,7 +4,8 @@
 
 import type * as monoid from "@fp-ts/core/typeclass/Monoid"
 import type * as order from "@fp-ts/core/typeclass/Order"
-import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
+import type * as semigroup from "@fp-ts/core/typeclass/Semigroup"
+import * as string from "@fp-ts/data/internal/String"
 import type { NonEmptyReadonlyArray } from "@fp-ts/data/ReadonlyArray"
 import * as RA from "@fp-ts/data/ReadonlyArray"
 import type { Refinement } from "@fp-ts/data/Refinement"
@@ -12,7 +13,7 @@ import type { Refinement } from "@fp-ts/data/Refinement"
 /**
  * @since 1.0.0
  */
-export const concat = (that: string) => (self: string): string => self + that
+export const concat: (that: string) => (self: string) => string = string.concat
 
 /**
  * `string` semigroup under concatenation.
@@ -26,14 +27,14 @@ export const concat = (that: string) => (self: string): string => self + that
  * @category instances
  * @since 1.0.0
  */
-export const Semigroup: semigroup.Semigroup<string> = semigroup.fromCombine(concat)
+export const Semigroup: semigroup.Semigroup<string> = string.Semigroup
 
 /**
  * An empty `string`.
  *
  * @since 1.0.0
  */
-export const empty = ""
+export const empty: "" = string.empty
 
 /**
  * `string` monoid under concatenation.
@@ -50,11 +51,7 @@ export const empty = ""
  * @category instances
  * @since 1.0.0
  */
-export const Monoid: monoid.Monoid<string> = {
-  ...Semigroup,
-  combineAll: (collection) => Semigroup.combineMany(collection)(empty),
-  empty
-}
+export const Monoid: monoid.Monoid<string> = string.Monoid
 
 /**
  * @example

@@ -43,7 +43,10 @@ export const ReadonlyArray: Seq<RA.ReadonlyArrayTypeLambda> = {
   compact: RA.compact,
   findFirstIndex: RA.findFirstIndex,
   findLastIndex: RA.findLastIndex,
-  findLast: RA.findLast
+  findLast: RA.findLast,
+  isEmpty: RA.isEmpty,
+  isNonEmpty: RA.isNonEmpty,
+  join: RA.join
 }
 
 export const List: Seq<L.ListTypeLambda> = {
@@ -95,7 +98,13 @@ export const List: Seq<L.ListTypeLambda> = {
   // TODO
   findLastIndex: hole,
   // TODO
-  findLast: hole
+  findLast: hole,
+  // TODO
+  isEmpty: hole,
+  // TODO
+  isNonEmpty: hole,
+  // TODO
+  join: hole
 }
 
 export const Chunk: Seq<C.ChunkTypeLambda> = {
@@ -135,7 +144,10 @@ export const Chunk: Seq<C.ChunkTypeLambda> = {
   compact: C.compact,
   findFirstIndex: C.findFirstIndex,
   findLastIndex: C.findLastIndex,
-  findLast: C.findLast
+  findLast: C.findLast,
+  isEmpty: C.isEmpty,
+  isNonEmpty: C.isNonEmpty,
+  join: C.join
 }
 
 describe.concurrent("Seq", () => {
@@ -698,6 +710,46 @@ describe.concurrent("Seq", () => {
         expect(pipe(F.fromIterable<number>([-1, 1]), F.findLast(p))).toEqual(O.some(1))
         expect(pipe(F.fromIterable<number>([1, 2]), F.findLast(p))).toEqual(O.some(2))
         expect(pipe(F.fromIterable<number>([-1, -2, 3]), F.findLast(p))).toEqual(O.some(3))
+      })
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    // TODO
+    // assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("isEmpty", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        expect(pipe(F.fromIterable<number>([]), F.isEmpty)).toEqual(true)
+        expect(pipe(F.fromIterable<number>([1]), F.isEmpty)).toEqual(false)
+      })
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    // TODO
+    // assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("isNonEmpty", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        expect(pipe(F.fromIterable<number>([]), F.isNonEmpty)).toEqual(false)
+        expect(pipe(F.fromIterable<number>([1]), F.isNonEmpty)).toEqual(true)
+      })
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    // TODO
+    // assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("join", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        expect(pipe(F.fromIterable<string>([]), F.join("|"))).toEqual("")
+        expect(pipe(F.fromIterable<string>(["a"]), F.join("|"))).toEqual("a")
+        expect(pipe(F.fromIterable<string>(["a", "b"]), F.join("|"))).toEqual("a|b")
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")

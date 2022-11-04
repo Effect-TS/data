@@ -32,6 +32,7 @@ import type { LazyArg } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
 import * as either from "@fp-ts/data/internal/Either"
 import * as option from "@fp-ts/data/internal/Option"
+import * as string from "@fp-ts/data/internal/String"
 import * as number from "@fp-ts/data/Number"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
@@ -2083,6 +2084,13 @@ export const intercalateNonEmpty = <A>(
   (middle: A) =>
     (self: NonEmptyReadonlyArray<A>): A =>
       semigroup.intercalate(middle)(S).combineMany(tailNonEmpty(self))(headNonEmpty(self))
+
+/**
+ * @since 1.0.0
+ */
+export const join: (sep: string) => (self: ReadonlyArray<string>) => string = intercalate(
+  string.Monoid
+)
 
 /**
  * @since 1.0.0
