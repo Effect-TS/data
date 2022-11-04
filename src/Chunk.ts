@@ -912,7 +912,7 @@ export const chunksOf = (n: number) =>
  * @since 1.0.0
  * @category elements
  */
-export const head = <A>(self: Chunk<A>): Option<A> => get(0)(self)
+export const head: <A>(self: Chunk<A>) => Option<A> = get(0)
 
 /**
  * Creates a Chunk of unique values that are included in all given Chunks.
