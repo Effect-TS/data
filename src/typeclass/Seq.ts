@@ -92,4 +92,6 @@ export interface Seq<F extends TypeLambda>
   readonly isNonEmpty: <R, O, E, A>(self: Kind<F, R, O, E, A>) => boolean
   readonly join: (sep: string) => <R, O, E>(self: Kind<F, R, O, E, string>) => string
   readonly last: <R, O, E, A>(self: Kind<F, R, O, E, A>) => Option<A>
+  readonly range: (start: number, end: number) => Kind<F, unknown, never, never, number>
+  readonly makeBy: <A>(f: (i: number) => A) => (n: number) => Kind<F, unknown, never, never, A>
 }
