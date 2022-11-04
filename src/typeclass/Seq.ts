@@ -11,13 +11,14 @@ import type { FlatMap } from "@fp-ts/core/typeclass/FlatMap"
 import type { Foldable } from "@fp-ts/core/typeclass/Foldable"
 import type { Order } from "@fp-ts/core/typeclass/Order"
 import type { Predicate } from "@fp-ts/data/Predicate"
+import type { FilterableWithIndex } from "@fp-ts/data/typeclass/FilterableWithIndex"
 
 /**
  * @category models
  * @since 1.0.0
  */
 export interface Seq<F extends TypeLambda>
-  extends Covariant<F>, FlatMap<F>, Foldable<F>, Filterable<F>
+  extends Covariant<F>, FlatMap<F>, Foldable<F>, Filterable<F>, FilterableWithIndex<F, number>
 {
   readonly fromIterable: <A>(self: Iterable<A>) => Kind<F, unknown, never, never, A>
   readonly toIterable: <R, O, E, A>(self: Kind<F, R, O, E, A>) => Iterable<A>
@@ -65,4 +66,8 @@ export interface Seq<F extends TypeLambda>
       predicate: (a: A) => boolean
     ): <R, O, E>(self: Kind<F, R, O, E, B>) => Kind<F, R, O, E, B>
   }
+  readonly filterMapWhile: <A, B>(
+    f: (a: A) => Option<B>
+  ) => (self: Iterable<A>) => Kind<F, unknown, never, never, B>
+  readonly elem: <B>(b: B) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => boolean
 }

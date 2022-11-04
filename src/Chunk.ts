@@ -752,8 +752,8 @@ export const filterMapWhile = <A, B>(f: (a: A) => Option<B>) =>
  * @since 1.0.0
  * @category elements
  */
-export const elem = <A>(a: A) =>
-  (self: Chunk<A>): boolean => pipe(toReadonlyArray(self), RA.elem(a))
+export const elem = <B>(b: B) =>
+  <A>(self: Chunk<A>): boolean => pipe(toReadonlyArray(self), RA.elem(b))
 
 /**
  * Filter out optional values
