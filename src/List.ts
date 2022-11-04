@@ -667,9 +667,9 @@ export const Filterable: filterable.Filterable<ListTypeLambda> = {
  */
 export const filter: {
   <C extends A, B extends A, A = C>(
-    refinement: (a: A) => a is B
+    refinement: Refinement<A, B>
   ): (self: List<C>) => List<B>
-  <B extends A, A = B>(predicate: (a: A) => boolean): (self: List<B>) => List<B>
+  <B extends A, A = B>(predicate: Predicate<A>): (self: List<B>) => List<B>
 } = filterable.filter(Filterable)
 
 /**

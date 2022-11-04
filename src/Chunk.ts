@@ -709,8 +709,13 @@ export const filterMap = <A, B>(f: (a: A) => Option<B>) =>
  * @since 1.0.0
  * @category filtering
  */
-export const filter = <A>(f: (a: A) => boolean) =>
-  (self: Iterable<A>): Chunk<A> => unsafeFromArray(RA.filterMap(O.liftPredicate(f))(self))
+export const filter: {
+  <C extends A, B extends A, A = C>(
+    refinement: Refinement<A, B>
+  ): (self: Chunk<C>) => Chunk<B>
+  <B extends A, A = B>(predicate: Predicate<A>): (self: Chunk<B>) => Chunk<B>
+} = <A>(f: Predicate<A>) =>
+  (self: Chunk<A>) => unsafeFromArray(RA.filterMap(O.liftPredicate(f))(self))
 
 /**
  * Returns a filtered and mapped subset of the elements.
