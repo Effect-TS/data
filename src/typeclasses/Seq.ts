@@ -46,4 +46,7 @@ export interface Seq<F extends TypeLambda> extends TypeClass<F> {
   readonly flatMap: FlatMap<F>["flatMap"]
   readonly reduce: Foldable<F>["reduce"]
   readonly sort: <A>(O: Order<A>) => <R, O, E>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A>
+  readonly get: (index: number) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => Option<A>
+  readonly unsafeGet: (index: number) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => A
+  readonly size: <R, O, E, A>(self: Kind<F, R, O, E, A>) => number
 }

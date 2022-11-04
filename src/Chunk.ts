@@ -333,7 +333,7 @@ export const toReadonlyArray = <A>(self: Chunk<A>): ReadonlyArray<A> => {
  * @category elements
  */
 export const get = (n: number) =>
-  <A>(self: Chunk<A>): Option<A> => n >= self.length ? O.none : O.some(unsafeGet(n)(self))
+  <A>(self: Chunk<A>): Option<A> => n < 0 || n >= self.length ? O.none : O.some(unsafeGet(n)(self))
 
 /**
  * Wraps an array into a chunk without copying, unsafe on mutable arrays
