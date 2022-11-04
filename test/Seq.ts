@@ -40,7 +40,8 @@ export const ReadonlyArray: Seq<RA.ReadonlyArrayTypeLambda> = {
   filter: RA.filter,
   // TODO
   filterMapWhile: hole,
-  elem: RA.elem
+  elem: RA.elem,
+  compact: RA.compact
 }
 
 export const List: Seq<L.ListTypeLambda> = {
@@ -85,7 +86,8 @@ export const List: Seq<L.ListTypeLambda> = {
   // TODO
   filterMapWhile: hole,
   // TODO
-  elem: hole
+  elem: hole,
+  compact: L.compact
 }
 
 export const Chunk: Seq<C.ChunkTypeLambda> = {
@@ -121,7 +123,8 @@ export const Chunk: Seq<C.ChunkTypeLambda> = {
   filter: C.filter,
   filterMapWithIndex: C.filterMapWithIndex,
   filterMapWhile: C.filterMapWhile,
-  elem: C.elem
+  elem: C.elem,
+  compact: C.compact
 }
 
 describe.concurrent("Seq", () => {
@@ -627,6 +630,21 @@ describe.concurrent("Seq", () => {
     assert(ReadonlyArray, "ReadonlyArray")
     // TODO
     // assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("compact", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        expect(
+          pipe(F.fromIterable([O.some(1), O.none, O.some(3), O.none]), F.compact, F.toIterable)
+        ).toEqual(
+          [1, 3]
+        )
+      })
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 })

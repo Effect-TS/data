@@ -632,7 +632,7 @@ export const foldMapKind: <G extends TypeLambda>(
 /**
  * @since 1.0.0
  */
-export const compact: <A>(self: List<Option<A>>) => List<A> = LI.compact
+export const compact: <A>(self: Iterable<Option<A>>) => List<A> = LI.compact
 
 /**
  * @since 1.0.0
@@ -651,7 +651,8 @@ export const separate: <A, B>(self: List<Either<A, B>>) => readonly [List<A>, Li
 /**
  * @since 1.0.0
  */
-export const filterMap: <A, B>(f: (a: A) => Option<B>) => (self: List<A>) => List<B> = LI.filterMap
+export const filterMap: <A, B>(f: (a: A) => Option<B>) => (self: Iterable<A>) => List<B> =
+  LI.filterMap
 
 /**
  * @since 1.0.0
