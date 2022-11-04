@@ -42,6 +42,7 @@ import type { LazyArg } from "@fp-ts/data/Function"
 import { pipe } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
 import * as either from "@fp-ts/data/internal/Either"
+import * as option from "@fp-ts/data/internal/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
 
@@ -82,13 +83,13 @@ export interface OptionTypeLambda extends TypeLambda {
  * @category constructors
  * @since 1.0.0
  */
-export const none: Option<never> = internal.none
+export const none: Option<never> = option.none
 
 /**
  * @category constructors
  * @since 1.0.0
  */
-export const some: <A>(a: A) => Option<A> = internal.some
+export const some: <A>(a: A) => Option<A> = option.some
 
 /**
  * Returns `true` if the specified value is an instance of `Option`, `false`
@@ -104,7 +105,7 @@ export const some: <A>(a: A) => Option<A> = internal.some
  * @category guards
  * @since 1.0.0
  */
-export const isOption: (u: unknown) => u is Option<unknown> = internal.isOption
+export const isOption: (u: unknown) => u is Option<unknown> = option.isOption
 
 /**
  * Constructs a new `Option` from a nullable type. If the value is `null` or `undefined`, returns `None`, otherwise
@@ -120,7 +121,7 @@ export const isOption: (u: unknown) => u is Option<unknown> = internal.isOption
  * @category conversions
  * @since 1.0.0
  */
-export const fromNullable: <A>(a: A) => Option<NonNullable<A>> = internal.fromNullableToOption
+export const fromNullable: <A>(a: A) => Option<NonNullable<A>> = option.fromNullable
 
 /**
  * Converts an exception into an `Option`. If `f` throws, returns `None`, otherwise returns the output wrapped in a
@@ -821,7 +822,7 @@ export const traverseTap: <F extends TypeLambda>(
  * @category guards
  * @since 1.0.0
  */
-export const isNone: <A>(self: Option<A>) => self is None = internal.isNone
+export const isNone: <A>(self: Option<A>) => self is None = option.isNone
 
 /**
  * Returns `true` if the option is an instance of `Some`, `false` otherwise.
@@ -835,7 +836,7 @@ export const isNone: <A>(self: Option<A>) => self is None = internal.isNone
  * @category guards
  * @since 1.0.0
  */
-export const isSome: <A>(self: Option<A>) => self is Some<A> = internal.isSome
+export const isSome: <A>(self: Option<A>) => self is Some<A> = option.isSome
 
 /**
  * @category conversions

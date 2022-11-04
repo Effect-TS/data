@@ -5,7 +5,7 @@ import * as L from "@fp-ts/data/List"
 import * as O from "@fp-ts/data/Option"
 import * as RA from "@fp-ts/data/ReadonlyArray"
 import * as S from "@fp-ts/data/String"
-import type { Seq } from "@fp-ts/data/typeclasses/Seq"
+import type { Seq } from "@fp-ts/data/typeclass/Seq"
 
 export const ReadonlyArray: Seq<RA.ReadonlyArrayTypeLambda> = {
   fromIterable: RA.fromIterable,

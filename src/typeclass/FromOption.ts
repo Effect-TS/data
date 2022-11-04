@@ -6,8 +6,8 @@
 import type { Kind, TypeClass, TypeLambda } from "@fp-ts/core/HKT"
 import type { FlatMap } from "@fp-ts/core/typeclass/FlatMap"
 import { pipe } from "@fp-ts/data/Function"
-import * as C from "@fp-ts/data/internal/Common"
-import type * as O from "@fp-ts/data/Option"
+import * as option from "@fp-ts/data/internal/Option"
+import type { Option } from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
 
@@ -16,7 +16,7 @@ import type { Refinement } from "@fp-ts/data/Refinement"
  * @since 1.0.0
  */
 export interface FromOption<F extends TypeLambda> extends TypeClass<F> {
-  readonly fromOption: <A>(fa: O.Option<A>) => Kind<F, unknown, never, never, A>
+  readonly fromOption: <A>(self: Option<A>) => Kind<F, unknown, never, never, A>
 }
 
 // -------------------------------------------------------------------------------------
@@ -28,8 +28,7 @@ export interface FromOption<F extends TypeLambda> extends TypeClass<F> {
  * @since 1.0.0
  */
 export const fromNullable = <F extends TypeLambda>(F: FromOption<F>) =>
-  <A>(a: A): Kind<F, unknown, never, never, NonNullable<A>> =>
-    F.fromOption(C.fromNullableToOption(a))
+  <A>(a: A): Kind<F, unknown, never, never, NonNullable<A>> => F.fromOption(option.fromNullable(a))
 
 // -------------------------------------------------------------------------------------
 // lifting
@@ -48,14 +47,15 @@ export const liftPredicate = <F extends TypeLambda>(
   <B extends A, A = B>(predicate: Predicate<A>): (b: B) => Kind<F, unknown, never, never, B>
 } =>
   <B extends A, A = B>(predicate: Predicate<A>) =>
-    (b: B): Kind<F, unknown, never, never, B> => F.fromOption(predicate(b) ? C.some(b) : C.none)
+    (b: B): Kind<F, unknown, never, never, B> =>
+      F.fromOption(predicate(b) ? option.some(b) : option.none)
 
 /**
  * @category lifting
  * @since 1.0.0
  */
 export const liftOption = <F extends TypeLambda>(F: FromOption<F>) =>
-  <A extends ReadonlyArray<unknown>, B>(f: (...a: A) => O.Option<B>) =>
+  <A extends ReadonlyArray<unknown>, B>(f: (...a: A) => Option<B>) =>
     (...a: A): Kind<F, unknown, never, never, B> => F.fromOption(f(...a))
 
 /**
