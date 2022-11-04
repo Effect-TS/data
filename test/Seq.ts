@@ -46,7 +46,9 @@ export const ReadonlyArray: Seq<RA.ReadonlyArrayTypeLambda> = {
   findLast: RA.findLast,
   isEmpty: RA.isEmpty,
   isNonEmpty: RA.isNonEmpty,
-  join: RA.join
+  join: RA.join,
+  last: RA.last,
+  mapWithIndex: RA.mapWithIndex
 }
 
 export const List: Seq<L.ListTypeLambda> = {
@@ -104,7 +106,11 @@ export const List: Seq<L.ListTypeLambda> = {
   // TODO
   isNonEmpty: hole,
   // TODO
-  join: hole
+  join: hole,
+  // TODO
+  last: hole,
+  // TODO
+  mapWithIndex: hole
 }
 
 export const Chunk: Seq<C.ChunkTypeLambda> = {
@@ -147,7 +153,9 @@ export const Chunk: Seq<C.ChunkTypeLambda> = {
   findLast: C.findLast,
   isEmpty: C.isEmpty,
   isNonEmpty: C.isNonEmpty,
-  join: C.join
+  join: C.join,
+  last: C.last,
+  mapWithIndex: C.mapWithIndex
 }
 
 describe.concurrent("Seq", () => {
@@ -750,6 +758,42 @@ describe.concurrent("Seq", () => {
         expect(pipe(F.fromIterable<string>([]), F.join("|"))).toEqual("")
         expect(pipe(F.fromIterable<string>(["a"]), F.join("|"))).toEqual("a")
         expect(pipe(F.fromIterable<string>(["a", "b"]), F.join("|"))).toEqual("a|b")
+      })
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    // TODO
+    // assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("last", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        expect(pipe(F.fromIterable([]), F.last)).toEqual(O.none)
+        expect(pipe(F.fromIterable([1, 2, 3, 4]), F.last)).toEqual(O.some(4))
+      })
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    // TODO
+    // assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("mapWithIndex", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        expect(
+          pipe(F.fromIterable<number>([]), F.mapWithIndex((n, i) => (n * 2) + i), F.toIterable)
+        )
+          .toEqual([])
+        expect(
+          pipe(
+            F.fromIterable<number>([1, 2, 3, 4]),
+            F.mapWithIndex((n, i) => (n * 2) + i),
+            F.toIterable
+          )
+        )
+          .toEqual([2, 5, 8, 11])
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
