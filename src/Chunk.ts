@@ -8,7 +8,7 @@ import type { Either } from "@fp-ts/data/Either"
 import * as Equal from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
 import * as MRef from "@fp-ts/data/mutable/MutableRef"
-import type { nonEmpty } from "@fp-ts/data/NonEmpty"
+import type { NonEmptyIterable } from "@fp-ts/data/NonEmpty"
 import type { Option } from "@fp-ts/data/Option"
 import * as O from "@fp-ts/data/Option"
 import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
@@ -26,8 +26,7 @@ export type TypeId = typeof TypeId
  * @category model
  * @since 1.0.0
  */
-export interface NonEmptyChunk<A> extends Chunk<A> {
-  readonly [nonEmpty]: A
+export interface NonEmptyChunk<A> extends Chunk<A>, NonEmptyIterable<A> {
 }
 
 /**
