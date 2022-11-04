@@ -505,7 +505,7 @@ export function dropWhile<A>(
  * @category getters
  * @since 1.0.0
  */
-export const findIndex = <A>(predicate: Predicate<A>) =>
+export const findFirstIndex = <A>(predicate: Predicate<A>) =>
   (as: ReadonlyArray<A>): Option<number> => {
     const len = as.length
     for (let i = 0; i < len; i++) {
