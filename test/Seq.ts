@@ -28,8 +28,7 @@ export const ReadonlyArray: Seq<RA.ReadonlyArrayTypeLambda> = {
   reduce: RA.reduce,
   sort: RA.sort,
   get: RA.get,
-  // TODO
-  unsafeGet: hole,
+  unsafeGet: RA.unsafeGet,
   size: RA.size,
   empty: RA.empty,
   append: RA.append,
@@ -478,8 +477,7 @@ describe.concurrent("Seq", () => {
         expect(pipe(F.fromIterable([1, 2, 3]), F.unsafeGet(1))).toEqual(2)
       })
     }
-    // TODO
-    // assert(ReadonlyArray, "ReadonlyArray")
+    assert(ReadonlyArray, "ReadonlyArray")
     // TODO
     // assert(List, "List")
     assert(Chunk, "Chunk")

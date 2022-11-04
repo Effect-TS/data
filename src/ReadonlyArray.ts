@@ -50,7 +50,7 @@ export interface ReadonlyArrayTypeLambda extends TypeLambda {
  * @category models
  * @since 1.0.0
  */
-export type NonEmptyReadonlyArray<A> = readonly [A, ...ReadonlyArray<A>]
+export type NonEmptyReadonlyArray<A> = readonly [A, ...Array<A>]
 
 /**
  * Builds a `NonEmptyReadonlyArray` from an non-empty collection of elements.
@@ -308,15 +308,27 @@ export const unappend = <A>(
  * @category getters
  * @since 1.0.0
  */
-export const head = <A>(
-  self: ReadonlyArray<A>
-): Option<A> => (isNonEmpty(self) ? option.some(self[0]) : option.none)
+export const head: <A>(self: ReadonlyArray<A>) => Option<A> = get(0)
+
+/**
+ * Gets an element unsafely, will throw on out of bounds.
+ *
+ * @since 1.0.0
+ * @category unsafe
+ */
+export const unsafeGet = (index: number) =>
+  <A>(self: ReadonlyArray<A>): A => {
+    if (isOutOfBound(index, self)) {
+      throw new Error(`Index out of bounds`)
+    }
+    return self[index]
+  }
 
 /**
  * @category getters
  * @since 1.0.0
  */
-export const headNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): A => self[0]
+export const headNonEmpty: <A>(self: NonEmptyReadonlyArray<A>) => A = unsafeGet(0)
 
 /**
  * Get the last element in a `ReadonlyArray`, or `None` if the `ReadonlyArray` is empty.
