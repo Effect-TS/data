@@ -122,7 +122,7 @@ export const both = <E, A>(left: E, right: A): These<E, A> => ({
  * @category constructors
  * @since 1.0.0
  */
-export const fail = <E>(e: E): Validated<E, never> => left(chunk.make(e))
+export const fail = <E>(e: E): Validated<E, never> => left(chunk.singleton(e))
 
 /**
  * Alias of `right`.
@@ -136,7 +136,7 @@ export const succeed: <A>(a: A) => Validated<never, A> = right
  * @category constructors
  * @since 1.0.0
  */
-export const warn = <E, A>(e: E, a: A): Validated<E, A> => both(chunk.make(e), a)
+export const warn = <E, A>(e: E, a: A): Validated<E, A> => both(chunk.singleton(e), a)
 
 /**
  * @category constructors
@@ -292,7 +292,7 @@ export const fromNullable = <E>(onNullable: E) =>
  * @since 1.0.0
  */
 export const fromEither = <E, A>(self: Either<E, A>): Validated<E, A> =>
-  either.isLeft(self) ? left(chunk.make(self.left)) : self
+  either.isLeft(self) ? left(chunk.singleton(self.left)) : self
 
 /**
  * @category conversions
@@ -337,7 +337,7 @@ export const flatMapNullable = <A, B, E2>(
   f: (a: A) => B | null | undefined,
   onNullable: E2
 ): (<E1>(self: Validated<E1, A>) => Validated<E1 | E2, NonNullable<B>>) =>
-  flatMap(liftNullable(f, chunk.make(onNullable)))
+  flatMap(liftNullable(f, chunk.singleton(onNullable)))
 
 /**
  * @category lifting
@@ -411,7 +411,7 @@ export const flatMapOption = <A, B, E2>(
   onNone: E2
 ) =>
   <E1>(self: Validated<E1, A>): Validated<E1 | E2, B> =>
-    pipe(self, flatMap(liftOption(f, chunk.make(onNone))))
+    pipe(self, flatMap(liftOption(f, chunk.singleton(onNone))))
 
 /**
  * @category sequencing
@@ -602,7 +602,7 @@ export const mapLeft: <E, G>(f: (e: E) => G) => <A>(self: These<E, A>) => These<
  * @category conversions
  * @since 1.0.0
  */
-export const fromThese: <E, A>(self: These<E, A>) => Validated<E, A> = mapLeft(chunk.make)
+export const fromThese: <E, A>(self: These<E, A>) => Validated<E, A> = mapLeft(chunk.singleton)
 
 /**
  * Returns an effect whose right is mapped by the specified `f` function.

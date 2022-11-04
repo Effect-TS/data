@@ -629,7 +629,7 @@ describe("These", () => {
 
   it("fromEither", () => {
     U.deepStrictEqual(_.fromEither(E.right(1)), _.right(1))
-    U.deepStrictEqual(_.fromEither(E.left("e")), _.left(chunk.make("e")))
+    U.deepStrictEqual(_.fromEither(E.left("e")), _.left(chunk.singleton("e")))
   })
 
   it("fromThese", () => {
