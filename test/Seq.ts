@@ -42,7 +42,9 @@ export const ReadonlyArray: Seq<RA.ReadonlyArrayTypeLambda> = {
   filterMapWhile: hole,
   elem: RA.elem,
   compact: RA.compact,
-  findFirstIndex: RA.findFirstIndex
+  findFirstIndex: RA.findFirstIndex,
+  findLastIndex: RA.findLastIndex,
+  findLast: RA.findLast
 }
 
 export const List: Seq<L.ListTypeLambda> = {
@@ -90,7 +92,11 @@ export const List: Seq<L.ListTypeLambda> = {
   elem: hole,
   compact: L.compact,
   // TODO
-  findFirstIndex: hole
+  findFirstIndex: hole,
+  // TODO
+  findLastIndex: hole,
+  // TODO
+  findLast: hole
 }
 
 export const Chunk: Seq<C.ChunkTypeLambda> = {
@@ -128,7 +134,9 @@ export const Chunk: Seq<C.ChunkTypeLambda> = {
   filterMapWhile: C.filterMapWhile,
   elem: C.elem,
   compact: C.compact,
-  findFirstIndex: C.findFirstIndex
+  findFirstIndex: C.findFirstIndex,
+  findLastIndex: C.findLastIndex,
+  findLast: C.findLast
 }
 
 describe.concurrent("Seq", () => {
@@ -660,6 +668,38 @@ describe.concurrent("Seq", () => {
         expect(pipe(F.fromIterable<number>([-1, 1]), F.findFirstIndex(p))).toEqual(O.some(1))
         expect(pipe(F.fromIterable<number>([1, 2]), F.findFirstIndex(p))).toEqual(O.some(0))
         expect(pipe(F.fromIterable<number>([-1, -2, 3]), F.findFirstIndex(p))).toEqual(O.some(2))
+      })
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    // TODO
+    // assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("findLastIndex", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        const p = (n: number): boolean => n > 0
+        expect(pipe(F.fromIterable<number>([]), F.findLastIndex(p))).toEqual(O.none)
+        expect(pipe(F.fromIterable<number>([-1, 1]), F.findLastIndex(p))).toEqual(O.some(1))
+        expect(pipe(F.fromIterable<number>([1, 2]), F.findLastIndex(p))).toEqual(O.some(1))
+        expect(pipe(F.fromIterable<number>([-1, -2, 3]), F.findLastIndex(p))).toEqual(O.some(2))
+      })
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    // TODO
+    // assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("findLast", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        const p = (n: number): boolean => n > 0
+        expect(pipe(F.fromIterable<number>([]), F.findLast(p))).toEqual(O.none)
+        expect(pipe(F.fromIterable<number>([-1, 1]), F.findLast(p))).toEqual(O.some(1))
+        expect(pipe(F.fromIterable<number>([1, 2]), F.findLast(p))).toEqual(O.some(2))
+        expect(pipe(F.fromIterable<number>([-1, -2, 3]), F.findLast(p))).toEqual(O.some(3))
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")

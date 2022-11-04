@@ -80,4 +80,10 @@ export interface Seq<F extends TypeLambda>
   readonly findFirstIndex: <A>(
     predicate: Predicate<A>
   ) => <R, O, E>(self: Kind<F, R, O, E, A>) => Option<number>
+  readonly findLastIndex: <A>(
+    predicate: Predicate<A>
+  ) => <R, O, E>(self: Kind<F, R, O, E, A>) => Option<number>
+  readonly findLast: <A>(
+    predicate: Predicate<A>
+  ) => <R, O, E>(self: Kind<F, R, O, E, A>) => Option<A>
 }
