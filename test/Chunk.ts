@@ -144,7 +144,7 @@ describe.concurrent("Chunk", () => {
     })
 
     describe("Given a singleton Chunk and an index out of bounds", () => {
-      const chunk = pipe(C.single(1))
+      const chunk = pipe(C.make(1))
       const index = 4
 
       it("should throw", () => {
@@ -189,7 +189,7 @@ describe.concurrent("Chunk", () => {
     })
 
     describe("Given a singleton Chunk and an index in bounds", () => {
-      const chunk = pipe(C.single(1))
+      const chunk = pipe(C.make(1))
       const index = 0
 
       it("should return the value", () => {
@@ -286,7 +286,7 @@ describe.concurrent("Chunk", () => {
     })
 
     describe("Given a singleton Chunk with and an amount > 1", () => {
-      const chunk = C.single(1)
+      const chunk = C.make(1)
       const amount = 2
 
       it("should return the available subset", () => {
@@ -294,6 +294,15 @@ describe.concurrent("Chunk", () => {
           1
         ]))
       })
+    })
+  })
+
+  describe("make", () => {
+    it("should return a NonEmptyChunk", () => {
+      expect(C.make(0, 1).length).toStrictEqual(2)
+    })
+    it("should return a ISingleton", () => {
+      expect(C.make(1).backing._tag).toEqual("ISingleton")
     })
   })
 
