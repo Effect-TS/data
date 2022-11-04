@@ -1013,13 +1013,13 @@ export const make = <As extends readonly [any, ...ReadonlyArray<any>]>(
 /**
  * Return a Chunk of length n with element i initialized with f(i).
  *
- * Note. n is normalized to a non negative integer.
+ * **Note**. `n` is normalized to an integer >= 1.
  *
  * @since 1.0.0
  * @category constructors
  */
 export const makeBy = <A>(f: (i: number) => A) =>
-  (n: number): Chunk<A> => unsafeFromArray(RA.makeBy(f)(n))
+  (n: number): NonEmptyChunk<A> => make(...RA.makeBy(f)(n))
 
 /**
  * Returns an effect whose success is mapped by the specified f function.
@@ -1045,7 +1045,7 @@ export const mapWithIndex = <A, B>(f: (a: A, i: number) => B) =>
  * @since 1.0.0
  * @category folding
  */
-export function mapAccum<A, B, S>(s: S, f: (s: S, a: A) => readonly [S, B]) {
+export function mapAccum<S, A, B>(s: S, f: (s: S, a: A) => readonly [S, B]) {
   return (self: Chunk<A>): readonly [S, Chunk<B>] => {
     let s1 = s
     const res: Array<B> = []
@@ -1133,18 +1133,13 @@ export const separate = <A, B>(fa: Chunk<Either<A, B>>): readonly [Chunk<A>, Chu
   )
 
 /**
- * Build a chunk with an integer range with both min/max included.
+ * Create a non empty `Chunk` containing a range of integers, including both endpoints.
  *
  * @category constructors
  * @since 1.0.0
  */
-export const range = (min: number, max: number) => {
-  const builder: Array<number> = []
-  for (let i = min; i <= max; i++) {
-    builder.push(i)
-  }
-  return unsafeFromArray(builder)
-}
+export const range = (start: number, end: number): NonEmptyChunk<number> =>
+  start <= end ? makeBy((i) => start + i)(end - start + 1) : make(start)
 
 /**
  * Reverse a Chunk, creating a new Chunk.

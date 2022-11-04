@@ -48,7 +48,9 @@ export const ReadonlyArray: Seq<RA.ReadonlyArrayTypeLambda> = {
   isNonEmpty: RA.isNonEmpty,
   join: RA.join,
   last: RA.last,
-  mapWithIndex: RA.mapWithIndex
+  mapWithIndex: RA.mapWithIndex,
+  range: RA.range,
+  makeBy: RA.makeBy
 }
 
 export const List: Seq<L.ListTypeLambda> = {
@@ -110,7 +112,11 @@ export const List: Seq<L.ListTypeLambda> = {
   // TODO
   last: hole,
   // TODO
-  mapWithIndex: hole
+  mapWithIndex: hole,
+  // TODO
+  range: hole,
+  // TODO
+  makeBy: hole
 }
 
 export const Chunk: Seq<C.ChunkTypeLambda> = {
@@ -155,7 +161,9 @@ export const Chunk: Seq<C.ChunkTypeLambda> = {
   isNonEmpty: C.isNonEmpty,
   join: C.join,
   last: C.last,
-  mapWithIndex: C.mapWithIndex
+  mapWithIndex: C.mapWithIndex,
+  range: C.range,
+  makeBy: C.makeBy
 }
 
 describe.concurrent("Seq", () => {
@@ -794,6 +802,41 @@ describe.concurrent("Seq", () => {
           )
         )
           .toEqual([2, 5, 8, 11])
+      })
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    // TODO
+    // assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("range", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        expect(pipe(F.range(0, 0), F.toIterable), "(0, 0)").toEqual([0])
+        expect(pipe(F.range(0, 1), F.toIterable), "(0, 1)").toEqual([0, 1])
+        expect(pipe(F.range(1, 5), F.toIterable), "(1, 5)").toEqual([1, 2, 3, 4, 5])
+        expect(pipe(F.range(10, 15), F.toIterable), "(10, 15)").toEqual([10, 11, 12, 13, 14, 15])
+        expect(pipe(F.range(-1, 0), F.toIterable), "(-1, 0)").toEqual([-1, 0])
+        expect(pipe(F.range(-5, -1), F.toIterable), "(-5, -1)").toEqual([-5, -4, -3, -2, -1])
+        // out of bound
+        expect(pipe(F.range(2, 1), F.toIterable), "(2, 1)").toEqual([2])
+        expect(pipe(F.range(-1, -2), F.toIterable), "(-1, -2)").toEqual([-1])
+      })
+    }
+    assert(ReadonlyArray, "ReadonlyArray")
+    // TODO
+    // assert(List, "List")
+    assert(Chunk, "Chunk")
+  })
+
+  describe("makeBy", () => {
+    const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
+      it(message, () => {
+        expect(pipe(F.makeBy((n) => n * 2)(0), F.toIterable)).toEqual([0])
+        expect(pipe(F.makeBy((n) => n * 2)(-1), F.toIterable)).toEqual([0])
+        expect(pipe(F.makeBy((n) => n * 2)(5), F.toIterable)).toEqual([0, 2, 4, 6, 8])
+        expect(pipe(F.makeBy((n) => n * 2)(2.2), F.toIterable)).toEqual([0, 2])
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
