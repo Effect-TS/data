@@ -301,8 +301,14 @@ describe.concurrent("Chunk", () => {
     it("should return a NonEmptyChunk", () => {
       expect(C.make(0, 1).length).toStrictEqual(2)
     })
+  })
+
+  describe("singleton", () => {
+    it("should return a NonEmptyChunk", () => {
+      expect(C.singleton(1).length).toStrictEqual(1)
+    })
     it("should return a ISingleton", () => {
-      expect(C.make(1).backing._tag).toEqual("ISingleton")
+      expect(C.singleton(1).backing._tag).toEqual("ISingleton")
     })
   })
 

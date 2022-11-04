@@ -1008,8 +1008,16 @@ export const last = <A>(self: Chunk<A>): Option<A> => get(self.length - 1)(self)
  */
 export const make = <As extends readonly [any, ...ReadonlyArray<any>]>(
   ...as: As
-): NonEmptyChunk<As[number]> =>
-  as.length === 1 ? new ChunkImpl({ _tag: "ISingleton", a: as[0] }) : unsafeFromArray(as) as any
+): NonEmptyChunk<As[number]> => unsafeFromArray(as) as any
+
+/**
+ * Builds a `NonEmptyChunk` from a single element.
+ *
+ * @since 1.0.0
+ * @category constructors
+ */
+export const singleton = <A>(a: A): NonEmptyChunk<A> =>
+  new ChunkImpl({ _tag: "ISingleton", a }) as any
 
 /**
  * Return a Chunk of length n with element i initialized with f(i).
@@ -1140,7 +1148,7 @@ export const separate = <A, B>(self: Chunk<Either<A, B>>): readonly [Chunk<A>, C
  * @since 1.0.0
  */
 export const range = (start: number, end: number): NonEmptyChunk<number> =>
-  start <= end ? makeBy((i) => start + i)(end - start + 1) : make(start)
+  start <= end ? makeBy((i) => start + i)(end - start + 1) : singleton(start)
 
 /**
  * Reverse a Chunk, creating a new Chunk.
