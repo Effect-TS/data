@@ -35,8 +35,7 @@ import * as option from "@fp-ts/data/internal/Option"
 import * as string from "@fp-ts/data/internal/String"
 import * as number from "@fp-ts/data/Number"
 import type { Option } from "@fp-ts/data/Option"
-import type { Predicate } from "@fp-ts/data/Predicate"
-import type { Refinement } from "@fp-ts/data/Refinement"
+import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 
 /**
  * @category type lambdas

@@ -43,8 +43,7 @@ import { pipe } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
 import * as either from "@fp-ts/data/internal/Either"
 import * as option from "@fp-ts/data/internal/Option"
-import type { Predicate } from "@fp-ts/data/Predicate"
-import type { Refinement } from "@fp-ts/data/Refinement"
+import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 
 /**
  * @category models
@@ -122,6 +121,16 @@ export const isOption: (u: unknown) => u is Option<unknown> = option.isOption
  * @since 1.0.0
  */
 export const fromNullable: <A>(a: A) => Option<NonNullable<A>> = option.fromNullable
+
+/**
+ * Returns a `Refinement` from a `Option` returning function.
+ * This function ensures that a `Refinement` definition is type-safe.
+ *
+ * @category conversions
+ * @since 1.0.0
+ */
+export const toRefinement = <A, B extends A>(f: (a: A) => Option<B>): Refinement<A, B> =>
+  (a: A): a is B => isSome(f(a))
 
 /**
  * Converts an exception into an `Option`. If `f` throws, returns `None`, otherwise returns the output wrapped in a

@@ -14,9 +14,8 @@ import * as II from "@fp-ts/data/internal/Iterable"
 import * as LI from "@fp-ts/data/internal/List"
 import * as L from "@fp-ts/data/List"
 import * as O from "@fp-ts/data/Option"
-import type { Predicate } from "@fp-ts/data/Predicate"
+import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 import type * as Q from "@fp-ts/data/Queue"
-import type { Refinement } from "@fp-ts/data/Refinement"
 
 export const QueueTypeId: Q.TypeId = Symbol.for("@fp-ts/data/Queue") as Q.TypeId
 

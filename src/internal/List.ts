@@ -20,8 +20,7 @@ import * as internal from "@fp-ts/data/internal/Common"
 import type * as L from "@fp-ts/data/List"
 import * as O from "@fp-ts/data/Option"
 import type { Option } from "@fp-ts/data/Option"
-import type { Predicate } from "@fp-ts/data/Predicate"
-import type { Refinement } from "@fp-ts/data/Refinement"
+import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 
 /** @internal */
 export interface ListTypeLambda extends TypeLambda {

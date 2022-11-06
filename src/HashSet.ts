@@ -4,8 +4,7 @@
 
 import type { Equal } from "@fp-ts/data/Equal"
 import * as HS from "@fp-ts/data/internal/HashSet"
-import type { Predicate } from "@fp-ts/data/Predicate"
-import type { Refinement } from "@fp-ts/data/Refinement"
+import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 
 const TypeId: unique symbol = HS.HashSetTypeId as TypeId
 

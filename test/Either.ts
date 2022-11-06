@@ -75,6 +75,22 @@ describe.concurrent("Either", () => {
     expect(_.traverseTap).exist
   })
 
+  it("toRefinement", () => {
+    const f = (s: string | number): _.Either<string, string> =>
+      typeof s === "string" ? _.right(s) : _.left("not a string")
+    const isString = _.toRefinement(f)
+    deepStrictEqual(isString("s"), true)
+    deepStrictEqual(isString(1), false)
+    type A = { readonly type: "A" }
+    type B = { readonly type: "B" }
+    type C = A | B
+    const isA = _.toRefinement((
+      c: C
+    ) => (c.type === "A" ? _.right(c) : _.left("not as A")))
+    deepStrictEqual(isA({ type: "A" }), true)
+    deepStrictEqual(isA({ type: "B" }), false)
+  })
+
   it("isEither", () => {
     deepStrictEqual(pipe(_.right(1), _.isEither), true)
     deepStrictEqual(pipe(_.left("e"), _.isEither), true)

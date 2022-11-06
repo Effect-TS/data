@@ -7,8 +7,7 @@ import type * as Equal from "@fp-ts/data/Equal"
 import * as QI from "@fp-ts/data/internal/Queue"
 import type * as L from "@fp-ts/data/List"
 import type * as O from "@fp-ts/data/Option"
-import type { Predicate } from "@fp-ts/data/Predicate"
-import type { Refinement } from "@fp-ts/data/Refinement"
+import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 
 const TypeId: unique symbol = QI.QueueTypeId as TypeId
 

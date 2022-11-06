@@ -5,7 +5,7 @@ import type * as monoid from "@fp-ts/core/typeclass/Monoid"
 import type * as order from "@fp-ts/core/typeclass/Order"
 import type * as semigroup from "@fp-ts/core/typeclass/Semigroup"
 import type { LazyArg } from "@fp-ts/data/Function"
-import type { Refinement } from "@fp-ts/data/Refinement"
+import type { Refinement } from "@fp-ts/data/Predicate"
 
 /**
  * @category refinements

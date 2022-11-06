@@ -6,7 +6,7 @@ import type * as monoid from "@fp-ts/core/typeclass/Monoid"
 import type * as order from "@fp-ts/core/typeclass/Order"
 import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
 import type { Ordering } from "@fp-ts/data/Ordering"
-import type { Refinement } from "@fp-ts/data/Refinement"
+import type { Refinement } from "@fp-ts/data/Predicate"
 
 /**
  * @category refinements

@@ -34,7 +34,6 @@ import * as queue from "@fp-ts/data/Queue"
 import * as random from "@fp-ts/data/Random"
 import * as readonlyArray from "@fp-ts/data/ReadonlyArray"
 import * as redBlackTree from "@fp-ts/data/RedBlackTree"
-import * as refinement from "@fp-ts/data/Refinement"
 import * as safeEval from "@fp-ts/data/SafeEval"
 import * as sortedMap from "@fp-ts/data/SortedMap"
 import * as sortedSet from "@fp-ts/data/SortedSet"
@@ -182,10 +181,6 @@ export {
    * @since 1.0.0
    */
   redBlackTree,
-  /**
-   * @since 1.0.0
-   */
-  refinement,
   /**
    * @since 1.0.0
    */

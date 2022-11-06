@@ -6,9 +6,9 @@ import type * as monoid from "@fp-ts/core/typeclass/Monoid"
 import type * as order from "@fp-ts/core/typeclass/Order"
 import type * as semigroup from "@fp-ts/core/typeclass/Semigroup"
 import * as string from "@fp-ts/data/internal/String"
+import type { Refinement } from "@fp-ts/data/Predicate"
 import type { NonEmptyReadonlyArray } from "@fp-ts/data/ReadonlyArray"
 import * as RA from "@fp-ts/data/ReadonlyArray"
-import type { Refinement } from "@fp-ts/data/Refinement"
 
 /**
  * @since 1.0.0

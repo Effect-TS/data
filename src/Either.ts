@@ -37,8 +37,7 @@ import { identity, pipe } from "@fp-ts/data/Function"
 import * as either from "@fp-ts/data/internal/Either"
 import * as option from "@fp-ts/data/internal/Option"
 import type { Option } from "@fp-ts/data/Option"
-import type { Predicate } from "@fp-ts/data/Predicate"
-import type { Refinement } from "@fp-ts/data/Refinement"
+import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 
 /**
  * @category models
@@ -776,6 +775,16 @@ export const flatMapNullable = <A, B, E2>(
   onNullable: E2
 ): (<E1>(self: Either<E1, A>) => Either<E1 | E2, NonNullable<B>>) =>
   flatMap(liftNullable(f, onNullable))
+
+/**
+ * Returns a `Refinement` from a `Either` returning function.
+ * This function ensures that a `Refinement` definition is type-safe.
+ *
+ * @category conversions
+ * @since 1.0.0
+ */
+export const toRefinement = <A, E, B extends A>(f: (a: A) => Either<E, B>): Refinement<A, B> =>
+  (a: A): a is B => isRight(f(a))
 
 /**
  * Constructs a new `Either` from a function that might throw.

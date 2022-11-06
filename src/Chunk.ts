@@ -11,9 +11,8 @@ import * as MRef from "@fp-ts/data/mutable/MutableRef"
 import type { nonEmpty } from "@fp-ts/data/NonEmpty"
 import type { Option } from "@fp-ts/data/Option"
 import * as O from "@fp-ts/data/Option"
-import type { Predicate } from "@fp-ts/data/Predicate"
+import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 import * as RA from "@fp-ts/data/ReadonlyArray"
-import type { Refinement } from "@fp-ts/data/Refinement"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/Chunk") as TypeId
 

@@ -9,7 +9,7 @@ import * as of_ from "@fp-ts/core/typeclass/Of"
 import * as product_ from "@fp-ts/core/typeclass/Product"
 import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
 import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
-import { constFalse, constTrue, flow } from "@fp-ts/data/Function"
+import { constFalse, constTrue } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
 
 /**
@@ -31,8 +31,35 @@ export interface PredicateTypeLambda extends TypeLambda {
 /**
  * @since 1.0.0
  */
+export interface Refinement<A, B extends A> {
+  (a: A): a is B
+}
+
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+export const id = <A>(): Refinement<A, A> => (_): _ is A => true
+
+/**
+ * @since 1.0.0
+ */
+export const compose = <A, B extends A, C extends B>(bc: Refinement<B, C>) =>
+  (ab: Refinement<A, B>): Refinement<A, C> => (i): i is C => ab(i) && bc(i)
+
+/**
+ * @since 1.0.0
+ */
 export const contramap = <B, A>(f: (b: B) => A) =>
-  (self: Predicate<A>): Predicate<B> => flow(f, self)
+  (self: Predicate<A>): Predicate<B> => (b) => self(f(b))
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const Contravariant: contravariant.Contravariant<PredicateTypeLambda> = contravariant.make(
+  contramap
+)
 
 /**
  * @since 1.0.0
@@ -40,9 +67,7 @@ export const contramap = <B, A>(f: (b: B) => A) =>
 export const imap: <A, B>(
   to: (a: A) => B,
   from: (b: B) => A
-) => (self: Predicate<A>) => Predicate<B> = contravariant.imap<PredicateTypeLambda>(
-  contramap
-)
+) => (self: Predicate<A>) => Predicate<B> = Contravariant.imap
 
 /**
  * @category instances
@@ -70,18 +95,9 @@ export const bindTo: <N extends string>(
 )
 
 /**
- * @category instances
  * @since 1.0.0
  */
-export const Contravariant: contravariant.Contravariant<PredicateTypeLambda> = {
-  ...Invariant,
-  contramap
-}
-
-/**
- * @since 1.0.0
- */
-export const of = <A>(_: A): Predicate<A> => () => true
+export const of = <A>(_: A): Predicate<A> => id()
 
 /**
  * @category instances
@@ -94,7 +110,12 @@ export const Of: of_.Of<PredicateTypeLambda> = {
 /**
  * @since 1.0.0
  */
-export const Do = of_.Do(Of)
+export const Do: Predicate<{}> = of_.Do(Of)
+
+/**
+ * @since 1.0.0
+ */
+export const unit: Predicate<void> = of_.unit(Of)
 
 /**
  * @since 1.0.0
@@ -126,7 +147,7 @@ export const productMany = <A>(collection: Iterable<Predicate<A>>) =>
  * @since 1.0.0
  */
 export const SemiProduct: semiProduct.SemiProduct<PredicateTypeLambda> = {
-  ...Contravariant,
+  imap,
   product,
   productMany
 }
@@ -152,8 +173,10 @@ export const productAll = <A>(
  * @since 1.0.0
  */
 export const Product: product_.Product<PredicateTypeLambda> = {
-  ...SemiProduct,
-  ...Of,
+  imap,
+  product,
+  productMany,
+  of,
   productAll
 }
 
@@ -162,7 +185,7 @@ export const Product: product_.Product<PredicateTypeLambda> = {
  */
 export const andThenBind: <N extends string, A extends object, B>(
   name: Exclude<N, keyof A>,
-  fb: Predicate<B>
+  self: Predicate<B>
 ) => (
   self: Predicate<A>
 ) => Predicate<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }> = semiProduct
@@ -174,7 +197,7 @@ export const andThenBind: <N extends string, A extends object, B>(
  * @since 1.0.0
  */
 export const tuple: <T extends ReadonlyArray<Predicate<any>>>(
-  ...tuple: T
+  ...predicates: T
 ) => Predicate<Readonly<{ [I in keyof T]: [T[I]] extends [Predicate<infer A>] ? A : never }>> =
   product_
     .tuple(Product)
@@ -183,7 +206,7 @@ export const tuple: <T extends ReadonlyArray<Predicate<any>>>(
  * @since 1.0.0
  */
 export const struct: <R extends Record<string, Predicate<any>>>(
-  r: R
+  predicates: R
 ) => Predicate<{ readonly [K in keyof R]: [R[K]] extends [Predicate<infer A>] ? A : never }> =
   product_
     .struct(Product)
@@ -191,7 +214,7 @@ export const struct: <R extends Record<string, Predicate<any>>>(
 /**
  * @since 1.0.0
  */
-export const not = <A>(predicate: Predicate<A>): Predicate<A> => (a) => !predicate(a)
+export const not = <A>(self: Predicate<A>): Predicate<A> => (a) => !self(a)
 
 /**
  * @since 1.0.0
@@ -220,7 +243,7 @@ export const getMonoidAny = <A>(): monoid.Monoid<Predicate<A>> => {
   return ({
     combine: S.combine,
     combineMany: S.combineMany,
-    combineAll: (all) => S.combineMany(all)(constFalse),
+    combineAll: (collection) => S.combineMany(collection)(constFalse),
     empty: constFalse
   })
 }
@@ -241,7 +264,7 @@ export const getMonoidAll = <A>(): monoid.Monoid<Predicate<A>> => {
   return ({
     combine: S.combine,
     combineMany: S.combineMany,
-    combineAll: (all) => S.combineMany(all)(constTrue),
+    combineAll: (collection) => S.combineMany(collection)(constTrue),
     empty: constTrue
   })
 }

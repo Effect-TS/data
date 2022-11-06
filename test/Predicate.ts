@@ -1,10 +1,20 @@
 import { pipe } from "@fp-ts/data/Function"
 import * as _ from "@fp-ts/data/Predicate"
+import * as String from "@fp-ts/data/String"
 import { deepStrictEqual } from "@fp-ts/data/test/util"
 
 const isPositive: _.Predicate<number> = (n) => n > 0
 const isNegative: _.Predicate<number> = (n) => n < 0
 const lt2: _.Predicate<number> = (n) => n < 2
+
+interface NonEmptyStringBrand {
+  readonly NonEmptyString: unique symbol
+}
+
+type NonEmptyString = string & NonEmptyStringBrand
+
+const NonEmptyString: _.Refinement<string, NonEmptyString> = (s): s is NonEmptyString =>
+  s.length > 0
 
 describe.concurrent("Predicate", () => {
   it("instances and derived exports", () => {
@@ -18,6 +28,7 @@ describe.concurrent("Predicate", () => {
 
     expect(_.Of).exist
     expect(_.of).exist
+    expect(_.unit).exist
     expect(_.Do).exist
 
     expect(_.SemiProduct).exist
@@ -29,6 +40,18 @@ describe.concurrent("Predicate", () => {
     expect(_.productAll).exist
     expect(_.tuple).exist
     expect(_.struct).exist
+  })
+
+  it("id", () => {
+    const refinement = _.id<string>()
+    deepStrictEqual(refinement("a"), true)
+  })
+
+  it("compose", () => {
+    const refinement = pipe(String.isString, _.compose(NonEmptyString))
+    deepStrictEqual(refinement("a"), true)
+    deepStrictEqual(refinement(null), false)
+    deepStrictEqual(refinement(""), false)
   })
 
   it("contramap", () => {
