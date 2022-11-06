@@ -89,6 +89,21 @@ describe.concurrent("Option", () => {
     expect(_.filter).exist
   })
 
+  it("toRefinement", () => {
+    const f = (
+      s: string | number
+    ): _.Option<string> => (typeof s === "string" ? _.some(s) : _.none)
+    const isString = _.toRefinement(f)
+    deepStrictEqual(isString("s"), true)
+    deepStrictEqual(isString(1), false)
+    type A = { readonly type: "A" }
+    type B = { readonly type: "B" }
+    type C = A | B
+    const isA = _.toRefinement<C, A>((c) => (c.type === "A" ? _.some(c) : _.none))
+    deepStrictEqual(isA({ type: "A" }), true)
+    deepStrictEqual(isA({ type: "B" }), false)
+  })
+
   it("isOption", () => {
     deepStrictEqual(pipe(_.some(1), _.isOption), true)
     deepStrictEqual(pipe(_.none, _.isOption), true)

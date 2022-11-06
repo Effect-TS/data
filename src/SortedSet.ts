@@ -5,9 +5,8 @@
 import type { Order } from "@fp-ts/core/typeclass/Order"
 import * as Eq from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
-import type { Predicate } from "@fp-ts/data/Predicate"
+import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 import * as RBT from "@fp-ts/data/RedBlackTree"
-import type { Refinement } from "@fp-ts/data/Refinement"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/SortedSet")
 

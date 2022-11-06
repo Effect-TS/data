@@ -5,8 +5,7 @@ import { fromBitmap, hashFragment, toBitmap } from "@fp-ts/data/internal/HashMap
 import { SIZE } from "@fp-ts/data/internal/HashMap/config"
 import * as Node from "@fp-ts/data/internal/HashMap/node"
 import * as Option from "@fp-ts/data/Option"
-import type { Predicate } from "@fp-ts/data/Predicate"
-import type { Refinement } from "@fp-ts/data/Refinement"
+import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 
 /** @internal */
 export const HashMapTypeId: HM.TypeId = Symbol.for("@fp-ts/data/HashMap") as HM.TypeId

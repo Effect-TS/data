@@ -47,8 +47,7 @@ import * as either from "@fp-ts/data/internal/Either"
 import * as option from "@fp-ts/data/internal/Option"
 import * as these from "@fp-ts/data/internal/These"
 import type { Option } from "@fp-ts/data/Option"
-import type { Predicate } from "@fp-ts/data/Predicate"
-import type { Refinement } from "@fp-ts/data/Refinement"
+import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 
 /**
  * @category model

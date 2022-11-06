@@ -28,8 +28,7 @@ import type * as Equal from "@fp-ts/data/Equal"
 import * as LI from "@fp-ts/data/internal/List"
 import * as _sort from "@fp-ts/data/internal/List/sort"
 import type { Option } from "@fp-ts/data/Option"
-import type { Predicate } from "@fp-ts/data/Predicate"
-import type { Refinement } from "@fp-ts/data/Refinement"
+import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 
 type LCons<A> = Cons<A>
 type LNil<A> = Nil<A>
