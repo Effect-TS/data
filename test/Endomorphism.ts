@@ -1,6 +1,6 @@
-import * as _ from "@fp-ts/data/Endomorphism"
 import { pipe } from "@fp-ts/data/Function"
 import { decrement, increment } from "@fp-ts/data/Number"
+import * as _ from "@fp-ts/data/test/limbo/Endomorphism"
 import { deepStrictEqual, double } from "@fp-ts/data/test/util"
 
 describe.concurrent("Endomorphism", () => {

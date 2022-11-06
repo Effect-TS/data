@@ -4,7 +4,6 @@
 
 import * as boolean from "@fp-ts/data/Boolean"
 import * as chunk from "@fp-ts/data/Chunk"
-import * as const_ from "@fp-ts/data/Const"
 import * as context from "@fp-ts/data/Context"
 import * as differ from "@fp-ts/data/Differ"
 import * as chunkPatch from "@fp-ts/data/Differ/ChunkPatch"
@@ -14,7 +13,6 @@ import * as hashSetPatch from "@fp-ts/data/Differ/HashSetPatch"
 import * as orPatch from "@fp-ts/data/Differ/OrPatch"
 import * as duration from "@fp-ts/data/Duration"
 import * as either from "@fp-ts/data/Either"
-import * as endomorphism from "@fp-ts/data/Endomorphism"
 import * as equal from "@fp-ts/data/Equal"
 import * as _function from "@fp-ts/data/Function"
 import * as hashMap from "@fp-ts/data/HashMap"
@@ -68,10 +66,6 @@ export {
   /**
    * @since 1.0.0
    */
-  const_,
-  /**
-   * @since 1.0.0
-   */
   context,
   /**
    * @since 1.0.0
@@ -93,10 +87,6 @@ export {
    * @since 1.0.0
    */
   either,
-  /**
-   * @since 1.0.0
-   */
-  endomorphism,
   /**
    * @since 1.0.0
    */

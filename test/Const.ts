@@ -1,7 +1,7 @@
-import * as _ from "@fp-ts/data/Const"
 import { pipe } from "@fp-ts/data/Function"
 import * as number from "@fp-ts/data/Number"
 import * as string from "@fp-ts/data/String"
+import * as _ from "@fp-ts/data/test/limbo/Const"
 import * as U from "./util"
 
 describe.concurrent("Const", () => {
