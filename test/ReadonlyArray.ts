@@ -4,7 +4,7 @@ import * as E from "@fp-ts/data/Either"
 import * as Equal from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
 import * as Number from "@fp-ts/data/Number"
-import * as Option from "@fp-ts/data/Option"
+import * as O from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import * as RA from "@fp-ts/data/ReadonlyArray"
 import * as String from "@fp-ts/data/String"
@@ -88,12 +88,42 @@ describe.concurrent("ReadonlyArray", () => {
     expect(RA.traverseFilter).exist
     expect(RA.traversePartition).exist
 
-    expect(RA.FromOption).exist
     expect(RA.liftPredicate).exist
     expect(RA.liftOption).exist
-    expect(RA.fromNullable).exist
     expect(RA.liftNullable).exist
     expect(RA.flatMapNullable).exist
+  })
+
+  it("fromNullable", () => {
+    deepStrictEqual(RA.fromNullable(undefined), [])
+    deepStrictEqual(RA.fromNullable(null), [])
+    deepStrictEqual(RA.fromNullable(1), [1])
+  })
+
+  it("liftNullable", () => {
+    const f = RA.liftNullable((n: number) => (n > 0 ? n : null))
+    deepStrictEqual(f(1), [1])
+    deepStrictEqual(f(-1), [])
+  })
+
+  it("flatMapNullable", () => {
+    const f = RA.flatMapNullable((n: number) => (n > 0 ? n : null))
+    deepStrictEqual(pipe([], f), [])
+    deepStrictEqual(pipe([1], f), [1])
+    deepStrictEqual(pipe([-1], f), [])
+  })
+
+  it("liftPredicate", () => {
+    const p = (n: number): boolean => n > 2
+    const f = RA.liftPredicate(p)
+    deepStrictEqual(f(1), [])
+    deepStrictEqual(f(3), [3])
+  })
+
+  it("liftOption", () => {
+    const f = RA.liftOption((n: number) => (n > 0 ? O.some(n) : O.none))
+    deepStrictEqual(f(1), [1])
+    deepStrictEqual(f(-1), [])
   })
 
   it("unprepend", () => {
@@ -168,45 +198,45 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("traverse", () => {
-    const traverse = RA.traverse(Option.Applicative)((
+    const traverse = RA.traverse(O.Applicative)((
       n: number
-    ): Option.Option<number> => (n % 2 === 0 ? Option.none : Option.some(n)))
-    deepStrictEqual(traverse([1, 2]), Option.none)
-    deepStrictEqual(traverse([1, 3]), Option.some([1, 3]))
+    ): O.Option<number> => (n % 2 === 0 ? O.none : O.some(n)))
+    deepStrictEqual(traverse([1, 2]), O.none)
+    deepStrictEqual(traverse([1, 3]), O.some([1, 3]))
   })
 
   it("sequence", () => {
-    const sequence = RA.sequence(Option.Applicative)
-    deepStrictEqual(sequence([Option.some(1), Option.some(3)]), Option.some([1, 3]))
-    deepStrictEqual(sequence([Option.some(1), Option.none]), Option.none)
+    const sequence = RA.sequence(O.Applicative)
+    deepStrictEqual(sequence([O.some(1), O.some(3)]), O.some([1, 3]))
+    deepStrictEqual(sequence([O.some(1), O.none]), O.none)
   })
 
   it("traverseWithIndex", () => {
     deepStrictEqual(
       pipe(
         ["a", "bb"],
-        RA.traverseWithIndex(Option.Applicative)((
+        RA.traverseWithIndex(O.Applicative)((
           s,
           i
-        ) => (s.length >= 1 ? Option.some(s + i) : Option.none))
+        ) => (s.length >= 1 ? O.some(s + i) : O.none))
       ),
-      Option.some(["a0", "bb1"])
+      O.some(["a0", "bb1"])
     )
     deepStrictEqual(
       pipe(
         ["a", "bb"],
-        RA.traverseWithIndex(Option.Applicative)((
+        RA.traverseWithIndex(O.Applicative)((
           s,
           i
-        ) => (s.length > 1 ? Option.some(s + i) : Option.none))
+        ) => (s.length > 1 ? O.some(s + i) : O.none))
       ),
-      Option.none
+      O.none
     )
   })
 
   it("get", () => {
-    deepStrictEqual(pipe([1, 2, 3], RA.get(0)), Option.some(1))
-    deepStrictEqual(pipe([1, 2, 3], RA.get(3)), Option.none)
+    deepStrictEqual(pipe([1, 2, 3], RA.get(0)), O.some(1))
+    deepStrictEqual(pipe([1, 2, 3], RA.get(3)), O.none)
   })
 
   it("elem", () => {
@@ -217,7 +247,7 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("unfold", () => {
-    const as = RA.unfold(5, (n) => (n > 0 ? Option.some([n, n - 1]) : Option.none))
+    const as = RA.unfold(5, (n) => (n > 0 ? O.some([n, n - 1]) : O.none))
     deepStrictEqual(as, [5, 4, 3, 2, 1])
   })
 
@@ -293,12 +323,12 @@ describe.concurrent("ReadonlyArray", () => {
 
   it("compact", () => {
     deepStrictEqual(RA.compact([]), [])
-    deepStrictEqual(RA.compact([Option.some(1), Option.some(2), Option.some(3)]), [
+    deepStrictEqual(RA.compact([O.some(1), O.some(2), O.some(3)]), [
       1,
       2,
       3
     ])
-    deepStrictEqual(RA.compact([Option.some(1), Option.none, Option.some(3)]), [
+    deepStrictEqual(RA.compact([O.some(1), O.none, O.some(3)]), [
       1,
       3
     ])
@@ -316,15 +346,15 @@ describe.concurrent("ReadonlyArray", () => {
     const g = (n: number) => n % 2 === 1
     deepStrictEqual(pipe([1, 2, 3], RA.filter(g)), [1, 3])
     const x = pipe(
-      [Option.some(3), Option.some(2), Option.some(1)],
-      RA.filter(Option.isSome)
+      [O.some(3), O.some(2), O.some(1)],
+      RA.filter(O.isSome)
     )
-    assert.deepStrictEqual(x, [Option.some(3), Option.some(2), Option.some(1)])
+    assert.deepStrictEqual(x, [O.some(3), O.some(2), O.some(1)])
     const y = pipe(
-      [Option.some(3), Option.none, Option.some(1)],
-      RA.filter(Option.isSome)
+      [O.some(3), O.none, O.some(1)],
+      RA.filter(O.isSome)
     )
-    assert.deepStrictEqual(y, [Option.some(3), Option.some(1)])
+    assert.deepStrictEqual(y, [O.some(3), O.some(1)])
   })
 
   it("filterWithIndex", () => {
@@ -336,7 +366,7 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("filterMap", () => {
-    const f = (n: number) => (n % 2 === 0 ? Option.none : Option.some(n))
+    const f = (n: number) => (n % 2 === 0 ? O.none : O.some(n))
     deepStrictEqual(pipe([1, 2, 3], RA.filterMap(f)), [1, 3])
     deepStrictEqual(pipe([], RA.filterMap(f)), [])
   })
@@ -352,7 +382,7 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("filterMapWithIndex", () => {
-    const f = (n: number, i: number) => ((i + n) % 2 === 0 ? Option.none : Option.some(n))
+    const f = (n: number, i: number) => ((i + n) % 2 === 0 ? O.none : O.some(n))
     deepStrictEqual(pipe([1, 2, 4], RA.filterMapWithIndex(f)), [1, 2])
     deepStrictEqual(pipe([], RA.filterMapWithIndex(f)), [])
   })
@@ -435,20 +465,20 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("traverseNonEmpty", () => {
-    const traverseNonEmpty = RA.traverseNonEmpty(Option.Applicative)
+    const traverseNonEmpty = RA.traverseNonEmpty(O.Applicative)
     deepStrictEqual(
       pipe(
         RA.make(1, 2, 3),
-        traverseNonEmpty((n) => (n >= 0 ? Option.some(n) : Option.none))
+        traverseNonEmpty((n) => (n >= 0 ? O.some(n) : O.none))
       ),
-      Option.some(RA.make(1, 2, 3))
+      O.some(RA.make(1, 2, 3))
     )
     deepStrictEqual(
       pipe(
         RA.make(1, 2, 3),
-        traverseNonEmpty((n) => (n >= 2 ? Option.some(n) : Option.none))
+        traverseNonEmpty((n) => (n >= 2 ? O.some(n) : O.none))
       ),
-      Option.none
+      O.none
     )
   })
 
@@ -456,22 +486,22 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(
       pipe(
         RA.make("a", "bb"),
-        RA.traverseNonEmptyWithIndex(Option.Applicative)((
+        RA.traverseNonEmptyWithIndex(O.Applicative)((
           s,
           i
-        ) => (s.length >= 1 ? Option.some(s + i) : Option.none))
+        ) => (s.length >= 1 ? O.some(s + i) : O.none))
       ),
-      Option.some(RA.make("a0", "bb1"))
+      O.some(RA.make("a0", "bb1"))
     )
     deepStrictEqual(
       pipe(
         RA.make("a", "bb"),
-        RA.traverseNonEmptyWithIndex(Option.Applicative)((
+        RA.traverseNonEmptyWithIndex(O.Applicative)((
           s,
           i
-        ) => (s.length > 1 ? Option.some(s + i) : Option.none))
+        ) => (s.length > 1 ? O.some(s + i) : O.none))
       ),
-      Option.none
+      O.none
     )
   })
 
@@ -547,20 +577,20 @@ describe.concurrent("ReadonlyArray", () => {
 
   it("head", () => {
     const as: ReadonlyArray<number> = [1, 2, 3]
-    deepStrictEqual(RA.head(as), Option.some(1))
-    deepStrictEqual(RA.head([]), Option.none)
+    deepStrictEqual(RA.head(as), O.some(1))
+    deepStrictEqual(RA.head([]), O.none)
   })
 
   it("last", () => {
     const as: ReadonlyArray<number> = [1, 2, 3]
-    deepStrictEqual(RA.last(as), Option.some(3))
-    deepStrictEqual(RA.last([]), Option.none)
+    deepStrictEqual(RA.last(as), O.some(3))
+    deepStrictEqual(RA.last([]), O.none)
   })
 
   it("tail", () => {
     const as: ReadonlyArray<number> = [1, 2, 3]
-    deepStrictEqual(RA.tail(as), Option.some([2, 3]))
-    deepStrictEqual(RA.tail([]), Option.none)
+    deepStrictEqual(RA.tail(as), O.some([2, 3]))
+    deepStrictEqual(RA.tail([]), O.none)
   })
 
   it("takeLeft", () => {
@@ -682,13 +712,13 @@ describe.concurrent("ReadonlyArray", () => {
 
   it("init", () => {
     const as: ReadonlyArray<number> = [1, 2, 3]
-    deepStrictEqual(RA.init(as), Option.some([1, 2]))
-    deepStrictEqual(RA.init([]), Option.none)
+    deepStrictEqual(RA.init(as), O.some([1, 2]))
+    deepStrictEqual(RA.init([]), O.none)
   })
 
   it("findFirstIndex", () => {
-    deepStrictEqual(RA.findFirstIndex((x) => x === 2)([1, 2, 3]), Option.some(1))
-    deepStrictEqual(RA.findFirstIndex((x) => x === 2)([]), Option.none)
+    deepStrictEqual(RA.findFirstIndex((x) => x === 2)([1, 2, 3]), O.some(1))
+    deepStrictEqual(RA.findFirstIndex((x) => x === 2)([]), O.none)
   })
 
   it("findFirst", () => {
@@ -697,21 +727,21 @@ describe.concurrent("ReadonlyArray", () => {
         [],
         RA.findFirst((x: { readonly a: number }) => x.a > 1)
       ),
-      Option.none
+      O.none
     )
     deepStrictEqual(
       pipe(
         [{ a: 1 }, { a: 2 }, { a: 3 }],
         RA.findFirst((x) => x.a > 1)
       ),
-      Option.some({ a: 2 })
+      O.some({ a: 2 })
     )
     deepStrictEqual(
       pipe(
         [{ a: 1 }, { a: 2 }, { a: 3 }],
         RA.findFirst((x) => x.a > 3)
       ),
-      Option.none
+      O.none
     )
   })
 
@@ -721,21 +751,21 @@ describe.concurrent("ReadonlyArray", () => {
         [],
         RA.findLast((x: { readonly a: number }) => x.a > 1)
       ),
-      Option.none
+      O.none
     )
     deepStrictEqual(
       pipe(
         [{ a: 1 }, { a: 2 }, { a: 3 }],
         RA.findLast((x) => x.a > 1)
       ),
-      Option.some({ a: 3 })
+      O.some({ a: 3 })
     )
     deepStrictEqual(
       pipe(
         [{ a: 1 }, { a: 2 }, { a: 3 }],
         RA.findLast((x) => x.a > 3)
       ),
-      Option.none
+      O.none
     )
   })
 
@@ -748,17 +778,17 @@ describe.concurrent("ReadonlyArray", () => {
       { a: 1, b: 0 },
       { a: 1, b: 1 }
     ]
-    deepStrictEqual(RA.findLastIndex((x: X) => x.a === 1)(xs), Option.some(1))
-    deepStrictEqual(RA.findLastIndex((x: X) => x.a === 4)(xs), Option.none)
-    deepStrictEqual(RA.findLastIndex((x: X) => x.a === 1)([]), Option.none)
+    deepStrictEqual(RA.findLastIndex((x: X) => x.a === 1)(xs), O.some(1))
+    deepStrictEqual(RA.findLastIndex((x: X) => x.a === 4)(xs), O.none)
+    deepStrictEqual(RA.findLastIndex((x: X) => x.a === 1)([]), O.none)
   })
 
   it("insertAt", () => {
-    deepStrictEqual(RA.insertAt(1, 1)([]), Option.none)
-    deepStrictEqual(RA.insertAt(0, 1)([]), Option.some([1] as const))
+    deepStrictEqual(RA.insertAt(1, 1)([]), O.none)
+    deepStrictEqual(RA.insertAt(0, 1)([]), O.some([1] as const))
     deepStrictEqual(
       RA.insertAt(2, 5)([1, 2, 3, 4]),
-      Option.some([1, 2, 5, 3, 4] as const)
+      O.some([1, 2, 5, 3, 4] as const)
     )
   })
 
@@ -777,19 +807,19 @@ describe.concurrent("ReadonlyArray", () => {
 
   it("updateAt", () => {
     const as: ReadonlyArray<number> = [1, 2, 3]
-    deepStrictEqual(RA.updateAt(1, 1)(as), Option.some([1, 1, 3]))
-    deepStrictEqual(RA.updateAt(1, 1)([]), Option.none)
+    deepStrictEqual(RA.updateAt(1, 1)(as), O.some([1, 1, 3]))
+    deepStrictEqual(RA.updateAt(1, 1)([]), O.none)
   })
 
   it("deleteAt", () => {
     const as: ReadonlyArray<number> = [1, 2, 3]
-    deepStrictEqual(RA.deleteAt(0)(as), Option.some([2, 3]))
-    deepStrictEqual(RA.deleteAt(1)([]), Option.none)
+    deepStrictEqual(RA.deleteAt(0)(as), O.some([2, 3]))
+    deepStrictEqual(RA.deleteAt(1)([]), O.none)
   })
 
   it("modifyAt", () => {
-    deepStrictEqual(RA.modifyAt(1, double)([1, 2, 3]), Option.some([1, 4, 3]))
-    deepStrictEqual(RA.modifyAt(1, double)([]), Option.none)
+    deepStrictEqual(RA.modifyAt(1, double)([1, 2, 3]), O.some([1, 4, 3]))
+    deepStrictEqual(RA.modifyAt(1, double)([]), O.none)
   })
 
   it("sort", () => {
@@ -950,12 +980,12 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("sequenceNonEmpty", () => {
-    const sequence = RA.sequenceNonEmpty(Option.Applicative)
+    const sequence = RA.sequenceNonEmpty(O.Applicative)
     deepStrictEqual(
-      sequence([Option.some(1), Option.some(2), Option.some(3)]),
-      Option.some(RA.make(1, 2, 3))
+      sequence([O.some(1), O.some(2), O.some(3)]),
+      O.some(RA.make(1, 2, 3))
     )
-    deepStrictEqual(sequence([Option.none, Option.some(2), Option.some(3)]), Option.none)
+    deepStrictEqual(sequence([O.none, O.some(2), O.some(3)]), O.none)
   })
 
   it("mapNonEmpty", () => {
@@ -1458,8 +1488,8 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("fromOption", () => {
-    deepStrictEqual(RA.fromOption(Option.some("hello")), ["hello"])
-    deepStrictEqual(RA.fromOption(Option.none), [])
+    deepStrictEqual(RA.fromOption(O.some("hello")), ["hello"])
+    deepStrictEqual(RA.fromOption(O.none), [])
   })
 
   it("fromResult", () => {

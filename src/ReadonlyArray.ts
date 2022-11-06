@@ -37,7 +37,6 @@ import * as number from "@fp-ts/data/Number"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Refinement } from "@fp-ts/data/Refinement"
-import * as fromOption_ from "@fp-ts/data/typeclass/FromOption"
 
 /**
  * @category type lambdas
@@ -1965,56 +1964,46 @@ export const traversePartition: <F extends TypeLambda>(
   .traversePartition(TraversableFilterable)
 
 /**
- * @category instances
- * @since 1.0.0
- */
-export const FromOption: fromOption_.FromOption<ReadonlyArrayTypeLambda> = {
-  fromOption
-}
-
-/**
  * @category lifting
  * @since 1.0.0
  */
 export const liftPredicate: {
   <C extends A, B extends A, A = C>(refinement: Refinement<A, B>): (c: C) => ReadonlyArray<B>
   <B extends A, A = B>(predicate: Predicate<A>): (b: B) => ReadonlyArray<B>
-} = fromOption_.liftPredicate(FromOption)
+} = <B extends A, A = B>(predicate: Predicate<A>) => (b: B) => predicate(b) ? [b] : empty
 
 /**
  * @category lifting
  * @since 1.0.0
  */
-export const liftOption: <A extends ReadonlyArray<unknown>, B>(
+export const liftOption = <A extends ReadonlyArray<unknown>, B>(
   f: (...a: A) => Option<B>
-) => (...a: A) => ReadonlyArray<B> = fromOption_.liftOption(FromOption)
+) => (...a: A): ReadonlyArray<B> => fromOption(f(...a))
 
 /**
  * @category conversions
  * @since 1.0.0
  */
-export const fromNullable: <A>(a: A) => ReadonlyArray<NonNullable<A>> = fromOption_.fromNullable(
-  FromOption
-)
+export const fromNullable = <A>(a: A): ReadonlyArray<NonNullable<A>> =>
+  a == null ? empty : [a as NonNullable<A>]
 
 /**
  * @category lifting
  * @since 1.0.0
  */
-export const liftNullable: <A extends ReadonlyArray<unknown>, B>(
+export const liftNullable = <A extends ReadonlyArray<unknown>, B>(
   f: (...a: A) => B | null | undefined
-) => (...a: A) => ReadonlyArray<NonNullable<B>> = fromOption_.liftNullable(FromOption)
+): (...a: A) => ReadonlyArray<NonNullable<B>> => (...a) => fromNullable(f(...a))
 
 /**
  * @category sequencing
  * @since 1.0.0
  */
-export const flatMapNullable: <A, B>(
+export const flatMapNullable = <A, B>(
   f: (a: A) => B | null | undefined
-) => (self: ReadonlyArray<A>) => ReadonlyArray<NonNullable<B>> = fromOption_.flatMapNullable(
-  FromOption,
-  FlatMap
-)
+) =>
+  (self: ReadonlyArray<A>): ReadonlyArray<NonNullable<B>> =>
+    isNonEmpty(self) ? fromNullable(f(headNonEmpty(self))) : empty
 
 /**
  * @category lifting
