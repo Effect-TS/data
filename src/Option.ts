@@ -984,7 +984,7 @@ export const liftNullable = <A extends ReadonlyArray<unknown>, B>(
  * @since 1.0.0
  */
 export const flatMapNullable = <A, B>(f: (a: A) => B | null | undefined) =>
-  (ma: Option<A>): Option<NonNullable<B>> => isNone(ma) ? none : fromNullable(f(ma.value))
+  (self: Option<A>): Option<NonNullable<B>> => isNone(self) ? none : fromNullable(f(self.value))
 
 /**
  * Extracts the value out of the structure, if it exists. Otherwise returns `null`.
