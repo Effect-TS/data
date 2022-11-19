@@ -21,6 +21,8 @@ export type TagTypeId = typeof TagTypeId
 export interface Tag<Service> extends Equal {
   readonly _id: TagTypeId
   readonly _S: (_: Service) => Service
+
+  [Symbol.iterator](): Generator<Tag<Service>, Service>
 }
 
 /**
