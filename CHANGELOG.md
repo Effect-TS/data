@@ -1,5 +1,53 @@
 # @fp-ts/data
 
+## 0.0.10
+
+### Patch Changes
+
+- [#102](https://github.com/fp-ts/data/pull/102) [`b12a109`](https://github.com/fp-ts/data/commit/b12a109546feb928086795ed965a5f2cfe60ea58) Thanks [@gcanti](https://github.com/gcanti)! - Chunk: fix filter signature
+
+- [#97](https://github.com/fp-ts/data/pull/97) [`886509e`](https://github.com/fp-ts/data/commit/886509ecaba787b3275e96a7ba247dbde7bf6237) Thanks [@gcanti](https://github.com/gcanti)! - Either: refactoring
+
+- [#98](https://github.com/fp-ts/data/pull/98) [`d030746`](https://github.com/fp-ts/data/commit/d030746a40ecb616d841bd206fced06558db4145) Thanks [@gcanti](https://github.com/gcanti)! - add These / NonEmptyChunk data types
+
+- [#102](https://github.com/fp-ts/data/pull/102) [`11efaae`](https://github.com/fp-ts/data/commit/11efaae2dbbedd899af5ae6c73c212709e5dc85d) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: add unsafeGet
+
+- [#102](https://github.com/fp-ts/data/pull/102) [`96e9a97`](https://github.com/fp-ts/data/commit/96e9a97fb1f1f942f62028a2eff007ac17ec001f) Thanks [@gcanti](https://github.com/gcanti)! - add Seq typeclass
+
+- [#104](https://github.com/fp-ts/data/pull/104) [`ff4d164`](https://github.com/fp-ts/data/commit/ff4d1649cbeb64cac248c739925f53b7b36d4ab2) Thanks [@gcanti](https://github.com/gcanti)! - Remove Refinement module
+
+- [#102](https://github.com/fp-ts/data/pull/102) [`bf17093`](https://github.com/fp-ts/data/commit/bf1709385ed1d36526dd591c28542d5dd09f450a) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: add join
+
+- [#102](https://github.com/fp-ts/data/pull/102) [`f3b8b70`](https://github.com/fp-ts/data/commit/f3b8b705404f5b4b1494df5e549759c1f5952502) Thanks [@gcanti](https://github.com/gcanti)! - Chunk: relax elem signature
+
+- [#102](https://github.com/fp-ts/data/pull/102) [`dbd4684`](https://github.com/fp-ts/data/commit/dbd46841e3fef37659af3a9c79458a4ec0f82222) Thanks [@gcanti](https://github.com/gcanti)! - Chunk: rename grouped to chunksOf and add tests
+
+- [#102](https://github.com/fp-ts/data/pull/102) [`6e17760`](https://github.com/fp-ts/data/commit/6e17760364e055fbf9c94ce2868ff1179c94f868) Thanks [@gcanti](https://github.com/gcanti)! - List: relax filterMap / compact signature to accept an Iterable
+
+- [#103](https://github.com/fp-ts/data/pull/103) [`a23f4b9`](https://github.com/fp-ts/data/commit/a23f4b97da26011d2d945a6921a1fac7eeebf4a0) Thanks [@gcanti](https://github.com/gcanti)! - move Const, Endomorphism modules to limbo
+
+- [#102](https://github.com/fp-ts/data/pull/102) [`b4088a6`](https://github.com/fp-ts/data/commit/b4088a6ef223b92908292384355f003cc1b7b33c) Thanks [@gcanti](https://github.com/gcanti)! - Chunk: add singleton
+
+- [#106](https://github.com/fp-ts/data/pull/106) [`8400bc5`](https://github.com/fp-ts/data/commit/8400bc5a9d4860fa885383362aeb19f8002f5489) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Make Context.Tag Yieldable
+
+- [#100](https://github.com/fp-ts/data/pull/100) [`f3860bc`](https://github.com/fp-ts/data/commit/f3860bccacffac6b7811f1dcac41080f2d003fd0) Thanks [@gcanti](https://github.com/gcanti)! - upgrade to @fp-ts/core@0.0.8
+
+- [#97](https://github.com/fp-ts/data/pull/97) [`03029f9`](https://github.com/fp-ts/data/commit/03029f9de8e59af3056246f6a266946e3110f7bf) Thanks [@gcanti](https://github.com/gcanti)! - Option: align APIs to Either
+
+- [#102](https://github.com/fp-ts/data/pull/102) [`4fe8390`](https://github.com/fp-ts/data/commit/4fe8390a52f458de5d056f0771577811a53f4c83) Thanks [@gcanti](https://github.com/gcanti)! - add CovariantWithIndex typeclass
+
+- [#102](https://github.com/fp-ts/data/pull/102) [`72ab2d3`](https://github.com/fp-ts/data/commit/72ab2d33379f3352f248c34ecbbe58d673d84b5a) Thanks [@gcanti](https://github.com/gcanti)! - Chunk: align range / makeBy to ReadonlyArray behaviour
+
+- [#102](https://github.com/fp-ts/data/pull/102) [`be60507`](https://github.com/fp-ts/data/commit/be60507f247fc3e387bce23bc5b504c2b61f2ca3) Thanks [@gcanti](https://github.com/gcanti)! - Chunk: remove single in favour of make
+
+- [#105](https://github.com/fp-ts/data/pull/105) [`8aaea40`](https://github.com/fp-ts/data/commit/8aaea40c8adf313c7bb2b6ddb8224d28451460b0) Thanks [@gcanti](https://github.com/gcanti)! - Remove FromOption typeclass
+
+- [#102](https://github.com/fp-ts/data/pull/102) [`7dc00c3`](https://github.com/fp-ts/data/commit/7dc00c38933326e5ded094aef3be51b7cd0b9751) Thanks [@gcanti](https://github.com/gcanti)! - rename typeclass folder and add FilterableWithIndex typeclass
+
+- [#101](https://github.com/fp-ts/data/pull/101) [`c7adc7c`](https://github.com/fp-ts/data/commit/c7adc7cdc1d99c4bb2b17f961ddd2307118dc6df) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - NonEmpty: generalize to NonEmptyIterable
+
+- [#102](https://github.com/fp-ts/data/pull/102) [`af45250`](https://github.com/fp-ts/data/commit/af45250ad4f8287b8f6c4845997a8fefe48aca31) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: rename findIndex to findFirstIndex
+
 ## 0.0.9
 
 ### Patch Changes
