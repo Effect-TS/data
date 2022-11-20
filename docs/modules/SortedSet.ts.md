@@ -1,6 +1,6 @@
 ---
 title: SortedSet.ts
-nav_order: 38
+nav_order: 36
 parent: Modules
 ---
 
@@ -54,7 +54,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const empty: <A>(ord: Sortable<A>) => SortedSet<A>
+export declare const empty: <A>(O: Order<A>) => SortedSet<A>
 ```
 
 Added in v1.0.0
@@ -188,7 +188,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const map: <B>(ord: Sortable<B>) => <A>(f: (a: A) => B) => (self: SortedSet<A>) => SortedSet<B>
+export declare const map: <B>(O: Order<B>) => <A>(f: (a: A) => B) => (self: SortedSet<A>) => SortedSet<B>
 ```
 
 Added in v1.0.0
@@ -202,7 +202,6 @@ Added in v1.0.0
 ```ts
 export interface SortedSet<A> extends Iterable<A>, Eq.Equal {
   readonly _id: TypeId
-  readonly _A: (_: never) => A
   /** @internal */
   readonly keyTree: RBT.RedBlackTree<A, boolean>
 }
@@ -261,9 +260,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const flatMap: <B>(
-  ord: Sortable<B>
-) => <A>(f: (a: A) => Iterable<B>) => (self: SortedSet<A>) => SortedSet<B>
+export declare const flatMap: <B>(O: Order<B>) => <A>(f: (a: A) => Iterable<B>) => (self: SortedSet<A>) => SortedSet<B>
 ```
 
 Added in v1.0.0

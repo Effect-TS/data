@@ -18,11 +18,12 @@ Added in v1.0.0
   - [make](#make)
   - [makeBy](#makeby)
   - [range](#range)
-  - [single](#single)
+  - [singleton](#singleton)
 - [conversions](#conversions)
   - [fromIterable](#fromiterable)
-  - [toArray](#toarray)
+  - [toReadonlyArray](#toreadonlyarray)
 - [elements](#elements)
+  - [chunksOf](#chunksof)
   - [correspondsTo](#correspondsto)
   - [cross](#cross)
   - [crossWith](#crosswith)
@@ -35,7 +36,6 @@ Added in v1.0.0
   - [findLastIndex](#findlastindex)
   - [forEach](#foreach)
   - [get](#get)
-  - [grouped](#grouped)
   - [head](#head)
   - [intersection](#intersection)
   - [isEmpty](#isempty)
@@ -81,6 +81,8 @@ Added in v1.0.0
 - [mapping](#mapping)
   - [map](#map)
   - [mapWithIndex](#mapwithindex)
+- [model](#model)
+  - [NonEmptyChunk (interface)](#nonemptychunk-interface)
 - [models](#models)
   - [Chunk (interface)](#chunk-interface)
 - [mutations](#mutations)
@@ -90,12 +92,15 @@ Added in v1.0.0
   - [dropRight](#dropright)
   - [dropWhile](#dropwhile)
   - [prepend](#prepend)
+  - [prependAllNonEmpty](#prependallnonempty)
   - [take](#take)
 - [sequencing](#sequencing)
   - [flatMap](#flatmap)
   - [flatten](#flatten)
 - [symbol](#symbol)
   - [TypeId (type alias)](#typeid-type-alias)
+- [type lambdas](#type-lambdas)
+  - [ChunkTypeLambda (interface)](#chunktypelambda-interface)
 - [unsafe](#unsafe)
   - [unsafeFromArray](#unsafefromarray)
   - [unsafeGet](#unsafeget)
@@ -130,12 +135,12 @@ Added in v1.0.0
 
 ## make
 
-Build a chunk from a sequence of elements.
+Builds a `NonEmptyChunk` from an non-empty collection of elements.
 
 **Signature**
 
 ```ts
-export declare const make: <Elem extends readonly any[]>(...elements: Elem) => Chunk<Elem[number]>
+export declare const make: <As extends readonly [any, ...any[]]>(...as: As) => NonEmptyChunk<As[number]>
 ```
 
 Added in v1.0.0
@@ -144,36 +149,36 @@ Added in v1.0.0
 
 Return a Chunk of length n with element i initialized with f(i).
 
-Note. n is normalized to a non negative integer.
+**Note**. `n` is normalized to an integer >= 1.
 
 **Signature**
 
 ```ts
-export declare const makeBy: <A>(f: (i: number) => A) => (n: number) => Chunk<A>
+export declare const makeBy: <A>(f: (i: number) => A) => (n: number) => NonEmptyChunk<A>
 ```
 
 Added in v1.0.0
 
 ## range
 
-Build a chunk with an integer range with both min/max included.
+Create a non empty `Chunk` containing a range of integers, including both endpoints.
 
 **Signature**
 
 ```ts
-export declare const range: (min: number, max: number) => Chunk<number>
+export declare const range: (start: number, end: number) => NonEmptyChunk<number>
 ```
 
 Added in v1.0.0
 
-## single
+## singleton
 
-Creates a Chunk of a single element
+Builds a `NonEmptyChunk` from a single element.
 
 **Signature**
 
 ```ts
-export declare const single: <A>(a: A) => Chunk<A>
+export declare const singleton: <A>(a: A) => NonEmptyChunk<A>
 ```
 
 Added in v1.0.0
@@ -192,19 +197,31 @@ export declare const fromIterable: <A>(self: Iterable<A>) => Chunk<A>
 
 Added in v1.0.0
 
-## toArray
+## toReadonlyArray
 
 Converts to a `ReadonlyArray<A>`
 
 **Signature**
 
 ```ts
-export declare const toArray: <A>(self: Chunk<A>) => readonly A[]
+export declare const toReadonlyArray: <A>(self: Chunk<A>) => readonly A[]
 ```
 
 Added in v1.0.0
 
 # elements
+
+## chunksOf
+
+Groups elements in chunks of up to `n` elements.
+
+**Signature**
+
+```ts
+export declare const chunksOf: (n: number) => <A>(self: Chunk<A>) => Chunk<Chunk<A>>
+```
+
+Added in v1.0.0
 
 ## correspondsTo
 
@@ -261,7 +278,7 @@ Tests whether a value is a member of a `Chunk<A>`.
 **Signature**
 
 ```ts
-export declare const elem: <A>(a: A) => (self: Chunk<A>) => boolean
+export declare const elem: <B>(b: B) => <A>(self: Chunk<A>) => boolean
 ```
 
 Added in v1.0.0
@@ -285,8 +302,8 @@ Find the first element which satisfies a predicate (or a refinement) function.
 **Signature**
 
 ```ts
-export declare function findFirst<A, B extends A>(f: Refinement<A, B>): (self: Chunk<A>) => Option<B>
-export declare function findFirst<A>(f: Predicate<A>): (self: Chunk<A>) => Option<A>
+export declare function findFirst<A, B extends A>(refinement: Refinement<A, B>): (self: Chunk<A>) => Option<B>
+export declare function findFirst<A>(predicate: Predicate<A>): (self: Chunk<A>) => Option<A>
 ```
 
 Added in v1.0.0
@@ -352,18 +369,6 @@ export declare const get: (n: number) => <A>(self: Chunk<A>) => Option<A>
 
 Added in v1.0.0
 
-## grouped
-
-Groups elements in chunks of up to `n` elements.
-
-**Signature**
-
-```ts
-export declare const grouped: (n: number) => <A>(self: Chunk<A>) => Chunk<Chunk<A>>
-```
-
-Added in v1.0.0
-
 ## head
 
 Returns the first element of this chunk if it exists.
@@ -409,7 +414,7 @@ Determines if the chunk is not empty.
 **Signature**
 
 ```ts
-export declare const isNonEmpty: <A>(self: Chunk<A>) => boolean
+export declare const isNonEmpty: <A>(self: Chunk<A>) => self is NonEmptyChunk<A>
 ```
 
 Added in v1.0.0
@@ -469,7 +474,7 @@ Sort the elements of a Chunk in increasing order, creating a new Chunk.
 **Signature**
 
 ```ts
-export declare const sort: <B>(O: Sortable<B>) => <A extends B>(as: Chunk<A>) => Chunk<A>
+export declare const sort: <B>(O: Order<B>) => <A extends B>(as: Chunk<A>) => Chunk<A>
 ```
 
 Added in v1.0.0
@@ -703,7 +708,10 @@ Returns a filtered and mapped subset of the elements.
 **Signature**
 
 ```ts
-export declare const filter: <A>(f: (a: A) => boolean) => (self: Iterable<A>) => Chunk<A>
+export declare const filter: {
+  <C extends A, B extends A, A = C>(refinement: Refinement<A, B>): (self: Chunk<C>) => Chunk<B>
+  <B extends A, A = B>(predicate: Predicate<A>): (self: Chunk<B>) => Chunk<B>
+}
 ```
 
 Added in v1.0.0
@@ -739,7 +747,7 @@ Returns a filtered and mapped subset of the elements.
 **Signature**
 
 ```ts
-export declare const filterMapWithIndex: <A, B>(f: (i: number, a: A) => Option<B>) => (self: Iterable<A>) => Chunk<B>
+export declare const filterMapWithIndex: <A, B>(f: (a: A, i: number) => Option<B>) => (self: Iterable<A>) => Chunk<B>
 ```
 
 Added in v1.0.0
@@ -781,10 +789,10 @@ Separate elements based on a predicate that also exposes the index of the elemen
 
 ```ts
 export declare const partitionWithIndex: {
-  <C extends A, B extends A, A = C>(refinement: (i: number, a: A) => a is B): (
+  <C extends A, B extends A, A = C>(refinement: (a: A, i: number) => a is B): (
     fb: Chunk<C>
   ) => readonly [Chunk<C>, Chunk<B>]
-  <B extends A, A = B>(predicate: (i: number, a: A) => boolean): (fb: Chunk<B>) => readonly [Chunk<B>, Chunk<B>]
+  <B extends A, A = B>(predicate: (a: A, i: number) => boolean): (fb: Chunk<B>) => readonly [Chunk<B>, Chunk<B>]
 }
 ```
 
@@ -797,7 +805,7 @@ Partitions the elements of this chunk into two chunks.
 **Signature**
 
 ```ts
-export declare const separate: <A, B>(fa: Chunk<Either<A, B>>) => readonly [Chunk<A>, Chunk<B>]
+export declare const separate: <A, B>(self: Chunk<Either<A, B>>) => readonly [Chunk<A>, Chunk<B>]
 ```
 
 Added in v1.0.0
@@ -823,7 +831,7 @@ Statefully maps over the chunk, producing new elements of type `B`.
 **Signature**
 
 ```ts
-export declare function mapAccum<A, B, S>(s: S, f: (s: S, a: A) => readonly [S, B])
+export declare function mapAccum<S, A, B>(s: S, f: (s: S, a: A) => readonly [S, B])
 ```
 
 Added in v1.0.0
@@ -835,7 +843,7 @@ Folds over the elements in this chunk from the left.
 **Signature**
 
 ```ts
-export declare const reduce: <A, S>(s: S, f: (s: S, a: A) => S) => (self: Chunk<A>) => S
+export declare const reduce: <A, B>(b: B, f: (s: B, a: A) => B) => (self: Chunk<A>) => B
 ```
 
 Added in v1.0.0
@@ -847,7 +855,7 @@ Folds over the elements in this chunk from the right.
 **Signature**
 
 ```ts
-export declare const reduceRight: <A, S>(s: S, f: (a: A, s: S) => S) => (self: Chunk<A>) => S
+export declare const reduceRight: <A, S>(s: S, f: (s: S, a: A) => S) => (self: Chunk<A>) => S
 ```
 
 Added in v1.0.0
@@ -859,7 +867,7 @@ Folds over the elements in this chunk from the right.
 **Signature**
 
 ```ts
-export declare const reduceRightWithIndex: <A, S>(s: S, f: (i: number, a: A, s: S) => S) => (self: Chunk<A>) => S
+export declare const reduceRightWithIndex: <B, A>(b: B, f: (b: B, a: A, i: number) => B) => (self: Chunk<A>) => B
 ```
 
 Added in v1.0.0
@@ -871,7 +879,7 @@ Folds over the elements in this chunk from the left.
 **Signature**
 
 ```ts
-export declare const reduceWithIndex: <A, S>(s: S, f: (i: number, s: S, a: A) => S) => (self: Chunk<A>) => S
+export declare const reduceWithIndex: <B, A>(b: B, f: (b: B, a: A, i: number) => B) => (self: Chunk<A>) => B
 ```
 
 Added in v1.0.0
@@ -897,7 +905,19 @@ Returns an effect whose success is mapped by the specified f function.
 **Signature**
 
 ```ts
-export declare const mapWithIndex: <A, B>(f: (i: number, a: A) => B) => (self: Chunk<A>) => Chunk<B>
+export declare const mapWithIndex: <A, B>(f: (a: A, i: number) => B) => (self: Chunk<A>) => Chunk<B>
+```
+
+Added in v1.0.0
+
+# model
+
+## NonEmptyChunk (interface)
+
+**Signature**
+
+```ts
+export interface NonEmptyChunk<A> extends Chunk<A>, NonEmptyIterable<A> {}
 ```
 
 Added in v1.0.0
@@ -911,7 +931,6 @@ Added in v1.0.0
 ```ts
 export interface Chunk<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
-  readonly _A: (_: never) => A
 
   readonly length: number
 
@@ -997,7 +1016,18 @@ Prepends the value to the chunk
 **Signature**
 
 ```ts
-export declare const prepend: <A1>(a: A1) => <A>(self: Chunk<A>) => Chunk<A1 | A>
+export declare const prepend: <B>(elem: B) => <A>(self: Chunk<A>) => Chunk<B | A>
+```
+
+Added in v1.0.0
+
+## prependAllNonEmpty
+
+**Signature**
+
+```ts
+export declare function prependAllNonEmpty<B>(that: NonEmptyChunk<B>): <A>(self: Chunk<A>) => NonEmptyChunk<A | B>
+export declare function prependAllNonEmpty<B>(that: Chunk<B>): <A>(self: NonEmptyChunk<A>) => NonEmptyChunk<A | B>
 ```
 
 Added in v1.0.0
@@ -1048,6 +1078,20 @@ Added in v1.0.0
 
 ```ts
 export type TypeId = typeof TypeId
+```
+
+Added in v1.0.0
+
+# type lambdas
+
+## ChunkTypeLambda (interface)
+
+**Signature**
+
+```ts
+export interface ChunkTypeLambda extends TypeLambda {
+  readonly type: Chunk<this['Target']>
+}
 ```
 
 Added in v1.0.0

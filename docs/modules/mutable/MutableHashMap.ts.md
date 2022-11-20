@@ -1,6 +1,6 @@
 ---
 title: mutable/MutableHashMap.ts
-nav_order: 21
+nav_order: 19
 parent: Modules
 ---
 
@@ -113,9 +113,6 @@ Added in v1.0.0
 ```ts
 export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, Equal.Equal {
   readonly _id: TypeId
-
-  readonly _K: (_: K) => K
-  readonly _V: (_: never) => V
 
   /** @internal */
   readonly backingMap: Map<number, Node<K, V>>

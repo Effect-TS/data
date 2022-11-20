@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 19
+nav_order: 17
 parent: Modules
 ---
 
@@ -16,17 +16,14 @@ Added in v1.0.0
   - [boolean](#boolean)
   - [chunk](#chunk)
   - [chunkPatch](#chunkpatch)
-  - [compactable](#compactable)
-  - [const\_](#const_)
   - [context](#context)
   - [contextPatch](#contextpatch)
+  - [covariantWithIndex](#covariantwithindex)
   - [differ](#differ)
   - [duration](#duration)
   - [either](#either)
-  - [endomorphism](#endomorphism)
   - [equal](#equal)
-  - [filterable](#filterable)
-  - [fromOption](#fromoption)
+  - [filterableWithIndex](#filterablewithindex)
   - [function](#function)
   - [hashMap](#hashmap)
   - [hashMapPatch](#hashmappatch)
@@ -40,21 +37,22 @@ Added in v1.0.0
   - [mutableListBuilder](#mutablelistbuilder)
   - [mutableQueue](#mutablequeue)
   - [mutableRef](#mutableref)
-  - [nonEmptyReadonlyArray](#nonemptyreadonlyarray)
+  - [nonEmpty](#nonempty)
   - [number](#number)
   - [option](#option)
   - [orPatch](#orpatch)
+  - [ordering](#ordering)
   - [predicate](#predicate)
   - [queue](#queue)
   - [random](#random)
   - [readonlyArray](#readonlyarray)
   - [redBlackTree](#redblacktree)
-  - [refinement](#refinement)
   - [safeEval](#safeeval)
+  - [seq](#seq)
   - [sortedMap](#sortedmap)
   - [sortedSet](#sortedset)
   - [string](#string)
-  - [traversableFilterable](#traversablefilterable)
+  - [these](#these)
   - [weakIterableMap](#weakiterablemap)
 
 ---
@@ -91,26 +89,6 @@ export declare const chunkPatch: typeof chunkPatch
 
 Added in v1.0.0
 
-## compactable
-
-**Signature**
-
-```ts
-export declare const compactable: typeof compactable
-```
-
-Added in v1.0.0
-
-## const\_
-
-**Signature**
-
-```ts
-export declare const const_: typeof const_
-```
-
-Added in v1.0.0
-
 ## context
 
 **Signature**
@@ -127,6 +105,16 @@ Added in v1.0.0
 
 ```ts
 export declare const contextPatch: typeof contextPatch
+```
+
+Added in v1.0.0
+
+## covariantWithIndex
+
+**Signature**
+
+```ts
+export declare const covariantWithIndex: typeof covariantWithIndex
 ```
 
 Added in v1.0.0
@@ -161,16 +149,6 @@ export declare const either: typeof either
 
 Added in v1.0.0
 
-## endomorphism
-
-**Signature**
-
-```ts
-export declare const endomorphism: typeof endomorphism
-```
-
-Added in v1.0.0
-
 ## equal
 
 **Signature**
@@ -181,22 +159,12 @@ export declare const equal: typeof equal
 
 Added in v1.0.0
 
-## filterable
+## filterableWithIndex
 
 **Signature**
 
 ```ts
-export declare const filterable: typeof filterable
-```
-
-Added in v1.0.0
-
-## fromOption
-
-**Signature**
-
-```ts
-export declare const fromOption: typeof fromOption
+export declare const filterableWithIndex: typeof filterableWithIndex
 ```
 
 Added in v1.0.0
@@ -331,12 +299,12 @@ export declare const mutableRef: typeof mutableRef
 
 Added in v1.0.0
 
-## nonEmptyReadonlyArray
+## nonEmpty
 
 **Signature**
 
 ```ts
-export declare const nonEmptyReadonlyArray: typeof nonEmptyReadonlyArray
+export declare const nonEmpty: typeof nonEmpty
 ```
 
 Added in v1.0.0
@@ -367,6 +335,16 @@ Added in v1.0.0
 
 ```ts
 export declare const orPatch: typeof orPatch
+```
+
+Added in v1.0.0
+
+## ordering
+
+**Signature**
+
+```ts
+export declare const ordering: typeof ordering
 ```
 
 Added in v1.0.0
@@ -421,22 +399,22 @@ export declare const redBlackTree: typeof redBlackTree
 
 Added in v1.0.0
 
-## refinement
-
-**Signature**
-
-```ts
-export declare const refinement: typeof refinement
-```
-
-Added in v1.0.0
-
 ## safeEval
 
 **Signature**
 
 ```ts
 export declare const safeEval: typeof safeEval
+```
+
+Added in v1.0.0
+
+## seq
+
+**Signature**
+
+```ts
+export declare const seq: typeof seq
 ```
 
 Added in v1.0.0
@@ -471,12 +449,12 @@ export declare const string: typeof string
 
 Added in v1.0.0
 
-## traversableFilterable
+## these
 
 **Signature**
 
 ```ts
-export declare const traversableFilterable: typeof traversableFilterable
+export declare const these: typeof these
 ```
 
 Added in v1.0.0

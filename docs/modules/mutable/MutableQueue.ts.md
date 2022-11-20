@@ -1,6 +1,6 @@
 ---
 title: mutable/MutableQueue.ts
-nav_order: 25
+nav_order: 23
 parent: Modules
 ---
 
@@ -121,7 +121,6 @@ Added in v1.0.0
 ```ts
 export interface MutableQueue<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
-  readonly _A: (_: never) => A
 
   /** @internal */
   queue: MutableList.MutableList<A>

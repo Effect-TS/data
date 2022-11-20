@@ -1,6 +1,6 @@
 ---
 title: Differ/HashSetPatch.ts
-nav_order: 9
+nav_order: 8
 parent: Modules
 ---
 

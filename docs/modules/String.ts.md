@@ -1,6 +1,6 @@
 ---
 title: String.ts
-nav_order: 39
+nav_order: 37
 parent: Modules
 ---
 
@@ -14,13 +14,12 @@ Added in v1.0.0
 
 - [instances](#instances)
   - [Monoid](#monoid)
+  - [Order](#order)
   - [Semigroup](#semigroup)
-  - [Sortable](#sortable)
 - [refinements](#refinements)
   - [isString](#isstring)
 - [utils](#utils)
   - [concat](#concat)
-  - [concatAll](#concatall)
   - [empty](#empty)
   - [endsWith](#endswith)
   - [includes](#includes)
@@ -70,6 +69,27 @@ assert.deepStrictEqual(pipe('a', S.Monoid.combine(S.Monoid.empty)), 'a')
 
 Added in v1.0.0
 
+## Order
+
+**Signature**
+
+```ts
+export declare const Order: order.Order<string>
+```
+
+**Example**
+
+```ts
+import * as S from '@fp-ts/data/String'
+import { pipe } from '@fp-ts/data/Function'
+
+assert.deepStrictEqual(pipe('a', S.Order.compare('a')), 0)
+assert.deepStrictEqual(pipe('a', S.Order.compare('b')), -1)
+assert.deepStrictEqual(pipe('b', S.Order.compare('a')), 1)
+```
+
+Added in v1.0.0
+
 ## Semigroup
 
 `string` semigroup under concatenation.
@@ -87,27 +107,6 @@ import * as S from '@fp-ts/data/String'
 import { pipe } from '@fp-ts/data/Function'
 
 assert.deepStrictEqual(pipe('a', S.Semigroup.combine('b')), 'ab')
-```
-
-Added in v1.0.0
-
-## Sortable
-
-**Signature**
-
-```ts
-export declare const Sortable: sortable.Sortable<string>
-```
-
-**Example**
-
-```ts
-import * as S from '@fp-ts/data/String'
-import { pipe } from '@fp-ts/data/Function'
-
-assert.deepStrictEqual(pipe('a', S.Sortable.compare('a')), 0)
-assert.deepStrictEqual(pipe('a', S.Sortable.compare('b')), -1)
-assert.deepStrictEqual(pipe('b', S.Sortable.compare('a')), 1)
 ```
 
 Added in v1.0.0
@@ -141,16 +140,6 @@ Added in v1.0.0
 
 ```ts
 export declare const concat: (that: string) => (self: string) => string
-```
-
-Added in v1.0.0
-
-## concatAll
-
-**Signature**
-
-```ts
-export declare const concatAll: (collection: Iterable<string>) => string
 ```
 
 Added in v1.0.0

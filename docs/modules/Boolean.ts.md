@@ -15,17 +15,15 @@ Added in v1.0.0
 - [instances](#instances)
   - [MonoidAll](#monoidall)
   - [MonoidAny](#monoidany)
+  - [Order](#order)
   - [SemigroupAll](#semigroupall)
   - [SemigroupAny](#semigroupany)
-  - [Sortable](#sortable)
 - [pattern matching](#pattern-matching)
   - [match](#match)
 - [refinements](#refinements)
   - [isBoolean](#isboolean)
 - [utils](#utils)
-  - [all](#all)
   - [and](#and)
-  - [any](#any)
   - [or](#or)
 
 ---
@@ -56,6 +54,16 @@ The `empty` value is `false`.
 
 ```ts
 export declare const MonoidAny: monoid.Monoid<boolean>
+```
+
+Added in v1.0.0
+
+## Order
+
+**Signature**
+
+```ts
+export declare const Order: order.Order<boolean>
 ```
 
 Added in v1.0.0
@@ -101,16 +109,6 @@ import { pipe } from '@fp-ts/data/Function'
 assert.deepStrictEqual(pipe(true, SemigroupAny.combine(true)), true)
 assert.deepStrictEqual(pipe(true, SemigroupAny.combine(false)), true)
 assert.deepStrictEqual(pipe(false, SemigroupAny.combine(false)), false)
-```
-
-Added in v1.0.0
-
-## Sortable
-
-**Signature**
-
-```ts
-export declare const Sortable: sortable.Sortable<boolean>
 ```
 
 Added in v1.0.0
@@ -166,32 +164,12 @@ Added in v1.0.0
 
 # utils
 
-## all
-
-**Signature**
-
-```ts
-export declare const all: (collection: Iterable<boolean>) => boolean
-```
-
-Added in v1.0.0
-
 ## and
 
 **Signature**
 
 ```ts
 export declare const and: (that: boolean) => (self: boolean) => boolean
-```
-
-Added in v1.0.0
-
-## any
-
-**Signature**
-
-```ts
-export declare const any: (collection: Iterable<boolean>) => boolean
 ```
 
 Added in v1.0.0

@@ -1,6 +1,6 @@
 ---
 title: HashMap.ts
-nav_order: 16
+nav_order: 14
 parent: Modules
 ---
 
@@ -226,8 +226,8 @@ and filters out `None` values.
 **Signature**
 
 ```ts
-export declare const filterMapWithIndex: <K, A, B>(
-  f: (key: K, value: A) => Option<B>
+export declare const filterMapWithIndex: <A, K, B>(
+  f: (a: A, k: K) => Option<B>
 ) => (self: HashMap<K, A>) => HashMap<K, B>
 ```
 
@@ -241,8 +241,8 @@ Filters entries out of a `HashMap` using the specified predicate.
 
 ```ts
 export declare const filterWithIndex: {
-  <K, A, B extends A>(f: (k: K, a: A) => a is B): (self: HashMap<K, A>) => HashMap<K, B>
-  <K, A>(f: (k: K, a: A) => boolean): (self: HashMap<K, A>) => HashMap<K, A>
+  <A, B extends A, K>(f: (a: A, k: K) => a is B): (self: HashMap<K, A>) => HashMap<K, B>
+  <A, K>(f: (a: A, k: K) => boolean): (self: HashMap<K, A>) => HashMap<K, A>
 }
 ```
 
@@ -269,10 +269,7 @@ Reduces the specified state over the entries of the `HashMap`.
 **Signature**
 
 ```ts
-export declare const reduceWithIndex: <K, V, Z>(
-  zero: Z,
-  f: (accumulator: Z, key: K, value: V) => Z
-) => (self: HashMap<K, V>) => Z
+export declare const reduceWithIndex: <B, A, K>(b: B, f: (b: B, a: A, k: K) => B) => (self: HashMap<K, A>) => B
 ```
 
 Added in v1.0.0
@@ -350,7 +347,7 @@ Maps over the entries of the `HashMap` using the specified function.
 **Signature**
 
 ```ts
-export declare const mapWithIndex: <K, V, A>(f: (key: K, value: V) => A) => (self: HashMap<K, V>) => HashMap<K, A>
+export declare const mapWithIndex: <A, K, B>(f: (a: A, k: K) => B) => (self: HashMap<K, A>) => HashMap<K, B>
 ```
 
 Added in v1.0.0
@@ -364,8 +361,6 @@ Added in v1.0.0
 ```ts
 export interface HashMap<Key, Value> extends Iterable<readonly [Key, Value]>, Equal {
   readonly _id: TypeId
-  readonly _Key: (_: never) => Key
-  readonly _Value: (_: never) => Value
 }
 ```
 
@@ -567,8 +562,8 @@ Chains over the entries of the `HashMap` using the specified function.
 **Signature**
 
 ```ts
-export declare const flatMapWithIndex: <K, A, B>(
-  f: (key: K, value: A) => HashMap<K, B>
+export declare const flatMapWithIndex: <A, K, B>(
+  f: (a: A, k: K) => HashMap<K, B>
 ) => (self: HashMap<K, A>) => HashMap<K, B>
 ```
 
@@ -607,7 +602,7 @@ Applies the specified function to the entries of the `HashMap`.
 **Signature**
 
 ```ts
-export declare const forEachWithIndex: <K, V>(f: (key: K, value: V) => void) => (self: HashMap<K, V>) => void
+export declare const forEachWithIndex: <A, K>(f: (a: A, k: K) => void) => (self: HashMap<K, A>) => void
 ```
 
 Added in v1.0.0

@@ -1,6 +1,6 @@
 ---
 title: mutable/MutableList.ts
-nav_order: 23
+nav_order: 21
 parent: Modules
 ---
 
@@ -132,7 +132,6 @@ Added in v1.0.0
 ```ts
 export interface MutableList<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
-  readonly _A: (_: never) => A
 
   /** @internal */
   head: LinkedListNode<A> | undefined

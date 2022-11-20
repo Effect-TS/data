@@ -1,6 +1,6 @@
 ---
 title: Differ/HashMapPatch.ts
-nav_order: 8
+nav_order: 7
 parent: Modules
 ---
 

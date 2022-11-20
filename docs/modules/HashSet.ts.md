@@ -1,6 +1,6 @@
 ---
 title: HashSet.ts
-nav_order: 17
+nav_order: 15
 parent: Modules
 ---
 
@@ -227,7 +227,6 @@ Added in v1.0.0
 ```ts
 export interface HashSet<A> extends Iterable<A>, Equal {
   readonly _id: TypeId
-  readonly _A: (_: never) => A
 }
 ```
 

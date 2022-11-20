@@ -1,6 +1,6 @@
 ---
 title: Number.ts
-nav_order: 28
+nav_order: 26
 parent: Modules
 ---
 
@@ -16,19 +16,18 @@ Added in v1.0.0
   - [Bounded](#bounded)
   - [MonoidMultiply](#monoidmultiply)
   - [MonoidSum](#monoidsum)
+  - [Order](#order)
   - [SemigroupMultiply](#semigroupmultiply)
   - [SemigroupSum](#semigroupsum)
-  - [Sortable](#sortable)
 - [refinements](#refinements)
   - [isNumber](#isnumber)
 - [utils](#utils)
   - [decrement](#decrement)
   - [increment](#increment)
   - [multiply](#multiply)
-  - [multiplyAll](#multiplyall)
+  - [sign](#sign)
   - [sub](#sub)
   - [sum](#sum)
-  - [sumAll](#sumall)
 
 ---
 
@@ -72,6 +71,16 @@ export declare const MonoidSum: monoid.Monoid<number>
 
 Added in v1.0.0
 
+## Order
+
+**Signature**
+
+```ts
+export declare const Order: order.Order<number>
+```
+
+Added in v1.0.0
+
 ## SemigroupMultiply
 
 `number` semigroup under multiplication.
@@ -110,16 +119,6 @@ import { SemigroupSum } from '@fp-ts/data/Number'
 import { pipe } from '@fp-ts/data/Function'
 
 assert.deepStrictEqual(pipe(2, SemigroupSum.combine(3)), 5)
-```
-
-Added in v1.0.0
-
-## Sortable
-
-**Signature**
-
-```ts
-export declare const Sortable: sortable.Sortable<number>
 ```
 
 Added in v1.0.0
@@ -168,12 +167,12 @@ export declare const multiply: (that: number) => (self: number) => number
 
 Added in v1.0.0
 
-## multiplyAll
+## sign
 
 **Signature**
 
 ```ts
-export declare const multiplyAll: (collection: Iterable<number>) => number
+export declare const sign: (n: number) => Ordering
 ```
 
 Added in v1.0.0
@@ -194,16 +193,6 @@ Added in v1.0.0
 
 ```ts
 export declare const sum: (that: number) => (self: number) => number
-```
-
-Added in v1.0.0
-
-## sumAll
-
-**Signature**
-
-```ts
-export declare const sumAll: (collection: Iterable<number>) => number
 ```
 
 Added in v1.0.0
