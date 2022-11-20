@@ -1,6 +1,6 @@
 ---
 title: Function.ts
-nav_order: 15
+nav_order: 13
 parent: Modules
 ---
 
@@ -12,11 +12,7 @@ Added in v1.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [constructors](#constructors)
-  - [id](#id)
 - [instances](#instances)
-  - [Category](#category)
-  - [Composable](#composable)
   - [getMonoid](#getmonoid)
   - [getSemigroup](#getsemigroup)
 - [type lambdas](#type-lambdas)
@@ -45,39 +41,7 @@ Added in v1.0.0
 
 ---
 
-# constructors
-
-## id
-
-**Signature**
-
-```ts
-export declare const id: <A>() => Endomorphism<A>
-```
-
-Added in v1.0.0
-
 # instances
-
-## Category
-
-**Signature**
-
-```ts
-export declare const Category: category.Category<FunctionTypeLambda>
-```
-
-Added in v1.0.0
-
-## Composable
-
-**Signature**
-
-```ts
-export declare const Composable: composable.Composable<FunctionTypeLambda>
-```
-
-Added in v1.0.0
 
 ## getMonoid
 
@@ -153,7 +117,7 @@ Added in v1.0.0
 
 ```ts
 export interface FunctionTypeLambda extends TypeLambda {
-  readonly type: (a: this['In1']) => this['Out1']
+  readonly type: (a: this['In']) => this['Target']
 }
 ```
 
@@ -222,7 +186,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const apply: <A>(a: A) => <B>(f: (a: A) => B) => B
+export declare const apply: <A>(a: A) => <B>(self: (a: A) => B) => B
 ```
 
 Added in v1.0.0

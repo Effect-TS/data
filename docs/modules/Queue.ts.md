@@ -1,6 +1,6 @@
 ---
 title: Queue.ts
-nav_order: 31
+nav_order: 30
 parent: Modules
 ---
 
@@ -214,7 +214,6 @@ Added in v1.0.0
 ```ts
 export interface Queue<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
-  readonly _A: (_: never) => A
   /** @internal */
   readonly _in: L.List<A>
   /** @internal */
@@ -320,7 +319,7 @@ Added in v1.0.0
 
 ```ts
 export interface QueueTypeLambda extends HKT.TypeLambda {
-  readonly type: Queue<this['Out1']>
+  readonly type: Queue<this['Target']>
 }
 ```
 

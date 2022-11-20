@@ -1,6 +1,6 @@
 ---
 title: SortedMap.ts
-nav_order: 37
+nav_order: 35
 parent: Modules
 ---
 
@@ -27,6 +27,7 @@ Added in v1.0.0
   - [reduceWithIndex](#reducewithindex)
 - [getters](#getters)
   - [entries](#entries)
+  - [getOrder](#getorder)
   - [keys](#keys)
   - [size](#size)
   - [values](#values)
@@ -52,7 +53,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const empty: <K, V = never>(ord: Sortable<K>) => SortedMap<K, V>
+export declare const empty: <K, V = never>(ord: Order<K>) => SortedMap<K, V>
 ```
 
 Added in v1.0.0
@@ -62,7 +63,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const from: <K>(ord: Sortable<K>) => <V>(iterable: Iterable<readonly [K, V]>) => SortedMap<K, V>
+export declare const from: <K>(ord: Order<K>) => <V>(iterable: Iterable<readonly [K, V]>) => SortedMap<K, V>
 ```
 
 Added in v1.0.0
@@ -73,7 +74,7 @@ Added in v1.0.0
 
 ```ts
 export declare const make: <K>(
-  ord: Sortable<K>
+  ord: Order<K>
 ) => <Entries extends readonly (readonly [K, any])[]>(
   ...entries: Entries
 ) => SortedMap<K, Entries[number] extends readonly [any, infer V] ? V : never>
@@ -150,10 +151,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const reduceWithIndex: <K, V, B>(
-  zero: B,
-  f: (accumulator: B, key: K, value: V) => B
-) => (self: SortedMap<K, V>) => B
+export declare const reduceWithIndex: <B, A, K>(b: B, f: (b: B, value: A, key: K) => B) => (self: SortedMap<K, A>) => B
 ```
 
 Added in v1.0.0
@@ -166,6 +164,18 @@ Added in v1.0.0
 
 ```ts
 export declare const entries: <K, V>(self: SortedMap<K, V>) => Iterator<readonly [K, V], any, undefined>
+```
+
+Added in v1.0.0
+
+## getOrder
+
+Gets the `Order<K>` that the `SortedMap<K, V>` is using.
+
+**Signature**
+
+```ts
+export declare const getOrder: <K, V>(self: SortedMap<K, V>) => Order<K>
 ```
 
 Added in v1.0.0
@@ -217,7 +227,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const mapWithIndex: <K, A, B>(f: (k: K, a: A) => B) => (self: SortedMap<K, A>) => SortedMap<K, B>
+export declare const mapWithIndex: <A, K, B>(f: (a: A, k: K) => B) => (self: SortedMap<K, A>) => SortedMap<K, B>
 ```
 
 Added in v1.0.0
@@ -231,8 +241,6 @@ Added in v1.0.0
 ```ts
 export interface SortedMap<K, V> extends Iterable<readonly [K, V]>, Eq.Equal {
   readonly _id: TypeId
-  readonly _K: (_: never) => K
-  readonly _V: (_: never) => V
   /** @internal */
   readonly tree: RBT.RedBlackTree<K, V>
 }

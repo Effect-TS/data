@@ -1,6 +1,6 @@
 ---
 title: Identity.ts
-nav_order: 18
+nav_order: 16
 parent: Modules
 ---
 
@@ -16,66 +16,73 @@ Added in v1.0.0
   - [of](#of)
 - [conversions](#conversions)
   - [toReadonlyArray](#toreadonlyarray)
+  - [toReadonlyArrayWith](#toreadonlyarraywith)
 - [do notation](#do-notation)
   - [Do](#do)
+  - [andThenBind](#andthenbind)
   - [bind](#bind)
-  - [bindRight](#bindright)
   - [bindTo](#bindto)
   - [let](#let)
 - [folding](#folding)
   - [foldMap](#foldmap)
+  - [foldMapKind](#foldmapkind)
   - [reduce](#reduce)
+  - [reduceKind](#reducekind)
   - [reduceRight](#reduceright)
+  - [reduceRightKind](#reducerightkind)
 - [instances](#instances)
-  - [CategoryKind](#categorykind)
-  - [Comonad](#comonad)
-  - [ComposableKind](#composablekind)
-  - [Extendable](#extendable)
+  - [Applicative](#applicative)
+  - [Chainable](#chainable)
+  - [Covariant](#covariant)
   - [FlatMap](#flatmap)
   - [Foldable](#foldable)
-  - [Functor](#functor)
+  - [Invariant](#invariant)
   - [Monad](#monad)
-  - [Monoidal](#monoidal)
+  - [Of](#of)
   - [Pointed](#pointed)
-  - [SemigroupKind](#semigroupkind)
-  - [Semigroupal](#semigroupal)
+  - [Product](#product)
+  - [SemiApplicative](#semiapplicative)
+  - [SemiProduct](#semiproduct)
   - [Traversable](#traversable)
+  - [getSemiAlternative](#getsemialternative)
+  - [getSemiCoproduct](#getsemicoproduct)
+  - [liftSemigroup](#liftsemigroup)
 - [lifting](#lifting)
   - [lift2](#lift2)
   - [lift3](#lift3)
 - [mapping](#mapping)
   - [as](#as)
+  - [asUnit](#asunit)
   - [flap](#flap)
-  - [map](#map)
-  - [unit](#unit)
 - [models](#models)
   - [Identity (type alias)](#identity-type-alias)
 - [sequencing](#sequencing)
+  - [andThenDiscard](#andthendiscard)
   - [flatMap](#flatmap)
-  - [zipLeft](#zipleft)
-  - [zipRight](#zipright)
 - [traversing](#traversing)
   - [sequence](#sequence)
   - [traverse](#traverse)
-- [tuple sequencing](#tuple-sequencing)
-  - [Zip](#zip)
-  - [tupled](#tupled)
-  - [zipFlatten](#zipflatten)
+  - [traverseTap](#traversetap)
 - [type lambdas](#type-lambdas)
   - [IdentityTypeLambda (interface)](#identitytypelambda-interface)
+  - [IdentityTypeLambdaFix (interface)](#identitytypelambdafix-interface)
 - [utils](#utils)
+  - [andThen](#andthen)
   - [ap](#ap)
-  - [combineKind](#combinekind)
-  - [combineKindMany](#combinekindmany)
-  - [composeKind](#composekind)
-  - [duplicate](#duplicate)
-  - [extend](#extend)
-  - [extract](#extract)
+  - [composeKleisliArrow](#composekleisliarrow)
   - [flatten](#flatten)
-  - [idKind](#idkind)
-  - [zipAll](#zipall)
-  - [zipMany](#zipmany)
-  - [zipWith](#zipwith)
+  - [imap](#imap)
+  - [liftMonoid](#liftmonoid)
+  - [map](#map)
+  - [product](#product)
+  - [productAll](#productall)
+  - [productFlatten](#productflatten)
+  - [productMany](#productmany)
+  - [struct](#struct)
+  - [tap](#tap)
+  - [tuple](#tuple)
+  - [tupled](#tupled)
+  - [unit](#unit)
 
 ---
 
@@ -103,6 +110,16 @@ export declare const toReadonlyArray: <A>(self: A) => readonly A[]
 
 Added in v1.0.0
 
+## toReadonlyArrayWith
+
+**Signature**
+
+```ts
+export declare const toReadonlyArrayWith: <A, B>(f: (a: A) => B) => (self: A) => readonly B[]
+```
+
+Added in v1.0.0
+
 # do notation
 
 ## Do
@@ -115,6 +132,21 @@ export declare const Do: {}
 
 Added in v1.0.0
 
+## andThenBind
+
+A variant of `bind` that sequentially ignores the scope.
+
+**Signature**
+
+```ts
+export declare const andThenBind: <N extends string, A extends object, B>(
+  name: Exclude<N, keyof A>,
+  fb: B
+) => (self: A) => { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }
+```
+
+Added in v1.0.0
+
 ## bind
 
 **Signature**
@@ -123,21 +155,6 @@ Added in v1.0.0
 export declare const bind: <N extends string, A extends object, B>(
   name: Exclude<N, keyof A>,
   f: (a: A) => B
-) => (self: A) => { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }
-```
-
-Added in v1.0.0
-
-## bindRight
-
-A variant of `bind` that sequentially ignores the scope.
-
-**Signature**
-
-```ts
-export declare const bindRight: <N extends string, A extends object, B>(
-  name: Exclude<N, keyof A>,
-  fb: B
 ) => (self: A) => { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }
 ```
 
@@ -173,7 +190,19 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const foldMap: <M>(_: Monoid<M>) => <A>(f: (a: A) => M) => (self: A) => M
+export declare const foldMap: <M>(M: Monoid<M>) => <A>(f: (a: A) => M) => (self: A) => M
+```
+
+Added in v1.0.0
+
+## foldMapKind
+
+**Signature**
+
+```ts
+export declare const foldMapKind: <G extends TypeLambda>(
+  G: coproduct_.Coproduct<G>
+) => <A, R, O, E, B>(f: (a: A) => Kind<G, R, O, E, B>) => (self: A) => Kind<G, R, O, E, B>
 ```
 
 Added in v1.0.0
@@ -188,6 +217,18 @@ export declare const reduce: <B, A>(b: B, f: (b: B, a: A) => B) => (self: A) => 
 
 Added in v1.0.0
 
+## reduceKind
+
+**Signature**
+
+```ts
+export declare const reduceKind: <G extends TypeLambda>(
+  G: monad.Monad<G>
+) => <B, A, R, O, E>(b: B, f: (b: B, a: A) => Kind<G, R, O, E, B>) => (self: A) => Kind<G, R, O, E, B>
+```
+
+Added in v1.0.0
+
 ## reduceRight
 
 **Signature**
@@ -198,44 +239,46 @@ export declare const reduceRight: <B, A>(b: B, f: (b: B, a: A) => B) => (self: A
 
 Added in v1.0.0
 
+## reduceRightKind
+
+**Signature**
+
+```ts
+export declare const reduceRightKind: <G extends TypeLambda>(
+  G: monad.Monad<G>
+) => <B, A, R, O, E>(b: B, f: (b: B, a: A) => Kind<G, R, O, E, B>) => (self: A) => Kind<G, R, O, E, B>
+```
+
+Added in v1.0.0
+
 # instances
 
-## CategoryKind
+## Applicative
 
 **Signature**
 
 ```ts
-export declare const CategoryKind: categoryKind.CategoryKind<IdentityTypeLambda>
+export declare const Applicative: applicative.Applicative<IdentityTypeLambda>
 ```
 
 Added in v1.0.0
 
-## Comonad
+## Chainable
 
 **Signature**
 
 ```ts
-export declare const Comonad: comonad.Comonad<IdentityTypeLambda>
+export declare const Chainable: chainable.Chainable<IdentityTypeLambda>
 ```
 
 Added in v1.0.0
 
-## ComposableKind
+## Covariant
 
 **Signature**
 
 ```ts
-export declare const ComposableKind: composableKind.ComposableKind<IdentityTypeLambda>
-```
-
-Added in v1.0.0
-
-## Extendable
-
-**Signature**
-
-```ts
-export declare const Extendable: extendable.Extendable<IdentityTypeLambda>
+export declare const Covariant: covariant.Covariant<IdentityTypeLambda>
 ```
 
 Added in v1.0.0
@@ -260,12 +303,12 @@ export declare const Foldable: foldable.Foldable<IdentityTypeLambda>
 
 Added in v1.0.0
 
-## Functor
+## Invariant
 
 **Signature**
 
 ```ts
-export declare const Functor: functor.Functor<IdentityTypeLambda>
+export declare const Invariant: invariant.Invariant<IdentityTypeLambda>
 ```
 
 Added in v1.0.0
@@ -280,12 +323,12 @@ export declare const Monad: monad.Monad<IdentityTypeLambda>
 
 Added in v1.0.0
 
-## Monoidal
+## Of
 
 **Signature**
 
 ```ts
-export declare const Monoidal: monoidal.Monoidal<IdentityTypeLambda>
+export declare const Of: of_.Of<IdentityTypeLambda>
 ```
 
 Added in v1.0.0
@@ -300,22 +343,32 @@ export declare const Pointed: pointed.Pointed<IdentityTypeLambda>
 
 Added in v1.0.0
 
-## SemigroupKind
+## Product
 
 **Signature**
 
 ```ts
-export declare const SemigroupKind: semigroupKind.SemigroupKind<IdentityTypeLambda>
+export declare const Product: product_.Product<IdentityTypeLambda>
 ```
 
 Added in v1.0.0
 
-## Semigroupal
+## SemiApplicative
 
 **Signature**
 
 ```ts
-export declare const Semigroupal: semigroupal.Semigroupal<IdentityTypeLambda>
+export declare const SemiApplicative: semiApplicative.SemiApplicative<IdentityTypeLambda>
+```
+
+Added in v1.0.0
+
+## SemiProduct
+
+**Signature**
+
+```ts
+export declare const SemiProduct: semiProduct.SemiProduct<IdentityTypeLambda>
 ```
 
 Added in v1.0.0
@@ -326,6 +379,38 @@ Added in v1.0.0
 
 ```ts
 export declare const Traversable: traversable.Traversable<IdentityTypeLambda>
+```
+
+Added in v1.0.0
+
+## getSemiAlternative
+
+**Signature**
+
+```ts
+export declare const getSemiAlternative: <A>(
+  S: Semigroup<A>
+) => semiAlternative.SemiAlternative<IdentityTypeLambdaFix<A>>
+```
+
+Added in v1.0.0
+
+## getSemiCoproduct
+
+**Signature**
+
+```ts
+export declare const getSemiCoproduct: <A>(S: Semigroup<A>) => semiCoproduct.SemiCoproduct<IdentityTypeLambdaFix<A>>
+```
+
+Added in v1.0.0
+
+## liftSemigroup
+
+**Signature**
+
+```ts
+export declare const liftSemigroup: <A>(S: Semigroup<A>) => Semigroup<A>
 ```
 
 Added in v1.0.0
@@ -365,7 +450,19 @@ Maps the success value of this effect to the specified constant value.
 **Signature**
 
 ```ts
-export declare const as: <B>(b: B) => <A>(self: A) => B
+export declare const as: <B>(b: B) => <_>(self: _) => B
+```
+
+Added in v1.0.0
+
+## asUnit
+
+Returns the effect resulting from mapping the success of this effect to unit.
+
+**Signature**
+
+```ts
+export declare const asUnit: <_>(self: _) => Identity<void>
 ```
 
 Added in v1.0.0
@@ -375,31 +472,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const flap: <A>(a: A) => <B>(self: (a: A) => B) => B
-```
-
-Added in v1.0.0
-
-## map
-
-Returns an effect whose success is mapped by the specified `f` function.
-
-**Signature**
-
-```ts
-export declare const map: <A, B>(f: (a: A) => B) => (self: A) => B
-```
-
-Added in v1.0.0
-
-## unit
-
-Returns the effect resulting from mapping the success of this effect to unit.
-
-**Signature**
-
-```ts
-export declare const unit: <A>(self: A) => Identity<void>
+export declare const flap: <A>(a: A) => <B>(fab: (a: A) => B) => B
 ```
 
 Added in v1.0.0
@@ -418,17 +491,7 @@ Added in v1.0.0
 
 # sequencing
 
-## flatMap
-
-**Signature**
-
-```ts
-export declare const flatMap: <A, B>(f: (a: A) => B) => (self: A) => B
-```
-
-Added in v1.0.0
-
-## zipLeft
+## andThenDiscard
 
 Sequences the specified effect after this effect, but ignores the value
 produced by the effect.
@@ -436,19 +499,17 @@ produced by the effect.
 **Signature**
 
 ```ts
-export declare const zipLeft: (that: Identity<unknown>) => <A>(self: A) => A
+export declare const andThenDiscard: <_>(that: _) => <A>(self: A) => A
 ```
 
 Added in v1.0.0
 
-## zipRight
-
-A variant of `flatMap` that ignores the value produced by this effect.
+## flatMap
 
 **Signature**
 
 ```ts
-export declare const zipRight: <A>(that: A) => (self: Identity<unknown>) => A
+export declare const flatMap: <A, B>(f: (a: A) => B) => (self: A) => B
 ```
 
 Added in v1.0.0
@@ -461,8 +522,8 @@ Added in v1.0.0
 
 ```ts
 export declare const sequence: <F extends TypeLambda>(
-  _: monoidal.Monoidal<F>
-) => <S, R, O, E, A>(self: Kind<F, S, R, O, E, A>) => Kind<F, S, R, O, E, A>
+  F: applicative.Applicative<F>
+) => <R, O, E, A>(fas: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A>
 ```
 
 Added in v1.0.0
@@ -473,42 +534,20 @@ Added in v1.0.0
 
 ```ts
 export declare const traverse: <F extends TypeLambda>(
-  Monoidal: monoidal.Monoidal<F>
-) => <A, S, R, O, E, B>(f: (a: A) => Kind<F, S, R, O, E, B>) => (self: A) => Kind<F, S, R, O, E, B>
+  F: applicative.Applicative<F>
+) => <A, R, O, E, B>(f: (a: A) => Kind<F, R, O, E, B>) => (self: A) => Kind<F, R, O, E, B>
 ```
 
 Added in v1.0.0
 
-# tuple sequencing
-
-## Zip
+## traverseTap
 
 **Signature**
 
 ```ts
-export declare const Zip: readonly []
-```
-
-Added in v1.0.0
-
-## tupled
-
-**Signature**
-
-```ts
-export declare const tupled: <A>(self: A) => readonly [A]
-```
-
-Added in v1.0.0
-
-## zipFlatten
-
-Sequentially zips this effect with the specified effect.
-
-**Signature**
-
-```ts
-export declare const zipFlatten: <B>(fb: B) => <A extends readonly unknown[]>(self: A) => readonly [...A, B]
+export declare const traverseTap: <F extends TypeLambda>(
+  F: applicative.Applicative<F>
+) => <A, R, O, E, B>(f: (a: A) => Kind<F, R, O, E, B>) => (self: A) => Kind<F, R, O, E, A>
 ```
 
 Added in v1.0.0
@@ -521,13 +560,35 @@ Added in v1.0.0
 
 ```ts
 export interface IdentityTypeLambda extends TypeLambda {
-  readonly type: Identity<this['Out1']>
+  readonly type: Identity<this['Target']>
+}
+```
+
+Added in v1.0.0
+
+## IdentityTypeLambdaFix (interface)
+
+**Signature**
+
+```ts
+export interface IdentityTypeLambdaFix<A> extends TypeLambda {
+  readonly type: Identity<A>
 }
 ```
 
 Added in v1.0.0
 
 # utils
+
+## andThen
+
+**Signature**
+
+```ts
+export declare const andThen: <B>(that: B) => <_>(self: _) => B
+```
+
+Added in v1.0.0
 
 ## ap
 
@@ -539,62 +600,12 @@ export declare const ap: <A>(fa: A) => <B>(self: (a: A) => B) => B
 
 Added in v1.0.0
 
-## combineKind
+## composeKleisliArrow
 
 **Signature**
 
 ```ts
-export declare const combineKind: <B>(that: B) => <A>(self: A) => B | A
-```
-
-Added in v1.0.0
-
-## combineKindMany
-
-**Signature**
-
-```ts
-export declare const combineKindMany: <A>(collection: Iterable<A>) => (self: A) => A
-```
-
-Added in v1.0.0
-
-## composeKind
-
-**Signature**
-
-```ts
-export declare const composeKind: <B, C>(that: (b: B) => C) => <A>(self: (a: A) => B) => (a: A) => C
-```
-
-Added in v1.0.0
-
-## duplicate
-
-**Signature**
-
-```ts
-export declare const duplicate: <A>(self: A) => A
-```
-
-Added in v1.0.0
-
-## extend
-
-**Signature**
-
-```ts
-export declare const extend: <A, B>(f: (that: A) => B) => (self: A) => B
-```
-
-Added in v1.0.0
-
-## extract
-
-**Signature**
-
-```ts
-export declare const extract: <A>(self: A) => A
+export declare const composeKleisliArrow: <B, C>(bfc: (b: B) => C) => <A>(afb: (a: A) => B) => (a: A) => C
 ```
 
 Added in v1.0.0
@@ -609,42 +620,124 @@ export declare const flatten: <A>(self: A) => A
 
 Added in v1.0.0
 
-## idKind
+## imap
 
 **Signature**
 
 ```ts
-export declare const idKind: <A>() => (a: A) => A
+export declare const imap: <A, B>(to: (a: A) => B, from: (b: B) => A) => (self: A) => B
 ```
 
 Added in v1.0.0
 
-## zipAll
+## liftMonoid
 
 **Signature**
 
 ```ts
-export declare const zipAll: <A>(collection: Iterable<A>) => readonly A[]
+export declare const liftMonoid: <A>(M: Monoid<A>) => Monoid<A>
 ```
 
 Added in v1.0.0
 
-## zipMany
+## map
 
 **Signature**
 
 ```ts
-export declare const zipMany: <A>(collection: Iterable<A>) => (self: A) => readonly [A, ...A[]]
+export declare const map: <A, B>(f: (a: A) => B) => (self: A) => B
 ```
 
 Added in v1.0.0
 
-## zipWith
+## product
 
 **Signature**
 
 ```ts
-export declare const zipWith: <B, A, C>(that: B, f: (a: A, b: B) => C) => (self: A) => C
+export declare const product: <B>(that: B) => <A>(self: A) => readonly [A, B]
+```
+
+Added in v1.0.0
+
+## productAll
+
+**Signature**
+
+```ts
+export declare const productAll: <A>(collection: Iterable<A>) => readonly A[]
+```
+
+Added in v1.0.0
+
+## productFlatten
+
+**Signature**
+
+```ts
+export declare const productFlatten: <B>(fb: B) => <A extends readonly unknown[]>(self: A) => readonly [...A, B]
+```
+
+Added in v1.0.0
+
+## productMany
+
+**Signature**
+
+```ts
+export declare const productMany: <A>(collection: Iterable<A>) => (self: A) => readonly [A, ...A[]]
+```
+
+Added in v1.0.0
+
+## struct
+
+**Signature**
+
+```ts
+export declare const struct: <R extends Record<string, any>>(r: R) => { readonly [K in keyof R]: R[K] }
+```
+
+Added in v1.0.0
+
+## tap
+
+Returns an effect that effectfully "peeks" at the success of this effect.
+
+**Signature**
+
+```ts
+export declare const tap: <A, _>(f: (a: A) => _) => (self: A) => A
+```
+
+Added in v1.0.0
+
+## tuple
+
+**Signature**
+
+```ts
+export declare const tuple: <T extends readonly any[]>(...tuple: T) => Readonly<{ [I in keyof T]: T[I] }>
+```
+
+Added in v1.0.0
+
+## tupled
+
+**Signature**
+
+```ts
+export declare const tupled: <A>(self: A) => readonly [A]
+```
+
+Added in v1.0.0
+
+## unit
+
+**Signature**
+
+```ts
+export declare const unit: void
 ```
 
 Added in v1.0.0

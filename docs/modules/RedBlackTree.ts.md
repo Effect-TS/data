@@ -1,6 +1,6 @@
 ---
 title: RedBlackTree.ts
-nav_order: 34
+nav_order: 33
 parent: Modules
 ---
 
@@ -28,7 +28,7 @@ Added in v1.0.0
   - [reduceWithIndex](#reducewithindex)
 - [getters](#getters)
   - [first](#first)
-  - [getSortable](#getsortable)
+  - [getOrder](#getorder)
   - [keys](#keys)
   - [last](#last)
   - [size](#size)
@@ -77,7 +77,7 @@ Creates an empty `RedBlackTree`.
 **Signature**
 
 ```ts
-export declare const empty: <K, V = never>(ord: Sortable<K>) => RedBlackTree<K, V>
+export declare const empty: <K, V = never>(ord: Order<K>) => RedBlackTree<K, V>
 ```
 
 Added in v1.0.0
@@ -89,7 +89,7 @@ Constructs a new tree from an iterable of key-value pairs.
 **Signature**
 
 ```ts
-export declare const from: <K, V>(ord: Sortable<K>) => (entries: Iterable<readonly [K, V]>) => RedBlackTree<K, V>
+export declare const from: <K, V>(ord: Order<K>) => (entries: Iterable<readonly [K, V]>) => RedBlackTree<K, V>
 ```
 
 Added in v1.0.0
@@ -102,7 +102,7 @@ Constructs a new `RedBlackTree` from the specified entries.
 
 ```ts
 export declare const make: <K, Entries extends (readonly [K, any])[]>(
-  ord: Sortable<K>
+  ord: Order<K>
 ) => (...entries: Entries) => RedBlackTree<K, Entries[number] extends readonly [any, infer V] ? V : never>
 ```
 
@@ -180,10 +180,10 @@ Reduce a state over the entries of the tree.
 **Signature**
 
 ```ts
-export declare const reduceWithIndex: <Z, K, V>(
-  zero: Z,
-  f: (accumulator: Z, key: K, value: V) => Z
-) => (self: RedBlackTree<K, V>) => Z
+export declare const reduceWithIndex: <B, A, K>(
+  b: B,
+  f: (b: B, value: A, key: K) => B
+) => (self: RedBlackTree<K, A>) => B
 ```
 
 Added in v1.0.0
@@ -202,14 +202,14 @@ export declare const first: <K, V>(tree: RedBlackTree<K, V>) => Option<readonly 
 
 Added in v1.0.0
 
-## getSortable
+## getOrder
 
-Gets the `Sortable<K>` that the `RedBlackTree<K, V>` is using.
+Gets the `Order<K>` that the `RedBlackTree<K, V>` is using.
 
 **Signature**
 
 ```ts
-export declare const getSortable: <K, V>(self: RedBlackTree<K, V>) => Sortable<K>
+export declare const getOrder: <K, V>(self: RedBlackTree<K, V>) => Order<K>
 ```
 
 Added in v1.0.0
@@ -277,8 +277,6 @@ A Red-Black Tree.
 ```ts
 export interface RedBlackTree<Key, Value> extends Iterable<readonly [Key, Value]>, Equal {
   readonly _id: TypeId
-  readonly _Key: (_: never) => Key
-  readonly _Value: (_: never) => Value
 }
 ```
 

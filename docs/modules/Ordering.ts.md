@@ -1,12 +1,12 @@
 ---
 title: Ordering.ts
-nav_order: 30
+nav_order: 28
 parent: Modules
 ---
 
 ## Ordering overview
 
-Added in v3.0.0
+Added in v1.0.0
 
 ---
 
@@ -21,7 +21,6 @@ Added in v3.0.0
   - [match](#match)
 - [utils](#utils)
   - [reverse](#reverse)
-  - [sign](#sign)
 
 ---
 
@@ -35,7 +34,7 @@ Added in v3.0.0
 export declare const Monoid: monoid.Monoid<Ordering>
 ```
 
-Added in v3.0.0
+Added in v1.0.0
 
 ## Semigroup
 
@@ -45,7 +44,7 @@ Added in v3.0.0
 export declare const Semigroup: semigroup.Semigroup<Ordering>
 ```
 
-Added in v3.0.0
+Added in v1.0.0
 
 # model
 
@@ -57,7 +56,7 @@ Added in v3.0.0
 export type Ordering = -1 | 0 | 1
 ```
 
-Added in v3.0.0
+Added in v1.0.0
 
 # pattern matching
 
@@ -73,7 +72,7 @@ export declare const match: <A, B, C = B>(
 ) => (o: Ordering) => A | B | C
 ```
 
-Added in v3.0.0
+Added in v1.0.0
 
 # utils
 
@@ -85,14 +84,4 @@ Added in v3.0.0
 export declare const reverse: (o: Ordering) => Ordering
 ```
 
-Added in v3.0.0
-
-## sign
-
-**Signature**
-
-```ts
-export declare const sign: (n: number) => Ordering
-```
-
-Added in v3.0.0
+Added in v1.0.0

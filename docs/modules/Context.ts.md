@@ -1,6 +1,6 @@
 ---
 title: Context.ts
-nav_order: 4
+nav_order: 3
 parent: Modules
 ---
 
@@ -20,6 +20,7 @@ Added in v1.0.0
   - [getOption](#getoption)
 - [guards](#guards)
   - [isContext](#iscontext)
+  - [isTag](#istag)
 - [models](#models)
   - [Context (interface)](#context-interface)
   - [Tag (interface)](#tag-interface)
@@ -94,6 +95,16 @@ export declare const isContext: (u: unknown) => u is Context<never>
 
 Added in v1.0.0
 
+## isTag
+
+**Signature**
+
+```ts
+export declare const isTag: (u: unknown) => u is Tag<never>
+```
+
+Added in v1.0.0
+
 # models
 
 ## Context (interface)
@@ -119,6 +130,8 @@ Added in v1.0.0
 export interface Tag<Service> extends Equal {
   readonly _id: TagTypeId
   readonly _S: (_: Service) => Service
+
+  [Symbol.iterator](): Generator<Tag<Service>, Service>
 }
 ```
 
