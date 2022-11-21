@@ -44,7 +44,7 @@ import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
  * @category models
  * @since 1.0.0
  */
-export interface Left<E> {
+export type Left<E> = {
   readonly _tag: "Left"
   readonly left: E
 }
@@ -53,7 +53,7 @@ export interface Left<E> {
  * @category models
  * @since 1.0.0
  */
-export interface Right<A> {
+export type Right<A> = {
   readonly _tag: "Right"
   readonly right: A
 }
