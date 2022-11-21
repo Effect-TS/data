@@ -34,8 +34,8 @@ export type Json =
  * import * as E from '@fp-ts/data/Either'
  * import { pipe } from '@fp-ts/data/Function'
  *
- * assert.deepStrictEqual(pipe('{"a":1}', J.parse), E.succeed({ a: 1 }))
- * assert.deepStrictEqual(pipe('{"a":}', J.parse), E.fail(new SyntaxError('Unexpected token } in JSON at position 5')))
+ * assert.deepStrictEqual(pipe('{"a":1}', J.parse), E.right({ a: 1 }))
+ * assert.deepStrictEqual(pipe('{"a":}', J.parse), E.left(new SyntaxError('Unexpected token } in JSON at position 5')))
  *
  * @since 1.0.0
  */
