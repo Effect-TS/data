@@ -138,8 +138,8 @@ describe.concurrent("Option", () => {
   })
 
   it("orElseSucceed", () => {
-    deepStrictEqual(pipe(_.some(1), _.orElseSucceed(2)), _.some(1))
-    deepStrictEqual(pipe(_.none, _.orElseSucceed(2)), _.some(2))
+    deepStrictEqual(pipe(_.some(1), _.orElseSucceed(() => 2)), _.some(1))
+    deepStrictEqual(pipe(_.none, _.orElseSucceed(() => 2)), _.some(2))
   })
 
   it("inspectSome", () => {
@@ -175,8 +175,8 @@ describe.concurrent("Option", () => {
   })
 
   it("getOrThrow", () => {
-    expect(pipe(_.some(1), _.getOrThrow(new Error("e")))).toEqual(1)
-    expect(() => pipe(_.none, _.getOrThrow(new Error("e")))).toThrow(
+    expect(pipe(_.some(1), _.getOrThrow(() => new Error("e")))).toEqual(1)
+    expect(() => pipe(_.none, _.getOrThrow(() => new Error("e")))).toThrow(
       new Error("e")
     )
   })
@@ -315,12 +315,12 @@ describe.concurrent("Option", () => {
   })
 
   it("toEither", () => {
-    deepStrictEqual(pipe(_.none, _.toEither("e")), E.left("e"))
-    deepStrictEqual(pipe(_.some(1), _.toEither("e")), E.right(1))
+    deepStrictEqual(pipe(_.none, _.toEither(() => "e")), E.left("e"))
+    deepStrictEqual(pipe(_.some(1), _.toEither(() => "e")), E.right(1))
   })
 
   it("match", () => {
-    const f = "none"
+    const f = () => "none"
     const g = (s: string) => `some${s.length}`
     const match = _.match(f, g)
     deepStrictEqual(match(_.none), "none")
@@ -328,8 +328,8 @@ describe.concurrent("Option", () => {
   })
 
   it("getOrElse", () => {
-    deepStrictEqual(pipe(_.some(1), _.getOrElse(0)), 1)
-    deepStrictEqual(pipe(_.none, _.getOrElse(0)), 0)
+    deepStrictEqual(pipe(_.some(1), _.getOrElse(() => 0)), 1)
+    deepStrictEqual(pipe(_.none, _.getOrElse(() => 0)), 0)
   })
 
   it("getOrNull", () => {

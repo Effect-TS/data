@@ -1,6 +1,7 @@
 /**
  * @since 1.0.0
  */
+import type { LazyArg } from "@fp-ts/core/internal/Function"
 import type { Either, Left, Right } from "@fp-ts/data/Either"
 import * as option from "@fp-ts/data/internal/Option"
 import type { Option } from "@fp-ts/data/Option"
@@ -33,9 +34,10 @@ export const getRight = <E, A>(
 ): Option<A> => (isLeft(self) ? option.none : option.some(self.right))
 
 /** @internal */
-export const fromNullable = <E>(onNullable: E) =>
-  <A>(a: A): Either<E, NonNullable<A>> => a == null ? left(onNullable) : right(a as NonNullable<A>)
+export const fromNullable = <E>(onNullable: LazyArg<E>) =>
+  <A>(a: A): Either<E, NonNullable<A>> =>
+    a == null ? left(onNullable()) : right(a as NonNullable<A>)
 
 /** @internal */
-export const fromOption = <E>(onNone: E) =>
-  <A>(fa: Option<A>): Either<E, A> => option.isNone(fa) ? left(onNone) : right(fa.value)
+export const fromOption = <E>(onNone: () => E) =>
+  <A>(fa: Option<A>): Either<E, A> => option.isNone(fa) ? left(onNone()) : right(fa.value)

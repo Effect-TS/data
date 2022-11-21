@@ -39,7 +39,7 @@ import * as traversable from "@fp-ts/core/typeclass/Traversable"
 import type { Either } from "@fp-ts/data/Either"
 import { equals } from "@fp-ts/data/Equal"
 import type { LazyArg } from "@fp-ts/data/Function"
-import { pipe } from "@fp-ts/data/Function"
+import { constNull, constUndefined, pipe } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
 import * as either from "@fp-ts/data/internal/Either"
 import * as option from "@fp-ts/data/internal/Option"
@@ -172,12 +172,12 @@ export const liftThrowable = <A extends ReadonlyArray<unknown>, B>(
  * @category interop
  * @since 1.0.0
  */
-export const getOrThrow = (onError: unknown) =>
+export const getOrThrow = (onError: LazyArg<unknown>) =>
   <A>(self: Option<A>): A => {
     if (isSome(self)) {
       return self.value
     }
-    throw onError
+    throw onError()
   }
 
 /**
@@ -877,7 +877,8 @@ export const fromEither: <E, A>(self: Either<E, A>) => Option<A> = either.getRig
  * @category conversions
  * @since 1.0.0
  */
-export const toEither: <E>(onNone: E) => <A>(self: Option<A>) => Either<E, A> = either.fromOption
+export const toEither: <E>(onNone: LazyArg<E>) => <A>(self: Option<A>) => Either<E, A> =
+  either.fromOption
 
 /**
  * Takes a (lazy) default value, a function, and an `Option` value, if the `Option` value is `None` the default value is
@@ -890,7 +891,7 @@ export const toEither: <E>(onNone: E) => <A>(self: Option<A>) => Either<E, A> = 
  * assert.strictEqual(
  *   pipe(
  *     some(1),
- *     match('a none', a => `a some containing ${a}`)
+ *     match(() => 'a none', a => `a some containing ${a}`)
  *   ),
  *   'a some containing 1'
  * )
@@ -898,7 +899,7 @@ export const toEither: <E>(onNone: E) => <A>(self: Option<A>) => Either<E, A> = 
  * assert.strictEqual(
  *   pipe(
  *     none,
- *     match('a none', a => `a some containing ${a}`)
+ *     match(() => 'a none', a => `a some containing ${a}`)
  *   ),
  *   'a none'
  * )
@@ -906,8 +907,8 @@ export const toEither: <E>(onNone: E) => <A>(self: Option<A>) => Either<E, A> = 
  * @category pattern matching
  * @since 1.0.0
  */
-export const match = <B, A, C = B>(onNone: B, onSome: (a: A) => C) =>
-  (self: Option<A>): B | C => isNone(self) ? onNone : onSome(self.value)
+export const match = <B, A, C = B>(onNone: LazyArg<B>, onSome: (a: A) => C) =>
+  (self: Option<A>): B | C => isNone(self) ? onNone() : onSome(self.value)
 
 /**
  * Extracts the value out of the structure, if it exists. Otherwise returns the given default value
@@ -916,14 +917,14 @@ export const match = <B, A, C = B>(onNone: B, onSome: (a: A) => C) =>
  * import { some, none, getOrElse } from '@fp-ts/data/Option'
  * import { pipe } from '@fp-ts/data/Function'
  *
- * assert.strictEqual(pipe(some(1), getOrElse(0)), 1)
- * assert.strictEqual(pipe(none, getOrElse(0)), 0)
+ * assert.strictEqual(pipe(some(1), getOrElse(() => 0)), 1)
+ * assert.strictEqual(pipe(none, getOrElse(() => 0)), 0)
  *
  * @category error handling
  * @since 1.0.0
  */
-export const getOrElse = <B>(onNone: B) =>
-  <A>(self: Option<A>): A | B => isNone(self) ? onNone : self.value
+export const getOrElse = <B>(onNone: LazyArg<B>) =>
+  <A>(self: Option<A>): A | B => isNone(self) ? onNone() : self.value
 
 /**
  * Returns a *smart constructor* from a function that returns a nullable value.
@@ -1008,7 +1009,7 @@ export const flatMapNullable = <A, B>(f: (a: A) => B | null | undefined) =>
  * @category conversions
  * @since 1.0.0
  */
-export const getOrNull: <A>(self: Option<A>) => A | null = getOrElse(null)
+export const getOrNull: <A>(self: Option<A>) => A | null = getOrElse(constNull)
 
 /**
  * Extracts the value out of the structure, if it exists. Otherwise returns `undefined`.
@@ -1023,7 +1024,7 @@ export const getOrNull: <A>(self: Option<A>) => A | null = getOrElse(null)
  * @category conversions
  * @since 1.0.0
  */
-export const getOrUndefined: <A>(self: Option<A>) => A | undefined = getOrElse(undefined)
+export const getOrUndefined: <A>(self: Option<A>) => A | undefined = getOrElse(constUndefined)
 
 /**
  * Lazy version of `orElse`.
@@ -1109,8 +1110,8 @@ export const orElseEither = <B>(
  * @since 1.0.0
  */
 export const orElseSucceed = <B>(
-  onNone: B
-): <A>(self: Option<A>) => Option<A | B> => orElse(some(onNone))
+  onNone: () => B
+): <A>(self: Option<A>) => Option<A | B> => catchAll(() => some(onNone()))
 
 /**
  * The `Order` instance allows `Option` values to be compared with
