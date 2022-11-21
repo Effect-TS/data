@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.12
+
+### Patch Changes
+
+- [#109](https://github.com/fp-ts/data/pull/109) [`3044b92`](https://github.com/fp-ts/data/commit/3044b929d15ee4f3daff6d607c924f05bde835b0) Thanks [@gcanti](https://github.com/gcanti)! - add Json module
+
 ## 0.0.11
 
 ### Patch Changes
