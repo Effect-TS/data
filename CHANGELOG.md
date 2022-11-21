@@ -1,5 +1,13 @@
 # @fp-ts/data
 
+## 0.0.11
+
+### Patch Changes
+
+- [#110](https://github.com/fp-ts/data/pull/110) [`9350db7`](https://github.com/fp-ts/data/commit/9350db73fd4fb99ffb2a3dce5d2b47118d9b2b48) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Fix Context Equals
+
+- [#108](https://github.com/fp-ts/data/pull/108) [`860b4c5`](https://github.com/fp-ts/data/commit/860b4c5017de827e7ad69667b1213302c159b637) Thanks [@gcanti](https://github.com/gcanti)! - Option / Either / These: fix eager APIs
+
 ## 0.0.10
 
 ### Patch Changes
