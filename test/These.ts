@@ -370,7 +370,7 @@ describe("These", () => {
   })
 
   it("flatMapNullable", () => {
-    const f = _.flatMapNullable((n: number) => (n > 0 ? n : null), "e2")
+    const f = _.flatMapNullable((n: number) => (n > 0 ? n : null), () => "e2")
     U.deepStrictEqual(f(_.succeed(1)), _.succeed(1))
     U.deepStrictEqual(f(_.succeed(-1)), _.fail("e2"))
     U.deepStrictEqual(f(_.fail("e1")), _.fail("e1"))
@@ -379,7 +379,7 @@ describe("These", () => {
   })
 
   it("flatMapOption", () => {
-    const f = _.flatMapOption((n: number) => (n > 0 ? O.some(n) : O.none), "e2")
+    const f = _.flatMapOption((n: number) => (n > 0 ? O.some(n) : O.none), () => "e2")
     U.deepStrictEqual(f(_.succeed(1)), _.succeed(1))
     U.deepStrictEqual(f(_.succeed(-1)), _.fail("e2"))
     U.deepStrictEqual(f(_.fail("e1")), _.fail("e1"))
@@ -410,13 +410,13 @@ describe("These", () => {
   })
 
   it("leftOrBoth", () => {
-    U.deepStrictEqual(_.leftOrBoth("a")(O.none), _.left("a"))
-    U.deepStrictEqual(_.leftOrBoth("a")(O.some(1)), _.both("a", 1))
+    U.deepStrictEqual(_.leftOrBoth(() => "a")(O.none), _.left("a"))
+    U.deepStrictEqual(_.leftOrBoth(() => "a")(O.some(1)), _.both("a", 1))
   })
 
   it("rightOrBoth", () => {
-    U.deepStrictEqual(_.rightOrBoth(1)(O.none), _.right(1))
-    U.deepStrictEqual(_.rightOrBoth(1)(O.some("a")), _.both("a", 1))
+    U.deepStrictEqual(_.rightOrBoth(() => 1)(O.none), _.right(1))
+    U.deepStrictEqual(_.rightOrBoth(() => 1)(O.some("a")), _.both("a", 1))
   })
 
   it("match", () => {
@@ -428,7 +428,7 @@ describe("These", () => {
   })
 
   it("getBothOrElse", () => {
-    const f = _.getBothOrElse("a", 1)
+    const f = _.getBothOrElse(() => "a", () => 1)
     U.deepStrictEqual(pipe(_.left("b"), f), ["b", 1])
     U.deepStrictEqual(pipe(_.right(2), f), ["a", 2])
     U.deepStrictEqual(pipe(_.both("b", 2), f), ["b", 2])
@@ -582,9 +582,9 @@ describe("These", () => {
   })
 
   it("getOrElse", () => {
-    U.deepStrictEqual(pipe(_.right(1), _.getOrElse(2)), 1)
-    U.deepStrictEqual(pipe(_.left("e"), _.getOrElse(2)), 2)
-    U.deepStrictEqual(pipe(_.both("e", 1), _.getOrElse(2)), 1)
+    U.deepStrictEqual(pipe(_.right(1), _.getOrElse(() => 2)), 1)
+    U.deepStrictEqual(pipe(_.left("e"), _.getOrElse(() => 2)), 2)
+    U.deepStrictEqual(pipe(_.both("e", 1), _.getOrElse(() => 2)), 1)
   })
 
   it("getOrNull", () => {
@@ -600,31 +600,31 @@ describe("These", () => {
   })
 
   it("fromNullable", () => {
-    U.deepStrictEqual(_.fromNullable("default")(null), _.left("default"))
-    U.deepStrictEqual(_.fromNullable("default")(undefined), _.left("default"))
-    U.deepStrictEqual(_.fromNullable("default")(1), _.right(1))
+    U.deepStrictEqual(_.fromNullable(() => "default")(null), _.left("default"))
+    U.deepStrictEqual(_.fromNullable(() => "default")(undefined), _.left("default"))
+    U.deepStrictEqual(_.fromNullable(() => "default")(1), _.right(1))
   })
 
   it("liftNullable", () => {
-    const f = _.liftNullable((n: number) => (n > 0 ? n : null), "error")
+    const f = _.liftNullable((n: number) => (n > 0 ? n : null), () => "error")
     U.deepStrictEqual(f(1), _.right(1))
     U.deepStrictEqual(f(-1), _.left("error"))
   })
 
   it("liftPredicate", () => {
-    const f = _.liftPredicate((n: number) => n >= 2, "e")
+    const f = _.liftPredicate((n: number) => n >= 2, () => "e")
     U.deepStrictEqual(f(3), _.right(3))
     U.deepStrictEqual(f(1), _.left("e"))
   })
 
   it("fromIterable", () => {
-    U.deepStrictEqual(_.fromIterable("e")([]), _.left("e"))
-    U.deepStrictEqual(_.fromIterable("e")(["a"]), _.right("a"))
+    U.deepStrictEqual(_.fromIterable(() => "e")([]), _.left("e"))
+    U.deepStrictEqual(_.fromIterable(() => "e")(["a"]), _.right("a"))
   })
 
   it("fromOption", () => {
-    U.deepStrictEqual(_.fromOption("e")(O.none), _.left("e"))
-    U.deepStrictEqual(_.fromOption("e")(O.some(1)), _.right(1))
+    U.deepStrictEqual(_.fromOption(() => "e")(O.none), _.left("e"))
+    U.deepStrictEqual(_.fromOption(() => "e")(O.some(1)), _.right(1))
   })
 
   it("fromEither", () => {
@@ -655,7 +655,7 @@ describe("These", () => {
   })
 
   it("liftOption", () => {
-    const f = _.liftOption((n: number) => (n > 0 ? O.some(n) : O.none), "e")
+    const f = _.liftOption((n: number) => (n > 0 ? O.some(n) : O.none), () => "e")
     U.deepStrictEqual(f(1), _.right(1))
     U.deepStrictEqual(f(-1), _.left("e"))
   })
@@ -740,15 +740,15 @@ describe("These", () => {
   })
 
   it("orElseFail", () => {
-    U.deepStrictEqual(pipe(_.right(1), _.orElseFail("e2")), _.right(1))
-    U.deepStrictEqual(pipe(_.left("e1"), _.orElseFail("e2")), _.left("e2"))
-    U.deepStrictEqual(pipe(_.both("e1", 1), _.orElseFail("e2")), _.both("e1", 1))
+    U.deepStrictEqual(pipe(_.right(1), _.orElseFail(() => "e2")), _.right(1))
+    U.deepStrictEqual(pipe(_.left("e1"), _.orElseFail(() => "e2")), _.left("e2"))
+    U.deepStrictEqual(pipe(_.both("e1", 1), _.orElseFail(() => "e2")), _.both("e1", 1))
   })
 
   it("orElseSucceed", () => {
-    U.deepStrictEqual(pipe(_.right(1), _.orElseSucceed(2)), _.right(1))
-    U.deepStrictEqual(pipe(_.left("e"), _.orElseSucceed(2)), _.right(2))
-    U.deepStrictEqual(pipe(_.both("e", 1), _.orElseSucceed(2)), _.both("e", 1))
+    U.deepStrictEqual(pipe(_.right(1), _.orElseSucceed(() => 2)), _.right(1))
+    U.deepStrictEqual(pipe(_.left("e"), _.orElseSucceed(() => 2)), _.right(2))
+    U.deepStrictEqual(pipe(_.both("e", 1), _.orElseSucceed(() => 2)), _.both("e", 1))
   })
 
   it("firstSuccessOf", () => {
@@ -790,28 +790,28 @@ describe("These", () => {
   })
 
   it("compact", () => {
-    U.deepStrictEqual(pipe(_.right(O.some(1)), _.compact("e2")), _.right(1))
-    U.deepStrictEqual(pipe(_.right(O.none), _.compact("e2")), _.left("e2"))
-    U.deepStrictEqual(pipe(_.left("e1"), _.compact("e2")), _.left("e1"))
-    U.deepStrictEqual(pipe(_.both("e1", O.some(1)), _.compact("e2")), _.both("e1", 1))
-    U.deepStrictEqual(pipe(_.both("e1", O.none), _.compact("e2")), _.left("e2"))
+    U.deepStrictEqual(pipe(_.right(O.some(1)), _.compact(() => "e2")), _.right(1))
+    U.deepStrictEqual(pipe(_.right(O.none), _.compact(() => "e2")), _.left("e2"))
+    U.deepStrictEqual(pipe(_.left("e1"), _.compact(() => "e2")), _.left("e1"))
+    U.deepStrictEqual(pipe(_.both("e1", O.some(1)), _.compact(() => "e2")), _.both("e1", 1))
+    U.deepStrictEqual(pipe(_.both("e1", O.none), _.compact(() => "e2")), _.left("e2"))
   })
 
   it("filter", () => {
     const predicate = (n: number) => n > 10
-    U.deepStrictEqual(pipe(_.right(12), _.filter(predicate, "e2")), _.right(12))
-    U.deepStrictEqual(pipe(_.right(7), _.filter(predicate, "e2")), _.left("e2"))
-    U.deepStrictEqual(pipe(_.left("e1"), _.filter(predicate, "e2")), _.left("e1"))
-    U.deepStrictEqual(pipe(_.both("e1", 12), _.filter(predicate, "e2")), _.both("e1", 12))
-    U.deepStrictEqual(pipe(_.both("e1", 7), _.filter(predicate, "e2")), _.left("e2"))
+    U.deepStrictEqual(pipe(_.right(12), _.filter(predicate, () => "e2")), _.right(12))
+    U.deepStrictEqual(pipe(_.right(7), _.filter(predicate, () => "e2")), _.left("e2"))
+    U.deepStrictEqual(pipe(_.left("e1"), _.filter(predicate, () => "e2")), _.left("e1"))
+    U.deepStrictEqual(pipe(_.both("e1", 12), _.filter(predicate, () => "e2")), _.both("e1", 12))
+    U.deepStrictEqual(pipe(_.both("e1", 7), _.filter(predicate, () => "e2")), _.left("e2"))
   })
 
   it("filterMap", () => {
     const f = (n: number) => (n > 2 ? O.some(n + 1) : O.none)
-    U.deepStrictEqual(pipe(_.left("e1"), _.filterMap(f, "e2")), _.left("e1"))
-    U.deepStrictEqual(pipe(_.right(1), _.filterMap(f, "e2")), _.left("e2"))
-    U.deepStrictEqual(pipe(_.right(3), _.filterMap(f, "e2")), _.right(4))
-    U.deepStrictEqual(pipe(_.both("e1", 1), _.filterMap(f, "e2")), _.left("e2"))
-    U.deepStrictEqual(pipe(_.both("e1", 3), _.filterMap(f, "e2")), _.both("e1", 4))
+    U.deepStrictEqual(pipe(_.left("e1"), _.filterMap(f, () => "e2")), _.left("e1"))
+    U.deepStrictEqual(pipe(_.right(1), _.filterMap(f, () => "e2")), _.left("e2"))
+    U.deepStrictEqual(pipe(_.right(3), _.filterMap(f, () => "e2")), _.right(4))
+    U.deepStrictEqual(pipe(_.both("e1", 1), _.filterMap(f, () => "e2")), _.left("e2"))
+    U.deepStrictEqual(pipe(_.both("e1", 3), _.filterMap(f, () => "e2")), _.both("e1", 4))
   })
 })

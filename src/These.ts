@@ -42,7 +42,8 @@ import type { NonEmptyChunk } from "@fp-ts/data/Chunk"
 import * as chunk from "@fp-ts/data/Chunk"
 import type { Either, Left, Right } from "@fp-ts/data/Either"
 import { equals } from "@fp-ts/data/Equal"
-import { pipe } from "@fp-ts/data/Function"
+import type { LazyArg } from "@fp-ts/data/Function"
+import { constNull, constUndefined, pipe } from "@fp-ts/data/Function"
 import * as either from "@fp-ts/data/internal/Either"
 import * as option from "@fp-ts/data/internal/Option"
 import * as these from "@fp-ts/data/internal/These"
@@ -141,15 +142,15 @@ export const warn = <E, A>(e: E, a: A): Validated<E, A> => both(chunk.singleton(
  * @category constructors
  * @since 1.0.0
  */
-export const leftOrBoth = <E>(e: E) =>
-  <A>(self: Option<A>): These<E, A> => option.isNone(self) ? left(e) : both(e, self.value)
+export const leftOrBoth = <E>(e: LazyArg<E>) =>
+  <A>(self: Option<A>): These<E, A> => option.isNone(self) ? left(e()) : both(e(), self.value)
 
 /**
  * @category constructors
  * @since 1.0.0
  */
-export const rightOrBoth = <A>(a: A) =>
-  <E>(self: Option<E>): These<E, A> => option.isNone(self) ? right(a) : both(self.value, a)
+export const rightOrBoth = <A>(a: () => A) =>
+  <E>(self: Option<E>): These<E, A> => option.isNone(self) ? right(a()) : both(self.value, a())
 
 /**
  * @category pattern matching
@@ -283,8 +284,8 @@ export const getRightOnlyOrThrow = <E>(onLeft: (e: E) => unknown) =>
  * @category conversions
  * @since 1.0.0
  */
-export const fromNullable = <E>(onNullable: E) =>
-  <A>(a: A): These<E, NonNullable<A>> => a == null ? left(onNullable) : right(a as NonNullable<A>)
+export const fromNullable = <E>(onNullable: LazyArg<E>) =>
+  <A>(a: A): These<E, NonNullable<A>> => a == null ? left(onNullable()) : right(a as NonNullable<A>)
 
 /**
  * @category conversions
@@ -325,8 +326,8 @@ export const condemn: <E, A>(self: These<E, A>) => Either<E, A> = toEither((
  */
 export const liftNullable = <A extends ReadonlyArray<unknown>, B, E>(
   f: (...a: A) => B | null | undefined,
-  onNullable: E
-) => (...a: A): These<E, NonNullable<B>> => fromNullable(onNullable)(f(...a))
+  onNullable: (...a: A) => E
+) => (...a: A): These<E, NonNullable<B>> => fromNullable(() => onNullable(...a))(f(...a))
 
 /**
  * @category sequencing
@@ -334,9 +335,9 @@ export const liftNullable = <A extends ReadonlyArray<unknown>, B, E>(
  */
 export const flatMapNullable = <A, B, E2>(
   f: (a: A) => B | null | undefined,
-  onNullable: E2
+  onNullable: (a: A) => E2
 ): (<E1>(self: Validated<E1, A>) => Validated<E1 | E2, NonNullable<B>>) =>
-  flatMap(liftNullable(f, chunk.singleton(onNullable)))
+  flatMap(liftNullable(f, (a) => chunk.singleton(onNullable(a))))
 
 /**
  * @category lifting
@@ -345,30 +346,30 @@ export const flatMapNullable = <A, B, E2>(
 export const liftPredicate: {
   <C extends A, B extends A, E, A = C>(
     refinement: Refinement<A, B>,
-    onFalse: E
+    onFalse: LazyArg<E>
   ): (c: C) => These<E, B>
-  <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: E): (b: B) => These<E, B>
-} = <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: E) =>
-  (b: B) => predicate(b) ? right(b) : left(onFalse)
+  <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: LazyArg<E>): (b: B) => These<E, B>
+} = <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: LazyArg<E>) =>
+  (b: B) => predicate(b) ? right(b) : left(onFalse())
 
 /**
  * @category conversions
  * @since 1.0.0
  */
-export const fromIterable = <E>(onEmpty: E) =>
+export const fromIterable = <E>(onEmpty: LazyArg<E>) =>
   <A>(collection: Iterable<A>): These<E, A> => {
     for (const a of collection) {
       return right(a)
     }
-    return left(onEmpty)
+    return left(onEmpty())
   }
 
 /**
  * @category conversions
  * @since 1.0.0
  */
-export const fromOption = <E>(onNone: E) =>
-  <A>(self: Option<A>): These<E, A> => option.isNone(self) ? left(onNone) : right(self.value)
+export const fromOption = <E>(onNone: LazyArg<E>) =>
+  <A>(self: Option<A>): These<E, A> => option.isNone(self) ? left(onNone()) : right(self.value)
 
 /**
  * @category conversions
@@ -382,8 +383,8 @@ export const fromTuple = <E, A>(self: readonly [E, A]): These<E, A> => both(self
  */
 export const liftOption = <A extends ReadonlyArray<unknown>, B, E>(
   f: (...a: A) => Option<B>,
-  onNone: E
-) => (...a: A): These<E, B> => fromOption(onNone)(f(...a))
+  onNone: (...a: A) => E
+) => (...a: A): These<E, B> => fromOption(() => onNone(...a))(f(...a))
 
 /**
  * @category lifting
@@ -407,10 +408,10 @@ export const liftThese = <A extends ReadonlyArray<unknown>, E, B>(
  */
 export const flatMapOption = <A, B, E2>(
   f: (a: A) => Option<B>,
-  onNone: E2
+  onNone: (a: A) => E2
 ) =>
   <E1>(self: Validated<E1, A>): Validated<E1 | E2, B> =>
-    pipe(self, flatMap(liftOption(f, chunk.singleton(onNone))))
+    pipe(self, flatMap(liftOption(f, (a) => chunk.singleton(onNone(a)))))
 
 /**
  * @category sequencing
@@ -476,34 +477,34 @@ export const getBoth = <E, A>(
  * @category getters
  * @since 1.0.0
  */
-export const getBothOrElse = <E, A>(e: E, a: A) =>
+export const getBothOrElse = <E, A>(e: LazyArg<E>, a: LazyArg<A>) =>
   (
     self: These<E, A>
   ): readonly [E, A] =>
     isLeft(self) ?
-      [self.left, a] :
+      [self.left, a()] :
       isRight(self) ?
-      [e, self.right] :
+      [e(), self.right] :
       [self.left, self.right]
 
 /**
  * @category getters
  * @since 1.0.0
  */
-export const getOrElse = <B>(onLeft: B) =>
-  <E, A>(self: These<E, A>): A | B => isLeft(self) ? onLeft : self.right
+export const getOrElse = <B>(onLeft: LazyArg<B>) =>
+  <E, A>(self: These<E, A>): A | B => isLeft(self) ? onLeft() : self.right
 
 /**
  * @category getters
  * @since 1.0.0
  */
-export const getOrNull: <E, A>(self: These<E, A>) => A | null = getOrElse(null)
+export const getOrNull: <E, A>(self: These<E, A>) => A | null = getOrElse(constNull)
 
 /**
  * @category getters
  * @since 1.0.0
  */
-export const getOrUndefined: <E, A>(self: These<E, A>) => A | undefined = getOrElse(undefined)
+export const getOrUndefined: <E, A>(self: These<E, A>) => A | undefined = getOrElse(constUndefined)
 
 /**
  * @category debugging
@@ -840,8 +841,8 @@ export const orElseEither = <E2, B>(
  * @since 1.0.0
  */
 export const orElseFail = <E2>(
-  onLeft: E2
-): <E1, A>(self: These<E1, A>) => These<E1 | E2, A> => orElse(left(onLeft))
+  onLeft: LazyArg<E2>
+): <E1, A>(self: These<E1, A>) => These<E1 | E2, A> => catchAll(() => left(onLeft()))
 
 /**
  * Executes this effect and returns its value, if it succeeds, but otherwise
@@ -851,8 +852,8 @@ export const orElseFail = <E2>(
  * @since 1.0.0
  */
 export const orElseSucceed = <B>(
-  onLeft: B
-): <E, A>(self: These<E, A>) => These<E, A | B> => orElse(right(onLeft))
+  onLeft: LazyArg<B>
+): <E, A>(self: These<E, A>) => These<E, A | B> => catchAll(() => right(onLeft()))
 
 /**
  * @category error handling
@@ -902,12 +903,12 @@ export const SemiAlternative: semiAlternative.SemiAlternative<TheseTypeLambda> =
  * @category filtering
  * @since 1.0.0
  */
-export const compact = <E>(onNone: E) =>
+export const compact = <E>(onNone: LazyArg<E>) =>
   <A>(self: These<E, Option<A>>): These<E, A> =>
     isLeft(self) ?
       self :
       option.isNone(self.right) ?
-      left(onNone) :
+      left(onNone()) :
       isBoth(self) ?
       both(self.left, self.right.value) :
       right(self.right.value)
@@ -917,19 +918,19 @@ export const compact = <E>(onNone: E) =>
  * @since 1.0.0
  */
 export const filter: {
-  <C extends A, B extends A, E2, A = C>(refinement: Refinement<A, B>, onFalse: E2): <E1>(
+  <C extends A, B extends A, E2, A = C>(refinement: Refinement<A, B>, onFalse: LazyArg<E2>): <E1>(
     self: These<E1, C>
   ) => These<E1 | E2, B>
   <B extends A, E2, A = B>(
     predicate: Predicate<A>,
-    onFalse: E2
+    onFalse: LazyArg<E2>
   ): <E1>(self: These<E1, B>) => These<E1 | E2, B>
 } = <A, E>(
   predicate: Predicate<A>,
-  onFalse: E
+  onFalse: LazyArg<E>
 ) =>
   (self: These<E, A>): These<E, A> =>
-    isLeft(self) ? self : predicate(self.right) ? self : left(onFalse)
+    isLeft(self) ? self : predicate(self.right) ? self : left(onFalse())
 
 /**
  * @category filtering
@@ -937,7 +938,7 @@ export const filter: {
  */
 export const filterMap = <A, B, E2>(
   f: (a: A) => Option<B>,
-  onNone: E2
+  onNone: LazyArg<E2>
 ) =>
   <E1>(self: These<E1, A>): These<E1 | E2, B> => {
     if (isLeft(self)) {
@@ -945,10 +946,10 @@ export const filterMap = <A, B, E2>(
     }
     if (isRight(self)) {
       const ob = f(self.right)
-      return option.isNone(ob) ? left(onNone) : right(ob.value)
+      return option.isNone(ob) ? left(onNone()) : right(ob.value)
     }
     const ob = f(self.right)
-    return option.isNone(ob) ? left(onNone) : both(self.left, ob.value)
+    return option.isNone(ob) ? left(onNone()) : both(self.left, ob.value)
   }
 
 /**

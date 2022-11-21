@@ -122,7 +122,7 @@ describe.concurrent("MutableHashMap", () => {
       map,
       HM.modify(
         key(2, 2),
-        O.match(O.some(value(2, 2)), O.some)
+        O.match(() => O.some(value(2, 2)), O.some)
       )
     )
 

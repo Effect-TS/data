@@ -33,7 +33,8 @@ import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
 import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
 import { equals } from "@fp-ts/data/Equal"
-import { identity, pipe } from "@fp-ts/data/Function"
+import type { LazyArg } from "@fp-ts/data/Function"
+import { constNull, constUndefined, identity, pipe } from "@fp-ts/data/Function"
 import * as either from "@fp-ts/data/internal/Either"
 import * as option from "@fp-ts/data/internal/Option"
 import type { Option } from "@fp-ts/data/Option"
@@ -606,14 +607,14 @@ export const getFirstRightSemigroup: <E, A>() => Semigroup<Either<E, A>> = semiC
  * assert.deepStrictEqual(
  *   pipe(
  *     E.right(1),
- *     E.getOrElse(0)
+ *     E.getOrElse(() => 0)
  *   ),
  *   1
  * )
  * assert.deepStrictEqual(
  *   pipe(
  *     E.left('error'),
- *     E.getOrElse(0)
+ *     E.getOrElse(() => 0)
  *   ),
  *   0
  * )
@@ -621,8 +622,8 @@ export const getFirstRightSemigroup: <E, A>() => Semigroup<Either<E, A>> = semiC
  * @category getters
  * @since 1.0.0
  */
-export const getOrElse = <B>(onLeft: B) =>
-  <E, A>(self: Either<E, A>): A | B => isLeft(self) ? onLeft : self.right
+export const getOrElse = <B>(onLeft: LazyArg<B>) =>
+  <E, A>(self: Either<E, A>): A | B => isLeft(self) ? onLeft() : self.right
 
 /**
  * Recovers from all errors.
@@ -675,8 +676,8 @@ export const orElseEither = <E2, B>(
  * @since 1.0.0
  */
 export const orElseFail = <E2>(
-  onLeft: E2
-): <E1, A>(self: Either<E1, A>) => Either<E2, A> => orElse(left(onLeft))
+  onLeft: LazyArg<E2>
+): <E1, A>(self: Either<E1, A>) => Either<E2, A> => catchAll(() => left(onLeft()))
 
 /**
  * Executes this effect and returns its value, if it succeeds, but otherwise
@@ -686,8 +687,8 @@ export const orElseFail = <E2>(
  * @since 1.0.0
  */
 export const orElseSucceed = <B>(
-  onLeft: B
-): <E, A>(self: Either<E, A>) => Either<E, A | B> => orElse(right(onLeft))
+  onLeft: LazyArg<B>
+): <E, A>(self: Either<E, A>) => Either<E, A | B> => catchAll(() => right(onLeft()))
 
 /**
  * @category instances
@@ -746,15 +747,15 @@ export const match = <E, B, A, C = B>(onLeft: (e: E) => B, onRight: (a: A) => C)
  * @example
  * import * as E from '@fp-ts/data/Either'
  *
- * const parse = E.fromNullable('nully')
+ * const parse = E.fromNullable(() => 'nullable')
  *
  * assert.deepStrictEqual(parse(1), E.right(1))
- * assert.deepStrictEqual(parse(null), E.left('nully'))
+ * assert.deepStrictEqual(parse(null), E.left('nullable'))
  *
  * @category conversions
  * @since 1.0.0
  */
-export const fromNullable: <E>(onNullable: E) => <A>(a: A) => Either<E, NonNullable<A>> =
+export const fromNullable: <E>(onNullable: LazyArg<E>) => <A>(a: A) => Either<E, NonNullable<A>> =
   either.fromNullable
 
 /**
@@ -763,8 +764,8 @@ export const fromNullable: <E>(onNullable: E) => <A>(a: A) => Either<E, NonNulla
  */
 export const liftNullable = <A extends ReadonlyArray<unknown>, B, E>(
   f: (...a: A) => B | null | undefined,
-  onNullable: E
-) => (...a: A): Either<E, NonNullable<B>> => fromNullable(onNullable)(f(...a))
+  onNullable: (...a: A) => E
+) => (...a: A): Either<E, NonNullable<B>> => fromNullable(() => onNullable(...a))(f(...a))
 
 /**
  * @category sequencing
@@ -772,7 +773,7 @@ export const liftNullable = <A extends ReadonlyArray<unknown>, B, E>(
  */
 export const flatMapNullable = <A, B, E2>(
   f: (a: A) => B | null | undefined,
-  onNullable: E2
+  onNullable: (a: A) => E2
 ): (<E1>(self: Either<E1, A>) => Either<E1 | E2, NonNullable<B>>) =>
   flatMap(liftNullable(f, onNullable))
 
@@ -861,28 +862,28 @@ export const reverse = <E, A>(self: Either<E, A>): Either<A, E> =>
  * @category filtering
  * @since 1.0.0
  */
-export const compact = <E2>(onNone: E2) =>
+export const compact = <E2>(onNone: LazyArg<E2>) =>
   <E1, A>(self: Either<E1, Option<A>>): Either<E1 | E2, A> =>
-    isLeft(self) ? self : option.isNone(self.right) ? left(onNone) : right(self.right.value)
+    isLeft(self) ? self : option.isNone(self.right) ? left(onNone()) : right(self.right.value)
 
 /**
  * @category filtering
  * @since 1.0.0
  */
 export const filter: {
-  <C extends A, B extends A, E2, A = C>(refinement: Refinement<A, B>, onFalse: E2): <E1>(
+  <C extends A, B extends A, E2, A = C>(refinement: Refinement<A, B>, onFalse: LazyArg<E2>): <E1>(
     self: Either<E1, C>
   ) => Either<E1 | E2, B>
   <B extends A, E2, A = B>(
     predicate: Predicate<A>,
-    onFalse: E2
+    onFalse: LazyArg<E2>
   ): <E1>(self: Either<E1, B>) => Either<E1 | E2, B>
 } = <A, E>(
   predicate: Predicate<A>,
-  onFalse: E
+  onFalse: LazyArg<E>
 ) =>
   (self: Either<E, A>): Either<E, A> =>
-    isLeft(self) ? self : predicate(self.right) ? self : left(onFalse)
+    isLeft(self) ? self : predicate(self.right) ? self : left(onFalse())
 
 /**
  * @category filtering
@@ -890,14 +891,14 @@ export const filter: {
  */
 export const filterMap = <A, B, E2>(
   f: (a: A) => Option<B>,
-  onNone: E2
+  onNone: LazyArg<E2>
 ) =>
   <E1>(self: Either<E1, A>): Either<E1 | E2, B> =>
     pipe(
       self,
       flatMap((a) => {
         const ob = f(a)
-        return option.isNone(ob) ? left(onNone) : right(ob.value)
+        return option.isNone(ob) ? left(onNone()) : right(ob.value)
       })
     )
 
@@ -1002,12 +1003,12 @@ export const inspectLeft = <E>(
  * @category conversions
  * @since 1.0.0
  */
-export const fromIterable = <E>(onEmpty: E) =>
+export const fromIterable = <E>(onEmpty: LazyArg<E>) =>
   <A>(collection: Iterable<A>): Either<E, A> => {
     for (const a of collection) {
       return right(a)
     }
-    return left(onEmpty)
+    return left(onEmpty())
   }
 
 /**
@@ -1016,13 +1017,14 @@ export const fromIterable = <E>(onEmpty: E) =>
  * import { pipe } from '@fp-ts/data/Function'
  * import * as O from '@fp-ts/data/Option'
  *
- * assert.deepStrictEqual(pipe(O.some(1), E.fromOption('error')), E.right(1))
- * assert.deepStrictEqual(pipe(O.none, E.fromOption('error')), E.left('error'))
+ * assert.deepStrictEqual(pipe(O.some(1), E.fromOption(() => 'error')), E.right(1))
+ * assert.deepStrictEqual(pipe(O.none, E.fromOption(() => 'error')), E.left('error'))
  *
  * @category conversions
  * @since 1.0.0
  */
-export const fromOption: <E>(onNone: E) => <A>(self: Option<A>) => Either<E, A> = either.fromOption
+export const fromOption: <E>(onNone: LazyArg<E>) => <A>(self: Option<A>) => Either<E, A> =
+  either.fromOption
 
 /**
  * Converts a `Either` to an `Option` discarding the Right.
@@ -1058,13 +1060,13 @@ export const getRight: <E, A>(self: Either<E, A>) => Option<A> = either.getRight
  * @category getters
  * @since 1.0.0
  */
-export const getOrNull: <E, A>(self: Either<E, A>) => A | null = getOrElse(null)
+export const getOrNull: <E, A>(self: Either<E, A>) => A | null = getOrElse(constNull)
 
 /**
  * @category getters
  * @since 1.0.0
  */
-export const getOrUndefined: <E, A>(self: Either<E, A>) => A | undefined = getOrElse(undefined)
+export const getOrUndefined: <E, A>(self: Either<E, A>) => A | undefined = getOrElse(constUndefined)
 
 /**
  * @example
@@ -1074,14 +1076,14 @@ export const getOrUndefined: <E, A>(self: Either<E, A>) => A | undefined = getOr
  * assert.deepStrictEqual(
  *   pipe(
  *     1,
- *     liftPredicate((n) => n > 0, 'error')
+ *     liftPredicate((n) => n > 0, () => 'error')
  *   ),
  *   right(1)
  * )
  * assert.deepStrictEqual(
  *   pipe(
  *     -1,
- *     liftPredicate((n) => n > 0, 'error')
+ *     liftPredicate((n) => n > 0, () => 'error')
  *   ),
  *   left('error')
  * )
@@ -1092,11 +1094,11 @@ export const getOrUndefined: <E, A>(self: Either<E, A>) => A | undefined = getOr
 export const liftPredicate: {
   <C extends A, B extends A, E, A = C>(
     refinement: Refinement<A, B>,
-    onFalse: E
+    onFalse: LazyArg<E>
   ): (c: C) => Either<E, B>
-  <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: E): (b: B) => Either<E, B>
-} = <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: E) =>
-  (b: B) => predicate(b) ? right(b) : left(onFalse)
+  <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: LazyArg<E>): (b: B) => Either<E, B>
+} = <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: LazyArg<E>) =>
+  (b: B) => predicate(b) ? right(b) : left(onFalse())
 
 /**
  * @category lifting
@@ -1104,8 +1106,8 @@ export const liftPredicate: {
  */
 export const liftOption = <A extends ReadonlyArray<unknown>, B, E>(
   f: (...a: A) => Option<B>,
-  onNone: E
-) => (...a: A): Either<E, B> => fromOption(onNone)(f(...a))
+  onNone: (...a: A) => E
+) => (...a: A): Either<E, B> => fromOption(() => onNone(...a))(f(...a))
 
 /**
  * @category sequencing
@@ -1113,7 +1115,7 @@ export const liftOption = <A extends ReadonlyArray<unknown>, B, E>(
  */
 export const flatMapOption = <A, B, E2>(
   f: (a: A) => Option<B>,
-  onNone: E2
+  onNone: (a: A) => E2
 ) => <E1>(self: Either<E1, A>): Either<E1 | E2, B> => pipe(self, flatMap(liftOption(f, onNone)))
 
 /**
