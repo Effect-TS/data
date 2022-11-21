@@ -1,6 +1,6 @@
 ---
 title: These.ts
-nav_order: 38
+nav_order: 39
 parent: Modules
 ---
 
@@ -137,7 +137,7 @@ Added in v1.0.0
   - [map](#map)
   - [tupled](#tupled)
 - [model](#model)
-  - [Both (interface)](#both-interface)
+  - [Both (type alias)](#both-type-alias)
   - [These (type alias)](#these-type-alias)
   - [Validated (type alias)](#validated-type-alias)
 - [pattern matching](#pattern-matching)
@@ -245,7 +245,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const leftOrBoth: <E>(e: E) => <A>(self: Option<A>) => These<E, A>
+export declare const leftOrBoth: <E>(e: LazyArg<E>) => <A>(self: Option<A>) => These<E, A>
 ```
 
 Added in v1.0.0
@@ -277,7 +277,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const rightOrBoth: <A>(a: A) => <E>(self: Option<E>) => These<E, A>
+export declare const rightOrBoth: <A>(a: () => A) => <E>(self: Option<E>) => These<E, A>
 ```
 
 Added in v1.0.0
@@ -341,7 +341,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const fromIterable: <E>(onEmpty: E) => <A>(collection: Iterable<A>) => These<E, A>
+export declare const fromIterable: <E>(onEmpty: LazyArg<E>) => <A>(collection: Iterable<A>) => These<E, A>
 ```
 
 Added in v1.0.0
@@ -351,7 +351,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const fromNullable: <E>(onNullable: E) => <A>(a: A) => These<E, NonNullable<A>>
+export declare const fromNullable: <E>(onNullable: LazyArg<E>) => <A>(a: A) => These<E, NonNullable<A>>
 ```
 
 Added in v1.0.0
@@ -361,7 +361,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const fromOption: <E>(onNone: E) => <A>(self: Option<A>) => These<E, A>
+export declare const fromOption: <E>(onNone: LazyArg<E>) => <A>(self: Option<A>) => These<E, A>
 ```
 
 Added in v1.0.0
@@ -640,7 +640,7 @@ fails with the specified error.
 **Signature**
 
 ```ts
-export declare const orElseFail: <E2>(onLeft: E2) => <E1, A>(self: These<E1, A>) => These<E2 | E1, A>
+export declare const orElseFail: <E2>(onLeft: LazyArg<E2>) => <E1, A>(self: These<E1, A>) => These<E2 | E1, A>
 ```
 
 Added in v1.0.0
@@ -653,7 +653,7 @@ succeeds with the specified value.
 **Signature**
 
 ```ts
-export declare const orElseSucceed: <B>(onLeft: B) => <E, A>(self: These<E, A>) => These<E, B | A>
+export declare const orElseSucceed: <B>(onLeft: LazyArg<B>) => <E, A>(self: These<E, A>) => These<E, B | A>
 ```
 
 Added in v1.0.0
@@ -665,7 +665,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const compact: <E>(onNone: E) => <A>(self: These<E, Option<A>>) => These<E, A>
+export declare const compact: <E>(onNone: LazyArg<E>) => <A>(self: These<E, Option<A>>) => These<E, A>
 ```
 
 Added in v1.0.0
@@ -676,10 +676,10 @@ Added in v1.0.0
 
 ```ts
 export declare const filter: {
-  <C extends A, B extends A, E2, A = C>(refinement: Refinement<A, B>, onFalse: E2): <E1>(
+  <C extends A, B extends A, E2, A = C>(refinement: Refinement<A, B>, onFalse: LazyArg<E2>): <E1>(
     self: These<E1, C>
   ) => These<E2 | E1, B>
-  <B extends A, E2, A = B>(predicate: Predicate<A>, onFalse: E2): <E1>(self: These<E1, B>) => These<E2 | E1, B>
+  <B extends A, E2, A = B>(predicate: Predicate<A>, onFalse: LazyArg<E2>): <E1>(self: These<E1, B>) => These<E2 | E1, B>
 }
 ```
 
@@ -692,7 +692,7 @@ Added in v1.0.0
 ```ts
 export declare const filterMap: <A, B, E2>(
   f: (a: A) => Option<B>,
-  onNone: E2
+  onNone: LazyArg<E2>
 ) => <E1>(self: These<E1, A>) => These<E2 | E1, B>
 ```
 
@@ -715,7 +715,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getBothOrElse: <E, A>(e: E, a: A) => (self: These<E, A>) => readonly [E, A]
+export declare const getBothOrElse: <E, A>(e: LazyArg<E>, a: LazyArg<A>) => (self: These<E, A>) => readonly [E, A]
 ```
 
 Added in v1.0.0
@@ -747,7 +747,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getOrElse: <B>(onLeft: B) => <E, A>(self: These<E, A>) => B | A
+export declare const getOrElse: <B>(onLeft: LazyArg<B>) => <E, A>(self: These<E, A>) => B | A
 ```
 
 Added in v1.0.0
@@ -1125,7 +1125,7 @@ Added in v1.0.0
 ```ts
 export declare const liftNullable: <A extends readonly unknown[], B, E>(
   f: (...a: A) => B | null | undefined,
-  onNullable: E
+  onNullable: (...a: A) => E
 ) => (...a: A) => These<E, NonNullable<B>>
 ```
 
@@ -1138,7 +1138,7 @@ Added in v1.0.0
 ```ts
 export declare const liftOption: <A extends readonly unknown[], B, E>(
   f: (...a: A) => Option<B>,
-  onNone: E
+  onNone: (...a: A) => E
 ) => (...a: A) => These<E, B>
 ```
 
@@ -1150,8 +1150,8 @@ Added in v1.0.0
 
 ```ts
 export declare const liftPredicate: {
-  <C extends A, B extends A, E, A = C>(refinement: Refinement<A, B>, onFalse: E): (c: C) => These<E, B>
-  <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: E): (b: B) => These<E, B>
+  <C extends A, B extends A, E, A = C>(refinement: Refinement<A, B>, onFalse: LazyArg<E>): (c: C) => These<E, B>
+  <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: LazyArg<E>): (b: B) => These<E, B>
 }
 ```
 
@@ -1252,12 +1252,12 @@ Added in v1.0.0
 
 # model
 
-## Both (interface)
+## Both (type alias)
 
 **Signature**
 
 ```ts
-export interface Both<E, A> {
+export type Both<E, A> = {
   readonly _tag: 'Both'
   readonly left: E
   readonly right: A
@@ -1372,7 +1372,7 @@ Added in v1.0.0
 ```ts
 export declare const flatMapNullable: <A, B, E2>(
   f: (a: A) => B | null | undefined,
-  onNullable: E2
+  onNullable: (a: A) => E2
 ) => <E1>(self: These<NonEmptyChunk<E1>, A>) => These<NonEmptyChunk<E2 | E1>, NonNullable<B>>
 ```
 
@@ -1385,7 +1385,7 @@ Added in v1.0.0
 ```ts
 export declare const flatMapOption: <A, B, E2>(
   f: (a: A) => Option<B>,
-  onNone: E2
+  onNone: (a: A) => E2
 ) => <E1>(self: These<NonEmptyChunk<E1>, A>) => These<NonEmptyChunk<E2 | E1>, B>
 ```
 

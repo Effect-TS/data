@@ -30,6 +30,7 @@ Added in v1.0.0
   - [hashSet](#hashset)
   - [hashSetPatch](#hashsetpatch)
   - [identity](#identity)
+  - [json](#json)
   - [list](#list)
   - [mutableHashMap](#mutablehashmap)
   - [mutableHashSet](#mutablehashset)
@@ -225,6 +226,16 @@ Added in v1.0.0
 
 ```ts
 export declare const identity: typeof identity
+```
+
+Added in v1.0.0
+
+## json
+
+**Signature**
+
+```ts
+export declare const json: typeof json
 ```
 
 Added in v1.0.0

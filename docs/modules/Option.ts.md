@@ -1,6 +1,6 @@
 ---
 title: Option.ts
-nav_order: 27
+nav_order: 28
 parent: Modules
 ---
 
@@ -102,9 +102,9 @@ Added in v1.0.0
   - [imap](#imap)
   - [map](#map)
 - [models](#models)
-  - [None (interface)](#none-interface)
+  - [None (type alias)](#none-type-alias)
   - [Option (type alias)](#option-type-alias)
-  - [Some (interface)](#some-interface)
+  - [Some (type alias)](#some-type-alias)
 - [pattern matching](#pattern-matching)
   - [match](#match)
 - [sequencing](#sequencing)
@@ -325,7 +325,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const toEither: <E>(onNone: E) => <A>(self: Option<A>) => Either<E, A>
+export declare const toEither: <E>(onNone: LazyArg<E>) => <A>(self: Option<A>) => Either<E, A>
 ```
 
 Added in v1.0.0
@@ -459,7 +459,7 @@ Extracts the value out of the structure, if it exists. Otherwise returns the giv
 **Signature**
 
 ```ts
-export declare const getOrElse: <B>(onNone: B) => <A>(self: Option<A>) => B | A
+export declare const getOrElse: <B>(onNone: LazyArg<B>) => <A>(self: Option<A>) => B | A
 ```
 
 **Example**
@@ -468,8 +468,20 @@ export declare const getOrElse: <B>(onNone: B) => <A>(self: Option<A>) => B | A
 import { some, none, getOrElse } from '@fp-ts/data/Option'
 import { pipe } from '@fp-ts/data/Function'
 
-assert.strictEqual(pipe(some(1), getOrElse(0)), 1)
-assert.strictEqual(pipe(none, getOrElse(0)), 0)
+assert.strictEqual(
+  pipe(
+    some(1),
+    getOrElse(() => 0)
+  ),
+  1
+)
+assert.strictEqual(
+  pipe(
+    none,
+    getOrElse(() => 0)
+  ),
+  0
+)
 ```
 
 Added in v1.0.0
@@ -529,7 +541,7 @@ succeeds with the specified value.
 **Signature**
 
 ```ts
-export declare const orElseSucceed: <B>(onNone: B) => <A>(self: Option<A>) => Option<B | A>
+export declare const orElseSucceed: <B>(onNone: () => B) => <A>(self: Option<A>) => Option<B | A>
 ```
 
 Added in v1.0.0
@@ -877,7 +889,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getOrThrow: (onError: unknown) => <A>(self: Option<A>) => A
+export declare const getOrThrow: (onError: LazyArg<unknown>) => <A>(self: Option<A>) => A
 ```
 
 Added in v1.0.0
@@ -1087,12 +1099,12 @@ Added in v1.0.0
 
 # models
 
-## None (interface)
+## None (type alias)
 
 **Signature**
 
 ```ts
-export interface None {
+export type None = {
   readonly _tag: 'None'
 }
 ```
@@ -1109,12 +1121,12 @@ export type Option<A> = None | Some<A>
 
 Added in v1.0.0
 
-## Some (interface)
+## Some (type alias)
 
 **Signature**
 
 ```ts
-export interface Some<A> {
+export type Some<A> = {
   readonly _tag: 'Some'
   readonly value: A
 }
@@ -1132,7 +1144,7 @@ returned, otherwise the function is applied to the value inside the `Some` and t
 **Signature**
 
 ```ts
-export declare const match: <B, A, C = B>(onNone: B, onSome: (a: A) => C) => (self: Option<A>) => B | C
+export declare const match: <B, A, C = B>(onNone: LazyArg<B>, onSome: (a: A) => C) => (self: Option<A>) => B | C
 ```
 
 **Example**
@@ -1144,7 +1156,10 @@ import { pipe } from '@fp-ts/data/Function'
 assert.strictEqual(
   pipe(
     some(1),
-    match('a none', (a) => `a some containing ${a}`)
+    match(
+      () => 'a none',
+      (a) => `a some containing ${a}`
+    )
   ),
   'a some containing 1'
 )
@@ -1152,7 +1167,10 @@ assert.strictEqual(
 assert.strictEqual(
   pipe(
     none,
-    match('a none', (a) => `a some containing ${a}`)
+    match(
+      () => 'a none',
+      (a) => `a some containing ${a}`
+    )
   ),
   'a none'
 )

@@ -108,8 +108,8 @@ Added in v1.0.0
   - [tupled](#tupled)
 - [models](#models)
   - [Either (type alias)](#either-type-alias)
-  - [Left (interface)](#left-interface)
-  - [Right (interface)](#right-interface)
+  - [Left (type alias)](#left-type-alias)
+  - [Right (type alias)](#right-type-alias)
 - [mutations](#mutations)
   - [reverse](#reverse)
 - [pattern matching](#pattern-matching)
@@ -245,7 +245,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const fromIterable: <E>(onEmpty: E) => <A>(collection: Iterable<A>) => Either<E, A>
+export declare const fromIterable: <E>(onEmpty: LazyArg<E>) => <A>(collection: Iterable<A>) => Either<E, A>
 ```
 
 Added in v1.0.0
@@ -258,7 +258,7 @@ the provided default as a `Left`.
 **Signature**
 
 ```ts
-export declare const fromNullable: <E>(onNullable: E) => <A>(a: A) => Either<E, NonNullable<A>>
+export declare const fromNullable: <E>(onNullable: LazyArg<E>) => <A>(a: A) => Either<E, NonNullable<A>>
 ```
 
 **Example**
@@ -266,10 +266,10 @@ export declare const fromNullable: <E>(onNullable: E) => <A>(a: A) => Either<E, 
 ```ts
 import * as E from '@fp-ts/data/Either'
 
-const parse = E.fromNullable('nully')
+const parse = E.fromNullable(() => 'nullable')
 
 assert.deepStrictEqual(parse(1), E.right(1))
-assert.deepStrictEqual(parse(null), E.left('nully'))
+assert.deepStrictEqual(parse(null), E.left('nullable'))
 ```
 
 Added in v1.0.0
@@ -279,7 +279,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const fromOption: <E>(onNone: E) => <A>(self: Option<A>) => Either<E, A>
+export declare const fromOption: <E>(onNone: LazyArg<E>) => <A>(self: Option<A>) => Either<E, A>
 ```
 
 **Example**
@@ -289,8 +289,20 @@ import * as E from '@fp-ts/data/Either'
 import { pipe } from '@fp-ts/data/Function'
 import * as O from '@fp-ts/data/Option'
 
-assert.deepStrictEqual(pipe(O.some(1), E.fromOption('error')), E.right(1))
-assert.deepStrictEqual(pipe(O.none, E.fromOption('error')), E.left('error'))
+assert.deepStrictEqual(
+  pipe(
+    O.some(1),
+    E.fromOption(() => 'error')
+  ),
+  E.right(1)
+)
+assert.deepStrictEqual(
+  pipe(
+    O.none,
+    E.fromOption(() => 'error')
+  ),
+  E.left('error')
+)
 ```
 
 Added in v1.0.0
@@ -477,7 +489,7 @@ fails with the specified error.
 **Signature**
 
 ```ts
-export declare const orElseFail: <E2>(onLeft: E2) => <E1, A>(self: Either<E1, A>) => Either<E2, A>
+export declare const orElseFail: <E2>(onLeft: LazyArg<E2>) => <E1, A>(self: Either<E1, A>) => Either<E2, A>
 ```
 
 Added in v1.0.0
@@ -490,7 +502,7 @@ succeeds with the specified value.
 **Signature**
 
 ```ts
-export declare const orElseSucceed: <B>(onLeft: B) => <E, A>(self: Either<E, A>) => Either<E, B | A>
+export declare const orElseSucceed: <B>(onLeft: LazyArg<B>) => <E, A>(self: Either<E, A>) => Either<E, B | A>
 ```
 
 Added in v1.0.0
@@ -528,7 +540,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const compact: <E2>(onNone: E2) => <E1, A>(self: Either<E1, Option<A>>) => Either<E2 | E1, A>
+export declare const compact: <E2>(onNone: LazyArg<E2>) => <E1, A>(self: Either<E1, Option<A>>) => Either<E2 | E1, A>
 ```
 
 Added in v1.0.0
@@ -539,10 +551,12 @@ Added in v1.0.0
 
 ```ts
 export declare const filter: {
-  <C extends A, B extends A, E2, A = C>(refinement: Refinement<A, B>, onFalse: E2): <E1>(
+  <C extends A, B extends A, E2, A = C>(refinement: Refinement<A, B>, onFalse: LazyArg<E2>): <E1>(
     self: Either<E1, C>
   ) => Either<E2 | E1, B>
-  <B extends A, E2, A = B>(predicate: Predicate<A>, onFalse: E2): <E1>(self: Either<E1, B>) => Either<E2 | E1, B>
+  <B extends A, E2, A = B>(predicate: Predicate<A>, onFalse: LazyArg<E2>): <E1>(
+    self: Either<E1, B>
+  ) => Either<E2 | E1, B>
 }
 ```
 
@@ -555,7 +569,7 @@ Added in v1.0.0
 ```ts
 export declare const filterMap: <A, B, E2>(
   f: (a: A) => Option<B>,
-  onNone: E2
+  onNone: LazyArg<E2>
 ) => <E1>(self: Either<E1, A>) => Either<E2 | E1, B>
 ```
 
@@ -592,7 +606,7 @@ Returns the wrapped value if it's a `Right` or a default value if is a `Left`.
 **Signature**
 
 ```ts
-export declare const getOrElse: <B>(onLeft: B) => <E, A>(self: Either<E, A>) => B | A
+export declare const getOrElse: <B>(onLeft: LazyArg<B>) => <E, A>(self: Either<E, A>) => B | A
 ```
 
 **Example**
@@ -601,8 +615,20 @@ export declare const getOrElse: <B>(onLeft: B) => <E, A>(self: Either<E, A>) => 
 import * as E from '@fp-ts/data/Either'
 import { pipe } from '@fp-ts/data/Function'
 
-assert.deepStrictEqual(pipe(E.right(1), E.getOrElse(0)), 1)
-assert.deepStrictEqual(pipe(E.left('error'), E.getOrElse(0)), 0)
+assert.deepStrictEqual(
+  pipe(
+    E.right(1),
+    E.getOrElse(() => 0)
+  ),
+  1
+)
+assert.deepStrictEqual(
+  pipe(
+    E.left('error'),
+    E.getOrElse(() => 0)
+  ),
+  0
+)
 ```
 
 Added in v1.0.0
@@ -952,7 +978,7 @@ Added in v1.0.0
 ```ts
 export declare const liftNullable: <A extends readonly unknown[], B, E>(
   f: (...a: A) => B | null | undefined,
-  onNullable: E
+  onNullable: (...a: A) => E
 ) => (...a: A) => Either<E, NonNullable<B>>
 ```
 
@@ -965,7 +991,7 @@ Added in v1.0.0
 ```ts
 export declare const liftOption: <A extends readonly unknown[], B, E>(
   f: (...a: A) => Option<B>,
-  onNone: E
+  onNone: (...a: A) => E
 ) => (...a: A) => Either<E, B>
 ```
 
@@ -977,8 +1003,8 @@ Added in v1.0.0
 
 ```ts
 export declare const liftPredicate: {
-  <C extends A, B extends A, E, A = C>(refinement: Refinement<A, B>, onFalse: E): (c: C) => Either<E, B>
-  <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: E): (b: B) => Either<E, B>
+  <C extends A, B extends A, E, A = C>(refinement: Refinement<A, B>, onFalse: LazyArg<E>): (c: C) => Either<E, B>
+  <B extends A, E, A = B>(predicate: Predicate<A>, onFalse: LazyArg<E>): (b: B) => Either<E, B>
 }
 ```
 
@@ -991,14 +1017,20 @@ import { pipe } from '@fp-ts/data/Function'
 assert.deepStrictEqual(
   pipe(
     1,
-    liftPredicate((n) => n > 0, 'error')
+    liftPredicate(
+      (n) => n > 0,
+      () => 'error'
+    )
   ),
   right(1)
 )
 assert.deepStrictEqual(
   pipe(
     -1,
-    liftPredicate((n) => n > 0, 'error')
+    liftPredicate(
+      (n) => n > 0,
+      () => 'error'
+    )
   ),
   left('error')
 )
@@ -1099,12 +1131,12 @@ export type Either<E, A> = Left<E> | Right<A>
 
 Added in v1.0.0
 
-## Left (interface)
+## Left (type alias)
 
 **Signature**
 
 ```ts
-export interface Left<E> {
+export type Left<E> = {
   readonly _tag: 'Left'
   readonly left: E
 }
@@ -1112,12 +1144,12 @@ export interface Left<E> {
 
 Added in v1.0.0
 
-## Right (interface)
+## Right (type alias)
 
 **Signature**
 
 ```ts
-export interface Right<A> {
+export type Right<A> = {
   readonly _tag: 'Right'
   readonly right: A
 }
@@ -1198,7 +1230,7 @@ Added in v1.0.0
 ```ts
 export declare const flatMapNullable: <A, B, E2>(
   f: (a: A) => B | null | undefined,
-  onNullable: E2
+  onNullable: (a: A) => E2
 ) => <E1>(self: Either<E1, A>) => Either<E2 | E1, NonNullable<B>>
 ```
 
@@ -1211,7 +1243,7 @@ Added in v1.0.0
 ```ts
 export declare const flatMapOption: <A, B, E2>(
   f: (a: A) => Option<B>,
-  onNone: E2
+  onNone: (a: A) => E2
 ) => <E1>(self: Either<E1, A>) => Either<E2 | E1, B>
 ```
 
