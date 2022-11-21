@@ -53,7 +53,7 @@ import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
  * @category model
  * @since 1.0.0
  */
-export interface Both<E, A> {
+export type Both<E, A> = {
   readonly _tag: "Both"
   readonly left: E
   readonly right: A

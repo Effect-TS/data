@@ -49,7 +49,7 @@ import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
  * @category models
  * @since 1.0.0
  */
-export interface None {
+export type None = {
   readonly _tag: "None"
 }
 
@@ -57,7 +57,7 @@ export interface None {
  * @category models
  * @since 1.0.0
  */
-export interface Some<A> {
+export type Some<A> = {
   readonly _tag: "Some"
   readonly value: A
 }
