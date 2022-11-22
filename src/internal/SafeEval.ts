@@ -1,6 +1,7 @@
 import * as Equal from "@fp-ts/data/Equal"
 import type { LazyArg } from "@fp-ts/data/Function"
 import { constant, constVoid, identity } from "@fp-ts/data/Function"
+import { SingleShotGen } from "@fp-ts/data/internal/Context"
 import { Stack } from "@fp-ts/data/internal/Stack"
 import type * as SE from "@fp-ts/data/SafeEval"
 
@@ -23,6 +24,9 @@ class Succeed<A> implements SE.SafeEval<A>, Equal.Equal {
   [Equal.symbolHash]() {
     return Equal.hashRandom(this)
   }
+  [Symbol.iterator](): Generator<SE.SafeEval<A>, A> {
+    return new SingleShotGen<SE.SafeEval<A>, A>(this)
+  }
 }
 
 class Suspend<A> implements SE.SafeEval<A>, Equal.Equal {
@@ -35,6 +39,9 @@ class Suspend<A> implements SE.SafeEval<A>, Equal.Equal {
   }
   [Equal.symbolHash]() {
     return Equal.hashRandom(this)
+  }
+  [Symbol.iterator](): Generator<SE.SafeEval<A>, A> {
+    return new SingleShotGen<SE.SafeEval<A>, A>(this)
   }
 }
 
@@ -52,14 +59,8 @@ class FlatMap<A, B> implements SE.SafeEval<B>, Equal.Equal {
   [Equal.symbolHash]() {
     return Equal.hashRandom(this)
   }
-}
-
-/** @internal */
-export class GenSafeEval<A> {
-  readonly _A: (_: never) => A = variance
-  constructor(readonly computation: SE.SafeEval<A>) {}
-  *[Symbol.iterator](): Generator<GenSafeEval<A>, A, any> {
-    return yield this
+  [Symbol.iterator](): Generator<SE.SafeEval<B>, B> {
+    return new SingleShotGen<SE.SafeEval<B>, B>(this)
   }
 }
 
@@ -142,11 +143,11 @@ export function reduce<A, B>(
 }
 
 /** @internal */
-export function gen<Eff extends GenSafeEval<any>, AEff>(
-  f: (i: { <A>(_: SE.SafeEval<A>): GenSafeEval<A> }) => Generator<Eff, AEff, any>
+export function gen<Eff extends SE.SafeEval<any>, AEff>(
+  f: () => Generator<Eff, AEff, any>
 ): SE.SafeEval<AEff> {
   return suspend(() => {
-    const iterator = f(genAdapter)
+    const iterator = f()
     const state = iterator.next()
     return runGen(state, iterator)
   })
@@ -247,11 +248,8 @@ export function tap<A, X>(f: (a: A) => SE.SafeEval<X>) {
   }
 }
 
-function genAdapter<A>(_: SE.SafeEval<A>): GenSafeEval<A> {
-  return new GenSafeEval(_)
-}
-
-function runGen<Eff extends GenSafeEval<any>, AEff>(
+/** @internal */
+function runGen<Eff extends SE.SafeEval<any>, AEff>(
   state: IteratorYieldResult<Eff> | IteratorReturnResult<AEff>,
   iterator: Generator<Eff, AEff, any>
 ): SE.SafeEval<AEff> {
@@ -261,5 +259,5 @@ function runGen<Eff extends GenSafeEval<any>, AEff>(
   return flatMap((val) => {
     const next = iterator.next(val)
     return runGen(next, iterator)
-  })(state.value["computation"])
+  })(state.value)
 }

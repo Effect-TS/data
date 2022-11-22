@@ -48,9 +48,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const gen: <Eff extends SE.GenSafeEval<any>, AEff>(
-  f: (i: <A>(_: SafeEval<A>) => SE.GenSafeEval<A>) => Generator<Eff, AEff, any>
-) => SafeEval<AEff>
+export declare const gen: <Eff extends SafeEval<any>, AEff>(f: () => Generator<Eff, AEff, any>) => SafeEval<AEff>
 ```
 
 Added in v1.0.0
@@ -243,6 +241,8 @@ useful when you need the ability to suspend recursive procedures.
 export interface SafeEval<A> {
   readonly _id: TypeId
   readonly _A: (_: never) => A
+
+  [Symbol.iterator](): Generator<SafeEval<A>, A>
 }
 ```
 
