@@ -25,6 +25,8 @@ export type TypeId = typeof TypeId
 export interface SafeEval<A> {
   readonly _id: TypeId
   readonly _A: (_: never) => A
+
+  [Symbol.iterator](): Generator<SafeEval<A>, A>
 }
 
 /**
@@ -104,8 +106,8 @@ export const reduce: <A, B>(
  * @since 1.0.0
  * @category constructors
  */
-export const gen: <Eff extends SE.GenSafeEval<any>, AEff>(
-  f: (i: <A>(_: SafeEval<A>) => SE.GenSafeEval<A>) => Generator<Eff, AEff, any>
+export const gen: <Eff extends SafeEval<any>, AEff>(
+  f: () => Generator<Eff, AEff, any>
 ) => SafeEval<AEff> = SE.gen
 
 /**
