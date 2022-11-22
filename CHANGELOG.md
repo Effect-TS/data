@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.13
+
+### Patch Changes
+
+- [#114](https://github.com/fp-ts/data/pull/114) [`b02ef29`](https://github.com/fp-ts/data/commit/b02ef2951bdab7fad5cbdca8f0fffcd1bdf8b885) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Fix SafeEval.gen
+
 ## 0.0.12
 
 ### Patch Changes
