@@ -22,15 +22,27 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [model](#model)
+  - [OptionalNumber (type alias)](#optionalnumber-type-alias)
   - [PCGRandom (class)](#pcgrandom-class)
     - [getState (method)](#getstate-method)
     - [setState (method)](#setstate-method)
     - [integer (method)](#integer-method)
     - [number (method)](#number-method)
+  - [PCGRandomState (type alias)](#pcgrandomstate-type-alias)
 
 ---
 
 # model
+
+## OptionalNumber (type alias)
+
+**Signature**
+
+```ts
+export type OptionalNumber = number | null | undefined
+```
+
+Added in v1.0.0
 
 ## PCGRandom (class)
 
@@ -94,6 +106,16 @@ Get a uniformly distributed IEEE-754 double between 0.0 and 1.0, with
 
 ```ts
 number()
+```
+
+Added in v1.0.0
+
+## PCGRandomState (type alias)
+
+**Signature**
+
+```ts
+export type PCGRandomState = [number, number, number, number]
 ```
 
 Added in v1.0.0
