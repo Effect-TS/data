@@ -22,6 +22,7 @@ import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
 import { identity } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
+import * as Gen from "@fp-ts/data/typeclass/Gen"
 
 /**
  * @category models
@@ -535,3 +536,9 @@ export const traverseTap: <F extends TypeLambda>(
   f: (a: A) => Kind<F, R, O, E, B>
 ) => (self: Identity<A>) => Kind<F, R, O, E, Identity<A>> = traversable
   .traverseTap(Traversable)
+
+/**
+ * @since 1.0.0
+ * @category generators
+ */
+export const gen = Gen.singleShot(Monad)(Gen.adapter<IdentityTypeLambda>())

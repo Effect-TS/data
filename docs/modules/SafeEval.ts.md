@@ -13,7 +13,6 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [constructors](#constructors)
-  - [gen](#gen)
   - [reduce](#reduce)
   - [struct](#struct)
   - [succeed](#succeed)
@@ -28,6 +27,12 @@ Added in v1.0.0
   - [zipLeft](#zipleft)
   - [zipRight](#zipright)
   - [zipWith](#zipwith)
+- [generators](#generators)
+  - [gen](#gen)
+- [instances](#instances)
+  - [Covariant](#covariant)
+  - [Monad](#monad)
+  - [SafeEvalTypeLambda (interface)](#safeevaltypelambda-interface)
 - [mapping](#mapping)
   - [map](#map)
 - [models](#models)
@@ -42,16 +47,6 @@ Added in v1.0.0
 ---
 
 # constructors
-
-## gen
-
-**Signature**
-
-```ts
-export declare const gen: <Eff extends SafeEval<any>, AEff>(f: () => Generator<Eff, AEff, any>) => SafeEval<AEff>
-```
-
-Added in v1.0.0
 
 ## reduce
 
@@ -210,6 +205,52 @@ export declare const zipWith: <A, B, C>(that: SafeEval<B>, f: (a: A, b: B) => C)
 
 Added in v1.0.0
 
+# generators
+
+## gen
+
+**Signature**
+
+```ts
+export declare const gen: Gen.Gen<SafeEvalTypeLambda, Gen.Adapter<SafeEvalTypeLambda>>
+```
+
+Added in v1.0.0
+
+# instances
+
+## Covariant
+
+**Signature**
+
+```ts
+export declare const Covariant: _Covariant.Covariant<SafeEvalTypeLambda>
+```
+
+Added in v1.0.0
+
+## Monad
+
+**Signature**
+
+```ts
+export declare const Monad: _Monad.Monad<SafeEvalTypeLambda>
+```
+
+Added in v1.0.0
+
+## SafeEvalTypeLambda (interface)
+
+**Signature**
+
+```ts
+export interface SafeEvalTypeLambda extends TypeLambda {
+  readonly type: SafeEval<this['Target']>
+}
+```
+
+Added in v1.0.0
+
 # mapping
 
 ## map
@@ -241,8 +282,6 @@ useful when you need the ability to suspend recursive procedures.
 export interface SafeEval<A> {
   readonly _id: TypeId
   readonly _A: (_: never) => A
-
-  [Symbol.iterator](): Generator<SafeEval<A>, A>
 }
 ```
 

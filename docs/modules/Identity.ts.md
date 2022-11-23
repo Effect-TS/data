@@ -30,6 +30,8 @@ Added in v1.0.0
   - [reduceKind](#reducekind)
   - [reduceRight](#reduceright)
   - [reduceRightKind](#reducerightkind)
+- [generators](#generators)
+  - [gen](#gen)
 - [instances](#instances)
   - [Applicative](#applicative)
   - [Chainable](#chainable)
@@ -247,6 +249,18 @@ Added in v1.0.0
 export declare const reduceRightKind: <G extends TypeLambda>(
   G: monad.Monad<G>
 ) => <B, A, R, O, E>(b: B, f: (b: B, a: A) => Kind<G, R, O, E, B>) => (self: A) => Kind<G, R, O, E, B>
+```
+
+Added in v1.0.0
+
+# generators
+
+## gen
+
+**Signature**
+
+```ts
+export declare const gen: Gen.Gen<IdentityTypeLambda, Gen.Adapter<IdentityTypeLambda>>
 ```
 
 Added in v1.0.0

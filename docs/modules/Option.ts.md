@@ -60,6 +60,8 @@ Added in v1.0.0
   - [filter](#filter)
   - [filterMap](#filtermap)
   - [separate](#separate)
+- [generators](#generators)
+  - [gen](#gen)
 - [guards](#guards)
   - [isNone](#isnone)
   - [isOption](#isoption)
@@ -589,6 +591,18 @@ Added in v1.0.0
 
 ```ts
 export declare const separate: <A, B>(self: Option<Either<A, B>>) => readonly [Option<A>, Option<B>]
+```
+
+Added in v1.0.0
+
+# generators
+
+## gen
+
+**Signature**
+
+```ts
+export declare const gen: Gen.Gen<OptionTypeLambda, Gen.Adapter<OptionTypeLambda>>
 ```
 
 Added in v1.0.0

@@ -25,6 +25,7 @@ Added in v1.0.0
   - [equal](#equal)
   - [filterableWithIndex](#filterablewithindex)
   - [function](#function)
+  - [gen](#gen)
   - [hashMap](#hashmap)
   - [hashMapPatch](#hashmappatch)
   - [hashSet](#hashset)
@@ -176,6 +177,16 @@ Added in v1.0.0
 
 ```ts
 export declare const function: typeof _function
+```
+
+Added in v1.0.0
+
+## gen
+
+**Signature**
+
+```ts
+export declare const gen: typeof gen
 ```
 
 Added in v1.0.0

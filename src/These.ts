@@ -49,6 +49,7 @@ import * as option from "@fp-ts/data/internal/Option"
 import * as these from "@fp-ts/data/internal/These"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
+import * as Gen from "@fp-ts/data/typeclass/Gen"
 
 /**
  * @category model
@@ -1316,3 +1317,9 @@ export const Monad: monad.Monad<ValidatedTypeLambda> = {
   of,
   flatMap
 }
+
+/**
+ * @since 1.0.0
+ * @category generators
+ */
+export const gen = Gen.singleShot(Monad)(Gen.adapter<ValidatedTypeLambda>())

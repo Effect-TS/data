@@ -44,6 +44,7 @@ import * as internal from "@fp-ts/data/internal/Common"
 import * as either from "@fp-ts/data/internal/Either"
 import * as option from "@fp-ts/data/internal/Option"
 import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
+import * as Gen from "@fp-ts/data/typeclass/Gen"
 
 /**
  * @category models
@@ -1223,3 +1224,9 @@ export const elem = <B>(b: B) =>
  */
 export const exists = <A>(predicate: Predicate<A>) =>
   (self: Option<A>): boolean => isNone(self) ? false : predicate(self.value)
+
+/**
+ * @since 1.0.0
+ * @category generators
+ */
+export const gen = Gen.singleShot(Monad)(Gen.adapter<OptionTypeLambda>())

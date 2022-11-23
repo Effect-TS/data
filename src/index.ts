@@ -42,6 +42,7 @@ import * as string from "@fp-ts/data/String"
 import * as these from "@fp-ts/data/These"
 import * as covariantWithIndex from "@fp-ts/data/typeclass/CovariantWithIndex"
 import * as filterableWithIndex from "@fp-ts/data/typeclass/FilterableWithIndex"
+import * as gen from "@fp-ts/data/typeclass/Gen"
 import * as seq from "@fp-ts/data/typeclass/Seq"
 import * as weakIterableMap from "@fp-ts/data/weak/WeakIterableMap"
 
@@ -94,6 +95,10 @@ export {
    * @since 1.0.0
    */
   filterableWithIndex,
+  /**
+   * @since 1.0.0
+   */
+  gen,
   /**
    * @since 1.0.0
    */
