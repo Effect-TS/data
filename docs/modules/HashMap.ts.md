@@ -51,7 +51,6 @@ Added in v1.0.0
   - [remove](#remove)
   - [removeMany](#removemany)
   - [set](#set)
-  - [setTree](#settree)
   - [union](#union)
   - [update](#update)
 - [refinements](#refinements)
@@ -480,18 +479,6 @@ function.
 
 ```ts
 export declare const set: <K, V>(key: K, value: V) => (self: HashMap<K, V>) => HashMap<K, V>
-```
-
-Added in v1.0.0
-
-## setTree
-
-Sets the root of the `HashMap`.
-
-**Signature**
-
-```ts
-export declare const setTree: <K, V>(newRoot: HMN.Node<K, V>, newSize: number) => (self: HashMap<K, V>) => HashMap<K, V>
 ```
 
 Added in v1.0.0
