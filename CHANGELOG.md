@@ -1,5 +1,13 @@
 # @fp-ts/data
 
+## 0.0.14
+
+### Patch Changes
+
+- [#116](https://github.com/fp-ts/data/pull/116) [`10bee45`](https://github.com/fp-ts/data/commit/10bee45ecb4bd98aa4f7af127ca10cd78e741463) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Fix Random Overusage of Internal
+
+- [#116](https://github.com/fp-ts/data/pull/116) [`6e96219`](https://github.com/fp-ts/data/commit/6e9621934910c3f6d9cf070935a366f7a33dc424) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Hide HashMap Node, avoid exposing setTree
+
 ## 0.0.13
 
 ### Patch Changes
