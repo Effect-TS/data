@@ -60,6 +60,8 @@ Added in v1.0.0
   - [compact](#compact)
   - [filter](#filter)
   - [filterMap](#filtermap)
+- [generators](#generators)
+  - [gen](#gen)
 - [getters](#getters)
   - [getLeft](#getleft)
   - [getOrElse](#getorelse)
@@ -571,6 +573,18 @@ export declare const filterMap: <A, B, E2>(
   f: (a: A) => Option<B>,
   onNone: LazyArg<E2>
 ) => <E1>(self: Either<E1, A>) => Either<E2 | E1, B>
+```
+
+Added in v1.0.0
+
+# generators
+
+## gen
+
+**Signature**
+
+```ts
+export declare const gen: Gen.Gen<EitherTypeLambda, Gen.Adapter<EitherTypeLambda>>
 ```
 
 Added in v1.0.0

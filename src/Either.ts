@@ -39,6 +39,7 @@ import * as either from "@fp-ts/data/internal/Either"
 import * as option from "@fp-ts/data/internal/Option"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
+import * as Gen from "@fp-ts/data/typeclass/Gen"
 
 /**
  * @category models
@@ -1142,3 +1143,9 @@ export const elem = <B>(b: B) =>
  */
 export const exists = <A>(predicate: Predicate<A>) =>
   <E>(self: Either<E, A>): boolean => isLeft(self) ? false : predicate(self.right)
+
+/**
+ * @since 1.0.0
+ * @category generators
+ */
+export const gen = Gen.singleShot(Monad)(Gen.adapter<EitherTypeLambda>())

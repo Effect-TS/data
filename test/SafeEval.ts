@@ -14,10 +14,10 @@ describe.concurrent("SafeEval", () => {
   })
 
   it("gen", () => {
-    const program = SafeEval.gen(function*() {
-      const a = yield* SafeEval.succeed(0)
-      const b = yield* SafeEval.succeed(1)
-      const c = yield* SafeEval.succeed(2)
+    const program = SafeEval.gen(function*($) {
+      const a = yield* $(SafeEval.succeed(0))
+      const b = yield* $(SafeEval.succeed(1))
+      const c = yield* $(SafeEval.succeed(2))
       return a + b + c
     })
     const result = SafeEval.execute(program)

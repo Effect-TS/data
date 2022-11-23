@@ -2,8 +2,12 @@
  * @since 1.0.0
  */
 
+import type { TypeLambda } from "@fp-ts/core/HKT"
+import * as _Covariant from "@fp-ts/core/typeclass/Covariant"
+import type * as _Monad from "@fp-ts/core/typeclass/Monad"
 import type { LazyArg } from "@fp-ts/data/Function"
 import * as SE from "@fp-ts/data/internal/SafeEval"
+import * as Gen from "@fp-ts/data/typeclass/Gen"
 
 const TypeId: unique symbol = SE.SafeEvalTypeId as TypeId
 
@@ -25,8 +29,6 @@ export type TypeId = typeof TypeId
 export interface SafeEval<A> {
   readonly _id: TypeId
   readonly _A: (_: never) => A
-
-  [Symbol.iterator](): Generator<SafeEval<A>, A>
 }
 
 /**
@@ -101,14 +103,6 @@ export const reduce: <A, B>(
   b: B,
   f: (b: B, a: A) => SafeEval<B>
 ) => SafeEval<B> = SE.reduce
-
-/**
- * @since 1.0.0
- * @category constructors
- */
-export const gen: <Eff extends SafeEval<any>, AEff>(
-  f: () => Generator<Eff, AEff, any>
-) => SafeEval<AEff> = SE.gen
 
 /**
  * Executes the computation represented by the specified `SafeEval`.
@@ -214,3 +208,33 @@ export const tap: <A, X>(
 ) => (
   self: SafeEval<A>
 ) => SafeEval<A> = SE.tap
+
+/**
+ * @since 1.0.0
+ * @category instances
+ */
+export interface SafeEvalTypeLambda extends TypeLambda {
+  readonly type: SafeEval<this["Target"]>
+}
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const Covariant: _Covariant.Covariant<SafeEvalTypeLambda> = _Covariant.make(map)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const Monad: _Monad.Monad<SafeEvalTypeLambda> = {
+  ...Covariant,
+  flatMap,
+  of: succeed
+}
+
+/**
+ * @since 1.0.0
+ * @category generators
+ */
+export const gen = Gen.singleShot(Monad)(Gen.adapter<SafeEvalTypeLambda>())
