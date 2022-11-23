@@ -6,7 +6,6 @@ import type { Equal } from "@fp-ts/data/Equal"
 import type { HashSet } from "@fp-ts/data/HashSet"
 import * as HM from "@fp-ts/data/internal/HashMap"
 import * as _keySet from "@fp-ts/data/internal/HashMap/keySet"
-import type * as HMN from "@fp-ts/data/internal/HashMap/node"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 
@@ -24,13 +23,6 @@ export type TypeId = typeof TypeId
  */
 export interface HashMap<Key, Value> extends Iterable<readonly [Key, Value]>, Equal {
   readonly _id: TypeId
-}
-
-/**
- * @since 1.0.0
- */
-export declare namespace HashMap {
-  export type Node<Key, Value> = HMN.Node<Key, Value>
 }
 
 /**
@@ -132,19 +124,6 @@ export const hasHash: <K, V>(key: K, hash: number) => (self: HashMap<K, V>) => b
  * @category mutations
  */
 export const set: <K, V>(key: K, value: V) => (self: HashMap<K, V>) => HashMap<K, V> = HM.set
-
-/**
- * Sets the root of the `HashMap`.
- *
- * @since 1.0.0
- * @category mutations
- */
-export const setTree: <K, V>(
-  newRoot: HMN.Node<K, V>,
-  newSize: number
-) => (
-  self: HashMap<K, V>
-) => HashMap<K, V> = HM.setTree
 
 /**
  * Returns an `IterableIterator` of the keys within the `HashMap`.
