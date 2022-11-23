@@ -16,23 +16,23 @@ export function isNothing<T>(value: T | null | undefined) {
   return value === void 0 || value === null
 }
 
-/** @internal */
 const defaultIncHi = 0x14057b7e
-/** @internal */
 const defaultIncLo = 0xf767814f
-/** @internal */
 const MUL_HI = 0x5851f42d >>> 0
-/** @internal */
 const MUL_LO = 0x4c957f2d >>> 0
-/** @internal */
 const BIT_53 = 9007199254740992.0
-/** @internal */
 const BIT_27 = 134217728.0
 
-/** @internal */
+/**
+ * @category model
+ * @since 1.0.0
+ */
 export type PCGRandomState = [number, number, number, number]
 
-/** @internal */
+/**
+ * @category model
+ * @since 1.0.0
+ */
 export type OptionalNumber = number | null | undefined
 
 /**
