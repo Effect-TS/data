@@ -1294,8 +1294,8 @@ export const unfold = <A, S>(s: S, f: (s: S) => Option<readonly [A, S]>): Chunk<
   while (cont) {
     const x = f(s1)
     if (O.isSome(x)) {
-      s1 = x[1]
-      builder.push(x[0])
+      s1 = x.value[1]
+      builder.push(x.value[0])
     } else {
       cont = false
     }
