@@ -1,5 +1,13 @@
 # @fp-ts/data
 
+## 0.0.15
+
+### Patch Changes
+
+- [#119](https://github.com/fp-ts/data/pull/119) [`169deb1`](https://github.com/fp-ts/data/commit/169deb1c61b9778ab2b05eb9d6eb7e513efe2923) Thanks [@IMax153](https://github.com/IMax153)! - fix Chunk.zipWith
+
+- [#118](https://github.com/fp-ts/data/pull/118) [`a2d1e7e`](https://github.com/fp-ts/data/commit/a2d1e7e5c2ff0bcb3c4cb95620d9066711c5c557) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Generalize Generators to work with Single Shot Monads
+
 ## 0.0.14
 
 ### Patch Changes
