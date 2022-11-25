@@ -1381,7 +1381,7 @@ export const zipWith = <A, B, C>(that: Chunk<B>, f: (a: A, b: B) => C) =>
     const len = Math.min(selfA.length, thatA.length)
     const res: Array<C> = new Array(len)
     for (let i = 0; i < len; i++) {
-      res.push(f(selfA[i], thatA[i]))
+      res[i] = f(selfA[i], thatA[i])
     }
     return unsafeFromArray(res)
   }
