@@ -448,6 +448,14 @@ describe.concurrent("Chunk", () => {
     // TODO add tests for 100% coverage: left & right diff depths & depth > 0
   })
 
+  it("unfold", () => {
+    pipe(
+      C.unfold(5, (n) => (n > 0 ? O.some([n, n - 1]) : O.none)),
+      equals(C.unsafeFromArray([5, 4, 3, 2, 1])),
+      assert.isTrue
+    )
+  })
+
   it("zip", () => {
     pipe(
       C.empty,
