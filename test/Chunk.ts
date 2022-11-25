@@ -448,6 +448,33 @@ describe.concurrent("Chunk", () => {
     // TODO add tests for 100% coverage: left & right diff depths & depth > 0
   })
 
+  it("zip", () => {
+    pipe(
+      C.empty,
+      C.zip(C.empty),
+      equals(C.unsafeFromArray([])),
+      assert.isTrue
+    )
+    pipe(
+      C.empty,
+      C.zip(C.singleton(1)),
+      equals(C.unsafeFromArray([])),
+      assert.isTrue
+    )
+    pipe(
+      C.singleton(1),
+      C.zip(C.empty),
+      equals(C.unsafeFromArray([])),
+      assert.isTrue
+    )
+    pipe(
+      C.singleton(1),
+      C.zip(C.singleton(2)),
+      equals(C.unsafeFromArray([[1, 2]])),
+      assert.isTrue
+    )
+  })
+
   it("zipWithIndex", () => {
     pipe(
       C.empty,
