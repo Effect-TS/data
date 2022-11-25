@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.16
+
+### Patch Changes
+
+- [#121](https://github.com/fp-ts/data/pull/121) [`d2e2475`](https://github.com/fp-ts/data/commit/d2e247581afc9d8e1bbacae5c143e789b9cc58fe) Thanks [@IMax153](https://github.com/IMax153)! - fix Chunk.unfold
+
 ## 0.0.15
 
 ### Patch Changes
