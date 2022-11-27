@@ -1,0 +1,17 @@
+{
+  "project": {
+    "packageName": "@fp-ts/data",
+    "baseDir": "src",
+    "tsconfig": "tsconfig.base.json",
+    "paths": ["!**/internal/**"],
+    "staticPrefixes": ["make", "from", "unsafeFrom"]
+  },
+  "namespaces": [
+    {
+      "name": "fp-ts/data"
+    },
+    {
+      "name": "ReadonlyArray"
+    }
+  ]
+}
