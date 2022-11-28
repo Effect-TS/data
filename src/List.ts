@@ -5,7 +5,6 @@
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import * as applicative from "@fp-ts/core/typeclass/Applicative"
 import * as chainable from "@fp-ts/core/typeclass/Chainable"
-import * as compactable from "@fp-ts/core/typeclass/Compactable"
 import type { Coproduct } from "@fp-ts/core/typeclass/Coproduct"
 import * as covariant from "@fp-ts/core/typeclass/Covariant"
 import * as filterable from "@fp-ts/core/typeclass/Filterable"
@@ -29,6 +28,7 @@ import * as LI from "@fp-ts/data/internal/List"
 import * as _sort from "@fp-ts/data/internal/List/sort"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
+import * as compactable from "@fp-ts/data/typeclass/Compactable"
 
 type LCons<A> = Cons<A>
 type LNil<A> = Nil<A>
