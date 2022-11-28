@@ -676,8 +676,9 @@ export const getFirstSomeSemigroup: <A>() => Semigroup<Option<A>> = semiCoproduc
 /**
  * @since 1.0.0
  */
-export const coproductEither: <B>(that: Option<B>) => <A>(self: Option<A>) => Option<Either<A, B>> =
-  semiCoproduct.coproductEither(SemiCoproduct)
+export const coproductEither = <B>(that: Option<B>) =>
+  <A>(self: Option<A>): Option<Either<A, B>> =>
+    isNone(self) ? pipe(that, map(either.right)) : pipe(self, map(either.left))
 
 /**
  * @since 1.0.0
