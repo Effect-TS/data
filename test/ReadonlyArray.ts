@@ -792,19 +792,6 @@ describe.concurrent("ReadonlyArray", () => {
     )
   })
 
-  // TODO
-  // it("unsafeUpdateAt", () => {
-  //   const empty: ReadonlyArray<number> = []
-  //   deepStrictEqual(ReadonlyArray.unsafeUpdateAt(1, 2, empty), empty)
-  //   deepStrictEqual(ReadonlyArray.unsafeUpdateAt(1, 2, ReadonlyArray.empty), ReadonlyArray.empty)
-  //   // should return the same reference if nothing changed
-  //   const input: ReadonlyArray<number> = [1, 2, 3]
-  //   deepStrictEqual(
-  //     pipe(ReadonlyArray.unsafeUpdateAt(1, 2, input), (out) => out === input),
-  //     true
-  //   )
-  // })
-
   it("update", () => {
     const as: ReadonlyArray<number> = [1, 2, 3]
     deepStrictEqual(RA.update(1, 1)(as), [1, 1, 3])
