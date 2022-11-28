@@ -325,13 +325,13 @@ export const toReadonlyArray = <A>(self: Chunk<A>): ReadonlyArray<A> => {
 }
 
 /**
- * Gets the `n`-th element in the chunk if it exists
+ * This function provides a safe way to read a value at a particular index from a `Chunk`.
  *
  * @since 1.0.0
  * @category elements
  */
-export const get = (n: number) =>
-  <A>(self: Chunk<A>): Option<A> => n < 0 || n >= self.length ? O.none : O.some(unsafeGet(n)(self))
+export const get = (i: number) =>
+  <A>(self: Chunk<A>): Option<A> => i < 0 || i >= self.length ? O.none : O.some(unsafeGet(i)(self))
 
 /**
  * Wraps an array into a chunk without copying, unsafe on mutable arrays
@@ -1502,3 +1502,48 @@ export const zipWithIndexOffset = (offset: number) =>
     }
     return unsafeFromArray(builder)
   }
+
+/**
+ * Delete the element at the specified index, creating a new `Chunk`,
+ * or returning the input if the index is out of bounds.
+ *
+ * @category mutations
+ * @since 1.0.0
+ */
+export const remove = (i: number) =>
+  <A>(self: Chunk<A>): Chunk<A> => pipe(self, toReadonlyArray, RA.remove(i), unsafeFromArray)
+
+/**
+ * Change the element at the specified index, creating a new `Chunk`,
+ * or returning the input if the index is out of bounds.
+ *
+ * @category mutations
+ * @since 1.0.0
+ */
+export const update = <B>(i: number, b: B): <A>(self: Chunk<A>) => Chunk<B | A> =>
+  modify(i, () => b)
+
+/**
+ * @category mutations
+ * @since 1.0.0
+ */
+export const updateOption = <B>(i: number, b: B): <A>(self: Chunk<A>) => Option<Chunk<B | A>> =>
+  modifyOption(i, () => b)
+
+/**
+ * Apply a function to the element at the specified index, creating a new `Chunk`,
+ * or returning the input if the index is out of bounds.
+ *
+ * @category mutations
+ * @since 1.0.0
+ */
+export const modify = <A, B>(i: number, f: (a: A) => B) =>
+  (self: Chunk<A>): Chunk<A | B> => pipe(modifyOption(i, f)(self), O.getOrElse(() => self))
+
+/**
+ * @category mutations
+ * @since 1.0.0
+ */
+export const modifyOption = <A, B>(i: number, f: (a: A) => B) =>
+  (self: Chunk<A>): Option<Chunk<A | B>> =>
+    pipe(self, toReadonlyArray, RA.modifyOption(i, f), O.map(unsafeFromArray))

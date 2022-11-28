@@ -22,10 +22,13 @@ import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
 import type { Either } from "@fp-ts/data/Either"
 import type * as Equal from "@fp-ts/data/Equal"
+import { pipe } from "@fp-ts/data/Function"
 import * as LI from "@fp-ts/data/internal/List"
 import * as _sort from "@fp-ts/data/internal/List/sort"
+import * as O from "@fp-ts/data/Option"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
+import * as RA from "@fp-ts/data/ReadonlyArray"
 import * as compactable from "@fp-ts/data/typeclass/Compactable"
 import * as filterable from "@fp-ts/data/typeclass/Filterable"
 import * as traversableFilterable from "@fp-ts/data/typeclass/TraversableFilterable"
@@ -789,3 +792,56 @@ export const traversePartition: <F extends TypeLambda>(
   .traversePartition(
     TraversableFilterable
   )
+
+/**
+ * This function provides a safe way to read a value at a particular index from a `List`.
+ *
+ * @category getters
+ * @since 1.0.0
+ */
+export const get = (i: number) =>
+  <A>(self: List<A>): Option<A> => pipe(self, toReadonlyArray, RA.get(i))
+
+/**
+ * Delete the element at the specified index, creating a new `Chunk`,
+ * or returning the input if the index is out of bounds.
+ *
+ * @category mutations
+ * @since 1.0.0
+ */
+export const remove = (i: number) =>
+  <A>(self: List<A>): List<A> => pipe(self, toReadonlyArray, RA.remove(i), fromIterable)
+
+/**
+ * Change the element at the specified index, creating a new `Chunk`,
+ * or returning the input if the index is out of bounds.
+ *
+ * @category mutations
+ * @since 1.0.0
+ */
+export const update = <B>(i: number, b: B): <A>(self: List<A>) => List<B | A> => modify(i, () => b)
+
+/**
+ * @category mutations
+ * @since 1.0.0
+ */
+export const updateOption = <B>(i: number, b: B): <A>(self: List<A>) => Option<List<B | A>> =>
+  modifyOption(i, () => b)
+
+/**
+ * Apply a function to the element at the specified index, creating a new `List`,
+ * or returning the input if the index is out of bounds.
+ *
+ * @category mutations
+ * @since 1.0.0
+ */
+export const modify = <A, B>(i: number, f: (a: A) => B) =>
+  (self: List<A>): List<A | B> => pipe(modifyOption(i, f)(self), O.getOrElse(() => self))
+
+/**
+ * @category mutations
+ * @since 1.0.0
+ */
+export const modifyOption = <A, B>(i: number, f: (a: A) => B) =>
+  (self: List<A>): Option<List<A | B>> =>
+    pipe(self, toReadonlyArray, RA.modifyOption(i, f), O.map(fromIterable))
