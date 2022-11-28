@@ -3,13 +3,13 @@
  *
  * @since 1.0.0
  */
-import type { Option } from "@fp-ts/core/data/Option"
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import type { Covariant } from "@fp-ts/core/typeclass/Covariant"
 import type { FlatMap } from "@fp-ts/core/typeclass/FlatMap"
 import type { Foldable } from "@fp-ts/core/typeclass/Foldable"
 import type { Order } from "@fp-ts/core/typeclass/Order"
 import type { Either } from "@fp-ts/data/Either"
+import type { Option } from "@fp-ts/data/Option"
 import type { Predicate } from "@fp-ts/data/Predicate"
 import type { Compactable } from "@fp-ts/data/typeclass/Compactable"
 import type { CovariantWithIndex } from "@fp-ts/data/typeclass/CovariantWithIndex"
