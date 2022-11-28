@@ -71,9 +71,7 @@ export class ContextImpl<Services> implements C.Context<Services> {
     if (isContext(that)) {
       if (this.unsafeMap.size === that.unsafeMap.size) {
         for (const k of this.unsafeMap.keys()) {
-          if (
-            !that.unsafeMap.has(k) || !Equal.equals(this.unsafeMap.get(k), that.unsafeMap.get(k))
-          ) {
+          if (!that.unsafeMap.has(k) || this.unsafeMap.get(k) !== that.unsafeMap.get(k)) {
             return false
           }
         }
