@@ -811,10 +811,10 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(RA.updateAt(1, 1)([]), O.none)
   })
 
-  it("deleteAt", () => {
+  it("remove", () => {
     const as: ReadonlyArray<number> = [1, 2, 3]
-    deepStrictEqual(RA.deleteAt(0)(as), O.some([2, 3]))
-    deepStrictEqual(RA.deleteAt(1)([]), O.none)
+    deepStrictEqual(RA.remove(0)(as), [2, 3])
+    deepStrictEqual(RA.remove(1)([]), [])
   })
 
   it("modifyAt", () => {
