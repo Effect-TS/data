@@ -3,12 +3,12 @@
  */
 import type { Kind, TypeClass, TypeLambda } from "@fp-ts/core/HKT"
 import type { Covariant } from "@fp-ts/core/typeclass/Covariant"
-import type { Filterable } from "@fp-ts/core/typeclass/Filterable"
 import type { Either } from "@fp-ts/data/Either"
+import * as E from "@fp-ts/data/Either"
 import { pipe } from "@fp-ts/data/Function"
-import * as either from "@fp-ts/data/internal/Either"
-import * as option from "@fp-ts/data/internal/Option"
+import * as O from "@fp-ts/data/Option"
 import type { Option } from "@fp-ts/data/Option"
+import type { Filterable } from "@fp-ts/data/typeclass/Filterable"
 
 /**
  * @category models
@@ -63,7 +63,7 @@ export const filterWithIndex: <F extends TypeLambda, I>(
     FilterableWithIndex.filterMapWithIndex((
       b,
       i
-    ) => (predicate(b, i) ? option.some(b) : option.none))
+    ) => (predicate(b, i) ? O.some(b) : O.none))
 
 /**
  * @since 1.0.0
@@ -76,8 +76,8 @@ export const partitionMapWithIndex = <F extends TypeLambda, I>(
       self: Kind<F, R, O, E, A>
     ): readonly [Kind<F, R, O, E, B>, Kind<F, R, O, E, C>] => {
       return [
-        pipe(self, F.filterMapWithIndex((a, i) => either.getLeft(f(a, i)))),
-        pipe(self, F.filterMapWithIndex((a, i) => either.getRight(f(a, i))))
+        pipe(self, F.filterMapWithIndex((a, i) => E.getLeft(f(a, i)))),
+        pipe(self, F.filterMapWithIndex((a, i) => E.getRight(f(a, i))))
       ]
     }
 
@@ -100,5 +100,5 @@ export const partitionWithIndex: <F extends TypeLambda, I>(
   ): (<R, O, E>(
     self: Kind<F, R, O, E, B>
   ) => readonly [Kind<F, R, O, E, B>, Kind<F, R, O, E, B>]) =>
-    partitionMapWithIndex_((b, i) => (predicate(b, i) ? either.right(b) : either.left(b)))
+    partitionMapWithIndex_((b, i) => (predicate(b, i) ? E.right(b) : E.left(b)))
 }
