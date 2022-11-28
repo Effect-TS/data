@@ -650,14 +650,14 @@ const unsafeDeleteAt = <A>(i: number, as: ReadonlyArray<A>): ReadonlyArray<A> =>
 }
 
 /**
- * Delete the element at the specified index, creating a new `ReadonlyArray`, or returning `None` if the index is out of bounds.
+ * Delete the element at the specified index, creating a new `ReadonlyArray`, or returning the input if the index is out of bounds.
  *
  * @category mutations
  * @since 1.0.0
  */
-export const deleteAt = (i: number) =>
-  <A>(self: ReadonlyArray<A>): Option<ReadonlyArray<A>> =>
-    isOutOfBound(i, self) ? option.none : option.some(unsafeDeleteAt(i, self))
+export const remove = (i: number) =>
+  <A>(self: ReadonlyArray<A>): ReadonlyArray<A> =>
+    isOutOfBound(i, self) ? self : unsafeDeleteAt(i, self)
 
 /**
  * Reverse a `ReadonlyArray`, creating a new `ReadonlyArray`.
