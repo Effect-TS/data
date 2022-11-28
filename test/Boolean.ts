@@ -1,5 +1,5 @@
-import { pipe } from "@fp-ts/core/internal/Function"
 import * as Boolean from "@fp-ts/data/Boolean"
+import { pipe } from "@fp-ts/data/Function"
 import { deepStrictEqual } from "@fp-ts/data/test/util"
 
 describe.concurrent("Boolean", () => {

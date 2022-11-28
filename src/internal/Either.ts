@@ -1,8 +1,8 @@
 /**
  * @since 1.0.0
  */
-import type { LazyArg } from "@fp-ts/core/internal/Function"
 import type { Either, Left, Right } from "@fp-ts/data/Either"
+import type { LazyArg } from "@fp-ts/data/Function"
 import * as option from "@fp-ts/data/internal/Option"
 import type { Option } from "@fp-ts/data/Option"
 
