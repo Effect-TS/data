@@ -614,33 +614,33 @@ export const insertAt = <B>(i: number, a: B) =>
   }
 
 /**
- * Change the element at the specified index, creating a new `ReadonlyArray`, or returning `None` if the index is out of bounds.
+ * Change the element at the specified index, creating a new `ReadonlyArray`, or returning the input if the index is out of bounds.
  *
  * @category mutations
  * @since 1.0.0
  */
-export const updateAt = <B>(
+export const update = <B>(
   i: number,
   b: B
-): (<A>(self: ReadonlyArray<A>) => Option<ReadonlyArray<A | B>>) => modifyAt(i, () => b)
+): (<A>(self: ReadonlyArray<A>) => ReadonlyArray<A | B>) => modify(i, () => b)
 
 /**
- * Apply a function to the element at the specified index, creating a new `ReadonlyArray`, or returning `None` if the index is out
+ * Apply a function to the element at the specified index, creating a new `ReadonlyArray`, or returning the input if the index is out
  * of bounds.
  *
  * @category mutations
  * @since 1.0.0
  */
-export const modifyAt = <A, B>(i: number, f: (a: A) => B) =>
-  (self: ReadonlyArray<A>): Option<ReadonlyArray<A | B>> => {
+export const modify = <A, B>(i: number, f: (a: A) => B) =>
+  (self: ReadonlyArray<A>): ReadonlyArray<A | B> => {
     if (isOutOfBound(i, self)) {
-      return option.none
+      return self
     }
     const prev = self[i]
     const next = f(prev)
     const out: Array<A | B> = self.slice()
     out[i] = next
-    return option.some(out)
+    return out
   }
 
 const unsafeDeleteAt = <A>(i: number, as: ReadonlyArray<A>): ReadonlyArray<A> => {
