@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.17
+
+### Patch Changes
+
+- [#124](https://github.com/fp-ts/data/pull/124) [`5c987a3`](https://github.com/fp-ts/data/commit/5c987a3a3e4b22c1418382c39d4b4657de7a1a04) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Use referential equality to compare services
+
 ## 0.0.16
 
 ### Patch Changes
