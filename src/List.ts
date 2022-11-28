@@ -20,7 +20,6 @@ import * as semiApplicative from "@fp-ts/core/typeclass/SemiApplicative"
 import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
 import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
-import * as traversableFilterable from "@fp-ts/core/typeclass/TraversableFilterable"
 import type { Either } from "@fp-ts/data/Either"
 import type * as Equal from "@fp-ts/data/Equal"
 import * as LI from "@fp-ts/data/internal/List"
@@ -29,6 +28,7 @@ import type { Option } from "@fp-ts/data/Option"
 import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 import * as compactable from "@fp-ts/data/typeclass/Compactable"
 import * as filterable from "@fp-ts/data/typeclass/Filterable"
+import * as traversableFilterable from "@fp-ts/data/typeclass/TraversableFilterable"
 
 type LCons<A> = Cons<A>
 type LNil<A> = Nil<A>

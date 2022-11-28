@@ -22,7 +22,6 @@ import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
 import { fromCombine } from "@fp-ts/core/typeclass/Semigroup"
 import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
-import * as traversableFilterable from "@fp-ts/core/typeclass/TraversableFilterable"
 import type { Either } from "@fp-ts/data/Either"
 import { equals } from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
@@ -36,6 +35,7 @@ import type { Option } from "@fp-ts/data/Option"
 import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 import type * as compactable from "@fp-ts/data/typeclass/Compactable"
 import * as filterable from "@fp-ts/data/typeclass/Filterable"
+import * as traversableFilterable from "@fp-ts/data/typeclass/TraversableFilterable"
 
 /**
  * @category type lambdas

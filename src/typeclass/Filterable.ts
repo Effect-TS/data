@@ -8,7 +8,7 @@ import type { Covariant } from "@fp-ts/core/typeclass/Covariant"
 import type { Either } from "@fp-ts/data/Either"
 import * as E from "@fp-ts/data/Either"
 import { pipe } from "@fp-ts/data/Function"
-import * as O from "@fp-ts/data/Option"
+import * as O from "@fp-ts/data/internal/Option"
 import type { Option } from "@fp-ts/data/Option"
 
 /**

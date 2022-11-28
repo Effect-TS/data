@@ -46,6 +46,7 @@ import * as filterable from "@fp-ts/data/typeclass/Filterable"
 import * as filterableWithIndex from "@fp-ts/data/typeclass/FilterableWithIndex"
 import * as gen from "@fp-ts/data/typeclass/Gen"
 import * as seq from "@fp-ts/data/typeclass/Seq"
+import * as traversableFilterable from "@fp-ts/data/typeclass/TraversableFilterable"
 import * as weakIterableMap from "@fp-ts/data/weak/WeakIterableMap"
 
 export {
@@ -225,6 +226,10 @@ export {
    * @since 1.0.0
    */
   these,
+  /**
+   * @since 1.0.0
+   */
+  traversableFilterable,
   /**
    * @since 1.0.0
    */
