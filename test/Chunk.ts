@@ -5,6 +5,33 @@ import * as O from "@fp-ts/data/Option"
 import * as fc from "fast-check"
 
 describe.concurrent("Chunk", () => {
+  it("modifyOption", () => {
+    expect(pipe(C.empty, C.modifyOption(0, (n: number) => n * 2))).toEqual(O.none)
+    expect(pipe(C.make(1, 2, 3), C.modifyOption(0, (n: number) => n * 2))).toEqual(
+      O.some(C.make(2, 2, 3))
+    )
+  })
+
+  it("modify", () => {
+    expect(pipe(C.empty, C.modify(0, (n: number) => n * 2))).toEqual(C.empty)
+    expect(pipe(C.make(1, 2, 3), C.modify(0, (n: number) => n * 2))).toEqual(C.make(2, 2, 3))
+  })
+
+  it("updateOption", () => {
+    expect(pipe(C.empty, C.updateOption(0, 2))).toEqual(O.none)
+    expect(pipe(C.make(1, 2, 3), C.updateOption(0, 2))).toEqual(O.some(C.make(2, 2, 3)))
+  })
+
+  it("update", () => {
+    expect(pipe(C.empty, C.update(0, 2))).toEqual(C.empty)
+    expect(pipe(C.make(1, 2, 3), C.update(0, 2))).toEqual(C.make(2, 2, 3))
+  })
+
+  it("remove", () => {
+    expect(pipe(C.empty, C.remove(0))).toEqual(C.empty)
+    expect(pipe(C.make(1, 2, 3), C.remove(0))).toEqual(C.make(2, 3))
+  })
+
   it("chunksOf", () => {
     expect(pipe(C.empty, C.chunksOf(2))).toEqual(
       C.empty
@@ -41,6 +68,7 @@ describe.concurrent("Chunk", () => {
       })
     })
   })
+
   describe("is", () => {
     describe("Given a chunk", () => {
       const chunk = C.make(0, 1)
@@ -55,6 +83,7 @@ describe.concurrent("Chunk", () => {
       })
     })
   })
+
   describe("fromIterable", () => {
     describe("Given an iterable", () => {
       const myIterable = {

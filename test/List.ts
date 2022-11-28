@@ -8,6 +8,33 @@ import * as O from "@fp-ts/data/Option"
 import * as U from "@fp-ts/data/test/util"
 
 describe.concurrent("List", () => {
+  it("modifyOption", () => {
+    expect(pipe(L.empty(), L.modifyOption(0, (n: number) => n * 2))).toEqual(O.none)
+    expect(pipe(L.make(1, 2, 3), L.modifyOption(0, (n: number) => n * 2))).toEqual(
+      O.some(L.make(2, 2, 3))
+    )
+  })
+
+  it("modify", () => {
+    expect(pipe(L.empty(), L.modify(0, (n: number) => n * 2))).toEqual(L.empty())
+    expect(pipe(L.make(1, 2, 3), L.modify(0, (n: number) => n * 2))).toEqual(L.make(2, 2, 3))
+  })
+
+  it("updateOption", () => {
+    expect(pipe(L.empty(), L.updateOption(0, 2))).toEqual(O.none)
+    expect(pipe(L.make(1, 2, 3), L.updateOption(0, 2))).toEqual(O.some(L.make(2, 2, 3)))
+  })
+
+  it("update", () => {
+    expect(pipe(L.empty(), L.update(0, 2))).toEqual(L.empty())
+    expect(pipe(L.make(1, 2, 3), L.update(0, 2))).toEqual(L.make(2, 2, 3))
+  })
+
+  it("remove", () => {
+    expect(pipe(L.empty(), L.remove(0))).toEqual(L.empty())
+    expect(pipe(L.make(1, 2, 3), L.remove(0))).toEqual(L.make(2, 3))
+  })
+
   it("take", () => {
     expect(pipe(L.make(1, 2, 3, 4), L.take(2))).toEqual(L.make(1, 2))
     // take(0)

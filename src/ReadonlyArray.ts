@@ -32,6 +32,7 @@ import * as option from "@fp-ts/data/internal/Option"
 import * as string from "@fp-ts/data/internal/String"
 import * as number from "@fp-ts/data/Number"
 import type { Option } from "@fp-ts/data/Option"
+import * as O from "@fp-ts/data/Option"
 import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 import type * as compactable from "@fp-ts/data/typeclass/Compactable"
 import * as filterable from "@fp-ts/data/typeclass/Filterable"
@@ -272,7 +273,7 @@ export const size = <A>(self: ReadonlyArray<A>): number => self.length
 const isOutOfBound = <A>(i: number, as: ReadonlyArray<A>): boolean => i < 0 || i >= as.length
 
 /**
- * This function provides a safe way to read a value at a particular index from a `ReadonlyArray`
+ * This function provides a safe way to read a value at a particular index from a `ReadonlyArray`.
  *
  * @category getters
  * @since 1.0.0
@@ -614,33 +615,49 @@ export const insertAt = <B>(i: number, a: B) =>
   }
 
 /**
- * Change the element at the specified index, creating a new `ReadonlyArray`, or returning the input if the index is out of bounds.
+ * Change the element at the specified index, creating a new `ReadonlyArray`,
+ * or returning the input if the index is out of bounds.
  *
  * @category mutations
  * @since 1.0.0
  */
-export const update = <B>(
-  i: number,
-  b: B
-): (<A>(self: ReadonlyArray<A>) => ReadonlyArray<A | B>) => modify(i, () => b)
+export const update = <B>(i: number, b: B): (<A>(self: ReadonlyArray<A>) => ReadonlyArray<A | B>) =>
+  modify(i, () => b)
 
 /**
- * Apply a function to the element at the specified index, creating a new `ReadonlyArray`, or returning the input if the index is out
- * of bounds.
+ * @category mutations
+ * @since 1.0.0
+ */
+export const updateOption = <B>(
+  i: number,
+  b: B
+): (<A>(self: ReadonlyArray<A>) => Option<ReadonlyArray<A | B>>) => modifyOption(i, () => b)
+
+/**
+ * Apply a function to the element at the specified index, creating a new `ReadonlyArray`,
+ * or returning the input if the index is out of bounds.
  *
  * @category mutations
  * @since 1.0.0
  */
 export const modify = <A, B>(i: number, f: (a: A) => B) =>
-  (self: ReadonlyArray<A>): ReadonlyArray<A | B> => {
+  (self: ReadonlyArray<A>): ReadonlyArray<A | B> =>
+    pipe(modifyOption(i, f)(self), O.getOrElse(() => self))
+
+/**
+ * @category mutations
+ * @since 1.0.0
+ */
+export const modifyOption = <A, B>(i: number, f: (a: A) => B) =>
+  (self: ReadonlyArray<A>): Option<ReadonlyArray<A | B>> => {
     if (isOutOfBound(i, self)) {
-      return self
+      return O.none
     }
     const prev = self[i]
     const next = f(prev)
     const out: Array<A | B> = self.slice()
     out[i] = next
-    return out
+    return O.some(out)
   }
 
 const unsafeDeleteAt = <A>(i: number, as: ReadonlyArray<A>): ReadonlyArray<A> => {
@@ -650,7 +667,8 @@ const unsafeDeleteAt = <A>(i: number, as: ReadonlyArray<A>): ReadonlyArray<A> =>
 }
 
 /**
- * Delete the element at the specified index, creating a new `ReadonlyArray`, or returning the input if the index is out of bounds.
+ * Delete the element at the specified index, creating a new `ReadonlyArray`,
+ * or returning the input if the index is out of bounds.
  *
  * @category mutations
  * @since 1.0.0
