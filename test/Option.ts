@@ -63,7 +63,6 @@ describe.concurrent("Option", () => {
     expect(_.SemiCoproduct).exist
     expect(_.getFirstSomeSemigroup).exist // getSemigroup
     expect(_.coproduct).exist
-    expect(_.coproductEither).exist
 
     expect(_.Coproduct).exist
     expect(_.zero).exist
@@ -108,6 +107,13 @@ describe.concurrent("Option", () => {
     deepStrictEqual(pipe(_.some(1), _.isOption), true)
     deepStrictEqual(pipe(_.none, _.isOption), true)
     deepStrictEqual(pipe(E.right(1), _.isOption), false)
+  })
+
+  it("coproductEither", () => {
+    deepStrictEqual(pipe(_.none, _.coproductEither(_.none)), _.none)
+    deepStrictEqual(pipe(_.none, _.coproductEither(_.some("a"))), _.some(E.right("a")))
+    deepStrictEqual(pipe(_.some(1), _.coproductEither(_.none)), _.some(E.left(1)))
+    deepStrictEqual(pipe(_.some(1), _.coproductEither(_.some("a"))), _.some(E.left(1)))
   })
 
   it("firstSomeOf", () => {
