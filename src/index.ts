@@ -42,6 +42,7 @@ import * as string from "@fp-ts/data/String"
 import * as these from "@fp-ts/data/These"
 import * as compactable from "@fp-ts/data/typeclass/Compactable"
 import * as covariantWithIndex from "@fp-ts/data/typeclass/CovariantWithIndex"
+import * as filterable from "@fp-ts/data/typeclass/Filterable"
 import * as filterableWithIndex from "@fp-ts/data/typeclass/FilterableWithIndex"
 import * as gen from "@fp-ts/data/typeclass/Gen"
 import * as seq from "@fp-ts/data/typeclass/Seq"
@@ -96,6 +97,10 @@ export {
    * @since 1.0.0
    */
   equal,
+  /**
+   * @since 1.0.0
+   */
+  filterable,
   /**
    * @since 1.0.0
    */

@@ -7,7 +7,6 @@ import * as applicative from "@fp-ts/core/typeclass/Applicative"
 import * as chainable from "@fp-ts/core/typeclass/Chainable"
 import type { Coproduct } from "@fp-ts/core/typeclass/Coproduct"
 import * as covariant from "@fp-ts/core/typeclass/Covariant"
-import * as filterable from "@fp-ts/core/typeclass/Filterable"
 import * as flatMap_ from "@fp-ts/core/typeclass/FlatMap"
 import * as foldable from "@fp-ts/core/typeclass/Foldable"
 import * as invariant from "@fp-ts/core/typeclass/Invariant"
@@ -29,6 +28,7 @@ import * as _sort from "@fp-ts/data/internal/List/sort"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 import * as compactable from "@fp-ts/data/typeclass/Compactable"
+import * as filterable from "@fp-ts/data/typeclass/Filterable"
 
 type LCons<A> = Cons<A>
 type LNil<A> = Nil<A>
