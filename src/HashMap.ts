@@ -232,12 +232,12 @@ export const modifyHash: <K, V>(
  * @since 1.0.0
  * @category mutations
  */
-export const update: <K, V>(
+export const replace: <K, V>(
   key: K,
   f: (v: V) => V
 ) => (
   self: HashMap<K, V>
-) => HashMap<K, V> = HM.update
+) => HashMap<K, V> = HM.replace
 
 /**
  * Performs a union of this `HashMap` and that `HashMap`.

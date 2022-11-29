@@ -343,13 +343,18 @@ describe.concurrent("HashMap", () => {
     )
   })
 
-  it("update", () => {
+  it("replace", () => {
     const map = HashMap.make([key(0), value("a")], [key(1), value("b")])
-    const result = pipe(map, HashMap.update(key(0), ({ s }) => value(`${s}-${s}`)))
+    const result = pipe(map, HashMap.replace(key(0), ({ s }) => value(`${s}-${s}`)))
 
     deepStrictEqual(HashMap.get(key(0))(result), Option.some(value("a-a")))
     deepStrictEqual(HashMap.get(key(1))(result), Option.some(value("b")))
     deepStrictEqual(HashMap.get(key(2))(result), Option.none)
+
+    deepStrictEqual(
+      HashMap.get(key(2))(pipe(map, HashMap.replace(key(2), ({ s }) => value(`${s}-${s}`)))),
+      Option.none
+    )
   })
 
   it("values", () => {
