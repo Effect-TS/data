@@ -1,7 +1,7 @@
 /**
  * @since 1.0.0
  */
-import { absurd, pipe } from "@fp-ts/data/Function"
+import { pipe } from "@fp-ts/data/Function"
 import { PCGRandom } from "@fp-ts/data/Random"
 
 /**
@@ -79,6 +79,17 @@ function isDeepEqual(u: unknown): u is Equal {
 }
 
 function compareObject(self: object, that: object) {
+  const selfProto = Object.getPrototypeOf(self)
+  const thatProto = Object.getPrototypeOf(self)
+
+  if (selfProto !== thatProto) {
+    return false
+  }
+
+  if (selfProto !== Object.prototype) {
+    return self === that
+  }
+
   if ("_tag" in self) {
     if ("_tag" in that) {
       if (self["_tag"] !== that["_tag"]) {
@@ -88,14 +99,18 @@ function compareObject(self: object, that: object) {
       return false
     }
   }
+
   const keysA = Object.keys(self).sort()
   const keysB = Object.keys(that).sort()
+
   if (keysA.length !== keysB.length) {
     return false
   }
+
   if (!equals(keysA, keysB)) {
     return false
   }
+
   for (const ka of keysA) {
     const va = self[ka]
     const vb = that[ka]
@@ -103,75 +118,60 @@ function compareObject(self: object, that: object) {
       return false
     }
   }
+
   return true
+}
+
+const compareBothTable = {
+  "object": (self: object, that: unknown) => {
+    if (self == null || that == null || typeof that !== "object") {
+      return self === that
+    }
+    if (Array.isArray(self)) {
+      if (Array.isArray(that)) {
+        return self.length === that.length && self.every((v, i) => equals(v, that[i]))
+      } else {
+        return false
+      }
+    }
+    const hashSelf = hash(self)
+    const hashThat = hash(that)
+    if (hashSelf !== hashThat) {
+      return false
+    }
+    if (isDeepEqual(self)) {
+      if (isDeepEqual(that)) {
+        return self[symbolEqual](that)
+      } else {
+        return false
+      }
+    }
+    return compareObject(self, that)
+  },
+  "function": (self: Function, that: unknown) => {
+    if (isDeepEqual(self)) {
+      if (isDeepEqual(that)) {
+        const hashSelf = hash(self)
+        const hashThat = hash(that)
+        if (hashSelf !== hashThat) {
+          return false
+        }
+        return self[symbolEqual](that)
+      } else {
+        return false
+      }
+    }
+    return false
+  }
 }
 
 function compareBoth<A, B>(self: A, that: B): boolean
 function compareBoth(self: unknown, that: unknown) {
-  const selfType = typeof self
-  switch (selfType) {
-    case "number": {
-      return self === that
-    }
-    case "string": {
-      return self === that
-    }
-    case "symbol": {
-      return self === that
-    }
-    case "bigint": {
-      return self === that
-    }
-    case "boolean": {
-      return self === that
-    }
-    case "undefined": {
-      return self === that
-    }
-    case "object": {
-      if (self == null || that == null || typeof that !== "object") {
-        return self === that
-      }
-      if (Array.isArray(self)) {
-        if (Array.isArray(that)) {
-          return self.length === that.length && self.every((v, i) => equals(v, that[i]))
-        } else {
-          return false
-        }
-      }
-      const hashSelf = hash(self)
-      const hashThat = hash(that)
-      if (hashSelf !== hashThat) {
-        return false
-      }
-      if (isDeepEqual(self)) {
-        if (isDeepEqual(that)) {
-          return self[symbolEqual](that)
-        } else {
-          return false
-        }
-      }
-      return compareObject(self, that)
-    }
-    case "function": {
-      if (isDeepEqual(self)) {
-        if (isDeepEqual(that)) {
-          const hashSelf = hash(self)
-          const hashThat = hash(that)
-          if (hashSelf !== hashThat) {
-            return false
-          }
-          return self[symbolEqual](that)
-        } else {
-          return false
-        }
-      }
-      return self === that
-    }
-    default: {
-      absurd(selfType)
-    }
+  if (self === that) {
+    return true
   }
+  const cmp = compareBothTable[typeof self]
+  return cmp ? cmp(self, that) : false
 }
 
 /** @internal */
