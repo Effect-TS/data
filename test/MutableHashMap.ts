@@ -94,7 +94,7 @@ describe.concurrent("MutableHashMap", () => {
     )
   })
 
-  it("modify", () => {
+  it("modifyAt", () => {
     const map = pipe(
       HM.empty<Key, Value>(),
       HM.set(key(0, 0), value(0, 0)),
@@ -103,7 +103,7 @@ describe.concurrent("MutableHashMap", () => {
 
     pipe(
       map,
-      HM.modify(
+      HM.modifyAt(
         key(0, 0),
         () => O.some(value(0, 1))
       )
@@ -120,7 +120,7 @@ describe.concurrent("MutableHashMap", () => {
 
     pipe(
       map,
-      HM.modify(
+      HM.modifyAt(
         key(2, 2),
         O.match(() => O.some(value(2, 2)), O.some)
       )
@@ -196,7 +196,7 @@ describe.concurrent("MutableHashMap", () => {
     assert.strictEqual(HM.size(map), 2)
   })
 
-  it("replace", () => {
+  it("modify", () => {
     const map = pipe(
       HM.empty<Key, Value>(),
       HM.set(key(0, 0), value(0, 0)),
@@ -205,7 +205,7 @@ describe.concurrent("MutableHashMap", () => {
 
     pipe(
       map,
-      HM.replace(key(0, 0), (v) => value(v.c + 1, v.d + 1))
+      HM.modify(key(0, 0), (v) => value(v.c + 1, v.d + 1))
     )
 
     pipe(
@@ -217,7 +217,7 @@ describe.concurrent("MutableHashMap", () => {
 
     pipe(
       map,
-      HM.replace(key(1, 1), (v) => value(v.c + 1, v.d + 1))
+      HM.modify(key(1, 1), (v) => value(v.c + 1, v.d + 1))
     )
 
     pipe(

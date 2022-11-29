@@ -128,7 +128,7 @@ export const size = <K, V>(self: MutableHashMap<K, V>): number => {
  * @since 1.0.0
  * @category mutations
  */
-export const replace = <K, V>(k: K, f: (v: V) => V) =>
+export const modify = <K, V>(k: K, f: (v: V) => V) =>
   (self: MutableHashMap<K, V>): MutableHashMap<K, V> => {
     const hash = Equal.hash(k)
     const arr = self.backingMap.get(hash)
@@ -183,10 +183,13 @@ export const set = <K, V>(k: K, v: V) =>
   }
 
 /**
+ * Set or remove the specified key in the `MutableHashMap` using the specified
+ * update function.
+ *
  * @since 1.0.0
  * @category mutations
  */
-export const modify = <K, V>(key: K, f: (value: Option<V>) => Option<V>) =>
+export const modifyAt = <K, V>(key: K, f: (value: Option<V>) => Option<V>) =>
   (self: MutableHashMap<K, V>) => {
     const result = f(pipe(self, get(key)))
     if (O.isSome(result)) {
