@@ -1520,14 +1520,14 @@ export const remove = (i: number) =>
  * @category mutations
  * @since 1.0.0
  */
-export const update = <B>(i: number, b: B): <A>(self: Chunk<A>) => Chunk<B | A> =>
+export const replace = <B>(i: number, b: B): <A>(self: Chunk<A>) => Chunk<B | A> =>
   modify(i, () => b)
 
 /**
  * @category mutations
  * @since 1.0.0
  */
-export const updateOption = <B>(i: number, b: B): <A>(self: Chunk<A>) => Option<Chunk<B | A>> =>
+export const replaceOption = <B>(i: number, b: B): <A>(self: Chunk<A>) => Option<Chunk<B | A>> =>
   modifyOption(i, () => b)
 
 /**

@@ -792,15 +792,15 @@ describe.concurrent("ReadonlyArray", () => {
     )
   })
 
-  it("updateOption", () => {
-    expect(pipe([], RA.updateOption(0, 2))).toEqual(O.none)
-    expect(pipe([1, 2, 3], RA.updateOption(0, 2))).toEqual(O.some([2, 2, 3]))
+  it("replaceOption", () => {
+    expect(pipe([], RA.replaceOption(0, 2))).toEqual(O.none)
+    expect(pipe([1, 2, 3], RA.replaceOption(0, 2))).toEqual(O.some([2, 2, 3]))
   })
 
-  it("update", () => {
+  it("replace", () => {
     const as: ReadonlyArray<number> = [1, 2, 3]
-    deepStrictEqual(RA.update(1, 1)(as), [1, 1, 3])
-    deepStrictEqual(RA.update(1, 1)([]), [])
+    deepStrictEqual(RA.replace(1, 1)(as), [1, 1, 3])
+    deepStrictEqual(RA.replace(1, 1)([]), [])
   })
 
   it("remove", () => {

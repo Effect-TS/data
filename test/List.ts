@@ -20,14 +20,14 @@ describe.concurrent("List", () => {
     expect(pipe(L.make(1, 2, 3), L.modify(0, (n: number) => n * 2))).toEqual(L.make(2, 2, 3))
   })
 
-  it("updateOption", () => {
-    expect(pipe(L.empty(), L.updateOption(0, 2))).toEqual(O.none)
-    expect(pipe(L.make(1, 2, 3), L.updateOption(0, 2))).toEqual(O.some(L.make(2, 2, 3)))
+  it("replaceOption", () => {
+    expect(pipe(L.empty(), L.replaceOption(0, 2))).toEqual(O.none)
+    expect(pipe(L.make(1, 2, 3), L.replaceOption(0, 2))).toEqual(O.some(L.make(2, 2, 3)))
   })
 
-  it("update", () => {
-    expect(pipe(L.empty(), L.update(0, 2))).toEqual(L.empty())
-    expect(pipe(L.make(1, 2, 3), L.update(0, 2))).toEqual(L.make(2, 2, 3))
+  it("replace", () => {
+    expect(pipe(L.empty(), L.replace(0, 2))).toEqual(L.empty())
+    expect(pipe(L.make(1, 2, 3), L.replace(0, 2))).toEqual(L.make(2, 2, 3))
   })
 
   it("remove", () => {
