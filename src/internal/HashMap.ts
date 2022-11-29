@@ -342,7 +342,7 @@ export function modifyHash<K, V>(key: K, hash: number, f: Node.UpdateFn<V>) {
 }
 
 /** @internal */
-export function update<K, V>(key: K, f: (v: V) => V) {
+export function replace<K, V>(key: K, f: (v: V) => V) {
   return (self: HM.HashMap<K, V>): HM.HashMap<K, V> => {
     return pipe(self, modify(key, (maybe) => pipe(maybe, Option.map(f))))
   }
