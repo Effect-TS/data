@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.19
+
+### Patch Changes
+
+- [#129](https://github.com/fp-ts/data/pull/129) [`943e195`](https://github.com/fp-ts/data/commit/943e195ebd4a1dfbe0711c299926cabb227ec23d) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Improve MutableRef API
+
 ## 0.0.18
 
 ### Patch Changes
