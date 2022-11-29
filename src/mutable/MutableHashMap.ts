@@ -123,10 +123,12 @@ export const size = <K, V>(self: MutableHashMap<K, V>): number => {
 }
 
 /**
+ * Updates the value of the specified key within the `MutableHashMap` if it exists.
+ *
  * @since 1.0.0
  * @category mutations
  */
-export const update = <K, V>(k: K, f: (v: V) => V) =>
+export const replace = <K, V>(k: K, f: (v: V) => V) =>
   (self: MutableHashMap<K, V>): MutableHashMap<K, V> => {
     const hash = Equal.hash(k)
     const arr = self.backingMap.get(hash)
