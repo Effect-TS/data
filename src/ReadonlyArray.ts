@@ -621,14 +621,16 @@ export const insertAt = <B>(i: number, a: B) =>
  * @category mutations
  * @since 1.0.0
  */
-export const update = <B>(i: number, b: B): (<A>(self: ReadonlyArray<A>) => ReadonlyArray<A | B>) =>
-  modify(i, () => b)
+export const replace = <B>(
+  i: number,
+  b: B
+): (<A>(self: ReadonlyArray<A>) => ReadonlyArray<A | B>) => modify(i, () => b)
 
 /**
  * @category mutations
  * @since 1.0.0
  */
-export const updateOption = <B>(
+export const replaceOption = <B>(
   i: number,
   b: B
 ): (<A>(self: ReadonlyArray<A>) => Option<ReadonlyArray<A | B>>) => modifyOption(i, () => b)

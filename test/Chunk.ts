@@ -17,14 +17,14 @@ describe.concurrent("Chunk", () => {
     expect(pipe(C.make(1, 2, 3), C.modify(0, (n: number) => n * 2))).toEqual(C.make(2, 2, 3))
   })
 
-  it("updateOption", () => {
-    expect(pipe(C.empty, C.updateOption(0, 2))).toEqual(O.none)
-    expect(pipe(C.make(1, 2, 3), C.updateOption(0, 2))).toEqual(O.some(C.make(2, 2, 3)))
+  it("replaceOption", () => {
+    expect(pipe(C.empty, C.replaceOption(0, 2))).toEqual(O.none)
+    expect(pipe(C.make(1, 2, 3), C.replaceOption(0, 2))).toEqual(O.some(C.make(2, 2, 3)))
   })
 
-  it("update", () => {
-    expect(pipe(C.empty, C.update(0, 2))).toEqual(C.empty)
-    expect(pipe(C.make(1, 2, 3), C.update(0, 2))).toEqual(C.make(2, 2, 3))
+  it("replace", () => {
+    expect(pipe(C.empty, C.replace(0, 2))).toEqual(C.empty)
+    expect(pipe(C.make(1, 2, 3), C.replace(0, 2))).toEqual(C.make(2, 2, 3))
   })
 
   it("remove", () => {
