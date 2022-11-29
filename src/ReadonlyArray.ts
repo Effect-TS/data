@@ -893,7 +893,7 @@ export const modifyNonEmptyHead = <A, B>(f: (a: A) => B) =>
  * @category mutations
  * @since 1.0.0
  */
-export const updateNonEmptyHead = <B>(
+export const setNonEmptyHead = <B>(
   b: B
 ): (<A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A | B>) =>
   modifyNonEmptyHead(() => b)
@@ -914,7 +914,7 @@ export const modifyNonEmptyLast = <A, B>(f: (a: A) => B) =>
  * @category mutations
  * @since 1.0.0
  */
-export const updateNonEmptyLast = <B>(
+export const setNonEmptyLast = <B>(
   b: B
 ): (<A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A | B>) =>
   modifyNonEmptyLast(() => b)

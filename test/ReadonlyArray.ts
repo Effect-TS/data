@@ -158,16 +158,16 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(pipe(["a", "b", "c"], RA.modifyNonEmptyLast(f)), ["a", "b", "c!"])
   })
 
-  it("updateNonEmptyHead", () => {
-    deepStrictEqual(pipe(RA.make("a"), RA.updateNonEmptyHead("d")), ["d"])
-    deepStrictEqual(pipe(RA.make("a", "b"), RA.updateNonEmptyHead("d")), ["d", "b"])
-    deepStrictEqual(pipe(RA.make("a", "b", "c"), RA.updateNonEmptyHead("d")), ["d", "b", "c"])
+  it("setNonEmptyHead", () => {
+    deepStrictEqual(pipe(RA.make("a"), RA.setNonEmptyHead("d")), ["d"])
+    deepStrictEqual(pipe(RA.make("a", "b"), RA.setNonEmptyHead("d")), ["d", "b"])
+    deepStrictEqual(pipe(RA.make("a", "b", "c"), RA.setNonEmptyHead("d")), ["d", "b", "c"])
   })
 
-  it("updateNonEmptyLast", () => {
-    deepStrictEqual(pipe(RA.make("a"), RA.updateNonEmptyLast("d")), ["d"])
-    deepStrictEqual(pipe(RA.make("a", "b"), RA.updateNonEmptyLast("d")), ["a", "d"])
-    deepStrictEqual(pipe(RA.make("a", "b", "c"), RA.updateNonEmptyLast("d")), ["a", "b", "d"])
+  it("setNonEmptyLast", () => {
+    deepStrictEqual(pipe(RA.make("a"), RA.setNonEmptyLast("d")), ["d"])
+    deepStrictEqual(pipe(RA.make("a", "b"), RA.setNonEmptyLast("d")), ["a", "d"])
+    deepStrictEqual(pipe(RA.make("a", "b", "c"), RA.setNonEmptyLast("d")), ["a", "b", "d"])
   })
 
   it("liftEither", () => {
