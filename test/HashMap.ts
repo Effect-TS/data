@@ -240,11 +240,11 @@ describe.concurrent("HashMap", () => {
     deepStrictEqual(HashMap.get(key(2))(result), Option.none)
   })
 
-  it("modify", () => {
+  it("modifyAt", () => {
     const map = HashMap.make([key(0), value("a")], [key(1), value("b")])
     const result = pipe(
       map,
-      HashMap.modify(key(0), (maybe) =>
+      HashMap.modifyAt(key(0), (maybe) =>
         Option.isSome(maybe) ?
           Option.some(value("test")) :
           Option.none)
@@ -253,6 +253,14 @@ describe.concurrent("HashMap", () => {
     deepStrictEqual(HashMap.get(key(0))(result), Option.some(value("test")))
     deepStrictEqual(HashMap.get(key(1))(result), Option.some(value("b")))
     deepStrictEqual(HashMap.get(key(2))(result), Option.none)
+
+    deepStrictEqual(
+      HashMap.get(key(0))(pipe(
+        map,
+        HashMap.modifyAt(key(0), (): Option.Option<Value> => Option.none)
+      )),
+      Option.none
+    )
   })
 
   it("modifyHash", () => {
@@ -343,16 +351,16 @@ describe.concurrent("HashMap", () => {
     )
   })
 
-  it("replace", () => {
+  it("modify", () => {
     const map = HashMap.make([key(0), value("a")], [key(1), value("b")])
-    const result = pipe(map, HashMap.replace(key(0), ({ s }) => value(`${s}-${s}`)))
+    const result = pipe(map, HashMap.modify(key(0), ({ s }) => value(`${s}-${s}`)))
 
     deepStrictEqual(HashMap.get(key(0))(result), Option.some(value("a-a")))
     deepStrictEqual(HashMap.get(key(1))(result), Option.some(value("b")))
     deepStrictEqual(HashMap.get(key(2))(result), Option.none)
 
     deepStrictEqual(
-      HashMap.get(key(2))(pipe(map, HashMap.replace(key(2), ({ s }) => value(`${s}-${s}`)))),
+      HashMap.get(key(2))(pipe(map, HashMap.modify(key(2), ({ s }) => value(`${s}-${s}`)))),
       Option.none
     )
   })

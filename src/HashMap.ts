@@ -186,24 +186,22 @@ export const mutate: <K, V>(
 ) => HashMap<K, V> = HM.mutate
 
 /**
- * Alter the value of the specified key in the `HashMap` using the specified
+ * Set or remove the specified key in the `HashMap` using the specified
  * update function. The value of the specified key will be computed using the
  * provided hash.
  *
  * The update function will be invoked with the current value of the key if it
  * exists, or `None` if no such value exists.
  *
- * This function will always either update or insert a value into the `HashMap`.
- *
  * @since 1.0.0
  * @category mutations
  */
-export const modify: <K, V>(
+export const modifyAt: <K, V>(
   key: K,
   f: (v: Option<V>) => Option<V>
 ) => (
   self: HashMap<K, V>
-) => HashMap<K, V> = HM.modify
+) => HashMap<K, V> = HM.modifyAt
 
 /**
  * Alter the value of the specified key in the `HashMap` using the specified
@@ -232,12 +230,12 @@ export const modifyHash: <K, V>(
  * @since 1.0.0
  * @category mutations
  */
-export const replace: <K, V>(
+export const modify: <K, V>(
   key: K,
   f: (v: V) => V
 ) => (
   self: HashMap<K, V>
-) => HashMap<K, V> = HM.replace
+) => HashMap<K, V> = HM.modify
 
 /**
  * Performs a union of this `HashMap` and that `HashMap`.

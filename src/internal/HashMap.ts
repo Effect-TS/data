@@ -255,7 +255,7 @@ export function hasHash<K, V>(key: K, hash: number) {
 /** @internal */
 export function set<K, V>(key: K, value: V) {
   return (self: HM.HashMap<K, V>): HM.HashMap<K, V> => {
-    return pipe(self, modify(key, () => Option.some(value)))
+    return pipe(self, modifyAt(key, () => Option.some(value)))
   }
 }
 
@@ -319,9 +319,8 @@ export function mutate<K, V>(f: (self: HM.HashMap<K, V>) => void) {
 }
 
 /** @internal */
-export function modify<K, V>(key: K, f: Node.UpdateFn<V>) {
-  return (self: HM.HashMap<K, V>): HM.HashMap<K, V> => modifyHash(key, Equal.hash(key), f)(self)
-}
+export const modifyAt = <K, V>(key: K, f: Node.UpdateFn<V>) =>
+  (self: HM.HashMap<K, V>): HM.HashMap<K, V> => modifyHash(key, Equal.hash(key), f)(self)
 
 /** @internal */
 export function modifyHash<K, V>(key: K, hash: number, f: Node.UpdateFn<V>) {
@@ -342,9 +341,9 @@ export function modifyHash<K, V>(key: K, hash: number, f: Node.UpdateFn<V>) {
 }
 
 /** @internal */
-export function replace<K, V>(key: K, f: (v: V) => V) {
+export function modify<K, V>(key: K, f: (v: V) => V) {
   return (self: HM.HashMap<K, V>): HM.HashMap<K, V> => {
-    return pipe(self, modify(key, (maybe) => pipe(maybe, Option.map(f))))
+    return pipe(self, modifyAt(key, (maybe) => pipe(maybe, Option.map(f))))
   }
 }
 
@@ -362,7 +361,7 @@ export function union<K1, V1>(that: HM.HashMap<K1, V1>) {
 /** @internal */
 export function remove<K>(key: K) {
   return <V>(self: HM.HashMap<K, V>): HM.HashMap<K, V> => {
-    return modify<K, V>(key, () => Option.none)(self)
+    return modifyAt<K, V>(key, () => Option.none)(self)
   }
 }
 
