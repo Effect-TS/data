@@ -101,7 +101,7 @@
     "rimraf": "^3.0.2",
     "ts-node": "^10.9.1",
     "tslint": "^6.1.3",
-    "tsplus-gen": "^0.1.4",
+    "tsplus-gen": "^0.2.20",
     "typescript": "^4.9.3",
     "ultra-runner": "^3.10.5",
     "vite": "^3.2.5",
