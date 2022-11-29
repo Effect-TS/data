@@ -4,11 +4,16 @@
     "baseDir": "src",
     "tsconfig": "tsconfig.base.json",
     "paths": ["!**/internal/**"],
-    "staticPrefixes": ["make", "from", "unsafeFrom"]
+    "staticPrefixes": ["make", "from", "unsafeFrom"],
+    "getterNamespaces": ["fp-ts/data", "ReadonlyArray"]
   },
   "namespaces": [
     {
-      "name": "fp-ts/data"
+      "name": "fp-ts/data",
+      "type": {
+        "include": true,
+        "includeCompanion": true
+      }
     },
     {
       "name": "ReadonlyArray"
