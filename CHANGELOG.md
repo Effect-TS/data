@@ -1,5 +1,35 @@
 # @fp-ts/data
 
+## 0.0.18
+
+### Patch Changes
+
+- [#126](https://github.com/fp-ts/data/pull/126) [`da6f154`](https://github.com/fp-ts/data/commit/da6f1542d0cf10d6844d1845555f5242fcc7c6c7) Thanks [@gcanti](https://github.com/gcanti)! - HashMap: rename update to replace to align with /optic
+
+- [#126](https://github.com/fp-ts/data/pull/126) [`1a8688d`](https://github.com/fp-ts/data/commit/1a8688de07f3c6bbd4adc97a55d8c0b271b1ede3) Thanks [@gcanti](https://github.com/gcanti)! - add TraversableFilterable typeclass
+
+- [#126](https://github.com/fp-ts/data/pull/126) [`00a501f`](https://github.com/fp-ts/data/commit/00a501fe7629233d62fd8d1032ca87849534b408) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: rename modifyAt to modify, updateAt to update (API uniformity)
+
+- [#126](https://github.com/fp-ts/data/pull/126) [`7502977`](https://github.com/fp-ts/data/commit/7502977d485d140a14306c5d3d19ff3583bb156b) Thanks [@gcanti](https://github.com/gcanti)! - HashMap / MutableHashMap: rename modify to modifyAt to align with /optic
+
+- [#126](https://github.com/fp-ts/data/pull/126) [`018d628`](https://github.com/fp-ts/data/commit/018d628dab23fb00ba7eae7a15a2fdf7793e88cf) Thanks [@gcanti](https://github.com/gcanti)! - MutableHashMap: rename update to replace to align with /optic
+
+- [#126](https://github.com/fp-ts/data/pull/126) [`2578beb`](https://github.com/fp-ts/data/commit/2578beb4e3cb04b05ed4ea71d057e41ad8a0b747) Thanks [@gcanti](https://github.com/gcanti)! - add Compactable typeclass
+
+- [#126](https://github.com/fp-ts/data/pull/126) [`d691717`](https://github.com/fp-ts/data/commit/d691717c1224175e31cdb8530e1b825e0b478430) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray, List, Chunk: get, remove, update, updateOption, modify, modifyOption
+
+- [#126](https://github.com/fp-ts/data/pull/126) [`9ab8d14`](https://github.com/fp-ts/data/commit/9ab8d1446219738993f44d5bc542818f9b277b5f) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: rename deleteAt to remove (API uniformity)
+
+- [#126](https://github.com/fp-ts/data/pull/126) [`dcb7d52`](https://github.com/fp-ts/data/commit/dcb7d52c5ec869b3f9273b18e265d69e82f18d96) Thanks [@gcanti](https://github.com/gcanti)! - upgrade to latest @fp-ts/core
+
+- [#126](https://github.com/fp-ts/data/pull/126) [`2391647`](https://github.com/fp-ts/data/commit/2391647956626b68f1148f0efc6af560c61421af) Thanks [@gcanti](https://github.com/gcanti)! - add Filterable typeclass
+
+- [#126](https://github.com/fp-ts/data/pull/126) [`a974276`](https://github.com/fp-ts/data/commit/a9742767eb7c259bdf2f481cd98d918705d5e047) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: rename updateNonEmptyLast to setNonEmptyLast, updateNonEmptyHead to setNonEmptyHead to align with /optic
+
+- [#128](https://github.com/fp-ts/data/pull/128) [`ee26d5b`](https://github.com/fp-ts/data/commit/ee26d5b647cf4215b236f91bb64af0036f37ec7b) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Improve equality
+
+- [#126](https://github.com/fp-ts/data/pull/126) [`d0fd474`](https://github.com/fp-ts/data/commit/d0fd4744552d8b8b663e9cfada665783c6598514) Thanks [@gcanti](https://github.com/gcanti)! - rename update to replace, updateOption to replaceOption to align with /optic
+
 ## 0.0.17
 
 ### Patch Changes
