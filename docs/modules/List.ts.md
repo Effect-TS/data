@@ -41,6 +41,7 @@ Added in v1.0.0
 - [folding](#folding)
   - [reduce](#reduce)
 - [getters](#getters)
+  - [get](#get)
   - [head](#head)
   - [tail](#tail)
 - [instances](#instances)
@@ -72,8 +73,13 @@ Added in v1.0.0
   - [Nil (interface)](#nil-interface)
 - [mutations](#mutations)
   - [concat](#concat)
+  - [modify](#modify)
+  - [modifyOption](#modifyoption)
   - [prepend](#prepend)
   - [prependAll](#prependall)
+  - [remove](#remove)
+  - [replace](#replace)
+  - [replaceOption](#replaceoption)
   - [reverse](#reverse)
 - [partitioning](#partitioning)
   - [splitAt](#splitat)
@@ -253,8 +259,8 @@ Added in v1.0.0
 
 ```ts
 export declare const findFirst: {
-  <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => Option<B>
-  <A>(predicate: Predicate<A>): (self: List<A>) => Option<A>
+  <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => O.Option<B>
+  <A>(predicate: Predicate<A>): (self: List<A>) => O.Option<A>
 }
 ```
 
@@ -351,7 +357,7 @@ Added in v1.0.0
 ```ts
 export declare const traverseFilterMap: <F extends TypeLambda>(
   F: applicative.Applicative<F>
-) => <A, R, O, E, B>(f: (a: A) => Kind<F, R, O, E, Option<B>>) => (self: List<A>) => Kind<F, R, O, E, List<B>>
+) => <A, R, O, E, B>(f: (a: A) => Kind<F, R, O, E, O.Option<B>>) => (self: List<A>) => Kind<F, R, O, E, List<B>>
 ```
 
 Added in v1.0.0
@@ -398,12 +404,24 @@ Added in v1.0.0
 
 # getters
 
+## get
+
+This function provides a safe way to read a value at a particular index from a `List`.
+
+**Signature**
+
+```ts
+export declare const get: (i: number) => <A>(self: List<A>) => O.Option<A>
+```
+
+Added in v1.0.0
+
 ## head
 
 **Signature**
 
 ```ts
-export declare const head: <A>(self: List<A>) => Option<A>
+export declare const head: <A>(self: List<A>) => O.Option<A>
 ```
 
 Added in v1.0.0
@@ -413,7 +431,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const tail: <A>(self: List<A>) => Option<List<A>>
+export declare const tail: <A>(self: List<A>) => O.Option<List<A>>
 ```
 
 Added in v1.0.0
@@ -684,6 +702,29 @@ export declare const concat: <B>(that: List<B>) => <A>(self: List<A>) => List<B 
 
 Added in v1.0.0
 
+## modify
+
+Apply a function to the element at the specified index, creating a new `List`,
+or returning the input if the index is out of bounds.
+
+**Signature**
+
+```ts
+export declare const modify: <A, B>(i: number, f: (a: A) => B) => (self: List<A>) => List<A | B>
+```
+
+Added in v1.0.0
+
+## modifyOption
+
+**Signature**
+
+```ts
+export declare const modifyOption: <A, B>(i: number, f: (a: A) => B) => (self: List<A>) => O.Option<List<A | B>>
+```
+
+Added in v1.0.0
+
 ## prepend
 
 **Signature**
@@ -700,6 +741,42 @@ Added in v1.0.0
 
 ```ts
 export declare const prependAll: <B>(prefix: List<B>) => <A>(self: List<A>) => List<B | A>
+```
+
+Added in v1.0.0
+
+## remove
+
+Delete the element at the specified index, creating a new `Chunk`,
+or returning the input if the index is out of bounds.
+
+**Signature**
+
+```ts
+export declare const remove: (i: number) => <A>(self: List<A>) => List<A>
+```
+
+Added in v1.0.0
+
+## replace
+
+Change the element at the specified index, creating a new `Chunk`,
+or returning the input if the index is out of bounds.
+
+**Signature**
+
+```ts
+export declare const replace: <B>(i: number, b: B) => <A>(self: List<A>) => List<B | A>
+```
+
+Added in v1.0.0
+
+## replaceOption
+
+**Signature**
+
+```ts
+export declare const replaceOption: <B>(i: number, b: B) => <A>(self: List<A>) => O.Option<List<B | A>>
 ```
 
 Added in v1.0.0
@@ -958,7 +1035,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const compact: <A>(self: Iterable<Option<A>>) => List<A>
+export declare const compact: <A>(self: Iterable<O.Option<A>>) => List<A>
 ```
 
 Added in v1.0.0
@@ -980,7 +1057,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const filterMap: <A, B>(f: (a: A) => Option<B>) => (self: Iterable<A>) => List<B>
+export declare const filterMap: <A, B>(f: (a: A) => O.Option<B>) => (self: Iterable<A>) => List<B>
 ```
 
 Added in v1.0.0

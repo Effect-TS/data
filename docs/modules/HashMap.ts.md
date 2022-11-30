@@ -46,13 +46,13 @@ Added in v1.0.0
   - [beginMutation](#beginmutation)
   - [endMutation](#endmutation)
   - [modify](#modify)
+  - [modifyAt](#modifyat)
   - [modifyHash](#modifyhash)
   - [mutate](#mutate)
   - [remove](#remove)
   - [removeMany](#removemany)
   - [set](#set)
   - [union](#union)
-  - [update](#update)
 - [refinements](#refinements)
   - [isHashMap](#ishashmap)
 - [sequencing](#sequencing)
@@ -393,19 +393,29 @@ Added in v1.0.0
 
 ## modify
 
-Alter the value of the specified key in the `HashMap` using the specified
+Updates the value of the specified key within the `HashMap` if it exists.
+
+**Signature**
+
+```ts
+export declare const modify: <K, V>(key: K, f: (v: V) => V) => (self: HashMap<K, V>) => HashMap<K, V>
+```
+
+Added in v1.0.0
+
+## modifyAt
+
+Set or remove the specified key in the `HashMap` using the specified
 update function. The value of the specified key will be computed using the
 provided hash.
 
 The update function will be invoked with the current value of the key if it
 exists, or `None` if no such value exists.
 
-This function will always either update or insert a value into the `HashMap`.
-
 **Signature**
 
 ```ts
-export declare const modify: <K, V>(key: K, f: (v: Option<V>) => Option<V>) => (self: HashMap<K, V>) => HashMap<K, V>
+export declare const modifyAt: <K, V>(key: K, f: (v: Option<V>) => Option<V>) => (self: HashMap<K, V>) => HashMap<K, V>
 ```
 
 Added in v1.0.0
@@ -493,18 +503,6 @@ Performs a union of this `HashMap` and that `HashMap`.
 export declare const union: <K1, V1>(
   that: HashMap<K1, V1>
 ) => <K0, V0>(self: HashMap<K0, V0>) => HashMap<K1 | K0, V1 | V0>
-```
-
-Added in v1.0.0
-
-## update
-
-Updates the value of the specified key within the `HashMap` if it exists.
-
-**Signature**
-
-```ts
-export declare const update: <K, V>(key: K, f: (v: V) => V) => (self: HashMap<K, V>) => HashMap<K, V>
 ```
 
 Added in v1.0.0

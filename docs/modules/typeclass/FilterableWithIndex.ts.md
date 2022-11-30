@@ -1,6 +1,6 @@
 ---
 title: typeclass/FilterableWithIndex.ts
-nav_order: 41
+nav_order: 43
 parent: Modules
 ---
 
@@ -50,7 +50,7 @@ Returns a default `filterMap` implementation.
 ```ts
 export declare const filterMap: <F extends TypeLambda, I>(
   F: FilterableWithIndex<F, I>
-) => <A, B>(f: (a: A) => any) => <R, O, E>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, B>
+) => <A, B>(f: (a: A) => O.Option<B>) => <R, O, E>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, B>
 ```
 
 Added in v1.0.0
@@ -66,7 +66,7 @@ export declare const filterMapWithIndexComposition: <F extends TypeLambda, G ext
   F: Covariant<F>,
   G: FilterableWithIndex<G, I>
 ) => <A, B>(
-  f: (a: A, i: I) => Option<B>
+  f: (a: A, i: I) => O.Option<B>
 ) => <FR, FO, FE, GR, GO, GE>(
   self: Kind<F, FR, FO, FE, Kind<G, GR, GO, GE, A>>
 ) => Kind<F, FR, FO, FE, Kind<G, GR, GO, GE, B>>

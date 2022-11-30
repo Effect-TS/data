@@ -137,30 +137,32 @@ Added in v1.0.0
   - [append](#append)
   - [appendAll](#appendall)
   - [appendAllNonEmpty](#appendallnonempty)
-  - [deleteAt](#deleteat)
   - [difference](#difference)
   - [insertAt](#insertat)
   - [intersection](#intersection)
   - [intersperse](#intersperse)
   - [intersperseNonEmpty](#interspersenonempty)
-  - [modifyAt](#modifyat)
+  - [modify](#modify)
   - [modifyNonEmptyHead](#modifynonemptyhead)
   - [modifyNonEmptyLast](#modifynonemptylast)
+  - [modifyOption](#modifyoption)
   - [prepend](#prepend)
   - [prependAll](#prependall)
   - [prependAllNonEmpty](#prependallnonempty)
+  - [remove](#remove)
+  - [replace](#replace)
+  - [replaceOption](#replaceoption)
   - [reverse](#reverse)
   - [rotate](#rotate)
   - [rotateNonEmpty](#rotatenonempty)
+  - [setNonEmptyHead](#setnonemptyhead)
+  - [setNonEmptyLast](#setnonemptylast)
   - [union](#union)
   - [unionNonEmpty](#unionnonempty)
   - [uniq](#uniq)
   - [uniqNonEmpty](#uniqnonempty)
   - [unzip](#unzip)
   - [unzipNonEmpty](#unzipnonempty)
-  - [updateAt](#updateat)
-  - [updateNonEmptyHead](#updatenonemptyhead)
-  - [updateNonEmptyLast](#updatenonemptylast)
   - [zip](#zip)
   - [zipNonEmpty](#zipnonempty)
   - [zipNonEmptyWith](#zipnonemptywith)
@@ -855,7 +857,7 @@ Added in v1.0.0
 
 ## get
 
-This function provides a safe way to read a value at a particular index from a `ReadonlyArray`
+This function provides a safe way to read a value at a particular index from a `ReadonlyArray`.
 
 **Signature**
 
@@ -1585,18 +1587,6 @@ export declare function appendAllNonEmpty<B>(
 
 Added in v1.0.0
 
-## deleteAt
-
-Delete the element at the specified index, creating a new `ReadonlyArray`, or returning `None` if the index is out of bounds.
-
-**Signature**
-
-```ts
-export declare const deleteAt: (i: number) => <A>(self: readonly A[]) => Option<readonly A[]>
-```
-
-Added in v1.0.0
-
 ## difference
 
 Creates a `ReadonlyArray` of values not included in the other given `ReadonlyArray` using a `Eq` for equality
@@ -1661,15 +1651,15 @@ export declare const intersperseNonEmpty: <B>(
 
 Added in v1.0.0
 
-## modifyAt
+## modify
 
-Apply a function to the element at the specified index, creating a new `ReadonlyArray`, or returning `None` if the index is out
-of bounds.
+Apply a function to the element at the specified index, creating a new `ReadonlyArray`,
+or returning the input if the index is out of bounds.
 
 **Signature**
 
 ```ts
-export declare const modifyAt: <A, B>(i: number, f: (a: A) => B) => (self: readonly A[]) => Option<readonly (A | B)[]>
+export declare const modify: <A, B>(i: number, f: (a: A) => B) => (self: readonly A[]) => readonly (A | B)[]
 ```
 
 Added in v1.0.0
@@ -1698,6 +1688,19 @@ Apply a function to the last element, creating a new `NonEmptyReadonlyArray`.
 export declare const modifyNonEmptyLast: <A, B>(
   f: (a: A) => B
 ) => (self: readonly [A, ...A[]]) => readonly [A | B, ...(A | B)[]]
+```
+
+Added in v1.0.0
+
+## modifyOption
+
+**Signature**
+
+```ts
+export declare const modifyOption: <A, B>(
+  i: number,
+  f: (a: A) => B
+) => (self: readonly A[]) => Option<readonly (A | B)[]>
 ```
 
 Added in v1.0.0
@@ -1739,6 +1742,42 @@ export declare function prependAllNonEmpty<B>(
 
 Added in v1.0.0
 
+## remove
+
+Delete the element at the specified index, creating a new `ReadonlyArray`,
+or returning the input if the index is out of bounds.
+
+**Signature**
+
+```ts
+export declare const remove: (i: number) => <A>(self: readonly A[]) => readonly A[]
+```
+
+Added in v1.0.0
+
+## replace
+
+Change the element at the specified index, creating a new `ReadonlyArray`,
+or returning the input if the index is out of bounds.
+
+**Signature**
+
+```ts
+export declare const replace: <B>(i: number, b: B) => <A>(self: readonly A[]) => readonly (B | A)[]
+```
+
+Added in v1.0.0
+
+## replaceOption
+
+**Signature**
+
+```ts
+export declare const replaceOption: <B>(i: number, b: B) => <A>(self: readonly A[]) => Option<readonly (B | A)[]>
+```
+
+Added in v1.0.0
+
 ## reverse
 
 Reverse a `ReadonlyArray`, creating a new `ReadonlyArray`.
@@ -1771,6 +1810,30 @@ Rotate a `NonEmptyReadonlyArray` by `n` steps.
 
 ```ts
 export declare const rotateNonEmpty: (n: number) => <A>(self: readonly [A, ...A[]]) => readonly [A, ...A[]]
+```
+
+Added in v1.0.0
+
+## setNonEmptyHead
+
+Change the head, creating a new `NonEmptyReadonlyArray`.
+
+**Signature**
+
+```ts
+export declare const setNonEmptyHead: <B>(b: B) => <A>(self: readonly [A, ...A[]]) => readonly [B | A, ...(B | A)[]]
+```
+
+Added in v1.0.0
+
+## setNonEmptyLast
+
+Change the last element, creating a new `NonEmptyReadonlyArray`.
+
+**Signature**
+
+```ts
+export declare const setNonEmptyLast: <B>(b: B) => <A>(self: readonly [A, ...A[]]) => readonly [B | A, ...(B | A)[]]
 ```
 
 Added in v1.0.0
@@ -1844,42 +1907,6 @@ Added in v1.0.0
 export declare const unzipNonEmpty: <A, B>(
   self: readonly [readonly [A, B], ...(readonly [A, B])[]]
 ) => readonly [readonly [A, ...A[]], readonly [B, ...B[]]]
-```
-
-Added in v1.0.0
-
-## updateAt
-
-Change the element at the specified index, creating a new `ReadonlyArray`, or returning `None` if the index is out of bounds.
-
-**Signature**
-
-```ts
-export declare const updateAt: <B>(i: number, b: B) => <A>(self: readonly A[]) => Option<readonly (B | A)[]>
-```
-
-Added in v1.0.0
-
-## updateNonEmptyHead
-
-Change the head, creating a new `NonEmptyReadonlyArray`.
-
-**Signature**
-
-```ts
-export declare const updateNonEmptyHead: <B>(b: B) => <A>(self: readonly [A, ...A[]]) => readonly [B | A, ...(B | A)[]]
-```
-
-Added in v1.0.0
-
-## updateNonEmptyLast
-
-Change the last element, creating a new `NonEmptyReadonlyArray`.
-
-**Signature**
-
-```ts
-export declare const updateNonEmptyLast: <B>(b: B) => <A>(self: readonly [A, ...A[]]) => readonly [B | A, ...(B | A)[]]
 ```
 
 Added in v1.0.0
