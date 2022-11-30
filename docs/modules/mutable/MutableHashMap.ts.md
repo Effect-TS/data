@@ -25,9 +25,9 @@ Added in v1.0.0
   - [MutableHashMap (interface)](#mutablehashmap-interface)
 - [mutations](#mutations)
   - [modify](#modify)
+  - [modifyAt](#modifyat)
   - [remove](#remove)
   - [set](#set)
-  - [update](#update)
 - [symbol](#symbol)
   - [TypeId (type alias)](#typeid-type-alias)
 
@@ -127,10 +127,25 @@ Added in v1.0.0
 
 ## modify
 
+Updates the value of the specified key within the `MutableHashMap` if it exists.
+
 **Signature**
 
 ```ts
-export declare const modify: <K, V>(
+export declare const modify: <K, V>(k: K, f: (v: V) => V) => (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+```
+
+Added in v1.0.0
+
+## modifyAt
+
+Set or remove the specified key in the `MutableHashMap` using the specified
+update function.
+
+**Signature**
+
+```ts
+export declare const modifyAt: <K, V>(
   key: K,
   f: (value: O.Option<V>) => O.Option<V>
 ) => (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
@@ -154,16 +169,6 @@ Added in v1.0.0
 
 ```ts
 export declare const set: <K, V>(k: K, v: V) => (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
-```
-
-Added in v1.0.0
-
-## update
-
-**Signature**
-
-```ts
-export declare const update: <K, V>(k: K, f: (v: V) => V) => (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
 ```
 
 Added in v1.0.0

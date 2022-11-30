@@ -91,8 +91,13 @@ Added in v1.0.0
   - [drop](#drop)
   - [dropRight](#dropright)
   - [dropWhile](#dropwhile)
+  - [modify](#modify)
+  - [modifyOption](#modifyoption)
   - [prepend](#prepend)
   - [prependAllNonEmpty](#prependallnonempty)
+  - [remove](#remove)
+  - [replace](#replace)
+  - [replaceOption](#replaceoption)
   - [take](#take)
 - [sequencing](#sequencing)
   - [flatMap](#flatmap)
@@ -359,12 +364,12 @@ Added in v1.0.0
 
 ## get
 
-Gets the `n`-th element in the chunk if it exists
+This function provides a safe way to read a value at a particular index from a `Chunk`.
 
 **Signature**
 
 ```ts
-export declare const get: (n: number) => <A>(self: Chunk<A>) => Option<A>
+export declare const get: (i: number) => <A>(self: Chunk<A>) => Option<A>
 ```
 
 Added in v1.0.0
@@ -1009,6 +1014,29 @@ export declare const dropWhile: <A>(f: (a: A) => boolean) => (self: Chunk<A>) =>
 
 Added in v1.0.0
 
+## modify
+
+Apply a function to the element at the specified index, creating a new `Chunk`,
+or returning the input if the index is out of bounds.
+
+**Signature**
+
+```ts
+export declare const modify: <A, B>(i: number, f: (a: A) => B) => (self: Chunk<A>) => Chunk<A | B>
+```
+
+Added in v1.0.0
+
+## modifyOption
+
+**Signature**
+
+```ts
+export declare const modifyOption: <A, B>(i: number, f: (a: A) => B) => (self: Chunk<A>) => Option<Chunk<A | B>>
+```
+
+Added in v1.0.0
+
 ## prepend
 
 Prepends the value to the chunk
@@ -1028,6 +1056,42 @@ Added in v1.0.0
 ```ts
 export declare function prependAllNonEmpty<B>(that: NonEmptyChunk<B>): <A>(self: Chunk<A>) => NonEmptyChunk<A | B>
 export declare function prependAllNonEmpty<B>(that: Chunk<B>): <A>(self: NonEmptyChunk<A>) => NonEmptyChunk<A | B>
+```
+
+Added in v1.0.0
+
+## remove
+
+Delete the element at the specified index, creating a new `Chunk`,
+or returning the input if the index is out of bounds.
+
+**Signature**
+
+```ts
+export declare const remove: (i: number) => <A>(self: Chunk<A>) => Chunk<A>
+```
+
+Added in v1.0.0
+
+## replace
+
+Change the element at the specified index, creating a new `Chunk`,
+or returning the input if the index is out of bounds.
+
+**Signature**
+
+```ts
+export declare const replace: <B>(i: number, b: B) => <A>(self: Chunk<A>) => Chunk<B | A>
+```
+
+Added in v1.0.0
+
+## replaceOption
+
+**Signature**
+
+```ts
+export declare const replaceOption: <B>(i: number, b: B) => <A>(self: Chunk<A>) => Option<Chunk<B | A>>
 ```
 
 Added in v1.0.0

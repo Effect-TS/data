@@ -16,6 +16,7 @@ Added in v1.0.0
   - [boolean](#boolean)
   - [chunk](#chunk)
   - [chunkPatch](#chunkpatch)
+  - [compactable](#compactable)
   - [context](#context)
   - [contextPatch](#contextpatch)
   - [covariantWithIndex](#covariantwithindex)
@@ -23,6 +24,7 @@ Added in v1.0.0
   - [duration](#duration)
   - [either](#either)
   - [equal](#equal)
+  - [filterable](#filterable)
   - [filterableWithIndex](#filterablewithindex)
   - [function](#function)
   - [gen](#gen)
@@ -55,6 +57,7 @@ Added in v1.0.0
   - [sortedSet](#sortedset)
   - [string](#string)
   - [these](#these)
+  - [traversableFilterable](#traversablefilterable)
   - [weakIterableMap](#weakiterablemap)
 
 ---
@@ -87,6 +90,16 @@ Added in v1.0.0
 
 ```ts
 export declare const chunkPatch: typeof chunkPatch
+```
+
+Added in v1.0.0
+
+## compactable
+
+**Signature**
+
+```ts
+export declare const compactable: typeof compactable
 ```
 
 Added in v1.0.0
@@ -157,6 +170,16 @@ Added in v1.0.0
 
 ```ts
 export declare const equal: typeof equal
+```
+
+Added in v1.0.0
+
+## filterable
+
+**Signature**
+
+```ts
+export declare const filterable: typeof filterable
 ```
 
 Added in v1.0.0
@@ -477,6 +500,16 @@ Added in v1.0.0
 
 ```ts
 export declare const these: typeof these
+```
+
+Added in v1.0.0
+
+## traversableFilterable
+
+**Signature**
+
+```ts
+export declare const traversableFilterable: typeof traversableFilterable
 ```
 
 Added in v1.0.0
