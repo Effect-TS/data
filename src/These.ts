@@ -40,8 +40,9 @@ import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
 import type { NonEmptyChunk } from "@fp-ts/data/Chunk"
 import * as chunk from "@fp-ts/data/Chunk"
-import type { Either, Left, Right } from "@fp-ts/data/Either"
+import type { Either } from "@fp-ts/data/Either"
 import { equals } from "@fp-ts/data/Equal"
+import type * as Equal from "@fp-ts/data/Equal"
 import type { LazyArg } from "@fp-ts/data/Function"
 import { constNull, constUndefined, pipe } from "@fp-ts/data/Function"
 import * as either from "@fp-ts/data/internal/Either"
@@ -52,10 +53,51 @@ import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 import * as Gen from "@fp-ts/data/typeclass/Gen"
 
 /**
+ * @category models
+ * @since 1.0.0
+ */
+export interface TheseMethods extends Equal.Equal {
+  map<E, A, B>(this: Either<E, A>, f: (a: A) => B): These<E, B>
+  map<E, A, B>(this: These<E, A>, f: (a: A) => B): These<E, B>
+
+  isLeft<E, A>(this: Either<E, A>): this is Left<E>
+  isLeft<E, A>(this: These<E, A>): this is Left<E>
+
+  isRight<E, A>(this: Either<E, A>): this is Right<A>
+  isRight<E, A>(this: These<E, A>): this is Right<A>
+
+  isBoth<E, A>(this: These<E, A>): this is Both<E, A>
+
+  getLeft<E, A>(this: Either<E, A>): Option<E>
+  getLeft<E, A>(this: These<E, A>): Option<E>
+
+  getRight<E, A>(this: Either<E, A>): Option<A>
+  getRight<E, A>(this: These<E, A>): Option<A>
+}
+
+/**
+ * @category models
+ * @since 1.0.0
+ */
+export interface Left<E> extends Equal.Equal, TheseMethods {
+  readonly _tag: "Left"
+  readonly left: E
+}
+
+/**
+ * @category models
+ * @since 1.0.0
+ */
+export interface Right<A> extends Equal.Equal, TheseMethods {
+  readonly _tag: "Right"
+  readonly right: A
+}
+
+/**
  * @category model
  * @since 1.0.0
  */
-export type Both<E, A> = {
+export interface Both<E, A> extends Equal.Equal, TheseMethods {
   readonly _tag: "Both"
   readonly left: E
   readonly right: A
@@ -65,7 +107,7 @@ export type Both<E, A> = {
  * @category model
  * @since 1.0.0
  */
-export type These<E, A> = Either<E, A> | Both<E, A>
+export type These<E, A> = Left<E> | Right<A> | Both<E, A>
 
 /**
  * @category model
@@ -93,13 +135,13 @@ export interface ValidatedTypeLambda extends TypeLambda {
  * @category constructors
  * @since 1.0.0
  */
-export const left = <E>(left: E): These<E, never> => ({ _tag: "Left", left })
+export const left: <E>(left: E) => These<E, never> = these.left
 
 /**
  * @category constructors
  * @since 1.0.0
  */
-export const right = <A>(right: A): These<never, A> => ({ _tag: "Right", right })
+export const right: <A>(right: A) => These<never, A> = these.right
 
 /**
  * Alias of `right`.
@@ -113,11 +155,7 @@ export const of = right
  * @category constructors
  * @since 1.0.0
  */
-export const both = <E, A>(left: E, right: A): These<E, A> => ({
-  _tag: "Both",
-  left,
-  right
-})
+export const both: <E, A>(left: E, right: A) => These<E, A> = these.both
 
 /**
  * @category constructors
@@ -293,7 +331,7 @@ export const fromNullable = <E>(onNullable: LazyArg<E>) =>
  * @since 1.0.0
  */
 export const fromEither = <E, A>(self: Either<E, A>): Validated<E, A> =>
-  either.isLeft(self) ? left(chunk.singleton(self.left)) : self
+  self.isLeft() ? left(chunk.singleton(self.left)) : right(self.right)
 
 /**
  * @category conversions
@@ -301,7 +339,13 @@ export const fromEither = <E, A>(self: Either<E, A>): Validated<E, A> =>
  */
 export const toEither = <E, A>(
   onBoth: (e: E, a: A) => Either<E, A>
-) => (self: These<E, A>): Either<E, A> => isBoth(self) ? onBoth(self.left, self.right) : self
+) =>
+  (self: These<E, A>): Either<E, A> =>
+    isBoth(self) ?
+      onBoth(self.left, self.right) :
+      self.isLeft() ?
+      either.left(self.left) :
+      either.right(self.right)
 
 /**
  * @category conversions

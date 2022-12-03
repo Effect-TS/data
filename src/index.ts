@@ -34,6 +34,7 @@ import * as predicate from "@fp-ts/data/Predicate"
 import * as queue from "@fp-ts/data/Queue"
 import * as random from "@fp-ts/data/Random"
 import * as readonlyArray from "@fp-ts/data/ReadonlyArray"
+import * as record from "@fp-ts/data/Record"
 import * as redBlackTree from "@fp-ts/data/RedBlackTree"
 import * as safeEval from "@fp-ts/data/SafeEval"
 import * as sortedMap from "@fp-ts/data/SortedMap"
@@ -198,6 +199,10 @@ export {
    * @since 1.0.0
    */
   readonlyArray,
+  /**
+   * @since 1.0.0
+   */
+  record,
   /**
    * @since 1.0.0
    */

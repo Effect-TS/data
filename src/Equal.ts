@@ -78,50 +78,6 @@ function isDeepEqual(u: unknown): u is Equal {
   return typeof u === "object" && u !== null && symbolEqual in u && symbolHash in u
 }
 
-function compareObject(self: object, that: object) {
-  const selfProto = Object.getPrototypeOf(self)
-  const thatProto = Object.getPrototypeOf(self)
-
-  if (selfProto !== thatProto) {
-    return false
-  }
-
-  if (selfProto !== Object.prototype) {
-    return self === that
-  }
-
-  if ("_tag" in self) {
-    if ("_tag" in that) {
-      if (self["_tag"] !== that["_tag"]) {
-        return false
-      }
-    } else {
-      return false
-    }
-  }
-
-  const keysA = Object.keys(self).sort()
-  const keysB = Object.keys(that).sort()
-
-  if (keysA.length !== keysB.length) {
-    return false
-  }
-
-  if (!equals(keysA, keysB)) {
-    return false
-  }
-
-  for (const ka of keysA) {
-    const va = self[ka]
-    const vb = that[ka]
-    if (!equals(va, vb)) {
-      return false
-    }
-  }
-
-  return true
-}
-
 const compareBothTable = {
   "object": (self: object, that: unknown) => {
     if (self == null || that == null || typeof that !== "object") {
@@ -134,19 +90,19 @@ const compareBothTable = {
         return false
       }
     }
-    const hashSelf = hash(self)
-    const hashThat = hash(that)
-    if (hashSelf !== hashThat) {
-      return false
-    }
     if (isDeepEqual(self)) {
       if (isDeepEqual(that)) {
+        const hashSelf = hash(self)
+        const hashThat = hash(that)
+        if (hashSelf !== hashThat) {
+          return false
+        }
         return self[symbolEqual](that)
       } else {
         return false
       }
     }
-    return compareObject(self, that)
+    return self === that
   },
   "function": (self: Function, that: unknown) => {
     if (isDeepEqual(self)) {
@@ -177,7 +133,11 @@ function compareBoth(self: unknown, that: unknown) {
 /** @internal */
 const pcgr = new PCGRandom()
 
-function hashNumber(n: number) {
+/**
+ * @since 1.0.0
+ * @category hashing
+ */
+export function hashNumber(n: number) {
   if (n !== n || n === Infinity) return 0
   let h = n | 0
   if (h !== n) h ^= n * 0xffffffff
@@ -185,7 +145,11 @@ function hashNumber(n: number) {
   return n
 }
 
-function hashString(str: string): number {
+/**
+ * @since 1.0.0
+ * @category hashing
+ */
+export function hashString(str: string): number {
   let h = 5381,
     i = str.length
   while (i) h = (h * 33) ^ str.charCodeAt(--i)
@@ -194,7 +158,11 @@ function hashString(str: string): number {
 
 const CACHE = new WeakMap()
 
-function hashStructure(o: object): number {
+/**
+ * @since 1.0.0
+ * @category hashing
+ */
+export function hashStructure(o: object): number {
   CACHE.set(o, hashNumber(pcgr.number()))
   const keys = Object.keys(o)
   let h = 12289
@@ -204,7 +172,11 @@ function hashStructure(o: object): number {
   return h
 }
 
-function hashArray(arr: ReadonlyArray<any>): number {
+/**
+ * @since 1.0.0
+ * @category hashing
+ */
+export function hashArray(arr: ReadonlyArray<any>): number {
   let h = 6151
   for (let i = 0; i < arr.length; i++) {
     h = pipe(h, hashCombine(hash(arr[i])))
@@ -212,52 +184,48 @@ function hashArray(arr: ReadonlyArray<any>): number {
   return h
 }
 
-const hashProtoMap = new Map<any, (_: any) => number>([
-  [Array.prototype, hashArray],
-  [Object.prototype, hashStructure]
-])
-
-function hashObject(value: object): number {
-  if (CACHE.has(value)) return CACHE.get(value)
-  let h: number
-  if (isDeepEqual(value)) {
-    h = value[symbolHash]()
-  } else {
-    h = (
-      hashProtoMap.get(Object.getPrototypeOf(value))
-        ?? hashProtoMap.get(Object.prototype)
-    )!(value as any)
-  }
-  CACHE.set(value, h)
-  return h
-}
-
-function hashGeneric<A>(self: A) {
-  if (typeof self === "number") {
-    return hashNumber(self)
-  }
-  if (typeof self === "string") {
-    return hashString(self)
-  }
-  if (typeof self === "symbol") {
-    return hashString(String(self))
-  }
-  if (typeof self === "bigint") {
-    return hashString(self.toString(10))
-  }
-  if (typeof self === "undefined") {
-    return hashString("undefined")
-  }
-  if (typeof self === "object") {
-    if (self == null) {
-      return hashString("null")
+/**
+ * @since 1.0.0
+ * @category hashing
+ */
+export function hashGeneric<A>(self: A): number
+export function hashGeneric(self: unknown): number {
+  switch (typeof self) {
+    case "number": {
+      return hashNumber(self)
     }
-    return hashObject(self)
-  }
-  if (typeof self === "function") {
-    if (CACHE.has(self)) {
-      CACHE.set(self, isDeepEqual(self) ? self[symbolHash]() : hashNumber(pcgr.number()))
+    case "string": {
+      return hashString(self)
     }
-    return CACHE.get(self)!
+    case "symbol": {
+      return hashString(String(self))
+    }
+    case "bigint": {
+      return hashString((self).toString(10))
+    }
+    case "undefined": {
+      return hashString("undefined")
+    }
+    case "function": {
+      if (isDeepEqual(self)) {
+        return self[symbolHash]()
+      }
+      return hashRandom(self)
+    }
+    case "object": {
+      if (self == null) {
+        return hashString("null")
+      }
+      if (Array.isArray(self)) {
+        return hashArray(self)
+      }
+      if (isDeepEqual(self)) {
+        return self[symbolHash]()
+      }
+      return hashRandom(self)
+    }
+    case "boolean": {
+      return hashString(String(self))
+    }
   }
 }

@@ -3,6 +3,7 @@ import * as Differ from "@fp-ts/data/Differ"
 import { equals } from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
 import * as O from "@fp-ts/data/Option"
+import * as R from "@fp-ts/data/Record"
 
 interface A {
   a: number
@@ -23,20 +24,20 @@ describe.concurrent("Context", () => {
   it("adds and retrieve services", () => {
     const Services = pipe(
       Context.empty(),
-      Context.add(A)({ a: 0 }),
-      Context.add(B)({ b: 1 })
+      Context.add(A)(R.record({ a: 0 })),
+      Context.add(B)(R.record({ b: 1 }))
     )
 
     assert.isTrue(pipe(
       Services,
       Context.get(A),
-      equals({ a: 0 })
+      equals(R.record({ a: 0 }))
     ))
 
     assert.isTrue(pipe(
       Services,
       Context.getOption(B),
-      equals(O.some({ b: 1 }))
+      equals(O.some(R.record({ b: 1 })))
     ))
 
     assert.isTrue(pipe(
@@ -56,11 +57,11 @@ describe.concurrent("Context", () => {
   it("prunes services in env and merges", () => {
     const env = pipe(
       Context.empty(),
-      Context.add(A)({ a: 0 }),
+      Context.add(A)(R.record({ a: 0 })),
       Context.merge(pipe(
         Context.empty(),
-        Context.add(B)({ b: 1 }),
-        Context.add(C)({ c: 2 })
+        Context.add(B)(R.record({ b: 1 })),
+        Context.add(C)(R.record({ c: 2 }))
       ))
     )
 
@@ -72,13 +73,13 @@ describe.concurrent("Context", () => {
     assert.isTrue(pipe(
       pruned,
       Context.get(A),
-      equals({ a: 0 })
+      equals(R.record({ a: 0 }))
     ))
 
     assert.isTrue(pipe(
       pruned,
       Context.getOption(B),
-      equals(O.some({ b: 1 }))
+      equals(O.some(R.record({ b: 1 })))
     ))
 
     assert.isTrue(pipe(
@@ -90,7 +91,7 @@ describe.concurrent("Context", () => {
     assert.isTrue(pipe(
       env,
       Context.getOption(C),
-      equals(O.some({ c: 2 }))
+      equals(O.some(R.record({ c: 2 })))
     ))
   })
 

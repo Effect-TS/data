@@ -119,7 +119,7 @@ export const fromOption = <A>(
  */
 export const fromEither = <A>(
   e: Either<unknown, A>
-): ReadonlyArray<A> => (either.isLeft(e) ? empty : [e.right])
+): ReadonlyArray<A> => (e.isLeft() ? empty : [e.right])
 
 /**
  * @category pattern matching
@@ -705,7 +705,7 @@ export const rights = <A>(self: ReadonlyArray<Either<unknown, A>>): ReadonlyArra
   const out: Array<A> = []
   for (let i = 0; i < self.length; i++) {
     const a = self[i]
-    if (either.isRight(a)) {
+    if (a.isRight()) {
       out.push(a.right)
     }
   }
@@ -722,7 +722,7 @@ export const lefts = <E>(self: ReadonlyArray<Either<E, unknown>>): ReadonlyArray
   const out: Array<E> = []
   for (let i = 0; i < self.length; i++) {
     const a = self[i]
-    if (either.isLeft(a)) {
+    if (a.isLeft()) {
       out.push(a.left)
     }
   }
@@ -1474,7 +1474,7 @@ export const separate = <A, B>(
   const left: Array<A> = []
   const right: Array<B> = []
   for (const e of self) {
-    if (either.isLeft(e)) {
+    if (e.isLeft()) {
       left.push(e.left)
     } else {
       right.push(e.right)
@@ -1566,7 +1566,7 @@ export const partitionMapWithIndex = <A, B, C>(f: (a: A, i: number) => Either<B,
     const right: Array<C> = []
     for (let i = 0; i < fa.length; i++) {
       const e = f(fa[i], i)
-      if (either.isLeft(e)) {
+      if (e.isLeft()) {
         left.push(e.left)
       } else {
         right.push(e.right)
@@ -2033,7 +2033,7 @@ export const liftEither = <A extends ReadonlyArray<unknown>, E, B>(
 ) =>
   (...a: A): ReadonlyArray<B> => {
     const e = f(...a)
-    return either.isLeft(e) ? [] : [e.right]
+    return e.isLeft() ? [] : [e.right]
   }
 
 /**

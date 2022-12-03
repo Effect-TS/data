@@ -32,38 +32,21 @@ import * as semiCoproduct from "@fp-ts/core/typeclass/SemiCoproduct"
 import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
 import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
-import { equals } from "@fp-ts/data/Equal"
+import * as Equal from "@fp-ts/data/Equal"
 import type { LazyArg } from "@fp-ts/data/Function"
 import { constNull, constUndefined, identity, pipe } from "@fp-ts/data/Function"
 import * as either from "@fp-ts/data/internal/Either"
 import * as option from "@fp-ts/data/internal/Option"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
+import type * as These from "@fp-ts/data/These"
 import * as Gen from "@fp-ts/data/typeclass/Gen"
 
 /**
  * @category models
  * @since 1.0.0
  */
-export type Left<E> = {
-  readonly _tag: "Left"
-  readonly left: E
-}
-
-/**
- * @category models
- * @since 1.0.0
- */
-export type Right<A> = {
-  readonly _tag: "Right"
-  readonly right: A
-}
-
-/**
- * @category models
- * @since 1.0.0
- */
-export type Either<E, A> = Left<E> | Right<A>
+export type Either<E, A> = These.Left<E> | These.Right<A>
 
 /**
  * @category type lambdas
@@ -114,7 +97,7 @@ export const isEither: (u: unknown) => u is Either<unknown, unknown> = either.is
  * @category guards
  * @since 1.0.0
  */
-export const isLeft: <E, A>(self: Either<E, A>) => self is Left<E> = either.isLeft
+export const isLeft = <E, A>(self: Either<E, A>): self is These.Left<E> => self.isLeft()
 
 /**
  * Returns `true` if the either is an instance of `Right`, `false` otherwise.
@@ -122,7 +105,7 @@ export const isLeft: <E, A>(self: Either<E, A>) => self is Left<E> = either.isLe
  * @category guards
  * @since 1.0.0
  */
-export const isRight: <E, A>(self: Either<E, A>) => self is Right<A> = either.isRight
+export const isRight = <E, A>(self: Either<E, A>): self is These.Right<A> => self.isRight()
 
 /**
  * Returns an effect whose Right is mapped by the specified `f` function.
@@ -667,7 +650,7 @@ export const orElseEither = <E2, B>(
   <E1, A>(self: Either<E1, A>): Either<E2, Either<A, B>> =>
     isLeft(self) ?
       pipe(that, map(right)) :
-      pipe<Right<A>, Either<E2, Either<A, B>>>(self, map(left))
+      pipe<These.Right<A>, Either<E2, Either<A, B>>>(self, map(left))
 
 /**
  * Executes this effect and returns its value, if it succeeds, but otherwise
@@ -1125,7 +1108,7 @@ export const flatMapOption = <A, B, E2>(
  * @since 1.0.0
  */
 export const elem = <B>(b: B) =>
-  <E, A>(self: Either<E, A>): boolean => isLeft(self) ? false : equals(self.right)(b)
+  <E, A>(self: Either<E, A>): boolean => isLeft(self) ? false : Equal.equals(self.right)(b)
 
 /**
  * Returns `false` if `Left` or returns the Either of the application of the given predicate to the `Right` value.

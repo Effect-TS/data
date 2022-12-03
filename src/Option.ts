@@ -35,6 +35,7 @@ import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
 import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
 import type { Either } from "@fp-ts/data/Either"
+import type * as Equal from "@fp-ts/data/Equal"
 import { equals } from "@fp-ts/data/Equal"
 import type { LazyArg } from "@fp-ts/data/Function"
 import { constNull, constUndefined, pipe } from "@fp-ts/data/Function"
@@ -50,7 +51,25 @@ import * as Gen from "@fp-ts/data/typeclass/Gen"
  * @category models
  * @since 1.0.0
  */
-export type None = {
+export interface OptionMethods extends Equal.Equal {
+  map<A, B>(this: Option<A>, f: (a: A) => B): Option<B>
+
+  isSome<A>(this: Option<A>): this is Some<A>
+
+  isNone<A>(this: Option<A>): this is None
+
+  getOrUndefined<A>(this: Option<A>): A | undefined
+
+  getOrNull<A>(this: Option<A>): A | null
+
+  getOrThrow<A>(this: Option<A>, onNone?: LazyArg<unknown>): A
+}
+
+/**
+ * @category models
+ * @since 1.0.0
+ */
+export interface None extends OptionMethods, Equal.Equal {
   readonly _tag: "None"
 }
 
@@ -58,7 +77,7 @@ export type None = {
  * @category models
  * @since 1.0.0
  */
-export type Some<A> = {
+export interface Some<A> extends OptionMethods, Equal.Equal {
   readonly _tag: "Some"
   readonly value: A
 }
@@ -173,13 +192,8 @@ export const liftThrowable = <A extends ReadonlyArray<unknown>, B>(
  * @category interop
  * @since 1.0.0
  */
-export const getOrThrow = (onError: LazyArg<unknown>) =>
-  <A>(self: Option<A>): A => {
-    if (isSome(self)) {
-      return self.value
-    }
-    throw onError()
-  }
+export const getOrThrow = (onNone?: LazyArg<unknown>) =>
+  <A>(self: Option<A>): A => self.getOrThrow(onNone)
 
 /**
  * Returns an effect whose success is mapped by the specified `f` function.
@@ -187,8 +201,7 @@ export const getOrThrow = (onError: LazyArg<unknown>) =>
  * @category mapping
  * @since 1.0.0
  */
-export const map = <A, B>(f: (a: A) => B) =>
-  (self: Option<A>): Option<B> => isNone(self) ? none : some(f(self.value))
+export const map = <A, B>(f: (a: A) => B) => (self: Option<A>): Option<B> => self.map(f)
 
 /**
  * @category mapping
