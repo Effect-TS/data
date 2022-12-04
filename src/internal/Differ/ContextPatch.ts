@@ -1,5 +1,6 @@
 import type { Context, Tag } from "@fp-ts/data/Context"
 import type * as CP from "@fp-ts/data/Differ/ContextPatch"
+import * as Equal from "@fp-ts/data/Equal"
 import { ContextImpl } from "@fp-ts/data/internal/Context"
 import * as L from "@fp-ts/data/internal/List"
 
@@ -86,7 +87,7 @@ export function diff<Input, Output>(
     if (missingServices.has(tag)) {
       const old = missingServices.get(tag)!
       missingServices.delete(tag)
-      if (old !== newService) {
+      if (!Equal.equals(old, newService)) {
         patch = combine(new UpdateService(tag, () => newService))(patch)
       }
     } else {
