@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.20
+
+### Patch Changes
+
+- [#133](https://github.com/fp-ts/data/pull/133) [`df46648`](https://github.com/fp-ts/data/commit/df46648e34dc472c003b83d45854bf53b6daabe6) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Improved structural equality
+
 ## 0.0.19
 
 ### Patch Changes
