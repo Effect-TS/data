@@ -24,6 +24,10 @@ Added in v1.0.0
 - [symbols](#symbols)
   - [symbolEqual](#symbolequal)
   - [symbolHash](#symbolhash)
+- [utils](#utils)
+  - [addTagToPreCheck](#addtagtoprecheck)
+  - [considerByRef](#considerbyref)
+  - [considerProtoByRef](#considerprotobyref)
 
 ---
 
@@ -115,6 +119,38 @@ Added in v1.0.0
 
 ```ts
 export declare const symbolHash: typeof symbolHash
+```
+
+Added in v1.0.0
+
+# utils
+
+## addTagToPreCheck
+
+**Signature**
+
+```ts
+export declare const addTagToPreCheck: <K extends string>(self: K) => void
+```
+
+Added in v1.0.0
+
+## considerByRef
+
+**Signature**
+
+```ts
+export declare const considerByRef: <A extends object>(self: A) => A
+```
+
+Added in v1.0.0
+
+## considerProtoByRef
+
+**Signature**
+
+```ts
+export declare const considerProtoByRef: <A extends object>(self: A) => A
 ```
 
 Added in v1.0.0
