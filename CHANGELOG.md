@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.21
+
+### Patch Changes
+
+- [#136](https://github.com/fp-ts/data/pull/136) [`3a5f1c8`](https://github.com/fp-ts/data/commit/3a5f1c8c21fddac4c3896cf6c52c8446d3639756) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Try catch over possible globals with throwable getters
+
 ## 0.0.20
 
 ### Patch Changes
