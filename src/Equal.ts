@@ -6,14 +6,18 @@ import { PCGRandom } from "@fp-ts/data/Random"
 
 const hashCache = new WeakMap<object, number>()
 const byRefCache = new WeakSet<object>()
-const globals = Reflect.ownKeys(globalThis).flatMap((k) =>
-  typeof globalThis[k] === "function" &&
-    k !== "Array" &&
-    k !== "Object" &&
-    "prototype" in globalThis[k] ?
-    [globalThis[k]["prototype"]] :
-    []
-)
+const globals = Reflect.ownKeys(globalThis).flatMap((k) => {
+  try {
+    return typeof globalThis[k] === "function" &&
+        k !== "Array" &&
+        k !== "Object" &&
+        "prototype" in globalThis[k] ?
+      [globalThis[k]["prototype"]] :
+      []
+  } catch {
+    return []
+  }
+})
 const byRefProtoCache = new WeakSet<object>(globals)
 const circularCache = new WeakMap<object, WeakSet<object>>()
 const shortCircuitTags: Array<string> = ["_tag"]
