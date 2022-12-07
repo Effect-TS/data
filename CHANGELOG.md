@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.22
+
+### Patch Changes
+
+- [#138](https://github.com/fp-ts/data/pull/138) [`4b3c483`](https://github.com/fp-ts/data/commit/4b3c483b2ad43d2885fb53ab47a8bd834871a43f) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Improve dependency ranges
+
 ## 0.0.21
 
 ### Patch Changes
