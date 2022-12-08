@@ -483,7 +483,7 @@ export const prepend = <B>(elem: B) =>
         } else {
           const buffer = new Array(BufferSize)
           buffer[BufferSize - 1] = elem
-          const chunk = take(self.backing.bufferUsed)(
+          const chunk = takeRight(self.backing.bufferUsed)(
             unsafeFromArray(self.backing.buffer as Array<B>)
           )
           return new ChunkImpl({
