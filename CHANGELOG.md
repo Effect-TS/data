@@ -1,5 +1,17 @@
 # @fp-ts/data
 
+## 0.0.23
+
+### Patch Changes
+
+- [#140](https://github.com/fp-ts/data/pull/140) [`48e5e1a`](https://github.com/fp-ts/data/commit/48e5e1aceb23c0c37255e6b8522933cdace90c5b) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Remove Queue in favour of MutableList
+
+- [#140](https://github.com/fp-ts/data/pull/140) [`48e5e1a`](https://github.com/fp-ts/data/commit/48e5e1aceb23c0c37255e6b8522933cdace90c5b) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Remove IterableWeakMap
+
+- [#140](https://github.com/fp-ts/data/pull/140) [`48e5e1a`](https://github.com/fp-ts/data/commit/48e5e1aceb23c0c37255e6b8522933cdace90c5b) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Remove List in favour of Chunk
+
+- [#140](https://github.com/fp-ts/data/pull/140) [`48e5e1a`](https://github.com/fp-ts/data/commit/48e5e1aceb23c0c37255e6b8522933cdace90c5b) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Remove SafeEval in favour of Effect
+
 ## 0.0.22
 
 ### Patch Changes
