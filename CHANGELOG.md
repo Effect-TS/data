@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.24
+
+### Patch Changes
+
+- [#142](https://github.com/fp-ts/data/pull/142) [`dded325`](https://github.com/fp-ts/data/commit/dded325aac6387358947eea98bbbe06bada6fd8d) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Fix Chunk.prepend
+
 ## 0.0.23
 
 ### Patch Changes
