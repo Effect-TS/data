@@ -1,6 +1,6 @@
 ---
 title: typeclass/CovariantWithIndex.ts
-nav_order: 41
+nav_order: 37
 parent: Modules
 ---
 

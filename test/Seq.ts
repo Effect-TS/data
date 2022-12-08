@@ -3,7 +3,6 @@ import * as C from "@fp-ts/data/Chunk"
 import type { Either } from "@fp-ts/data/Either"
 import * as E from "@fp-ts/data/Either"
 import { hole, identity, pipe } from "@fp-ts/data/Function"
-import * as L from "@fp-ts/data/List"
 import * as O from "@fp-ts/data/Option"
 import * as RA from "@fp-ts/data/ReadonlyArray"
 import * as S from "@fp-ts/data/String"
@@ -58,55 +57,6 @@ export const ReadonlyArray: Seq<RA.ReadonlyArrayTypeLambda> = {
   split: hole
 }
 
-export const List: Seq<L.ListTypeLambda> = {
-  fromIterable: L.fromIterable,
-  toIterable: L.toReadonlyArray,
-  take: L.take,
-  reverse: L.reverse,
-  drop: L.drop,
-  prepend: L.prepend,
-  prependAll: L.prependAll,
-  concat: L.concat,
-  splitAt: L.splitAt,
-  head: L.head,
-  tail: L.tail,
-  some: L.some,
-  every: L.every,
-  findFirst: L.findFirst,
-  imap: L.imap,
-  map: L.map,
-  flatMap: L.flatMap,
-  reduce: L.reduce,
-  sort: L.sort,
-  filter: L.filter,
-  compact: L.compact,
-  // TODO
-  get: hole,
-  unsafeGet: hole,
-  size: hole,
-  empty: L.empty(),
-  append: hole,
-  dropRight: hole,
-  dropWhile: hole,
-  filterMap: hole,
-  filterMapWithIndex: hole,
-  filterMapWhile: hole,
-  elem: hole,
-  findFirstIndex: hole,
-  findLastIndex: hole,
-  findLast: hole,
-  isEmpty: hole,
-  isNonEmpty: hole,
-  join: hole,
-  last: hole,
-  mapWithIndex: hole,
-  range: hole,
-  makeBy: hole,
-  splitWhere: hole,
-  split: hole,
-  separate: hole
-}
-
 export const Chunk: Seq<C.ChunkTypeLambda> = {
   fromIterable: C.fromIterable,
   toIterable: C.toReadonlyArray,
@@ -128,7 +78,7 @@ export const Chunk: Seq<C.ChunkTypeLambda> = {
   get: C.get,
   unsafeGet: C.unsafeGet,
   size: C.size,
-  empty: C.empty,
+  empty: C.empty(),
   append: C.append,
   dropRight: C.dropRight,
   dropWhile: C.dropWhile,
@@ -165,7 +115,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -182,7 +131,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -194,7 +142,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -211,7 +158,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -225,7 +171,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -247,7 +192,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    assert(List, "List")
     // TODO
     // assert(Chunk, "Chunk")
   })
@@ -270,7 +214,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -320,7 +263,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -332,7 +274,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -346,7 +287,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -361,7 +301,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -376,7 +315,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -391,7 +329,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -405,7 +342,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -433,7 +369,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -446,7 +381,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -465,7 +399,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -480,8 +413,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -496,8 +427,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -509,8 +438,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -522,8 +449,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -537,8 +462,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -555,8 +478,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -570,8 +491,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -588,8 +507,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -606,8 +523,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -624,7 +539,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -642,8 +556,6 @@ describe.concurrent("Seq", () => {
     }
     // TODO
     // assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -656,8 +568,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -672,7 +582,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -687,8 +596,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -703,8 +610,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -719,8 +624,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -732,8 +635,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -745,8 +646,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -759,8 +658,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -772,8 +669,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -795,8 +690,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -815,8 +708,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -830,8 +721,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -850,8 +739,6 @@ describe.concurrent("Seq", () => {
     }
     // TODO
     // assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -898,8 +785,6 @@ describe.concurrent("Seq", () => {
     }
     // TODO
     // assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 
@@ -925,8 +810,6 @@ describe.concurrent("Seq", () => {
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
-    // TODO
-    // assert(List, "List")
     assert(Chunk, "Chunk")
   })
 })

@@ -1,9 +1,8 @@
-import * as C from "@fp-ts/data/Chunk"
+import * as Chunk from "@fp-ts/data/Chunk"
 import type { Differ } from "@fp-ts/data/Differ"
 import type * as CP from "@fp-ts/data/Differ/ChunkPatch"
 import { equals } from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
-import * as L from "@fp-ts/data/List"
 
 /** @internal */
 export const ChunkPatchTypeId: CP.TypeId = Symbol.for("@fp-ts/data/Differ/ChunkPatch") as CP.TypeId
@@ -35,7 +34,7 @@ class Append<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
   readonly _Value: (_: Value) => Value = variance
   readonly _Patch: (_: Patch) => Patch = variance
   readonly _id: CP.TypeId = ChunkPatchTypeId
-  constructor(readonly values: C.Chunk<Value>) {}
+  constructor(readonly values: Chunk.Chunk<Value>) {}
 }
 
 class Slice<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
@@ -68,15 +67,15 @@ export function empty<Value, Patch>(): CP.ChunkPatch<Value, Patch> {
 
 /** @internal */
 export function diff<Value, Patch>(
-  oldValue: C.Chunk<Value>,
-  newValue: C.Chunk<Value>,
+  oldValue: Chunk.Chunk<Value>,
+  newValue: Chunk.Chunk<Value>,
   differ: Differ<Value, Patch>
 ): CP.ChunkPatch<Value, Patch> {
   let i = 0
   let patch = empty<Value, Patch>()
   while (i < oldValue.length && i < newValue.length) {
-    const oldElement = C.unsafeGet(i)(oldValue)
-    const newElement = C.unsafeGet(i)(newValue)
+    const oldElement = Chunk.unsafeGet(i)(oldValue)
+    const newElement = Chunk.unsafeGet(i)(newValue)
     const valuePatch = differ.diff(oldElement, newElement)
     if (!equals(valuePatch, differ.empty)) {
       patch = pipe(patch, combine(new Update(i, valuePatch)))
@@ -87,7 +86,7 @@ export function diff<Value, Patch>(
     patch = pipe(patch, combine(new Slice(0, i)))
   }
   if (i < newValue.length) {
-    patch = pipe(patch, combine(new Append(C.drop(i)(newValue))))
+    patch = pipe(patch, combine(new Append(Chunk.drop(i)(newValue))))
   }
   return patch
 }
@@ -100,37 +99,37 @@ export function combine<Value, Patch>(that: CP.ChunkPatch<Value, Patch>) {
 }
 
 /** @internal */
-export function patch<Value, Patch>(oldValue: C.Chunk<Value>, differ: Differ<Value, Patch>) {
-  return (self: CP.ChunkPatch<Value, Patch>): C.Chunk<Value> => {
+export function patch<Value, Patch>(oldValue: Chunk.Chunk<Value>, differ: Differ<Value, Patch>) {
+  return (self: CP.ChunkPatch<Value, Patch>): Chunk.Chunk<Value> => {
     let chunk = oldValue
-    let patches = L.of(self)
-    while (L.isCons(patches)) {
-      const head: Instruction = patches.head as Instruction
-      const tail = patches.tail
+    let patches: Chunk.Chunk<CP.ChunkPatch<Value, Patch>> = Chunk.singleton(self)
+    while (Chunk.isNonEmpty(patches)) {
+      const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
+      const tail = Chunk.tailNonEmpty(patches)
       switch (head._tag) {
         case "Empty": {
           patches = tail
           break
         }
         case "AndThen": {
-          patches = L.cons(head.first, L.cons(head.second, tail))
+          patches = Chunk.prepend(head.first)(Chunk.prepend(head.second)(tail))
           break
         }
         case "Append": {
-          chunk = C.concat(head.values)(chunk)
+          chunk = Chunk.concat(head.values)(chunk)
           patches = tail
           break
         }
         case "Slice": {
-          const array = C.toReadonlyArray(chunk)
-          chunk = C.unsafeFromArray(array.slice(head.from, head.until))
+          const array = Chunk.toReadonlyArray(chunk)
+          chunk = Chunk.unsafeFromArray(array.slice(head.from, head.until))
           patches = tail
           break
         }
         case "Update": {
-          const array = C.toReadonlyArray(chunk) as Array<Value>
+          const array = Chunk.toReadonlyArray(chunk) as Array<Value>
           array[head.index] = differ.patch(head.patch, array[head.index]!)
-          chunk = C.unsafeFromArray(array)
+          chunk = Chunk.unsafeFromArray(array)
           patches = tail
           break
         }

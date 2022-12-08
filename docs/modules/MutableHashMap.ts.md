@@ -1,6 +1,6 @@
 ---
-title: mutable/MutableHashMap.ts
-nav_order: 20
+title: MutableHashMap.ts
+nav_order: 19
 parent: Modules
 ---
 

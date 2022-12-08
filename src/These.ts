@@ -1062,7 +1062,7 @@ export const productAll = <E, A>(
   collection: Iterable<Validated<E, A>>
 ): Validated<E, ReadonlyArray<A>> => {
   const rights: Array<A> = []
-  let lefts: chunk.Chunk<E> = chunk.empty
+  let lefts = chunk.empty<E>()
   let isFatal = false
   for (const t of collection) {
     if (isLeft(t)) {

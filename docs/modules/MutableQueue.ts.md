@@ -1,6 +1,6 @@
 ---
-title: mutable/MutableQueue.ts
-nav_order: 24
+title: MutableQueue.ts
+nav_order: 22
 parent: Modules
 ---
 
@@ -156,7 +156,7 @@ Returns a `List` of the values that were **not** able to be enqueued.
 **Signature**
 
 ```ts
-export declare const offerAll: <A>(values: Iterable<A>) => (self: MutableQueue<A>) => List.List<A>
+export declare const offerAll: <A>(values: Iterable<A>) => (self: MutableQueue<A>) => Chunk.Chunk<A>
 ```
 
 Added in v1.0.0
@@ -187,7 +187,7 @@ Returns a `List` of up to `n` elements.
 **Signature**
 
 ```ts
-export declare const pollUpTo: (n: number) => <A>(self: MutableQueue<A>) => List.List<A>
+export declare const pollUpTo: (n: number) => <A>(self: MutableQueue<A>) => Chunk.Chunk<A>
 ```
 
 Added in v1.0.0

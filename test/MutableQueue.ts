@@ -1,4 +1,4 @@
-import * as MutableQueue from "@fp-ts/data/mutable/MutableQueue"
+import * as MutableQueue from "@fp-ts/data/MutableQueue"
 import { assertFalse, assertTrue, deepStrictEqual, strictEqual } from "@fp-ts/data/test/util"
 
 describe.concurrent("MutableQueue", () => {

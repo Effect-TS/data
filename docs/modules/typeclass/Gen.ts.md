@@ -1,6 +1,6 @@
 ---
 title: typeclass/Gen.ts
-nav_order: 44
+nav_order: 40
 parent: Modules
 ---
 
@@ -15,6 +15,14 @@ Added in v1.0.0
 - [adapters](#adapters)
   - [adapter](#adapter)
 - [constructors](#constructors)
+  - [GenKindImpl (class)](#genkindimpl-class)
+    - [[Symbol.iterator] (method)](#symboliterator-method)
+    - [[GenKindTypeId] (property)](#genkindtypeid-property)
+  - [SingleShotGen (class)](#singleshotgen-class)
+    - [next (method)](#next-method)
+    - [return (method)](#return-method)
+    - [throw (method)](#throw-method)
+    - [[Symbol.iterator] (method)](#symboliterator-method-1)
   - [makeGenKind](#makegenkind)
   - [singleShot](#singleshot)
 - [models](#models)
@@ -41,6 +49,95 @@ export declare const adapter: <F extends TypeLambda>() => Adapter<F>
 Added in v1.0.0
 
 # constructors
+
+## GenKindImpl (class)
+
+**Signature**
+
+```ts
+export declare class GenKindImpl<F, R, O, E, A> {
+  constructor(
+    /**
+     * @since 1.0.0
+     */
+    readonly value: Kind<F, R, O, E, A>
+  )
+}
+```
+
+Added in v1.0.0
+
+### [Symbol.iterator] (method)
+
+**Signature**
+
+```ts
+[Symbol.iterator](): Generator<GenKind<F, R, O, E, A>, A>
+```
+
+Added in v1.0.0
+
+### [GenKindTypeId] (property)
+
+**Signature**
+
+```ts
+readonly [GenKindTypeId]: typeof GenKindTypeId
+```
+
+Added in v1.0.0
+
+## SingleShotGen (class)
+
+**Signature**
+
+```ts
+export declare class SingleShotGen<T, A> {
+  constructor(readonly self: T)
+}
+```
+
+Added in v1.0.0
+
+### next (method)
+
+**Signature**
+
+```ts
+next(a: A): IteratorResult<T, A>
+```
+
+Added in v1.0.0
+
+### return (method)
+
+**Signature**
+
+```ts
+return(a: A): IteratorResult<T, A>
+```
+
+Added in v1.0.0
+
+### throw (method)
+
+**Signature**
+
+```ts
+throw(e: unknown): IteratorResult<T, A>
+```
+
+Added in v1.0.0
+
+### [Symbol.iterator] (method)
+
+**Signature**
+
+```ts
+[Symbol.iterator](): Generator<T, A>
+```
+
+Added in v1.0.0
 
 ## makeGenKind
 
@@ -117,10 +214,10 @@ Added in v1.0.0
 ```ts
 export interface Variance<F extends TypeLambda, R, O, E> {
   readonly [GenKindTypeId]: GenKindTypeId
-  readonly _F: F
-  readonly _R: (_R: R) => unknown
-  readonly _O: () => O
-  readonly _E: () => E
+  readonly _F: (_: F) => F
+  readonly _R: (_: R) => unknown
+  readonly _O: (_: never) => O
+  readonly _E: (_: never) => E
 }
 ```
 

@@ -1,5 +1,5 @@
 import { pipe } from "@fp-ts/data/Function"
-import * as MutableList from "@fp-ts/data/mutable/MutableList"
+import * as MutableList from "@fp-ts/data/MutableList"
 import { deepStrictEqual, strictEqual } from "@fp-ts/data/test/util"
 
 describe.concurrent("MutableList", () => {

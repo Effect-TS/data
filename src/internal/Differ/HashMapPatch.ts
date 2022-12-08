@@ -1,8 +1,8 @@
+import * as Chunk from "@fp-ts/data/Chunk"
 import type * as Differ from "@fp-ts/data/Differ"
 import type * as HMP from "@fp-ts/data/Differ/HashMapPatch"
 import * as Equal from "@fp-ts/data/Equal"
 import * as HashMap from "@fp-ts/data/HashMap"
-import * as List from "@fp-ts/data/internal/List"
 
 /** @internal */
 export const HashMapPatchTypeId: HMP.TypeId = Symbol.for(
@@ -119,17 +119,17 @@ export function patch<Key, Value, Patch>(
 ) {
   return (self: HMP.HashMapPatch<Key, Value, Patch>): HashMap.HashMap<Key, Value> => {
     let map = oldValue
-    let patches = List.of(self)
-    while (List.isCons(patches)) {
-      const head: Instruction = patches.head as Instruction
-      const tail = patches.tail
+    let patches: Chunk.Chunk<HMP.HashMapPatch<Key, Value, Patch>> = Chunk.singleton(self)
+    while (Chunk.isNonEmpty(patches)) {
+      const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
+      const tail = Chunk.tailNonEmpty(patches)
       switch (head._tag) {
         case "Empty": {
           patches = tail
           break
         }
         case "AndThen": {
-          patches = List.cons(head.first, List.cons(head.second, tail))
+          patches = Chunk.prepend(head.first)(Chunk.prepend(head.second)(tail))
           break
         }
         case "Add": {

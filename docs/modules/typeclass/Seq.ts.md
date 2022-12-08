@@ -1,6 +1,6 @@
 ---
 title: typeclass/Seq.ts
-nav_order: 45
+nav_order: 41
 parent: Modules
 ---
 
