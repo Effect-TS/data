@@ -430,9 +430,12 @@ export const append = <A1>(a: A1) =>
         } else {
           const buffer = new Array(BufferSize)
           buffer[0] = a
-          const chunk = take(self.backing.bufferUsed)(
-            unsafeFromArray(self.backing.buffer as Array<A1>)
-          )
+          buffer[BufferSize - 1] = elem
+          const newArr: Array<A | A1> = new Array(self.backing.bufferUsed)
+          for (let i = 0; i < self.backing.bufferUsed; i++) {
+            newArr[i] = self.backing.buffer[i] as A | A1
+          }
+          const chunk = unsafeFromArray(newArr)
           return new ChunkImpl({
             _tag: "IAppend",
             start: concat(chunk)(self.backing.start),
@@ -483,9 +486,12 @@ export const prepend = <B>(elem: B) =>
         } else {
           const buffer = new Array(BufferSize)
           buffer[BufferSize - 1] = elem
-          const chunk = takeRight(self.backing.bufferUsed)(
-            unsafeFromArray(self.backing.buffer as Array<B>)
-          )
+          const newArr: Array<A | B> = new Array(self.backing.bufferUsed)
+          for (let i = 0; i < self.backing.bufferUsed; i++) {
+            newArr[i] = self.backing
+              .buffer[(self.backing.buffer.length - self.backing.bufferUsed) + i] as A | B
+          }
+          const chunk = unsafeFromArray(newArr)
           return new ChunkImpl({
             _tag: "IPrepend",
             end: concat(self.backing.end)(chunk),
