@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.25
+
+### Patch Changes
+
+- [#144](https://github.com/fp-ts/data/pull/144) [`23d2b5c`](https://github.com/fp-ts/data/commit/23d2b5c7693ba1ab08db3e553d3b9fdd76a23863) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Avoid sharing mutable buffers in Chunk.prepend/append
+
 ## 0.0.24
 
 ### Patch Changes
