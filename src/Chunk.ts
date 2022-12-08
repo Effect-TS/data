@@ -7,7 +7,7 @@ import type { Order } from "@fp-ts/core/typeclass/Order"
 import type { Either } from "@fp-ts/data/Either"
 import * as Equal from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
-import * as MRef from "@fp-ts/data/mutable/MutableRef"
+import * as MRef from "@fp-ts/data/MutableRef"
 import type { NonEmptyIterable } from "@fp-ts/data/NonEmpty"
 import type { Option } from "@fp-ts/data/Option"
 import * as O from "@fp-ts/data/Option"
@@ -164,36 +164,36 @@ class ChunkImpl<A> implements Chunk<A> {
       case "IArray": {
         this.length = backing.array.length
         this.depth = 0
-        this.left = empty
-        this.right = empty
+        this.left = _empty
+        this.right = _empty
         break
       }
       case "IAppend": {
         this.length = this.length = backing.start.length + backing.bufferUsed
         this.depth = 0
-        this.left = empty
-        this.right = empty
+        this.left = _empty
+        this.right = _empty
         break
       }
       case "IPrepend": {
         this.length = this.length = backing.end.length + backing.bufferUsed
         this.depth = 0
-        this.left = empty
-        this.right = empty
+        this.left = _empty
+        this.right = _empty
         break
       }
       case "ISingleton": {
         this.length = 1
         this.depth = 0
-        this.left = empty
-        this.right = empty
+        this.left = _empty
+        this.right = _empty
         break
       }
       case "ISlice": {
         this.length = backing.length
         this.depth = 0
-        this.left = empty
-        this.right = empty
+        this.left = _empty
+        this.right = _empty
         break
       }
     }
@@ -274,14 +274,19 @@ const copyToArray = <A>(self: Chunk<A>, array: Array<any>, n: number) => {
  * @since 1.0.0
  * @category constructors
  */
-export const isChunk = (u: unknown): u is Chunk<unknown> =>
+export const isChunk: {
+  <A>(u: Iterable<A>): u is Chunk<A>
+  (u: unknown): u is Chunk<unknown>
+} = (u: unknown): u is Chunk<unknown> =>
   typeof u === "object" && u != null && "_id" in u && u["_id"] === TypeId
+
+const _empty = new ChunkImpl<never>({ _tag: "IEmpty" })
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const empty: Chunk<never> = new ChunkImpl({ _tag: "IEmpty" })
+export const empty: <A = never>() => Chunk<A> = () => _empty
 
 /**
  * Converts from an `Iterable<A>`
@@ -316,8 +321,8 @@ export const toReadonlyArray = <A>(self: Chunk<A>): ReadonlyArray<A> => {
         _tag: "IArray",
         array: arr
       }
-      self.left = empty
-      self.right = empty
+      self.left = _empty
+      self.right = _empty
       self.depth = 0
       return arr
     }
@@ -513,7 +518,7 @@ export const prepend = <B>(elem: B) =>
 export const take = (n: number) =>
   <A>(self: Chunk<A>): Chunk<A> => {
     if (n <= 0) {
-      return empty
+      return _empty
     } else if (n >= self.length) {
       return self
     } else {
@@ -549,7 +554,7 @@ export const drop = (n: number) =>
     if (n <= 0) {
       return self
     } else if (n >= self.length) {
-      return empty
+      return _empty
     } else {
       const len = self.length
       switch (self.backing._tag) {
@@ -854,7 +859,7 @@ export const flatMap = <A, B>(f: (a: A) => Chunk<B>) =>
     if (self.backing._tag === "ISingleton") {
       return f(self.backing.a)
     }
-    let r: Chunk<B> = empty
+    let r: Chunk<B> = _empty
     for (const k of self) {
       r = concat(f(k))(r)
     }
@@ -1426,7 +1431,7 @@ export const zipAllWith = <A, B, C, D, E>(
   (self: Chunk<A>): Chunk<C | D | E> => {
     const length = Math.max(self.length, that.length)
     if (length === 0) {
-      return empty
+      return _empty
     }
     const leftarr = toReadonlyArray(self)
     const rightArr = toReadonlyArray(that)
@@ -1547,3 +1552,19 @@ export const modify = <A, B>(i: number, f: (a: A) => B) =>
 export const modifyOption = <A, B>(i: number, f: (a: A) => B) =>
   (self: Chunk<A>): Option<Chunk<A | B>> =>
     pipe(self, toReadonlyArray, RA.modifyOption(i, f), O.map(unsafeFromArray))
+
+/**
+ * Returns the first element of this non empty chunk.
+ *
+ * @since 1.0.0
+ * @category elements
+ */
+export const headNonEmpty: <A>(self: NonEmptyChunk<A>) => A = unsafeHead
+
+/**
+ * Returns every elements after the first.
+ *
+ * @since 1.0.0
+ * @category elements
+ */
+export const tailNonEmpty = <A>(self: NonEmptyChunk<A>): Chunk<A> => drop(1)(self)

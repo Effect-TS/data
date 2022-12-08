@@ -3,8 +3,7 @@
  */
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import type { Monad } from "@fp-ts/core/typeclass/Monad"
-import { pipe } from "@fp-ts/data/Function"
-import { SingleShotGen } from "@fp-ts/data/internal/Context"
+import { identity, pipe } from "@fp-ts/data/Function"
 
 /**
  * @category symbols
@@ -28,15 +27,106 @@ export interface GenKind<F extends TypeLambda, R, O, E, A> extends Variance<F, R
   [Symbol.iterator](): Generator<GenKind<F, R, O, E, A>, A>
 }
 
-// @ts-expect-error
-class GenKindImpl<F extends TypeLambda, R, O, E, A> implements GenKind<F, R, O, E, A> {
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+export class GenKindImpl<F extends TypeLambda, R, O, E, A> implements GenKind<F, R, O, E, A> {
   constructor(
+    /**
+     * @since 1.0.0
+     */
     readonly value: Kind<F, R, O, E, A>
   ) {}
 
+  /**
+   * @since 1.0.0
+   */
+  get _F() {
+    return identity
+  }
+
+  /**
+   * @since 1.0.0
+   */
+  get _R() {
+    return (_: R) => _
+  }
+
+  /**
+   * @since 1.0.0
+   */
+  get _O() {
+    return (_: never): O => _
+  }
+
+  /**
+   * @since 1.0.0
+   */
+  get _E() {
+    return (_: never): E => _
+  }
+
+  /**
+   * @since 1.0.0
+   */
+  readonly [GenKindTypeId]: typeof GenKindTypeId = GenKindTypeId;
+
+  /**
+   * @since 1.0.0
+   */
   [Symbol.iterator](): Generator<GenKind<F, R, O, E, A>, A> {
-    // @ts-expect-error
-    return new SingleShotGen<GenKind<F, R, O, E, A>, A>(this)
+    return new SingleShotGen<GenKind<F, R, O, E, A>, A>(this as any)
+  }
+}
+
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+export class SingleShotGen<T, A> implements Generator<T, A> {
+  private called = false
+
+  constructor(readonly self: T) {}
+
+  /**
+   * @since 1.0.0
+   */
+  next(a: A): IteratorResult<T, A> {
+    return this.called ?
+      ({
+        value: a,
+        done: true
+      }) :
+      (this.called = true,
+        ({
+          value: this.self,
+          done: false
+        }))
+  }
+
+  /**
+   * @since 1.0.0
+   */
+  return(a: A): IteratorResult<T, A> {
+    return ({
+      value: a,
+      done: true
+    })
+  }
+
+  /**
+   * @since 1.0.0
+   */
+  throw(e: unknown): IteratorResult<T, A> {
+    throw e
+  }
+
+  /**
+   * @since 1.0.0
+   */
+  [Symbol.iterator](): Generator<T, A> {
+    return new SingleShotGen<T, A>(this.self)
   }
 }
 
@@ -46,9 +136,7 @@ class GenKindImpl<F extends TypeLambda, R, O, E, A> implements GenKind<F, R, O, 
  */
 export const makeGenKind = <F extends TypeLambda, R, O, E, A>(
   kind: Kind<F, R, O, E, A>
-): GenKind<F, R, O, E, A> =>
-  // @ts-expect-error
-  new GenKindImpl(kind)
+): GenKind<F, R, O, E, A> => new GenKindImpl(kind)
 
 /**
  * @category models
@@ -56,10 +144,10 @@ export const makeGenKind = <F extends TypeLambda, R, O, E, A>(
  */
 export interface Variance<F extends TypeLambda, R, O, E> {
   readonly [GenKindTypeId]: GenKindTypeId
-  readonly _F: F
-  readonly _R: (_R: R) => unknown
-  readonly _O: () => O
-  readonly _E: () => E
+  readonly _F: (_: F) => F
+  readonly _R: (_: R) => unknown
+  readonly _O: (_: never) => O
+  readonly _E: (_: never) => E
 }
 
 /**
@@ -92,10 +180,7 @@ export interface Adapter<F extends TypeLambda> {
  * @category adapters
  * @since 1.0.0
  */
-export const adapter: <F extends TypeLambda>() => Adapter<F> = () =>
-  (kind) =>
-    // @ts-expect-error
-    new GenKindImpl(kind)
+export const adapter: <F extends TypeLambda>() => Adapter<F> = () => (kind) => new GenKindImpl(kind)
 
 function runGen<F extends TypeLambda, K extends GenKind<F, any, any, any, any>, AEff>(
   F: Monad<F>,

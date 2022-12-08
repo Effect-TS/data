@@ -1,17 +1,9 @@
 import * as E from "@fp-ts/data/Either"
 import * as Equal from "@fp-ts/data/Equal"
-import * as L from "@fp-ts/data/List"
-import * as LB from "@fp-ts/data/mutable/MutableListBuilder"
 import { assertFalse, assertTrue } from "@fp-ts/data/test/util"
 import * as fc from "fast-check"
 
 describe.concurrent("Equal", () => {
-  it("List", () => {
-    assertTrue(Equal.equals(L.make(0, 1, 2), L.make(0, 1, 2)))
-  })
-  it("ListBuilder", () => {
-    assertTrue(!Equal.equals(LB.empty(), LB.empty()))
-  })
   it("Result", () => {
     assertTrue(Equal.equals(E.right(1), E.right(1)))
     assertTrue(!Equal.equals(E.right(1), E.right(2)))

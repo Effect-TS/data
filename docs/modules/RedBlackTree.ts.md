@@ -1,6 +1,6 @@
 ---
 title: RedBlackTree.ts
-nav_order: 34
+nav_order: 31
 parent: Modules
 ---
 
@@ -117,7 +117,7 @@ Finds all values in the tree associated with the specified key.
 **Signature**
 
 ```ts
-export declare const find: <K>(key: K) => <V>(self: RedBlackTree<K, V>) => List<V>
+export declare const find: <K>(key: K) => <V>(self: RedBlackTree<K, V>) => Chunk<V>
 ```
 
 Added in v1.0.0

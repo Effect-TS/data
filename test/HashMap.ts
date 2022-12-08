@@ -209,18 +209,17 @@ describe.concurrent("HashMap", () => {
     deepStrictEqual(result, [0, 1])
   })
 
-  // TODO:
-  // it("keySet", () => {
-  //   const hashMap = HashMap.make(
-  //     [key(0), value("a")],
-  //     [key(1), value("b")],
-  //     [key(1), value("c")]
-  //   )
+  it("keySet", () => {
+    const hashMap = HashMap.make(
+      [key(0), value("a")],
+      [key(1), value("b")],
+      [key(1), value("c")]
+    )
 
-  //   const result = hashMap.keySet
+    const result = HashMap.keySet(hashMap)
 
-  //   assert.deepEqual([...result], [key(0), key(1)])
-  // })
+    assert.deepEqual([...result], [key(0), key(1)])
+  })
 
   it("map", () => {
     const map = HashMap.make([key(0), value("a")], [key(1), value("bb")])

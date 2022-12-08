@@ -1,6 +1,6 @@
 import * as Equal from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
-import * as HM from "@fp-ts/data/mutable/MutableHashMap"
+import * as HM from "@fp-ts/data/MutableHashMap"
 import * as O from "@fp-ts/data/Option"
 
 class Key implements Equal.Equal {

@@ -3,10 +3,10 @@
  */
 
 import type { Order } from "@fp-ts/core/typeclass/Order"
+import type { Chunk } from "@fp-ts/data/Chunk"
 import type { Equal } from "@fp-ts/data/Equal"
 import * as RBT from "@fp-ts/data/internal/RedBlackTree"
 import * as RBTI from "@fp-ts/data/internal/RedBlackTree/iterator"
-import type { List } from "@fp-ts/data/List"
 import type { Option } from "@fp-ts/data/Option"
 
 const TypeId: unique symbol = RBT.RedBlackTreeTypeId as TypeId
@@ -166,7 +166,7 @@ export const getAt: (
  * @since 1.0.0
  * @category elements
  */
-export const find: <K>(key: K) => <V>(self: RedBlackTree<K, V>) => List<V> = RBT.find
+export const find: <K>(key: K) => <V>(self: RedBlackTree<K, V>) => Chunk<V> = RBT.find
 
 /**
  * Finds the value in the tree associated with the specified key, if it exists.

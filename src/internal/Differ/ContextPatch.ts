@@ -1,8 +1,8 @@
+import * as Chunk from "@fp-ts/data/Chunk"
 import type { Context, Tag } from "@fp-ts/data/Context"
 import type * as CP from "@fp-ts/data/Differ/ContextPatch"
 import * as Equal from "@fp-ts/data/Equal"
 import { ContextImpl } from "@fp-ts/data/internal/Context"
-import * as L from "@fp-ts/data/internal/List"
 
 /** @internal */
 export const ContextPatchTypeId: CP.TypeId = Symbol.for(
@@ -112,11 +112,13 @@ export function combine<Output, Output2>(that: CP.ContextPatch<Output, Output2>)
 export function patch<Input>(context: Context<Input>) {
   return <Output>(self: CP.ContextPatch<Input, Output>): Context<Output> => {
     let wasServiceUpdated = false
-    let patches = L.of(self as CP.ContextPatch<unknown, unknown>)
+    let patches: Chunk.Chunk<CP.ContextPatch<unknown, unknown>> = Chunk.singleton(
+      self as CP.ContextPatch<unknown, unknown>
+    )
     const updatedContext: Map<Tag<unknown>, unknown> = new Map(context.unsafeMap)
-    while (L.isCons(patches)) {
-      const head: Instruction = patches.head as Instruction
-      const tail = patches.tail
+    while (Chunk.isNonEmpty(patches)) {
+      const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
+      const tail = Chunk.tailNonEmpty(patches)
       switch (head._tag) {
         case "Empty": {
           patches = tail
@@ -128,7 +130,7 @@ export function patch<Input>(context: Context<Input>) {
           break
         }
         case "AndThen": {
-          patches = L.cons(head.first, L.cons(head.second, tail))
+          patches = Chunk.prepend(head.first)(Chunk.prepend(head.second)(tail))
           break
         }
         case "RemoveService": {

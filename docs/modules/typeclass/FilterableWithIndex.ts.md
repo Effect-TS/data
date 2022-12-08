@@ -1,6 +1,6 @@
 ---
 title: typeclass/FilterableWithIndex.ts
-nav_order: 43
+nav_order: 39
 parent: Modules
 ---
 

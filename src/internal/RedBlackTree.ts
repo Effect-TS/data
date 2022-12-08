@@ -1,9 +1,9 @@
 import type * as Order from "@fp-ts/core/typeclass/Order"
+import * as Chunk from "@fp-ts/data/Chunk"
 import * as Equal from "@fp-ts/data/Equal"
 import { Direction, RedBlackTreeIterator } from "@fp-ts/data/internal/RedBlackTree/iterator"
 import * as Node from "@fp-ts/data/internal/RedBlackTree/node"
 import { Stack } from "@fp-ts/data/internal/Stack"
-import * as List from "@fp-ts/data/List"
 import * as Option from "@fp-ts/data/Option"
 import type * as Ordering from "@fp-ts/data/Ordering"
 import type * as RBT from "@fp-ts/data/RedBlackTree"
@@ -211,14 +211,14 @@ export function getOrder<K, V>(tree: RBT.RedBlackTree<K, V>): Order.Order<K> {
 
 /** @internal */
 export function find<K>(key: K) {
-  return <V>(self: RBT.RedBlackTree<K, V>): List.List<V> => {
+  return <V>(self: RBT.RedBlackTree<K, V>): Chunk.Chunk<V> => {
     const cmp = (self as RedBlackTreeImpl<K, V>)._ord.compare
     let node = (self as RedBlackTreeImpl<K, V>)._root
-    let result = List.empty<V>()
+    let result = Chunk.empty<V>()
     while (node != null) {
       const d = cmp(node.key)(key)
       if (d === 0 && Equal.equals(key, node.key)) {
-        result = List.cons(node.value, result)
+        result = Chunk.prepend(node.value)(result)
       }
       if (d <= 0) {
         node = node.left

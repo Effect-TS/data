@@ -34,11 +34,9 @@ Added in v1.0.0
   - [hashSetPatch](#hashsetpatch)
   - [identity](#identity)
   - [json](#json)
-  - [list](#list)
   - [mutableHashMap](#mutablehashmap)
   - [mutableHashSet](#mutablehashset)
   - [mutableList](#mutablelist)
-  - [mutableListBuilder](#mutablelistbuilder)
   - [mutableQueue](#mutablequeue)
   - [mutableRef](#mutableref)
   - [nonEmpty](#nonempty)
@@ -47,18 +45,15 @@ Added in v1.0.0
   - [orPatch](#orpatch)
   - [ordering](#ordering)
   - [predicate](#predicate)
-  - [queue](#queue)
   - [random](#random)
   - [readonlyArray](#readonlyarray)
   - [redBlackTree](#redblacktree)
-  - [safeEval](#safeeval)
   - [seq](#seq)
   - [sortedMap](#sortedmap)
   - [sortedSet](#sortedset)
   - [string](#string)
   - [these](#these)
   - [traversableFilterable](#traversablefilterable)
-  - [weakIterableMap](#weakiterablemap)
 
 ---
 
@@ -274,16 +269,6 @@ export declare const json: typeof json
 
 Added in v1.0.0
 
-## list
-
-**Signature**
-
-```ts
-export declare const list: typeof list
-```
-
-Added in v1.0.0
-
 ## mutableHashMap
 
 **Signature**
@@ -310,16 +295,6 @@ Added in v1.0.0
 
 ```ts
 export declare const mutableList: typeof mutableList
-```
-
-Added in v1.0.0
-
-## mutableListBuilder
-
-**Signature**
-
-```ts
-export declare const mutableListBuilder: typeof mutableListBuilder
 ```
 
 Added in v1.0.0
@@ -404,16 +379,6 @@ export declare const predicate: typeof predicate
 
 Added in v1.0.0
 
-## queue
-
-**Signature**
-
-```ts
-export declare const queue: typeof queue
-```
-
-Added in v1.0.0
-
 ## random
 
 **Signature**
@@ -440,16 +405,6 @@ Added in v1.0.0
 
 ```ts
 export declare const redBlackTree: typeof redBlackTree
-```
-
-Added in v1.0.0
-
-## safeEval
-
-**Signature**
-
-```ts
-export declare const safeEval: typeof safeEval
 ```
 
 Added in v1.0.0
@@ -510,16 +465,6 @@ Added in v1.0.0
 
 ```ts
 export declare const traversableFilterable: typeof traversableFilterable
-```
-
-Added in v1.0.0
-
-## weakIterableMap
-
-**Signature**
-
-```ts
-export declare const weakIterableMap: typeof weakIterableMap
 ```
 
 Added in v1.0.0

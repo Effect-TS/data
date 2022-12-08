@@ -37,6 +37,7 @@ Added in v1.0.0
   - [forEach](#foreach)
   - [get](#get)
   - [head](#head)
+  - [headNonEmpty](#headnonempty)
   - [intersection](#intersection)
   - [isEmpty](#isempty)
   - [isNonEmpty](#isnonempty)
@@ -49,6 +50,7 @@ Added in v1.0.0
   - [splitAt](#splitat)
   - [splitWhere](#splitwhere)
   - [tail](#tail)
+  - [tailNonEmpty](#tailnonempty)
   - [takeRight](#takeright)
   - [takeWhile](#takewhile)
   - [unfold](#unfold)
@@ -121,7 +123,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const empty: Chunk<never>
+export declare const empty: <A = never>() => Chunk<A>
 ```
 
 Added in v1.0.0
@@ -133,7 +135,7 @@ Checks if `u` is a `Chunk<unknown>`
 **Signature**
 
 ```ts
-export declare const isChunk: (u: unknown) => u is Chunk<unknown>
+export declare const isChunk: { <A>(u: Iterable<A>): u is Chunk<A>; (u: unknown): u is Chunk<unknown> }
 ```
 
 Added in v1.0.0
@@ -386,6 +388,18 @@ export declare const head: <A>(self: Chunk<A>) => Option<A>
 
 Added in v1.0.0
 
+## headNonEmpty
+
+Returns the first element of this non empty chunk.
+
+**Signature**
+
+```ts
+export declare const headNonEmpty: <A>(self: NonEmptyChunk<A>) => A
+```
+
+Added in v1.0.0
+
 ## intersection
 
 Creates a Chunk of unique values that are included in all given Chunks.
@@ -528,6 +542,18 @@ Returns every elements after the first.
 
 ```ts
 export declare const tail: <A>(self: Chunk<A>) => Option<Chunk<A>>
+```
+
+Added in v1.0.0
+
+## tailNonEmpty
+
+Returns every elements after the first.
+
+**Signature**
+
+```ts
+export declare const tailNonEmpty: <A>(self: NonEmptyChunk<A>) => Chunk<A>
 ```
 
 Added in v1.0.0

@@ -19,23 +19,19 @@ import * as hashMap from "@fp-ts/data/HashMap"
 import * as hashSet from "@fp-ts/data/HashSet"
 import * as identity from "@fp-ts/data/Identity"
 import * as json from "@fp-ts/data/Json"
-import * as list from "@fp-ts/data/List"
-import * as mutableHashMap from "@fp-ts/data/mutable/MutableHashMap"
-import * as mutableHashSet from "@fp-ts/data/mutable/MutableHashSet"
-import * as mutableList from "@fp-ts/data/mutable/MutableList"
-import * as mutableListBuilder from "@fp-ts/data/mutable/MutableListBuilder"
-import * as mutableQueue from "@fp-ts/data/mutable/MutableQueue"
-import * as mutableRef from "@fp-ts/data/mutable/MutableRef"
+import * as mutableHashMap from "@fp-ts/data/MutableHashMap"
+import * as mutableHashSet from "@fp-ts/data/MutableHashSet"
+import * as mutableList from "@fp-ts/data/MutableList"
+import * as mutableQueue from "@fp-ts/data/MutableQueue"
+import * as mutableRef from "@fp-ts/data/MutableRef"
 import * as nonEmpty from "@fp-ts/data/NonEmpty"
 import * as number from "@fp-ts/data/Number"
 import * as option from "@fp-ts/data/Option"
 import * as ordering from "@fp-ts/data/Ordering"
 import * as predicate from "@fp-ts/data/Predicate"
-import * as queue from "@fp-ts/data/Queue"
 import * as random from "@fp-ts/data/Random"
 import * as readonlyArray from "@fp-ts/data/ReadonlyArray"
 import * as redBlackTree from "@fp-ts/data/RedBlackTree"
-import * as safeEval from "@fp-ts/data/SafeEval"
 import * as sortedMap from "@fp-ts/data/SortedMap"
 import * as sortedSet from "@fp-ts/data/SortedSet"
 import * as string from "@fp-ts/data/String"
@@ -47,7 +43,6 @@ import * as filterableWithIndex from "@fp-ts/data/typeclass/FilterableWithIndex"
 import * as gen from "@fp-ts/data/typeclass/Gen"
 import * as seq from "@fp-ts/data/typeclass/Seq"
 import * as traversableFilterable from "@fp-ts/data/typeclass/TraversableFilterable"
-import * as weakIterableMap from "@fp-ts/data/weak/WeakIterableMap"
 
 export {
   /**
@@ -137,10 +132,6 @@ export {
   /**
    * @since 1.0.0
    */
-  list,
-  /**
-   * @since 1.0.0
-   */
   mutableHashMap,
   /**
    * @since 1.0.0
@@ -150,10 +141,6 @@ export {
    * @since 1.0.0
    */
   mutableList,
-  /**
-   * @since 1.0.0
-   */
-  mutableListBuilder,
   /**
    * @since 1.0.0
    */
@@ -189,10 +176,6 @@ export {
   /**
    * @since 1.0.0
    */
-  queue,
-  /**
-   * @since 1.0.0
-   */
   random,
   /**
    * @since 1.0.0
@@ -202,10 +185,6 @@ export {
    * @since 1.0.0
    */
   redBlackTree,
-  /**
-   * @since 1.0.0
-   */
-  safeEval,
   /**
    * @since 1.0.0
    */
@@ -229,9 +208,5 @@ export {
   /**
    * @since 1.0.0
    */
-  traversableFilterable,
-  /**
-   * @since 1.0.0
-   */
-  weakIterableMap
+  traversableFilterable
 }

@@ -1,9 +1,9 @@
+import * as Chunk from "@fp-ts/data/Chunk"
 import type { Differ } from "@fp-ts/data/Differ"
 import type * as OP from "@fp-ts/data/Differ/OrPatch"
 import type { Either } from "@fp-ts/data/Either"
 import * as E from "@fp-ts/data/Either"
 import { equals } from "@fp-ts/data/Equal"
-import * as L from "@fp-ts/data/internal/List"
 
 /** @internal */
 export const OrPatchTypeId: OP.TypeId = Symbol.for("@fp-ts/data/Differ/OrPatch") as OP.TypeId
@@ -165,18 +165,18 @@ export function patch<Value, Value2, Patch, Patch2>(
   right: Differ<Value2, Patch2>
 ) {
   return (self: OP.OrPatch<Value, Value2, Patch, Patch2>): Either<Value, Value2> => {
-    let patches = L.of(self)
+    let patches: Chunk.Chunk<OP.OrPatch<Value, Value2, Patch, Patch2>> = Chunk.singleton(self)
     let result = oldValue
-    while (L.isCons(patches)) {
-      const head: Instruction = patches.head as Instruction
-      const tail = patches.tail
+    while (Chunk.isNonEmpty(patches)) {
+      const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
+      const tail = Chunk.tailNonEmpty(patches)
       switch (head._tag) {
         case "Empty": {
           patches = tail
           break
         }
         case "AndThen": {
-          patches = L.cons(head.first, L.cons(head.second, tail))
+          patches = Chunk.prepend(head.first)(Chunk.prepend(head.second)(tail))
           break
         }
         case "UpdateLeft": {

@@ -130,8 +130,6 @@ Added in v1.0.0
 export interface Tag<Service> extends Equal {
   readonly _id: TagTypeId
   readonly _S: (_: Service) => Service
-
-  [Symbol.iterator](): Generator<Tag<Service>, Service>
 }
 ```
 

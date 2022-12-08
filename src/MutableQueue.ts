@@ -2,9 +2,9 @@
  * @since 1.0.0
  */
 
+import * as Chunk from "@fp-ts/data/Chunk"
 import * as Equal from "@fp-ts/data/Equal"
-import * as List from "@fp-ts/data/List"
-import * as MutableList from "@fp-ts/data/mutable/MutableList"
+import * as MutableList from "@fp-ts/data/MutableList"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableQueue") as TypeId
 
@@ -142,19 +142,19 @@ export const offer = <A>(value: A) =>
  * @category mutations
  */
 export const offerAll = <A>(values: Iterable<A>) =>
-  (self: MutableQueue<A>): List.List<A> => {
+  (self: MutableQueue<A>): Chunk.Chunk<A> => {
     const iterator = values[Symbol.iterator]()
     let next: IteratorResult<A> | undefined
-    let remainder = List.empty<A>()
+    let remainder = Chunk.empty<A>()
     let offering = true
     while (offering && (next = iterator.next()) && !next.done) {
       offering = offer(next.value)(self)
     }
     while (next != null && !next.done) {
-      remainder = List.prepend<A>(next.value)(remainder)
+      remainder = Chunk.prepend<A>(next.value)(remainder)
       next = iterator.next()
     }
-    return List.reverse(remainder)
+    return Chunk.reverse(remainder)
   }
 
 /**
@@ -185,16 +185,16 @@ export const poll = <D>(def: D) =>
  * @category mutations
  */
 export const pollUpTo = (n: number) =>
-  <A>(self: MutableQueue<A>): List.List<A> => {
-    let result = List.empty<A>()
+  <A>(self: MutableQueue<A>): Chunk.Chunk<A> => {
+    let result = Chunk.empty<A>()
     let count = 0
     while (count < n) {
       const element = poll(EmptyMutableQueue)(self)
       if (element === EmptyMutableQueue) {
         break
       }
-      result = List.prepend(element)(result)
+      result = Chunk.prepend(element)(result)
       count += 1
     }
-    return List.reverse(result)
+    return Chunk.reverse(result)
   }

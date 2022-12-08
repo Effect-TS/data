@@ -6,36 +6,34 @@ import * as fc from "fast-check"
 
 describe.concurrent("Chunk", () => {
   it("modifyOption", () => {
-    expect(pipe(C.empty, C.modifyOption(0, (n: number) => n * 2))).toEqual(O.none)
+    expect(pipe(C.empty(), C.modifyOption(0, (n: number) => n * 2))).toEqual(O.none)
     expect(pipe(C.make(1, 2, 3), C.modifyOption(0, (n: number) => n * 2))).toEqual(
       O.some(C.make(2, 2, 3))
     )
   })
 
   it("modify", () => {
-    expect(pipe(C.empty, C.modify(0, (n: number) => n * 2))).toEqual(C.empty)
+    expect(pipe(C.empty(), C.modify(0, (n: number) => n * 2))).toEqual(C.empty())
     expect(pipe(C.make(1, 2, 3), C.modify(0, (n: number) => n * 2))).toEqual(C.make(2, 2, 3))
   })
 
   it("replaceOption", () => {
-    expect(pipe(C.empty, C.replaceOption(0, 2))).toEqual(O.none)
+    expect(pipe(C.empty(), C.replaceOption(0, 2))).toEqual(O.none)
     expect(pipe(C.make(1, 2, 3), C.replaceOption(0, 2))).toEqual(O.some(C.make(2, 2, 3)))
   })
 
   it("replace", () => {
-    expect(pipe(C.empty, C.replace(0, 2))).toEqual(C.empty)
+    expect(pipe(C.empty(), C.replace(0, 2))).toEqual(C.empty())
     expect(pipe(C.make(1, 2, 3), C.replace(0, 2))).toEqual(C.make(2, 2, 3))
   })
 
   it("remove", () => {
-    expect(pipe(C.empty, C.remove(0))).toEqual(C.empty)
+    expect(pipe(C.empty(), C.remove(0))).toEqual(C.empty())
     expect(pipe(C.make(1, 2, 3), C.remove(0))).toEqual(C.make(2, 3))
   })
 
   it("chunksOf", () => {
-    expect(pipe(C.empty, C.chunksOf(2))).toEqual(
-      C.empty
-    )
+    expect(pipe(C.empty(), C.chunksOf(2))).toEqual(C.empty())
     expect(pipe(C.make(1, 2, 3, 4, 5), C.chunksOf(2))).toEqual(
       C.make(C.make(1, 2), C.make(3, 4), C.make(5))
     )
@@ -62,7 +60,7 @@ describe.concurrent("Chunk", () => {
 
   describe("toReadonlyArray", () => {
     describe("Given an empty Chunk", () => {
-      const chunk = C.empty
+      const chunk = C.empty()
       it("should give back an empty readonly array", () => {
         expect(C.toReadonlyArray(chunk)).toEqual([])
       })
@@ -129,7 +127,7 @@ describe.concurrent("Chunk", () => {
 
   describe("unsafeGet", () => {
     describe("Given an empty Chunk and an index", () => {
-      const chunk = C.empty
+      const chunk = C.empty()
       const index = 4
 
       it("should throw", () => {
@@ -138,7 +136,7 @@ describe.concurrent("Chunk", () => {
     })
 
     describe("Given an appended Chunk and an index out of bounds", () => {
-      const chunk = pipe(C.empty, C.append(1))
+      const chunk = pipe(C.empty(), C.append(1))
       const index = 4
 
       it("should throw", () => {
@@ -156,7 +154,7 @@ describe.concurrent("Chunk", () => {
     describe("Given a prepended Chunk and an index out of bounds", () => {
       it("should throw", () => {
         fc.assert(fc.property(fc.array(fc.anything()), (array) => {
-          let chunk: C.Chunk<unknown> = C.empty
+          let chunk: C.Chunk<unknown> = C.empty()
           array.forEach((e) => {
             chunk = pipe(chunk, C.prepend(e))
           })
@@ -200,7 +198,7 @@ describe.concurrent("Chunk", () => {
     })
 
     describe("Given an appended Chunk and an index in bounds", () => {
-      const chunk = pipe(C.empty, C.append(1), C.append(2))
+      const chunk = pipe(C.empty(), C.append(1), C.append(2))
       const index = 1
 
       it("should return the value", () => {
@@ -209,7 +207,7 @@ describe.concurrent("Chunk", () => {
     })
 
     describe("Given a prepended Chunk and an index in bounds", () => {
-      const chunk = pipe(C.empty, C.prepend(2), C.prepend(1))
+      const chunk = pipe(C.empty(), C.prepend(2), C.prepend(1))
       const index = 1
 
       it("should return the value", () => {
@@ -422,7 +420,7 @@ describe.concurrent("Chunk", () => {
 
     describe("Given 2 chunks where the first one is appended", () => {
       const chunk1 = pipe(
-        C.empty,
+        C.empty(),
         C.append(1)
       )
       const chunk2 = C.unsafeFromArray([2, 3, 4])
@@ -435,7 +433,7 @@ describe.concurrent("Chunk", () => {
     describe("Given 2 chunks where the second one is appended", () => {
       const chunk1 = C.unsafeFromArray([1])
       const chunk2 = pipe(
-        C.empty,
+        C.empty(),
         C.prepend(2)
       )
 
@@ -445,7 +443,7 @@ describe.concurrent("Chunk", () => {
     })
 
     describe("Given 2 chunks where the first one is empty", () => {
-      const chunk1 = C.empty
+      const chunk1 = C.empty()
       const chunk2 = C.unsafeFromArray([1, 2])
 
       it("should concatenate them following order", () => {
@@ -455,7 +453,7 @@ describe.concurrent("Chunk", () => {
 
     describe("Given 2 chunks where the second one is empty", () => {
       const chunk1 = C.unsafeFromArray([1, 2])
-      const chunk2 = C.empty
+      const chunk2 = C.empty()
 
       it("should concatenate them following order", () => {
         expect(pipe(chunk1, C.concat(chunk2))).toEqual(C.unsafeFromArray([1, 2]))
@@ -463,7 +461,7 @@ describe.concurrent("Chunk", () => {
     })
 
     describe("Given several chunks concatenated with each", () => {
-      const chunk1 = C.empty
+      const chunk1 = C.empty()
       const chunk2 = C.unsafeFromArray([1])
       const chunk3 = C.unsafeFromArray([2])
       const chunk4 = C.unsafeFromArray([3, 4])
@@ -487,20 +485,20 @@ describe.concurrent("Chunk", () => {
 
   it("zip", () => {
     pipe(
-      C.empty,
-      C.zip(C.empty),
+      C.empty(),
+      C.zip(C.empty()),
       equals(C.unsafeFromArray([])),
       assert.isTrue
     )
     pipe(
-      C.empty,
+      C.empty(),
       C.zip(C.singleton(1)),
       equals(C.unsafeFromArray([])),
       assert.isTrue
     )
     pipe(
       C.singleton(1),
-      C.zip(C.empty),
+      C.zip(C.empty()),
       equals(C.unsafeFromArray([])),
       assert.isTrue
     )
@@ -514,7 +512,7 @@ describe.concurrent("Chunk", () => {
 
   it("zipWithIndex", () => {
     pipe(
-      C.empty,
+      C.empty(),
       C.zipWithIndex,
       equals(C.unsafeFromArray([])),
       assert.isTrue
@@ -529,7 +527,7 @@ describe.concurrent("Chunk", () => {
 
   it("zipWithIndexOffset", () => {
     pipe(
-      C.empty,
+      C.empty(),
       C.zipWithIndexOffset(5),
       equals(C.unsafeFromArray([]))
     )

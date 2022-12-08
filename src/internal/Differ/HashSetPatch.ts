@@ -1,6 +1,6 @@
+import * as Chunk from "@fp-ts/data/Chunk"
 import type * as HSP from "@fp-ts/data/Differ/HashSetPatch"
 import * as HashSet from "@fp-ts/data/HashSet"
-import * as List from "@fp-ts/data/internal/List"
 
 /** @internal */
 export const HashSetPatchTypeId: HSP.TypeId = Symbol.for(
@@ -80,17 +80,17 @@ export function combine<Value>(that: HSP.HashSetPatch<Value>) {
 export function patch<Value>(oldValue: HashSet.HashSet<Value>) {
   return (self: HSP.HashSetPatch<Value>): HashSet.HashSet<Value> => {
     let set = oldValue
-    let patches = List.of(self)
-    while (List.isCons(patches)) {
-      const head: Instruction = patches.head as Instruction
-      const tail = patches.tail
+    let patches: Chunk.Chunk<HSP.HashSetPatch<Value>> = Chunk.singleton(self)
+    while (Chunk.isNonEmpty(patches)) {
+      const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
+      const tail = Chunk.tailNonEmpty(patches)
       switch (head._tag) {
         case "Empty": {
           patches = tail
           break
         }
         case "AndThen": {
-          patches = List.cons(head.first, List.cons(head.second, tail))
+          patches = Chunk.prepend(head.first)(Chunk.prepend(head.second)(tail))
           break
         }
         case "Add": {

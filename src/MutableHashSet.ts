@@ -2,7 +2,7 @@
  * @since 1.0.0
  */
 import * as Equal from "@fp-ts/data/Equal"
-import * as MHashMap from "@fp-ts/data/mutable/MutableHashMap"
+import * as MHashMap from "@fp-ts/data/MutableHashMap"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableHashSet") as TypeId
 
