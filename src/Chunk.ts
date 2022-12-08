@@ -430,7 +430,6 @@ export const append = <A1>(a: A1) =>
         } else {
           const buffer = new Array(BufferSize)
           buffer[0] = a
-          buffer[BufferSize - 1] = elem
           const newArr: Array<A | A1> = new Array(self.backing.bufferUsed)
           for (let i = 0; i < self.backing.bufferUsed; i++) {
             newArr[i] = self.backing.buffer[i] as A | A1
