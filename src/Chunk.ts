@@ -46,6 +46,66 @@ export interface Chunk<A> extends Iterable<A>, Equal.Equal {
   backing: Backing<A>
   /** @internal */
   depth: number
+
+  /**
+   * @since 1.0.0
+   */
+  toReadonlyArray(this: Chunk<A>): ReadonlyArray<A>
+
+  /**
+   * @since 1.0.0
+   */
+  isNonEmpty(this: Chunk<A>): this is NonEmptyChunk<A>
+
+  /**
+   * @since 1.0.0
+   */
+  isEmpty(this: Chunk<A>): boolean
+
+  /**
+   * @since 1.0.0
+   */
+  map<B>(this: Chunk<A>, f: (a: A) => B): Chunk<B>
+
+  /**
+   * @since 1.0.0
+   */
+  flatMap<B>(this: Chunk<A>, f: (a: A) => Chunk<B>): Chunk<B>
+
+  /**
+   * @since 1.0.0
+   */
+  forEach(this: Chunk<A>, f: (a: A) => void): void
+
+  /**
+   * @since 1.0.0
+   */
+  append<B>(this: Chunk<A>, b: B): Chunk<A | B>
+
+  /**
+   * @since 1.0.0
+   */
+  prepend<B>(this: Chunk<A>, b: B): Chunk<A | B>
+
+  /**
+   * @since 1.0.0
+   */
+  concat<B>(this: Chunk<A>, that: Chunk<B>): Chunk<A | B>
+
+  /**
+   * @since 1.0.0
+   */
+  pipe<B>(this: Chunk<A>, f: (self: Chunk<A>) => B): B
+
+  /**
+   * @since 1.0.0
+   */
+  get(this: Chunk<A>, index: number): Option<A>
+
+  /**
+   * @since 1.0.0
+   */
+  unsafeGet(this: Chunk<A>, index: number): A
 }
 
 /**
@@ -199,6 +259,264 @@ class ChunkImpl<A> implements Chunk<A> {
     }
   }
 
+  toReadonlyArray(this: Chunk<A>): ReadonlyArray<A> {
+    switch (this.backing._tag) {
+      case "IEmpty": {
+        return emptyArray
+      }
+      case "IArray": {
+        return this.backing.array
+      }
+      default: {
+        const arr = new Array<A>(this.length)
+        copyToArray(this, arr, 0)
+        this.backing = {
+          _tag: "IArray",
+          array: arr
+        }
+        this.left = _empty
+        this.right = _empty
+        this.depth = 0
+        return arr
+      }
+    }
+  }
+
+  isNonEmpty(this: Chunk<A>): this is NonEmptyChunk<A> {
+    return this.length > 0
+  }
+
+  isEmpty(this: Chunk<A>): boolean {
+    return !this.isNonEmpty()
+  }
+
+  map<B>(this: Chunk<A>, f: (a: A) => B): Chunk<B> {
+    return this.backing._tag === "ISingleton" ?
+      singleton(f(this.backing.a)) :
+      unsafeFromArray(RA.map(f)(toReadonlyArray(this)))
+  }
+
+  flatMap<B>(this: Chunk<A>, f: (a: A) => Chunk<B>): Chunk<B> {
+    if (this.backing._tag === "ISingleton") {
+      return f(this.backing.a)
+    }
+    let r: Chunk<B> = _empty
+    for (const k of this) {
+      r = concat(f(k))(r)
+    }
+    return r
+  }
+
+  forEach(this: Chunk<A>, f: (a: A) => void): void {
+    return this.backing._tag === "ISingleton" ?
+      f(this.backing.a) :
+      toReadonlyArray(this).forEach(f)
+  }
+
+  append<B>(this: Chunk<A>, b: B): Chunk<A | B> {
+    switch (this.backing._tag) {
+      case "IAppend": {
+        if (
+          this.backing.bufferUsed < this.backing.buffer.length &&
+          MRef.compareAndSet(this.backing.bufferUsed, this.backing.bufferUsed + 1)(
+            this.backing.chain
+          )
+        ) {
+          this.backing.buffer[this.backing.bufferUsed] = b
+          return new ChunkImpl({
+            _tag: "IAppend",
+            start: this.backing.start,
+            buffer: this.backing.buffer,
+            bufferUsed: this.backing.bufferUsed + 1,
+            chain: this.backing.chain
+          })
+        } else {
+          const buffer = new Array(BufferSize)
+          buffer[0] = b
+          const newArr: Array<A | B> = new Array(this.backing.bufferUsed)
+          for (let i = 0; i < this.backing.bufferUsed; i++) {
+            newArr[i] = this.backing.buffer[i] as A | B
+          }
+          const chunk = unsafeFromArray(newArr)
+          return new ChunkImpl({
+            _tag: "IAppend",
+            start: concat(chunk)(this.backing.start),
+            buffer,
+            bufferUsed: 1,
+            chain: MRef.make(1)
+          })
+        }
+      }
+      default: {
+        const buffer = new Array(BufferSize)
+        buffer[0] = b
+        return new ChunkImpl({
+          _tag: "IAppend",
+          buffer,
+          start: this,
+          bufferUsed: 1,
+          chain: MRef.make(1)
+        })
+      }
+    }
+  }
+
+  prepend<B>(this: Chunk<A>, b: B): Chunk<A | B> {
+    switch (this.backing._tag) {
+      case "IPrepend": {
+        if (
+          this.backing.bufferUsed < this.backing.buffer.length &&
+          MRef.compareAndSet(this.backing.bufferUsed, this.backing.bufferUsed + 1)(
+            this.backing.chain
+          )
+        ) {
+          this.backing.buffer[BufferSize - this.backing.bufferUsed - 1] = b
+          return new ChunkImpl({
+            _tag: "IPrepend",
+            end: this.backing.end,
+            buffer: this.backing.buffer,
+            bufferUsed: this.backing.bufferUsed + 1,
+            chain: this.backing.chain
+          })
+        } else {
+          const buffer = new Array(BufferSize)
+          buffer[BufferSize - 1] = b
+          const newArr: Array<A | B> = new Array(this.backing.bufferUsed)
+          for (let i = 0; i < this.backing.bufferUsed; i++) {
+            newArr[i] = this.backing
+              .buffer[(this.backing.buffer.length - this.backing.bufferUsed) + i] as A | B
+          }
+          const chunk = unsafeFromArray(newArr)
+          return new ChunkImpl({
+            _tag: "IPrepend",
+            end: chunk.concat(this.backing.end),
+            buffer,
+            bufferUsed: 1,
+            chain: MRef.make(1)
+          })
+        }
+      }
+      default: {
+        const buffer = new Array(BufferSize)
+        buffer[BufferSize - 1] = b
+        return new ChunkImpl({
+          _tag: "IPrepend",
+          buffer,
+          end: this,
+          bufferUsed: 1,
+          chain: MRef.make(1)
+        })
+      }
+    }
+  }
+
+  concat<B>(this: Chunk<A>, that: Chunk<B>): Chunk<A | B> {
+    if (this.backing._tag === "IEmpty") {
+      return that
+    }
+    if (that.backing._tag === "IEmpty") {
+      return this
+    }
+    if (this.backing._tag === "IAppend") {
+      const chunk = take(this.backing.bufferUsed)(unsafeFromArray(this.backing.buffer as Array<A>))
+      return pipe(this.backing.start, concat(chunk), concat(that))
+    }
+    if (that.backing._tag === "IPrepend") {
+      const chunk = unsafeFromArray(
+        that.backing.bufferUsed === 0 ?
+          [] :
+          (that.backing.buffer as Array<B>).slice(-that.backing.bufferUsed)
+      )
+      return pipe(this, concat(chunk), concat(that.backing.end))
+    }
+    const diff = that.depth - this.depth
+    if (Math.abs(diff) <= 1) {
+      return new ChunkImpl<A | B>({ _tag: "IConcat", left: this, right: that })
+    } else if (diff < -1) {
+      if (this.left.depth >= this.right.depth) {
+        const nr = concat(that)(this.right)
+        return new ChunkImpl({ _tag: "IConcat", left: this.left, right: nr })
+      } else {
+        const nrr = concat(that)(this.right.right)
+        if (nrr.depth === this.depth - 3) {
+          const nr = new ChunkImpl({ _tag: "IConcat", left: this.right.left, right: nrr })
+          return new ChunkImpl({ _tag: "IConcat", left: this.left, right: nr })
+        } else {
+          const nl = new ChunkImpl({ _tag: "IConcat", left: this.left, right: this.right.left })
+          return new ChunkImpl({ _tag: "IConcat", left: nl, right: nrr })
+        }
+      }
+    } else {
+      if (this.right.depth >= that.left.depth) {
+        const nl = concat(that.left)(this)
+        return new ChunkImpl({ _tag: "IConcat", left: nl, right: that.right })
+      } else {
+        const nll = concat(that.left.left)(this)
+        if (nll.depth === that.depth - 3) {
+          const nl = new ChunkImpl({ _tag: "IConcat", left: nll, right: that.left.right })
+          return new ChunkImpl({ _tag: "IConcat", left: nl, right: that.right })
+        } else {
+          const nr = new ChunkImpl({ _tag: "IConcat", left: that.left.right, right: that.right })
+          return new ChunkImpl({ _tag: "IConcat", left: nll, right: nr })
+        }
+      }
+    }
+  }
+
+  get(this: Chunk<A>, index: number): Option<A> {
+    return index < 0 || index >= this.length ? O.none : O.some(this.unsafeGet(index))
+  }
+
+  unsafeGet(this: Chunk<A>, index: number): A {
+    switch (this.backing._tag) {
+      case "IEmpty": {
+        throw new Error(`Index out of bounds`)
+      }
+      case "ISlice": {
+        return this.backing.chunk.unsafeGet(index + this.backing.offset)
+      }
+      case "IAppend": {
+        if (index < 0 || index >= this.length) {
+          throw new Error(`Index out of bounds`)
+        } else if (index < this.backing.start.length) {
+          return this.backing.start.unsafeGet(index)
+        } else {
+          return (this.backing.buffer as Array<A>)[index - this.backing.start.length]!
+        }
+      }
+      case "IPrepend": {
+        if (index < 0 || index >= this.length) {
+          throw new Error(`Index out of bounds`)
+        } else if (index < this.backing.bufferUsed) {
+          return (this.backing.buffer as Array<A>)[BufferSize - this.backing.bufferUsed + index]!
+        } else {
+          return this.backing.end.unsafeGet(index - this.backing.bufferUsed)
+        }
+      }
+      case "ISingleton": {
+        if (index !== 0) {
+          throw new Error(`Index out of bounds`)
+        }
+        return this.backing.a
+      }
+      case "IArray": {
+        if (index >= this.length || index < 0) {
+          throw new Error(`Index out of bounds`)
+        }
+        return this.backing.array[index]!
+      }
+      case "IConcat": {
+        return index < this.left.length
+          ? this.left.unsafeGet(index)
+          : this.right.unsafeGet(index - this.left.length)
+      }
+    }
+  }
+
+  pipe<B>(this: Chunk<A>, f: (self: Chunk<A>) => B): B {
+    return f(this)
+  }
+
   [Equal.symbolEqual](that: unknown): boolean {
     return isChunk(that) && Equal.equals(toReadonlyArray(this), toReadonlyArray(that))
   }
@@ -295,10 +613,12 @@ export const empty: <A = never>() => Chunk<A> = () => _empty
  * @category conversions
  */
 export const fromIterable = <A>(self: Iterable<A>): Chunk<A> =>
-  new ChunkImpl({
-    _tag: "IArray",
-    array: Array.from(self)
-  })
+  isChunk(self) ?
+    self :
+    new ChunkImpl({
+      _tag: "IArray",
+      array: Array.from(self)
+    })
 
 /**
  * Converts to a `ReadonlyArray<A>`
@@ -306,28 +626,7 @@ export const fromIterable = <A>(self: Iterable<A>): Chunk<A> =>
  * @since 1.0.0
  * @category conversions
  */
-export const toReadonlyArray = <A>(self: Chunk<A>): ReadonlyArray<A> => {
-  switch (self.backing._tag) {
-    case "IEmpty": {
-      return emptyArray
-    }
-    case "IArray": {
-      return self.backing.array
-    }
-    default: {
-      const arr = new Array<A>(self.length)
-      copyToArray(self, arr, 0)
-      self.backing = {
-        _tag: "IArray",
-        array: arr
-      }
-      self.left = _empty
-      self.right = _empty
-      self.depth = 0
-      return arr
-    }
-  }
-}
+export const toReadonlyArray = <A>(self: Chunk<A>): ReadonlyArray<A> => self.toReadonlyArray()
 
 /**
  * This function provides a safe way to read a value at a particular index from a `Chunk`.
@@ -335,8 +634,7 @@ export const toReadonlyArray = <A>(self: Chunk<A>): ReadonlyArray<A> => {
  * @since 1.0.0
  * @category elements
  */
-export const get = (i: number) =>
-  <A>(self: Chunk<A>): Option<A> => i < 0 || i >= self.length ? O.none : O.some(unsafeGet(i)(self))
+export const get = (index: number) => <A>(self: Chunk<A>): Option<A> => self.get(index)
 
 /**
  * Wraps an array into a chunk without copying, unsafe on mutable arrays
@@ -356,52 +654,7 @@ export const unsafeFromArray = <A>(self: ReadonlyArray<A>): Chunk<A> =>
  * @since 1.0.0
  * @category unsafe
  */
-export const unsafeGet = (index: number) =>
-  <A>(self: Chunk<A>): A => {
-    switch (self.backing._tag) {
-      case "IEmpty": {
-        throw new Error(`Index out of bounds`)
-      }
-      case "ISlice": {
-        return unsafeGet(index + self.backing.offset)(self.backing.chunk)
-      }
-      case "IAppend": {
-        if (index < 0 || index >= self.length) {
-          throw new Error(`Index out of bounds`)
-        } else if (index < self.backing.start.length) {
-          return unsafeGet(index)(self.backing.start)
-        } else {
-          return (self.backing.buffer as Array<A>)[index - self.backing.start.length]!
-        }
-      }
-      case "IPrepend": {
-        if (index < 0 || index >= self.length) {
-          throw new Error(`Index out of bounds`)
-        } else if (index < self.backing.bufferUsed) {
-          return (self.backing.buffer as Array<A>)[BufferSize - self.backing.bufferUsed + index]!
-        } else {
-          return unsafeGet(index - self.backing.bufferUsed)(self.backing.end)
-        }
-      }
-      case "ISingleton": {
-        if (index !== 0) {
-          throw new Error(`Index out of bounds`)
-        }
-        return self.backing.a
-      }
-      case "IArray": {
-        if (index >= self.length || index < 0) {
-          throw new Error(`Index out of bounds`)
-        }
-        return self.backing.array[index]!
-      }
-      case "IConcat": {
-        return index < self.left.length
-          ? unsafeGet(index)(self.left)
-          : unsafeGet(index - self.left.length)(self.right)
-      }
-    }
-  }
+export const unsafeGet = (index: number) => <A>(self: Chunk<A>): A => self.unsafeGet(index)
 
 /**
  * Appends the value to the chunk
@@ -409,54 +662,7 @@ export const unsafeGet = (index: number) =>
  * @since 1.0.0
  * @category mutations
  */
-export const append = <A1>(a: A1) =>
-  <A>(self: Chunk<A>): Chunk<A | A1> => {
-    switch (self.backing._tag) {
-      case "IAppend": {
-        if (
-          self.backing.bufferUsed < self.backing.buffer.length &&
-          MRef.compareAndSet(self.backing.bufferUsed, self.backing.bufferUsed + 1)(
-            self.backing.chain
-          )
-        ) {
-          self.backing.buffer[self.backing.bufferUsed] = a
-          return new ChunkImpl({
-            _tag: "IAppend",
-            start: self.backing.start,
-            buffer: self.backing.buffer,
-            bufferUsed: self.backing.bufferUsed + 1,
-            chain: self.backing.chain
-          })
-        } else {
-          const buffer = new Array(BufferSize)
-          buffer[0] = a
-          const newArr: Array<A | A1> = new Array(self.backing.bufferUsed)
-          for (let i = 0; i < self.backing.bufferUsed; i++) {
-            newArr[i] = self.backing.buffer[i] as A | A1
-          }
-          const chunk = unsafeFromArray(newArr)
-          return new ChunkImpl({
-            _tag: "IAppend",
-            start: concat(chunk)(self.backing.start),
-            buffer,
-            bufferUsed: 1,
-            chain: MRef.make(1)
-          })
-        }
-      }
-      default: {
-        const buffer = new Array(BufferSize)
-        buffer[0] = a
-        return new ChunkImpl({
-          _tag: "IAppend",
-          buffer,
-          start: self,
-          bufferUsed: 1,
-          chain: MRef.make(1)
-        })
-      }
-    }
-  }
+export const append = <A1>(a: A1) => <A>(self: Chunk<A>): Chunk<A | A1> => self.append(a)
 
 /**
  * Prepends the value to the chunk
@@ -464,55 +670,7 @@ export const append = <A1>(a: A1) =>
  * @since 1.0.0
  * @category mutations
  */
-export const prepend = <B>(elem: B) =>
-  <A>(self: Chunk<A>): Chunk<A | B> => {
-    switch (self.backing._tag) {
-      case "IPrepend": {
-        if (
-          self.backing.bufferUsed < self.backing.buffer.length &&
-          MRef.compareAndSet(self.backing.bufferUsed, self.backing.bufferUsed + 1)(
-            self.backing.chain
-          )
-        ) {
-          self.backing.buffer[BufferSize - self.backing.bufferUsed - 1] = elem
-          return new ChunkImpl({
-            _tag: "IPrepend",
-            end: self.backing.end,
-            buffer: self.backing.buffer,
-            bufferUsed: self.backing.bufferUsed + 1,
-            chain: self.backing.chain
-          })
-        } else {
-          const buffer = new Array(BufferSize)
-          buffer[BufferSize - 1] = elem
-          const newArr: Array<A | B> = new Array(self.backing.bufferUsed)
-          for (let i = 0; i < self.backing.bufferUsed; i++) {
-            newArr[i] = self.backing
-              .buffer[(self.backing.buffer.length - self.backing.bufferUsed) + i] as A | B
-          }
-          const chunk = unsafeFromArray(newArr)
-          return new ChunkImpl({
-            _tag: "IPrepend",
-            end: concat(self.backing.end)(chunk),
-            buffer,
-            bufferUsed: 1,
-            chain: MRef.make(1)
-          })
-        }
-      }
-      default: {
-        const buffer = new Array(BufferSize)
-        buffer[BufferSize - 1] = elem
-        return new ChunkImpl({
-          _tag: "IPrepend",
-          buffer,
-          end: self,
-          bufferUsed: 1,
-          chain: MRef.make(1)
-        })
-      }
-    }
-  }
+export const prepend = <B>(elem: B) => <A>(self: Chunk<A>): Chunk<A | B> => self.prepend(elem)
 
 /**
  * Takes the first up to `n` elements from the chunk
@@ -632,59 +790,7 @@ export function prependAllNonEmpty<B>(
  * @since 1.0.0
  * @category mutations
  */
-export const concat = <B>(that: Chunk<B>) =>
-  <A>(self: Chunk<A>): Chunk<A | B> => {
-    if (self.backing._tag === "IEmpty") {
-      return that
-    }
-    if (that.backing._tag === "IEmpty") {
-      return self
-    }
-    if (self.backing._tag === "IAppend") {
-      const chunk = take(self.backing.bufferUsed)(unsafeFromArray(self.backing.buffer as Array<A>))
-      return pipe(self.backing.start, concat(chunk), concat(that))
-    }
-    if (that.backing._tag === "IPrepend") {
-      const chunk = unsafeFromArray(
-        that.backing.bufferUsed === 0 ?
-          [] :
-          (that.backing.buffer as Array<B>).slice(-that.backing.bufferUsed)
-      )
-      return pipe(self, concat(chunk), concat(that.backing.end))
-    }
-    const diff = that.depth - self.depth
-    if (Math.abs(diff) <= 1) {
-      return new ChunkImpl<A | B>({ _tag: "IConcat", left: self, right: that })
-    } else if (diff < -1) {
-      if (self.left.depth >= self.right.depth) {
-        const nr = concat(that)(self.right)
-        return new ChunkImpl({ _tag: "IConcat", left: self.left, right: nr })
-      } else {
-        const nrr = concat(that)(self.right.right)
-        if (nrr.depth === self.depth - 3) {
-          const nr = new ChunkImpl({ _tag: "IConcat", left: self.right.left, right: nrr })
-          return new ChunkImpl({ _tag: "IConcat", left: self.left, right: nr })
-        } else {
-          const nl = new ChunkImpl({ _tag: "IConcat", left: self.left, right: self.right.left })
-          return new ChunkImpl({ _tag: "IConcat", left: nl, right: nrr })
-        }
-      }
-    } else {
-      if (self.right.depth >= that.left.depth) {
-        const nl = concat(that.left)(self)
-        return new ChunkImpl({ _tag: "IConcat", left: nl, right: that.right })
-      } else {
-        const nll = concat(that.left.left)(self)
-        if (nll.depth === that.depth - 3) {
-          const nl = new ChunkImpl({ _tag: "IConcat", left: nll, right: that.left.right })
-          return new ChunkImpl({ _tag: "IConcat", left: nl, right: that.right })
-        } else {
-          const nr = new ChunkImpl({ _tag: "IConcat", left: that.left.right, right: that.right })
-          return new ChunkImpl({ _tag: "IConcat", left: nll, right: nr })
-        }
-      }
-    }
-  }
+export const concat = <B>(that: Chunk<B>) => <A>(self: Chunk<A>): Chunk<A | B> => self.concat(that)
 
 /**
  * Compares the two chunks of equal length using the specified function
@@ -885,8 +991,7 @@ export const flatten: <A>(self: Chunk<Chunk<A>>) => Chunk<A> = flatMap(identity)
  * @since 1.0.0
  * @category elements
  */
-export const forEach = <A>(f: (a: A) => void) =>
-  (self: Chunk<A>): void => toReadonlyArray(self).forEach(f)
+export const forEach = <A>(f: (a: A) => void) => (self: Chunk<A>): void => self.forEach(f)
 
 /**
  * Groups elements in chunks of up to `n` elements.
@@ -944,7 +1049,7 @@ export const intersection = <A>(that: Chunk<A>) =>
  * @since 1.0.0
  * @category elements
  */
-export const isEmpty = <A>(self: Chunk<A>): boolean => self.length === 0
+export const isEmpty = <A>(self: Chunk<A>): boolean => self.isEmpty()
 
 /**
  * Determines if the chunk is not empty.
@@ -952,7 +1057,7 @@ export const isEmpty = <A>(self: Chunk<A>): boolean => self.length === 0
  * @since 1.0.0
  * @category elements
  */
-export const isNonEmpty = <A>(self: Chunk<A>): self is NonEmptyChunk<A> => self.length > 0
+export const isNonEmpty = <A>(self: Chunk<A>): self is NonEmptyChunk<A> => self.isNonEmpty()
 
 /**
  * Folds over the elements in this chunk from the left.
@@ -1044,8 +1149,7 @@ export const makeBy = <A>(f: (i: number) => A) =>
  * @since 1.0.0
  * @category mapping
  */
-export const map = <A, B>(f: (a: A) => B) =>
-  (self: Chunk<A>): Chunk<B> => unsafeFromArray(RA.map(f)(toReadonlyArray(self)))
+export const map = <A, B>(f: (a: A) => B) => (self: Chunk<A>): Chunk<B> => self.map(f)
 
 /**
  * Returns an effect whose success is mapped by the specified f function.
@@ -1054,7 +1158,10 @@ export const map = <A, B>(f: (a: A) => B) =>
  * @category mapping
  */
 export const mapWithIndex = <A, B>(f: (a: A, i: number) => B) =>
-  (self: Chunk<A>): Chunk<B> => unsafeFromArray(pipe(toReadonlyArray(self), RA.mapWithIndex(f)))
+  (self: Chunk<A>): Chunk<B> =>
+    self.backing._tag === "ISingleton" ?
+      singleton(f(self.backing.a, 0)) :
+      unsafeFromArray(pipe(toReadonlyArray(self), RA.mapWithIndex(f)))
 
 /**
  * Statefully maps over the chunk, producing new elements of type `B`.

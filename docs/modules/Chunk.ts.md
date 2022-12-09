@@ -371,7 +371,7 @@ This function provides a safe way to read a value at a particular index from a `
 **Signature**
 
 ```ts
-export declare const get: (i: number) => <A>(self: Chunk<A>) => Option<A>
+export declare const get: (index: number) => <A>(self: Chunk<A>) => Option<A>
 ```
 
 Added in v1.0.0
@@ -973,6 +973,66 @@ export interface Chunk<A> extends Iterable<A>, Equal.Equal {
   backing: Backing<A>
   /** @internal */
   depth: number
+
+  /**
+   * @since 1.0.0
+   */
+  toReadonlyArray(this: Chunk<A>): ReadonlyArray<A>
+
+  /**
+   * @since 1.0.0
+   */
+  isNonEmpty(this: Chunk<A>): this is NonEmptyChunk<A>
+
+  /**
+   * @since 1.0.0
+   */
+  isEmpty(this: Chunk<A>): boolean
+
+  /**
+   * @since 1.0.0
+   */
+  map<B>(this: Chunk<A>, f: (a: A) => B): Chunk<B>
+
+  /**
+   * @since 1.0.0
+   */
+  flatMap<B>(this: Chunk<A>, f: (a: A) => Chunk<B>): Chunk<B>
+
+  /**
+   * @since 1.0.0
+   */
+  forEach(this: Chunk<A>, f: (a: A) => void): void
+
+  /**
+   * @since 1.0.0
+   */
+  append<B>(this: Chunk<A>, b: B): Chunk<A | B>
+
+  /**
+   * @since 1.0.0
+   */
+  prepend<B>(this: Chunk<A>, b: B): Chunk<A | B>
+
+  /**
+   * @since 1.0.0
+   */
+  concat<B>(this: Chunk<A>, that: Chunk<B>): Chunk<A | B>
+
+  /**
+   * @since 1.0.0
+   */
+  pipe<B>(this: Chunk<A>, f: (self: Chunk<A>) => B): B
+
+  /**
+   * @since 1.0.0
+   */
+  get(this: Chunk<A>, index: number): Option<A>
+
+  /**
+   * @since 1.0.0
+   */
+  unsafeGet(this: Chunk<A>, index: number): A
 }
 ```
 
