@@ -38,8 +38,6 @@ import * as semiCoproduct from "@fp-ts/core/typeclass/SemiCoproduct"
 import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
 import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
-import type { NonEmptyChunk } from "@fp-ts/data/Chunk"
-import * as chunk from "@fp-ts/data/Chunk"
 import type { Either, Left, Right } from "@fp-ts/data/Either"
 import { equals } from "@fp-ts/data/Equal"
 import type { LazyArg } from "@fp-ts/data/Function"
@@ -49,6 +47,8 @@ import * as option from "@fp-ts/data/internal/Option"
 import * as these from "@fp-ts/data/internal/These"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
+import type { NonEmptyReadonlyArray } from "@fp-ts/data/ReadonlyArray"
+import * as RA from "@fp-ts/data/ReadonlyArray"
 import * as Gen from "@fp-ts/data/typeclass/Gen"
 
 /**
@@ -71,7 +71,7 @@ export type These<E, A> = Either<E, A> | Both<E, A>
  * @category model
  * @since 1.0.0
  */
-export type Validated<E, A> = These<NonEmptyChunk<E>, A>
+export type Validated<E, A> = These<NonEmptyReadonlyArray<E>, A>
 
 /**
  * @category type lambdas
@@ -123,7 +123,7 @@ export const both = <E, A>(left: E, right: A): These<E, A> => ({
  * @category constructors
  * @since 1.0.0
  */
-export const fail = <E>(e: E): Validated<E, never> => left(chunk.singleton(e))
+export const fail = <E>(e: E): Validated<E, never> => left([e])
 
 /**
  * Alias of `right`.
@@ -137,7 +137,7 @@ export const succeed: <A>(a: A) => Validated<never, A> = right
  * @category constructors
  * @since 1.0.0
  */
-export const warn = <E, A>(e: E, a: A): Validated<E, A> => both(chunk.singleton(e), a)
+export const warn = <E, A>(e: E, a: A): Validated<E, A> => both([e], a)
 
 /**
  * @category constructors
@@ -293,7 +293,7 @@ export const fromNullable = <E>(onNullable: LazyArg<E>) =>
  * @since 1.0.0
  */
 export const fromEither = <E, A>(self: Either<E, A>): Validated<E, A> =>
-  either.isLeft(self) ? left(chunk.singleton(self.left)) : self
+  either.isLeft(self) ? left([self.left]) : self
 
 /**
  * @category conversions
@@ -338,7 +338,7 @@ export const flatMapNullable = <A, B, E2>(
   f: (a: A) => B | null | undefined,
   onNullable: (a: A) => E2
 ): (<E1>(self: Validated<E1, A>) => Validated<E1 | E2, NonNullable<B>>) =>
-  flatMap(liftNullable(f, (a) => chunk.singleton(onNullable(a))))
+  flatMap(liftNullable(f, (a) => [onNullable(a)]))
 
 /**
  * @category lifting
@@ -412,7 +412,7 @@ export const flatMapOption = <A, B, E2>(
   onNone: (a: A) => E2
 ) =>
   <E1>(self: Validated<E1, A>): Validated<E1 | E2, B> =>
-    pipe(self, flatMap(liftOption(f, (a) => chunk.singleton(onNone(a)))))
+    pipe(self, flatMap(liftOption(f, (a) => [onNone(a)])))
 
 /**
  * @category sequencing
@@ -603,7 +603,7 @@ export const mapLeft: <E, G>(f: (e: E) => G) => <A>(self: These<E, A>) => These<
  * @category conversions
  * @since 1.0.0
  */
-export const fromThese: <E, A>(self: These<E, A>) => Validated<E, A> = mapLeft(chunk.singleton)
+export const fromThese: <E, A>(self: These<E, A>) => Validated<E, A> = mapLeft((e) => [e])
 
 /**
  * Returns an effect whose right is mapped by the specified `f` function.
@@ -973,12 +973,12 @@ export const product = <E2, B>(that: Validated<E2, B>) =>
       return both(that.left, [self.right, that.right])
     }
     if (isLeft(that)) {
-      return left(chunk.prependAllNonEmpty(that.left)(self.left))
+      return left(RA.appendAllNonEmpty(that.left)(self.left))
     }
     if (isRight(that)) {
       return both(self.left, [self.right, that.right])
     }
-    return both(chunk.prependAllNonEmpty(that.left)(self.left), [self.right, that.right])
+    return both(RA.appendAllNonEmpty(that.left)(self.left), [self.right, that.right])
   }
 
 /**
@@ -1062,21 +1062,21 @@ export const productAll = <E, A>(
   collection: Iterable<Validated<E, A>>
 ): Validated<E, ReadonlyArray<A>> => {
   const rights: Array<A> = []
-  let lefts = chunk.empty<E>()
+  const lefts: Array<E> = []
   let isFatal = false
   for (const t of collection) {
     if (isLeft(t)) {
-      lefts = chunk.concat(t.left)(lefts)
+      lefts.push(...t.left)
       isFatal = true
       break
     } else if (isRight(t)) {
       rights.push(t.right)
     } else {
-      lefts = chunk.concat(t.left)(lefts)
+      lefts.push(...t.left)
       rights.push(t.right)
     }
   }
-  if (chunk.isNonEmpty(lefts)) {
+  if (RA.isNonEmpty(lefts)) {
     return isFatal ? left(lefts) : both(lefts, rights)
   }
   return right(rights)
@@ -1176,12 +1176,12 @@ export const flatMap = <A, E2, B>(
     }
     const that = f(self.right)
     if (isLeft(that)) {
-      return left(chunk.prependAllNonEmpty(that.left)(self.left))
+      return left(RA.appendAllNonEmpty(that.left)(self.left))
     }
     if (isRight(that)) {
       return both(self.left, that.right)
     }
-    return both(chunk.prependAllNonEmpty(that.left)(self.left), that.right)
+    return both(RA.appendAllNonEmpty(that.left)(self.left), that.right)
   }
 
 /**
