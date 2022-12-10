@@ -78,7 +78,7 @@ export const Chunk: Seq<C.ChunkTypeLambda> = {
   get: C.get,
   unsafeGet: C.unsafeGet,
   size: C.size,
-  empty: C.empty(),
+  empty: C.empty,
   append: C.append,
   dropRight: C.dropRight,
   dropWhile: C.dropWhile,
@@ -444,8 +444,8 @@ describe.concurrent("Seq", () => {
   describe("empty", () => {
     const assert = <F extends TypeLambda>(F: Seq<F>, message: string) => {
       it(message, () => {
-        expect(pipe(F.toIterable(F.empty))).toEqual([])
-        expect(pipe(F.empty, F.size)).toEqual(0)
+        expect(pipe(F.toIterable(F.empty()))).toEqual([])
+        expect(pipe(F.empty(), F.size)).toEqual(0)
       })
     }
     assert(ReadonlyArray, "ReadonlyArray")
