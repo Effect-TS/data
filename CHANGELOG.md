@@ -1,5 +1,17 @@
 # @fp-ts/data
 
+## 0.0.26
+
+### Patch Changes
+
+- [#148](https://github.com/fp-ts/data/pull/148) [`c3939ef`](https://github.com/fp-ts/data/commit/c3939ef384c0c06ffb83ec9d4584c1ba2443f214) Thanks [@gcanti](https://github.com/gcanti)! - These/Validated: switch to standard free semigroup
+
+- [#150](https://github.com/fp-ts/data/pull/150) [`90b245d`](https://github.com/fp-ts/data/commit/90b245d5f451e6e935fbe4860c78c4878ba4114e) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: align empty signature
+
+- [#149](https://github.com/fp-ts/data/pull/149) [`c034904`](https://github.com/fp-ts/data/commit/c034904cb590cd828a7f2216279ded7c7fea372e) Thanks [@gcanti](https://github.com/gcanti)! - Chunk: fix prependAllNonEmpty implementation
+
+- [#147](https://github.com/fp-ts/data/pull/147) [`e6dc944`](https://github.com/fp-ts/data/commit/e6dc944454bcce70dc39163be20f80a86a0885b3) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Improve Chunk's Usability
+
 ## 0.0.25
 
 ### Patch Changes
