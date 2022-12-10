@@ -111,7 +111,7 @@ export const fromIterable: <A>(collection: Iterable<A>) => ReadonlyArray<A> = in
  */
 export const fromOption = <A>(
   o: Option<A>
-): ReadonlyArray<A> => (option.isNone(o) ? empty : [o.value])
+): ReadonlyArray<A> => (option.isNone(o) ? empty() : [o.value])
 
 /**
  * @category conversions
@@ -119,7 +119,7 @@ export const fromOption = <A>(
  */
 export const fromEither = <A>(
   e: Either<unknown, A>
-): ReadonlyArray<A> => (either.isLeft(e) ? empty : [e.right])
+): ReadonlyArray<A> => (either.isLeft(e) ? empty() : [e.right])
 
 /**
  * @category pattern matching
@@ -388,7 +388,7 @@ export const initNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): ReadonlyArray<A
  */
 export const take = (n: number) =>
   <A>(self: ReadonlyArray<A>): ReadonlyArray<A> =>
-    n <= 0 ? empty : n >= self.length ? self : self.slice(0, n)
+    n <= 0 ? empty() : n >= self.length ? self : self.slice(0, n)
 
 /**
  * Keep only a max number of elements from the end of an `ReadonlyArray`, creating a new `ReadonlyArray`.
@@ -400,7 +400,7 @@ export const take = (n: number) =>
  */
 export const takeRight = (n: number) =>
   <A>(as: ReadonlyArray<A>): ReadonlyArray<A> =>
-    isOutOfBound(n, as) ? as : n === 0 ? empty : as.slice(-n)
+    isOutOfBound(n, as) ? as : n === 0 ? empty() : as.slice(-n)
 
 /**
  * Calculate the longest initial subarray for which all element satisfy the specified predicate, creating a new `ReadonlyArray`.
@@ -473,7 +473,7 @@ export function span<A>(
  */
 export const drop = (n: number) =>
   <A>(as: ReadonlyArray<A>): ReadonlyArray<A> =>
-    n <= 0 || isEmpty(as) ? as : n >= as.length ? empty : as.slice(n, as.length)
+    n <= 0 || isEmpty(as) ? as : n >= as.length ? empty() : as.slice(n, as.length)
 
 /**
  * Drop a max number of elements from the end of an `ReadonlyArray`, creating a new `ReadonlyArray`.
@@ -485,7 +485,7 @@ export const drop = (n: number) =>
  */
 export const dropRight = (n: number) =>
   <A>(as: ReadonlyArray<A>): ReadonlyArray<A> =>
-    n <= 0 || isEmpty(as) ? as : n >= as.length ? empty : as.slice(0, as.length - n)
+    n <= 0 || isEmpty(as) ? as : n >= as.length ? empty() : as.slice(0, as.length - n)
 
 /**
  * Remove the longest initial subarray for which all element satisfy the specified predicate, creating a new `ReadonlyArray`.
@@ -507,7 +507,7 @@ export function dropWhile<A>(
 ): (as: ReadonlyArray<A>) => ReadonlyArray<A> {
   return (as) => {
     const i = spanIndex(as, predicate)
-    return i === 0 ? as : i === as.length ? empty : as.slice(i)
+    return i === 0 ? as : i === as.length ? empty() : as.slice(i)
   }
 }
 
@@ -1009,7 +1009,7 @@ export const uniqNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): NonEmptyReadonl
 export const chop = <A, B>(
   f: (as: NonEmptyReadonlyArray<A>) => readonly [B, ReadonlyArray<A>]
 ) =>
-  (self: ReadonlyArray<A>): ReadonlyArray<B> => (isNonEmpty(self) ? chopNonEmpty(f)(self) : empty)
+  (self: ReadonlyArray<A>): ReadonlyArray<B> => (isNonEmpty(self) ? chopNonEmpty(f)(self) : empty())
 
 /**
  * A useful recursion pattern for processing a `NonEmptyReadonlyArray` to produce a new `NonEmptyReadonlyArray`, often used for "chopping" up the input
@@ -1044,8 +1044,8 @@ export const splitAt = (n: number) =>
     n >= 1 && isNonEmpty(self) ?
       splitNonEmptyAt(n)(self) :
       isEmpty(self) ?
-      [self, empty] :
-      [empty, self]
+      [self, empty()] :
+      [empty(), self]
 
 /**
  * Splits a `NonEmptyReadonlyArray` into two pieces, the first piece has max `n` elements.
@@ -1080,7 +1080,7 @@ export const chunksOf = (n: number) =>
     self: ReadonlyArray<A>
   ): ReadonlyArray<
     NonEmptyReadonlyArray<A>
-  > => (isNonEmpty(self) ? chunksOfNonEmpty(n)(self) : empty)
+  > => (isNonEmpty(self) ? chunksOfNonEmpty(n)(self) : empty())
 
 /**
  * Splits a `NonEmptyReadonlyArray` into length-`n` pieces. The last piece will be shorter if `n` does not evenly divide the length of
@@ -1202,7 +1202,7 @@ export const of = <A>(a: A): NonEmptyReadonlyArray<A> => [a]
  * @category constructors
  * @since 1.0.0
  */
-export const empty: ReadonlyArray<never> = internal.empty
+export const empty: <A = never>() => ReadonlyArray<A> = () => internal.empty
 
 /**
  * @category mapping
@@ -1333,7 +1333,7 @@ export const Pointed: pointed.Pointed<ReadonlyArrayTypeLambda> = {
 export const flatMapWithIndex = <A, B>(f: (a: A, i: number) => ReadonlyArray<B>) =>
   (self: ReadonlyArray<A>): ReadonlyArray<B> => {
     if (isEmpty(self)) {
-      return empty
+      return empty()
     }
     const out: Array<B> = []
     for (let i = 0; i < self.length; i++) {
@@ -1667,7 +1667,7 @@ export const product = <B>(
 ) =>
   <A>(self: ReadonlyArray<A>): ReadonlyArray<readonly [A, B]> => {
     if (isEmpty(self) || isEmpty(that)) {
-      return empty
+      return empty()
     }
     const out: Array<readonly [A, B]> = []
     for (let i = 0; i < self.length; i++) {
@@ -1697,7 +1697,7 @@ export const productAll = <A>(
 ): ReadonlyArray<ReadonlyArray<A>> => {
   const arrays = Array.from(collection)
   if (isEmpty(arrays)) {
-    return empty
+    return empty()
   }
   return productMany(arrays.slice(1))(arrays[0])
 }
@@ -1989,7 +1989,7 @@ export const traversePartition: <F extends TypeLambda>(
 export const liftPredicate: {
   <C extends A, B extends A, A = C>(refinement: Refinement<A, B>): (c: C) => ReadonlyArray<B>
   <B extends A, A = B>(predicate: Predicate<A>): (b: B) => ReadonlyArray<B>
-} = <B extends A, A = B>(predicate: Predicate<A>) => (b: B) => predicate(b) ? [b] : empty
+} = <B extends A, A = B>(predicate: Predicate<A>) => (b: B) => predicate(b) ? [b] : empty()
 
 /**
  * @category lifting
@@ -2004,7 +2004,7 @@ export const liftOption = <A extends ReadonlyArray<unknown>, B>(
  * @since 1.0.0
  */
 export const fromNullable = <A>(a: A): ReadonlyArray<NonNullable<A>> =>
-  a == null ? empty : [a as NonNullable<A>]
+  a == null ? empty() : [a as NonNullable<A>]
 
 /**
  * @category lifting
@@ -2022,7 +2022,7 @@ export const flatMapNullable = <A, B>(
   f: (a: A) => B | null | undefined
 ) =>
   (self: ReadonlyArray<A>): ReadonlyArray<NonNullable<B>> =>
-    isNonEmpty(self) ? fromNullable(f(headNonEmpty(self))) : empty
+    isNonEmpty(self) ? fromNullable(f(headNonEmpty(self))) : empty()
 
 /**
  * @category lifting
@@ -2158,8 +2158,8 @@ export const getUnionMonoid = <A>(): Monoid<ReadonlyArray<A>> => {
   return ({
     combine: S.combine,
     combineMany: S.combineMany,
-    combineAll: (collection) => S.combineMany(collection)(empty),
-    empty
+    combineAll: (collection) => S.combineMany(collection)(empty()),
+    empty: empty()
   })
 }
 
@@ -2189,8 +2189,8 @@ export const getMonoid = <A>(): Monoid<ReadonlyArray<A>> => {
   return ({
     combine: S.combine,
     combineMany: S.combineMany,
-    combineAll: (collection) => S.combineMany(collection)(empty),
-    empty
+    combineAll: (collection) => S.combineMany(collection)(empty()),
+    empty: empty()
   })
 }
 

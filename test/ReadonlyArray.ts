@@ -298,9 +298,9 @@ describe.concurrent("ReadonlyArray", () => {
   it("flatMapWithIndex", () => {
     const f = RA.flatMapWithIndex((n: number, i) => [n + i])
     deepStrictEqual(pipe([1, 2, 3], f), [1, 3, 5])
-    deepStrictEqual(pipe(RA.empty, f), RA.empty)
+    deepStrictEqual(pipe(RA.empty(), f), RA.empty())
     const empty: ReadonlyArray<number> = []
-    deepStrictEqual(pipe(empty, f), RA.empty)
+    deepStrictEqual(pipe(empty, f), RA.empty())
   })
 
   it("extend", () => {
@@ -604,21 +604,21 @@ describe.concurrent("ReadonlyArray", () => {
 
   it("takeRight", () => {
     // _.empty
-    deepStrictEqual(RA.takeRight(0)(RA.empty), RA.empty)
+    deepStrictEqual(RA.takeRight(0)(RA.empty()), RA.empty())
     // empty
     const empty: ReadonlyArray<number> = []
     deepStrictEqual(RA.takeRight(0)(empty), empty)
     const full: ReadonlyArray<number> = [1, 2]
     // non empty
-    deepStrictEqual(RA.takeRight(0)(full), RA.empty)
+    deepStrictEqual(RA.takeRight(0)(full), RA.empty())
     deepStrictEqual(RA.takeRight(1)(full), [2])
     // full
     deepStrictEqual(RA.takeRight(2)(full), full)
     // out of bound
-    deepStrictEqual(RA.takeRight(1)(RA.empty), RA.empty)
+    deepStrictEqual(RA.takeRight(1)(RA.empty()), RA.empty())
     deepStrictEqual(RA.takeRight(1)(empty), empty)
     deepStrictEqual(RA.takeRight(3)(full), full)
-    deepStrictEqual(RA.takeRight(-1)(RA.empty), RA.empty)
+    deepStrictEqual(RA.takeRight(-1)(RA.empty()), RA.empty())
     deepStrictEqual(RA.takeRight(-1)(empty), empty)
     deepStrictEqual(RA.takeRight(-1)(full), full)
   })
@@ -636,12 +636,12 @@ describe.concurrent("ReadonlyArray", () => {
     }
     deepStrictEqual(f([1, 3, 2, 4, 5]), [[1, 3], [2, 4, 5]])
     const empty: ReadonlyArray<number> = []
-    assertSpanLeft(empty, empty, RA.empty)
-    assertSpanLeft(RA.empty, RA.empty, RA.empty)
+    assertSpanLeft(empty, empty, RA.empty())
+    assertSpanLeft(RA.empty(), RA.empty(), RA.empty())
     const inputAll: ReadonlyArray<number> = [1, 3]
-    assertSpanLeft(inputAll, inputAll, RA.empty)
+    assertSpanLeft(inputAll, inputAll, RA.empty())
     const inputNone: ReadonlyArray<number> = [2, 4]
-    assertSpanLeft(inputNone, RA.empty, inputNone)
+    assertSpanLeft(inputNone, RA.empty(), inputNone)
   })
 
   it("takeWhile", () => {
@@ -649,15 +649,15 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(RA.takeWhile(f)([2, 4, 3, 6]), [2, 4])
     const empty: ReadonlyArray<number> = []
     deepStrictEqual(RA.takeWhile(f)(empty), empty)
-    deepStrictEqual(RA.takeWhile(f)(RA.empty), RA.empty)
-    deepStrictEqual(RA.takeWhile(f)([1, 2, 4]), RA.empty)
+    deepStrictEqual(RA.takeWhile(f)(RA.empty()), RA.empty())
+    deepStrictEqual(RA.takeWhile(f)([1, 2, 4]), RA.empty())
     const input: ReadonlyArray<number> = [2, 4]
     deepStrictEqual(RA.takeWhile(f)(input), input)
   })
 
   it("dropLeft", () => {
     // _.empty
-    deepStrictEqual(RA.drop(0)(RA.empty), RA.empty)
+    deepStrictEqual(RA.drop(0)(RA.empty()), RA.empty())
     // empty
     const empty: ReadonlyArray<number> = []
     deepStrictEqual(RA.drop(0)(empty), empty)
@@ -666,19 +666,19 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(RA.drop(0)(full), full)
     deepStrictEqual(RA.drop(1)(full), [2])
     // full
-    deepStrictEqual(RA.drop(2)(full), RA.empty)
+    deepStrictEqual(RA.drop(2)(full), RA.empty())
     // out of bound
-    deepStrictEqual(RA.drop(1)(RA.empty), RA.empty)
+    deepStrictEqual(RA.drop(1)(RA.empty()), RA.empty())
     deepStrictEqual(RA.drop(1)(empty), empty)
-    deepStrictEqual(RA.drop(3)(full), RA.empty)
-    deepStrictEqual(RA.drop(-1)(RA.empty), RA.empty)
+    deepStrictEqual(RA.drop(3)(full), RA.empty())
+    deepStrictEqual(RA.drop(-1)(RA.empty()), RA.empty())
     deepStrictEqual(RA.drop(-1)(empty), empty)
     deepStrictEqual(RA.drop(-1)(full), full)
   })
 
   it("dropRight", () => {
     // _.empty
-    deepStrictEqual(RA.dropRight(0)(RA.empty), RA.empty)
+    deepStrictEqual(RA.dropRight(0)(RA.empty()), RA.empty())
     // empty
     const empty: ReadonlyArray<number> = []
     deepStrictEqual(RA.dropRight(0)(empty), empty)
@@ -687,22 +687,22 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(RA.dropRight(0)(full), full)
     deepStrictEqual(RA.dropRight(1)(full), [1])
     // full
-    deepStrictEqual(RA.dropRight(2)(full), RA.empty)
+    deepStrictEqual(RA.dropRight(2)(full), RA.empty())
     // out of bound
-    deepStrictEqual(RA.dropRight(1)(RA.empty), RA.empty)
+    deepStrictEqual(RA.dropRight(1)(RA.empty()), RA.empty())
     deepStrictEqual(RA.dropRight(1)(empty), empty)
-    deepStrictEqual(RA.dropRight(3)(full), RA.empty)
-    deepStrictEqual(RA.dropRight(-1)(RA.empty), RA.empty)
+    deepStrictEqual(RA.dropRight(3)(full), RA.empty())
+    deepStrictEqual(RA.dropRight(-1)(RA.empty()), RA.empty())
     deepStrictEqual(RA.dropRight(-1)(empty), empty)
     deepStrictEqual(RA.dropRight(-1)(full), full)
   })
 
   it("dropLeftWhile", () => {
     const f = RA.dropWhile((n: number) => n > 0)
-    deepStrictEqual(f(RA.empty), RA.empty)
+    deepStrictEqual(f(RA.empty()), RA.empty())
     const empty: ReadonlyArray<number> = []
     deepStrictEqual(f(empty), empty)
-    deepStrictEqual(f([1, 2]), RA.empty)
+    deepStrictEqual(f([1, 2]), RA.empty())
     const x1: ReadonlyArray<number> = [-1, -2]
     deepStrictEqual(f(x1), x1)
     const x2: ReadonlyArray<number> = [-1, 2]
@@ -841,7 +841,7 @@ describe.concurrent("ReadonlyArray", () => {
         { a: 3, b: "b1" }
       ]
     )
-    deepStrictEqual(RA.sort(Number.Order)(RA.empty), RA.empty)
+    deepStrictEqual(RA.sort(Number.Order)(RA.empty()), RA.empty())
     const as: ReadonlyArray<number> = [1]
     deepStrictEqual(RA.sort(Number.Order)(as), as)
 
@@ -1065,8 +1065,8 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("rotate", () => {
-    deepStrictEqual(RA.rotate(0)(RA.empty), RA.empty)
-    deepStrictEqual(RA.rotate(1)(RA.empty), RA.empty)
+    deepStrictEqual(RA.rotate(0)(RA.empty()), RA.empty())
+    deepStrictEqual(RA.rotate(1)(RA.empty()), RA.empty())
 
     const singleton: ReadonlyArray<number> = [1]
     deepStrictEqual(RA.rotate(1)(singleton), singleton)
@@ -1119,7 +1119,7 @@ describe.concurrent("ReadonlyArray", () => {
   it("reverse", () => {
     const empty: ReadonlyArray<number> = []
     deepStrictEqual(RA.reverse(empty), empty)
-    deepStrictEqual(RA.reverse(RA.empty), RA.empty)
+    deepStrictEqual(RA.reverse(RA.empty()), RA.empty())
     const singleton: ReadonlyArray<number> = [1]
     deepStrictEqual(RA.reverse(singleton), singleton)
     deepStrictEqual(RA.reverse([1, 2, 3]), [3, 2, 1])
@@ -1207,15 +1207,15 @@ describe.concurrent("ReadonlyArray", () => {
       { a: "b", b: 3, c: true }
     ])
 
-    deepStrictEqual(f(RA.empty), RA.empty)
+    deepStrictEqual(f(RA.empty()), RA.empty())
     deepStrictEqual(RA.sortBy([])(xs), xs)
   })
 
   it("chop", () => {
     const f = RA.chop<number, number>((as) => [as[0] * 2, as.slice(1)])
     const empty: ReadonlyArray<number> = []
-    deepStrictEqual(f(empty), RA.empty)
-    deepStrictEqual(f(RA.empty), RA.empty)
+    deepStrictEqual(f(empty), RA.empty())
+    deepStrictEqual(f(RA.empty()), RA.empty())
     deepStrictEqual(f([1, 2, 3]), [2, 4, 6])
     deepStrictEqual(RA.chopNonEmpty<number, number>((as) => [as[0] * 2, as.slice(1)])([1, 2, 3]), [
       2,
@@ -1241,23 +1241,23 @@ describe.concurrent("ReadonlyArray", () => {
     }
     deepStrictEqual(RA.splitAt(1)([1, 2]), [[1], [2]])
     const two: ReadonlyArray<number> = [1, 2]
-    assertSplitAt(two, 2, two, RA.empty)
+    assertSplitAt(two, 2, two, RA.empty())
     deepStrictEqual(RA.splitAt(2)([1, 2, 3, 4, 5]), [
       [1, 2],
       [3, 4, 5]
     ])
     // zero
     const empty: ReadonlyArray<number> = []
-    assertSplitAt(RA.empty, 0, RA.empty, RA.empty)
-    assertSplitAt(empty, 0, empty, RA.empty)
-    assertSplitAt(two, 0, RA.empty, two)
+    assertSplitAt(RA.empty(), 0, RA.empty(), RA.empty())
+    assertSplitAt(empty, 0, empty, RA.empty())
+    assertSplitAt(two, 0, RA.empty(), two)
     // out of bounds
-    assertSplitAt(RA.empty, -1, RA.empty, RA.empty)
-    assertSplitAt(empty, -1, empty, RA.empty)
-    assertSplitAt(two, -1, RA.empty, two)
-    assertSplitAt(two, 3, two, RA.empty)
-    assertSplitAt(RA.empty, 3, RA.empty, RA.empty)
-    assertSplitAt(empty, 3, empty, RA.empty)
+    assertSplitAt(RA.empty(), -1, RA.empty(), RA.empty())
+    assertSplitAt(empty, -1, empty, RA.empty())
+    assertSplitAt(two, -1, RA.empty(), two)
+    assertSplitAt(two, 3, two, RA.empty())
+    assertSplitAt(RA.empty(), 3, RA.empty(), RA.empty())
+    assertSplitAt(empty, 3, empty, RA.empty())
 
     deepStrictEqual(pipe(RA.make(1, 2, 3, 4), RA.splitNonEmptyAt(2)), [[1, 2], [3, 4]])
   })
@@ -1289,12 +1289,12 @@ describe.concurrent("ReadonlyArray", () => {
 
     it("returns an empty array if provided an empty array", () => {
       const empty: ReadonlyArray<number> = []
-      deepStrictEqual(RA.chunksOf(0)(empty), RA.empty)
-      deepStrictEqual(RA.chunksOf(0)(RA.empty), RA.empty)
-      deepStrictEqual(RA.chunksOf(1)(empty), RA.empty)
-      deepStrictEqual(RA.chunksOf(1)(RA.empty), RA.empty)
-      deepStrictEqual(RA.chunksOf(2)(empty), RA.empty)
-      deepStrictEqual(RA.chunksOf(2)(RA.empty), RA.empty)
+      deepStrictEqual(RA.chunksOf(0)(empty), RA.empty())
+      deepStrictEqual(RA.chunksOf(0)(RA.empty()), RA.empty())
+      deepStrictEqual(RA.chunksOf(1)(empty), RA.empty())
+      deepStrictEqual(RA.chunksOf(1)(RA.empty()), RA.empty())
+      deepStrictEqual(RA.chunksOf(2)(empty), RA.empty())
+      deepStrictEqual(RA.chunksOf(2)(RA.empty()), RA.empty())
     })
 
     it("should respect the law: chunksOf(n)(xs).concat(chunksOf(n)(ys)) == chunksOf(n)(xs.concat(ys)))", () => {
@@ -1348,11 +1348,11 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(pipe(two, RA.union([3, 4])), [1, 2, 3, 4])
     deepStrictEqual(pipe(two, RA.union([2, 3])), [1, 2, 3])
     deepStrictEqual(pipe(two, RA.union([1, 2])), [1, 2])
-    deepStrictEqual(pipe(two, RA.union(RA.empty)), two)
-    deepStrictEqual(pipe(RA.empty, RA.union(two)), two)
+    deepStrictEqual(pipe(two, RA.union(RA.empty())), two)
+    deepStrictEqual(pipe(RA.empty(), RA.union(two)), two)
     deepStrictEqual(
-      pipe(RA.empty, RA.union(RA.empty)),
-      RA.empty
+      pipe(RA.empty(), RA.union(RA.empty())),
+      RA.empty()
     )
     deepStrictEqual(RA.unionNonEmpty([3, 4])([1, 2]), [1, 2, 3, 4])
   })
@@ -1481,7 +1481,7 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("size", () => {
-    deepStrictEqual(RA.size(RA.empty), 0)
+    deepStrictEqual(RA.size(RA.empty()), 0)
     deepStrictEqual(RA.size([]), 0)
     deepStrictEqual(RA.size(["a"]), 1)
   })
@@ -1493,7 +1493,7 @@ describe.concurrent("ReadonlyArray", () => {
 
   it("fromResult", () => {
     deepStrictEqual(RA.fromEither(E.right(1)), [1])
-    deepStrictEqual(RA.fromEither(E.left("a")), RA.empty)
+    deepStrictEqual(RA.fromEither(E.left("a")), RA.empty())
   })
 
   test("product", () => {
