@@ -262,6 +262,17 @@ describe.concurrent("Chunk", () => {
     )
   })
 
+  it("prependAllNonEmpty", () => {
+    expect(pipe(C.empty(), C.prependAllNonEmpty(C.make(1)))).toEqual(C.make(1))
+    expect(pipe(C.make(1), C.prependAllNonEmpty(C.empty()))).toEqual(C.make(1))
+
+    expect(pipe(C.empty(), C.prependAllNonEmpty(C.make(1, 2)))).toEqual(C.make(1, 2))
+    expect(pipe(C.make(1, 2), C.prependAllNonEmpty(C.empty()))).toEqual(C.make(1, 2))
+
+    expect(pipe(C.make(2, 3), C.prependAllNonEmpty(C.make(1)))).toEqual(C.make(1, 2, 3))
+    expect(pipe(C.make(3), C.prependAllNonEmpty(C.make(1, 2)))).toEqual(C.make(1, 2, 3))
+  })
+
   it("prepend", () => {
     fc.assert(
       fc.property(
