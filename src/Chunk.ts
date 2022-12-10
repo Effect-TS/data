@@ -623,7 +623,7 @@ export function prependAllNonEmpty<B>(
 export function prependAllNonEmpty<B>(
   that: Chunk<B>
 ): <A>(self: NonEmptyChunk<A>) => Chunk<A | B> {
-  return concat(that)
+  return (self) => concat(self)(that)
 }
 
 /**
