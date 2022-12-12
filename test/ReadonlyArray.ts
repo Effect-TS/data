@@ -94,6 +94,544 @@ describe.concurrent("ReadonlyArray", () => {
     expect(RA.flatMapNullable).exist
   })
 
+  describe("iterable inputs", () => {
+    it("prepend", () => {
+      deepStrictEqual(pipe([1, 2, 3], RA.prepend(0)), [0, 1, 2, 3])
+      deepStrictEqual(pipe([[2]], RA.prepend([1])), [[1], [2]])
+
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.prepend(0)), [0, 1, 2, 3])
+      deepStrictEqual(pipe(new Set([[2]]), RA.prepend([1])), [[1], [2]])
+    })
+
+    it("prependAll", () => {
+      deepStrictEqual(pipe([3, 4], RA.prependAll([1, 2])), [1, 2, 3, 4])
+
+      deepStrictEqual(pipe([3, 4], RA.prependAll(new Set([1, 2]))), [1, 2, 3, 4])
+      deepStrictEqual(pipe(new Set([3, 4]), RA.prependAll([1, 2])), [1, 2, 3, 4])
+    })
+
+    it("prependAllNonEmpty", () => {
+      deepStrictEqual(pipe([3, 4], RA.prependAllNonEmpty([1, 2])), [1, 2, 3, 4])
+
+      deepStrictEqual(pipe(RA.make(3, 4), RA.prependAllNonEmpty(new Set([1, 2]))), [1, 2, 3, 4])
+      deepStrictEqual(pipe(new Set([3, 4]), RA.prependAllNonEmpty([1, 2])), [1, 2, 3, 4])
+    })
+
+    it("append", () => {
+      deepStrictEqual(pipe([1, 2, 3], RA.append(4)), [1, 2, 3, 4])
+      deepStrictEqual(pipe([[1]], RA.append([2])), [[1], [2]])
+
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.append(4)), [1, 2, 3, 4])
+      deepStrictEqual(pipe(new Set([[1]]), RA.append([2])), [[1], [2]])
+    })
+
+    it("appendAll", () => {
+      deepStrictEqual(pipe([1, 2], RA.appendAll([3, 4])), [1, 2, 3, 4])
+
+      deepStrictEqual(pipe([1, 2], RA.appendAll(new Set([3, 4]))), [1, 2, 3, 4])
+      deepStrictEqual(pipe(new Set([1, 2]), RA.appendAll([3, 4])), [1, 2, 3, 4])
+    })
+
+    it("appendAllNonEmpty", () => {
+      deepStrictEqual(pipe([1, 2], RA.appendAllNonEmpty([3, 4])), [1, 2, 3, 4])
+
+      deepStrictEqual(pipe(RA.make(1, 2), RA.appendAllNonEmpty(new Set([3, 4]))), [1, 2, 3, 4])
+      deepStrictEqual(pipe(new Set([1, 2]), RA.appendAllNonEmpty([3, 4])), [1, 2, 3, 4])
+    })
+
+    it("scan", () => {
+      const f = (b: number, a: number) => b - a
+      deepStrictEqual(pipe([1, 2, 3], RA.scan(10, f)), [10, 9, 7, 4])
+      deepStrictEqual(pipe([0], RA.scan(10, f)), [10, 10])
+      deepStrictEqual(pipe([], RA.scan(10, f)), [10])
+
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.scan(10, f)), [10, 9, 7, 4])
+      deepStrictEqual(pipe(new Set([0]), RA.scan(10, f)), [10, 10])
+      deepStrictEqual(pipe(new Set([]), RA.scan(10, f)), [10])
+    })
+
+    it("scanRight", () => {
+      const f = (b: number, a: number) => a - b
+      deepStrictEqual(pipe([1, 2, 3], RA.scanRight(10, f)), [-8, 9, -7, 10])
+      deepStrictEqual(pipe([0], RA.scanRight(10, f)), [-10, 10])
+      deepStrictEqual(pipe([], RA.scanRight(10, f)), [10])
+
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.scanRight(10, f)), [-8, 9, -7, 10])
+      deepStrictEqual(pipe(new Set([0]), RA.scanRight(10, f)), [-10, 10])
+      deepStrictEqual(pipe(new Set([]), RA.scanRight(10, f)), [10])
+    })
+
+    it("tail", () => {
+      deepStrictEqual(RA.tail([1, 2, 3]), O.some([2, 3]))
+      deepStrictEqual(RA.tail([]), O.none)
+
+      deepStrictEqual(RA.tail(new Set([1, 2, 3])), O.some([2, 3]))
+      deepStrictEqual(RA.tail(new Set([])), O.none)
+    })
+
+    it("init", () => {
+      deepStrictEqual(RA.init([1, 2, 3]), O.some([1, 2]))
+      deepStrictEqual(RA.init([]), O.none)
+
+      deepStrictEqual(RA.init(new Set([1, 2, 3])), O.some([1, 2]))
+      deepStrictEqual(RA.init(new Set([])), O.none)
+    })
+
+    it("take", () => {
+      expect(pipe([1, 2, 3, 4], RA.take(2))).toEqual([1, 2])
+      expect(pipe([1, 2, 3, 4], RA.take(0))).toEqual([])
+      // out of bounds
+      expect(pipe([1, 2, 3, 4], RA.take(-10))).toEqual([])
+      expect(pipe([1, 2, 3, 4], RA.take(10))).toEqual([1, 2, 3, 4])
+
+      expect(pipe(new Set([1, 2, 3, 4]), RA.take(2))).toEqual([1, 2])
+      expect(pipe(new Set([1, 2, 3, 4]), RA.take(0))).toEqual([])
+      // out of bounds
+      expect(pipe(new Set([1, 2, 3, 4]), RA.take(-10))).toEqual([])
+      expect(pipe(new Set([1, 2, 3, 4]), RA.take(10))).toEqual([1, 2, 3, 4])
+    })
+
+    it("takeRight", () => {
+      deepStrictEqual(pipe(RA.empty(), RA.takeRight(0)), [])
+      deepStrictEqual(pipe([1, 2], RA.takeRight(0)), [])
+      deepStrictEqual(pipe([1, 2], RA.takeRight(1)), [2])
+      deepStrictEqual(pipe([1, 2], RA.takeRight(2)), [1, 2])
+      // out of bound
+      deepStrictEqual(pipe(RA.empty(), RA.takeRight(1)), [])
+      deepStrictEqual(pipe(RA.empty(), RA.takeRight(-1)), [])
+      deepStrictEqual(pipe([1, 2], RA.takeRight(3)), [1, 2])
+      deepStrictEqual(pipe([1, 2], RA.takeRight(-1)), [])
+
+      deepStrictEqual(pipe(new Set(), RA.takeRight(0)), [])
+      deepStrictEqual(pipe(new Set([1, 2]), RA.takeRight(0)), [])
+      deepStrictEqual(pipe(new Set([1, 2]), RA.takeRight(1)), [2])
+      deepStrictEqual(pipe(new Set([1, 2]), RA.takeRight(2)), [1, 2])
+      // out of bound
+      deepStrictEqual(pipe(new Set(), RA.takeRight(1)), [])
+      deepStrictEqual(pipe(new Set(), RA.takeRight(-1)), [])
+      deepStrictEqual(pipe(new Set([1, 2]), RA.takeRight(3)), [1, 2])
+      deepStrictEqual(pipe(new Set([1, 2]), RA.takeRight(-1)), [])
+    })
+
+    it("takeWhile", () => {
+      const f = (n: number) => n % 2 === 0
+      deepStrictEqual(pipe([2, 4, 3, 6], RA.takeWhile(f)), [2, 4])
+      deepStrictEqual(pipe(RA.empty(), RA.takeWhile(f)), [])
+      deepStrictEqual(pipe([1, 2, 4], RA.takeWhile(f)), [])
+      deepStrictEqual(pipe([2, 4], RA.takeWhile(f)), [2, 4])
+
+      deepStrictEqual(pipe(new Set([2, 4, 3, 6]), RA.takeWhile(f)), [2, 4])
+      deepStrictEqual(pipe(new Set<number>(), RA.takeWhile(f)), [])
+      deepStrictEqual(pipe(new Set([1, 2, 4]), RA.takeWhile(f)), [])
+      deepStrictEqual(pipe(new Set([2, 4]), RA.takeWhile(f)), [2, 4])
+    })
+
+    it("span", () => {
+      const f = RA.span((n: number) => n % 2 === 1)
+      const assertSpan = (
+        input: Iterable<number>,
+        expectedInit: ReadonlyArray<number>,
+        expectedRest: ReadonlyArray<number>
+      ) => {
+        const [init, rest] = f(input)
+        deepStrictEqual(init, expectedInit)
+        deepStrictEqual(rest, expectedRest)
+      }
+      assertSpan([1, 3, 2, 4, 5], [1, 3], [2, 4, 5])
+      assertSpan(RA.empty(), RA.empty(), RA.empty())
+      assertSpan([1, 3], [1, 3], RA.empty())
+      assertSpan([2, 4], RA.empty(), [2, 4])
+
+      assertSpan(new Set([1, 3, 2, 4, 5]), [1, 3], [2, 4, 5])
+      assertSpan(new Set(), RA.empty(), RA.empty())
+      assertSpan(new Set([1, 3]), [1, 3], RA.empty())
+      assertSpan(new Set([2, 4]), RA.empty(), [2, 4])
+    })
+
+    it("drop", () => {
+      deepStrictEqual(pipe(RA.empty(), RA.drop(0)), [])
+      deepStrictEqual(pipe([1, 2], RA.drop(0)), [1, 2])
+      deepStrictEqual(pipe([1, 2], RA.drop(1)), [2])
+      deepStrictEqual(pipe([1, 2], RA.drop(2)), [])
+      // out of bound
+      deepStrictEqual(pipe(RA.empty(), RA.drop(1)), [])
+      deepStrictEqual(pipe(RA.empty(), RA.drop(-1)), [])
+      deepStrictEqual(pipe([1, 2], RA.drop(3)), [])
+      deepStrictEqual(pipe([1, 2], RA.drop(-1)), [1, 2])
+
+      deepStrictEqual(pipe(new Set(), RA.drop(0)), [])
+      deepStrictEqual(pipe(new Set([1, 2]), RA.drop(0)), [1, 2])
+      deepStrictEqual(pipe(new Set([1, 2]), RA.drop(1)), [2])
+      deepStrictEqual(pipe(new Set([1, 2]), RA.drop(2)), [])
+      // out of bound
+      deepStrictEqual(pipe(new Set(), RA.drop(1)), [])
+      deepStrictEqual(pipe(new Set(), RA.drop(-1)), [])
+      deepStrictEqual(pipe(new Set([1, 2]), RA.drop(3)), [])
+      deepStrictEqual(pipe(new Set([1, 2]), RA.drop(-1)), [1, 2])
+    })
+
+    it("dropRight", () => {
+      deepStrictEqual(pipe([], RA.dropRight(0)), [])
+      deepStrictEqual(pipe([1, 2], RA.dropRight(0)), [1, 2])
+      deepStrictEqual(pipe([1, 2], RA.dropRight(1)), [1])
+      deepStrictEqual(pipe([1, 2], RA.dropRight(2)), [])
+      // out of bound
+      deepStrictEqual(pipe([], RA.dropRight(1)), [])
+      deepStrictEqual(pipe([1, 2], RA.dropRight(3)), [])
+      deepStrictEqual(pipe([], RA.dropRight(-1)), [])
+      deepStrictEqual(pipe([1, 2], RA.dropRight(-1)), [1, 2])
+
+      deepStrictEqual(pipe(new Set(), RA.dropRight(0)), [])
+      deepStrictEqual(pipe(new Set([1, 2]), RA.dropRight(0)), [1, 2])
+      deepStrictEqual(pipe(new Set([1, 2]), RA.dropRight(1)), [1])
+      deepStrictEqual(pipe(new Set([1, 2]), RA.dropRight(2)), [])
+      // out of bound
+      deepStrictEqual(pipe(new Set(), RA.dropRight(1)), [])
+      deepStrictEqual(pipe(new Set([1, 2]), RA.dropRight(3)), [])
+      deepStrictEqual(pipe(new Set(), RA.dropRight(-1)), [])
+      deepStrictEqual(pipe(new Set([1, 2]), RA.dropRight(-1)), [1, 2])
+    })
+
+    it("dropWhile", () => {
+      const f = RA.dropWhile((n: number) => n > 0)
+
+      deepStrictEqual(f([]), [])
+      deepStrictEqual(f([1, 2]), RA.empty())
+      deepStrictEqual(f([-1, -2]), [-1, -2])
+      deepStrictEqual(f([-1, 2]), [-1, 2])
+      deepStrictEqual(f([1, -2, 3]), [-2, 3])
+
+      deepStrictEqual(f(new Set<number>()), [])
+      deepStrictEqual(f(new Set([1, 2])), RA.empty())
+      deepStrictEqual(f(new Set([-1, -2])), [-1, -2])
+      deepStrictEqual(f(new Set([-1, 2])), [-1, 2])
+      deepStrictEqual(f(new Set([1, -2, 3])), [-2, 3])
+    })
+
+    it("findFirstIndex", () => {
+      deepStrictEqual(pipe([], RA.findFirstIndex((n) => n % 2 === 0)), O.none)
+      deepStrictEqual(pipe([1, 2, 3], RA.findFirstIndex((n) => n % 2 === 0)), O.some(1))
+      deepStrictEqual(pipe([1, 2, 3, 1], RA.findFirstIndex((n) => n % 2 === 0)), O.some(1))
+
+      deepStrictEqual(pipe(new Set<number>(), RA.findFirstIndex((n) => n % 2 === 0)), O.none)
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.findFirstIndex((n) => n % 2 === 0)), O.some(1))
+      deepStrictEqual(pipe(new Set([1, 2, 3, 4]), RA.findFirstIndex((n) => n % 2 === 0)), O.some(1))
+    })
+
+    it("findLastIndex", () => {
+      deepStrictEqual(pipe([], RA.findLastIndex((n) => n % 2 === 0)), O.none)
+      deepStrictEqual(pipe([1, 2, 3], RA.findLastIndex((n) => n % 2 === 0)), O.some(1))
+      deepStrictEqual(pipe([1, 2, 3, 4], RA.findLastIndex((n) => n % 2 === 0)), O.some(3))
+
+      deepStrictEqual(pipe(new Set<number>(), RA.findLastIndex((n) => n % 2 === 0)), O.none)
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.findLastIndex((n) => n % 2 === 0)), O.some(1))
+      deepStrictEqual(pipe(new Set([1, 2, 3, 4]), RA.findLastIndex((n) => n % 2 === 0)), O.some(3))
+    })
+
+    it("findFirst", () => {
+      deepStrictEqual(pipe([], RA.findFirst((n) => n % 2 === 0)), O.none)
+      deepStrictEqual(pipe([1, 2, 3], RA.findFirst((n) => n % 2 === 0)), O.some(2))
+      deepStrictEqual(pipe([1, 2, 3, 4], RA.findFirst((n) => n % 2 === 0)), O.some(2))
+
+      deepStrictEqual(pipe(new Set<number>(), RA.findFirst((n) => n % 2 === 0)), O.none)
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.findFirst((n) => n % 2 === 0)), O.some(2))
+      deepStrictEqual(pipe(new Set([1, 2, 3, 4]), RA.findFirst((n) => n % 2 === 0)), O.some(2))
+    })
+
+    it("findLast", () => {
+      deepStrictEqual(pipe([], RA.findLast((n) => n % 2 === 0)), O.none)
+      deepStrictEqual(pipe([1, 2, 3], RA.findLast((n) => n % 2 === 0)), O.some(2))
+      deepStrictEqual(pipe([1, 2, 3, 4], RA.findLast((n) => n % 2 === 0)), O.some(4))
+
+      deepStrictEqual(pipe(new Set<number>(), RA.findLast((n) => n % 2 === 0)), O.none)
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.findLast((n) => n % 2 === 0)), O.some(2))
+      deepStrictEqual(pipe(new Set([1, 2, 3, 4]), RA.findLast((n) => n % 2 === 0)), O.some(4))
+    })
+
+    it("insertAt", () => {
+      deepStrictEqual(RA.insertAt(1, 1)([]), O.none)
+      deepStrictEqual(RA.insertAt(0, 1)([]), O.some([1]))
+      deepStrictEqual(RA.insertAt(2, 5)([1, 2, 3, 4]), O.some([1, 2, 5, 3, 4]))
+      // out of bound
+      deepStrictEqual(RA.insertAt(-1, 5)([1, 2, 3, 4]), O.none)
+      deepStrictEqual(RA.insertAt(10, 5)([1, 2, 3, 4]), O.none)
+
+      deepStrictEqual(RA.insertAt(1, 1)(new Set([])), O.none)
+      deepStrictEqual(RA.insertAt(0, 1)(new Set([])), O.some([1]))
+      deepStrictEqual(RA.insertAt(2, 5)(new Set([1, 2, 3, 4])), O.some([1, 2, 5, 3, 4]))
+      // out of bound
+      deepStrictEqual(RA.insertAt(-1, 5)(new Set([1, 2, 3, 4])), O.none)
+      deepStrictEqual(RA.insertAt(10, 5)(new Set([1, 2, 3, 4])), O.none)
+    })
+
+    it("replace", () => {
+      deepStrictEqual(pipe([1, 2, 3], RA.replace(1, "a")), [1, "a", 3])
+      // out of bound
+      deepStrictEqual(pipe([], RA.replace(1, "a")), [])
+      deepStrictEqual(pipe([1, 2, 3], RA.replace(-1, "a")), [1, 2, 3])
+      deepStrictEqual(pipe([1, 2, 3], RA.replace(10, "a")), [1, 2, 3])
+
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.replace(1, "a")), [1, "a", 3])
+      // out of bound
+      deepStrictEqual(pipe(new Set([]), RA.replace(1, "a")), [])
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.replace(-1, "a")), [1, 2, 3])
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.replace(10, "a")), [1, 2, 3])
+    })
+
+    it("replaceOption", () => {
+      deepStrictEqual(pipe([1, 2, 3], RA.replaceOption(1, "a")), O.some([1, "a", 3]))
+      // out of bound
+      deepStrictEqual(pipe([], RA.replaceOption(1, "a")), O.none)
+      deepStrictEqual(pipe([1, 2, 3], RA.replaceOption(-1, "a")), O.none)
+      deepStrictEqual(pipe([1, 2, 3], RA.replaceOption(10, "a")), O.none)
+
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.replaceOption(1, "a")), O.some([1, "a", 3]))
+      // out of bound
+      deepStrictEqual(pipe(new Set([]), RA.replaceOption(1, "a")), O.none)
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.replaceOption(-1, "a")), O.none)
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.replaceOption(10, "a")), O.none)
+    })
+
+    it("modify", () => {
+      deepStrictEqual(pipe([1, 2, 3], RA.modify(1, double)), [1, 4, 3])
+      // out of bound
+      deepStrictEqual(pipe([], RA.modify(1, double)), [])
+      deepStrictEqual(pipe([1, 2, 3], RA.modify(10, double)), [1, 2, 3])
+
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.modify(1, double)), [1, 4, 3])
+      // out of bound
+      deepStrictEqual(pipe(new Set([]), RA.modify(1, double)), [])
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.modify(10, double)), [1, 2, 3])
+    })
+
+    it("modifyOption", () => {
+      deepStrictEqual(pipe([1, 2, 3], RA.modifyOption(1, double)), O.some([1, 4, 3]))
+      // out of bound
+      deepStrictEqual(pipe([], RA.modifyOption(1, double)), O.none)
+      deepStrictEqual(pipe([1, 2, 3], RA.modifyOption(10, double)), O.none)
+
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.modifyOption(1, double)), O.some([1, 4, 3]))
+      // out of bound
+      deepStrictEqual(pipe(new Set([]), RA.modifyOption(1, double)), O.none)
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.modifyOption(10, double)), O.none)
+    })
+
+    it("remove", () => {
+      deepStrictEqual(pipe([1, 2, 3], RA.remove(0)), [2, 3])
+      // out of bound
+      deepStrictEqual(pipe([], RA.remove(0)), [])
+      deepStrictEqual(pipe([1, 2, 3], RA.remove(-1)), [1, 2, 3])
+      deepStrictEqual(pipe([1, 2, 3], RA.remove(10)), [1, 2, 3])
+
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.remove(0)), [2, 3])
+      // out of bound
+      deepStrictEqual(pipe(new Set([]), RA.remove(0)), [])
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.remove(-1)), [1, 2, 3])
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.remove(10)), [1, 2, 3])
+    })
+
+    it("reverse", () => {
+      deepStrictEqual(RA.reverse([]), [])
+      deepStrictEqual(RA.reverse([1]), [1])
+      deepStrictEqual(RA.reverse([1, 2, 3]), [3, 2, 1])
+
+      deepStrictEqual(RA.reverse(new Set([])), [])
+      deepStrictEqual(RA.reverse(new Set([1])), [1])
+      deepStrictEqual(RA.reverse(new Set([1, 2, 3])), [3, 2, 1])
+    })
+
+    it("rights", () => {
+      deepStrictEqual(RA.rights([]), [])
+      deepStrictEqual(RA.rights([E.right(1), E.left("a"), E.right(2)]), [1, 2])
+
+      deepStrictEqual(RA.rights(new Set<E.Either<unknown, unknown>>()), [])
+      deepStrictEqual(RA.rights(new Set([E.right(1), E.left("a"), E.right(2)])), [1, 2])
+    })
+
+    it("lefts", () => {
+      deepStrictEqual(RA.lefts([]), [])
+      deepStrictEqual(RA.lefts([E.right(1), E.left("a"), E.right(2)]), ["a"])
+
+      deepStrictEqual(RA.lefts(new Set<E.Either<unknown, unknown>>()), [])
+      deepStrictEqual(RA.lefts(new Set([E.right(1), E.left("a"), E.right(2)])), ["a"])
+    })
+
+    it("sort", () => {
+      deepStrictEqual(RA.sort(Number.Order)([]), [])
+      deepStrictEqual(RA.sort(Number.Order)([1, 3, 2]), [1, 2, 3])
+
+      deepStrictEqual(RA.sort(Number.Order)(new Set<number>()), [])
+      deepStrictEqual(RA.sort(Number.Order)(new Set([1, 3, 2])), [1, 2, 3])
+    })
+
+    it("zip", () => {
+      deepStrictEqual(pipe(new Set([]), RA.zip(new Set(["a", "b", "c", "d"]))), [])
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.zip(new Set([]))), [])
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.zip(new Set(["a", "b", "c", "d"]))), [
+        [1, "a"],
+        [2, "b"],
+        [3, "c"]
+      ])
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.zip(new Set(["a", "b", "c", "d"]))), [
+        [1, "a"],
+        [2, "b"],
+        [3, "c"]
+      ])
+    })
+
+    it("zipWith", () => {
+      deepStrictEqual(
+        pipe(new Set([1, 2, 3]), RA.zipWith(new Set([]), (n, s) => s + n)),
+        []
+      )
+      deepStrictEqual(
+        pipe(new Set([]), RA.zipWith(new Set(["a", "b", "c", "d"]), (n, s) => s + n)),
+        []
+      )
+      deepStrictEqual(
+        pipe(new Set([]), RA.zipWith(new Set([]), (n, s) => s + n)),
+        []
+      )
+      deepStrictEqual(
+        pipe(new Set([1, 2, 3]), RA.zipWith(new Set(["a", "b", "c", "d"]), (n, s) => s + n)),
+        ["a1", "b2", "c3"]
+      )
+    })
+
+    it("unzip", () => {
+      deepStrictEqual(RA.unzip(new Set([])), [[], []])
+      deepStrictEqual(
+        RA.unzip(
+          new Set([
+            [1, "a"],
+            [2, "b"],
+            [3, "c"]
+          ])
+        ),
+        [
+          [1, 2, 3],
+          ["a", "b", "c"]
+        ]
+      )
+    })
+
+    it("intersperse", () => {
+      deepStrictEqual(pipe([], RA.intersperse(0)), [])
+      deepStrictEqual(pipe([1], RA.intersperse(0)), [1])
+      deepStrictEqual(pipe([1, 2, 3], RA.intersperse(0)), [1, 0, 2, 0, 3])
+      deepStrictEqual(pipe([1, 2], RA.intersperse(0)), [1, 0, 2])
+      deepStrictEqual(pipe([1, 2, 3, 4], RA.intersperse(0)), [1, 0, 2, 0, 3, 0, 4])
+
+      deepStrictEqual(pipe(new Set([]), RA.intersperse(0)), [])
+      deepStrictEqual(pipe(new Set([1]), RA.intersperse(0)), [1])
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.intersperse(0)), [1, 0, 2, 0, 3])
+      deepStrictEqual(pipe(new Set([1, 2]), RA.intersperse(0)), [1, 0, 2])
+      deepStrictEqual(pipe(new Set([1, 2, 3, 4]), RA.intersperse(0)), [1, 0, 2, 0, 3, 0, 4])
+    })
+
+    it("rotate", () => {
+      deepStrictEqual(RA.rotate(0)(RA.empty()), RA.empty())
+      deepStrictEqual(RA.rotate(1)(RA.empty()), RA.empty())
+      deepStrictEqual(RA.rotate(1)([1]), [1])
+      deepStrictEqual(RA.rotate(2)([1]), [1])
+      deepStrictEqual(RA.rotate(-1)([1]), [1])
+      deepStrictEqual(RA.rotate(-2)([1]), [1])
+      deepStrictEqual(RA.rotate(2)([1, 2]), [1, 2])
+      deepStrictEqual(RA.rotate(0)([1, 2]), [1, 2])
+      deepStrictEqual(RA.rotate(-2)([1, 2]), [1, 2])
+      deepStrictEqual(RA.rotate(1)([1, 2]), [2, 1])
+      deepStrictEqual(RA.rotate(1)(new Set([1, 2, 3, 4, 5])), [5, 1, 2, 3, 4])
+      deepStrictEqual(RA.rotate(2)(new Set([1, 2, 3, 4, 5])), [4, 5, 1, 2, 3])
+      deepStrictEqual(RA.rotate(-1)(new Set([1, 2, 3, 4, 5])), [2, 3, 4, 5, 1])
+      deepStrictEqual(RA.rotate(-2)(new Set([1, 2, 3, 4, 5])), [3, 4, 5, 1, 2])
+      // out of bounds
+      deepStrictEqual(RA.rotate(7)([1, 2, 3, 4, 5]), [4, 5, 1, 2, 3])
+      deepStrictEqual(RA.rotate(-7)([1, 2, 3, 4, 5]), [3, 4, 5, 1, 2])
+      deepStrictEqual(RA.rotate(2.2)([1, 2, 3, 4, 5]), [4, 5, 1, 2, 3])
+      deepStrictEqual(RA.rotate(-2.2)([1, 2, 3, 4, 5]), [3, 4, 5, 1, 2])
+    })
+
+    it("elem", () => {
+      deepStrictEqual(pipe([1, 2, 3], RA.elem(2)), true)
+      deepStrictEqual(pipe([1, 2, 3], RA.elem(0)), false)
+
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.elem(2)), true)
+      deepStrictEqual(pipe(new Set([1, 2, 3]), RA.elem(0)), false)
+    })
+
+    it("uniq", () => {
+      deepStrictEqual(RA.uniq([true, false, true, false]), [true, false])
+      deepStrictEqual(RA.uniq([-0, -0]), [-0])
+      deepStrictEqual(RA.uniq([0, -0]), [0])
+      deepStrictEqual(RA.uniq([1]), [1])
+      deepStrictEqual(RA.uniq([2, 1, 2]), [2, 1])
+      deepStrictEqual(RA.uniq([1, 2, 1]), [1, 2])
+      deepStrictEqual(RA.uniq([1, 2, 3, 4, 5]), [1, 2, 3, 4, 5])
+      deepStrictEqual(RA.uniq([1, 1, 2, 2, 3, 3, 4, 4, 5, 5]), [1, 2, 3, 4, 5])
+      deepStrictEqual(RA.uniq([1, 2, 3, 4, 5, 1, 2, 3, 4, 5]), [1, 2, 3, 4, 5])
+      deepStrictEqual(RA.uniq(["a", "b", "a"]), ["a", "b"])
+      deepStrictEqual(RA.uniq(["a", "b", "A"]), ["a", "b", "A"])
+      deepStrictEqual(RA.uniq([]), [])
+
+      deepStrictEqual(RA.uniq(new Map([["a", 1], ["b", 1]]).values()), [1])
+    })
+
+    it("splitAt", () => {
+      const assertSplitAt = (
+        input: ReadonlyArray<number>,
+        index: number,
+        expectedInit: ReadonlyArray<number>,
+        expectedRest: ReadonlyArray<number>
+      ) => {
+        const [init, rest] = RA.splitAt(index)(input)
+        deepStrictEqual(init, expectedInit)
+        deepStrictEqual(rest, expectedRest)
+      }
+      deepStrictEqual(RA.splitAt(1)([1, 2]), [[1], [2]])
+      assertSplitAt([1, 2], 2, [1, 2], [])
+      deepStrictEqual(RA.splitAt(2)([1, 2, 3, 4, 5]), [
+        [1, 2],
+        [3, 4, 5]
+      ])
+      deepStrictEqual(RA.splitAt(2)(new Set([1, 2, 3, 4, 5])), [
+        [1, 2],
+        [3, 4, 5]
+      ])
+      assertSplitAt([], 0, [], [])
+      assertSplitAt([1, 2], 0, [], [1, 2])
+
+      // out of bounds
+      assertSplitAt([], -1, [], [])
+      assertSplitAt([1, 2], -1, [], [1, 2])
+      assertSplitAt([1, 2], 3, [1, 2], [])
+      assertSplitAt([], 3, [], [])
+    })
+  })
+
+  it("splitNonEmptyAt", () => {
+    deepStrictEqual(pipe(RA.make(1, 2, 3, 4), RA.splitNonEmptyAt(2)), [[1, 2], [3, 4]])
+  })
+
+  it("rotateNonEmpty", () => {
+    deepStrictEqual(RA.rotateNonEmpty(2)([1, 2, 3, 4, 5]), [4, 5, 1, 2, 3])
+  })
+
+  it("intersperseNonEmpty", () => {
+    deepStrictEqual(pipe(RA.make(1), RA.intersperseNonEmpty(0)), [1])
+    deepStrictEqual(pipe(RA.make(1, 2, 3), RA.intersperseNonEmpty(0)), [1, 0, 2, 0, 3])
+  })
+
+  it("sortNonEmpty", () => {
+    deepStrictEqual(RA.sortNonEmpty(Number.Order)([1]), [1])
+    deepStrictEqual(RA.sortNonEmpty(Number.Order)([1, 3, 2]), [1, 2, 3])
+  })
+
+  describe("unsafeGet", () => {
+    it("should throw on index out of bound", () => {
+      expect(() => pipe([], RA.unsafeGet(100))).toThrowError(new Error("Index 100 out of bounds"))
+    })
+  })
+
   it("fromNullable", () => {
     deepStrictEqual(RA.fromNullable(undefined), [])
     deepStrictEqual(RA.fromNullable(null), [])
@@ -237,13 +775,6 @@ describe.concurrent("ReadonlyArray", () => {
   it("get", () => {
     deepStrictEqual(pipe([1, 2, 3], RA.get(0)), O.some(1))
     deepStrictEqual(pipe([1, 2, 3], RA.get(3)), O.none)
-  })
-
-  it("elem", () => {
-    deepStrictEqual(RA.elem(2)([1, 2, 3]), true)
-    deepStrictEqual(RA.elem(0)([1, 2, 3]), false)
-    deepStrictEqual(pipe([1, 2, 3], RA.elem(2)), true)
-    deepStrictEqual(pipe([1, 2, 3], RA.elem(0)), false)
   })
 
   it("unfold", () => {
@@ -564,17 +1095,6 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(RA.isNonEmpty([]), false)
   })
 
-  it("prepend", () => {
-    deepStrictEqual(pipe([1, 2, 3], RA.prepend(0)), [0, 1, 2, 3])
-    deepStrictEqual(pipe([[2]], RA.prepend([1])), [[1], [2]])
-  })
-
-  it("append", () => {
-    const as: ReadonlyArray<number> = [1, 2, 3]
-    deepStrictEqual(RA.append(4)(as), [1, 2, 3, 4])
-    deepStrictEqual(RA.append([2])([[1]]), [[1], [2]])
-  })
-
   it("head", () => {
     const as: ReadonlyArray<number> = [1, 2, 3]
     deepStrictEqual(RA.head(as), O.some(1))
@@ -587,290 +1107,9 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(RA.last([]), O.none)
   })
 
-  it("tail", () => {
-    const as: ReadonlyArray<number> = [1, 2, 3]
-    deepStrictEqual(RA.tail(as), O.some([2, 3]))
-    deepStrictEqual(RA.tail([]), O.none)
-  })
-
-  it("takeLeft", () => {
-    expect(pipe([1, 2, 3, 4], RA.take(2))).toEqual([1, 2])
-    // take(0)
-    expect(pipe([1, 2, 3, 4], RA.take(0))).toEqual([])
-    // out of bounds
-    expect(pipe([1, 2, 3, 4], RA.take(-10))).toEqual([])
-    expect(pipe([1, 2, 3, 4], RA.take(10))).toEqual([1, 2, 3, 4])
-  })
-
-  it("takeRight", () => {
-    // _.empty
-    deepStrictEqual(RA.takeRight(0)(RA.empty()), RA.empty())
-    // empty
-    const empty: ReadonlyArray<number> = []
-    deepStrictEqual(RA.takeRight(0)(empty), empty)
-    const full: ReadonlyArray<number> = [1, 2]
-    // non empty
-    deepStrictEqual(RA.takeRight(0)(full), RA.empty())
-    deepStrictEqual(RA.takeRight(1)(full), [2])
-    // full
-    deepStrictEqual(RA.takeRight(2)(full), full)
-    // out of bound
-    deepStrictEqual(RA.takeRight(1)(RA.empty()), RA.empty())
-    deepStrictEqual(RA.takeRight(1)(empty), empty)
-    deepStrictEqual(RA.takeRight(3)(full), full)
-    deepStrictEqual(RA.takeRight(-1)(RA.empty()), RA.empty())
-    deepStrictEqual(RA.takeRight(-1)(empty), empty)
-    deepStrictEqual(RA.takeRight(-1)(full), full)
-  })
-
-  it("span", () => {
-    const f = RA.span((n: number) => n % 2 === 1)
-    const assertSpanLeft = (
-      input: ReadonlyArray<number>,
-      expectedInit: ReadonlyArray<number>,
-      expectedRest: ReadonlyArray<number>
-    ) => {
-      const [init, rest] = f(input)
-      deepStrictEqual(init, expectedInit)
-      deepStrictEqual(rest, expectedRest)
-    }
-    deepStrictEqual(f([1, 3, 2, 4, 5]), [[1, 3], [2, 4, 5]])
-    const empty: ReadonlyArray<number> = []
-    assertSpanLeft(empty, empty, RA.empty())
-    assertSpanLeft(RA.empty(), RA.empty(), RA.empty())
-    const inputAll: ReadonlyArray<number> = [1, 3]
-    assertSpanLeft(inputAll, inputAll, RA.empty())
-    const inputNone: ReadonlyArray<number> = [2, 4]
-    assertSpanLeft(inputNone, RA.empty(), inputNone)
-  })
-
-  it("takeWhile", () => {
-    const f = (n: number) => n % 2 === 0
-    deepStrictEqual(RA.takeWhile(f)([2, 4, 3, 6]), [2, 4])
-    const empty: ReadonlyArray<number> = []
-    deepStrictEqual(RA.takeWhile(f)(empty), empty)
-    deepStrictEqual(RA.takeWhile(f)(RA.empty()), RA.empty())
-    deepStrictEqual(RA.takeWhile(f)([1, 2, 4]), RA.empty())
-    const input: ReadonlyArray<number> = [2, 4]
-    deepStrictEqual(RA.takeWhile(f)(input), input)
-  })
-
-  it("dropLeft", () => {
-    // _.empty
-    deepStrictEqual(RA.drop(0)(RA.empty()), RA.empty())
-    // empty
-    const empty: ReadonlyArray<number> = []
-    deepStrictEqual(RA.drop(0)(empty), empty)
-    const full: ReadonlyArray<number> = [1, 2]
-    // non empty
-    deepStrictEqual(RA.drop(0)(full), full)
-    deepStrictEqual(RA.drop(1)(full), [2])
-    // full
-    deepStrictEqual(RA.drop(2)(full), RA.empty())
-    // out of bound
-    deepStrictEqual(RA.drop(1)(RA.empty()), RA.empty())
-    deepStrictEqual(RA.drop(1)(empty), empty)
-    deepStrictEqual(RA.drop(3)(full), RA.empty())
-    deepStrictEqual(RA.drop(-1)(RA.empty()), RA.empty())
-    deepStrictEqual(RA.drop(-1)(empty), empty)
-    deepStrictEqual(RA.drop(-1)(full), full)
-  })
-
-  it("dropRight", () => {
-    // _.empty
-    deepStrictEqual(RA.dropRight(0)(RA.empty()), RA.empty())
-    // empty
-    const empty: ReadonlyArray<number> = []
-    deepStrictEqual(RA.dropRight(0)(empty), empty)
-    const full: ReadonlyArray<number> = [1, 2]
-    // non empty
-    deepStrictEqual(RA.dropRight(0)(full), full)
-    deepStrictEqual(RA.dropRight(1)(full), [1])
-    // full
-    deepStrictEqual(RA.dropRight(2)(full), RA.empty())
-    // out of bound
-    deepStrictEqual(RA.dropRight(1)(RA.empty()), RA.empty())
-    deepStrictEqual(RA.dropRight(1)(empty), empty)
-    deepStrictEqual(RA.dropRight(3)(full), RA.empty())
-    deepStrictEqual(RA.dropRight(-1)(RA.empty()), RA.empty())
-    deepStrictEqual(RA.dropRight(-1)(empty), empty)
-    deepStrictEqual(RA.dropRight(-1)(full), full)
-  })
-
-  it("dropLeftWhile", () => {
-    const f = RA.dropWhile((n: number) => n > 0)
-    deepStrictEqual(f(RA.empty()), RA.empty())
-    const empty: ReadonlyArray<number> = []
-    deepStrictEqual(f(empty), empty)
-    deepStrictEqual(f([1, 2]), RA.empty())
-    const x1: ReadonlyArray<number> = [-1, -2]
-    deepStrictEqual(f(x1), x1)
-    const x2: ReadonlyArray<number> = [-1, 2]
-    deepStrictEqual(f(x2), x2)
-    deepStrictEqual(f([1, -2, 3]), [-2, 3])
-  })
-
-  it("init", () => {
-    const as: ReadonlyArray<number> = [1, 2, 3]
-    deepStrictEqual(RA.init(as), O.some([1, 2]))
-    deepStrictEqual(RA.init([]), O.none)
-  })
-
-  it("findFirstIndex", () => {
-    deepStrictEqual(RA.findFirstIndex((x) => x === 2)([1, 2, 3]), O.some(1))
-    deepStrictEqual(RA.findFirstIndex((x) => x === 2)([]), O.none)
-  })
-
-  it("findFirst", () => {
-    deepStrictEqual(
-      pipe(
-        [],
-        RA.findFirst((x: { readonly a: number }) => x.a > 1)
-      ),
-      O.none
-    )
-    deepStrictEqual(
-      pipe(
-        [{ a: 1 }, { a: 2 }, { a: 3 }],
-        RA.findFirst((x) => x.a > 1)
-      ),
-      O.some({ a: 2 })
-    )
-    deepStrictEqual(
-      pipe(
-        [{ a: 1 }, { a: 2 }, { a: 3 }],
-        RA.findFirst((x) => x.a > 3)
-      ),
-      O.none
-    )
-  })
-
-  it("findLast", () => {
-    deepStrictEqual(
-      pipe(
-        [],
-        RA.findLast((x: { readonly a: number }) => x.a > 1)
-      ),
-      O.none
-    )
-    deepStrictEqual(
-      pipe(
-        [{ a: 1 }, { a: 2 }, { a: 3 }],
-        RA.findLast((x) => x.a > 1)
-      ),
-      O.some({ a: 3 })
-    )
-    deepStrictEqual(
-      pipe(
-        [{ a: 1 }, { a: 2 }, { a: 3 }],
-        RA.findLast((x) => x.a > 3)
-      ),
-      O.none
-    )
-  })
-
-  it("findLastIndex", () => {
-    interface X {
-      readonly a: number
-      readonly b: number
-    }
-    const xs: ReadonlyArray<X> = [
-      { a: 1, b: 0 },
-      { a: 1, b: 1 }
-    ]
-    deepStrictEqual(RA.findLastIndex((x: X) => x.a === 1)(xs), O.some(1))
-    deepStrictEqual(RA.findLastIndex((x: X) => x.a === 4)(xs), O.none)
-    deepStrictEqual(RA.findLastIndex((x: X) => x.a === 1)([]), O.none)
-  })
-
-  it("insertAt", () => {
-    deepStrictEqual(RA.insertAt(1, 1)([]), O.none)
-    deepStrictEqual(RA.insertAt(0, 1)([]), O.some([1] as const))
-    deepStrictEqual(
-      RA.insertAt(2, 5)([1, 2, 3, 4]),
-      O.some([1, 2, 5, 3, 4] as const)
-    )
-  })
-
-  it("replaceOption", () => {
-    expect(pipe([], RA.replaceOption(0, 2))).toEqual(O.none)
-    expect(pipe([1, 2, 3], RA.replaceOption(0, 2))).toEqual(O.some([2, 2, 3]))
-  })
-
-  it("replace", () => {
-    const as: ReadonlyArray<number> = [1, 2, 3]
-    deepStrictEqual(RA.replace(1, 1)(as), [1, 1, 3])
-    deepStrictEqual(RA.replace(1, 1)([]), [])
-  })
-
-  it("remove", () => {
-    const as: ReadonlyArray<number> = [1, 2, 3]
-    deepStrictEqual(RA.remove(0)(as), [2, 3])
-    deepStrictEqual(RA.remove(1)([]), [])
-  })
-
-  it("modifyOption", () => {
-    expect(pipe([], RA.modifyOption(0, (n: number) => n * 2))).toEqual(O.none)
-    expect(pipe([1, 2, 3], RA.modifyOption(0, (n: number) => n * 2))).toEqual(
-      O.some([2, 2, 3])
-    )
-  })
-
-  it("modify", () => {
-    deepStrictEqual(RA.modify(1, double)([1, 2, 3]), [1, 4, 3])
-    deepStrictEqual(RA.modify(1, double)([]), [])
-  })
-
-  it("sort", () => {
-    const S = pipe(
-      Number.Order,
-      Order.contramap((x: { readonly a: number }) => x.a)
-    )
-    deepStrictEqual(
-      pipe(
-        [
-          { a: 3, b: "b1" },
-          { a: 2, b: "b2" },
-          { a: 1, b: "b3" }
-        ],
-        RA.sort(S)
-      ),
-      [
-        { a: 1, b: "b3" },
-        { a: 2, b: "b2" },
-        { a: 3, b: "b1" }
-      ]
-    )
-    deepStrictEqual(RA.sort(Number.Order)(RA.empty()), RA.empty())
-    const as: ReadonlyArray<number> = [1]
-    deepStrictEqual(RA.sort(Number.Order)(as), as)
-
-    deepStrictEqual(RA.sortNonEmpty(Number.Order)([1, 3, 2]), [1, 2, 3])
-    deepStrictEqual(RA.sortNonEmpty(Number.Order)([1]), [1])
-  })
-
   it("zipNonEmptyWith", () => {
     deepStrictEqual(
       pipe([1, 2, 3], RA.zipNonEmptyWith(["a", "b", "c", "d"], (n, s) => s + n)),
-      ["a1", "b2", "c3"]
-    )
-  })
-
-  it("zipWith", () => {
-    deepStrictEqual(
-      pipe([1, 2, 3], RA.zipWith([], (n, s) => s + n)),
-      []
-    )
-    deepStrictEqual(
-      pipe([], RA.zipWith(["a", "b", "c", "d"], (n, s) => s + n)),
-      []
-    )
-    deepStrictEqual(
-      pipe([], RA.zipWith([], (n, s) => s + n)),
-      []
-    )
-    deepStrictEqual(
-      pipe([1, 2, 3], RA.zipWith(["a", "b", "c", "d"], (n, s) => s + n)),
       ["a1", "b2", "c3"]
     )
   })
@@ -883,39 +1122,9 @@ describe.concurrent("ReadonlyArray", () => {
     ])
   })
 
-  it("zip", () => {
-    deepStrictEqual(pipe([], RA.zip(["a", "b", "c", "d"])), [])
-    deepStrictEqual(pipe([1, 2, 3], RA.zip([])), [])
-    deepStrictEqual(pipe([1, 2, 3], RA.zip(["a", "b", "c", "d"])), [
-      [1, "a"],
-      [2, "b"],
-      [3, "c"]
-    ])
-    deepStrictEqual(pipe([1, 2, 3], RA.zip(["a", "b", "c", "d"])), [
-      [1, "a"],
-      [2, "b"],
-      [3, "c"]
-    ])
-  })
-
   it("unzipNonEmpty", () => {
     deepStrictEqual(
       RA.unzipNonEmpty([
-        [1, "a"],
-        [2, "b"],
-        [3, "c"]
-      ]),
-      [
-        [1, 2, 3],
-        ["a", "b", "c"]
-      ]
-    )
-  })
-
-  it("unzip", () => {
-    deepStrictEqual(RA.unzip([]), [[], []])
-    deepStrictEqual(
-      RA.unzip([
         [1, "a"],
         [2, "b"],
         [3, "c"]
@@ -960,7 +1169,7 @@ describe.concurrent("ReadonlyArray", () => {
     ) => {
       const chunks = RA.chunksOfNonEmpty(n)(input)
       strictEqual(chunks.length, 1)
-      strictEqual(RA.headNonEmpty(chunks), input)
+      deepStrictEqual(RA.headNonEmpty(chunks), input)
     }
     // n = length
     assertSingleChunk(RA.make(1, 2), 2)
@@ -1018,41 +1227,8 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(RA.max(Number.Order)([1]), 1)
   })
 
-  it("rights", () => {
-    deepStrictEqual(
-      RA.rights([E.right(1), E.left("foo"), E.right(2)]),
-      [1, 2]
-    )
-    deepStrictEqual(RA.rights([]), [])
-  })
-
-  it("lefts", () => {
-    deepStrictEqual(
-      RA.lefts([E.right(1), E.left("foo"), E.right(2)]),
-      ["foo"]
-    )
-    deepStrictEqual(RA.lefts([]), [])
-  })
-
   it("flatten", () => {
     deepStrictEqual(RA.flatten([[1], [2], [3]]), [1, 2, 3])
-  })
-
-  it("prependAll", () => {
-    deepStrictEqual(RA.prependAll([1, 2])([3, 4]), [1, 2, 3, 4])
-  })
-
-  it("prependAllNonEmpty", () => {
-    deepStrictEqual(RA.prependAllNonEmpty([1, 2])([3, 4]), [1, 2, 3, 4])
-  })
-
-  it("intersperse", () => {
-    deepStrictEqual(RA.intersperse(0)([]), [])
-    deepStrictEqual(RA.intersperse(0)([1]), [1])
-    deepStrictEqual(RA.intersperse(0)([1, 2, 3]), [1, 0, 2, 0, 3])
-    deepStrictEqual(RA.intersperse(0)([1, 2]), [1, 0, 2])
-    deepStrictEqual(RA.intersperse(0)([1, 2, 3, 4]), [1, 0, 2, 0, 3, 0, 4])
-    deepStrictEqual(RA.intersperseNonEmpty(0)([1]), [1])
   })
 
   it("intercalate", () => {
@@ -1062,35 +1238,6 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(RA.intercalate(String.Monoid)("-")(["a", "", "c"]), "a--c")
     deepStrictEqual(RA.intercalate(String.Monoid)("-")(["a", "b"]), "a-b")
     deepStrictEqual(RA.intercalate(String.Monoid)("-")(["a", "b", "c", "d"]), "a-b-c-d")
-  })
-
-  it("rotate", () => {
-    deepStrictEqual(RA.rotate(0)(RA.empty()), RA.empty())
-    deepStrictEqual(RA.rotate(1)(RA.empty()), RA.empty())
-
-    const singleton: ReadonlyArray<number> = [1]
-    deepStrictEqual(RA.rotate(1)(singleton), singleton)
-    deepStrictEqual(RA.rotate(2)(singleton), singleton)
-    deepStrictEqual(RA.rotate(-1)(singleton), singleton)
-    deepStrictEqual(RA.rotate(-2)(singleton), singleton)
-    const two: ReadonlyArray<number> = [1, 2]
-    deepStrictEqual(RA.rotate(2)(two), two)
-    deepStrictEqual(RA.rotate(0)(two), two)
-    deepStrictEqual(RA.rotate(-2)(two), two)
-
-    deepStrictEqual(RA.rotate(1)([1, 2]), [2, 1])
-    deepStrictEqual(RA.rotate(1)([1, 2, 3, 4, 5]), [5, 1, 2, 3, 4])
-    deepStrictEqual(RA.rotate(2)([1, 2, 3, 4, 5]), [4, 5, 1, 2, 3])
-    deepStrictEqual(RA.rotate(-1)([1, 2, 3, 4, 5]), [2, 3, 4, 5, 1])
-    deepStrictEqual(RA.rotate(-2)([1, 2, 3, 4, 5]), [3, 4, 5, 1, 2])
-
-    deepStrictEqual(RA.rotate(7)([1, 2, 3, 4, 5]), [4, 5, 1, 2, 3])
-    deepStrictEqual(RA.rotate(-7)([1, 2, 3, 4, 5]), [3, 4, 5, 1, 2])
-
-    deepStrictEqual(RA.rotate(2.2)([1, 2, 3, 4, 5]), [4, 5, 1, 2, 3])
-    deepStrictEqual(RA.rotate(-2.2)([1, 2, 3, 4, 5]), [3, 4, 5, 1, 2])
-
-    deepStrictEqual(RA.rotateNonEmpty(2)([1, 2, 3, 4, 5]), [4, 5, 1, 2, 3])
   })
 
   it("group", () => {
@@ -1111,18 +1258,8 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("reverseNonEmpty", () => {
-    const singleton: RA.NonEmptyReadonlyArray<number> = [1]
-    strictEqual(RA.reverseNonEmpty(singleton), singleton)
+    deepStrictEqual(RA.reverseNonEmpty([1]), [1])
     deepStrictEqual(RA.reverseNonEmpty(RA.make(1, 2, 3)), [3, 2, 1])
-  })
-
-  it("reverse", () => {
-    const empty: ReadonlyArray<number> = []
-    deepStrictEqual(RA.reverse(empty), empty)
-    deepStrictEqual(RA.reverse(RA.empty()), RA.empty())
-    const singleton: ReadonlyArray<number> = [1]
-    deepStrictEqual(RA.reverse(singleton), singleton)
-    deepStrictEqual(RA.reverse([1, 2, 3]), [3, 2, 1])
   })
 
   it("match", () => {
@@ -1141,74 +1278,61 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(len([1, 2, 3]), 3)
   })
 
-  it("scan", () => {
-    const f = (b: number, a: number) => b - a
-    deepStrictEqual(RA.scan(10, f)([1, 2, 3]), [10, 9, 7, 4])
-    deepStrictEqual(RA.scan(10, f)([0]), [10, 10])
-    deepStrictEqual(RA.scan(10, f)([]), [10])
-  })
-
-  it("scanRight", () => {
-    const f = (b: number, a: number) => a - b
-    deepStrictEqual(RA.scanRight(10, f)([1, 2, 3]), [-8, 9, -7, 10])
-    deepStrictEqual(RA.scanRight(10, f)([0]), [-10, 10])
-    deepStrictEqual(RA.scanRight(10, f)([]), [10])
-  })
-
-  it("uniq", () => {
-    deepStrictEqual(RA.uniq([true, false, true, false]), [true, false])
-    deepStrictEqual(RA.uniq([-0, -0]), [-0])
-    deepStrictEqual(RA.uniq([0, -0]), [0])
-    deepStrictEqual(RA.uniq([1]), [1])
-    deepStrictEqual(RA.uniq([2, 1, 2]), [2, 1])
-    deepStrictEqual(RA.uniq([1, 2, 1]), [1, 2])
-    deepStrictEqual(RA.uniq([1, 2, 3, 4, 5]), [1, 2, 3, 4, 5])
-    deepStrictEqual(RA.uniq([1, 1, 2, 2, 3, 3, 4, 4, 5, 5]), [1, 2, 3, 4, 5])
-    deepStrictEqual(RA.uniq([1, 2, 3, 4, 5, 1, 2, 3, 4, 5]), [1, 2, 3, 4, 5])
-    deepStrictEqual(RA.uniq(["a", "b", "a"]), ["a", "b"])
-    deepStrictEqual(RA.uniq(["a", "b", "A"]), ["a", "b", "A"])
-    deepStrictEqual(RA.uniq([]), [])
-
+  it("uniqNonEmpty", () => {
     deepStrictEqual(RA.uniqNonEmpty(["a", "b", "A"]), ["a", "b", "A"])
   })
 
-  it("sortBy", () => {
+  it("sortBy / sortByNonEmpty", () => {
     interface X {
       readonly a: string
       readonly b: number
       readonly c: boolean
     }
+
     const byName = pipe(
       String.Order,
       Order.contramap((p: { readonly a: string; readonly b: number }) => p.a)
     )
+
     const byAge = pipe(
       Number.Order,
       Order.contramap((p: { readonly a: string; readonly b: number }) => p.b)
     )
-    const f = RA.sortBy([byName, byAge])
-    const xs: RA.NonEmptyReadonlyArray<X> = [
+
+    const sortByNameByAge = RA.sortBy(byName, byAge)
+
+    const xs: RA.NonEmptyArray<X> = [
       { a: "a", b: 1, c: true },
       { a: "b", b: 3, c: true },
       { a: "c", b: 2, c: true },
       { a: "b", b: 2, c: true }
     ]
-    deepStrictEqual(f(xs), [
+
+    deepStrictEqual(RA.sortBy()(xs), xs)
+    deepStrictEqual(sortByNameByAge([]), [])
+    deepStrictEqual(sortByNameByAge(xs), [
       { a: "a", b: 1, c: true },
       { a: "b", b: 2, c: true },
       { a: "b", b: 3, c: true },
       { a: "c", b: 2, c: true }
     ])
-    const sortByAgeByName = RA.sortByNonEmpty([byAge, byName])
+
+    deepStrictEqual(RA.sortBy()(new Set(xs)), xs)
+    deepStrictEqual(sortByNameByAge(new Set([])), [])
+    deepStrictEqual(sortByNameByAge(new Set(xs)), [
+      { a: "a", b: 1, c: true },
+      { a: "b", b: 2, c: true },
+      { a: "b", b: 3, c: true },
+      { a: "c", b: 2, c: true }
+    ])
+
+    const sortByAgeByName = RA.sortByNonEmpty(byAge, byName)
     deepStrictEqual(sortByAgeByName(xs), [
       { a: "a", b: 1, c: true },
       { a: "b", b: 2, c: true },
       { a: "c", b: 2, c: true },
       { a: "b", b: 3, c: true }
     ])
-
-    deepStrictEqual(f(RA.empty()), RA.empty())
-    deepStrictEqual(RA.sortBy([])(xs), xs)
   })
 
   it("chop", () => {
@@ -1222,44 +1346,6 @@ describe.concurrent("ReadonlyArray", () => {
       4,
       6
     ])
-  })
-
-  it("appendAllNonEmpty", () => {
-    deepStrictEqual(pipe([1, 2], RA.appendAllNonEmpty([3, 4])), [1, 2, 3, 4])
-  })
-
-  it("splitAt", () => {
-    const assertSplitAt = (
-      input: ReadonlyArray<number>,
-      index: number,
-      expectedInit: ReadonlyArray<number>,
-      expectedRest: ReadonlyArray<number>
-    ) => {
-      const [init, rest] = RA.splitAt(index)(input)
-      deepStrictEqual(init, expectedInit)
-      deepStrictEqual(rest, expectedRest)
-    }
-    deepStrictEqual(RA.splitAt(1)([1, 2]), [[1], [2]])
-    const two: ReadonlyArray<number> = [1, 2]
-    assertSplitAt(two, 2, two, RA.empty())
-    deepStrictEqual(RA.splitAt(2)([1, 2, 3, 4, 5]), [
-      [1, 2],
-      [3, 4, 5]
-    ])
-    // zero
-    const empty: ReadonlyArray<number> = []
-    assertSplitAt(RA.empty(), 0, RA.empty(), RA.empty())
-    assertSplitAt(empty, 0, empty, RA.empty())
-    assertSplitAt(two, 0, RA.empty(), two)
-    // out of bounds
-    assertSplitAt(RA.empty(), -1, RA.empty(), RA.empty())
-    assertSplitAt(empty, -1, empty, RA.empty())
-    assertSplitAt(two, -1, RA.empty(), two)
-    assertSplitAt(two, 3, two, RA.empty())
-    assertSplitAt(RA.empty(), 3, RA.empty(), RA.empty())
-    assertSplitAt(empty, 3, empty, RA.empty())
-
-    deepStrictEqual(pipe(RA.make(1, 2, 3, 4), RA.splitNonEmptyAt(2)), [[1, 2], [3, 4]])
   })
 
   describe.concurrent("chunksOf", () => {

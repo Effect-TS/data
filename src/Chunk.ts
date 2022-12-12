@@ -26,8 +26,7 @@ export type TypeId = typeof TypeId
  * @category model
  * @since 1.0.0
  */
-export interface NonEmptyChunk<A> extends Chunk<A>, NonEmptyIterable<A> {
-}
+export interface NonEmptyChunk<A> extends Chunk<A>, NonEmptyIterable<A> {}
 
 /**
  * @since 1.0.0
