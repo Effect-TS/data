@@ -185,7 +185,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getFirstLeftMonoid: <A, E>(M: Monoid<A>) => Monoid<These<NonEmptyChunk<E>, A>>
+export declare const getFirstLeftMonoid: <A, E>(M: Monoid<A>) => Monoid<These<readonly [E, ...E[]], A>>
 ```
 
 Added in v1.0.0
@@ -195,7 +195,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getFirstLeftSemigroup: <A, E>(S: Semigroup<A>) => Semigroup<These<NonEmptyChunk<E>, A>>
+export declare const getFirstLeftSemigroup: <A, E>(S: Semigroup<A>) => Semigroup<These<readonly [E, ...E[]], A>>
 ```
 
 Added in v1.0.0
@@ -227,7 +227,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const fail: <E>(e: E) => These<NonEmptyChunk<E>, never>
+export declare const fail: <E>(e: E) => These<readonly [E, ...E[]], never>
 ```
 
 Added in v1.0.0
@@ -291,7 +291,7 @@ Alias of `right`.
 **Signature**
 
 ```ts
-export declare const succeed: <A>(a: A) => These<NonEmptyChunk<never>, A>
+export declare const succeed: <A>(a: A) => These<readonly [never, ...never[]], A>
 ```
 
 Added in v1.0.0
@@ -301,7 +301,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const warn: <E, A>(e: E, a: A) => These<NonEmptyChunk<E>, A>
+export declare const warn: <E, A>(e: E, a: A) => These<readonly [E, ...E[]], A>
 ```
 
 Added in v1.0.0
@@ -333,7 +333,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const fromEither: <E, A>(self: Either<E, A>) => These<NonEmptyChunk<E>, A>
+export declare const fromEither: <E, A>(self: Either<E, A>) => These<readonly [E, ...E[]], A>
 ```
 
 Added in v1.0.0
@@ -373,7 +373,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const fromThese: <E, A>(self: These<E, A>) => These<NonEmptyChunk<E>, A>
+export declare const fromThese: <E, A>(self: These<E, A>) => These<readonly [E, ...E[]], A>
 ```
 
 Added in v1.0.0
@@ -459,10 +459,10 @@ Added in v1.0.0
 ```ts
 export declare const andThenBind: <N extends string, A extends object, E2, B>(
   name: Exclude<N, keyof A>,
-  fb: These<NonEmptyChunk<E2>, B>
+  fb: These<readonly [E2, ...E2[]], B>
 ) => <E1>(
-  self: These<NonEmptyChunk<E1>, A>
-) => These<NonEmptyChunk<E2 | E1>, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+  self: These<readonly [E1, ...E1[]], A>
+) => These<readonly [E2 | E1, ...(E2 | E1)[]], { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
 ```
 
 Added in v1.0.0
@@ -476,8 +476,8 @@ export declare const andThenBindEither: <N extends string, A extends object, E2,
   name: Exclude<N, keyof A>,
   fb: Either<E2, B>
 ) => <E1>(
-  self: These<NonEmptyChunk<E1>, A>
-) => These<NonEmptyChunk<E2 | E1>, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+  self: These<readonly [E1, ...E1[]], A>
+) => These<readonly [E2 | E1, ...(E2 | E1)[]], { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
 ```
 
 Added in v1.0.0
@@ -491,8 +491,8 @@ export declare const andThenBindThese: <N extends string, A extends object, E2, 
   name: Exclude<N, keyof A>,
   fb: These<E2, B>
 ) => <E1>(
-  self: These<NonEmptyChunk<E1>, A>
-) => These<NonEmptyChunk<E2 | E1>, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+  self: These<readonly [E1, ...E1[]], A>
+) => These<readonly [E2 | E1, ...(E2 | E1)[]], { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
 ```
 
 Added in v1.0.0
@@ -504,10 +504,10 @@ Added in v1.0.0
 ```ts
 export declare const bind: <N extends string, A extends object, E2, B>(
   name: Exclude<N, keyof A>,
-  f: (a: A) => These<NonEmptyChunk<E2>, B>
+  f: (a: A) => These<readonly [E2, ...E2[]], B>
 ) => <E1>(
-  self: These<NonEmptyChunk<E1>, A>
-) => These<NonEmptyChunk<E2 | E1>, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+  self: These<readonly [E1, ...E1[]], A>
+) => These<readonly [E2 | E1, ...(E2 | E1)[]], { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
 ```
 
 Added in v1.0.0
@@ -521,8 +521,8 @@ export declare const bindEither: <N extends string, A extends object, E2, B>(
   name: Exclude<N, keyof A>,
   f: (a: A) => Either<E2, B>
 ) => <E1>(
-  self: These<NonEmptyChunk<E1>, A>
-) => These<NonEmptyChunk<E2 | E1>, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+  self: These<readonly [E1, ...E1[]], A>
+) => These<readonly [E2 | E1, ...(E2 | E1)[]], { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
 ```
 
 Added in v1.0.0
@@ -536,8 +536,8 @@ export declare const bindThese: <N extends string, A extends object, E2, B>(
   name: Exclude<N, keyof A>,
   f: (a: A) => These<E2, B>
 ) => <E1>(
-  self: These<NonEmptyChunk<E1>, A>
-) => These<NonEmptyChunk<E2 | E1>, { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+  self: These<readonly [E1, ...E1[]], A>
+) => These<readonly [E2 | E1, ...(E2 | E1)[]], { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
 ```
 
 Added in v1.0.0
@@ -1099,7 +1099,10 @@ Added in v1.0.0
 ```ts
 export declare const lift2: <A, B, C>(
   f: (a: A, b: B) => C
-) => <E1, E2>(fa: These<NonEmptyChunk<E1>, A>, fb: These<NonEmptyChunk<E2>, B>) => These<NonEmptyChunk<E1 | E2>, C>
+) => <E1, E2>(
+  fa: These<readonly [E1, ...E1[]], A>,
+  fb: These<readonly [E2, ...E2[]], B>
+) => These<readonly [E1 | E2, ...(E1 | E2)[]], C>
 ```
 
 Added in v1.0.0
@@ -1112,10 +1115,10 @@ Added in v1.0.0
 export declare const lift3: <A, B, C, D>(
   f: (a: A, b: B, c: C) => D
 ) => <E1, E2, E3>(
-  fa: These<NonEmptyChunk<E1>, A>,
-  fb: These<NonEmptyChunk<E2>, B>,
-  fc: These<NonEmptyChunk<E3>, C>
-) => These<NonEmptyChunk<E1 | E2 | E3>, D>
+  fa: These<readonly [E1, ...E1[]], A>,
+  fb: These<readonly [E2, ...E2[]], B>,
+  fc: These<readonly [E3, ...E3[]], C>
+) => These<readonly [E1 | E2 | E3, ...(E1 | E2 | E3)[]], D>
 ```
 
 Added in v1.0.0
@@ -1127,7 +1130,7 @@ Added in v1.0.0
 ```ts
 export declare const liftEither: <A extends readonly unknown[], E, B>(
   f: (...a: A) => Either<E, B>
-) => (...a: A) => These<NonEmptyChunk<E>, B>
+) => (...a: A) => These<readonly [E, ...E[]], B>
 ```
 
 Added in v1.0.0
@@ -1178,7 +1181,7 @@ Added in v1.0.0
 ```ts
 export declare const liftThese: <A extends readonly unknown[], E, B>(
   f: (...a: A) => These<E, B>
-) => (...a: A) => These<NonEmptyChunk<E>, B>
+) => (...a: A) => These<readonly [E, ...E[]], B>
 ```
 
 Added in v1.0.0
@@ -1295,7 +1298,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type Validated<E, A> = These<NonEmptyChunk<E>, A>
+export type Validated<E, A> = These<NonEmptyReadonlyArray<E>, A>
 ```
 
 Added in v1.0.0
@@ -1349,8 +1352,8 @@ produced by the effect.
 
 ```ts
 export declare const andThenDiscard: <E2, _>(
-  that: These<NonEmptyChunk<E2>, _>
-) => <E1, A>(self: These<NonEmptyChunk<E1>, A>) => These<NonEmptyChunk<E2 | E1>, A>
+  that: These<readonly [E2, ...E2[]], _>
+) => <E1, A>(self: These<readonly [E1, ...E1[]], A>) => These<readonly [E2 | E1, ...(E2 | E1)[]], A>
 ```
 
 Added in v1.0.0
@@ -1361,8 +1364,8 @@ Added in v1.0.0
 
 ```ts
 export declare const flatMap: <A, E2, B>(
-  f: (a: A) => These<NonEmptyChunk<E2>, B>
-) => <E1>(self: These<NonEmptyChunk<E1>, A>) => These<NonEmptyChunk<E2 | E1>, B>
+  f: (a: A) => These<readonly [E2, ...E2[]], B>
+) => <E1>(self: These<readonly [E1, ...E1[]], A>) => These<readonly [E2 | E1, ...(E2 | E1)[]], B>
 ```
 
 Added in v1.0.0
@@ -1374,7 +1377,7 @@ Added in v1.0.0
 ```ts
 export declare const flatMapEither: <A, E2, B>(
   f: (a: A) => Either<E2, B>
-) => <E1>(self: These<NonEmptyChunk<E1>, A>) => These<NonEmptyChunk<E2 | E1>, B>
+) => <E1>(self: These<readonly [E1, ...E1[]], A>) => These<readonly [E2 | E1, ...(E2 | E1)[]], B>
 ```
 
 Added in v1.0.0
@@ -1387,7 +1390,7 @@ Added in v1.0.0
 export declare const flatMapNullable: <A, B, E2>(
   f: (a: A) => B | null | undefined,
   onNullable: (a: A) => E2
-) => <E1>(self: These<NonEmptyChunk<E1>, A>) => These<NonEmptyChunk<E2 | E1>, NonNullable<B>>
+) => <E1>(self: These<readonly [E1, ...E1[]], A>) => These<readonly [E2 | E1, ...(E2 | E1)[]], NonNullable<B>>
 ```
 
 Added in v1.0.0
@@ -1400,7 +1403,7 @@ Added in v1.0.0
 export declare const flatMapOption: <A, B, E2>(
   f: (a: A) => Option<B>,
   onNone: (a: A) => E2
-) => <E1>(self: These<NonEmptyChunk<E1>, A>) => These<NonEmptyChunk<E2 | E1>, B>
+) => <E1>(self: These<readonly [E1, ...E1[]], A>) => These<readonly [E2 | E1, ...(E2 | E1)[]], B>
 ```
 
 Added in v1.0.0
@@ -1412,7 +1415,7 @@ Added in v1.0.0
 ```ts
 export declare const flatMapThese: <A, E2, B>(
   f: (a: A) => These<E2, B>
-) => <E1>(self: These<NonEmptyChunk<E1>, A>) => These<NonEmptyChunk<E2 | E1>, B>
+) => <E1>(self: These<readonly [E1, ...E1[]], A>) => These<readonly [E2 | E1, ...(E2 | E1)[]], B>
 ```
 
 Added in v1.0.0
@@ -1489,8 +1492,8 @@ Added in v3.0.0
 
 ```ts
 export declare const andThen: <E2, B>(
-  that: These<NonEmptyChunk<E2>, B>
-) => <E1, _>(self: These<NonEmptyChunk<E1>, _>) => These<NonEmptyChunk<E2 | E1>, B>
+  that: These<readonly [E2, ...E2[]], B>
+) => <E1, _>(self: These<readonly [E1, ...E1[]], _>) => These<readonly [E2 | E1, ...(E2 | E1)[]], B>
 ```
 
 Added in v1.0.0
@@ -1501,8 +1504,8 @@ Added in v1.0.0
 
 ```ts
 export declare const ap: <E2, A>(
-  fa: These<NonEmptyChunk<E2>, A>
-) => <E1, B>(self: These<NonEmptyChunk<E1>, (a: A) => B>) => These<NonEmptyChunk<E2 | E1>, B>
+  fa: These<readonly [E2, ...E2[]], A>
+) => <E1, B>(self: These<readonly [E1, ...E1[]], (a: A) => B>) => These<readonly [E2 | E1, ...(E2 | E1)[]], B>
 ```
 
 Added in v1.0.0
@@ -1513,8 +1516,8 @@ Added in v1.0.0
 
 ```ts
 export declare const composeKleisliArrow: <B, E2, C>(
-  bfc: (b: B) => These<NonEmptyChunk<E2>, C>
-) => <A, E1>(afb: (a: A) => These<NonEmptyChunk<E1>, B>) => (a: A) => These<NonEmptyChunk<E2 | E1>, C>
+  bfc: (b: B) => These<readonly [E2, ...E2[]], C>
+) => <A, E1>(afb: (a: A) => These<readonly [E1, ...E1[]], B>) => (a: A) => These<readonly [E2 | E1, ...(E2 | E1)[]], C>
 ```
 
 Added in v1.0.0
@@ -1525,8 +1528,8 @@ Added in v1.0.0
 
 ```ts
 export declare const flatten: <E2, E1, A>(
-  self: These<NonEmptyChunk<E2>, These<NonEmptyChunk<E1>, A>>
-) => These<NonEmptyChunk<E2 | E1>, A>
+  self: These<readonly [E2, ...E2[]], These<readonly [E1, ...E1[]], A>>
+) => These<readonly [E2 | E1, ...(E2 | E1)[]], A>
 ```
 
 Added in v1.0.0
@@ -1537,8 +1540,8 @@ Added in v1.0.0
 
 ```ts
 export declare const product: <E2, B>(
-  that: These<NonEmptyChunk<E2>, B>
-) => <E1, A>(self: These<NonEmptyChunk<E1>, A>) => These<NonEmptyChunk<E2 | E1>, readonly [A, B]>
+  that: These<readonly [E2, ...E2[]], B>
+) => <E1, A>(self: These<readonly [E1, ...E1[]], A>) => These<readonly [E2 | E1, ...(E2 | E1)[]], readonly [A, B]>
 ```
 
 Added in v1.0.0
@@ -1549,8 +1552,8 @@ Added in v1.0.0
 
 ```ts
 export declare const productAll: <E, A>(
-  collection: Iterable<These<NonEmptyChunk<E>, A>>
-) => These<NonEmptyChunk<E>, readonly A[]>
+  collection: Iterable<These<readonly [E, ...E[]], A>>
+) => These<readonly [E, ...E[]], readonly A[]>
 ```
 
 Added in v1.0.0
@@ -1561,10 +1564,10 @@ Added in v1.0.0
 
 ```ts
 export declare const productFlatten: <E2, B>(
-  that: These<NonEmptyChunk<E2>, B>
+  that: These<readonly [E2, ...E2[]], B>
 ) => <E1, A extends readonly any[]>(
-  self: These<NonEmptyChunk<E1>, A>
-) => These<NonEmptyChunk<E2 | E1>, readonly [...A, B]>
+  self: These<readonly [E1, ...E1[]], A>
+) => These<readonly [E2 | E1, ...(E2 | E1)[]], readonly [...A, B]>
 ```
 
 Added in v1.0.0
@@ -1575,8 +1578,8 @@ Added in v1.0.0
 
 ```ts
 export declare const productMany: <E, A>(
-  collection: Iterable<These<NonEmptyChunk<E>, A>>
-) => (self: These<NonEmptyChunk<E>, A>) => These<NonEmptyChunk<E>, readonly [A, ...A[]]>
+  collection: Iterable<These<readonly [E, ...E[]], A>>
+) => (self: These<readonly [E, ...E[]], A>) => These<readonly [E, ...E[]], readonly [A, ...A[]]>
 ```
 
 Added in v1.0.0
@@ -1596,11 +1599,14 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const struct: <R extends Record<string, These<NonEmptyChunk<any>, any>>>(
+export declare const struct: <R extends Record<string, These<readonly [any, ...any[]], any>>>(
   r: R
 ) => These<
-  NonEmptyChunk<[R[keyof R]] extends [These<NonEmptyChunk<infer E>, any>] ? E : never>,
-  { readonly [K in keyof R]: [R[K]] extends [These<NonEmptyChunk<any>, infer A>] ? A : never }
+  readonly [
+    [R[keyof R]] extends [These<readonly [infer E, ...(infer E)[]], any>] ? E : never,
+    ...([R[keyof R]] extends [These<readonly [infer E, ...(infer E)[]], any>] ? E : never)[]
+  ],
+  { readonly [K in keyof R]: [R[K]] extends [These<readonly [any, ...any[]], infer A>] ? A : never }
 >
 ```
 
@@ -1614,8 +1620,8 @@ Returns an effect that effectfully "peeks" at the success of this effect.
 
 ```ts
 export declare const tap: <A, E2, _>(
-  f: (a: A) => These<NonEmptyChunk<E2>, _>
-) => <E1>(self: These<NonEmptyChunk<E1>, A>) => These<NonEmptyChunk<E2 | E1>, A>
+  f: (a: A) => These<readonly [E2, ...E2[]], _>
+) => <E1>(self: These<readonly [E1, ...E1[]], A>) => These<readonly [E2 | E1, ...(E2 | E1)[]], A>
 ```
 
 Added in v1.0.0
@@ -1625,11 +1631,14 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const tuple: <T extends readonly These<NonEmptyChunk<any>, any>[]>(
+export declare const tuple: <T extends readonly These<readonly [any, ...any[]], any>[]>(
   ...tuple: T
 ) => These<
-  NonEmptyChunk<[T[number]] extends [These<NonEmptyChunk<infer E>, any>] ? E : never>,
-  Readonly<{ [I in keyof T]: [T[I]] extends [These<NonEmptyChunk<any>, infer A>] ? A : never }>
+  readonly [
+    [T[number]] extends [These<readonly [infer E, ...(infer E)[]], any>] ? E : never,
+    ...([T[number]] extends [These<readonly [infer E, ...(infer E)[]], any>] ? E : never)[]
+  ],
+  Readonly<{ [I in keyof T]: [T[I]] extends [These<readonly [any, ...any[]], infer A>] ? A : never }>
 >
 ```
 

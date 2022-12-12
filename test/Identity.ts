@@ -63,8 +63,8 @@ describe.concurrent("Identity", () => {
     expect(_.reduce).exist
     expect(_.reduceRight).exist
     expect(_.foldMap).exist
-    expect(_.toReadonlyArray).exist
-    expect(_.toReadonlyArrayWith).exist
+    expect(_.toArray).exist
+    expect(_.toArrayWith).exist
     expect(_.reduceKind).exist
     expect(_.reduceRightKind).exist
     expect(_.foldMapKind).exist

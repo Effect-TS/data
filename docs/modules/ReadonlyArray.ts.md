@@ -132,6 +132,7 @@ Added in v1.0.0
   - [mapNonEmptyWithIndex](#mapnonemptywithindex)
   - [mapWithIndex](#mapwithindex)
 - [models](#models)
+  - [NonEmptyArray (type alias)](#nonemptyarray-type-alias)
   - [NonEmptyReadonlyArray (type alias)](#nonemptyreadonlyarray-type-alias)
 - [mutations](#mutations)
   - [append](#append)
@@ -217,6 +218,7 @@ Added in v1.0.0
   - [productFlatten](#productflatten)
   - [productMany](#productmany)
   - [reverseNonEmpty](#reversenonempty)
+  - [slice](#slice)
   - [traverseFilter](#traversefilter)
   - [traversePartition](#traversepartition)
 
@@ -229,33 +231,35 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const empty: readonly never[]
+export declare const empty: <A = never>() => A[]
 ```
 
 Added in v1.0.0
 
 ## make
 
-Builds a `NonEmptyReadonlyArray` from an non-empty collection of elements.
+Builds a `NonEmptyArray` from an non-empty collection of elements.
 
 **Signature**
 
 ```ts
-export declare const make: <As extends readonly [any, ...any[]]>(...as: As) => readonly [As[number], ...As[number][]]
+export declare const make: <Elements extends [any, ...any[]]>(
+  ...elements: Elements
+) => [Elements[number], ...Elements[number][]]
 ```
 
 Added in v1.0.0
 
 ## makeBy
 
-Return a `ReadonlyArray` of length `n` with element `i` initialized with `f(i)`.
+Return a `NonEmptyArray` of length `n` with element `i` initialized with `f(i)`.
 
 **Note**. `n` is normalized to an integer >= 1.
 
 **Signature**
 
 ```ts
-export declare const makeBy: <A>(f: (i: number) => A) => (n: number) => readonly [A, ...A[]]
+export declare const makeBy: <A>(f: (i: number) => A) => (n: number) => [A, ...A[]]
 ```
 
 Added in v1.0.0
@@ -265,33 +269,33 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const of: <A>(a: A) => readonly [A, ...A[]]
+export declare const of: <A>(a: A) => [A, ...A[]]
 ```
 
 Added in v1.0.0
 
 ## range
 
-Create a non empty `ReadonlyArray` containing a range of integers, including both endpoints.
+Return a `NonEmptyArray` containing a range of integers, including both endpoints.
 
 **Signature**
 
 ```ts
-export declare const range: (start: number, end: number) => readonly [number, ...number[]]
+export declare const range: (start: number, end: number) => [number, ...number[]]
 ```
 
 Added in v1.0.0
 
 ## replicate
 
-Create a `ReadonlyArray` containing a value repeated the specified number of times.
+Return a `NonEmptyArray` containing a value repeated the specified number of times.
 
 **Note**. `n` is normalized to an integer >= 1.
 
 **Signature**
 
 ```ts
-export declare const replicate: <A>(a: A) => (n: number) => readonly [A, ...A[]]
+export declare const replicate: <A>(a: A) => (n: number) => [A, ...A[]]
 ```
 
 Added in v1.0.0
@@ -301,7 +305,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unfold: <B, A>(b: B, f: (b: B) => Option<readonly [A, B]>) => readonly A[]
+export declare const unfold: <B, A>(b: B, f: (b: B) => Option<readonly [A, B]>) => A[]
 ```
 
 Added in v1.0.0
@@ -313,7 +317,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const fromEither: <A>(e: Either<unknown, A>) => readonly A[]
+export declare const fromEither: <E, A>(self: Either<E, A>) => A[]
 ```
 
 Added in v1.0.0
@@ -333,7 +337,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const fromNullable: <A>(a: A) => readonly NonNullable<A>[]
+export declare const fromNullable: <A>(a: A) => NonNullable<A>[]
 ```
 
 Added in v1.0.0
@@ -343,7 +347,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const fromOption: <A>(o: Option<A>) => readonly A[]
+export declare const fromOption: <A>(self: Option<A>) => A[]
 ```
 
 Added in v1.0.0
@@ -370,7 +374,7 @@ A variant of `bind` that sequentially ignores the scope.
 export declare const andThenBind: <N extends string, A extends object, B>(
   name: Exclude<N, keyof A>,
   fb: readonly B[]
-) => (self: readonly A[]) => readonly { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }[]
+) => (self: readonly A[]) => readonly { [K in N | keyof A]: K extends keyof A ? A[K] : B }[]
 ```
 
 Added in v1.0.0
@@ -383,7 +387,7 @@ Added in v1.0.0
 export declare const bind: <N extends string, A extends object, B>(
   name: Exclude<N, keyof A>,
   f: (a: A) => readonly B[]
-) => (self: readonly A[]) => readonly { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }[]
+) => (self: readonly A[]) => readonly { [K in N | keyof A]: K extends keyof A ? A[K] : B }[]
 ```
 
 Added in v1.0.0
@@ -396,7 +400,7 @@ Added in v1.0.0
 export declare const let: <N extends string, A extends object, B>(
   name: Exclude<N, keyof A>,
   f: (a: A) => B
-) => (self: readonly A[]) => readonly { readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }[]
+) => (self: readonly A[]) => readonly { [K in N | keyof A]: K extends keyof A ? A[K] : B }[]
 ```
 
 Added in v1.0.0
@@ -408,7 +412,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const compact: <A>(self: Iterable<Option<A>>) => readonly A[]
+export declare const compact: <A>(self: Iterable<Option<A>>) => A[]
 ```
 
 Added in v1.0.0
@@ -431,7 +435,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const filterMap: <A, B>(f: (a: A) => Option<B>) => (self: Iterable<A>) => readonly B[]
+export declare const filterMap: <A, B>(f: (a: A) => Option<B>) => (self: Iterable<A>) => B[]
 ```
 
 Added in v1.0.0
@@ -441,9 +445,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const filterMapWithIndex: <A, B>(
-  f: (a: A, i: number) => Option<B>
-) => (self: Iterable<A>) => readonly B[]
+export declare const filterMapWithIndex: <A, B>(f: (a: A, i: number) => Option<B>) => (self: Iterable<A>) => B[]
 ```
 
 Added in v1.0.0
@@ -454,8 +456,8 @@ Added in v1.0.0
 
 ```ts
 export declare const filterWithIndex: {
-  <C extends A, B extends A, A = C>(refinement: (a: A, i: number) => a is B): (fc: readonly C[]) => readonly B[]
-  <B extends A, A = B>(predicate: (a: A, i: number) => boolean): (fb: readonly B[]) => readonly B[]
+  <C extends A, B extends A, A = C>(refinement: (a: A, i: number) => a is B): (self: readonly C[]) => B[]
+  <B extends A, A = B>(predicate: (a: A, i: number) => boolean): (self: readonly B[]) => B[]
 }
 ```
 
@@ -481,9 +483,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const partitionMap: <A, B, C>(
-  f: (a: A) => Either<B, C>
-) => (self: readonly A[]) => readonly [readonly B[], readonly C[]]
+export declare const partitionMap: <A, B, C>(f: (a: A) => Either<B, C>) => (self: readonly A[]) => [B[], C[]]
 ```
 
 Added in v1.0.0
@@ -495,7 +495,7 @@ Added in v1.0.0
 ```ts
 export declare const partitionMapWithIndex: <A, B, C>(
   f: (a: A, i: number) => Either<B, C>
-) => (fa: readonly A[]) => readonly [readonly B[], readonly C[]]
+) => (self: readonly A[]) => [B[], C[]]
 ```
 
 Added in v1.0.0
@@ -506,12 +506,8 @@ Added in v1.0.0
 
 ```ts
 export declare const partitionWithIndex: {
-  <C extends A, B extends A, A = C>(refinement: (a: A, i: number) => a is B): (
-    fb: readonly C[]
-  ) => readonly [readonly C[], readonly B[]]
-  <B extends A, A = B>(predicate: (a: A, i: number) => boolean): (
-    fb: readonly B[]
-  ) => readonly [readonly B[], readonly B[]]
+  <C extends A, B extends A, A = C>(refinement: (a: A, i: number) => a is B): (self: readonly C[]) => [C[], B[]]
+  <B extends A, A = B>(predicate: (a: A, i: number) => boolean): (self: readonly B[]) => [B[], B[]]
 }
 ```
 
@@ -522,14 +518,14 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const separate: <A, B>(self: readonly Either<A, B>[]) => readonly [readonly A[], readonly B[]]
+export declare const separate: <A, B>(self: readonly Either<A, B>[]) => [A[], B[]]
 ```
 
 Added in v1.0.0
 
 ## span
 
-Split a `ReadonlyArray` into two parts:
+Split an `Iterable` into two parts:
 
 1. the longest initial subarray for which all elements satisfy the specified predicate
 2. the remaining elements
@@ -539,13 +535,11 @@ Split a `ReadonlyArray` into two parts:
 ```ts
 export declare function span<A, B extends A>(
   refinement: Refinement<A, B>
-): (as: ReadonlyArray<A>) => readonly [init: ReadonlyArray<B>, rest: ReadonlyArray<A>]
+): (self: Iterable<A>) => [init: Array<B>, rest: Array<A>]
 export declare function span<A>(
   predicate: Predicate<A>
-): <B extends A>(bs: ReadonlyArray<B>) => readonly [init: ReadonlyArray<B>, rest: ReadonlyArray<B>]
-export declare function span<A>(
-  predicate: Predicate<A>
-): (as: ReadonlyArray<A>) => readonly [init: ReadonlyArray<A>, rest: ReadonlyArray<A>]
+): <B extends A>(self: Iterable<B>) => [init: Array<B>, rest: Array<B>]
+export declare function span<A>(predicate: Predicate<A>): (self: Iterable<A>) => [init: Array<A>, rest: Array<A>]
 ```
 
 Added in v1.0.0
@@ -700,24 +694,24 @@ Added in v1.0.0
 
 ## scan
 
-Fold a `ReadonlyArray` from the left, keeping all intermediate results instead of only the final result.
+Fold an `Iterable` from the left, keeping all intermediate results instead of only the final result.
 
 **Signature**
 
 ```ts
-export declare const scan: <B, A>(b: B, f: (b: B, a: A) => B) => (self: readonly A[]) => readonly [B, ...B[]]
+export declare const scan: <B, A>(b: B, f: (b: B, a: A) => B) => (self: Iterable<A>) => [B, ...B[]]
 ```
 
 Added in v1.0.0
 
 ## scanRight
 
-Fold a `ReadonlyArray` from the right, keeping all intermediate results instead of only the final result.
+Fold an `Iterable` from the right, keeping all intermediate results instead of only the final result.
 
 **Signature**
 
 ```ts
-export declare const scanRight: <B, A>(b: B, f: (b: B, a: A) => B) => (self: readonly A[]) => readonly [B, ...B[]]
+export declare const scanRight: <B, A>(b: B, f: (b: B, a: A) => B) => (self: Iterable<A>) => [B, ...B[]]
 ```
 
 Added in v1.0.0
@@ -726,20 +720,20 @@ Added in v1.0.0
 
 ## chunksOf
 
-Splits a `ReadonlyArray` into length-`n` pieces. The last piece will be shorter if `n` does not evenly divide the length of
-the `ReadonlyArray`. Note that `chunksOf(n)([])` is `[]`, not `[[]]`. This is intentional, and is consistent with a recursive
+Splits an `Iterable` into length-`n` pieces. The last piece will be shorter if `n` does not evenly divide the length of
+the `Iterable`. Note that `chunksOf(n)([])` is `[]`, not `[[]]`. This is intentional, and is consistent with a recursive
 definition of `chunksOf`; it satisfies the property that
 
 ```ts
 chunksOf(n)(xs).concat(chunksOf(n)(ys)) == chunksOf(n)(xs.concat(ys)))
 ```
 
-whenever `n` evenly divides the length of `as`.
+whenever `n` evenly divides the length of `self`.
 
 **Signature**
 
 ```ts
-export declare const chunksOf: (n: number) => <A>(self: readonly A[]) => readonly (readonly [A, ...A[]])[]
+export declare const chunksOf: (n: number) => <A>(self: Iterable<A>) => [A, ...A[]][]
 ```
 
 Added in v1.0.0
@@ -752,105 +746,101 @@ the `NonEmptyReadonlyArray`.
 **Signature**
 
 ```ts
-export declare const chunksOfNonEmpty: (
-  n: number
-) => <A>(self: readonly [A, ...A[]]) => readonly [readonly [A, ...A[]], ...(readonly [A, ...A[]])[]]
+export declare const chunksOfNonEmpty: (n: number) => <A>(self: readonly [A, ...A[]]) => [[A, ...A[]], ...[A, ...A[]][]]
 ```
 
 Added in v1.0.0
 
 ## drop
 
-Drop a max number of elements from the start of an `ReadonlyArray`, creating a new `ReadonlyArray`.
+Drop a max number of elements from the start of an `Iterable`, creating a new `Array`.
 
 **Note**. `n` is normalized to a non negative integer.
 
 **Signature**
 
 ```ts
-export declare const drop: (n: number) => <A>(as: readonly A[]) => readonly A[]
+export declare const drop: (n: number) => <A>(self: Iterable<A>) => A[]
 ```
 
 Added in v1.0.0
 
 ## dropRight
 
-Drop a max number of elements from the end of an `ReadonlyArray`, creating a new `ReadonlyArray`.
+Drop a max number of elements from the end of an `Iterable`, creating a new `Array`.
 
 **Note**. `n` is normalized to a non negative integer.
 
 **Signature**
 
 ```ts
-export declare const dropRight: (n: number) => <A>(as: readonly A[]) => readonly A[]
+export declare const dropRight: (n: number) => <A>(self: Iterable<A>) => A[]
 ```
 
 Added in v1.0.0
 
 ## dropWhile
 
-Remove the longest initial subarray for which all element satisfy the specified predicate, creating a new `ReadonlyArray`.
+Remove the longest initial subarray for which all element satisfy the specified predicate, creating a new `Array`.
 
 **Signature**
 
 ```ts
-export declare function dropWhile<A, B extends A>(
-  refinement: Refinement<A, B>
-): (as: ReadonlyArray<A>) => ReadonlyArray<B>
-export declare function dropWhile<A>(predicate: Predicate<A>): <B extends A>(bs: ReadonlyArray<B>) => ReadonlyArray<B>
-export declare function dropWhile<A>(predicate: Predicate<A>): (as: ReadonlyArray<A>) => ReadonlyArray<A>
+export declare function dropWhile<A, B extends A>(refinement: Refinement<A, B>): (self: Iterable<A>) => Array<B>
+export declare function dropWhile<A>(predicate: Predicate<A>): <B extends A>(self: Iterable<B>) => Array<B>
+export declare function dropWhile<A>(predicate: Predicate<A>): (self: Iterable<A>) => Array<A>
 ```
 
 Added in v1.0.0
 
 ## findFirst
 
-Find the first element which satisfies a predicate function.
+Find the first element for which a predicate holds.
 
 **Signature**
 
 ```ts
-export declare function findFirst<A, B extends A>(refinement: Refinement<A, B>): (as: ReadonlyArray<A>) => Option<B>
-export declare function findFirst<A>(predicate: Predicate<A>): <B extends A>(bs: ReadonlyArray<B>) => Option<B>
-export declare function findFirst<A>(predicate: Predicate<A>): (as: ReadonlyArray<A>) => Option<A>
+export declare function findFirst<A, B extends A>(refinement: Refinement<A, B>): (self: Iterable<A>) => Option<B>
+export declare function findFirst<A>(predicate: Predicate<A>): <B extends A>(self: Iterable<B>) => Option<B>
+export declare function findFirst<A>(predicate: Predicate<A>): (self: Iterable<A>) => Option<A>
 ```
 
 Added in v1.0.0
 
 ## findFirstIndex
 
-Find the first index for which a predicate holds
+Return the first index for which a predicate holds.
 
 **Signature**
 
 ```ts
-export declare const findFirstIndex: <A>(predicate: Predicate<A>) => (as: readonly A[]) => Option<number>
+export declare const findFirstIndex: <A>(predicate: Predicate<A>) => (self: Iterable<A>) => Option<number>
 ```
 
 Added in v1.0.0
 
 ## findLast
 
-Find the last element which satisfies a predicate function.
+Find the last element for which a predicate holds.
 
 **Signature**
 
 ```ts
-export declare function findLast<A, B extends A>(refinement: Refinement<A, B>): (as: ReadonlyArray<A>) => Option<B>
-export declare function findLast<A>(predicate: Predicate<A>): <B extends A>(bs: ReadonlyArray<B>) => Option<B>
-export declare function findLast<A>(predicate: Predicate<A>): (as: ReadonlyArray<A>) => Option<A>
+export declare function findLast<A, B extends A>(refinement: Refinement<A, B>): (self: Iterable<A>) => Option<B>
+export declare function findLast<A>(predicate: Predicate<A>): <B extends A>(self: Iterable<B>) => Option<B>
+export declare function findLast<A>(predicate: Predicate<A>): (self: Iterable<A>) => Option<A>
 ```
 
 Added in v1.0.0
 
 ## findLastIndex
 
-Returns the index of the last element of the list which matches the predicate
+Return the last index for which a predicate holds.
 
 **Signature**
 
 ```ts
-export declare const findLastIndex: <A>(predicate: Predicate<A>) => (as: readonly A[]) => Option<number>
+export declare const findLastIndex: <A>(predicate: Predicate<A>) => (self: Iterable<A>) => Option<number>
 ```
 
 Added in v1.0.0
@@ -862,7 +852,7 @@ This function provides a safe way to read a value at a particular index from a `
 **Signature**
 
 ```ts
-export declare const get: (i: number) => <A>(self: readonly A[]) => Option<A>
+export declare const get: (index: number) => <A>(self: readonly A[]) => Option<A>
 ```
 
 Added in v1.0.0
@@ -891,12 +881,12 @@ Added in v1.0.0
 
 ## init
 
-Get all but the last element of a `ReadonlyArray`, creating a new `ReadonlyArray`, or `None` if the `ReadonlyArray` is empty.
+Get all but the last element of an `Iterable`, creating a new `Array`, or `None` if the `Iterable` is empty.
 
 **Signature**
 
 ```ts
-export declare const init: <A>(self: readonly A[]) => Option<readonly A[]>
+export declare const init: <A>(self: Iterable<A>) => Option<A[]>
 ```
 
 Added in v1.0.0
@@ -908,7 +898,7 @@ Get all but the last element of a non empty array, creating a new array.
 **Signature**
 
 ```ts
-export declare const initNonEmpty: <A>(self: readonly [A, ...A[]]) => readonly A[]
+export declare const initNonEmpty: <A>(self: readonly [A, ...A[]]) => A[]
 ```
 
 Added in v1.0.0
@@ -937,31 +927,31 @@ Added in v1.0.0
 
 ## lefts
 
-Extracts from a `ReadonlyArray` of `Either` all the `Left` elements.
+Return all the `Left` elements from an `Interable` of `Either`s.
 
 **Signature**
 
 ```ts
-export declare const lefts: <E>(self: readonly Either<E, unknown>[]) => readonly E[]
+export declare const lefts: <E, A>(self: Iterable<Either<E, A>>) => E[]
 ```
 
 Added in v1.0.0
 
 ## rights
 
-Extracts from a `ReadonlyArray` of `Either`s all the `Right` elements.
+Return all the `Right` elements from an `Interable` of `Either`s.
 
 **Signature**
 
 ```ts
-export declare const rights: <A>(self: readonly Either<unknown, A>[]) => readonly A[]
+export declare const rights: <E, A>(self: Iterable<Either<E, A>>) => A[]
 ```
 
 Added in v1.0.0
 
 ## size
 
-Calculate the number of elements in a `ReadonlyArray`.
+Return the number of elements in a `ReadonlyArray`.
 
 **Signature**
 
@@ -973,12 +963,12 @@ Added in v1.0.0
 
 ## splitAt
 
-Splits a `ReadonlyArray` into two pieces, the first piece has max `n` elements.
+Splits an `Iterable` into two pieces, the first piece has max `n` elements.
 
 **Signature**
 
 ```ts
-export declare const splitAt: (n: number) => <A>(self: readonly A[]) => readonly [readonly A[], readonly A[]]
+export declare const splitAt: (n: number) => <A>(self: Iterable<A>) => [A[], A[]]
 ```
 
 Added in v1.0.0
@@ -990,21 +980,19 @@ Splits a `NonEmptyReadonlyArray` into two pieces, the first piece has max `n` el
 **Signature**
 
 ```ts
-export declare const splitNonEmptyAt: (
-  n: number
-) => <A>(self: readonly [A, ...A[]]) => readonly [readonly [A, ...A[]], readonly A[]]
+export declare const splitNonEmptyAt: (n: number) => <A>(self: readonly [A, ...A[]]) => [[A, ...A[]], A[]]
 ```
 
 Added in v1.0.0
 
 ## tail
 
-Get all but the first element of a `ReadonlyArray`, creating a new `ReadonlyArray`, or `None` if the `ReadonlyArray` is empty.
+Get all but the first element of an `Iterable`, creating a new `Array`, or `None` if the `Iterable` is empty.
 
 **Signature**
 
 ```ts
-export declare const tail: <A>(self: readonly A[]) => Option<readonly A[]>
+export declare const tail: <A>(self: Iterable<A>) => Option<A[]>
 ```
 
 Added in v1.0.0
@@ -1014,74 +1002,72 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const tailNonEmpty: <A>(self: readonly [A, ...A[]]) => readonly A[]
+export declare const tailNonEmpty: <A>(self: readonly [A, ...A[]]) => A[]
 ```
 
 Added in v1.0.0
 
 ## take
 
-Keep only a max number of elements from the start of an `ReadonlyArray`, creating a new `ReadonlyArray`.
+Keep only a max number of elements from the start of an `Iterable`, creating a new `Array`.
 
 **Note**. `n` is normalized to a non negative integer.
 
 **Signature**
 
 ```ts
-export declare const take: (n: number) => <A>(self: readonly A[]) => readonly A[]
+export declare const take: (n: number) => <A>(self: Iterable<A>) => A[]
 ```
 
 Added in v1.0.0
 
 ## takeRight
 
-Keep only a max number of elements from the end of an `ReadonlyArray`, creating a new `ReadonlyArray`.
+Keep only a max number of elements from the end of an `Iterable`, creating a new `Array`.
 
 **Note**. `n` is normalized to a non negative integer.
 
 **Signature**
 
 ```ts
-export declare const takeRight: (n: number) => <A>(as: readonly A[]) => readonly A[]
+export declare const takeRight: (n: number) => <A>(self: Iterable<A>) => A[]
 ```
 
 Added in v1.0.0
 
 ## takeWhile
 
-Calculate the longest initial subarray for which all element satisfy the specified predicate, creating a new `ReadonlyArray`.
+Calculate the longest initial subarray for which all element satisfy the specified predicate, creating a new `Array`.
 
 **Signature**
 
 ```ts
-export declare function takeWhile<A, B extends A>(
-  refinement: Refinement<A, B>
-): (self: ReadonlyArray<A>) => ReadonlyArray<B>
-export declare function takeWhile<A>(predicate: Predicate<A>): <B extends A>(self: ReadonlyArray<B>) => ReadonlyArray<B>
+export declare function takeWhile<A, B extends A>(refinement: Refinement<A, B>): (self: Iterable<A>) => Array<B>
+export declare function takeWhile<A>(predicate: Predicate<A>): <B extends A>(self: Iterable<B>) => Array<B>
 ```
 
 Added in v1.0.0
 
 ## unappend
 
-Produces a couple of a copy of the array without its last element, and that last element.
+Return a tuple containing a copy of the `NonEmptyReadonlyArray` without its last element, and that last element.
 
 **Signature**
 
 ```ts
-export declare const unappend: <A>(self: readonly [A, ...A[]]) => readonly [readonly A[], A]
+export declare const unappend: <A>(self: readonly [A, ...A[]]) => [A[], A]
 ```
 
 Added in v1.0.0
 
 ## unprepend
 
-Produces a couple of the first element of the array, and a new array of the remaining elements, if any.
+Return a tuple containing the first element, and a new `Array` of the remaining elements, if any.
 
 **Signature**
 
 ```ts
-export declare const unprepend: <A>(self: readonly [A, ...A[]]) => readonly [A, readonly A[]]
+export declare const unprepend: <A>(self: readonly [A, ...A[]]) => [A, A[]]
 ```
 
 Added in v1.0.0
@@ -1090,29 +1076,25 @@ Added in v1.0.0
 
 ## group
 
-Group equal, consecutive elements of a `NonEmptyReadonlyArray` into `NonEmptyReadonlyArray`s.
+Group equal, consecutive elements of a `NonEmptyReadonlyArray` into `NonEmptyArray`s.
 
 **Signature**
 
 ```ts
-export declare const group: <A>(
-  self: readonly [A, ...A[]]
-) => readonly [readonly [A, ...A[]], ...(readonly [A, ...A[]])[]]
+export declare const group: <A>(self: readonly [A, ...A[]]) => [[A, ...A[]], ...[A, ...A[]][]]
 ```
 
 Added in v1.0.0
 
 ## groupBy
 
-Splits an array into sub-non-empty-arrays stored in an object, based on the result of calling a `string`-returning
+Splits an `Iterable` into sub-non-empty-arrays stored in an object, based on the result of calling a `string`-returning
 function on each element, and grouping the results according to values returned
 
 **Signature**
 
 ```ts
-export declare const groupBy: <A>(
-  f: (a: A) => string
-) => (self: readonly A[]) => Readonly<Record<string, readonly [A, ...A[]]>>
+export declare const groupBy: <A>(f: (a: A) => string) => (self: Iterable<A>) => Record<string, [A, ...A[]]>
 ```
 
 Added in v1.0.0
@@ -1342,9 +1324,7 @@ Check if a predicate holds true for every `ReadonlyArray` member.
 **Signature**
 
 ```ts
-export declare function every<A, B extends A>(
-  refinement: Refinement<A, B>
-): Refinement<ReadonlyArray<A>, ReadonlyArray<B>>
+export declare function every<A, B extends A>(refinement: Refinement<A, B>): Refinement<ReadonlyArray<A>, Array<B>>
 export declare function every<A>(predicate: Predicate<A>): Predicate<ReadonlyArray<A>>
 ```
 
@@ -1381,9 +1361,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const liftEither: <A extends readonly unknown[], E, B>(
-  f: (...a: A) => Either<E, B>
-) => (...a: A) => readonly B[]
+export declare const liftEither: <A extends unknown[], E, B>(f: (...a: A) => Either<E, B>) => (...a: A) => B[]
 ```
 
 Added in v1.0.0
@@ -1403,9 +1381,9 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const liftNullable: <A extends readonly unknown[], B>(
+export declare const liftNullable: <A extends unknown[], B>(
   f: (...a: A) => B | null | undefined
-) => (...a: A) => readonly NonNullable<B>[]
+) => (...a: A) => NonNullable<B>[]
 ```
 
 Added in v1.0.0
@@ -1415,9 +1393,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const liftOption: <A extends readonly unknown[], B>(
-  f: (...a: A) => Option<B>
-) => (...a: A) => readonly B[]
+export declare const liftOption: <A extends unknown[], B>(f: (...a: A) => Option<B>) => (...a: A) => B[]
 ```
 
 Added in v1.0.0
@@ -1443,8 +1419,8 @@ Added in v1.0.0
 
 ```ts
 export declare const liftPredicate: {
-  <C extends A, B extends A, A = C>(refinement: Refinement<A, B>): (c: C) => readonly B[]
-  <B extends A, A = B>(predicate: Predicate<A>): (b: B) => readonly B[]
+  <C extends A, B extends A, A = C>(refinement: Refinement<A, B>): (c: C) => B[]
+  <B extends A, A = B>(predicate: Predicate<A>): (b: B) => B[]
 }
 ```
 
@@ -1499,7 +1475,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const map: <A, B>(f: (a: A) => B) => (self: readonly A[]) => readonly B[]
+export declare const map: <A, B>(f: (a: A) => B) => (self: readonly A[]) => B[]
 ```
 
 Added in v1.0.0
@@ -1509,7 +1485,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const mapNonEmpty: <A, B>(f: (a: A) => B) => (self: readonly [A, ...A[]]) => readonly [B, ...B[]]
+export declare const mapNonEmpty: <A, B>(f: (a: A) => B) => (self: readonly [A, ...A[]]) => [B, ...B[]]
 ```
 
 Added in v1.0.0
@@ -1521,7 +1497,7 @@ Added in v1.0.0
 ```ts
 export declare const mapNonEmptyWithIndex: <A, B>(
   f: (a: A, i: number) => B
-) => (self: readonly [A, ...A[]]) => readonly [B, ...B[]]
+) => (self: readonly [A, ...A[]]) => [B, ...B[]]
 ```
 
 Added in v1.0.0
@@ -1531,12 +1507,22 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const mapWithIndex: <A, B>(f: (a: A, i: number) => B) => (self: readonly A[]) => readonly B[]
+export declare const mapWithIndex: <A, B>(f: (a: A, i: number) => B) => (self: readonly A[]) => B[]
 ```
 
 Added in v1.0.0
 
 # models
+
+## NonEmptyArray (type alias)
+
+**Signature**
+
+```ts
+export type NonEmptyArray<A> = [A, ...Array<A>]
+```
+
+Added in v1.0.0
 
 ## NonEmptyReadonlyArray (type alias)
 
@@ -1552,12 +1538,12 @@ Added in v1.0.0
 
 ## append
 
-Append an element to the end of a `ReadonlyArray`, creating a new non empty `ReadonlyArray`.
+Append an element to the end of an `Iterable`, creating a new `NonEmptyArray`.
 
 **Signature**
 
 ```ts
-export declare const append: <B>(last: B) => <A>(self: readonly A[]) => readonly [B | A, ...(B | A)[]]
+export declare const append: <B>(last: B) => <A>(self: Iterable<A>) => [B | A, ...(B | A)[]]
 ```
 
 Added in v1.0.0
@@ -1567,7 +1553,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const appendAll: <B>(that: readonly B[]) => <A>(self: readonly A[]) => readonly (B | A)[]
+export declare const appendAll: <B>(that: Iterable<B>) => <A>(self: Iterable<A>) => (B | A)[]
 ```
 
 Added in v1.0.0
@@ -1579,60 +1565,61 @@ Added in v1.0.0
 ```ts
 export declare function appendAllNonEmpty<B>(
   that: NonEmptyReadonlyArray<B>
-): <A>(self: ReadonlyArray<A>) => NonEmptyReadonlyArray<A | B>
+): <A>(self: Iterable<A>) => NonEmptyArray<A | B>
 export declare function appendAllNonEmpty<B>(
-  that: ReadonlyArray<B>
-): <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A | B>
+  that: Iterable<B>
+): <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyArray<A | B>
 ```
 
 Added in v1.0.0
 
 ## difference
 
-Creates a `ReadonlyArray` of values not included in the other given `ReadonlyArray` using a `Eq` for equality
-comparisons. The order and references of result values are determined by the first `ReadonlyArray`.
+Creates a `Array` of values not included in the other given `Iterable`.
+The order and references of result values are determined by the first `Iterable`.
 
 **Signature**
 
 ```ts
-export declare const difference: <B>(that: readonly B[]) => <A>(self: readonly A[]) => readonly A[]
+export declare const difference: <B>(that: Iterable<B>) => <A>(self: Iterable<A>) => A[]
 ```
 
 Added in v1.0.0
 
 ## insertAt
 
-Insert an element at the specified index, creating a new `ReadonlyArray`, or returning `None` if the index is out of bounds.
+Insert an element at the specified index, creating a new `NonEmptyArray`,
+or return `None` if the index is out of bounds.
 
 **Signature**
 
 ```ts
-export declare const insertAt: <B>(i: number, a: B) => <A>(self: readonly A[]) => Option<readonly [B | A, ...(B | A)[]]>
+export declare const insertAt: <B>(i: number, b: B) => <A>(self: Iterable<A>) => Option<[B | A, ...(B | A)[]]>
 ```
 
 Added in v1.0.0
 
 ## intersection
 
-Creates a `ReadonlyArray` of unique values that are included in all given `ReadonlyArray`s using a `Eq` for equality
-comparisons. The order and references of result values are determined by the first `ReadonlyArray`.
+Creates an `Array` of unique values that are included in all given `Iterable`s.
+The order and references of result values are determined by the first `Iterable`.
 
 **Signature**
 
 ```ts
-export declare const intersection: <A>(that: readonly A[]) => <B>(self: readonly B[]) => readonly (A & B)[]
+export declare const intersection: <A>(that: Iterable<A>) => <B>(self: Iterable<B>) => (A & B)[]
 ```
 
 Added in v1.0.0
 
 ## intersperse
 
-Places an element in between members of a `ReadonlyArray`
+Places an element in between members of an `Iterable`
 
 **Signature**
 
 ```ts
-export declare const intersperse: <B>(middle: B) => <A>(self: readonly A[]) => readonly (B | A)[]
+export declare const intersperse: <B>(middle: B) => <A>(self: Iterable<A>) => (B | A)[]
 ```
 
 Added in v1.0.0
@@ -1644,22 +1631,20 @@ Places an element in between members of a `NonEmptyReadonlyArray`
 **Signature**
 
 ```ts
-export declare const intersperseNonEmpty: <B>(
-  middle: B
-) => <A>(self: readonly [A, ...A[]]) => readonly [B | A, ...(B | A)[]]
+export declare const intersperseNonEmpty: <B>(middle: B) => <A>(self: readonly [A, ...A[]]) => [B | A, ...(B | A)[]]
 ```
 
 Added in v1.0.0
 
 ## modify
 
-Apply a function to the element at the specified index, creating a new `ReadonlyArray`,
-or returning the input if the index is out of bounds.
+Apply a function to the element at the specified index, creating a new `Array`,
+or return a copy of the input if the index is out of bounds.
 
 **Signature**
 
 ```ts
-export declare const modify: <A, B>(i: number, f: (a: A) => B) => (self: readonly A[]) => readonly (A | B)[]
+export declare const modify: <A, B>(i: number, f: (a: A) => B) => (self: Iterable<A>) => (A | B)[]
 ```
 
 Added in v1.0.0
@@ -1671,9 +1656,7 @@ Apply a function to the head, creating a new `NonEmptyReadonlyArray`.
 **Signature**
 
 ```ts
-export declare const modifyNonEmptyHead: <A, B>(
-  f: (a: A) => B
-) => (self: readonly [A, ...A[]]) => readonly [A | B, ...(A | B)[]]
+export declare const modifyNonEmptyHead: <A, B>(f: (a: A) => B) => (self: readonly [A, ...A[]]) => [A | B, ...(A | B)[]]
 ```
 
 Added in v1.0.0
@@ -1685,34 +1668,32 @@ Apply a function to the last element, creating a new `NonEmptyReadonlyArray`.
 **Signature**
 
 ```ts
-export declare const modifyNonEmptyLast: <A, B>(
-  f: (a: A) => B
-) => (self: readonly [A, ...A[]]) => readonly [A | B, ...(A | B)[]]
+export declare const modifyNonEmptyLast: <A, B>(f: (a: A) => B) => (self: readonly [A, ...A[]]) => [A | B, ...(A | B)[]]
 ```
 
 Added in v1.0.0
 
 ## modifyOption
 
+Apply a function to the element at the specified index, creating a new `Array`,
+or return `None` if the index is out of bounds.
+
 **Signature**
 
 ```ts
-export declare const modifyOption: <A, B>(
-  i: number,
-  f: (a: A) => B
-) => (self: readonly A[]) => Option<readonly (A | B)[]>
+export declare const modifyOption: <A, B>(i: number, f: (a: A) => B) => (self: Iterable<A>) => Option<(A | B)[]>
 ```
 
 Added in v1.0.0
 
 ## prepend
 
-Prepend an element to the front of a `ReadonlyArray`, creating a new non empty `ReadonlyArray`.
+Prepend an element to the front of an `Iterable`, creating a new `NonEmptyArray`.
 
 **Signature**
 
 ```ts
-export declare const prepend: <B>(head: B) => <A>(self: readonly A[]) => readonly [B | A, ...(B | A)[]]
+export declare const prepend: <B>(head: B) => <A>(self: Iterable<A>) => [B | A, ...(B | A)[]]
 ```
 
 Added in v1.0.0
@@ -1722,7 +1703,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const prependAll: <B>(prefix: readonly B[]) => <A>(self: readonly A[]) => readonly (B | A)[]
+export declare const prependAll: <B>(that: Iterable<B>) => <A>(self: Iterable<A>) => (B | A)[]
 ```
 
 Added in v1.0.0
@@ -1734,36 +1715,36 @@ Added in v1.0.0
 ```ts
 export declare function prependAllNonEmpty<B>(
   that: NonEmptyReadonlyArray<B>
-): <A>(self: ReadonlyArray<A>) => NonEmptyReadonlyArray<A | B>
+): <A>(self: Iterable<A>) => NonEmptyArray<A | B>
 export declare function prependAllNonEmpty<B>(
-  that: ReadonlyArray<B>
-): <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A | B>
+  that: Iterable<B>
+): <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyArray<A | B>
 ```
 
 Added in v1.0.0
 
 ## remove
 
-Delete the element at the specified index, creating a new `ReadonlyArray`,
-or returning the input if the index is out of bounds.
+Delete the element at the specified index, creating a new `Array`,
+or return a copy of the input if the index is out of bounds.
 
 **Signature**
 
 ```ts
-export declare const remove: (i: number) => <A>(self: readonly A[]) => readonly A[]
+export declare const remove: (i: number) => <A>(self: Iterable<A>) => A[]
 ```
 
 Added in v1.0.0
 
 ## replace
 
-Change the element at the specified index, creating a new `ReadonlyArray`,
-or returning the input if the index is out of bounds.
+Change the element at the specified index, creating a new `Array`,
+or return a copy of the input if the index is out of bounds.
 
 **Signature**
 
 ```ts
-export declare const replace: <B>(i: number, b: B) => <A>(self: readonly A[]) => readonly (B | A)[]
+export declare const replace: <B>(i: number, b: B) => <A>(self: Iterable<A>) => (B | A)[]
 ```
 
 Added in v1.0.0
@@ -1773,31 +1754,31 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const replaceOption: <B>(i: number, b: B) => <A>(self: readonly A[]) => Option<readonly (B | A)[]>
+export declare const replaceOption: <B>(i: number, b: B) => <A>(self: Iterable<A>) => Option<(B | A)[]>
 ```
 
 Added in v1.0.0
 
 ## reverse
 
-Reverse a `ReadonlyArray`, creating a new `ReadonlyArray`.
+Reverse an `Iterable`, creating a new `Array`.
 
 **Signature**
 
 ```ts
-export declare const reverse: <A>(self: readonly A[]) => readonly A[]
+export declare const reverse: <A>(self: Iterable<A>) => A[]
 ```
 
 Added in v1.0.0
 
 ## rotate
 
-Rotate a `ReadonlyArray` by `n` steps.
+Rotate an `Iterable` by `n` steps.
 
 **Signature**
 
 ```ts
-export declare const rotate: (n: number) => <A>(self: readonly A[]) => readonly A[]
+export declare const rotate: (n: number) => <A>(self: Iterable<A>) => A[]
 ```
 
 Added in v1.0.0
@@ -1809,7 +1790,7 @@ Rotate a `NonEmptyReadonlyArray` by `n` steps.
 **Signature**
 
 ```ts
-export declare const rotateNonEmpty: (n: number) => <A>(self: readonly [A, ...A[]]) => readonly [A, ...A[]]
+export declare const rotateNonEmpty: (n: number) => <A>(self: readonly [A, ...A[]]) => [A, ...A[]]
 ```
 
 Added in v1.0.0
@@ -1821,7 +1802,7 @@ Change the head, creating a new `NonEmptyReadonlyArray`.
 **Signature**
 
 ```ts
-export declare const setNonEmptyHead: <B>(b: B) => <A>(self: readonly [A, ...A[]]) => readonly [B | A, ...(B | A)[]]
+export declare const setNonEmptyHead: <B>(b: B) => <A>(self: readonly [A, ...A[]]) => [B | A, ...(B | A)[]]
 ```
 
 Added in v1.0.0
@@ -1833,7 +1814,7 @@ Change the last element, creating a new `NonEmptyReadonlyArray`.
 **Signature**
 
 ```ts
-export declare const setNonEmptyLast: <B>(b: B) => <A>(self: readonly [A, ...A[]]) => readonly [B | A, ...(B | A)[]]
+export declare const setNonEmptyLast: <B>(b: B) => <A>(self: readonly [A, ...A[]]) => [B | A, ...(B | A)[]]
 ```
 
 Added in v1.0.0
@@ -1843,7 +1824,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const union: <B>(that: readonly B[]) => <A>(self: readonly A[]) => readonly (B | A)[]
+export declare const union: <B>(that: readonly B[]) => <A>(self: readonly A[]) => (B | A)[]
 ```
 
 Added in v1.0.0
@@ -1855,22 +1836,22 @@ Added in v1.0.0
 ```ts
 export declare function unionNonEmpty<B>(
   that: NonEmptyReadonlyArray<B>
-): <A>(self: ReadonlyArray<A>) => NonEmptyReadonlyArray<A | B>
+): <A>(self: ReadonlyArray<A>) => NonEmptyArray<A | B>
 export declare function unionNonEmpty<B>(
   that: ReadonlyArray<B>
-): <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A | B>
+): <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyArray<A | B>
 ```
 
 Added in v1.0.0
 
 ## uniq
 
-Remove duplicates from a `ReadonlyArray`, keeping the first occurrence of an element.
+Remove duplicates from am `Iterable`, keeping the first occurrence of an element.
 
 **Signature**
 
 ```ts
-export declare const uniq: <A>(self: readonly A[]) => readonly A[]
+export declare const uniq: <A>(self: Iterable<A>) => A[]
 ```
 
 Added in v1.0.0
@@ -1882,19 +1863,19 @@ Remove duplicates from a `NonEmptyReadonlyArray`, keeping the first occurrence o
 **Signature**
 
 ```ts
-export declare const uniqNonEmpty: <A>(self: readonly [A, ...A[]]) => readonly [A, ...A[]]
+export declare const uniqNonEmpty: <A>(self: readonly [A, ...A[]]) => [A, ...A[]]
 ```
 
 Added in v1.0.0
 
 ## unzip
 
-This function is the inverse of `zip`. Takes a `ReadonlyArray` of pairs and return two corresponding `ReadonlyArray`s.
+This function is the inverse of `zip`. Takes an `Iterable` of pairs and return two corresponding `Array`s.
 
 **Signature**
 
 ```ts
-export declare const unzip: <A, B>(self: readonly (readonly [A, B])[]) => readonly [readonly A[], readonly B[]]
+export declare const unzip: <A, B>(self: Iterable<[A, B]>) => [A[], B[]]
 ```
 
 Added in v1.0.0
@@ -1904,22 +1885,21 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unzipNonEmpty: <A, B>(
-  self: readonly [readonly [A, B], ...(readonly [A, B])[]]
-) => readonly [readonly [A, ...A[]], readonly [B, ...B[]]]
+export declare const unzipNonEmpty: <A, B>(self: readonly [[A, B], ...[A, B][]]) => [[A, ...A[]], [B, ...B[]]]
 ```
 
 Added in v1.0.0
 
 ## zip
 
-Takes two `ReadonlyArray`s and returns a `ReadonlyArray` of corresponding pairs. If one input `ReadonlyArray` is short, excess elements of the
-longer `ReadonlyArray` are discarded.
+Takes two `Iterable`s and returns an `Array` of corresponding pairs.
+If one input `Iterable` is short, excess elements of the
+longer `Iterable` are discarded.
 
 **Signature**
 
 ```ts
-export declare const zip: <B>(that: readonly B[]) => <A>(self: readonly A[]) => readonly (readonly [A, B])[]
+export declare const zip: <B>(that: Iterable<B>) => <A>(self: Iterable<A>) => [A, B][]
 ```
 
 Added in v1.0.0
@@ -1931,7 +1911,7 @@ Added in v1.0.0
 ```ts
 export declare const zipNonEmpty: <B>(
   that: readonly [B, ...B[]]
-) => <A>(self: readonly [A, ...A[]]) => readonly [readonly [A, B], ...(readonly [A, B])[]]
+) => <A>(self: readonly [A, ...A[]]) => [[A, B], ...[A, B][]]
 ```
 
 Added in v1.0.0
@@ -1944,23 +1924,20 @@ Added in v1.0.0
 export declare const zipNonEmptyWith: <B, A, C>(
   that: readonly [B, ...B[]],
   f: (a: A, b: B) => C
-) => (self: readonly [A, ...A[]]) => readonly [C, ...C[]]
+) => (self: readonly [A, ...A[]]) => [C, ...C[]]
 ```
 
 Added in v1.0.0
 
 ## zipWith
 
-Apply a function to pairs of elements at the same index in two `ReadonlyArray`s, collecting the results in a new `ReadonlyArray`. If one
-input `ReadonlyArray` is short, excess elements of the longer `ReadonlyArray` are discarded.
+Apply a function to pairs of elements at the same index in two `Iterable`s, collecting the results in a new `Array`. If one
+input `Iterable` is short, excess elements of the longer `Iterable` are discarded.
 
 **Signature**
 
 ```ts
-export declare const zipWith: <B, A, C>(
-  that: readonly B[],
-  f: (a: A, b: B) => C
-) => (self: readonly A[]) => readonly C[]
+export declare const zipWith: <B, A, C>(that: Iterable<B>, f: (a: A, b: B) => C) => (self: Iterable<A>) => C[]
 ```
 
 Added in v1.0.0
@@ -1974,7 +1951,7 @@ Added in v1.0.0
 ```ts
 export declare const match: <B, A, C = B>(
   onEmpty: LazyArg<B>,
-  onNonEmpty: (head: A, tail: readonly A[]) => C
+  onNonEmpty: (head: A, tail: A[]) => C
 ) => (self: readonly A[]) => B | C
 ```
 
@@ -1987,7 +1964,7 @@ Added in v1.0.0
 ```ts
 export declare const matchRight: <B, A, C = B>(
   onEmpty: LazyArg<B>,
-  onNonEmpty: (init: readonly A[], last: A) => C
+  onNonEmpty: (init: A[], last: A) => C
 ) => (self: readonly A[]) => B | C
 ```
 
@@ -1997,19 +1974,19 @@ Added in v1.0.0
 
 ## elem
 
-Tests whether a value is a member of a `ReadonlyArray`.
+Tests whether a value is a member of an `Iterable`.
 
 **Signature**
 
 ```ts
-export declare const elem: <B>(b: B) => <A>(self: readonly A[]) => boolean
+export declare const elem: <B>(b: B) => <A>(self: Iterable<A>) => boolean
 ```
 
 Added in v1.0.0
 
 ## isEmpty
 
-Test whether a `ReadonlyArray` is empty.
+Test whether a `ReadonlyArray` is empty narrowing down the type to `[]`.
 
 **Signature**
 
@@ -2021,7 +1998,7 @@ Added in v1.0.0
 
 ## isNonEmpty
 
-Test whether a `ReadonlyArray` is non empty narrowing down the type to `NonEmptyReadonlyArray<A>`
+Test whether a `ReadonlyArray` is non empty narrowing down the type to `NonEmptyReadonlyArray<A>`.
 
 **Signature**
 
@@ -2038,7 +2015,7 @@ Check if a predicate holds true for any `ReadonlyArray` member.
 **Signature**
 
 ```ts
-export declare const some: <A>(predicate: Predicate<A>) => (self: readonly A[]) => self is readonly [A, ...A[]]
+export declare const some: <A>(predicate: Predicate<A>) => (self: readonly A[]) => self is [A, ...A[]]
 ```
 
 Added in v1.0.0
@@ -2050,7 +2027,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const flatMap: <A, B>(f: (a: A) => readonly B[]) => (self: readonly A[]) => readonly B[]
+export declare const flatMap: <A, B>(f: (a: A) => readonly B[]) => (self: readonly A[]) => B[]
 ```
 
 Added in v1.0.0
@@ -2062,7 +2039,7 @@ Added in v1.0.0
 ```ts
 export declare const flatMapNonEmpty: <A, B>(
   f: (a: A) => readonly [B, ...B[]]
-) => (self: readonly [A, ...A[]]) => readonly [B, ...B[]]
+) => (self: readonly [A, ...A[]]) => [B, ...B[]]
 ```
 
 Added in v1.0.0
@@ -2074,7 +2051,7 @@ Added in v1.0.0
 ```ts
 export declare const flatMapNonEmptyWithIndex: <A, B>(
   f: (a: A, i: number) => readonly [B, ...B[]]
-) => (self: readonly [A, ...A[]]) => readonly [B, ...B[]]
+) => (self: readonly [A, ...A[]]) => [B, ...B[]]
 ```
 
 Added in v1.0.0
@@ -2086,7 +2063,7 @@ Added in v1.0.0
 ```ts
 export declare const flatMapNullable: <A, B>(
   f: (a: A) => B | null | undefined
-) => (self: readonly A[]) => readonly NonNullable<B>[]
+) => (self: readonly A[]) => NonNullable<B>[]
 ```
 
 Added in v1.0.0
@@ -2096,9 +2073,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const flatMapWithIndex: <A, B>(
-  f: (a: A, i: number) => readonly B[]
-) => (self: readonly A[]) => readonly B[]
+export declare const flatMapWithIndex: <A, B>(f: (a: A, i: number) => readonly B[]) => (self: readonly A[]) => B[]
 ```
 
 Added in v1.0.0
@@ -2120,7 +2095,7 @@ Added in v1.0.0
 ```ts
 export declare const flattenNonEmpty: <A>(
   self: readonly [readonly [A, ...A[]], ...(readonly [A, ...A[]])[]]
-) => readonly [A, ...A[]]
+) => [A, ...A[]]
 ```
 
 Added in v1.0.0
@@ -2129,25 +2104,25 @@ Added in v1.0.0
 
 ## sort
 
-Sort the elements of a `ReadonlyArray` in increasing order, creating a new `ReadonlyArray`.
+Sort the elements of an `Iterable` in increasing order, creating a new `Array`.
 
 **Signature**
 
 ```ts
-export declare const sort: <B>(O: order.Order<B>) => <A extends B>(self: readonly A[]) => readonly A[]
+export declare const sort: <B>(O: order.Order<B>) => <A extends B>(self: Iterable<A>) => A[]
 ```
 
 Added in v1.0.0
 
 ## sortBy
 
-Sort the elements of a `ReadonlyArray` in increasing order, where elements are compared using first `ords[0]`, then `ords[1]`,
-etc...
+Sort the elements of an `Iterable` in increasing order, where elements are compared
+using first `orders[0]`, then `orders[1]`, etc...
 
 **Signature**
 
 ```ts
-export declare const sortBy: <B>(orders: readonly order.Order<B>[]) => <A extends B>(self: readonly A[]) => readonly A[]
+export declare const sortBy: <B>(...orders: readonly order.Order<B>[]) => <A extends B>(self: Iterable<A>) => A[]
 ```
 
 Added in v1.0.0
@@ -2158,22 +2133,20 @@ Added in v1.0.0
 
 ```ts
 export declare const sortByNonEmpty: <B>(
-  orders: readonly order.Order<B>[]
-) => <A extends B>(as: readonly [A, ...A[]]) => readonly [A, ...A[]]
+  ...orders: readonly order.Order<B>[]
+) => <A extends B>(as: readonly [A, ...A[]]) => [A, ...A[]]
 ```
 
 Added in v1.0.0
 
 ## sortNonEmpty
 
-Sort the elements of a `NonEmptyReadonlyArray` in increasing order, creating a new `NonEmptyReadonlyArray`.
+Sort the elements of a `NonEmptyReadonlyArray` in increasing order, creating a new `NonEmptyArray`.
 
 **Signature**
 
 ```ts
-export declare const sortNonEmpty: <B>(
-  O: order.Order<B>
-) => <A extends B>(self: readonly [A, ...A[]]) => readonly [A, ...A[]]
+export declare const sortNonEmpty: <B>(O: order.Order<B>) => <A extends B>(self: readonly [A, ...A[]]) => [A, ...A[]]
 ```
 
 Added in v1.0.0
@@ -2314,16 +2287,16 @@ Added in v1.0.0
 
 ## chop
 
-A useful recursion pattern for processing a `ReadonlyArray` to produce a new `ReadonlyArray`, often used for "chopping" up the input
-`ReadonlyArray`. Typically chop is called with some function that will consume an initial prefix of the `ReadonlyArray` and produce a
-value and the rest of the `ReadonlyArray`.
+A useful recursion pattern for processing an `Iterable` to produce a new `Array`, often used for "chopping" up the input
+`Iterable`. Typically chop is called with some function that will consume an initial prefix of the `Iterable` and produce a
+value and the rest of the `Array`.
 
 **Signature**
 
 ```ts
 export declare const chop: <A, B>(
   f: (as: readonly [A, ...A[]]) => readonly [B, readonly A[]]
-) => (self: readonly A[]) => readonly B[]
+) => (self: Iterable<A>) => B[]
 ```
 
 Added in v1.0.0
@@ -2339,7 +2312,7 @@ value and the tail of the `NonEmptyReadonlyArray`.
 ```ts
 export declare const chopNonEmpty: <A, B>(
   f: (as: readonly [A, ...A[]]) => readonly [B, readonly A[]]
-) => (self: readonly [A, ...A[]]) => readonly [B, ...B[]]
+) => (self: readonly [A, ...A[]]) => [B, ...B[]]
 ```
 
 Added in v1.0.0
@@ -2361,7 +2334,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const extend: <A, B>(f: (as: readonly A[]) => B) => (self: readonly A[]) => readonly B[]
+export declare const extend: <A, B>(f: (as: readonly A[]) => B) => (self: readonly A[]) => B[]
 ```
 
 Added in v1.0.0
@@ -2373,7 +2346,7 @@ Alias of [`some`](#some)
 **Signature**
 
 ```ts
-export declare const has: <A>(predicate: Predicate<A>) => (self: readonly A[]) => self is readonly [A, ...A[]]
+export declare const has: <A>(predicate: Predicate<A>) => (self: readonly A[]) => self is [A, ...A[]]
 ```
 
 Added in v1.0.0
@@ -2438,7 +2411,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const product: <B>(that: readonly B[]) => <A>(self: readonly A[]) => readonly (readonly [A, B])[]
+export declare const product: <B>(that: readonly B[]) => <A>(self: readonly A[]) => [A, B][]
 ```
 
 Added in v1.0.0
@@ -2482,7 +2455,18 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const reverseNonEmpty: <A>(self: readonly [A, ...A[]]) => readonly [A, ...A[]]
+export declare const reverseNonEmpty: <A>(self: readonly [A, ...A[]]) => [A, ...A[]]
+```
+
+Added in v1.0.0
+
+## slice
+
+**Signature**
+
+```ts
+export declare function slice<A>(self: NonEmptyReadonlyArray<A>): NonEmptyArray<A>
+export declare function slice<A>(self: ReadonlyArray<A>): Array<A>
 ```
 
 Added in v1.0.0

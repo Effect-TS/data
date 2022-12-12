@@ -453,17 +453,14 @@ export const foldMap: <M>(M: Monoid<M>) => <A>(f: (a: A) => M) => (self: Identit
  * @category conversions
  * @since 1.0.0
  */
-export const toReadonlyArray: <A>(
-  self: Identity<A>
-) => ReadonlyArray<A> = foldable.toReadonlyArray(Foldable)
+export const toArray: <A>(self: Identity<A>) => Array<A> = foldable.toArray(Foldable)
 
 /**
  * @category conversions
  * @since 1.0.0
  */
-export const toReadonlyArrayWith: <A, B>(
-  f: (a: A) => B
-) => (self: Identity<A>) => ReadonlyArray<B> = foldable.toReadonlyArrayWith(Foldable)
+export const toArrayWith: <A, B>(f: (a: A) => B) => (self: Identity<A>) => Array<B> = foldable
+  .toArrayWith(Foldable)
 
 /**
  * @category folding

@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noImplicitReturns": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
+    "target": "es2015",
+    "lib": ["es2015"],
+    "paths": {
+      "@fp-ts/data": ["../../src/index.ts"],
+      "@fp-ts/data/test/*": ["../../test/*"],
+      "@fp-ts/data/examples/*": ["../../examples/*"],
+      "@fp-ts/data/*": ["../../src/*"]
+    }
+  }
+}

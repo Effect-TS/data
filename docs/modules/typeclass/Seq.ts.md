@@ -58,7 +58,7 @@ export interface Seq<F extends TypeLambda>
   readonly get: (index: number) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => Option<A>
   readonly unsafeGet: (index: number) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => A
   readonly size: <R, O, E, A>(self: Kind<F, R, O, E, A>) => number
-  readonly empty: Kind<F, unknown, never, never, never>
+  readonly empty: <A = never>() => Kind<F, unknown, never, never, A>
   readonly append: <B>(b: B) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A | B>
   readonly dropRight: (n: number) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A>
   readonly dropWhile: <A>(f: (a: A) => boolean) => <R, O, E>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, A>

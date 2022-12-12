@@ -15,8 +15,8 @@ Added in v1.0.0
 - [constructors](#constructors)
   - [of](#of)
 - [conversions](#conversions)
-  - [toReadonlyArray](#toreadonlyarray)
-  - [toReadonlyArrayWith](#toreadonlyarraywith)
+  - [toArray](#toarray)
+  - [toArrayWith](#toarraywith)
 - [do notation](#do-notation)
   - [Do](#do)
   - [andThenBind](#andthenbind)
@@ -102,22 +102,22 @@ Added in v1.0.0
 
 # conversions
 
-## toReadonlyArray
+## toArray
 
 **Signature**
 
 ```ts
-export declare const toReadonlyArray: <A>(self: A) => readonly A[]
+export declare const toArray: <A>(self: A) => A[]
 ```
 
 Added in v1.0.0
 
-## toReadonlyArrayWith
+## toArrayWith
 
 **Signature**
 
 ```ts
-export declare const toReadonlyArrayWith: <A, B>(f: (a: A) => B) => (self: A) => readonly B[]
+export declare const toArrayWith: <A, B>(f: (a: A) => B) => (self: A) => B[]
 ```
 
 Added in v1.0.0
