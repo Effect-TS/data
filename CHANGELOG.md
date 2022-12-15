@@ -1,5 +1,15 @@
 # @fp-ts/data
 
+## 0.0.27
+
+### Patch Changes
+
+- [#153](https://github.com/fp-ts/data/pull/153) [`151315f`](https://github.com/fp-ts/data/commit/151315ff0bad1a3a7e1f7af6a4732679486d21e7) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: spread sortBy, sortByNonEmpty input
+
+- [#153](https://github.com/fp-ts/data/pull/153) [`151315f`](https://github.com/fp-ts/data/commit/151315ff0bad1a3a7e1f7af6a4732679486d21e7) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyArray: relax input (ReadonlyArray -> Iterable) and narrow output (ReadonlyArray -> Array) when possible
+
+- [#153](https://github.com/fp-ts/data/pull/153) [`151315f`](https://github.com/fp-ts/data/commit/151315ff0bad1a3a7e1f7af6a4732679486d21e7) Thanks [@gcanti](https://github.com/gcanti)! - upgrade to latest @fp-ts/core
+
 ## 0.0.26
 
 ### Patch Changes
