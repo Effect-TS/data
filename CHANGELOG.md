@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.28
+
+### Patch Changes
+
+- [#156](https://github.com/fp-ts/data/pull/156) [`1a65152`](https://github.com/fp-ts/data/commit/1a651525fed1b1ea1682b2712c24c596745d32c7) Thanks [@ptrfrncsmrph](https://github.com/ptrfrncsmrph)! - Fix RedBlackTree.lessThanEqual
+
 ## 0.0.27
 
 ### Patch Changes
