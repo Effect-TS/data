@@ -240,15 +240,15 @@ describe.concurrent("RedBlackTree", () => {
 
     deepStrictEqual(Array.from(RedBlackTree.lessThan(0)(tree)), [
       [-1, "c"],
-      [-2, "d"]
+      [0, "b"],
+      [1, "a"],
+      [3, "e"]
     ])
     deepStrictEqual(
       Array.from(RedBlackTree.lessThan(0, RedBlackTree.Direction.Backward)(tree)),
       [
         [-1, "c"],
-        [0, "b"],
-        [1, "a"],
-        [3, "e"]
+        [-2, "d"]
       ]
     )
   })
@@ -265,15 +265,15 @@ describe.concurrent("RedBlackTree", () => {
 
     deepStrictEqual(Array.from(RedBlackTree.lessThanEqual(0)(tree)), [
       [0, "b"],
-      [-1, "c"],
-      [-2, "d"]
+      [1, "a"],
+      [3, "e"]
     ])
     deepStrictEqual(
       Array.from(RedBlackTree.lessThanEqual(0, RedBlackTree.Direction.Backward)(tree)),
       [
         [0, "b"],
-        [1, "a"],
-        [3, "e"]
+        [-1, "c"],
+        [-2, "d"]
       ]
     )
   })

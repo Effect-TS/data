@@ -673,11 +673,7 @@ export function lessThan<K>(key: K, direction: RBT.RedBlackTree.Direction = Dire
           }
         }
         stack.length = last_ptr
-        return new RedBlackTreeIterator(
-          self,
-          stack,
-          direction === Direction.Forward ? Direction.Backward : Direction.Forward
-        )
+        return new RedBlackTreeIterator(self, stack, direction)
       }
     }
   }
@@ -688,10 +684,30 @@ export function lessThanEqual<K>(
   key: K,
   direction: RBT.RedBlackTree.Direction = Direction.Forward
 ) {
-  return greaterThanEqual(
-    key,
-    direction === Direction.Forward ? Direction.Backward : Direction.Forward
-  )
+  return <V>(self: RBT.RedBlackTree<K, V>): Iterable<readonly [K, V]> => {
+    return {
+      [Symbol.iterator]: () => {
+        const cmp = (self as RedBlackTreeImpl<K, V>)._ord.compare
+        let node = (self as RedBlackTreeImpl<K, V>)._root
+        const stack = []
+        let last_ptr = 0
+        while (node != null) {
+          const d = cmp(node.key)(key)
+          stack.push(node)
+          if (d >= 0) {
+            last_ptr = stack.length
+          }
+          if (d < 0) {
+            node = node.left
+          } else {
+            node = node.right
+          }
+        }
+        stack.length = last_ptr
+        return new RedBlackTreeIterator(self, stack, direction)
+      }
+    }
+  }
 }
 
 /** @internal */
