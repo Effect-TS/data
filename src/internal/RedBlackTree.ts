@@ -694,10 +694,10 @@ export function lessThanEqual<K>(
         while (node != null) {
           const d = cmp(node.key)(key)
           stack.push(node)
-          if (d <= 0) {
+          if (d >= 0) {
             last_ptr = stack.length
           }
-          if (d <= 0) {
+          if (d < 0) {
             node = node.left
           } else {
             node = node.right
