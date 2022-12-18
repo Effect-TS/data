@@ -178,6 +178,31 @@ describe.concurrent("RedBlackTree", () => {
     deepStrictEqual(ordered, [[-1, "c"], [0, "b"], [1, "a"]])
   })
 
+  it("greaterThan", () => {
+    const tree = pipe(
+      RedBlackTree.empty<number, string>(number.Order),
+      RedBlackTree.insert(1, "a"),
+      RedBlackTree.insert(0, "b"),
+      RedBlackTree.insert(-1, "c"),
+      RedBlackTree.insert(-2, "d"),
+      RedBlackTree.insert(3, "e")
+    )
+
+    deepStrictEqual(Array.from(RedBlackTree.greaterThan(0)(tree)), [
+      [1, "a"],
+      [3, "e"]
+    ])
+    deepStrictEqual(
+      Array.from(RedBlackTree.greaterThan(0, RedBlackTree.Direction.Backward)(tree)),
+      [
+        [1, "a"],
+        [0, "b"],
+        [-1, "c"],
+        [-2, "d"]
+      ]
+    )
+  })
+
   it("greaterThanEqual", () => {
     const tree = pipe(
       RedBlackTree.empty<number, string>(number.Order),
@@ -199,6 +224,56 @@ describe.concurrent("RedBlackTree", () => {
         [0, "b"],
         [-1, "c"],
         [-2, "d"]
+      ]
+    )
+  })
+
+  it("lessThan", () => {
+    const tree = pipe(
+      RedBlackTree.empty<number, string>(number.Order),
+      RedBlackTree.insert(1, "a"),
+      RedBlackTree.insert(0, "b"),
+      RedBlackTree.insert(-1, "c"),
+      RedBlackTree.insert(-2, "d"),
+      RedBlackTree.insert(3, "e")
+    )
+
+    deepStrictEqual(Array.from(RedBlackTree.lessThan(0)(tree)), [
+      [-1, "c"],
+      [-2, "d"]
+    ])
+    deepStrictEqual(
+      Array.from(RedBlackTree.lessThan(0, RedBlackTree.Direction.Backward)(tree)),
+      [
+        [-1, "c"],
+        [0, "b"],
+        [1, "a"],
+        [3, "e"]
+      ]
+    )
+  })
+
+  it("lessThanEqual", () => {
+    const tree = pipe(
+      RedBlackTree.empty<number, string>(number.Order),
+      RedBlackTree.insert(1, "a"),
+      RedBlackTree.insert(0, "b"),
+      RedBlackTree.insert(-1, "c"),
+      RedBlackTree.insert(-2, "d"),
+      RedBlackTree.insert(3, "e")
+    )
+
+    deepStrictEqual(Array.from(RedBlackTree.lessThanEqual(0)(tree)), [
+      [0, "b"],
+      [-1, "c"],
+      [-2, "d"]
+    ])
+    deepStrictEqual(
+      Array.from(RedBlackTree.lessThanEqual(0, RedBlackTree.Direction.Backward)(tree)),
+      [
+        [0, "b"],
+        [1, "a"],
+        [3, "e"]
       ]
     )
   })
