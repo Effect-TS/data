@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.30
+
+### Patch Changes
+
+- [#160](https://github.com/fp-ts/data/pull/160) [`8688df8`](https://github.com/fp-ts/data/commit/8688df8cba7fca9ac74309ee431de1e5342dc655) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Allow for Tag to be attached to global
+
 ## 0.0.29
 
 ### Patch Changes
