@@ -101,7 +101,7 @@ export const hash: <A>(self: A) => number = <A>(self: A) => {
  */
 export const hashRandom: <A extends object>(self: A) => number = (self) => {
   if (!hashCache.has(self)) {
-    const h = hashOptimize(pcgr.number())
+    const h = hashOptimize(pcgr.integer(Number.MAX_SAFE_INTEGER))
     hashCache.set(self, h)
   }
   return hashCache.get(self)!
