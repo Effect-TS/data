@@ -31,7 +31,9 @@ class MutableHashSetImpl<K> implements MutableHashSet<K> {
 
   constructor(readonly keyMap: MHashMap.MutableHashMap<K, boolean>) {}
 
-  length = 0;
+  get length() {
+    return this.keyMap.length
+  }
 
   [Equal.symbolHash]() {
     return Equal.hash(this)

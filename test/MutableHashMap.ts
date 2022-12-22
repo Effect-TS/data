@@ -47,6 +47,28 @@ describe.concurrent("MutableHashMap", () => {
     assert.isTrue(pipe(map, HM.has(key(1, 1))))
   })
 
+  it("iterate", () => {
+    class Hello {
+      [Equal.symbolHash]() {
+        return 0
+      }
+
+      [Equal.symbolEqual](that: unknown) {
+        return this === that
+      }
+    }
+
+    const a = new Hello()
+    const b = new Hello()
+
+    const map = HM.make(
+      [a, 0],
+      [b, 0]
+    )
+
+    expect(Array.from(map).length).toEqual(2)
+  })
+
   it("get", () => {
     const map = pipe(
       HM.empty<Key, Value>(),

@@ -73,7 +73,15 @@ class MutableHashMapImpl<K, V> implements MutableHashMap<K, V> {
 
   [Symbol.iterator](): Iterator<readonly [K, V]> {
     return Array.from(this.backingMap.values())
-      .map((node) => [node.k, node.v] as const)[Symbol.iterator]()
+      .flatMap((node) => {
+        const arr = [[node.k, node.v] as const]
+        let next = node.next
+        while (next) {
+          arr.push([next.k, next.v])
+          next = next.next
+        }
+        return arr
+      })[Symbol.iterator]()
   }
 }
 
@@ -179,6 +187,7 @@ export const set = <K, V>(k: K, v: V) =>
 
     self.length = self.length + 1
     l.next = new Node(k, v)
+
     return self
   }
 
