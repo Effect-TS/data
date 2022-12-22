@@ -20,6 +20,11 @@ interface C {
 const C = Context.Tag<C>()
 
 describe.concurrent("Context", () => {
+  it("global tag", () => {
+    const a = Context.Tag<number>("@fp-ts/data/test/Context/Tag")
+    const b = Context.Tag<number>("@fp-ts/data/test/Context/Tag")
+    expect(a).toBe(b)
+  })
   it("adds and retrieve services", () => {
     const Services = pipe(
       Context.empty(),

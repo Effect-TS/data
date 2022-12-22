@@ -31,10 +31,16 @@ export declare namespace Tag {
 }
 
 /**
+ * Specifying the key will make the Tag global, meaning two tags with the same
+ * key will map to the same instance.
+ *
+ * Note: this is useful for cases where live reload can happen and it is
+ * desireable to preserve the instance across reloads.
+ *
  * @since 1.0.0
  * @category constructors
  */
-export const Tag = <Service>(): Tag<Service> => new C.TagImpl()
+export const Tag = <Service>(key?: string): Tag<Service> => new C.TagImpl(key)
 
 const TypeId: unique symbol = C.ContextTypeId as TypeId
 

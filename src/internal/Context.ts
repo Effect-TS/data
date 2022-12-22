@@ -9,7 +9,19 @@ export const TagTypeId: C.TagTypeId = Symbol.for("@fp-ts/data/Context/Tag") as C
 /** @internal */
 export class TagImpl<Service> implements C.Tag<Service> {
   readonly _id: typeof TagTypeId = TagTypeId
-  readonly _S: (_: Service) => Service = (_) => _;
+  readonly _S: (_: Service) => Service = (_) => _
+
+  constructor(readonly key?: string) {
+    if (key) {
+      if (!(TagTypeId in globalThis)) {
+        globalThis[TagTypeId] = {}
+      }
+      if (!(key in globalThis[TagTypeId])) {
+        globalThis[TagTypeId][key] = this
+      }
+      return globalThis[TagTypeId][key]
+    }
+  }
 
   [Equal.symbolEqual](that: unknown) {
     return this === that
