@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.29
+
+### Patch Changes
+
+- [#158](https://github.com/fp-ts/data/pull/158) [`7e89925`](https://github.com/fp-ts/data/commit/7e89925e31a5e40675a4f3bbaa9b39d47c7c5118) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Fix MutableHashMap Iterator
+
 ## 0.0.28
 
 ### Patch Changes
