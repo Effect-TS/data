@@ -1118,7 +1118,7 @@ export const last = <A>(self: Chunk<A>): Option<A> => get(self.length - 1)(self)
  * @since 1.0.0
  * @category constructors
  */
-export const make = <As extends readonly [any, ...ReadonlyArray<any>]>(
+export const make = <As extends RA.NonEmptyArray<any>>(
   ...as: As
 ): NonEmptyChunk<As[number]> => unsafeFromArray(as) as any
 
@@ -1140,7 +1140,7 @@ export const singleton = <A>(a: A): NonEmptyChunk<A> =>
  * @category constructors
  */
 export const makeBy = <A>(f: (i: number) => A) =>
-  (n: number): NonEmptyChunk<A> => make(...RA.makeBy(f)(n))
+  (n: number): NonEmptyChunk<A> => make(...RA.makeBy(f)(n) as [A, ...Array<A>])
 
 /**
  * Returns an effect whose success is mapped by the specified f function.
