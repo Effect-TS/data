@@ -15,6 +15,7 @@ Added in v1.0.0
 - [constructors](#constructors)
   - [Tag](#tag)
   - [empty](#empty)
+  - [make](#make)
 - [getters](#getters)
   - [get](#get)
   - [getOption](#getoption)
@@ -41,10 +42,16 @@ Added in v1.0.0
 
 ## Tag
 
+Specifying the key will make the Tag global, meaning two tags with the same
+key will map to the same instance.
+
+Note: this is useful for cases where live reload can happen and it is
+desireable to preserve the instance across reloads.
+
 **Signature**
 
 ```ts
-export declare const Tag: <Service>() => Tag<Service>
+export declare const Tag: <Service>(key?: string | undefined) => Tag<Service>
 ```
 
 Added in v1.0.0
@@ -55,6 +62,16 @@ Added in v1.0.0
 
 ```ts
 export declare const empty: () => Context<never>
+```
+
+Added in v1.0.0
+
+## make
+
+**Signature**
+
+```ts
+export declare const make: <S>(tag: Tag<S>) => (service: S) => Context<S>
 ```
 
 Added in v1.0.0
