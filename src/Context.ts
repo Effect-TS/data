@@ -87,6 +87,12 @@ export const empty: () => Context<never> = C.empty
 
 /**
  * @since 1.0.0
+ * @category constructors
+ */
+export const make: <S>(tag: Tag<S>) => (service: S) => Context<S> = C.make
+
+/**
+ * @since 1.0.0
  * @category mutations
  */
 export const add: <S>(

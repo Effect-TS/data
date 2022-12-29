@@ -25,10 +25,10 @@ describe.concurrent("Context", () => {
     const b = Context.Tag<number>("@fp-ts/data/test/Context/Tag")
     expect(a).toBe(b)
   })
+
   it("adds and retrieve services", () => {
     const Services = pipe(
-      Context.empty(),
-      Context.add(A)({ a: 0 }),
+      Context.make(A)({ a: 0 }),
       Context.add(B)({ b: 1 })
     )
 

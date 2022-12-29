@@ -9,8 +9,8 @@ describe("Json", () => {
   it("parse", () => {
     U.deepStrictEqual(pipe("{\"a\":1}", _.parse), E.right({ a: 1 }))
     U.deepStrictEqual(
-      pipe("{\"a\":}", _.parse),
-      E.left(new SyntaxError("Unexpected token } in JSON at position 5"))
+      pipe("{\"a\":}", _.parse, E.mapLeft(() => "invalid json")),
+      E.left("invalid json")
     )
   })
 

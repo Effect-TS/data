@@ -78,6 +78,10 @@ export function empty(): C.Context<never> {
   return new ContextImpl<never>(new Map())
 }
 
+export function make<S>(tag: C.Tag<S>) {
+  return (service: S): C.Context<S> => new ContextImpl<S>(new Map([[tag, service]]))
+}
+
 export function add<S>(tag: C.Tag<S>) {
   return (service: S) => {
     return <Services>(self: C.Context<Services>): C.Context<Services | S> => {
