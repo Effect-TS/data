@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.31
+
+### Patch Changes
+
+- [#163](https://github.com/fp-ts/data/pull/163) [`a03e765`](https://github.com/fp-ts/data/commit/a03e7658f70e6c208192c953fe72660164e5d885) Thanks [@TylorS](https://github.com/TylorS)! - Add Context.make
+
 ## 0.0.30
 
 ### Patch Changes
