@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.32
+
+### Patch Changes
+
+- [#167](https://github.com/fp-ts/data/pull/167) [`4cb63ca`](https://github.com/fp-ts/data/commit/4cb63ca5bef8e3af9a0c4b9c86fd5fb45568e6a6) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Use interface over type where possible
+
 ## 0.0.31
 
 ### Patch Changes
