@@ -110,8 +110,8 @@ Added in v1.0.0
   - [tupled](#tupled)
 - [models](#models)
   - [Either (type alias)](#either-type-alias)
-  - [Left (interface)](#left-interface)
-  - [Right (interface)](#right-interface)
+  - [Left (type alias)](#left-type-alias)
+  - [Right (type alias)](#right-type-alias)
 - [mutations](#mutations)
   - [reverse](#reverse)
 - [pattern matching](#pattern-matching)
@@ -1145,12 +1145,12 @@ export type Either<E, A> = Left<E> | Right<A>
 
 Added in v1.0.0
 
-## Left (interface)
+## Left (type alias)
 
 **Signature**
 
 ```ts
-export interface Left<E> extends J.StringIndexed {
+export type Left<E> = {
   readonly _tag: 'Left'
   readonly left: E
 }
@@ -1158,12 +1158,12 @@ export interface Left<E> extends J.StringIndexed {
 
 Added in v1.0.0
 
-## Right (interface)
+## Right (type alias)
 
 **Signature**
 
 ```ts
-export interface Right<A> extends J.StringIndexed {
+export type Right<A> = {
   readonly _tag: 'Right'
   readonly right: A
 }
