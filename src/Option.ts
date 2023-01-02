@@ -41,6 +41,7 @@ import { constNull, constUndefined, pipe } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
 import * as either from "@fp-ts/data/internal/Either"
 import * as option from "@fp-ts/data/internal/Option"
+import type * as J from "@fp-ts/data/Json"
 import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 import * as compactable from "@fp-ts/data/typeclass/Compactable"
 import * as filterable from "@fp-ts/data/typeclass/Filterable"
@@ -50,7 +51,7 @@ import * as Gen from "@fp-ts/data/typeclass/Gen"
  * @category models
  * @since 1.0.0
  */
-export type None = {
+export interface None extends J.StringIndexed {
   readonly _tag: "None"
 }
 
@@ -58,7 +59,7 @@ export type None = {
  * @category models
  * @since 1.0.0
  */
-export type Some<A> = {
+export interface Some<A> extends J.StringIndexed {
   readonly _tag: "Some"
   readonly value: A
 }

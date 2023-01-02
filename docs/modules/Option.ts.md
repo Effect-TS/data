@@ -104,9 +104,9 @@ Added in v1.0.0
   - [imap](#imap)
   - [map](#map)
 - [models](#models)
-  - [None (type alias)](#none-type-alias)
+  - [None (interface)](#none-interface)
   - [Option (type alias)](#option-type-alias)
-  - [Some (type alias)](#some-type-alias)
+  - [Some (interface)](#some-interface)
 - [pattern matching](#pattern-matching)
   - [match](#match)
 - [sequencing](#sequencing)
@@ -1113,12 +1113,12 @@ Added in v1.0.0
 
 # models
 
-## None (type alias)
+## None (interface)
 
 **Signature**
 
 ```ts
-export type None = {
+export interface None extends J.StringIndexed {
   readonly _tag: 'None'
 }
 ```
@@ -1135,12 +1135,12 @@ export type Option<A> = None | Some<A>
 
 Added in v1.0.0
 
-## Some (type alias)
+## Some (interface)
 
 **Signature**
 
 ```ts
-export type Some<A> = {
+export interface Some<A> extends J.StringIndexed {
   readonly _tag: 'Some'
   readonly value: A
 }
