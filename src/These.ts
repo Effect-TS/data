@@ -45,6 +45,7 @@ import { constNull, constUndefined, pipe } from "@fp-ts/data/Function"
 import * as either from "@fp-ts/data/internal/Either"
 import * as option from "@fp-ts/data/internal/Option"
 import * as these from "@fp-ts/data/internal/These"
+import type * as J from "@fp-ts/data/Json"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 import type { NonEmptyReadonlyArray } from "@fp-ts/data/ReadonlyArray"
@@ -55,7 +56,7 @@ import * as Gen from "@fp-ts/data/typeclass/Gen"
  * @category model
  * @since 1.0.0
  */
-export type Both<E, A> = {
+export interface Both<E, A> extends J.StringIndexed {
   readonly _tag: "Both"
   readonly left: E
   readonly right: A

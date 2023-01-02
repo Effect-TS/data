@@ -16,6 +16,7 @@ Added in v1.0.0
   - [Json (type alias)](#json-type-alias)
   - [JsonArray (type alias)](#jsonarray-type-alias)
   - [JsonObject (type alias)](#jsonobject-type-alias)
+  - [StringIndexed (interface)](#stringindexed-interface)
   - [parse](#parse)
   - [stringify](#stringify)
 
@@ -48,7 +49,19 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type JsonObject = { readonly [key: string]: Json }
+export type JsonObject = StringIndexed<Json>
+```
+
+Added in v1.0.0
+
+## StringIndexed (interface)
+
+**Signature**
+
+```ts
+export interface StringIndexed<A = any> {
+  readonly [k: string]: A
+}
 ```
 
 Added in v1.0.0

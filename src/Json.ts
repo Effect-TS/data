@@ -13,7 +13,14 @@ export type JsonArray = ReadonlyArray<Json>
 /**
  * @since 1.0.0
  */
-export type JsonObject = { readonly [key: string]: Json }
+export type JsonObject = StringIndexed<Json>
+
+/**
+ * @since 1.0.0
+ */
+export interface StringIndexed<A = any> {
+  readonly [k: string]: A
+}
 
 /**
  * @since 1.0.0
