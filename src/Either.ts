@@ -37,7 +37,6 @@ import type { LazyArg } from "@fp-ts/data/Function"
 import { constNull, constUndefined, identity, pipe } from "@fp-ts/data/Function"
 import * as either from "@fp-ts/data/internal/Either"
 import * as option from "@fp-ts/data/internal/Option"
-import type * as J from "@fp-ts/data/Json"
 import type { Option } from "@fp-ts/data/Option"
 import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 import * as Gen from "@fp-ts/data/typeclass/Gen"
@@ -46,7 +45,7 @@ import * as Gen from "@fp-ts/data/typeclass/Gen"
  * @category models
  * @since 1.0.0
  */
-export interface Left<E> extends J.StringIndexed {
+export type Left<E> = {
   readonly _tag: "Left"
   readonly left: E
 }
@@ -55,7 +54,7 @@ export interface Left<E> extends J.StringIndexed {
  * @category models
  * @since 1.0.0
  */
-export interface Right<A> extends J.StringIndexed {
+export type Right<A> = {
   readonly _tag: "Right"
   readonly right: A
 }

@@ -139,7 +139,7 @@ Added in v1.0.0
   - [map](#map)
   - [tupled](#tupled)
 - [model](#model)
-  - [Both (interface)](#both-interface)
+  - [Both (type alias)](#both-type-alias)
   - [These (type alias)](#these-type-alias)
   - [Validated (type alias)](#validated-type-alias)
 - [pattern matching](#pattern-matching)
@@ -1269,12 +1269,12 @@ Added in v1.0.0
 
 # model
 
-## Both (interface)
+## Both (type alias)
 
 **Signature**
 
 ```ts
-export interface Both<E, A> extends J.StringIndexed {
+export type Both<E, A> = {
   readonly _tag: 'Both'
   readonly left: E
   readonly right: A
