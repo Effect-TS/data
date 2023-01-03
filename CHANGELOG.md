@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.34
+
+### Patch Changes
+
+- [#174](https://github.com/fp-ts/data/pull/174) [`54d1e5a`](https://github.com/fp-ts/data/commit/54d1e5a749777e6d78ec5e2c6c2b7c5765077010) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Track tree depth in Chunk and materialize after MaxDepth
+
 ## 0.0.33
 
 ### Patch Changes
