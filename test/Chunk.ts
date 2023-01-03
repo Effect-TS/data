@@ -534,6 +534,27 @@ describe.concurrent("Chunk", () => {
     )
   })
 
+  it("zipAllWith", () => {
+    pipe(
+      C.make(1, 2, 3),
+      C.zipAllWith(C.make(3, 2, 1), (l, r) => l + r, () => 0, () => 0),
+      equals(C.make(4, 4, 4)),
+      assert.isTrue
+    )
+    pipe(
+      C.make(1, 2, 3),
+      C.zipAllWith(C.make(3, 2), (l, r) => l + r, () => 0, () => 0),
+      equals(C.make(4, 4, 0)),
+      assert.isTrue
+    )
+    pipe(
+      C.make(1, 2),
+      C.zipAllWith(C.make(3, 2, 1), (l, r) => l + r, () => 0, () => 0),
+      equals(C.make(4, 4, 0)),
+      assert.isTrue
+    )
+  })
+
   it("zipWithIndex", () => {
     pipe(
       C.empty(),

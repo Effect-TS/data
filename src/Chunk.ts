@@ -1569,16 +1569,16 @@ export const zipAllWith = <A, B, C, D, E>(
     const builder: Array<C | D | E> = new Array(length)
     while (i < length) {
       if (j < leftLength && k < rightLength) {
-        builder.push(f(leftarr![j]!, rightArr![k]!))
+        builder[i] = f(leftarr![j]!, rightArr![k]!)
         i++
         j++
         k++
       } else if (j < leftLength) {
-        builder.push(left(leftarr![j]!))
+        builder[i] = left(leftarr![j]!)
         i++
         j++
       } else if (k < rightLength) {
-        builder.push(right(rightArr![k]!))
+        builder[i] = right(rightArr![k]!)
         i++
         k++
       }
