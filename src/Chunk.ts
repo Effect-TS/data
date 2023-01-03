@@ -688,7 +688,7 @@ export const take = (n: number) =>
         case "ISlice": {
           return new ChunkImpl({
             _tag: "ISlice",
-            chunk: self,
+            chunk: self.backing.chunk,
             length: n,
             offset: self.backing.offset
           })
