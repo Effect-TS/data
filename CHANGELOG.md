@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.32
+
+### Patch Changes
+
+- [#170](https://github.com/fp-ts/data/pull/170) [`c34f0b7`](https://github.com/fp-ts/data/commit/c34f0b739a426b91b3b1e2b55203a122576f63fa) Thanks [@IMax153](https://github.com/IMax153)! - handle concat cases in Chunk.drop/Chunk.take
+
 ## 0.0.31
 
 ### Patch Changes
