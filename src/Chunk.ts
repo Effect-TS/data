@@ -693,6 +693,16 @@ export const take = (n: number) =>
             offset: self.backing.offset
           })
         }
+        case "IConcat": {
+          if (n > self.left.length) {
+            return new ChunkImpl({
+              _tag: "IConcat",
+              left: self.left,
+              right: take(n - self.left.length)(self.right)
+            })
+          }
+          return take(n)(self.left)
+        }
         default: {
           return new ChunkImpl({
             _tag: "ISlice",
@@ -726,6 +736,16 @@ export const drop = (n: number) =>
             chunk: self.backing.chunk,
             length: self.backing.length - n,
             offset: self.backing.offset + n
+          })
+        }
+        case "IConcat": {
+          if (n > self.left.length) {
+            return drop(n - self.left.length)(self.right)
+          }
+          return new ChunkImpl({
+            _tag: "IConcat",
+            left: drop(n)(self.left),
+            right: self.right
           })
         }
         default: {
