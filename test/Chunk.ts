@@ -333,6 +333,15 @@ describe.concurrent("Chunk", () => {
         ]))
       })
     })
+
+    describe("Given a concatenated Chunk and an amount > 1", () => {
+      const chunk = pipe(C.singleton(1), C.concat(C.make(2, 3, 4)))
+      const amount = 2
+
+      it("should return the available subset", () => {
+        expect(pipe(chunk, C.take(amount), C.toReadonlyArray)).toEqual([1, 2])
+      })
+    })
   })
 
   describe("make", () => {
@@ -358,6 +367,10 @@ describe.concurrent("Chunk", () => {
     it("should drop twice", () => {
       const self = C.make(0, 1, 2, 3)
       expect(C.toReadonlyArray(C.drop(1)(C.drop(1)(self)))).toEqual([2, 3])
+    })
+    it("should handle concatenated chunks", () => {
+      const self = pipe(C.make(1), C.concat(C.make(2, 3, 4)))
+      expect(pipe(self, C.drop(2), C.toReadonlyArray)).toEqual([3, 4])
     })
   })
 
