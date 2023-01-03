@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.33
+
+### Patch Changes
+
+- [#172](https://github.com/fp-ts/data/pull/172) [`9447525`](https://github.com/fp-ts/data/commit/9447525532cc64642e1d148c37717292a3a5cdde) Thanks [@IMax153](https://github.com/IMax153)! - fix Chunk.zipAllWith
+
 ## 0.0.32
 
 ### Patch Changes
