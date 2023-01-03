@@ -196,6 +196,9 @@ function copy<A>(
 const BufferSize = 64
 
 /** @internal */
+const MaxDepth = 64
+
+/** @internal */
 class ChunkImpl<A> implements Chunk<A> {
   readonly _id: typeof TypeId = TypeId
 
@@ -229,14 +232,14 @@ class ChunkImpl<A> implements Chunk<A> {
       }
       case "IAppend": {
         this.length = this.length = backing.start.length + backing.bufferUsed
-        this.depth = 0
+        this.depth = 1 + backing.start.depth
         this.left = _empty
         this.right = _empty
         break
       }
       case "IPrepend": {
         this.length = this.length = backing.end.length + backing.bufferUsed
-        this.depth = 0
+        this.depth = 1 + backing.end.depth
         this.left = _empty
         this.right = _empty
         break
@@ -250,11 +253,14 @@ class ChunkImpl<A> implements Chunk<A> {
       }
       case "ISlice": {
         this.length = backing.length
-        this.depth = 0
+        this.depth = 1 + backing.chunk.depth
         this.left = _empty
         this.right = _empty
         break
       }
+    }
+    if (this.depth > MaxDepth) {
+      this.toReadonlyArray()
     }
   }
 
