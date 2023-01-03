@@ -1,4 +1,5 @@
 import * as C from "@fp-ts/data/Chunk"
+import * as E from "@fp-ts/data/Either"
 import { equals } from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
 import * as O from "@fp-ts/data/Option"
@@ -561,5 +562,33 @@ describe.concurrent("Chunk", () => {
       equals(C.unsafeFromArray([[1, 5], [2, 6], [3, 7], [4, 8]])),
       assert.isTrue
     )
+  })
+
+  describe("Given two non-materialized chunks of different sizes", () => {
+    it("should zip the chunks together and return the leftover", () => {
+      const zipChunks = <A, B, C>(
+        left: C.Chunk<A>,
+        right: C.Chunk<B>,
+        f: (a: A, b: B) => C
+      ): readonly [C.Chunk<C>, E.Either<C.Chunk<A>, C.Chunk<B>>] => {
+        if (left.length > right.length) {
+          return [
+            pipe(left, C.take(right.length), C.zipWith(right, f)),
+            E.left(pipe(left, C.drop(right.length)))
+          ] as const
+        }
+        return [
+          pipe(left, C.zipWith(pipe(right, C.take(left.length)), f)),
+          E.right(pipe(right, C.drop(left.length)))
+        ] as const
+      }
+      // Create two non-materialized Chunks
+      const left = pipe(C.make(-1, 0, 1), C.drop(1))
+      const right = pipe(C.make(1, 0, 0, 1), C.drop(1))
+      const [zipped, either] = zipChunks(left, right, (a, b) => [a, b])
+      const leftover = pipe(either, E.bimap(C.toReadonlyArray, C.toReadonlyArray))
+      expect(Array.from(zipped)).toEqual([[0, 0], [1, 0]])
+      expect(leftover).toEqual(E.right([1]))
+    })
   })
 })

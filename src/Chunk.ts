@@ -1514,12 +1514,7 @@ export const zipWith = <A, B, C>(that: Chunk<B>, f: (a: A, b: B) => C) =>
   (self: Chunk<A>): Chunk<C> => {
     const selfA = toReadonlyArray(self)
     const thatA = toReadonlyArray(that)
-    const len = Math.min(selfA.length, thatA.length)
-    const res: Array<C> = new Array(len)
-    for (let i = 0; i < len; i++) {
-      res[i] = f(selfA[i], thatA[i])
-    }
-    return unsafeFromArray(res)
+    return pipe(selfA, RA.zipWith(thatA, f), unsafeFromArray)
   }
 
 /**
