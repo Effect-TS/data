@@ -564,7 +564,7 @@ describe.concurrent("Chunk", () => {
   })
 
   describe("Given two non-materialized chunks of different sizes", () => {
-    it.only("should zip the chunks together and return the leftover", () => {
+    it("should zip the chunks together and return the leftover", () => {
       // Create two non-materialized Chunks
       const left = pipe(C.make(-1, 0, 1), C.drop(1))
       const right = pipe(C.make(1, 0, 0, 1), C.drop(1))
