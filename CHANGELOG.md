@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.36
+
+### Patch Changes
+
+- [#179](https://github.com/fp-ts/data/pull/179) [`b571890`](https://github.com/fp-ts/data/commit/b571890d3f7760d29ba37d55cbafcd1d7b1446a1) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Simplify Chunk, in https://github.com/fp-ts/data/pull/178
+
 ## 0.0.35
 
 ### Patch Changes
