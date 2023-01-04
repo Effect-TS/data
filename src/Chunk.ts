@@ -231,14 +231,14 @@ class ChunkImpl<A> implements Chunk<A> {
         break
       }
       case "IAppend": {
-        this.length = this.length = backing.start.length + backing.bufferUsed
+        this.length = backing.start.length + backing.bufferUsed
         this.depth = 1 + backing.start.depth
         this.left = _empty
         this.right = _empty
         break
       }
       case "IPrepend": {
-        this.length = this.length = backing.end.length + backing.bufferUsed
+        this.length = backing.end.length + backing.bufferUsed
         this.depth = 1 + backing.end.depth
         this.left = _empty
         this.right = _empty
@@ -648,10 +648,12 @@ export const get = (index: number) => <A>(self: Chunk<A>): Option<A> => self.get
  * @category unsafe
  */
 export const unsafeFromArray = <A>(self: ReadonlyArray<A>): Chunk<A> =>
-  new ChunkImpl({
-    _tag: "IArray",
-    array: self
-  })
+  self.length === 0 ?
+    _empty :
+    new ChunkImpl({
+      _tag: "IArray",
+      array: self
+    })
 
 /**
  * Gets an element unsafely, will throw on out of bounds
