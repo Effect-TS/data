@@ -335,7 +335,7 @@ describe.concurrent("Chunk", () => {
     })
 
     describe("Given a concatenated Chunk and an amount > 1", () => {
-      const chunk = pipe(C.singleton(1), C.concat(C.make(2, 3, 4)))
+      const chunk = pipe(C.of(1), C.concat(C.make(2, 3, 4)))
       const amount = 2
 
       it("should return the available subset", () => {
@@ -352,10 +352,10 @@ describe.concurrent("Chunk", () => {
 
   describe("singleton", () => {
     it("should return a NonEmptyChunk", () => {
-      expect(C.singleton(1).length).toStrictEqual(1)
+      expect(C.of(1).length).toStrictEqual(1)
     })
     it("should return a ISingleton", () => {
-      expect(C.singleton(1).backing._tag).toEqual("ISingleton")
+      expect(C.of(1).backing._tag).toEqual("ISingleton")
     })
   })
 
@@ -516,19 +516,19 @@ describe.concurrent("Chunk", () => {
     )
     pipe(
       C.empty(),
-      C.zip(C.singleton(1)),
+      C.zip(C.of(1)),
       equals(C.unsafeFromArray([])),
       assert.isTrue
     )
     pipe(
-      C.singleton(1),
+      C.of(1),
       C.zip(C.empty()),
       equals(C.unsafeFromArray([])),
       assert.isTrue
     )
     pipe(
-      C.singleton(1),
-      C.zip(C.singleton(2)),
+      C.of(1),
+      C.zip(C.of(2)),
       equals(C.unsafeFromArray([[1, 2]])),
       assert.isTrue
     )

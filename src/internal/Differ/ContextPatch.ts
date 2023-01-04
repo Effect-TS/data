@@ -112,7 +112,7 @@ export function combine<Output, Output2>(that: CP.ContextPatch<Output, Output2>)
 export function patch<Input>(context: Context<Input>) {
   return <Output>(self: CP.ContextPatch<Input, Output>): Context<Output> => {
     let wasServiceUpdated = false
-    let patches: Chunk.Chunk<CP.ContextPatch<unknown, unknown>> = Chunk.singleton(
+    let patches: Chunk.Chunk<CP.ContextPatch<unknown, unknown>> = Chunk.of(
       self as CP.ContextPatch<unknown, unknown>
     )
     const updatedContext: Map<Tag<unknown>, unknown> = new Map(context.unsafeMap)

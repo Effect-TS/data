@@ -119,7 +119,7 @@ export function patch<Key, Value, Patch>(
 ) {
   return (self: HMP.HashMapPatch<Key, Value, Patch>): HashMap.HashMap<Key, Value> => {
     let map = oldValue
-    let patches: Chunk.Chunk<HMP.HashMapPatch<Key, Value, Patch>> = Chunk.singleton(self)
+    let patches: Chunk.Chunk<HMP.HashMapPatch<Key, Value, Patch>> = Chunk.of(self)
     while (Chunk.isNonEmpty(patches)) {
       const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
       const tail = Chunk.tailNonEmpty(patches)

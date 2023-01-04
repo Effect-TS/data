@@ -80,7 +80,7 @@ export function combine<Value>(that: HSP.HashSetPatch<Value>) {
 export function patch<Value>(oldValue: HashSet.HashSet<Value>) {
   return (self: HSP.HashSetPatch<Value>): HashSet.HashSet<Value> => {
     let set = oldValue
-    let patches: Chunk.Chunk<HSP.HashSetPatch<Value>> = Chunk.singleton(self)
+    let patches: Chunk.Chunk<HSP.HashSetPatch<Value>> = Chunk.of(self)
     while (Chunk.isNonEmpty(patches)) {
       const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
       const tail = Chunk.tailNonEmpty(patches)

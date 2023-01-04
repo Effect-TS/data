@@ -102,7 +102,7 @@ export function combine<Value, Patch>(that: CP.ChunkPatch<Value, Patch>) {
 export function patch<Value, Patch>(oldValue: Chunk.Chunk<Value>, differ: Differ<Value, Patch>) {
   return (self: CP.ChunkPatch<Value, Patch>): Chunk.Chunk<Value> => {
     let chunk = oldValue
-    let patches: Chunk.Chunk<CP.ChunkPatch<Value, Patch>> = Chunk.singleton(self)
+    let patches: Chunk.Chunk<CP.ChunkPatch<Value, Patch>> = Chunk.of(self)
     while (Chunk.isNonEmpty(patches)) {
       const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
       const tail = Chunk.tailNonEmpty(patches)

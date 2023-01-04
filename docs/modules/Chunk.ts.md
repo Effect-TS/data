@@ -17,8 +17,8 @@ Added in v1.0.0
   - [isChunk](#ischunk)
   - [make](#make)
   - [makeBy](#makeby)
+  - [of](#of)
   - [range](#range)
-  - [singleton](#singleton)
 - [conversions](#conversions)
   - [fromIterable](#fromiterable)
   - [toReadonlyArray](#toreadonlyarray)
@@ -166,6 +166,18 @@ export declare const makeBy: <A>(f: (i: number) => A) => (n: number) => NonEmpty
 
 Added in v1.0.0
 
+## of
+
+Builds a `NonEmptyChunk` from a single element.
+
+**Signature**
+
+```ts
+export declare const of: <A>(a: A) => NonEmptyChunk<A>
+```
+
+Added in v1.0.0
+
 ## range
 
 Create a non empty `Chunk` containing a range of integers, including both endpoints.
@@ -174,18 +186,6 @@ Create a non empty `Chunk` containing a range of integers, including both endpoi
 
 ```ts
 export declare const range: (start: number, end: number) => NonEmptyChunk<number>
-```
-
-Added in v1.0.0
-
-## singleton
-
-Builds a `NonEmptyChunk` from a single element.
-
-**Signature**
-
-```ts
-export declare const singleton: <A>(a: A) => NonEmptyChunk<A>
 ```
 
 Added in v1.0.0
@@ -1018,11 +1018,6 @@ export interface Chunk<A> extends Iterable<A>, Equal.Equal {
    * @since 1.0.0
    */
   concat<B>(this: Chunk<A>, that: Chunk<B>): Chunk<A | B>
-
-  /**
-   * @since 1.0.0
-   */
-  pipe<B>(this: Chunk<A>, f: (self: Chunk<A>) => B): B
 
   /**
    * @since 1.0.0

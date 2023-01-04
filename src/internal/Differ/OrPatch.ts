@@ -165,7 +165,7 @@ export function patch<Value, Value2, Patch, Patch2>(
   right: Differ<Value2, Patch2>
 ) {
   return (self: OP.OrPatch<Value, Value2, Patch, Patch2>): Either<Value, Value2> => {
-    let patches: Chunk.Chunk<OP.OrPatch<Value, Value2, Patch, Patch2>> = Chunk.singleton(self)
+    let patches: Chunk.Chunk<OP.OrPatch<Value, Value2, Patch, Patch2>> = Chunk.of(self)
     let result = oldValue
     while (Chunk.isNonEmpty(patches)) {
       const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
