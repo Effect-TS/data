@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.35
+
+### Patch Changes
+
+- [#176](https://github.com/fp-ts/data/pull/176) [`d83127a`](https://github.com/fp-ts/data/commit/d83127a8e9e6aa80b08834bb9e04f1441017c934) Thanks [@IMax153](https://github.com/IMax153)! - fix Chunk.unsafeFromArray
+
 ## 0.0.34
 
 ### Patch Changes
