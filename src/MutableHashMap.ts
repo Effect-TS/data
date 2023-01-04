@@ -3,6 +3,7 @@
  */
 import * as Equal from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
+import * as Hash from "@fp-ts/data/Hash"
 import * as O from "@fp-ts/data/Option"
 import type { Option } from "@fp-ts/data/Option"
 
@@ -47,7 +48,7 @@ class Node<K, V> implements Iterable<readonly [K, V]> {
  * @since 1.0.0
  * @category models
  */
-export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, Equal.Equal {
+export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]> {
   readonly _id: TypeId
 
   /** @internal */
@@ -63,14 +64,6 @@ class MutableHashMapImpl<K, V> implements MutableHashMap<K, V> {
   readonly backingMap = new Map<number, Node<K, V>>()
 
   length = 0;
-
-  [Equal.symbolHash]() {
-    return Equal.hashRandom(this)
-  }
-
-  [Equal.symbolEqual](that: unknown) {
-    return this === that
-  }
 
   [Symbol.iterator](): Iterator<readonly [K, V]> {
     return Array.from(this.backingMap.values())
@@ -109,7 +102,7 @@ class MutableHashMapImpl<K, V> implements MutableHashMap<K, V> {
  */
 export const get = <K>(k: K) =>
   <V>(self: MutableHashMap<K, V>): Option<V> => {
-    const hash = Equal.hash(k)
+    const hash = Hash.hash(k)
     const arr = self.backingMap.get(hash)
 
     if (arr == null) {
@@ -156,7 +149,7 @@ export const size = <K, V>(self: MutableHashMap<K, V>): number => {
  */
 export const modify = <K, V>(k: K, f: (v: V) => V) =>
   (self: MutableHashMap<K, V>): MutableHashMap<K, V> => {
-    const hash = Equal.hash(k)
+    const hash = Hash.hash(k)
     const arr = self.backingMap.get(hash)
 
     if (arr == null) {
@@ -182,7 +175,7 @@ export const modify = <K, V>(k: K, f: (v: V) => V) =>
  */
 export const set = <K, V>(k: K, v: V) =>
   (self: MutableHashMap<K, V>): MutableHashMap<K, V> => {
-    const hash = Equal.hash(k)
+    const hash = Hash.hash(k)
     const arr = self.backingMap.get(hash)
 
     if (arr == null) {
@@ -233,7 +226,7 @@ export const modifyAt = <K, V>(key: K, f: (value: Option<V>) => Option<V>) =>
  */
 export const remove = <K>(k: K) =>
   <V>(self: MutableHashMap<K, V>): MutableHashMap<K, V> => {
-    const hash = Equal.hash(k)
+    const hash = Hash.hash(k)
     const arr = self.backingMap.get(hash)
 
     if (arr == null) {

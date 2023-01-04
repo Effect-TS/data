@@ -1,6 +1,7 @@
 import * as Order from "@fp-ts/core/typeclass/Order"
 import * as Equal from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
+import * as Hash from "@fp-ts/data/Hash"
 import * as number from "@fp-ts/data/Number"
 import * as Option from "@fp-ts/data/Option"
 import * as RedBlackTree from "@fp-ts/data/RedBlackTree"
@@ -328,11 +329,11 @@ describe.concurrent("RedBlackTree", () => {
     class Key {
       constructor(readonly n: number, readonly s: string) {}
 
-      [Equal.symbolHash](): number {
-        return Equal.hashCombine(Equal.hash(this.n))(Equal.hash(this.s))
+      [Hash.symbol](): number {
+        return Hash.combine(Hash.hash(this.n))(Hash.hash(this.s))
       }
 
-      [Equal.symbolEqual](that: unknown): boolean {
+      [Equal.symbol](that: unknown): boolean {
         return that instanceof Key && this.n === that.n && this.s === that.s
       }
     }

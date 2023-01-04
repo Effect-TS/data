@@ -1,8 +1,9 @@
 import * as Chunk from "@fp-ts/data/Chunk"
 import type { Differ } from "@fp-ts/data/Differ"
 import type * as CP from "@fp-ts/data/Differ/ChunkPatch"
-import { equals } from "@fp-ts/data/Equal"
+import * as Equal from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
+import * as Hash from "@fp-ts/data/Hash"
 
 /** @internal */
 export const ChunkPatchTypeId: CP.TypeId = Symbol.for("@fp-ts/data/Differ/ChunkPatch") as CP.TypeId
@@ -15,7 +16,16 @@ class Empty<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
   readonly _tag = "Empty"
   readonly _Value: (_: Value) => Value = variance
   readonly _Patch: (_: Patch) => Patch = variance
-  readonly _id: CP.TypeId = ChunkPatchTypeId
+  readonly _id: CP.TypeId = ChunkPatchTypeId;
+
+  [Hash.symbol]() {
+    return Hash.string(`ChunkPatch(Empty)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id
+  }
 }
 
 class AndThen<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
@@ -23,10 +33,22 @@ class AndThen<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
   readonly _Value: (_: Value) => Value = variance
   readonly _Patch: (_: Patch) => Patch = variance
   readonly _id: CP.TypeId = ChunkPatchTypeId
+
   constructor(
     readonly first: CP.ChunkPatch<Value, Patch>,
     readonly second: CP.ChunkPatch<Value, Patch>
   ) {}
+
+  [Hash.symbol]() {
+    return Hash.string(`ChunkPatch(AndThen)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.first, (that as this).first) &&
+      Equal.equals(this.second, (that as this).second)
+  }
 }
 
 class Append<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
@@ -35,6 +57,16 @@ class Append<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
   readonly _Patch: (_: Patch) => Patch = variance
   readonly _id: CP.TypeId = ChunkPatchTypeId
   constructor(readonly values: Chunk.Chunk<Value>) {}
+
+  [Hash.symbol]() {
+    return Hash.string(`ChunkPatch(Append)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.values, (that as this).values)
+  }
 }
 
 class Slice<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
@@ -43,6 +75,17 @@ class Slice<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
   readonly _Patch: (_: Patch) => Patch = variance
   readonly _id: CP.TypeId = ChunkPatchTypeId
   constructor(readonly from: number, readonly until: number) {}
+
+  [Hash.symbol]() {
+    return Hash.string(`ChunkPatch(Slice)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.from, (that as this).from) &&
+      Equal.equals(this.until, (that as this).until)
+  }
 }
 
 class Update<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
@@ -51,6 +94,17 @@ class Update<Value, Patch> implements CP.ChunkPatch<Value, Patch> {
   readonly _Patch: (_: Patch) => Patch = variance
   readonly _id: CP.TypeId = ChunkPatchTypeId
   constructor(readonly index: number, readonly patch: Patch) {}
+
+  [Hash.symbol]() {
+    return Hash.string(`ChunkPatch(AndThen)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.index, (that as this).index) &&
+      Equal.equals(this.patch, (that as this).patch)
+  }
 }
 
 type Instruction =
@@ -77,7 +131,7 @@ export function diff<Value, Patch>(
     const oldElement = Chunk.unsafeGet(i)(oldValue)
     const newElement = Chunk.unsafeGet(i)(newValue)
     const valuePatch = differ.diff(oldElement, newElement)
-    if (!equals(valuePatch, differ.empty)) {
+    if (!Equal.equals(valuePatch, differ.empty)) {
       patch = pipe(patch, combine(new Update(i, valuePatch)))
     }
     i = i + 1

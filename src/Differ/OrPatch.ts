@@ -4,6 +4,7 @@
 
 import type { Differ } from "@fp-ts/data/Differ"
 import type { Either } from "@fp-ts/data/Either"
+import type { Equal } from "@fp-ts/data/Equal"
 import * as OP from "@fp-ts/data/internal/Differ/OrPatch"
 
 const TypeId: unique symbol = OP.OrPatchTypeId as TypeId
@@ -20,7 +21,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface OrPatch<Value, Value2, Patch, Patch2> {
+export interface OrPatch<Value, Value2, Patch, Patch2> extends Equal {
   readonly _id: TypeId
   readonly _Value: (_: Value) => Value
   readonly _Value2: (_: Value2) => Value2

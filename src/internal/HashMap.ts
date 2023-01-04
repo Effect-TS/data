@@ -1,5 +1,6 @@
 import * as Equal from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
+import * as Hash from "@fp-ts/data/Hash"
 import type * as HM from "@fp-ts/data/HashMap"
 import { fromBitmap, hashFragment, toBitmap } from "@fp-ts/data/internal/HashMap/bitwise"
 import { SIZE } from "@fp-ts/data/internal/HashMap/config"
@@ -41,15 +42,15 @@ export class HashMapImpl<K, V> implements HM.HashMap<K, V> {
     return new HashMapIterator(this, (k, v) => [k, v])
   }
 
-  [Equal.symbolHash](): number {
-    let hash = Equal.hash("HashMap")
+  [Hash.symbol](): number {
+    let hash = Hash.hash("HashMap")
     for (const item of this) {
-      hash ^= Equal.hashCombine(Equal.hash(item[0]))(Equal.hash(item[1]))
+      hash ^= Hash.combine(Hash.hash(item[0]))(Hash.hash(item[1]))
     }
     return hash
   }
 
-  [Equal.symbolEqual](that: unknown): boolean {
+  [Equal.symbol](that: unknown): boolean {
     if (isHashMap(that)) {
       if ((that as HashMapImpl<K, V>)._size !== this._size) {
         return false
@@ -57,7 +58,7 @@ export class HashMapImpl<K, V> implements HM.HashMap<K, V> {
       for (const item of this) {
         const elem = pipe(
           that as HM.HashMap<K, V>,
-          getHash(item[0], Equal.hash(item[0]))
+          getHash(item[0], Hash.hash(item[0]))
         )
         if (Option.isNone(elem)) {
           return false
@@ -172,6 +173,44 @@ export function make<Entries extends ReadonlyArray<readonly [any, any]>>(
   return from(entries)
 }
 
+class HashMapStructImpl<A extends Readonly<Record<PropertyKey, any>>>
+  extends HashMapImpl<{ [k in keyof A]: k }[keyof A], { [k in keyof A]: A[k] }[keyof A]>
+{
+  private readonly rec = undefined
+  constructor(
+    impl: HashMapImpl<{ [k in keyof A]: k }[keyof A], { [k in keyof A]: A[k] }[keyof A]>
+  ) {
+    super(impl._editable, impl._edit, impl._root, impl._size)
+  }
+  get record(): Readonly<A> {
+    if (this.rec !== undefined) {
+      return this.rec
+    }
+    const o: any = {}
+    pipe(
+      this,
+      forEachWithIndex((v, k) => {
+        o[k] = v
+      })
+    )
+    return o
+  }
+}
+
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
+export const struct = <A extends Readonly<Record<string, any>>>(
+  args: A
+): HM.Struct<A> => {
+  let hm: HM.HashMap<any, any> = empty()
+  for (const k of Object.keys(args)) {
+    hm = set(k, args[k])(hm)
+  }
+  return new HashMapStructImpl(hm as HashMapImpl<any, any>)
+}
+
 /** @internal */
 export function from<K, V>(entries: Iterable<readonly [K, V]>): HM.HashMap<K, V> {
   const map = beginMutation(empty<K, V>())
@@ -195,7 +234,7 @@ export function isEmpty<K, V>(self: HM.HashMap<K, V>): boolean {
 
 /** @internal */
 export function get<K, V>(key: K) {
-  return (self: HM.HashMap<K, V>): Option.Option<V> => pipe(self, getHash(key, Equal.hash(key)))
+  return (self: HM.HashMap<K, V>): Option.Option<V> => pipe(self, getHash(key, Hash.hash(key)))
 }
 
 /** @internal */
@@ -247,7 +286,7 @@ export function getHash<K, V>(key: K, hash: number) {
 /** @internal */
 export function unsafeGet<K, V>(key: K) {
   return (self: HM.HashMap<K, V>): V => {
-    const element = pipe(self, getHash(key, Equal.hash(key)))
+    const element = pipe(self, getHash(key, Hash.hash(key)))
     if (Option.isNone(element)) {
       throw new Error("Expected map to contain key")
     }
@@ -258,7 +297,7 @@ export function unsafeGet<K, V>(key: K) {
 /** @internal */
 export function has<K, V>(key: K) {
   return (self: HM.HashMap<K, V>): boolean => {
-    return Option.isSome(pipe(self, getHash(key, Equal.hash(key))))
+    return Option.isSome(pipe(self, getHash(key, Hash.hash(key))))
   }
 }
 
@@ -337,7 +376,7 @@ export function mutate<K, V>(f: (self: HM.HashMap<K, V>) => void) {
 
 /** @internal */
 export const modifyAt = <K, V>(key: K, f: Node.UpdateFn<V>) =>
-  (self: HM.HashMap<K, V>): HM.HashMap<K, V> => modifyHash(key, Equal.hash(key), f)(self)
+  (self: HM.HashMap<K, V>): HM.HashMap<K, V> => modifyHash(key, Hash.hash(key), f)(self)
 
 /** @internal */
 export function modifyHash<K, V>(key: K, hash: number, f: Node.UpdateFn<V>) {

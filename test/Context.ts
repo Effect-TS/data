@@ -1,6 +1,5 @@
 import * as Context from "@fp-ts/data/Context"
 import * as Differ from "@fp-ts/data/Differ"
-import { equals } from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
 import * as O from "@fp-ts/data/Option"
 
@@ -32,23 +31,20 @@ describe.concurrent("Context", () => {
       Context.add(B)({ b: 1 })
     )
 
-    assert.isTrue(pipe(
+    expect(pipe(
       Services,
-      Context.get(A),
-      equals({ a: 0 })
-    ))
+      Context.get(A)
+    )).toEqual({ a: 0 })
 
-    assert.isTrue(pipe(
+    expect(pipe(
       Services,
-      Context.getOption(B),
-      equals(O.some({ b: 1 }))
-    ))
+      Context.getOption(B)
+    )).toEqual(O.some({ b: 1 }))
 
-    assert.isTrue(pipe(
+    expect(pipe(
       Services,
-      Context.getOption(C),
-      equals(O.none)
-    ))
+      Context.getOption(C)
+    )).toEqual(O.none)
 
     assert.throw(() => {
       pipe(
@@ -74,29 +70,25 @@ describe.concurrent("Context", () => {
       Context.prune(A, B)
     )
 
-    assert.isTrue(pipe(
+    expect(pipe(
       pruned,
-      Context.get(A),
-      equals({ a: 0 })
-    ))
+      Context.get(A)
+    )).toEqual({ a: 0 })
 
-    assert.isTrue(pipe(
+    expect(pipe(
       pruned,
-      Context.getOption(B),
-      equals(O.some({ b: 1 }))
-    ))
+      Context.getOption(B)
+    )).toEqual(O.some({ b: 1 }))
 
-    assert.isTrue(pipe(
+    expect(pipe(
       pruned,
-      Context.getOption(C),
-      equals(O.none)
-    ))
+      Context.getOption(C)
+    )).toEqual(O.none)
 
-    assert.isTrue(pipe(
+    expect(pipe(
       env,
-      Context.getOption(C),
-      equals(O.some({ c: 2 }))
-    ))
+      Context.getOption(C)
+    )).toEqual(O.some({ c: 2 }))
   })
 
   it("applies a patch to the environment", () => {

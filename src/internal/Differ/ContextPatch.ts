@@ -2,6 +2,7 @@ import * as Chunk from "@fp-ts/data/Chunk"
 import type { Context, Tag } from "@fp-ts/data/Context"
 import type * as CP from "@fp-ts/data/Differ/ContextPatch"
 import * as Equal from "@fp-ts/data/Equal"
+import * as Hash from "@fp-ts/data/Hash"
 import { ContextImpl } from "@fp-ts/data/internal/Context"
 
 /** @internal */
@@ -18,7 +19,16 @@ export class Empty<Input, Output> implements CP.ContextPatch<Input, Output> {
   readonly _tag = "Empty"
   readonly _Input: (_: Input) => void = variance
   readonly _Output: (_: never) => Output = variance
-  readonly _id: CP.TypeId = ContextPatchTypeId
+  readonly _id: CP.TypeId = ContextPatchTypeId;
+
+  [Hash.symbol]() {
+    return Hash.string(`ContextPatch(Empty)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id
+  }
 }
 
 /** @internal */
@@ -31,6 +41,17 @@ export class AndThen<Input, Output, Output2> implements CP.ContextPatch<Input, O
     readonly first: CP.ContextPatch<Input, Output>,
     readonly second: CP.ContextPatch<Output, Output2>
   ) {}
+
+  [Hash.symbol]() {
+    return Hash.string(`ContextPatch(AndThen)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.first, (that as this).first) &&
+      Equal.equals(this.second, (that as this).second)
+  }
 }
 
 /** @internal */
@@ -40,6 +61,17 @@ export class AddService<Env, T> implements CP.ContextPatch<Env, Env | T> {
   readonly _Input: (_: Env) => void = variance
   readonly _Output: (_: never) => Env | T = variance
   constructor(readonly tag: Tag<T>, readonly service: T) {}
+
+  [Hash.symbol]() {
+    return Hash.string(`ContextPatch(AddService)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.tag, (that as this).tag) &&
+      Equal.equals(this.service, (that as this).service)
+  }
 }
 
 /** @internal */
@@ -49,6 +81,16 @@ export class RemoveService<Env, T> implements CP.ContextPatch<Env | T, Env> {
   readonly _Input: (_: Env | T) => void = variance
   readonly _Output: (_: never) => Env = variance
   constructor(readonly tag: Tag<T>) {}
+
+  [Hash.symbol]() {
+    return Hash.string(`ContextPatch(RemoveService)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.tag, (that as this).tag)
+  }
 }
 
 /** @internal */
@@ -61,6 +103,17 @@ export class UpdateService<Env, T> implements CP.ContextPatch<Env | T, Env | T> 
     readonly tag: Tag<T>,
     readonly update: (service: T) => T
   ) {
+  }
+
+  [Hash.symbol]() {
+    return Hash.string(`ContextPatch(AndThen)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.tag, (that as this).tag) &&
+      Equal.equals(this.update, (that as this).update)
   }
 }
 

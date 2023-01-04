@@ -3,8 +3,9 @@
  */
 
 import type { Order } from "@fp-ts/core/typeclass/Order"
-import * as Eq from "@fp-ts/data/Equal"
+import * as Equal from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
+import * as Hash from "@fp-ts/data/Hash"
 import * as O from "@fp-ts/data/Option"
 import * as RBT from "@fp-ts/data/RedBlackTree"
 
@@ -20,24 +21,24 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface SortedMap<K, V> extends Iterable<readonly [K, V]>, Eq.Equal {
+export interface SortedMap<K, V> extends Iterable<readonly [K, V]>, Equal.Equal {
   readonly _id: TypeId
   /** @internal */
   readonly tree: RBT.RedBlackTree<K, V>
 }
 
 /** @internal */
-class SortedMapImpl<K, V> implements Iterable<readonly [K, V]>, Eq.Equal {
+class SortedMapImpl<K, V> implements Iterable<readonly [K, V]>, Equal.Equal {
   readonly _id: TypeId = TypeId
 
   constructor(readonly tree: RBT.RedBlackTree<K, V>) {}
 
-  [Eq.symbolHash](): number {
-    return pipe(Eq.hash(this.tree), Eq.hashCombine(Eq.hash("@fp-ts/data/SortedMap")))
+  [Hash.symbol](): number {
+    return pipe(Hash.hash(this.tree), Hash.combine(Hash.hash("@fp-ts/data/SortedMap")))
   }
 
-  [Eq.symbolEqual](that: unknown): boolean {
-    return isSortedMap(that) && Eq.equals(this.tree, that.tree)
+  [Equal.symbol](that: unknown): boolean {
+    return isSortedMap(that) && Equal.equals(this.tree, that.tree)
   }
 
   [Symbol.iterator](): Iterator<readonly [K, V]> {

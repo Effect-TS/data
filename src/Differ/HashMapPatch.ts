@@ -3,6 +3,7 @@
  */
 
 import type { Differ } from "@fp-ts/data/Differ"
+import type { Equal } from "@fp-ts/data/Equal"
 import type { HashMap } from "@fp-ts/data/HashMap"
 import * as HMP from "@fp-ts/data/internal/Differ/HashMapPatch"
 
@@ -20,7 +21,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface HashMapPatch<Key, Value, Patch> {
+export interface HashMapPatch<Key, Value, Patch> extends Equal {
   readonly _id: TypeId
   readonly _Key: (_: Key) => Key
   readonly _Value: (_: Value) => Value

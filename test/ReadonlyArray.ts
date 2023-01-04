@@ -1,7 +1,6 @@
 import * as Order from "@fp-ts/core/typeclass/Order"
 import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as E from "@fp-ts/data/Either"
-import * as Equal from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
 import * as Number from "@fp-ts/data/Number"
 import * as O from "@fp-ts/data/Option"
@@ -576,6 +575,16 @@ describe.concurrent("ReadonlyArray", () => {
       deepStrictEqual(RA.uniq(new Map([["a", 1], ["b", 1]]).values()), [1])
     })
 
+    it("uniqBy", () => {
+      deepStrictEqual(
+        pipe(
+          [1, 2, 3, 4],
+          RA.uniqBy((that) => (self) => Math.abs(self % 2) === Math.abs(that % 2))
+        ),
+        [1, 2]
+      )
+    })
+
     it("splitAt", () => {
       const assertSplitAt = (
         input: ReadonlyArray<number>,
@@ -1044,17 +1053,6 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(M.combine(x)(M.empty), x)
 
     deepStrictEqual(M.combineAll([[1, 2], [3, 4, 5], [5, 6, 7, 1]]), [1, 2, 3, 4, 5, 5, 6, 7, 1])
-  })
-
-  it("getEq", () => {
-    deepStrictEqual(Equal.equals([], []), true)
-    deepStrictEqual(Equal.equals(["a"], ["a"]), true)
-    deepStrictEqual(Equal.equals(["a", "b"], ["a", "b"]), true)
-    deepStrictEqual(Equal.equals(["a"], []), false)
-    deepStrictEqual(Equal.equals([], ["a"]), false)
-    deepStrictEqual(Equal.equals(["a"], ["b"]), false)
-    deepStrictEqual(Equal.equals(["a", "b"], ["b", "a"]), false)
-    deepStrictEqual(Equal.equals(["a", "a"], ["a"]), false)
   })
 
   it("liftOrder", () => {

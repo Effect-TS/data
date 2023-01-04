@@ -1,4 +1,5 @@
 import * as Equal from "@fp-ts/data/Equal"
+import * as Hash from "@fp-ts/data/Hash"
 import type { HashMap } from "@fp-ts/data/HashMap"
 import type * as HS from "@fp-ts/data/HashSet"
 import * as HM from "@fp-ts/data/internal/HashMap"
@@ -17,11 +18,11 @@ export class HashSetImpl<A> implements HS.HashSet<A> {
     return HM.keys(this._keyMap)
   }
 
-  [Equal.symbolHash](): number {
-    return Equal.hashCombine(Equal.hash(this._keyMap))(Equal.hash("HashSet"))
+  [Hash.symbol](): number {
+    return Hash.combine(Hash.hash(this._keyMap))(Hash.hash("HashSet"))
   }
 
-  [Equal.symbolEqual](that: unknown): boolean {
+  [Equal.symbol](that: unknown): boolean {
     if (isHashSet(that)) {
       return (
         HM.size(this._keyMap) === HM.size((that as HashSetImpl<A>)._keyMap) &&

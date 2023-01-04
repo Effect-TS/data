@@ -1,5 +1,6 @@
 import * as Eq from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
+import * as Hash from "@fp-ts/data/Hash"
 import * as N from "@fp-ts/data/Number"
 import * as O from "@fp-ts/data/Option"
 import * as SM from "@fp-ts/data/SortedMap"
@@ -8,11 +9,11 @@ import { inspect } from "node:util"
 class Key implements Eq.Equal {
   constructor(readonly id: number) {}
 
-  [Eq.symbolHash](): number {
-    return Eq.hash(this.id)
+  [Hash.symbol](): number {
+    return Hash.hash(this.id)
   }
 
-  [Eq.symbolEqual](u: unknown): boolean {
+  [Eq.symbol](u: unknown): boolean {
     return u instanceof Key && this.id === u.id
   }
 }
@@ -20,11 +21,11 @@ class Key implements Eq.Equal {
 class Value implements Eq.Equal {
   constructor(readonly id: number) {}
 
-  [Eq.symbolHash](): number {
-    return Eq.hash(this.id)
+  [Hash.symbol](): number {
+    return Hash.hash(this.id)
   }
 
-  [Eq.symbolEqual](u: unknown): boolean {
+  [Eq.symbol](u: unknown): boolean {
     return u instanceof Value && this.id === u.id
   }
 }
@@ -80,13 +81,11 @@ describe.concurrent("SortedMap", () => {
 
     const result = Array.from(map)
 
-    assert.isTrue(
-      Eq.equals(result, [
-        [key(0), value(10)],
-        [key(1), value(20)],
-        [key(2), value(30)]
-      ])
-    )
+    expect([
+      [key(0), value(10)],
+      [key(1), value(20)],
+      [key(2), value(30)]
+    ]).toEqual(result)
   })
 
   it("get", () => {

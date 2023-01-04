@@ -15,7 +15,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface MutableRef<T> extends Equal.Equal {
+export interface MutableRef<T> {
   readonly _id: TypeId
   readonly _T: (_: never) => T
 
@@ -80,13 +80,8 @@ export interface MutableRef<T> extends Equal.Equal {
 class MutableRefImpl<T> implements MutableRef<T> {
   _T: (_: never) => T = (_) => _
   _id: typeof TypeId = TypeId
+
   constructor(public current: T) {}
-  [Equal.symbolEqual](that: unknown) {
-    return this === that
-  }
-  [Equal.symbolHash]() {
-    return Equal.hashRandom(this)
-  }
 
   get<T>(this: MutableRef<T>): T {
     return this.current

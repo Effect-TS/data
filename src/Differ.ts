@@ -2,7 +2,7 @@
  * @since 1.0.0
  */
 
-import type { Chunk } from "@fp-ts/data/Chunk"
+import type { Chunk, Tuple } from "@fp-ts/data/Chunk"
 import type { Context } from "@fp-ts/data/Context"
 import type { ChunkPatch } from "@fp-ts/data/Differ/ChunkPatch"
 import type { ContextPatch } from "@fp-ts/data/Differ/ContextPatch"
@@ -10,7 +10,6 @@ import type { HashMapPatch } from "@fp-ts/data/Differ/HashMapPatch"
 import type { HashSetPatch } from "@fp-ts/data/Differ/HashSetPatch"
 import type { OrPatch } from "@fp-ts/data/Differ/OrPatch"
 import type { Either } from "@fp-ts/data/Either"
-import type { Equal } from "@fp-ts/data/Equal"
 import type { HashMap } from "@fp-ts/data/HashMap"
 import type { HashSet } from "@fp-ts/data/HashSet"
 import * as D from "@fp-ts/data/internal/Differ"
@@ -42,7 +41,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface Differ<Value, Patch> extends Equal {
+export interface Differ<Value, Patch> {
   readonly _id: TypeId
   readonly _V: (_: Value) => Value
   readonly _P: (_: Patch) => Patch
@@ -237,3 +236,16 @@ export const zip: <Value2, Patch2>(
 ) => <Value, Patch>(
   self: Differ<Value, Patch>
 ) => Differ<readonly [Value, Value2], readonly [Patch, Patch2]> = D.zip
+
+/**
+ * Combines this differ and the specified differ to produce a new differ that
+ * knows how to diff the product of their values.
+ *
+ * @since 1.0.0
+ * @category mutations
+ */
+export const zipTuple: <Value2, Patch2>(
+  that: Differ<Value2, Patch2>
+) => <Value, Patch>(
+  self: Differ<Value, Patch>
+) => Differ<Tuple<readonly [Value, Value2]>, Tuple<readonly [Patch, Patch2]>> = D.zipTuple

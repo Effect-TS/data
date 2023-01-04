@@ -6,6 +6,14 @@ import * as fc from "fast-check"
 import { inspect } from "node:util"
 
 describe.concurrent("Chunk", () => {
+  it("tuple", () => {
+    expect(equals(C.tuple(0, 1, 2))(C.tuple(0, 1, 2))).toEqual(true)
+    const [a, b, c] = C.tuple(0, 1, 2).array
+    expect(a).toBe(0)
+    expect(b).toBe(1)
+    expect(c).toBe(2)
+  })
+
   it("toString", () => {
     expect(String(C.make(0, 1, 2))).toEqual("Chunk(0, 1, 2)")
   })
@@ -541,12 +549,11 @@ describe.concurrent("Chunk", () => {
       equals(C.unsafeFromArray([])),
       assert.isTrue
     )
-    pipe(
+    expect(pipe(
       C.of(1),
       C.zip(C.of(2)),
-      equals(C.unsafeFromArray([[1, 2]])),
-      assert.isTrue
-    )
+      C.toReadonlyArray
+    )).toEqual([[1, 2]])
   })
 
   it("zipAllWith", () => {
@@ -577,12 +584,11 @@ describe.concurrent("Chunk", () => {
       equals(C.unsafeFromArray([])),
       assert.isTrue
     )
-    pipe(
+    expect(pipe(
       C.unsafeFromArray([1, 2, 3, 4]),
       C.zipWithIndex,
-      equals(C.unsafeFromArray([[1, 0], [2, 1], [3, 2], [4, 3]])),
-      assert.isTrue
-    )
+      C.toReadonlyArray
+    )).toEqual([[1, 0], [2, 1], [3, 2], [4, 3]])
   })
 
   it("zipWithIndexOffset", () => {
@@ -591,12 +597,11 @@ describe.concurrent("Chunk", () => {
       C.zipWithIndexOffset(5),
       equals(C.unsafeFromArray([]))
     )
-    pipe(
+    expect(pipe(
       C.unsafeFromArray([1, 2, 3, 4]),
       C.zipWithIndexOffset(5),
-      equals(C.unsafeFromArray([[1, 5], [2, 6], [3, 7], [4, 8]])),
-      assert.isTrue
-    )
+      C.toReadonlyArray
+    )).toEqual([[1, 5], [2, 6], [3, 7], [4, 8]])
   })
 
   describe("Given two non-materialized chunks of different sizes", () => {

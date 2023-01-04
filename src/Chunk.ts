@@ -7,6 +7,7 @@ import type { Order } from "@fp-ts/core/typeclass/Order"
 import type { Either } from "@fp-ts/data/Either"
 import * as Equal from "@fp-ts/data/Equal"
 import { identity, pipe } from "@fp-ts/data/Function"
+import * as Hash from "@fp-ts/data/Hash"
 import type { NonEmptyIterable } from "@fp-ts/data/NonEmpty"
 import type { Option } from "@fp-ts/data/Option"
 import * as O from "@fp-ts/data/Option"
@@ -31,6 +32,14 @@ export interface NonEmptyChunk<A> extends Chunk<A>, NonEmptyIterable<A> {}
  * @since 1.0.0
  * @category models
  */
+export interface Tuple<A extends ReadonlyArray<any>> extends Chunk<A[number]> {
+  get array(): Readonly<A>
+}
+
+/**
+ * @since 1.0.0
+ * @category models
+ */
 export interface Chunk<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
 
@@ -44,6 +53,8 @@ export interface Chunk<A> extends Iterable<A>, Equal.Equal {
   backing: Backing<A>
   /** @internal */
   depth: number
+
+  get array(): ReadonlyArray<A>
 
   /**
    * @since 1.0.0
@@ -100,6 +111,20 @@ export interface Chunk<A> extends Iterable<A>, Equal.Equal {
    */
   unsafeGet(this: Chunk<A>, index: number): A
 }
+
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
+export const tuple = <A extends ReadonlyArray<any>>(...args: A): Tuple<Readonly<A>> =>
+  unsafeFromTuple(args)
+
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
+export const unsafeFromTuple = <A extends ReadonlyArray<any>>(args: A): Tuple<Readonly<A>> =>
+  unsafeFromArray(args) as Tuple<A>
 
 /**
  * @since 1.0.0
@@ -198,6 +223,10 @@ class ChunkImpl<A> implements Chunk<A> {
         break
       }
     }
+  }
+
+  get array(): ReadonlyArray<A> {
+    return this.toReadonlyArray()
   }
 
   toReadonlyArray(this: Chunk<A>): ReadonlyArray<A> {
@@ -347,12 +376,15 @@ class ChunkImpl<A> implements Chunk<A> {
     }
   }
 
-  [Equal.symbolEqual](that: unknown): boolean {
-    return isChunk(that) && Equal.equals(toReadonlyArray(this), toReadonlyArray(that))
+  [Equal.symbol](that: unknown): boolean {
+    if (isChunk(that) && this.length === that.length) {
+      return toReadonlyArray(this).every((value, i) => Equal.equals(value, that.unsafeGet(i)))
+    }
+    return false
   }
 
-  [Equal.symbolHash](): number {
-    return Equal.hash(toReadonlyArray(this))
+  [Hash.symbol](): number {
+    return Hash.array(toReadonlyArray(this))
   }
 
   [Symbol.iterator](): Iterator<A> {

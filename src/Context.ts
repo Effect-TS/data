@@ -18,7 +18,7 @@ export type TagTypeId = typeof TagTypeId
  * @since 1.0.0
  * @category models
  */
-export interface Tag<Service> extends Equal {
+export interface Tag<Service> {
   readonly _id: TagTypeId
   readonly _S: (_: Service) => Service
 }

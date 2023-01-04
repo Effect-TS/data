@@ -27,6 +27,16 @@ export interface HashMap<Key, Value> extends Iterable<readonly [Key, Value]>, Eq
 
 /**
  * @since 1.0.0
+ * @category models
+ */
+export interface Struct<A extends Readonly<Record<PropertyKey, any>>>
+  extends HashMap<{ [k in keyof A]: k }[keyof A], { [k in keyof A]: A[k] }[keyof A]>
+{
+  get record(): Readonly<A>
+}
+
+/**
+ * @since 1.0.0
  * @category refinements
  */
 export const isHashMap: {
@@ -41,6 +51,14 @@ export const isHashMap: {
  * @category constructors
  */
 export const empty: <K = never, V = never>() => HashMap<K, V> = HM.empty
+
+/**
+ * Creates a new `Struct`.
+ *
+ * @since 1.0.0
+ * @category constructors
+ */
+export const struct: <A extends Readonly<Record<string, any>>>(args: A) => Struct<A> = HM.struct
 
 /**
  * Constructs a new `HashMap` from an array of key/value pairs.

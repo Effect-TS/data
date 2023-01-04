@@ -24,6 +24,7 @@ import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
 import * as traversable from "@fp-ts/core/typeclass/Traversable"
 import type { Either } from "@fp-ts/data/Either"
 import { equals } from "@fp-ts/data/Equal"
+import * as Equivalence from "@fp-ts/data/Equivalence"
 import { identity, pipe } from "@fp-ts/data/Function"
 import type { LazyArg } from "@fp-ts/data/Function"
 import * as internal from "@fp-ts/data/internal/Common"
@@ -1010,12 +1011,21 @@ export const elem = <B>(b: B) =>
  * @category mutations
  * @since 1.0.0
  */
-export const uniq = <A>(
-  self: Iterable<A>
-): Array<A> => {
-  const input = fromIterable(self)
-  return isNonEmpty(input) ? uniqNonEmpty(input) : []
-}
+export const uniqBy: <A>(Eq: Equivalence.Equivalence<A>) => (self: Iterable<A>) => Array<A> = (
+  Eq
+) =>
+  (self) => {
+    const input = fromIterable(self)
+    return isNonEmpty(input) ? uniqNonEmptyBy(Eq)(input) : []
+  }
+
+/**
+ * Remove duplicates from am `Iterable`, keeping the first occurrence of an element.
+ *
+ * @category mutations
+ * @since 1.0.0
+ */
+export const uniq: <A>(self: Iterable<A>) => Array<A> = uniqBy(Equivalence.equal())
 
 /**
  * Remove duplicates from a `NonEmptyReadonlyArray`, keeping the first occurrence of an element.
@@ -1023,16 +1033,26 @@ export const uniq = <A>(
  * @category mutations
  * @since 1.0.0
  */
-export const uniqNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): NonEmptyArray<A> => {
-  const out: NonEmptyArray<A> = [headNonEmpty(self)]
-  const rest = tailNonEmpty(self)
-  for (const a of rest) {
-    if (out.every((o) => !equals(o)(a))) {
-      out.push(a)
+export const uniqNonEmptyBy = <A>(Eq: Equivalence.Equivalence<A>) =>
+  (self: NonEmptyReadonlyArray<A>): NonEmptyArray<A> => {
+    const out: NonEmptyArray<A> = [headNonEmpty(self)]
+    const rest = tailNonEmpty(self)
+    for (const a of rest) {
+      if (out.every((o) => !Eq(o)(a))) {
+        out.push(a)
+      }
     }
+    return out
   }
-  return out
-}
+
+/**
+ * Remove duplicates from a `NonEmptyReadonlyArray`, keeping the first occurrence of an element.
+ *
+ * @category mutations
+ * @since 1.0.0
+ */
+export const uniqNonEmpty: <A>(self: readonly [A, ...Array<A>]) => [A, ...Array<A>] =
+  uniqNonEmptyBy(Equivalence.equal())
 
 /**
  * A useful recursion pattern for processing an `Iterable` to produce a new `Array`, often used for "chopping" up the input

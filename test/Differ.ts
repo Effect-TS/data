@@ -1,7 +1,6 @@
 import * as Chunk from "@fp-ts/data/Chunk"
 import * as Differ from "@fp-ts/data/Differ"
-import * as Either from "@fp-ts/data/Either"
-import { equals } from "@fp-ts/data/Equal"
+import * as Equal from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
 import * as HashMap from "@fp-ts/data/HashMap"
 import * as HashSet from "@fp-ts/data/HashSet"
@@ -85,11 +84,11 @@ function randomHashSet(): HashSet.HashSet<number> {
   return HashSet.from(Array.from({ length: 20 }, smallInt))
 }
 
-function randomResult(): Either.Either<number, number> {
-  return Math.random() < 0.5 ? Either.left(smallInt()) : Either.right(smallInt())
+function randomTuple(): Chunk.Tuple<readonly [number, number]> {
+  return Chunk.tuple(smallInt(), smallInt())
 }
 
-function randomTuple(): readonly [number, number] {
+function randomPair(): readonly [number, number] {
   return [smallInt(), smallInt()]
 }
 
@@ -98,15 +97,7 @@ describe.concurrent("Differ", () => {
     diffLaws(
       Differ.chunk<number, (n: number) => number>(Differ.update()),
       randomChunk,
-      equals
-    )
-  })
-
-  describe.concurrent("result", () => {
-    diffLaws(
-      pipe(Differ.update<number>(), Differ.orElseResult(Differ.update<number>())),
-      randomResult,
-      equals
+      Equal.equals
     )
   })
 
@@ -114,7 +105,7 @@ describe.concurrent("Differ", () => {
     diffLaws(
       Differ.hashMap<number, number, (n: number) => number>(Differ.update<number>()),
       randomHashMap,
-      equals
+      Equal.equals
     )
   })
 
@@ -122,15 +113,20 @@ describe.concurrent("Differ", () => {
     diffLaws(
       Differ.hashSet<number>(),
       randomHashSet,
-      equals
+      Equal.equals
     )
   })
 
   describe.concurrent("tuple", () => {
     diffLaws(
       pipe(Differ.update<number>(), Differ.zip(Differ.update<number>())),
+      randomPair,
+      (a, b) => Equal.equals(a[0], b[0]) && Equal.equals(a[1], b[1])
+    )
+    diffLaws(
+      pipe(Differ.update<number>(), Differ.zipTuple(Differ.update<number>())),
       randomTuple,
-      equals
+      Equal.equals
     )
   })
 })
