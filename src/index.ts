@@ -3,6 +3,7 @@
  */
 
 import * as boolean from "@fp-ts/data/Boolean"
+import * as brand from "@fp-ts/data/Brand"
 import * as chunk from "@fp-ts/data/Chunk"
 import * as context from "@fp-ts/data/Context"
 import * as differ from "@fp-ts/data/Differ"
@@ -53,6 +54,10 @@ export {
    * @since 1.0.0
    */
   boolean,
+  /**
+   * @since 1.0.0
+   */
+  brand,
   /**
    * @since 1.0.0
    */
