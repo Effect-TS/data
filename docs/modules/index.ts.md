@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 17
+nav_order: 18
 parent: Modules
 ---
 
@@ -14,6 +14,7 @@ Added in v1.0.0
 
 - [utils](#utils)
   - [boolean](#boolean)
+  - [brand](#brand)
   - [chunk](#chunk)
   - [chunkPatch](#chunkpatch)
   - [compactable](#compactable)
@@ -65,6 +66,16 @@ Added in v1.0.0
 
 ```ts
 export declare const boolean: typeof boolean
+```
+
+Added in v1.0.0
+
+## brand
+
+**Signature**
+
+```ts
+export declare const brand: typeof brand
 ```
 
 Added in v1.0.0
