@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.38
+
+### Patch Changes
+
+- [#187](https://github.com/fp-ts/data/pull/187) [`4ec9b27`](https://github.com/fp-ts/data/commit/4ec9b27bba2fb4ae02d64cacccc7937ebb37a4b8) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Update build scripts
+
 ## 0.0.37
 
 ### Patch Changes
