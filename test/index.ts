@@ -1,6 +1,6 @@
 import * as _ from "@fp-ts/data"
 import * as assert from "assert"
-import * as glob from "glob"
+import glob from "glob"
 import * as path from "path"
 
 const getExportName = (name: string): string => {
