@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.37
+
+### Patch Changes
+
+- [#184](https://github.com/fp-ts/data/pull/184) [`9106537`](https://github.com/fp-ts/data/commit/9106537ae7c9973f3869e47471b2df87624225d2) Thanks [@IMax153](https://github.com/IMax153)! - add proof-of-concept branding module'
+
 ## 0.0.36
 
 ### Patch Changes
