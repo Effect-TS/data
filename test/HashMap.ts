@@ -3,6 +3,7 @@ import { pipe } from "@fp-ts/data/Function"
 import * as HashMap from "@fp-ts/data/HashMap"
 import * as Option from "@fp-ts/data/Option"
 import { deepStrictEqual } from "@fp-ts/data/test/util"
+import { inspect } from "node:util"
 
 class Key implements Equal.Equal {
   constructor(readonly n: number) {}
@@ -36,6 +37,21 @@ describe.concurrent("HashMap", () => {
   function value(s: string): Value {
     return new Value(s)
   }
+
+  it("toString", () => {
+    const map = HashMap.make([0, "a"])
+    expect(String(map)).toEqual("HashMap([0, a])")
+  })
+
+  it("toJSON", () => {
+    const map = HashMap.make([0, "a"])
+    expect(JSON.stringify(map)).toEqual(JSON.stringify({ _tag: "HashMap", values: [[0, "a"]] }))
+  })
+
+  it("inspect", () => {
+    const map = HashMap.make([0, "a"])
+    expect(inspect(map)).toEqual(inspect({ _tag: "HashMap", values: [[0, "a"]] }))
+  })
 
   it("has", () => {
     const map = HashMap.make([key(0), value("a")])

@@ -14,6 +14,7 @@ Added in v1.0.0
 
 - [constructors](#constructors)
   - [empty](#empty)
+  - [from](#from)
 - [elements](#elements)
   - [add](#add)
   - [every](#every)
@@ -55,6 +56,16 @@ Added in v1.0.0
 
 ```ts
 export declare const empty: <A>(O: Order<A>) => SortedSet<A>
+```
+
+Added in v1.0.0
+
+## from
+
+**Signature**
+
+```ts
+export declare const from: <K>(ord: Order<K>) => (iterable: Iterable<K>) => SortedSet<K>
 ```
 
 Added in v1.0.0

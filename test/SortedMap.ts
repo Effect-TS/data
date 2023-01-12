@@ -3,6 +3,7 @@ import { pipe } from "@fp-ts/data/Function"
 import * as N from "@fp-ts/data/Number"
 import * as O from "@fp-ts/data/Option"
 import * as SM from "@fp-ts/data/SortedMap"
+import { inspect } from "node:util"
 
 class Key implements Eq.Equal {
   constructor(readonly id: number) {}
@@ -43,7 +44,37 @@ function makeSortedMap(...numbers: Array<readonly [number, number]>): SM.SortedM
   })(entries)
 }
 
+function makeNumericSortedMap(
+  ...numbers: Array<readonly [number, number]>
+): SM.SortedMap<number, number> {
+  return SM.from({
+    compare: (that: number) => (self: number) => self > that ? 1 : self < that ? -1 : 0
+  })(numbers)
+}
+
 describe.concurrent("SortedMap", () => {
+  test("toString", () => {
+    const map = makeNumericSortedMap([0, 10], [1, 20], [2, 30])
+
+    expect(String(map)).toEqual("SortedMap([0, 10], [1, 20], [2, 30])")
+  })
+
+  test("toJSON", () => {
+    const map = makeNumericSortedMap([0, 10], [1, 20], [2, 30])
+
+    expect(JSON.stringify(map)).toEqual(
+      JSON.stringify({ _tag: "SortedMap", values: [[0, 10], [1, 20], [2, 30]] })
+    )
+  })
+
+  test("inspect", () => {
+    const map = makeNumericSortedMap([0, 10], [1, 20], [2, 30])
+
+    expect(inspect(map)).toEqual(
+      inspect({ _tag: "SortedMap", values: [[0, 10], [1, 20], [2, 30]] })
+    )
+  })
+
   test("entries", () => {
     const map = makeSortedMap([0, 10], [1, 20], [2, 30])
 

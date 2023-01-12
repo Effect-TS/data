@@ -2,6 +2,7 @@ import * as Equal from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
 import * as HashSet from "@fp-ts/data/HashSet"
 import { deepStrictEqual } from "@fp-ts/data/test/util"
+import { inspect } from "node:util"
 
 class Value implements Equal.Equal {
   constructor(readonly n: number) {}
@@ -27,6 +28,21 @@ describe.concurrent("HashSet", () => {
       }
     })(HashSet.empty())
   }
+
+  it("toString", () => {
+    const map = HashSet.make(0, "a")
+    expect(String(map)).toEqual("HashSet(0, a)")
+  })
+
+  it("toJSON", () => {
+    const map = HashSet.make(0, "a")
+    expect(JSON.stringify(map)).toEqual(JSON.stringify({ _tag: "HashSet", values: [0, "a"] }))
+  })
+
+  it("inspect", () => {
+    const map = HashSet.make(0, "a")
+    expect(inspect(map)).toEqual(inspect({ _tag: "HashSet", values: [0, "a"] }))
+  })
 
   it("add", () => {
     const set = makeTestHashSet(0, 1, 2)

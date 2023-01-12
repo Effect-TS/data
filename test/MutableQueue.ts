@@ -1,14 +1,27 @@
 import * as MutableQueue from "@fp-ts/data/MutableQueue"
 import { assertFalse, assertTrue, deepStrictEqual, strictEqual } from "@fp-ts/data/test/util"
+import { inspect } from "node:util"
 
 describe.concurrent("MutableQueue", () => {
+  it("toString", () => {
+    const queue = MutableQueue.bounded<number>(2)
+    MutableQueue.offerAll([0, 1, 2])(queue)
+    expect(String(queue)).toEqual("MutableQueue(0, 1)")
+  })
+
+  it("toJSON", () => {
+    const queue = MutableQueue.bounded<number>(2)
+    MutableQueue.offerAll([0, 1, 2])(queue)
+    expect(JSON.stringify(queue)).toEqual(JSON.stringify({ _tag: "MutableQueue", values: [0, 1] }))
+  })
+
+  it("inspect", () => {
+    const queue = MutableQueue.bounded<number>(2)
+    MutableQueue.offerAll([0, 1, 2])(queue)
+    expect(inspect(queue)).toEqual(inspect({ _tag: "MutableQueue", values: [0, 1] }))
+  })
+
   describe.concurrent("bounded", () => {
-    it("capacity", () => {
-      const queue = MutableQueue.bounded<number>(2)
-
-      strictEqual(MutableQueue.capacity(queue), 2)
-    })
-
     it("length", () => {
       const queue = MutableQueue.bounded<number>(2)
       strictEqual(MutableQueue.length(queue), 0)

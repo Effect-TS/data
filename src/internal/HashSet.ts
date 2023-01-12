@@ -30,6 +30,21 @@ export class HashSetImpl<A> implements HS.HashSet<A> {
     }
     return false
   }
+
+  toString() {
+    return `HashSet(${Array.from(this).map(String).join(", ")})`
+  }
+
+  toJSON() {
+    return {
+      _tag: "HashSet",
+      values: Array.from(this)
+    }
+  }
+
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return this.toJSON()
+  }
 }
 
 /** @internal */

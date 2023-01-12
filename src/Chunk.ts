@@ -223,6 +223,21 @@ class ChunkImpl<A> implements Chunk<A> {
     }
   }
 
+  toString() {
+    return `Chunk(${this.toReadonlyArray().map(String).join(", ")})`
+  }
+
+  toJSON() {
+    return {
+      _tag: "Chunk",
+      array: this.toReadonlyArray()
+    }
+  }
+
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return this.toJSON()
+  }
+
   isNonEmpty(this: Chunk<A>): this is NonEmptyChunk<A> {
     return this.length > 0
   }

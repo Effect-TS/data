@@ -1,8 +1,25 @@
 import { pipe } from "@fp-ts/data/Function"
 import * as MutableList from "@fp-ts/data/MutableList"
 import { deepStrictEqual, strictEqual } from "@fp-ts/data/test/util"
+import { inspect } from "node:util"
 
 describe.concurrent("MutableList", () => {
+  it("toString", () => {
+    expect(String(MutableList.make(0, 1, 2))).toEqual("MutableList(0, 1, 2)")
+  })
+
+  it("toJSON", () => {
+    expect(JSON.stringify(MutableList.make(0, 1, 2))).toEqual(
+      JSON.stringify({ _tag: "MutableList", values: [0, 1, 2] })
+    )
+  })
+
+  it("inspect", () => {
+    expect(inspect(MutableList.make(0, 1, 2))).toEqual(
+      inspect({ _tag: "MutableList", values: [0, 1, 2] })
+    )
+  })
+
   it("empty", () => {
     deepStrictEqual(Array.from(MutableList.empty<number>()), [])
   })

@@ -36,9 +36,11 @@ export class HashMapImpl<K, V> implements HM.HashMap<K, V> {
     public _root: Node.Node<K, V>,
     public _size: number
   ) {}
+
   [Symbol.iterator](): Iterator<readonly [K, V]> {
     return new HashMapIterator(this, (k, v) => [k, v])
   }
+
   [Equal.symbolHash](): number {
     let hash = Equal.hash("HashMap")
     for (const item of this) {
@@ -68,6 +70,21 @@ export class HashMapImpl<K, V> implements HM.HashMap<K, V> {
       return true
     }
     return false
+  }
+
+  toString() {
+    return `HashMap(${Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")})`
+  }
+
+  toJSON() {
+    return {
+      _tag: "HashMap",
+      values: Array.from(this)
+    }
+  }
+
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return this.toJSON()
   }
 }
 
