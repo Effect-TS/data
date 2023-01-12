@@ -230,7 +230,7 @@ class ChunkImpl<A> implements Chunk<A> {
   toJSON() {
     return {
       _tag: "Chunk",
-      array: this.toReadonlyArray()
+      values: this.toReadonlyArray()
     }
   }
 

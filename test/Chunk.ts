@@ -12,12 +12,12 @@ describe.concurrent("Chunk", () => {
 
   it("toJSON", () => {
     expect(JSON.stringify(C.make(0, 1, 2))).toEqual(
-      JSON.stringify({ _tag: "Chunk", array: [0, 1, 2] })
+      JSON.stringify({ _tag: "Chunk", values: [0, 1, 2] })
     )
   })
 
   it("inspect", () => {
-    expect(inspect(C.make(0, 1, 2))).toEqual(inspect({ _tag: "Chunk", array: [0, 1, 2] }))
+    expect(inspect(C.make(0, 1, 2))).toEqual(inspect({ _tag: "Chunk", values: [0, 1, 2] }))
   })
 
   it("modifyOption", () => {
