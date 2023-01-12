@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.39
+
+### Patch Changes
+
+- [#190](https://github.com/fp-ts/data/pull/190) [`f7e1ada`](https://github.com/fp-ts/data/commit/f7e1adad90ad4f52d64e199a30fa933627b62fec) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Improve stringify of custom types
+
 ## 0.0.38
 
 ### Patch Changes
