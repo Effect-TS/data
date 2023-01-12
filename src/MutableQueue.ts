@@ -60,6 +60,21 @@ class MutableQueueImpl<A> implements MutableQueue<A> {
   [Symbol.iterator](): Iterator<A> {
     return Array.from(this.queue)[Symbol.iterator]()
   }
+
+  toString() {
+    return `MutableQueue(${Array.from(this).map(String).join(", ")})`
+  }
+
+  toJSON() {
+    return {
+      _tag: "MutableQueue",
+      values: Array.from(this)
+    }
+  }
+
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return this.toJSON()
+  }
 }
 
 /**

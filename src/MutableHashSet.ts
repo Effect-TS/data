@@ -46,6 +46,21 @@ class MutableHashSetImpl<K> implements MutableHashSet<K> {
   [Symbol.iterator](): Iterator<K> {
     return Array.from(this.keyMap).map(([_]) => _)[Symbol.iterator]()
   }
+
+  toString() {
+    return `MutableHashSet(${Array.from(this).map(String).join(", ")})`
+  }
+
+  toJSON() {
+    return {
+      _tag: "MutableHashSet",
+      values: Array.from(this)
+    }
+  }
+
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return this.toJSON()
+  }
 }
 
 /**

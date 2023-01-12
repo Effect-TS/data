@@ -43,6 +43,23 @@ export class RedBlackTreeImpl<K, V> implements RBT.RedBlackTree<K, V> {
     }
     return new RedBlackTreeIterator(this, stack, Direction.Forward)
   }
+
+  toString() {
+    return `RedBlackTree(${
+      Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")
+    })`
+  }
+
+  toJSON() {
+    return {
+      _tag: "RedBlackTree",
+      values: Array.from(this)
+    }
+  }
+
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return this.toJSON()
+  }
 }
 
 /** @internal */

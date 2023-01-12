@@ -5,8 +5,41 @@ import * as number from "@fp-ts/data/Number"
 import * as Option from "@fp-ts/data/Option"
 import * as RedBlackTree from "@fp-ts/data/RedBlackTree"
 import { deepStrictEqual } from "@fp-ts/data/test/util"
+import { inspect } from "node:util"
 
 describe.concurrent("RedBlackTree", () => {
+  it("toString", () => {
+    const tree = pipe(
+      RedBlackTree.empty<number, string>(number.Order),
+      RedBlackTree.insert(1, "a"),
+      RedBlackTree.insert(0, "b")
+    )
+
+    expect(String(tree)).toEqual("RedBlackTree([0, b], [1, a])")
+  })
+
+  it("toJSON", () => {
+    const tree = pipe(
+      RedBlackTree.empty<number, string>(number.Order),
+      RedBlackTree.insert(1, "a"),
+      RedBlackTree.insert(0, "b")
+    )
+
+    expect(JSON.stringify(tree)).toEqual(
+      JSON.stringify({ _tag: "RedBlackTree", values: [[0, "b"], [1, "a"]] })
+    )
+  })
+
+  it("inspect", () => {
+    const tree = pipe(
+      RedBlackTree.empty<number, string>(number.Order),
+      RedBlackTree.insert(1, "a"),
+      RedBlackTree.insert(0, "b")
+    )
+
+    expect(inspect(tree)).toEqual(inspect({ _tag: "RedBlackTree", values: [[0, "b"], [1, "a"]] }))
+  })
+
   it("forEach", () => {
     const ordered: Array<[number, string]> = []
     pipe(

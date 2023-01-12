@@ -43,6 +43,23 @@ class SortedMapImpl<K, V> implements Iterable<readonly [K, V]>, Eq.Equal {
   [Symbol.iterator](): Iterator<readonly [K, V]> {
     return this.tree[Symbol.iterator]()
   }
+
+  toString() {
+    return `SortedMap(${
+      Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")
+    })`
+  }
+
+  toJSON() {
+    return {
+      _tag: "SortedMap",
+      values: Array.from(this)
+    }
+  }
+
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return this.toJSON()
+  }
 }
 
 /**

@@ -3,8 +3,23 @@ import { equals } from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
 import * as O from "@fp-ts/data/Option"
 import * as fc from "fast-check"
+import { inspect } from "node:util"
 
 describe.concurrent("Chunk", () => {
+  it("toString", () => {
+    expect(String(C.make(0, 1, 2))).toEqual("Chunk(0, 1, 2)")
+  })
+
+  it("toJSON", () => {
+    expect(JSON.stringify(C.make(0, 1, 2))).toEqual(
+      JSON.stringify({ _tag: "Chunk", values: [0, 1, 2] })
+    )
+  })
+
+  it("inspect", () => {
+    expect(inspect(C.make(0, 1, 2))).toEqual(inspect({ _tag: "Chunk", values: [0, 1, 2] }))
+  })
+
   it("modifyOption", () => {
     expect(pipe(C.empty(), C.modifyOption(0, (n: number) => n * 2))).toEqual(O.none)
     expect(pipe(C.make(1, 2, 3), C.modifyOption(0, (n: number) => n * 2))).toEqual(

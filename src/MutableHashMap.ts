@@ -61,6 +61,7 @@ class MutableHashMapImpl<K, V> implements MutableHashMap<K, V> {
   readonly _id: TypeId = TypeId
 
   readonly backingMap = new Map<number, Node<K, V>>()
+
   length = 0;
 
   [Equal.symbolHash]() {
@@ -82,6 +83,23 @@ class MutableHashMapImpl<K, V> implements MutableHashMap<K, V> {
         }
         return arr
       })[Symbol.iterator]()
+  }
+
+  toString() {
+    return `MutableHashMap(${
+      Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")
+    })`
+  }
+
+  toJSON() {
+    return {
+      _tag: "MutableHashMap",
+      values: Array.from(this)
+    }
+  }
+
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return this.toJSON()
   }
 }
 

@@ -3,6 +3,7 @@ import * as Eq from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
 import * as SortedSet from "@fp-ts/data/SortedSet"
 import * as Str from "@fp-ts/data/String"
+import { inspect } from "node:util"
 
 class Member implements Eq.Equal {
   constructor(readonly id: string) {}
@@ -18,7 +19,30 @@ class Member implements Eq.Equal {
 
 const OrdMember: Order.Order<Member> = pipe(Str.Order, Order.contramap((member) => member.id))
 
+function makeNumericSortedSet(
+  ...numbers: Array<number>
+): SortedSet.SortedSet<number> {
+  return SortedSet.from({
+    compare: (that: number) => (self: number) => self > that ? 1 : self < that ? -1 : 0
+  })(numbers)
+}
+
 describe.concurrent("SortedSet", () => {
+  it("toString", () => {
+    const set = makeNumericSortedSet(0, 1, 2)
+    expect(String(set)).toEqual("SortedSet(0, 1, 2)")
+  })
+
+  it("toJSON", () => {
+    const set = makeNumericSortedSet(0, 1, 2)
+    expect(JSON.stringify(set)).toEqual(JSON.stringify({ _tag: "SortedSet", values: [0, 1, 2] }))
+  })
+
+  it("inspect", () => {
+    const set = makeNumericSortedSet(0, 1, 2)
+    expect(inspect(set)).toEqual(inspect({ _tag: "SortedSet", values: [0, 1, 2] }))
+  })
+
   it("add", () => {
     const set = pipe(
       SortedSet.empty(OrdMember),

@@ -43,6 +43,21 @@ class SortedSetImpl<A> implements Iterable<A>, Eq.Equal {
   [Symbol.iterator](): Iterator<A> {
     return RBT.keys()(this.keyTree)
   }
+
+  toString() {
+    return `SortedSet(${Array.from(this).map(String).join(", ")})`
+  }
+
+  toJSON() {
+    return {
+      _tag: "SortedSet",
+      values: Array.from(this)
+    }
+  }
+
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return this.toJSON()
+  }
 }
 
 /**
@@ -60,6 +75,16 @@ export const isSortedSet: {
  * @category constructors
  */
 export const empty = <A>(O: Order<A>): SortedSet<A> => new SortedSetImpl(RBT.empty(O))
+
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
+export const from = <K>(ord: Order<K>) =>
+  (
+    iterable: Iterable<K>
+  ): SortedSet<K> =>
+    new SortedSetImpl(RBT.from<K, boolean>(ord)(Array.from(iterable).map((k) => [k, true])))
 
 /**
  * @since 1.0.0

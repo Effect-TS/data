@@ -131,6 +131,21 @@ class MutableRefImpl<T> implements MutableRef<T> {
   getAndUpdate<T>(this: MutableRef<T>, f: (value: T) => T): T {
     return this.getAndSet(f(this.get()))
   }
+
+  toString() {
+    return `MutableRef(${String(this.current)})`
+  }
+
+  toJSON() {
+    return {
+      _tag: "MutableRef",
+      current: this.current
+    }
+  }
+
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return this.toJSON()
+  }
 }
 
 /**

@@ -2,6 +2,7 @@ import * as Equal from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
 import * as HM from "@fp-ts/data/MutableHashMap"
 import * as O from "@fp-ts/data/Option"
+import { inspect } from "node:util"
 
 class Key implements Equal.Equal {
   constructor(readonly a: number, readonly b: number) {}
@@ -36,6 +37,35 @@ function value(c: number, d: number): Value {
 }
 
 describe.concurrent("MutableHashMap", () => {
+  it("toString", () => {
+    const map = HM.make(
+      [0, "a"],
+      [1, "b"]
+    )
+
+    expect(String(map)).toEqual("MutableHashMap([0, a], [1, b])")
+  })
+
+  it("toJSON", () => {
+    const map = HM.make(
+      [0, "a"],
+      [1, "b"]
+    )
+
+    expect(JSON.stringify(map)).toEqual(
+      JSON.stringify({ _tag: "MutableHashMap", values: [[0, "a"], [1, "b"]] })
+    )
+  })
+
+  it("inspect", () => {
+    const map = HM.make(
+      [0, "a"],
+      [1, "b"]
+    )
+
+    expect(inspect(map)).toEqual(inspect({ _tag: "MutableHashMap", values: [[0, "a"], [1, "b"]] }))
+  })
+
   it("from", () => {
     const map = HM.make(
       [key(0, 0), value(0, 0)],

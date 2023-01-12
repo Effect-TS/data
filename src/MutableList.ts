@@ -65,6 +65,21 @@ class MutableListImpl<A> implements MutableList<A> {
       }
     }
   }
+
+  toString() {
+    return `MutableList(${Array.from(this).map(String).join(", ")})`
+  }
+
+  toJSON() {
+    return {
+      _tag: "MutableList",
+      values: Array.from(this)
+    }
+  }
+
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return this.toJSON()
+  }
 }
 
 /** @internal */
