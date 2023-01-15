@@ -190,7 +190,6 @@ export function patch<Key, Value, Patch>(
           patches = tail
           break
         }
-
         case "Remove": {
           map = HashMap.remove(head.key)(map)
           patches = tail

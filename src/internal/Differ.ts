@@ -1,5 +1,4 @@
-import type { Chunk, Tuple } from "@fp-ts/data/Chunk"
-import * as C from "@fp-ts/data/Chunk"
+import type { Chunk } from "@fp-ts/data/Chunk"
 import type { Context } from "@fp-ts/data/Context"
 import type * as D from "@fp-ts/data/Differ"
 import * as ChunkPatch from "@fp-ts/data/Differ/ChunkPatch"
@@ -163,30 +162,5 @@ export function zip<Value2, Patch2>(that: D.Differ<Value2, Patch2>) {
         self.patch(patch[0], oldValue[0]),
         that.patch(patch[1], oldValue[1])
       ]
-    })
-}
-
-/** @internal */
-export function zipTuple<Value2, Patch2>(that: D.Differ<Value2, Patch2>) {
-  return <Value, Patch>(
-    self: D.Differ<Value, Patch>
-  ): D.Differ<Tuple<readonly [Value, Value2]>, Tuple<readonly [Patch, Patch2]>> =>
-    make({
-      empty: C.tuple(self.empty, that.empty),
-      combine: (first, second) =>
-        C.tuple(
-          self.combine(first.array[0], second.array[0]),
-          that.combine(first.array[1], second.array[1])
-        ),
-      diff: (oldValue, newValue) =>
-        C.tuple(
-          self.diff(oldValue.array[0], newValue.array[0]),
-          that.diff(oldValue.array[1], newValue.array[1])
-        ),
-      patch: (patch, oldValue) =>
-        C.tuple(
-          self.patch(patch.array[0], oldValue.array[0]),
-          that.patch(patch.array[1], oldValue.array[1])
-        )
     })
 }

@@ -6,14 +6,6 @@ import * as fc from "fast-check"
 import { inspect } from "node:util"
 
 describe.concurrent("Chunk", () => {
-  it("tuple", () => {
-    expect(equals(C.tuple(0, 1, 2))(C.tuple(0, 1, 2))).toEqual(true)
-    const [a, b, c] = C.tuple(0, 1, 2).array
-    expect(a).toBe(0)
-    expect(b).toBe(1)
-    expect(c).toBe(2)
-  })
-
   it("toString", () => {
     expect(String(C.make(0, 1, 2))).toEqual("Chunk(0, 1, 2)")
   })

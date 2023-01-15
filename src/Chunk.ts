@@ -32,14 +32,6 @@ export interface NonEmptyChunk<A> extends Chunk<A>, NonEmptyIterable<A> {}
  * @since 1.0.0
  * @category models
  */
-export interface Tuple<A extends ReadonlyArray<any>> extends Chunk<A[number]> {
-  get array(): Readonly<A>
-}
-
-/**
- * @since 1.0.0
- * @category models
- */
 export interface Chunk<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
 
@@ -111,20 +103,6 @@ export interface Chunk<A> extends Iterable<A>, Equal.Equal {
    */
   unsafeGet(this: Chunk<A>, index: number): A
 }
-
-/**
- * @since 1.0.0
- * @category constructors
- */
-export const tuple = <A extends ReadonlyArray<any>>(...args: A): Tuple<Readonly<A>> =>
-  unsafeFromTuple(args)
-
-/**
- * @since 1.0.0
- * @category constructors
- */
-export const unsafeFromTuple = <A extends ReadonlyArray<any>>(args: A): Tuple<Readonly<A>> =>
-  unsafeFromArray(args) as Tuple<A>
 
 /**
  * @since 1.0.0

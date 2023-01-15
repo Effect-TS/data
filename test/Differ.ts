@@ -84,10 +84,6 @@ function randomHashSet(): HashSet.HashSet<number> {
   return HashSet.from(Array.from({ length: 20 }, smallInt))
 }
 
-function randomTuple(): Chunk.Tuple<readonly [number, number]> {
-  return Chunk.tuple(smallInt(), smallInt())
-}
-
 function randomPair(): readonly [number, number] {
   return [smallInt(), smallInt()]
 }
@@ -122,11 +118,6 @@ describe.concurrent("Differ", () => {
       pipe(Differ.update<number>(), Differ.zip(Differ.update<number>())),
       randomPair,
       (a, b) => Equal.equals(a[0], b[0]) && Equal.equals(a[1], b[1])
-    )
-    diffLaws(
-      pipe(Differ.update<number>(), Differ.zipTuple(Differ.update<number>())),
-      randomTuple,
-      Equal.equals
     )
   })
 })
