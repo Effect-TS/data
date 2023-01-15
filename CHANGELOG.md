@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.40
+
+### Patch Changes
+
+- [#181](https://github.com/fp-ts/data/pull/181) [`7d9a3b6`](https://github.com/fp-ts/data/commit/7d9a3b6fdc1f5d154b78b16f9fa2ad92476206cf) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Introduce Equivalence, change Equal to be strict
+
 ## 0.0.39
 
 ### Patch Changes

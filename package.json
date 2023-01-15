@@ -1,6 +1,6 @@
 {
   "name": "@fp-ts/data",
-  "version": "0.0.39",
+  "version": "0.0.40",
   "publishConfig": {
     "access": "public",
     "directory": "dist"
