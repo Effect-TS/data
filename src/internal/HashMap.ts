@@ -173,44 +173,6 @@ export function make<Entries extends ReadonlyArray<readonly [any, any]>>(
   return from(entries)
 }
 
-class HashMapStructImpl<A extends Readonly<Record<PropertyKey, any>>>
-  extends HashMapImpl<{ [k in keyof A]: k }[keyof A], { [k in keyof A]: A[k] }[keyof A]>
-{
-  private readonly rec = undefined
-  constructor(
-    impl: HashMapImpl<{ [k in keyof A]: k }[keyof A], { [k in keyof A]: A[k] }[keyof A]>
-  ) {
-    super(impl._editable, impl._edit, impl._root, impl._size)
-  }
-  get record(): Readonly<A> {
-    if (this.rec !== undefined) {
-      return this.rec
-    }
-    const o: any = {}
-    pipe(
-      this,
-      forEachWithIndex((v, k) => {
-        o[k] = v
-      })
-    )
-    return o
-  }
-}
-
-/**
- * @since 1.0.0
- * @category constructors
- */
-export const struct = <A extends Readonly<Record<string, any>>>(
-  args: A
-): HM.Struct<A> => {
-  let hm: HM.HashMap<any, any> = empty()
-  for (const k of Object.keys(args)) {
-    hm = set(k, args[k])(hm)
-  }
-  return new HashMapStructImpl(hm as HashMapImpl<any, any>)
-}
-
 /** @internal */
 export function from<K, V>(entries: Iterable<readonly [K, V]>): HM.HashMap<K, V> {
   const map = beginMutation(empty<K, V>())

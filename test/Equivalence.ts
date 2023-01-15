@@ -1,13 +1,7 @@
-import * as Chunk from "@fp-ts/data/Chunk"
 import * as Equivalence from "@fp-ts/data/Equivalence"
 import { pipe } from "@fp-ts/data/Function"
 
 describe("Equivalence", () => {
-  it("equal", () => {
-    const eq = Equivalence.equal<Chunk.Tuple<readonly [number, number]>>()
-    assert.isTrue(eq(Chunk.tuple(0, 1))(Chunk.tuple(0, 1)))
-    assert.isFalse(eq(Chunk.tuple(0, 1))(Chunk.tuple(1, 1)))
-  })
   it("string", () => {
     assert.isTrue(Equivalence.string("ok")("ok"))
     assert.isFalse(Equivalence.string("ok")("no"))

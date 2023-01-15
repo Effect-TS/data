@@ -6,6 +6,7 @@ import * as boolean from "@fp-ts/data/Boolean"
 import * as brand from "@fp-ts/data/Brand"
 import * as chunk from "@fp-ts/data/Chunk"
 import * as context from "@fp-ts/data/Context"
+import * as data from "@fp-ts/data/Data"
 import * as differ from "@fp-ts/data/Differ"
 import * as chunkPatch from "@fp-ts/data/Differ/ChunkPatch"
 import * as contextPatch from "@fp-ts/data/Differ/ContextPatch"
@@ -84,6 +85,10 @@ export {
    * @since 1.0.0
    */
   covariantWithIndex,
+  /**
+   * @since 1.0.0
+   */
+  data,
   /**
    * @since 1.0.0
    */

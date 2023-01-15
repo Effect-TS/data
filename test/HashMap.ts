@@ -46,14 +46,6 @@ describe.concurrent("HashMap", () => {
     expect(pipe(map, HM.has(Option.some(2)))).toBe(false)
   })
 
-  it("struct", () => {
-    expect(Equal.equals(HM.struct({ a: 0, b: 1 }))(HM.struct({ a: 0, b: 1 }))).toEqual(true)
-    expect(Equal.equals(HM.struct({ a: 0, b: 1 }))(HM.struct({ a: 0, b: 1, c: 1 }))).toEqual(false)
-    const { a, b } = HM.struct({ a: 0, b: 1 }).record
-    expect(a).toBe(0)
-    expect(b).toBe(1)
-  })
-
   it("toString", () => {
     const map = HM.make([0, "a"])
     expect(String(map)).toEqual("HashMap([0, a])")

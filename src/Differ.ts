@@ -2,7 +2,7 @@
  * @since 1.0.0
  */
 
-import type { Chunk, Tuple } from "@fp-ts/data/Chunk"
+import type { Chunk } from "@fp-ts/data/Chunk"
 import type { Context } from "@fp-ts/data/Context"
 import type { ChunkPatch } from "@fp-ts/data/Differ/ChunkPatch"
 import type { ContextPatch } from "@fp-ts/data/Differ/ContextPatch"
@@ -236,16 +236,3 @@ export const zip: <Value2, Patch2>(
 ) => <Value, Patch>(
   self: Differ<Value, Patch>
 ) => Differ<readonly [Value, Value2], readonly [Patch, Patch2]> = D.zip
-
-/**
- * Combines this differ and the specified differ to produce a new differ that
- * knows how to diff the product of their values.
- *
- * @since 1.0.0
- * @category mutations
- */
-export const zipTuple: <Value2, Patch2>(
-  that: Differ<Value2, Patch2>
-) => <Value, Patch>(
-  self: Differ<Value, Patch>
-) => Differ<Tuple<readonly [Value, Value2]>, Tuple<readonly [Patch, Patch2]>> = D.zipTuple

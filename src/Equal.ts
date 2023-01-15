@@ -15,7 +15,7 @@ export const symbol: unique symbol = Symbol.for("@fp-ts/data/Equal")
  * @category models
  */
 export interface Equal extends Hash.Hash {
-  [symbol](that: unknown): boolean
+  [symbol](that: Equal): boolean
 }
 
 /**
