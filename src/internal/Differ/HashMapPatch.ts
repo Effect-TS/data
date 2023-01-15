@@ -134,7 +134,7 @@ export function diff<Key, Value, Patch>(
   const [removed, patch] = HashMap.reduceWithIndex(
     [oldValue, empty<Key, Value, Patch>()] as const,
     ([map, patch], newValue: Value, key: Key) => {
-      const option = HashMap.get<Key, Value>(key)(map)
+      const option = HashMap.get(key)(map)
       switch (option._tag) {
         case "Some": {
           const valuePatch = differ.diff(option.value, newValue)
@@ -197,7 +197,7 @@ export function patch<Key, Value, Patch>(
           break
         }
         case "Update": {
-          const option = HashMap.get<Key, Value>(head.key)(map)
+          const option = HashMap.get(head.key)(map)
           if (option._tag === "Some") {
             map = HashMap.set(head.key, differ.patch(head.patch, option.value))(map)
           }

@@ -96,7 +96,7 @@ export const isEmpty: <K, V>(self: HashMap<K, V>) => boolean = HM.isEmpty
  * @since 1.0.0
  * @category elements
  */
-export const get: <K, V>(key: K) => (self: HashMap<K, V>) => Option<V> = HM.get
+export const get: <K1>(key: K1) => <K, V>(self: HashMap<K, V>) => Option<V> = HM.get
 
 /**
  * Lookup the value for the specified key in the `HashMap` using a custom hash.
@@ -104,9 +104,8 @@ export const get: <K, V>(key: K) => (self: HashMap<K, V>) => Option<V> = HM.get
  * @since 1.0.0
  * @category elements
  */
-export const getHash: <K, V>(key: K, hash: number) => (
-  self: HashMap<K, V>
-) => Option<V> = HM.getHash
+export const getHash: <K1>(key: K1, hash: number) => <K, V>(self: HashMap<K, V>) => Option<V> =
+  HM.getHash
 
 /**
  * Unsafely lookup the value for the specified key in the `HashMap` using the
@@ -115,7 +114,7 @@ export const getHash: <K, V>(key: K, hash: number) => (
  * @since 1.0.0
  * @category unsafe
  */
-export const unsafeGet: <K, V>(key: K) => (self: HashMap<K, V>) => V = HM.unsafeGet
+export const unsafeGet: <K1>(key: K1) => <K, V>(self: HashMap<K, V>) => V = HM.unsafeGet
 
 /**
  * Checks if the specified key has an entry in the `HashMap`.
@@ -123,7 +122,7 @@ export const unsafeGet: <K, V>(key: K) => (self: HashMap<K, V>) => V = HM.unsafe
  * @since 1.0.0
  * @category elements
  */
-export const has: <K, V>(key: K) => (self: HashMap<K, V>) => boolean = HM.has
+export const has: <K1>(key: K1) => <K, V>(self: HashMap<K, V>) => boolean = HM.has
 
 /**
  * Checks if the specified key has an entry in the `HashMap` using a custom
@@ -132,7 +131,8 @@ export const has: <K, V>(key: K) => (self: HashMap<K, V>) => boolean = HM.has
  * @since 1.0.0
  * @category elements
  */
-export const hasHash: <K, V>(key: K, hash: number) => (self: HashMap<K, V>) => boolean = HM.hasHash
+export const hasHash: <K1>(key: K1, hash: number) => <K, V>(self: HashMap<K, V>) => boolean =
+  HM.hasHash
 
 /**
  * Sets the specified key to the specified value using the internal hashing

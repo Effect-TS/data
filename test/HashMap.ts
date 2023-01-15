@@ -41,9 +41,9 @@ describe.concurrent("HashMap", () => {
 
   it("option", () => {
     const map = HM.make([Option.some(1), 0], [Option.none, 1])
-    expect(pipe(map, HM.has(Option.none as Option.Option<number>))).toBe(true)
-    expect(pipe(map, HM.has(Option.some(1) as Option.Option<number>))).toBe(true)
-    expect(pipe(map, HM.has(Option.some(2) as Option.Option<number>))).toBe(false)
+    expect(pipe(map, HM.has(Option.none))).toBe(true)
+    expect(pipe(map, HM.has(Option.some(1)))).toBe(true)
+    expect(pipe(map, HM.has(Option.some(2)))).toBe(false)
   })
 
   it("struct", () => {
@@ -365,19 +365,19 @@ describe.concurrent("HashMap", () => {
     const result = HM.union(map2)(map1)
 
     deepStrictEqual(
-      pipe(result, HM.get<number | string, string | boolean>(0)),
+      pipe(result, HM.get(0)),
       Option.some("a")
     )
     deepStrictEqual(
-      pipe(result, HM.get<number | string, string | boolean>(1)),
+      pipe(result, HM.get(1)),
       Option.some("b")
     )
     deepStrictEqual(
-      pipe(result, HM.get<number | string, string | boolean>("foo")),
+      pipe(result, HM.get("foo")),
       Option.some(true)
     )
     deepStrictEqual(
-      pipe(result, HM.get<number | string, string | boolean>("bar")),
+      pipe(result, HM.get("bar")),
       Option.some(false)
     )
   })

@@ -233,13 +233,14 @@ export function isEmpty<K, V>(self: HM.HashMap<K, V>): boolean {
 }
 
 /** @internal */
-export function get<K, V>(key: K) {
-  return (self: HM.HashMap<K, V>): Option.Option<V> => pipe(self, getHash(key, Hash.hash(key)))
+export function get<K1>(key: K1) {
+  return <K, V>(self: HM.HashMap<K, V>): Option.Option<V> =>
+    pipe(self, getHash(key, Hash.hash(key)))
 }
 
 /** @internal */
-export function getHash<K, V>(key: K, hash: number) {
-  return (self: HM.HashMap<K, V>): Option.Option<V> => {
+export function getHash<K1>(key: K1, hash: number) {
+  return <K, V>(self: HM.HashMap<K, V>): Option.Option<V> => {
     let node = (self as HashMapImpl<K, V>)._root
     let shift = 0
     // eslint-disable-next-line no-constant-condition
@@ -284,8 +285,8 @@ export function getHash<K, V>(key: K, hash: number) {
 }
 
 /** @internal */
-export function unsafeGet<K, V>(key: K) {
-  return (self: HM.HashMap<K, V>): V => {
+export function unsafeGet<K1>(key: K1) {
+  return <K, V>(self: HM.HashMap<K, V>): V => {
     const element = pipe(self, getHash(key, Hash.hash(key)))
     if (Option.isNone(element)) {
       throw new Error("Expected map to contain key")
@@ -295,15 +296,15 @@ export function unsafeGet<K, V>(key: K) {
 }
 
 /** @internal */
-export function has<K, V>(key: K) {
-  return (self: HM.HashMap<K, V>): boolean => {
+export function has<K1>(key: K1) {
+  return <K, V>(self: HM.HashMap<K, V>): boolean => {
     return Option.isSome(pipe(self, getHash(key, Hash.hash(key))))
   }
 }
 
 /** @internal */
-export function hasHash<K, V>(key: K, hash: number) {
-  return (self: HM.HashMap<K, V>): boolean => {
+export function hasHash<K1>(key: K1, hash: number) {
+  return <K, V>(self: HM.HashMap<K, V>): boolean => {
     return Option.isSome(pipe(self, getHash(key, hash)))
   }
 }
