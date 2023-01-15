@@ -2,10 +2,11 @@
  * @since 1.0.0
  */
 import { pipe } from "@fp-ts/data/Function"
+import { structural } from "@fp-ts/data/internal/Equal"
 import { PCGRandom } from "@fp-ts/data/Random"
 
 /** @internal */
-const hashCache = new WeakMap<object, number>()
+const randomHashCache = new WeakMap<object, number>()
 /** @internal */
 const pcgr = new PCGRandom()
 
@@ -52,14 +53,13 @@ export const hash: <A>(self: A) => number = <A>(self: A) => {
       if (self === null) {
         return string("null")
       }
-      if (hashCache.has(self)) {
-        return hashCache.get(self)!
-      }
       if (isHash(self)) {
         return self[symbol]()
       } else {
-        hashCache.set(self, random(self))
-        return hashCache.get(self)!
+        if ("_tag" in (self as object | Function) && structural.has(self["_tag"])) {
+          return structure(self)
+        }
+        return random(self)
       }
     }
     default: {
@@ -73,11 +73,10 @@ export const hash: <A>(self: A) => number = <A>(self: A) => {
  * @category hashing
  */
 export const random: <A extends object>(self: A) => number = (self) => {
-  if (!hashCache.has(self)) {
-    const h = optimize(pcgr.integer(Number.MAX_SAFE_INTEGER))
-    hashCache.set(self, h)
+  if (!randomHashCache.has(self)) {
+    randomHashCache.set(self, number(pcgr.integer(Number.MAX_SAFE_INTEGER)))
   }
-  return hashCache.get(self)!
+  return randomHashCache.get(self)!
 }
 
 /**
@@ -133,7 +132,6 @@ export const string = (str: string) => {
  * @category hashing
  */
 export const structure = <A extends object>(o: A) => {
-  hashCache.set(o, number(pcgr.number()))
   const keys = Object.keys(o)
   let h = 12289
   for (let i = 0; i < keys.length; i++) {

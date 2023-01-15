@@ -2,6 +2,7 @@
  * @since 1.0.0
  */
 import * as Hash from "@fp-ts/data/Hash"
+import { structural } from "@fp-ts/data/internal/Equal"
 
 /**
  * @since 1.0.0
@@ -42,13 +43,40 @@ function compareBoth(self: unknown, that: unknown) {
   if (selfType !== typeof that) {
     return false
   }
-  return (selfType === "object" || selfType === "function") &&
-    self !== null &&
-    that !== null &&
-    isEqual(self) &&
-    isEqual(that) &&
-    Hash.hash(self) === Hash.hash(that) &&
-    self[symbol](that)
+  if (
+    (selfType === "object" || selfType === "function") &&
+    self != null &&
+    that != null
+  ) {
+    if (isEqual(self) && isEqual(that)) {
+      return Hash.hash(self) === Hash.hash(that) && self[symbol](that)
+    }
+    if (
+      "_tag" in (self as object | Function) &&
+      "_tag" in (that as object | Function) &&
+      self["_tag"] === that["_tag"] &&
+      typeof self["_tag"] === "string" &&
+      structural.has(self["_tag"])
+    ) {
+      const selfKeys = Object.keys(self)
+      const thatKeys = Object.keys(that)
+      if (selfKeys.length !== thatKeys.length) {
+        return false
+      }
+      for (const key of selfKeys) {
+        if (
+          !(
+            key in (that as object | Function) &&
+            equals(that[key])(self[key])
+          )
+        ) {
+          return false
+        }
+      }
+      return true
+    }
+  }
+  return false
 }
 
 /**
@@ -57,3 +85,11 @@ function compareBoth(self: unknown, that: unknown) {
  */
 export const isEqual = (u: unknown): u is Equal =>
   typeof u === "object" && u !== null && symbol in u
+
+/**
+ * @since 1.0.0
+ * @category structural
+ */
+export const considerByValue: (tag: string) => void = (tag: string) => {
+  structural.add(tag)
+}

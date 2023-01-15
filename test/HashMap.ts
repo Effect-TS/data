@@ -39,6 +39,13 @@ describe.concurrent("HashMap", () => {
     return new Value(s)
   }
 
+  it("option", () => {
+    const map = HM.make([Option.some(1), 0], [Option.none, 1])
+    expect(pipe(map, HM.has(Option.none as Option.Option<number>))).toBe(true)
+    expect(pipe(map, HM.has(Option.some(1) as Option.Option<number>))).toBe(true)
+    expect(pipe(map, HM.has(Option.some(2) as Option.Option<number>))).toBe(false)
+  })
+
   it("struct", () => {
     expect(Equal.equals(HM.struct({ a: 0, b: 1 }))(HM.struct({ a: 0, b: 1 }))).toEqual(true)
     expect(Equal.equals(HM.struct({ a: 0, b: 1 }))(HM.struct({ a: 0, b: 1, c: 1 }))).toEqual(false)
