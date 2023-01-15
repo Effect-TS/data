@@ -1,5 +1,6 @@
 import * as Equal from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
+import * as Hash from "@fp-ts/data/Hash"
 import * as HashSet from "@fp-ts/data/HashSet"
 import { deepStrictEqual } from "@fp-ts/data/test/util"
 import { inspect } from "node:util"
@@ -7,11 +8,11 @@ import { inspect } from "node:util"
 class Value implements Equal.Equal {
   constructor(readonly n: number) {}
 
-  [Equal.symbolHash](): number {
-    return Equal.hash(this.n)
+  [Hash.symbol](): number {
+    return Hash.hash(this.n)
   }
 
-  [Equal.symbolEqual](u: unknown): boolean {
+  [Equal.symbol](u: unknown): boolean {
     return u instanceof Value && this.n === u.n
   }
 }

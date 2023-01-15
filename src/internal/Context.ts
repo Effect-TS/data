@@ -1,5 +1,6 @@
 import type * as C from "@fp-ts/data/Context"
 import * as Equal from "@fp-ts/data/Equal"
+import * as Hash from "@fp-ts/data/Hash"
 import * as option from "@fp-ts/data/internal/Option"
 import type * as O from "@fp-ts/data/Option"
 
@@ -22,14 +23,6 @@ export class TagImpl<Service> implements C.Tag<Service> {
       return globalThis[TagTypeId][key]
     }
   }
-
-  [Equal.symbolEqual](that: unknown) {
-    return this === that
-  }
-
-  [Equal.symbolHash](): number {
-    return Equal.hashRandom(this)
-  }
 }
 
 /** @internal */
@@ -40,7 +33,7 @@ export class ContextImpl<Services> implements C.Context<Services> {
   _id: C.TypeId = ContextTypeId
   _S = (_: Services) => _;
 
-  [Equal.symbolEqual](that: unknown): boolean {
+  [Equal.symbol](that: unknown): boolean {
     if (isContext(that)) {
       if (this.unsafeMap.size === that.unsafeMap.size) {
         for (const k of this.unsafeMap.keys()) {
@@ -56,8 +49,8 @@ export class ContextImpl<Services> implements C.Context<Services> {
     return false
   }
 
-  [Equal.symbolHash](): number {
-    return Equal.hash(this.unsafeMap.size)
+  [Hash.symbol](): number {
+    return Hash.number(this.unsafeMap.size)
   }
 
   constructor(readonly unsafeMap: Map<C.Tag<any>, any>) {}

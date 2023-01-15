@@ -3,8 +3,9 @@
  */
 
 import type { Order } from "@fp-ts/core/typeclass/Order"
-import * as Eq from "@fp-ts/data/Equal"
+import * as Equal from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
+import * as Hash from "@fp-ts/data/Hash"
 import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 import * as RBT from "@fp-ts/data/RedBlackTree"
 
@@ -20,24 +21,24 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface SortedSet<A> extends Iterable<A>, Eq.Equal {
+export interface SortedSet<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
   /** @internal */
   readonly keyTree: RBT.RedBlackTree<A, boolean>
 }
 
 /** @internal */
-class SortedSetImpl<A> implements Iterable<A>, Eq.Equal {
+class SortedSetImpl<A> implements Iterable<A>, Equal.Equal {
   readonly _id: TypeId = TypeId
 
   constructor(readonly keyTree: RBT.RedBlackTree<A, boolean>) {}
 
-  [Eq.symbolHash](): number {
-    return pipe(Eq.hash(this.keyTree), Eq.hashCombine(Eq.hash("@fp-ts/data/SortedSet")))
+  [Hash.symbol](): number {
+    return pipe(Hash.hash(this.keyTree), Hash.combine(Hash.hash("@fp-ts/data/SortedSet")))
   }
 
-  [Eq.symbolEqual](that: unknown): boolean {
-    return isSortedSet(that) && Eq.equals(this.keyTree, that.keyTree)
+  [Equal.symbol](that: unknown): boolean {
+    return isSortedSet(that) && Equal.equals(this.keyTree, that.keyTree)
   }
 
   [Symbol.iterator](): Iterator<A> {

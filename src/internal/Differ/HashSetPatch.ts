@@ -1,5 +1,7 @@
 import * as Chunk from "@fp-ts/data/Chunk"
 import type * as HSP from "@fp-ts/data/Differ/HashSetPatch"
+import * as Equal from "@fp-ts/data/Equal"
+import * as Hash from "@fp-ts/data/Hash"
 import * as HashSet from "@fp-ts/data/HashSet"
 
 /** @internal */
@@ -14,7 +16,16 @@ function variance<A, B>(a: A): B {
 class Empty<Value> implements HSP.HashSetPatch<Value> {
   readonly _tag = "Empty"
   readonly _Value: (_: Value) => Value = variance
-  readonly _id: HSP.TypeId = HashSetPatchTypeId
+  readonly _id: HSP.TypeId = HashSetPatchTypeId;
+
+  [Hash.symbol]() {
+    return Hash.string(`HashSetPatch(Empty)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id
+  }
 }
 
 class AndThen<Value> implements HSP.HashSetPatch<Value> {
@@ -25,6 +36,17 @@ class AndThen<Value> implements HSP.HashSetPatch<Value> {
     readonly first: HSP.HashSetPatch<Value>,
     readonly second: HSP.HashSetPatch<Value>
   ) {}
+
+  [Hash.symbol]() {
+    return Hash.string(`HashSetPatch(AndThen)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.first, (that as this).first) &&
+      Equal.equals(this.second, (that as this).second)
+  }
 }
 
 class Add<Value> implements HSP.HashSetPatch<Value> {
@@ -32,6 +54,16 @@ class Add<Value> implements HSP.HashSetPatch<Value> {
   readonly _Value: (_: Value) => Value = variance
   readonly _id: HSP.TypeId = HashSetPatchTypeId
   constructor(readonly value: Value) {}
+
+  [Hash.symbol]() {
+    return Hash.string(`HashSetPatch(Add)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.value, (that as this).value)
+  }
 }
 
 class Remove<Value> implements HSP.HashSetPatch<Value> {
@@ -39,6 +71,16 @@ class Remove<Value> implements HSP.HashSetPatch<Value> {
   readonly _Value: (_: Value) => Value = variance
   readonly _id: HSP.TypeId = HashSetPatchTypeId
   constructor(readonly value: Value) {}
+
+  [Hash.symbol]() {
+    return Hash.string(`HashSetPatch(Remove)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.value, (that as this).value)
+  }
 }
 
 type Instruction =

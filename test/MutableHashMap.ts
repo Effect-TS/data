@@ -1,5 +1,6 @@
 import * as Equal from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
+import * as Hash from "@fp-ts/data/Hash"
 import * as HM from "@fp-ts/data/MutableHashMap"
 import * as O from "@fp-ts/data/Option"
 import { inspect } from "node:util"
@@ -7,11 +8,11 @@ import { inspect } from "node:util"
 class Key implements Equal.Equal {
   constructor(readonly a: number, readonly b: number) {}
 
-  [Equal.symbolHash]() {
-    return Equal.hash(`${this.a}-${this.b}`)
+  [Hash.symbol]() {
+    return Hash.hash(`${this.a}-${this.b}`)
   }
 
-  [Equal.symbolEqual](that: unknown): boolean {
+  [Equal.symbol](that: unknown): boolean {
     return that instanceof Key && this.a === that.a && this.b === that.b
   }
 }
@@ -19,11 +20,11 @@ class Key implements Equal.Equal {
 class Value implements Equal.Equal {
   constructor(readonly c: number, readonly d: number) {}
 
-  [Equal.symbolHash]() {
-    return Equal.hash(`${this.c}-${this.d}`)
+  [Hash.symbol]() {
+    return Hash.hash(`${this.c}-${this.d}`)
   }
 
-  [Equal.symbolEqual](that: unknown): boolean {
+  [Equal.symbol](that: unknown): boolean {
     return that instanceof Value && this.c === that.c && this.d === that.d
   }
 }
@@ -79,11 +80,11 @@ describe.concurrent("MutableHashMap", () => {
 
   it("iterate", () => {
     class Hello {
-      [Equal.symbolHash]() {
+      [Hash.symbol]() {
         return 0
       }
 
-      [Equal.symbolEqual](that: unknown) {
+      [Equal.symbol](that: unknown) {
         return this === that
       }
     }
@@ -111,11 +112,9 @@ describe.concurrent("MutableHashMap", () => {
       HM.get(key(0, 0))
     )
 
-    pipe(
-      result,
-      Equal.equals(O.some(value(1, 1))),
-      assert.isTrue
-    )
+    expect(
+      result
+    ).toEqual(O.some(value(1, 1)))
   })
 
   it("has", () => {
@@ -163,12 +162,10 @@ describe.concurrent("MutableHashMap", () => {
 
     assert.strictEqual(HM.size(map), 2)
 
-    pipe(
+    expect(pipe(
       map,
-      HM.get(key(0, 0)),
-      Equal.equals(O.some(value(0, 1))),
-      assert.isTrue
-    )
+      HM.get(key(0, 0))
+    )).toEqual(O.some(value(0, 1)))
 
     pipe(
       map,
@@ -180,12 +177,10 @@ describe.concurrent("MutableHashMap", () => {
 
     assert.strictEqual(HM.size(map), 3)
 
-    pipe(
+    expect(pipe(
       map,
-      HM.get(key(2, 2)),
-      Equal.equals(O.some(value(2, 2))),
-      assert.isTrue
-    )
+      HM.get(key(2, 2))
+    )).toEqual(O.some(value(2, 2)))
   })
 
   it("remove", () => {
@@ -227,12 +222,10 @@ describe.concurrent("MutableHashMap", () => {
       HM.set(key(0, 0), value(4, 4))
     )
 
-    assert.isTrue(
-      Equal.equals(Array.from(map), [
-        [key(0, 0), value(4, 4)],
-        [key(1, 1), value(3, 3)]
-      ])
-    )
+    expect(Array.from(map)).toEqual([
+      [key(0, 0), value(4, 4)],
+      [key(1, 1), value(3, 3)]
+    ])
   })
 
   it("size", () => {
@@ -260,23 +253,20 @@ describe.concurrent("MutableHashMap", () => {
       HM.modify(key(0, 0), (v) => value(v.c + 1, v.d + 1))
     )
 
-    pipe(
+    expect(pipe(
       map,
-      HM.get(key(0, 0)),
-      Equal.equals(O.some(value(1, 1))),
-      assert.isTrue
-    )
+      HM.get(key(0, 0))
+    )).toEqual(O.some(value(1, 1)))
 
     pipe(
       map,
       HM.modify(key(1, 1), (v) => value(v.c + 1, v.d + 1))
     )
 
-    pipe(
+    expect(pipe(
       map,
-      HM.get(key(0, 0)),
-      Equal.equals(O.none),
-      assert.isFalse
-    )
+      HM.remove(key(0, 0)),
+      HM.get(key(0, 0))
+    )).toEqual(O.none)
   })
 })

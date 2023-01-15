@@ -2,6 +2,7 @@ import * as Chunk from "@fp-ts/data/Chunk"
 import type * as Differ from "@fp-ts/data/Differ"
 import type * as HMP from "@fp-ts/data/Differ/HashMapPatch"
 import * as Equal from "@fp-ts/data/Equal"
+import * as Hash from "@fp-ts/data/Hash"
 import * as HashMap from "@fp-ts/data/HashMap"
 
 /** @internal */
@@ -18,7 +19,16 @@ class Empty<Key, Value, Patch> implements HMP.HashMapPatch<Key, Value, Patch> {
   readonly _Key: (_: Key) => Key = variance
   readonly _Value: (_: Value) => Value = variance
   readonly _Patch: (_: Patch) => Patch = variance
-  readonly _id: HMP.TypeId = HashMapPatchTypeId
+  readonly _id: HMP.TypeId = HashMapPatchTypeId;
+
+  [Hash.symbol]() {
+    return Hash.string(`HashMapPatch(Empty)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id
+  }
 }
 
 class AndThen<Key, Value, Patch> implements HMP.HashMapPatch<Key, Value, Patch> {
@@ -31,6 +41,17 @@ class AndThen<Key, Value, Patch> implements HMP.HashMapPatch<Key, Value, Patch> 
     readonly first: HMP.HashMapPatch<Key, Value, Patch>,
     readonly second: HMP.HashMapPatch<Key, Value, Patch>
   ) {}
+
+  [Hash.symbol]() {
+    return Hash.string(`HashMapPatch(AndThen)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.first, (that as this).first) &&
+      Equal.equals(this.second, (that as this).second)
+  }
 }
 
 class Add<Key, Value, Patch> implements HMP.HashMapPatch<Key, Value, Patch> {
@@ -40,6 +61,17 @@ class Add<Key, Value, Patch> implements HMP.HashMapPatch<Key, Value, Patch> {
   readonly _Patch: (_: Patch) => Patch = variance
   readonly _id: HMP.TypeId = HashMapPatchTypeId
   constructor(readonly key: Key, readonly value: Value) {}
+
+  [Hash.symbol]() {
+    return Hash.string(`HashMapPatch(Add)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.key, (that as this).key) &&
+      Equal.equals(this.value, (that as this).value)
+  }
 }
 
 class Remove<Key, Value, Patch> implements HMP.HashMapPatch<Key, Value, Patch> {
@@ -49,6 +81,16 @@ class Remove<Key, Value, Patch> implements HMP.HashMapPatch<Key, Value, Patch> {
   readonly _Patch: (_: Patch) => Patch = variance
   readonly _id: HMP.TypeId = HashMapPatchTypeId
   constructor(readonly key: Key) {}
+
+  [Hash.symbol]() {
+    return Hash.string(`HashMapPatch(Remove)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.key, (that as this).key)
+  }
 }
 
 class Update<Key, Value, Patch> implements HMP.HashMapPatch<Key, Value, Patch> {
@@ -58,6 +100,17 @@ class Update<Key, Value, Patch> implements HMP.HashMapPatch<Key, Value, Patch> {
   readonly _Patch: (_: Patch) => Patch = variance
   readonly _id: HMP.TypeId = HashMapPatchTypeId
   constructor(readonly key: Key, readonly patch: Patch) {}
+
+  [Hash.symbol]() {
+    return Hash.string(`HashMapPatch(Update)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.key, (that as this).key) &&
+      Equal.equals(this.patch, (that as this).patch)
+  }
 }
 
 type Instruction =
@@ -81,7 +134,7 @@ export function diff<Key, Value, Patch>(
   const [removed, patch] = HashMap.reduceWithIndex(
     [oldValue, empty<Key, Value, Patch>()] as const,
     ([map, patch], newValue: Value, key: Key) => {
-      const option = HashMap.get<Key, Value>(key)(map)
+      const option = HashMap.get(key)(map)
       switch (option._tag) {
         case "Some": {
           const valuePatch = differ.diff(option.value, newValue)
@@ -144,7 +197,7 @@ export function patch<Key, Value, Patch>(
           break
         }
         case "Update": {
-          const option = HashMap.get<Key, Value>(head.key)(map)
+          const option = HashMap.get(head.key)(map)
           if (option._tag === "Some") {
             map = HashMap.set(head.key, differ.patch(head.patch, option.value))(map)
           }

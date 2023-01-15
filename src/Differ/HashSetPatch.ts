@@ -2,6 +2,7 @@
  * @since 1.0.0
  */
 
+import type { Equal } from "@fp-ts/data/Equal"
 import type { HashSet } from "@fp-ts/data/HashSet"
 import * as HSP from "@fp-ts/data/internal/Differ/HashSetPatch"
 
@@ -19,7 +20,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface HashSetPatch<Value> {
+export interface HashSetPatch<Value> extends Equal {
   readonly _id: TypeId
   readonly _Value: (_: Value) => Value
 }

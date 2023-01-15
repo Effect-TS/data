@@ -1,7 +1,6 @@
 /**
  * @since 1.0.0
  */
-import * as Equal from "@fp-ts/data/Equal"
 import * as MHashMap from "@fp-ts/data/MutableHashMap"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableHashSet") as TypeId
@@ -16,7 +15,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface MutableHashSet<K> extends Iterable<K>, Equal.Equal {
+export interface MutableHashSet<K> extends Iterable<K> {
   readonly _id: TypeId
   readonly _V: (_: K) => K
 
@@ -33,14 +32,6 @@ class MutableHashSetImpl<K> implements MutableHashSet<K> {
 
   get length() {
     return this.keyMap.length
-  }
-
-  [Equal.symbolHash]() {
-    return Equal.hash(this)
-  }
-
-  [Equal.symbolEqual](that: unknown) {
-    return this === that
   }
 
   [Symbol.iterator](): Iterator<K> {

@@ -3,6 +3,7 @@
  */
 
 import type { Context } from "@fp-ts/data/Context"
+import type { Equal } from "@fp-ts/data/Equal"
 import * as CP from "@fp-ts/data/internal/Differ/ContextPatch"
 
 const TypeId: unique symbol = CP.ContextPatchTypeId as TypeId
@@ -21,7 +22,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface ContextPatch<Input, Output> {
+export interface ContextPatch<Input, Output> extends Equal {
   readonly _id: TypeId
   readonly _Input: (_: Input) => void
   readonly _Output: (_: never) => Output

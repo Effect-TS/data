@@ -2,8 +2,6 @@
  * @since 1.0.0
  */
 
-import * as Equal from "@fp-ts/data/Equal"
-
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableList") as TypeId
 
 /**
@@ -16,7 +14,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category model
  */
-export interface MutableList<A> extends Iterable<A>, Equal.Equal {
+export interface MutableList<A> extends Iterable<A> {
   readonly _id: TypeId
 
   /** @internal */
@@ -32,14 +30,6 @@ class MutableListImpl<A> implements MutableList<A> {
   head: LinkedListNode<A> | undefined = undefined
   tail: LinkedListNode<A> | undefined = undefined
   _length = 0;
-
-  [Equal.symbolHash]() {
-    return Equal.hashRandom(this)
-  }
-
-  [Equal.symbolEqual](that: unknown) {
-    return this === that
-  }
 
   [Symbol.iterator](): Iterator<A> {
     let done = false

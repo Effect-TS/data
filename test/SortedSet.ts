@@ -1,6 +1,7 @@
 import * as Order from "@fp-ts/core/typeclass/Order"
 import * as Eq from "@fp-ts/data/Equal"
 import { pipe } from "@fp-ts/data/Function"
+import * as Hash from "@fp-ts/data/Hash"
 import * as SortedSet from "@fp-ts/data/SortedSet"
 import * as Str from "@fp-ts/data/String"
 import { inspect } from "node:util"
@@ -8,11 +9,11 @@ import { inspect } from "node:util"
 class Member implements Eq.Equal {
   constructor(readonly id: string) {}
 
-  [Eq.symbolHash](): number {
-    return Eq.hash(this.id)
+  [Hash.symbol](): number {
+    return Hash.hash(this.id)
   }
 
-  [Eq.symbolEqual](u: unknown): boolean {
+  [Eq.symbol](u: unknown): boolean {
     return u instanceof Member && this.id === u.id
   }
 }
@@ -382,6 +383,6 @@ describe.concurrent("SortedSet", () => {
         new Member("worker_000003")
       ]
     )
-    assert.isTrue(Eq.equals(result2, set1))
+    expect(result2).toEqual(set1)
   })
 })

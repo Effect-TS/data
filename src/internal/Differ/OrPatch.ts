@@ -3,7 +3,8 @@ import type { Differ } from "@fp-ts/data/Differ"
 import type * as OP from "@fp-ts/data/Differ/OrPatch"
 import type { Either } from "@fp-ts/data/Either"
 import * as E from "@fp-ts/data/Either"
-import { equals } from "@fp-ts/data/Equal"
+import * as Equal from "@fp-ts/data/Equal"
+import * as Hash from "@fp-ts/data/Hash"
 
 /** @internal */
 export const OrPatchTypeId: OP.TypeId = Symbol.for("@fp-ts/data/Differ/OrPatch") as OP.TypeId
@@ -21,7 +22,16 @@ export class Empty<Value, Value2, Patch, Patch2>
   readonly _Value2: (_: Value2) => Value2 = variance
   readonly _Patch: (_: Patch) => Patch = variance
   readonly _Patch2: (_: Patch2) => Patch2 = variance
-  readonly _id: OP.TypeId = OrPatchTypeId
+  readonly _id: OP.TypeId = OrPatchTypeId;
+
+  [Hash.symbol]() {
+    return Hash.string(`OrPatch(Empty)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id
+  }
 }
 
 /** @internal */
@@ -38,6 +48,17 @@ export class AndThen<Value, Value2, Patch, Patch2>
     readonly first: OP.OrPatch<Value, Value2, Patch, Patch2>,
     readonly second: OP.OrPatch<Value, Value2, Patch, Patch2>
   ) {}
+
+  [Hash.symbol]() {
+    return Hash.string(`OrPatch(AndThen)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.first, (that as this).first) &&
+      Equal.equals(this.second, (that as this).second)
+  }
 }
 
 /** @internal */
@@ -51,6 +72,16 @@ export class SetLeft<Value, Value2, Patch, Patch2>
   readonly _Patch2: (_: Patch2) => Patch2 = variance
   readonly _id: OP.TypeId = OrPatchTypeId
   constructor(readonly value: Value) {}
+
+  [Hash.symbol]() {
+    return Hash.string(`OrPatch(SetLeft)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.value, (that as this).value)
+  }
 }
 
 /** @internal */
@@ -64,6 +95,16 @@ export class SetRight<Value, Value2, Patch, Patch2>
   readonly _Patch2: (_: Patch2) => Patch2 = variance
   readonly _id: OP.TypeId = OrPatchTypeId
   constructor(readonly value: Value2) {}
+
+  [Hash.symbol]() {
+    return Hash.string(`OrPatch(SetRight)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.value, (that as this).value)
+  }
 }
 
 /** @internal */
@@ -77,6 +118,16 @@ export class UpdateLeft<Value, Value2, Patch, Patch2>
   readonly _Patch2: (_: Patch2) => Patch2 = variance
   readonly _id: OP.TypeId = OrPatchTypeId
   constructor(readonly patch: Patch) {}
+
+  [Hash.symbol]() {
+    return Hash.string(`OrPatch(UpdateLeft)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.patch, (that as this).patch)
+  }
 }
 
 /** @internal */
@@ -90,6 +141,16 @@ export class UpdateRight<Value, Value2, Patch, Patch2>
   readonly _Patch2: (_: Patch2) => Patch2 = variance
   readonly _id: OP.TypeId = OrPatchTypeId
   constructor(readonly patch: Patch2) {}
+
+  [Hash.symbol]() {
+    return Hash.string(`OrPatch(UpdateRight)`)
+  }
+
+  [Equal.symbol](that: unknown) {
+    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
+      "_tag" in that && that["_tag"] === this._id &&
+      Equal.equals(this.patch, (that as this).patch)
+  }
 }
 
 type Instruction =
@@ -122,7 +183,7 @@ export function diff<Value, Value2, Patch, Patch2>(
       switch (newValue._tag) {
         case "Left": {
           const valuePatch = left.diff(oldValue.left, newValue.left)
-          if (equals(valuePatch, left.empty)) {
+          if (Equal.equals(valuePatch, left.empty)) {
             return new Empty()
           }
           return new UpdateLeft(valuePatch)
@@ -139,7 +200,7 @@ export function diff<Value, Value2, Patch, Patch2>(
         }
         case "Right": {
           const valuePatch = right.diff(oldValue.right, newValue.right)
-          if (equals(valuePatch, right.empty)) {
+          if (Equal.equals(valuePatch, right.empty)) {
             return new Empty()
           }
           return new UpdateRight(valuePatch)

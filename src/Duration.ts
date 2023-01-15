@@ -2,6 +2,7 @@
  * @since 1.0.0
  */
 import * as Equal from "@fp-ts/data/Equal"
+import * as Hash from "@fp-ts/data/Hash"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/Duration")
 
@@ -24,10 +25,10 @@ export interface Duration {
 class DurationImpl implements Equal.Equal {
   readonly _id: TypeId = TypeId
   constructor(readonly millis: number) {}
-  [Equal.symbolHash](): number {
-    return Equal.hash(this.millis)
+  [Hash.symbol](): number {
+    return Hash.hash(this.millis)
   }
-  [Equal.symbolEqual](that: unknown): boolean {
+  [Equal.symbol](that: unknown): boolean {
     return isDuration(that) && this.millis === that.millis
   }
 }

@@ -4,6 +4,7 @@
 
 import type { Chunk } from "@fp-ts/data/Chunk"
 import type { Differ } from "@fp-ts/data/Differ"
+import type { Equal } from "@fp-ts/data/Equal"
 import * as CP from "@fp-ts/data/internal/Differ/ChunkPatch"
 
 const TypeId: unique symbol = CP.ChunkPatchTypeId as TypeId
@@ -20,7 +21,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface ChunkPatch<Value, Patch> {
+export interface ChunkPatch<Value, Patch> extends Equal {
   readonly _id: TypeId
   readonly _Value: (_: Value) => Value
   readonly _Patch: (_: Patch) => Patch

@@ -3,7 +3,6 @@
  */
 
 import * as Chunk from "@fp-ts/data/Chunk"
-import * as Equal from "@fp-ts/data/Equal"
 import * as MutableList from "@fp-ts/data/MutableList"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableQueue") as TypeId
@@ -24,7 +23,7 @@ export const EmptyMutableQueue = Symbol.for("@fp-ts/data/mutable/MutableQueue/Em
  * @since 1.0.0
  * @category model
  */
-export interface MutableQueue<A> extends Iterable<A>, Equal.Equal {
+export interface MutableQueue<A> extends Iterable<A> {
   readonly _id: TypeId
 
   /** @internal */
@@ -48,14 +47,6 @@ class MutableQueueImpl<A> implements MutableQueue<A> {
   queue: MutableList.MutableList<A> = MutableList.empty()
 
   constructor(readonly capacity: number | undefined = undefined) {}
-
-  [Equal.symbolHash](): number {
-    return Equal.hashRandom(this)
-  }
-
-  [Equal.symbolEqual](that: unknown) {
-    return this === that
-  }
 
   [Symbol.iterator](): Iterator<A> {
     return Array.from(this.queue)[Symbol.iterator]()
