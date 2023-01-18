@@ -3,7 +3,7 @@ import * as U from "./util"
 
 // import { pipe } from "@fp-ts/data/Function"
 
-describe.concurrent("Duration", () => {
+describe.concurrent("Metric", () => {
   it("instances and derived exports", () => {
     expect(_.Contravariant).exist
     expect(_.contramap).exist
