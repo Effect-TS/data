@@ -10,7 +10,7 @@ export const TagTypeId: C.TagTypeId = Symbol.for("@fp-ts/data/Context/Tag") as C
 
 /** @internal */
 export class TagImpl<Service> implements C.Tag<Service> {
-  readonly id = {}
+  readonly id = this
   readonly _id: typeof TagTypeId = TagTypeId
   readonly _S: (_: Service) => Service = (_) => _
 
