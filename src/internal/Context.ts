@@ -90,7 +90,7 @@ export const add = Dual.dual<
   ) => C.Context<Services | C.Tag.Service<T>>
 >(3, (self, tag, service) => {
   const map = new Map(self.unsafeMap)
-  map.set(tag, service)
+  map.set(tag.id, service)
   return new ContextImpl(map)
 })
 
@@ -106,10 +106,10 @@ export const get = Dual.dual<
     self: C.Context<Services>
   ) => T extends C.Tag<infer S> ? S : never
 >(2, (self, tag) => {
-  if (!self.unsafeMap.has(tag)) {
+  if (!self.unsafeMap.has(tag.id)) {
     throw new Error("Service not found")
   }
-  return self.unsafeMap.get(tag)!
+  return self.unsafeMap.get(tag.id)!
 })
 
 /** @internal */
@@ -117,10 +117,10 @@ export const unsafeGet = Dual.dual<
   <Services, S>(self: C.Context<Services>, tag: C.Tag<S>) => S,
   <S>(tag: C.Tag<S>) => <Services>(self: C.Context<Services>) => S
 >(2, (self, tag) => {
-  if (!self.unsafeMap.has(tag)) {
+  if (!self.unsafeMap.has(tag.id)) {
     throw new Error("Service not found")
   }
-  return self.unsafeMap.get(tag)!
+  return self.unsafeMap.get(tag.id)!
 })
 
 /** @internal */
@@ -128,10 +128,10 @@ export const getOption = Dual.dual<
   <Services, S>(self: C.Context<Services>, tag: C.Tag<S>) => O.Option<S>,
   <S>(tag: C.Tag<S>) => <Services>(self: C.Context<Services>) => O.Option<S>
 >(2, (self, tag) => {
-  if (!self.unsafeMap.has(tag)) {
+  if (!self.unsafeMap.has(tag.id)) {
     return option.none()
   }
-  return option.some(self.unsafeMap.get(tag)!)
+  return option.some(self.unsafeMap.get(tag.id)!)
 })
 
 /** @internal */
