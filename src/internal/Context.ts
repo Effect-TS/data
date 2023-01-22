@@ -10,6 +10,7 @@ export const TagTypeId: C.TagTypeId = Symbol.for("@fp-ts/data/Context/Tag") as C
 
 /** @internal */
 export class TagImpl<Service> implements C.Tag<Service> {
+  readonly id = {}
   readonly _id: typeof TagTypeId = TagTypeId
   readonly _S: (_: Service) => Service = (_) => _
 
@@ -54,7 +55,7 @@ export class ContextImpl<Services> implements C.Context<Services> {
     return Hash.number(this.unsafeMap.size)
   }
 
-  constructor(readonly unsafeMap: Map<C.Tag<any>, any>) {}
+  constructor(readonly unsafeMap: Map<C.Tag<any>["id"], any>) {}
 }
 
 /** @internal */
@@ -150,7 +151,7 @@ export const prune = <Services, S extends Array<C.Tags<Services>>>(...tags: S) =
   (self: C.Context<Services>): C.Context<
     { [k in keyof S]: C.Tag.Service<S[k]> }[number]
   > => {
-    const tagSet = new Set<C.Tag<any>>(tags)
+    const tagSet = new Set<C.Tag<any>["id"]>(tags)
     const newEnv = new Map()
     for (const [tag, s] of self.unsafeMap.entries()) {
       if (tagSet.has(tag)) {

@@ -18,6 +18,7 @@ export type TagTypeId = typeof TagTypeId
  * @category models
  */
 export interface Tag<Service> {
+  readonly id: {}
   readonly _id: TagTypeId
   readonly _S: (_: Service) => Service
 }
@@ -63,7 +64,7 @@ export interface Context<Services> extends Equal {
   readonly _id: TypeId
   readonly _S: (_: Services) => unknown
   /** @internal */
-  readonly unsafeMap: Map<Tag<any>, any>
+  readonly unsafeMap: Map<Tag<any>["id"], any>
 }
 
 /**

@@ -61,7 +61,7 @@ export class AddService<Env, T> implements CP.ContextPatch<Env, Env | T> {
   readonly _id: CP.TypeId = ContextPatchTypeId
   readonly _Input: (_: Env) => void = variance
   readonly _Output: (_: never) => Env | T = variance
-  constructor(readonly tag: Tag<T>, readonly service: T) {}
+  constructor(readonly tag: Tag<T>["id"], readonly service: T) {}
 
   [Hash.symbol]() {
     return Hash.string(`ContextPatch(AddService)`)
@@ -81,7 +81,7 @@ export class RemoveService<Env, T> implements CP.ContextPatch<Env | T, Env> {
   readonly _id: CP.TypeId = ContextPatchTypeId
   readonly _Input: (_: Env | T) => void = variance
   readonly _Output: (_: never) => Env = variance
-  constructor(readonly tag: Tag<T>) {}
+  constructor(readonly tag: Tag<T>["id"]) {}
 
   [Hash.symbol]() {
     return Hash.string(`ContextPatch(RemoveService)`)
@@ -101,7 +101,7 @@ export class UpdateService<Env, T> implements CP.ContextPatch<Env | T, Env | T> 
   readonly _Input: (_: Env | T) => void = variance
   readonly _Output: (_: never) => Env | T = variance
   constructor(
-    readonly tag: Tag<T>,
+    readonly tag: Tag<T>["id"],
     readonly update: (service: T) => T
   ) {
   }
@@ -183,7 +183,7 @@ export const patch = Dual.dual<
   let patches: Chunk.Chunk<CP.ContextPatch<unknown, unknown>> = Chunk.of(
     self as CP.ContextPatch<unknown, unknown>
   )
-  const updatedContext: Map<Tag<unknown>, unknown> = new Map(context.unsafeMap)
+  const updatedContext: Map<Tag<unknown>["id"], unknown> = new Map(context.unsafeMap)
   while (Chunk.isNonEmpty(patches)) {
     const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
     const tail = Chunk.tailNonEmpty(patches)
