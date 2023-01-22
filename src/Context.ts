@@ -6,7 +6,7 @@ import type { Equal } from "@fp-ts/data/Equal"
 import * as C from "@fp-ts/data/internal/Context"
 import type { Option } from "@fp-ts/data/Option"
 
-const TagTypeId: unique symbol = C.TagTypeId
+export const TagTypeId: unique symbol = C.TagTypeId
 
 /**
  * @since 1.0.0
