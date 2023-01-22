@@ -1,5 +1,11 @@
 # @fp-ts/data
 
+## 0.0.41
+
+### Patch Changes
+
+- [#193](https://github.com/fp-ts/data/pull/193) [`4241470`](https://github.com/fp-ts/data/commit/4241470a76fd5a454f42651c284971ce6c7c8a75) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - introduce Data and Case
+
 ## 0.0.40
 
 ### Patch Changes
