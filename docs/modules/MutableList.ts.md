@@ -1,6 +1,6 @@
 ---
 title: MutableList.ts
-nav_order: 22
+nav_order: 19
 parent: Modules
 ---
 
@@ -130,7 +130,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface MutableList<A> extends Iterable<A>, Equal.Equal {
+export interface MutableList<A> extends Iterable<A> {
   readonly _id: TypeId
 
   /** @internal */

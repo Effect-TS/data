@@ -85,7 +85,7 @@ A patch which describes updates to a chunk of values.
 **Signature**
 
 ```ts
-export interface ChunkPatch<Value, Patch> {
+export interface ChunkPatch<Value, Patch> extends Equal {
   readonly _id: TypeId
   readonly _Value: (_: Value) => Value
   readonly _Patch: (_: Patch) => Patch

@@ -1,6 +1,6 @@
 ---
 title: SortedSet.ts
-nav_order: 34
+nav_order: 26
 parent: Modules
 ---
 
@@ -211,7 +211,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface SortedSet<A> extends Iterable<A>, Eq.Equal {
+export interface SortedSet<A> extends Iterable<A>, Equal.Equal {
   readonly _id: TypeId
   /** @internal */
   readonly keyTree: RBT.RedBlackTree<A, boolean>

@@ -86,7 +86,7 @@ A patch which describes updates to either one value or another.
 **Signature**
 
 ```ts
-export interface OrPatch<Value, Value2, Patch, Patch2> {
+export interface OrPatch<Value, Value2, Patch, Patch2> extends Equal {
   readonly _id: TypeId
   readonly _Value: (_: Value) => Value
   readonly _Value2: (_: Value2) => Value2
