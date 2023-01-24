@@ -1,7 +1,7 @@
+import { pipe } from "@fp-ts/core/Function"
+import * as O from "@fp-ts/core/Option"
 import * as C from "@fp-ts/data/Chunk"
 import { equals } from "@fp-ts/data/Equal"
-import { pipe } from "@fp-ts/data/Function"
-import * as O from "@fp-ts/data/Option"
 import * as fc from "fast-check"
 import { inspect } from "node:util"
 
@@ -21,7 +21,7 @@ describe.concurrent("Chunk", () => {
   })
 
   it("modifyOption", () => {
-    expect(pipe(C.empty(), C.modifyOption(0, (n: number) => n * 2))).toEqual(O.none)
+    expect(pipe(C.empty(), C.modifyOption(0, (n: number) => n * 2))).toEqual(O.none())
     expect(pipe(C.make(1, 2, 3), C.modifyOption(0, (n: number) => n * 2))).toEqual(
       O.some(C.make(2, 2, 3))
     )
@@ -33,7 +33,7 @@ describe.concurrent("Chunk", () => {
   })
 
   it("replaceOption", () => {
-    expect(pipe(C.empty(), C.replaceOption(0, 2))).toEqual(O.none)
+    expect(pipe(C.empty(), C.replaceOption(0, 2))).toEqual(O.none())
     expect(pipe(C.make(1, 2, 3), C.replaceOption(0, 2))).toEqual(O.some(C.make(2, 2, 3)))
   })
 
@@ -135,7 +135,7 @@ describe.concurrent("Chunk", () => {
       const chunk = C.unsafeFromArray([1, 2, 3])
 
       it("should return a None", () => {
-        expect(pipe(chunk, C.get(4))).toEqual(O.none)
+        expect(pipe(chunk, C.get(4))).toEqual(O.none())
       })
     })
   })
@@ -516,7 +516,7 @@ describe.concurrent("Chunk", () => {
 
   it("unfold", () => {
     pipe(
-      C.unfold(5, (n) => (n > 0 ? O.some([n, n - 1]) : O.none)),
+      C.unfold(5, (n) => (n > 0 ? O.some([n, n - 1]) : O.none())),
       equals(C.unsafeFromArray([5, 4, 3, 2, 1])),
       assert.isTrue
     )

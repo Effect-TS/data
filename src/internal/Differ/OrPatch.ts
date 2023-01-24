@@ -1,8 +1,8 @@
+import type { Either } from "@fp-ts/core/Either"
+import * as E from "@fp-ts/core/Either"
 import * as Chunk from "@fp-ts/data/Chunk"
 import type { Differ } from "@fp-ts/data/Differ"
 import type * as OP from "@fp-ts/data/Differ/OrPatch"
-import type { Either } from "@fp-ts/data/Either"
-import * as E from "@fp-ts/data/Either"
 import * as Equal from "@fp-ts/data/Equal"
 import * as Hash from "@fp-ts/data/Hash"
 

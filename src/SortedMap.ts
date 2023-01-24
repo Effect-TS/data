@@ -2,11 +2,11 @@
  * @since 1.0.0
  */
 
+import { pipe } from "@fp-ts/core/Function"
+import * as O from "@fp-ts/core/Option"
 import type { Order } from "@fp-ts/core/typeclass/Order"
 import * as Equal from "@fp-ts/data/Equal"
-import { pipe } from "@fp-ts/data/Function"
 import * as Hash from "@fp-ts/data/Hash"
-import * as O from "@fp-ts/data/Option"
 import * as RBT from "@fp-ts/data/RedBlackTree"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/SortedMap")

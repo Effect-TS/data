@@ -1,7 +1,7 @@
 /**
  * @since 1.0.0
  */
-import type { NonEmptyReadonlyArray } from "@fp-ts/data/ReadonlyArray"
+import type { NonEmptyReadonlyArray } from "@fp-ts/core/ReadonlyArray"
 
 // -------------------------------------------------------------------------------------
 // ReadonlyArray

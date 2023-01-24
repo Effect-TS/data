@@ -5,7 +5,7 @@ import { defineConfig } from "vite"
 export default defineConfig({
   test: {
     include: ["./test/**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-    exclude: ["./test/**/util.ts", "./test/limbo"],
+    exclude: ["./test/util.ts", "./test/Gen.ts"],
     globals: true
   },
   resolve: {

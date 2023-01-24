@@ -2,12 +2,12 @@
  * @since 1.0.0
  */
 
+import type { Option } from "@fp-ts/core/Option"
 import type { Order } from "@fp-ts/core/typeclass/Order"
 import type { Chunk } from "@fp-ts/data/Chunk"
 import type { Equal } from "@fp-ts/data/Equal"
 import * as RBT from "@fp-ts/data/internal/RedBlackTree"
 import * as RBTI from "@fp-ts/data/internal/RedBlackTree/iterator"
-import type { Option } from "@fp-ts/data/Option"
 
 const TypeId: unique symbol = RBT.RedBlackTreeTypeId as TypeId
 

@@ -2,17 +2,17 @@
  * @since 1.0.0
  */
 
+import type { Either } from "@fp-ts/core/Either"
+import { identity, pipe } from "@fp-ts/core/Function"
 import type { TypeLambda } from "@fp-ts/core/HKT"
+import type { Option } from "@fp-ts/core/Option"
+import * as O from "@fp-ts/core/Option"
+import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
+import * as RA from "@fp-ts/core/ReadonlyArray"
 import type { Order } from "@fp-ts/core/typeclass/Order"
-import type { Either } from "@fp-ts/data/Either"
 import * as Equal from "@fp-ts/data/Equal"
-import { identity, pipe } from "@fp-ts/data/Function"
 import * as Hash from "@fp-ts/data/Hash"
 import type { NonEmptyIterable } from "@fp-ts/data/NonEmpty"
-import type { Option } from "@fp-ts/data/Option"
-import * as O from "@fp-ts/data/Option"
-import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
-import * as RA from "@fp-ts/data/ReadonlyArray"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/Chunk") as TypeId
 
@@ -326,7 +326,7 @@ class ChunkImpl<A> implements Chunk<A> {
   }
 
   get(this: Chunk<A>, index: number): Option<A> {
-    return index < 0 || index >= this.length ? O.none : O.some(this.unsafeGet(index))
+    return index < 0 || index >= this.length ? O.none() : O.some(this.unsafeGet(index))
   }
 
   unsafeGet(this: Chunk<A>, index: number): A {
@@ -642,7 +642,7 @@ export const filterMapWhile = <A, B>(f: (a: A) => Option<B>) =>
  * @category elements
  */
 export const elem = <B>(b: B) =>
-  <A>(self: Chunk<A>): boolean => pipe(toReadonlyArray(self), RA.elem(b))
+  <A>(self: Chunk<A>): boolean => pipe(toReadonlyArray(self), RA.contains(Equal.equivalence())(b))
 
 /**
  * Filter out optional values
@@ -660,7 +660,7 @@ export const compact = <A>(self: Iterable<Option<A>>): Chunk<A> => pipe(self, fi
  */
 export const dedupeAdjacent = <A>(self: Chunk<A>): Chunk<A> => {
   const builder: Array<A> = []
-  let lastA: O.Option<A> = O.none
+  let lastA: O.Option<A> = O.none()
 
   for (const a of self) {
     if (O.isNone(lastA) || !Equal.equals(a, lastA.value)) {
@@ -814,7 +814,7 @@ export const intersection = <A>(that: Chunk<A>) =>
   <B>(self: Chunk<B>): Chunk<A & B> =>
     pipe(
       toReadonlyArray(self),
-      RA.intersection(toReadonlyArray(that)),
+      RA.intersection(Equal.equivalence<any>())(toReadonlyArray(that)),
       unsafeFromArray
     )
 
@@ -1142,7 +1142,7 @@ export const splitWhere = <A>(f: Predicate<A>) =>
  * @category elements
  */
 export const tail = <A>(self: Chunk<A>): Option<Chunk<A>> =>
-  self.length > 0 ? O.some(drop(1)(self)) : O.none
+  self.length > 0 ? O.some(drop(1)(self)) : O.none()
 
 /**
  * Takes the last `n` elements.
@@ -1202,7 +1202,9 @@ export const unfold = <A, S>(s: S, f: (s: S) => Option<readonly [A, S]>): Chunk<
  */
 export function union<A>(that: Chunk<A>) {
   return <B>(self: Chunk<B>): Chunk<A | B> =>
-    unsafeFromArray(RA.union(toReadonlyArray(that))(toReadonlyArray(self)))
+    unsafeFromArray(
+      RA.union(Equal.equivalence<A | B>())(toReadonlyArray(that))(toReadonlyArray(self))
+    )
 }
 
 /**
@@ -1212,7 +1214,7 @@ export function union<A>(that: Chunk<A>) {
  * @category elements
  */
 export const dedupe = <A>(self: Chunk<A>): Chunk<A> =>
-  unsafeFromArray(RA.uniq(toReadonlyArray(self)))
+  unsafeFromArray(RA.uniq(Equal.equivalence<A>())(toReadonlyArray(self)))
 
 /**
  * Returns the first element of this chunk.
@@ -1288,8 +1290,8 @@ export const zipAll = <B>(that: Chunk<B>) =>
       zipAllWith(
         that,
         (a, b) => [O.some(a), O.some(b)],
-        (a) => [O.some(a), O.none],
-        (b) => [O.none, O.some(b)]
+        (a) => [O.some(a), O.none()],
+        (b) => [O.none(), O.some(b)]
       )
     )
 

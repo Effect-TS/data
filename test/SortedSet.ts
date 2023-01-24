@@ -1,9 +1,9 @@
+import { pipe } from "@fp-ts/core/Function"
+import * as Str from "@fp-ts/core/String"
 import * as Order from "@fp-ts/core/typeclass/Order"
 import * as Eq from "@fp-ts/data/Equal"
-import { pipe } from "@fp-ts/data/Function"
 import * as Hash from "@fp-ts/data/Hash"
 import * as SortedSet from "@fp-ts/data/SortedSet"
-import * as Str from "@fp-ts/data/String"
 import { inspect } from "node:util"
 
 class Member implements Eq.Equal {
@@ -24,7 +24,7 @@ function makeNumericSortedSet(
   ...numbers: Array<number>
 ): SortedSet.SortedSet<number> {
   return SortedSet.from({
-    compare: (that: number) => (self: number) => self > that ? 1 : self < that ? -1 : 0
+    compare: (self, that: number) => self > that ? 1 : self < that ? -1 : 0
   })(numbers)
 }
 

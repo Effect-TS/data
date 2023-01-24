@@ -1,8 +1,8 @@
+import { pipe } from "@fp-ts/core/Function"
+import * as O from "@fp-ts/core/Option"
 import * as Equal from "@fp-ts/data/Equal"
-import { pipe } from "@fp-ts/data/Function"
 import * as Hash from "@fp-ts/data/Hash"
 import * as HM from "@fp-ts/data/MutableHashMap"
-import * as O from "@fp-ts/data/Option"
 import { inspect } from "node:util"
 
 class Key implements Equal.Equal {
@@ -267,6 +267,6 @@ describe.concurrent("MutableHashMap", () => {
       map,
       HM.remove(key(0, 0)),
       HM.get(key(0, 0))
-    )).toEqual(O.none)
+    )).toEqual(O.none())
   })
 })
