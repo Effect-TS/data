@@ -1,8 +1,8 @@
+import { pipe } from "@fp-ts/core/Function"
+import * as Option from "@fp-ts/core/Option"
 import * as Equal from "@fp-ts/data/Equal"
-import { pipe } from "@fp-ts/data/Function"
 import * as Hash from "@fp-ts/data/Hash"
 import * as HM from "@fp-ts/data/HashMap"
-import * as Option from "@fp-ts/data/Option"
 import { deepStrictEqual } from "@fp-ts/data/test/util"
 import { inspect } from "node:util"
 
@@ -40,8 +40,8 @@ describe.concurrent("HashMap", () => {
   }
 
   it("option", () => {
-    const map = HM.make([Option.some(1), 0], [Option.none, 1])
-    expect(pipe(map, HM.has(Option.none))).toBe(true)
+    const map = HM.make([Option.some(1), 0], [Option.none(), 1])
+    expect(pipe(map, HM.has(Option.none()))).toBe(true)
     expect(pipe(map, HM.has(Option.some(1)))).toBe(true)
     expect(pipe(map, HM.has(Option.some(2)))).toBe(false)
   })
@@ -79,14 +79,14 @@ describe.concurrent("HashMap", () => {
     const map = HM.make([key(0), value("a")])
 
     deepStrictEqual(HM.get(key(0))(map), Option.some(value("a")))
-    deepStrictEqual(HM.get(key(1))(map), Option.none)
+    deepStrictEqual(HM.get(key(1))(map), Option.none())
   })
 
   it("getHash", () => {
     const map = HM.make([key(0), value("a")])
 
     deepStrictEqual(HM.getHash(key(0), Hash.hash(0))(map), Option.some(value("a")))
-    deepStrictEqual(HM.getHash(key(1), Hash.hash(0))(map), Option.none)
+    deepStrictEqual(HM.getHash(key(1), Hash.hash(0))(map), Option.none())
   })
 
   it("set", () => {
@@ -114,7 +114,7 @@ describe.concurrent("HashMap", () => {
     )
 
     deepStrictEqual(HM.get(0)(result), Option.some("a"))
-    deepStrictEqual(HM.get(1)(result), Option.none)
+    deepStrictEqual(HM.get(1)(result), Option.none())
   })
 
   it("flatMap", () => {
@@ -130,7 +130,7 @@ describe.concurrent("HashMap", () => {
 
     deepStrictEqual(HM.get(key(1))(result), Option.some(value("a")))
     deepStrictEqual(HM.get(key(2))(result), Option.some(value("bb")))
-    deepStrictEqual(HM.get(key(3))(result), Option.none)
+    deepStrictEqual(HM.get(key(3))(result), Option.none())
   })
 
   it("flatMapWithIndex", () => {
@@ -146,17 +146,17 @@ describe.concurrent("HashMap", () => {
 
     deepStrictEqual(HM.get(key(2))(result), Option.some(value("a")))
     deepStrictEqual(HM.get(key(4))(result), Option.some(value("bb")))
-    deepStrictEqual(HM.get(key(6))(result), Option.none)
+    deepStrictEqual(HM.get(key(6))(result), Option.none())
   })
 
   it("filterMap", () => {
     const map = HM.make([key(0), value("a")], [key(1), value("bb")])
     const result = pipe(
       map,
-      HM.filterMap(({ s }) => s.length > 1 ? Option.some(value(s)) : Option.none)
+      HM.filterMap(({ s }) => s.length > 1 ? Option.some(value(s)) : Option.none())
     )
 
-    deepStrictEqual(HM.get(key(0))(result), Option.none)
+    deepStrictEqual(HM.get(key(0))(result), Option.none())
     deepStrictEqual(HM.get(key(1))(result), Option.some(value("bb")))
   })
 
@@ -164,15 +164,15 @@ describe.concurrent("HashMap", () => {
     const map = HM.make([key(0), value("a")], [key(1), value("bb")])
     const result = pipe(
       map,
-      HM.filterMapWithIndex((v, { n }) => n > 0 ? Option.some(v) : Option.none)
+      HM.filterMapWithIndex((v, { n }) => n > 0 ? Option.some(v) : Option.none())
     )
 
-    deepStrictEqual(HM.get(key(0))(result), Option.none)
+    deepStrictEqual(HM.get(key(0))(result), Option.none())
     deepStrictEqual(HM.get(key(1))(result), Option.some(value("bb")))
   })
 
   it("compact", () => {
-    const map = HM.make([0, Option.some("a")], [1, Option.none])
+    const map = HM.make([0, Option.some("a")], [1, Option.none()])
     const result = HM.compact(map)
 
     assert.strictEqual(HM.unsafeGet(0)(result), "a")
@@ -183,7 +183,7 @@ describe.concurrent("HashMap", () => {
     const map = HM.make([key(0), value("a")], [key(1), value("bb")])
     const result = pipe(map, HM.filter(({ s }) => s.length > 1))
 
-    deepStrictEqual(HM.get(key(0))(result), Option.none)
+    deepStrictEqual(HM.get(key(0))(result), Option.none())
     deepStrictEqual(HM.get(key(1))(result), Option.some(value("bb")))
   })
 
@@ -191,7 +191,7 @@ describe.concurrent("HashMap", () => {
     const map = HM.make([key(0), value("a")], [key(1), value("bb")])
     const result = pipe(map, HM.filterWithIndex(({ s }, { n }) => n > 0 && s.length > 0))
 
-    deepStrictEqual(HM.get(key(0))(result), Option.none)
+    deepStrictEqual(HM.get(key(0))(result), Option.none())
     deepStrictEqual(HM.get(key(1))(result), Option.some(value("bb")))
   })
 
@@ -251,7 +251,7 @@ describe.concurrent("HashMap", () => {
 
     deepStrictEqual(HM.get(key(0))(result), Option.some(1))
     deepStrictEqual(HM.get(key(1))(result), Option.some(2))
-    deepStrictEqual(HM.get(key(2))(result), Option.none)
+    deepStrictEqual(HM.get(key(2))(result), Option.none())
   })
 
   it("mapWithIndex", () => {
@@ -260,7 +260,7 @@ describe.concurrent("HashMap", () => {
 
     deepStrictEqual(HM.get(key(0))(result), Option.some(1))
     deepStrictEqual(HM.get(key(1))(result), Option.some(3))
-    deepStrictEqual(HM.get(key(2))(result), Option.none)
+    deepStrictEqual(HM.get(key(2))(result), Option.none())
   })
 
   it("modifyAt", () => {
@@ -270,19 +270,19 @@ describe.concurrent("HashMap", () => {
       HM.modifyAt(key(0), (maybe) =>
         Option.isSome(maybe) ?
           Option.some(value("test")) :
-          Option.none)
+          Option.none())
     )
 
     deepStrictEqual(HM.get(key(0))(result), Option.some(value("test")))
     deepStrictEqual(HM.get(key(1))(result), Option.some(value("b")))
-    deepStrictEqual(HM.get(key(2))(result), Option.none)
+    deepStrictEqual(HM.get(key(2))(result), Option.none())
 
     deepStrictEqual(
       HM.get(key(0))(pipe(
         map,
-        HM.modifyAt(key(0), (): Option.Option<Value> => Option.none)
+        HM.modifyAt(key(0), (): Option.Option<Value> => Option.none())
       )),
-      Option.none
+      Option.none()
     )
   })
 
@@ -293,12 +293,12 @@ describe.concurrent("HashMap", () => {
       HM.modifyHash(key(0), Hash.hash(key(0)), (maybe) =>
         Option.isSome(maybe) ?
           Option.some(value("test")) :
-          Option.none)
+          Option.none())
     )
 
     deepStrictEqual(HM.get(key(0))(result), Option.some(value("test")))
     deepStrictEqual(HM.get(key(1))(result), Option.some(value("b")))
-    deepStrictEqual(HM.get(key(2))(result), Option.none)
+    deepStrictEqual(HM.get(key(2))(result), Option.none())
   })
 
   it("reduce", () => {
@@ -325,7 +325,7 @@ describe.concurrent("HashMap", () => {
     const map = HM.make([key(0), value("a")], [key(1), value("b")])
     const result = pipe(map, HM.remove(key(0)))
 
-    deepStrictEqual(HM.get(key(0))(result), Option.none)
+    deepStrictEqual(HM.get(key(0))(result), Option.none())
     deepStrictEqual(HM.get(key(1))(result), Option.some(value("b")))
   })
 
@@ -380,11 +380,11 @@ describe.concurrent("HashMap", () => {
 
     deepStrictEqual(HM.get(key(0))(result), Option.some(value("a-a")))
     deepStrictEqual(HM.get(key(1))(result), Option.some(value("b")))
-    deepStrictEqual(HM.get(key(2))(result), Option.none)
+    deepStrictEqual(HM.get(key(2))(result), Option.none())
 
     deepStrictEqual(
       HM.get(key(2))(pipe(map, HM.modify(key(2), ({ s }) => value(`${s}-${s}`)))),
-      Option.none
+      Option.none()
     )
   })
 

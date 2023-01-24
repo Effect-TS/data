@@ -1,8 +1,8 @@
+import type * as O from "@fp-ts/core/Option"
+import * as option from "@fp-ts/core/Option"
 import type * as C from "@fp-ts/data/Context"
 import * as Equal from "@fp-ts/data/Equal"
 import * as Hash from "@fp-ts/data/Hash"
-import * as option from "@fp-ts/data/internal/Option"
-import type * as O from "@fp-ts/data/Option"
 
 /** @internal */
 export const TagTypeId: C.TagTypeId = Symbol.for("@fp-ts/data/Context/Tag") as C.TagTypeId
@@ -109,7 +109,7 @@ export function unsafeGet<S>(tag: C.Tag<S>) {
 export function getOption<S>(tag: C.Tag<S>) {
   return <Services>(self: C.Context<Services>): O.Option<S> => {
     if (!self.unsafeMap.has(tag)) {
-      return option.none
+      return option.none()
     }
     return option.some(self.unsafeMap.get(tag)!)
   }

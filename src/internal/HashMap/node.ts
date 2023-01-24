@@ -1,9 +1,9 @@
+import * as O from "@fp-ts/core/Option"
 import { equals } from "@fp-ts/data/Equal"
 import { arraySpliceIn, arraySpliceOut, arrayUpdate } from "@fp-ts/data/internal/HashMap/array"
 import { fromBitmap, hashFragment, toBitmap } from "@fp-ts/data/internal/HashMap/bitwise"
 import { MAX_INDEX_NODE, MIN_ARRAY_NODE, SIZE } from "@fp-ts/data/internal/HashMap/config"
 import { Stack } from "@fp-ts/data/internal/Stack"
-import * as O from "@fp-ts/data/Option"
 
 /** @internal */
 export type Node<K, V> =
@@ -30,7 +30,7 @@ export class EmptyNode<K, V> {
     key: K,
     size: SizeRef
   ): Node<K, V> {
-    const v = f(O.none)
+    const v = f(O.none())
     if (O.isNone(v)) return new EmptyNode()
     ;++size.value
     return new LeafNode(edit, hash, key, v)
@@ -89,7 +89,7 @@ export class LeafNode<K, V> {
       }
       return new LeafNode(edit, hash, key, v)
     }
-    const v = f(O.none)
+    const v = f(O.none())
     if (O.isNone(v)) return this
     ;++size.value
     return mergeLeaves(
@@ -136,7 +136,7 @@ export class CollisionNode<K, V> {
 
       return list.length > 1 ? new CollisionNode(edit, this.hash, list) : list[0]! // collapse single element collision list
     }
-    const v = f(O.none)
+    const v = f(O.none())
     if (O.isNone(v)) return this
     ;++size.value
     return mergeLeaves(
@@ -173,7 +173,7 @@ export class CollisionNode<K, V> {
       }
     }
 
-    const newValue = f(O.none)
+    const newValue = f(O.none())
     if (O.isNone(newValue)) return list
     ;++size.value
     return arrayUpdate(mutate, len, new LeafNode(edit, hash, key, newValue), list)

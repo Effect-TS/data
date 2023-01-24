@@ -1,6 +1,7 @@
 /**
  * @since 1.0.0
  */
+import type { Equivalence } from "@fp-ts/core/typeclass/Equivalence"
 import * as Hash from "@fp-ts/data/Hash"
 import { structural } from "@fp-ts/data/internal/Equal"
 
@@ -93,3 +94,10 @@ export const isEqual = (u: unknown): u is Equal =>
 export const considerByValue: (tag: string) => void = (tag: string) => {
   structural.add(tag)
 }
+
+/**
+ * @since 1.0.0
+ * @category instances
+ */
+export const equivalence: <A>() => Equivalence<A> = () =>
+  (self, that) => Hash.hash(self) === Hash.hash(that) && equals(self, that)

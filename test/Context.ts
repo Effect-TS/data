@@ -1,7 +1,7 @@
+import { pipe } from "@fp-ts/core/Function"
+import * as O from "@fp-ts/core/Option"
 import * as Context from "@fp-ts/data/Context"
 import * as Differ from "@fp-ts/data/Differ"
-import { pipe } from "@fp-ts/data/Function"
-import * as O from "@fp-ts/data/Option"
 
 interface A {
   a: number
@@ -44,7 +44,7 @@ describe.concurrent("Context", () => {
     expect(pipe(
       Services,
       Context.getOption(C)
-    )).toEqual(O.none)
+    )).toEqual(O.none())
 
     assert.throw(() => {
       pipe(
@@ -83,7 +83,7 @@ describe.concurrent("Context", () => {
     expect(pipe(
       pruned,
       Context.getOption(C)
-    )).toEqual(O.none)
+    )).toEqual(O.none())
 
     expect(pipe(
       env,

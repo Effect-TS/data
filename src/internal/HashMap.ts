@@ -1,12 +1,12 @@
+import { identity, pipe } from "@fp-ts/core/Function"
+import * as Option from "@fp-ts/core/Option"
+import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
 import * as Equal from "@fp-ts/data/Equal"
-import { identity, pipe } from "@fp-ts/data/Function"
 import * as Hash from "@fp-ts/data/Hash"
 import type * as HM from "@fp-ts/data/HashMap"
 import { fromBitmap, hashFragment, toBitmap } from "@fp-ts/data/internal/HashMap/bitwise"
 import { SIZE } from "@fp-ts/data/internal/HashMap/config"
 import * as Node from "@fp-ts/data/internal/HashMap/node"
-import * as Option from "@fp-ts/data/Option"
-import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 
 /** @internal */
 export const HashMapTypeId: HM.TypeId = Symbol.for("@fp-ts/data/HashMap") as HM.TypeId
@@ -113,7 +113,7 @@ class HashMapIterator<K, V, T> implements IterableIterator<T> {
 function applyCont<K, V, A>(cont: Cont<K, V, A>) {
   return cont
     ? visitLazyChildren(cont[0], cont[1], cont[2], cont[3], cont[4])
-    : Option.none
+    : Option.none()
 }
 
 function visitLazy<K, V, A>(
@@ -209,7 +209,7 @@ export function getHash<K1>(key: K1, hash: number) {
     while (true) {
       switch (node._tag) {
         case "LeafNode": {
-          return Equal.equals(key, node.key) ? node.value : Option.none
+          return Equal.equals(key, node.key) ? node.value : Option.none()
         }
         case "CollisionNode": {
           if (hash === node.hash) {
@@ -219,7 +219,7 @@ export function getHash<K1>(key: K1, hash: number) {
               if ("key" in child && Equal.equals(key, child.key)) return child.value
             }
           }
-          return Option.none
+          return Option.none()
         }
         case "IndexedNode": {
           const frag = hashFragment(shift, hash)
@@ -229,7 +229,7 @@ export function getHash<K1>(key: K1, hash: number) {
             shift += SIZE
             break
           }
-          return Option.none
+          return Option.none()
         }
         case "ArrayNode": {
           node = node.children[hashFragment(shift, hash)]!
@@ -237,10 +237,10 @@ export function getHash<K1>(key: K1, hash: number) {
             shift += SIZE
             break
           }
-          return Option.none
+          return Option.none()
         }
         default:
-          return Option.none
+          return Option.none()
       }
     }
   }
@@ -380,7 +380,7 @@ export function union<K1, V1>(that: HM.HashMap<K1, V1>) {
 /** @internal */
 export function remove<K>(key: K) {
   return <V>(self: HM.HashMap<K, V>): HM.HashMap<K, V> => {
-    return modifyAt<K, V>(key, () => Option.none)(self)
+    return modifyAt<K, V>(key, () => Option.none())(self)
   }
 }
 

@@ -1,8 +1,8 @@
+import { pipe } from "@fp-ts/core/Function"
+import * as N from "@fp-ts/core/Number"
+import * as O from "@fp-ts/core/Option"
 import * as Eq from "@fp-ts/data/Equal"
-import { pipe } from "@fp-ts/data/Function"
 import * as Hash from "@fp-ts/data/Hash"
-import * as N from "@fp-ts/data/Number"
-import * as O from "@fp-ts/data/Option"
 import * as SM from "@fp-ts/data/SortedMap"
 import { inspect } from "node:util"
 
@@ -41,7 +41,7 @@ function value(n: number): Value {
 function makeSortedMap(...numbers: Array<readonly [number, number]>): SM.SortedMap<Key, Value> {
   const entries = numbers.map(([k, v]) => [key(k), value(v)] as const)
   return SM.from({
-    compare: (that: Key) => (self: Key) => self.id > that.id ? 1 : self.id < that.id ? -1 : 0
+    compare: (self: Key, that: Key) => self.id > that.id ? 1 : self.id < that.id ? -1 : 0
   })(entries)
 }
 
@@ -49,7 +49,7 @@ function makeNumericSortedMap(
   ...numbers: Array<readonly [number, number]>
 ): SM.SortedMap<number, number> {
   return SM.from({
-    compare: (that: number) => (self: number) => self > that ? 1 : self < that ? -1 : 0
+    compare: (self: number, that: number) => self > that ? 1 : self < that ? -1 : 0
   })(numbers)
 }
 
@@ -92,7 +92,7 @@ describe.concurrent("SortedMap", () => {
     const map = makeSortedMap([0, 10], [1, 20], [2, 30])
 
     assert.deepEqual(pipe(map, SM.get(key(0))), O.some(value(10)))
-    assert.deepEqual(pipe(map, SM.get(key(4))), O.none)
+    assert.deepEqual(pipe(map, SM.get(key(4))), O.none())
   })
 
   it("has", () => {
@@ -107,7 +107,7 @@ describe.concurrent("SortedMap", () => {
     const map2 = SM.empty<number, number>(N.Order)
 
     assert.deepEqual(SM.headOption(map1), O.some([key(0), value(10)] as const))
-    assert.deepEqual(SM.headOption(map2), O.none)
+    assert.deepEqual(SM.headOption(map2), O.none())
   })
 
   it("isEmpty", () => {

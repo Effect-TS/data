@@ -1,9 +1,9 @@
 /**
  * @since 1.0.0
  */
+import { identity, pipe } from "@fp-ts/core/Function"
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
 import type { Monad } from "@fp-ts/core/typeclass/Monad"
-import { identity, pipe } from "@fp-ts/data/Function"
 
 /**
  * @category symbols

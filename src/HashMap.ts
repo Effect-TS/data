@@ -2,12 +2,12 @@
  * @since 1.0.0
  */
 
+import type { Option } from "@fp-ts/core/Option"
+import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
 import type { Equal } from "@fp-ts/data/Equal"
 import type { HashSet } from "@fp-ts/data/HashSet"
 import * as HM from "@fp-ts/data/internal/HashMap"
 import * as _keySet from "@fp-ts/data/internal/HashMap/keySet"
-import type { Option } from "@fp-ts/data/Option"
-import type { Predicate, Refinement } from "@fp-ts/data/Predicate"
 
 const TypeId: unique symbol = HM.HashMapTypeId as TypeId
 

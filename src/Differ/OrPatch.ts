@@ -2,8 +2,8 @@
  * @since 1.0.0
  */
 
+import type { Either } from "@fp-ts/core/Either"
 import type { Differ } from "@fp-ts/data/Differ"
-import type { Either } from "@fp-ts/data/Either"
 import type { Equal } from "@fp-ts/data/Equal"
 import * as OP from "@fp-ts/data/internal/Differ/OrPatch"
 

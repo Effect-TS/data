@@ -1,11 +1,11 @@
 /**
  * @since 1.0.0
  */
+import { pipe } from "@fp-ts/core/Function"
+import * as O from "@fp-ts/core/Option"
+import type { Option } from "@fp-ts/core/Option"
 import * as Equal from "@fp-ts/data/Equal"
-import { pipe } from "@fp-ts/data/Function"
 import * as Hash from "@fp-ts/data/Hash"
-import * as O from "@fp-ts/data/Option"
-import type { Option } from "@fp-ts/data/Option"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableHashMap") as TypeId
 
@@ -106,7 +106,7 @@ export const get = <K>(k: K) =>
     const arr = self.backingMap.get(hash)
 
     if (arr == null) {
-      return O.none
+      return O.none()
     }
 
     let c: Node<K, V> | undefined = arr
@@ -118,7 +118,7 @@ export const get = <K>(k: K) =>
       c = c.next
     }
 
-    return O.none
+    return O.none()
   }
 
 /**

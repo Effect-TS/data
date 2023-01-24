@@ -2,6 +2,7 @@
  * @since 1.0.0
  */
 
+import type { Either } from "@fp-ts/core/Either"
 import type { Chunk } from "@fp-ts/data/Chunk"
 import type { Context } from "@fp-ts/data/Context"
 import type { ChunkPatch } from "@fp-ts/data/Differ/ChunkPatch"
@@ -9,7 +10,6 @@ import type { ContextPatch } from "@fp-ts/data/Differ/ContextPatch"
 import type { HashMapPatch } from "@fp-ts/data/Differ/HashMapPatch"
 import type { HashSetPatch } from "@fp-ts/data/Differ/HashSetPatch"
 import type { OrPatch } from "@fp-ts/data/Differ/OrPatch"
-import type { Either } from "@fp-ts/data/Either"
 import type { HashMap } from "@fp-ts/data/HashMap"
 import type { HashSet } from "@fp-ts/data/HashSet"
 import * as D from "@fp-ts/data/internal/Differ"
