@@ -25,6 +25,10 @@ Added in v1.0.0
     - [[Symbol.iterator] (method)](#symboliterator-method-1)
   - [makeGenKind](#makegenkind)
   - [singleShot](#singleshot)
+- [instances](#instances)
+  - [Either](#either)
+  - [Option](#option)
+  - [These](#these)
 - [models](#models)
   - [Adapter (interface)](#adapter-interface)
   - [Gen (interface)](#gen-interface)
@@ -157,6 +161,38 @@ Added in v1.0.0
 
 ```ts
 export declare const singleShot: <F extends TypeLambda>(F: Monad<F>) => <Z extends Adapter<F>>(adapter: Z) => Gen<F, Z>
+```
+
+Added in v1.0.0
+
+# instances
+
+## Either
+
+**Signature**
+
+```ts
+export declare const Either: Gen<E.EitherTypeLambda, Adapter<E.EitherTypeLambda>>
+```
+
+Added in v1.0.0
+
+## Option
+
+**Signature**
+
+```ts
+export declare const Option: Gen<O.OptionTypeLambda, Adapter<O.OptionTypeLambda>>
+```
+
+Added in v1.0.0
+
+## These
+
+**Signature**
+
+```ts
+export declare const These: Gen<T.ValidatedTypeLambda, Adapter<T.ValidatedTypeLambda>>
 ```
 
 Added in v1.0.0
