@@ -1,8 +1,11 @@
 /**
  * @since 1.0.0
  */
+import * as E from "@fp-ts/core/Either"
 import { identity, pipe } from "@fp-ts/core/Function"
 import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
+import * as O from "@fp-ts/core/Option"
+import * as T from "@fp-ts/core/These"
 import type { Monad } from "@fp-ts/core/typeclass/Monad"
 
 /**
@@ -214,3 +217,21 @@ export const singleShot: <F extends TypeLambda>(
           return runGen(F, state, iterator)
         })
       )
+
+/**
+ * @since 1.0.0
+ * @category instances
+ */
+export const Either = singleShot(E.Monad)(adapter<E.EitherTypeLambda>())
+
+/**
+ * @since 1.0.0
+ * @category instances
+ */
+export const These = singleShot(T.Monad)(adapter<T.ValidatedTypeLambda>())
+
+/**
+ * @since 1.0.0
+ * @category instances
+ */
+export const Option = singleShot(O.Monad)(adapter<O.OptionTypeLambda>())
