@@ -1,6 +1,6 @@
 ---
 title: Context.ts
-nav_order: 4
+nav_order: 3
 parent: Modules
 ---
 
@@ -144,7 +144,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Tag<Service> extends Equal {
+export interface Tag<Service> {
   readonly _id: TagTypeId
   readonly _S: (_: Service) => Service
 }

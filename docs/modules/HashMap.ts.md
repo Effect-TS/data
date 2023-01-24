@@ -1,6 +1,6 @@
 ---
 title: HashMap.ts
-nav_order: 15
+nav_order: 14
 parent: Modules
 ---
 
@@ -121,7 +121,7 @@ internal hashing function.
 **Signature**
 
 ```ts
-export declare const get: <K, V>(key: K) => (self: HashMap<K, V>) => Option<V>
+export declare const get: <K1>(key: K1) => <K, V>(self: HashMap<K, V>) => Option<V>
 ```
 
 Added in v1.0.0
@@ -133,7 +133,7 @@ Lookup the value for the specified key in the `HashMap` using a custom hash.
 **Signature**
 
 ```ts
-export declare const getHash: <K, V>(key: K, hash: number) => (self: HashMap<K, V>) => Option<V>
+export declare const getHash: <K1>(key: K1, hash: number) => <K, V>(self: HashMap<K, V>) => Option<V>
 ```
 
 Added in v1.0.0
@@ -145,7 +145,7 @@ Checks if the specified key has an entry in the `HashMap`.
 **Signature**
 
 ```ts
-export declare const has: <K, V>(key: K) => (self: HashMap<K, V>) => boolean
+export declare const has: <K1>(key: K1) => <K, V>(self: HashMap<K, V>) => boolean
 ```
 
 Added in v1.0.0
@@ -158,7 +158,7 @@ hash.
 **Signature**
 
 ```ts
-export declare const hasHash: <K, V>(key: K, hash: number) => (self: HashMap<K, V>) => boolean
+export declare const hasHash: <K1>(key: K1, hash: number) => <K, V>(self: HashMap<K, V>) => boolean
 ```
 
 Added in v1.0.0
@@ -602,7 +602,7 @@ internal hashing function.
 **Signature**
 
 ```ts
-export declare const unsafeGet: <K, V>(key: K) => (self: HashMap<K, V>) => V
+export declare const unsafeGet: <K1>(key: K1) => <K, V>(self: HashMap<K, V>) => V
 ```
 
 Added in v1.0.0

@@ -77,7 +77,7 @@ A patch which describes updates to a set of values.
 **Signature**
 
 ```ts
-export interface HashSetPatch<Value> {
+export interface HashSetPatch<Value> extends Equal {
   readonly _id: TypeId
   readonly _Value: (_: Value) => Value
 }

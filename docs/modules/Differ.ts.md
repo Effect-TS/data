@@ -131,7 +131,7 @@ values for arbitrarily complex data types compositionally.
 **Signature**
 
 ```ts
-export interface Differ<Value, Patch> extends Equal {
+export interface Differ<Value, Patch> {
   readonly _id: TypeId
   readonly _V: (_: Value) => Value
   readonly _P: (_: Patch) => Patch

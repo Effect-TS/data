@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 18
+nav_order: 16
 parent: Modules
 ---
 
@@ -13,62 +13,36 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [utils](#utils)
-  - [boolean](#boolean)
   - [brand](#brand)
   - [chunk](#chunk)
   - [chunkPatch](#chunkpatch)
-  - [compactable](#compactable)
   - [context](#context)
   - [contextPatch](#contextpatch)
-  - [covariantWithIndex](#covariantwithindex)
+  - [data](#data)
   - [differ](#differ)
   - [duration](#duration)
-  - [either](#either)
   - [equal](#equal)
-  - [filterable](#filterable)
-  - [filterableWithIndex](#filterablewithindex)
-  - [function](#function)
   - [gen](#gen)
+  - [hash](#hash)
   - [hashMap](#hashmap)
   - [hashMapPatch](#hashmappatch)
   - [hashSet](#hashset)
   - [hashSetPatch](#hashsetpatch)
-  - [identity](#identity)
-  - [json](#json)
   - [mutableHashMap](#mutablehashmap)
   - [mutableHashSet](#mutablehashset)
   - [mutableList](#mutablelist)
   - [mutableQueue](#mutablequeue)
   - [mutableRef](#mutableref)
   - [nonEmpty](#nonempty)
-  - [number](#number)
-  - [option](#option)
   - [orPatch](#orpatch)
-  - [ordering](#ordering)
-  - [predicate](#predicate)
   - [random](#random)
-  - [readonlyArray](#readonlyarray)
   - [redBlackTree](#redblacktree)
-  - [seq](#seq)
   - [sortedMap](#sortedmap)
   - [sortedSet](#sortedset)
-  - [string](#string)
-  - [these](#these)
-  - [traversableFilterable](#traversablefilterable)
 
 ---
 
 # utils
-
-## boolean
-
-**Signature**
-
-```ts
-export declare const boolean: typeof boolean
-```
-
-Added in v1.0.0
 
 ## brand
 
@@ -100,16 +74,6 @@ export declare const chunkPatch: typeof chunkPatch
 
 Added in v1.0.0
 
-## compactable
-
-**Signature**
-
-```ts
-export declare const compactable: typeof compactable
-```
-
-Added in v1.0.0
-
 ## context
 
 **Signature**
@@ -130,12 +94,12 @@ export declare const contextPatch: typeof contextPatch
 
 Added in v1.0.0
 
-## covariantWithIndex
+## data
 
 **Signature**
 
 ```ts
-export declare const covariantWithIndex: typeof covariantWithIndex
+export declare const data: typeof data
 ```
 
 Added in v1.0.0
@@ -160,16 +124,6 @@ export declare const duration: typeof duration
 
 Added in v1.0.0
 
-## either
-
-**Signature**
-
-```ts
-export declare const either: typeof either
-```
-
-Added in v1.0.0
-
 ## equal
 
 **Signature**
@@ -180,42 +134,22 @@ export declare const equal: typeof equal
 
 Added in v1.0.0
 
-## filterable
-
-**Signature**
-
-```ts
-export declare const filterable: typeof filterable
-```
-
-Added in v1.0.0
-
-## filterableWithIndex
-
-**Signature**
-
-```ts
-export declare const filterableWithIndex: typeof filterableWithIndex
-```
-
-Added in v1.0.0
-
-## function
-
-**Signature**
-
-```ts
-export declare const function: typeof _function
-```
-
-Added in v1.0.0
-
 ## gen
 
 **Signature**
 
 ```ts
 export declare const gen: typeof gen
+```
+
+Added in v1.0.0
+
+## hash
+
+**Signature**
+
+```ts
+export declare const hash: typeof hash
 ```
 
 Added in v1.0.0
@@ -256,26 +190,6 @@ Added in v1.0.0
 
 ```ts
 export declare const hashSetPatch: typeof hashSetPatch
-```
-
-Added in v1.0.0
-
-## identity
-
-**Signature**
-
-```ts
-export declare const identity: typeof identity
-```
-
-Added in v1.0.0
-
-## json
-
-**Signature**
-
-```ts
-export declare const json: typeof json
 ```
 
 Added in v1.0.0
@@ -340,52 +254,12 @@ export declare const nonEmpty: typeof nonEmpty
 
 Added in v1.0.0
 
-## number
-
-**Signature**
-
-```ts
-export declare const number: typeof number
-```
-
-Added in v1.0.0
-
-## option
-
-**Signature**
-
-```ts
-export declare const option: typeof option
-```
-
-Added in v1.0.0
-
 ## orPatch
 
 **Signature**
 
 ```ts
 export declare const orPatch: typeof orPatch
-```
-
-Added in v1.0.0
-
-## ordering
-
-**Signature**
-
-```ts
-export declare const ordering: typeof ordering
-```
-
-Added in v1.0.0
-
-## predicate
-
-**Signature**
-
-```ts
-export declare const predicate: typeof predicate
 ```
 
 Added in v1.0.0
@@ -400,32 +274,12 @@ export declare const random: typeof random
 
 Added in v1.0.0
 
-## readonlyArray
-
-**Signature**
-
-```ts
-export declare const readonlyArray: typeof readonlyArray
-```
-
-Added in v1.0.0
-
 ## redBlackTree
 
 **Signature**
 
 ```ts
 export declare const redBlackTree: typeof redBlackTree
-```
-
-Added in v1.0.0
-
-## seq
-
-**Signature**
-
-```ts
-export declare const seq: typeof seq
 ```
 
 Added in v1.0.0
@@ -446,36 +300,6 @@ Added in v1.0.0
 
 ```ts
 export declare const sortedSet: typeof sortedSet
-```
-
-Added in v1.0.0
-
-## string
-
-**Signature**
-
-```ts
-export declare const string: typeof string
-```
-
-Added in v1.0.0
-
-## these
-
-**Signature**
-
-```ts
-export declare const these: typeof these
-```
-
-Added in v1.0.0
-
-## traversableFilterable
-
-**Signature**
-
-```ts
-export declare const traversableFilterable: typeof traversableFilterable
 ```
 
 Added in v1.0.0

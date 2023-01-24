@@ -1,6 +1,6 @@
 ---
 title: MutableRef.ts
-nav_order: 24
+nav_order: 21
 parent: Modules
 ---
 
@@ -152,7 +152,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface MutableRef<T> extends Equal.Equal {
+export interface MutableRef<T> {
   readonly _id: TypeId
   readonly _T: (_: never) => T
 

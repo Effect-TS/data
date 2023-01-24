@@ -81,7 +81,7 @@ different services in the environment in a compositional way.
 **Signature**
 
 ```ts
-export interface ContextPatch<Input, Output> {
+export interface ContextPatch<Input, Output> extends Equal {
   readonly _id: TypeId
   readonly _Input: (_: Input) => void
   readonly _Output: (_: never) => Output

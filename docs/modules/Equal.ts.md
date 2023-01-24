@@ -1,6 +1,6 @@
 ---
 title: Equal.ts
-nav_order: 13
+nav_order: 12
 parent: Modules
 ---
 
@@ -14,20 +14,16 @@ Added in v1.0.0
 
 - [equality](#equality)
   - [equals](#equals)
-- [hashing](#hashing)
-  - [hash](#hash)
-  - [hashCombine](#hashcombine)
-  - [hashOptimize](#hashoptimize)
-  - [hashRandom](#hashrandom)
+- [guards](#guards)
+  - [isEqual](#isequal)
+- [instances](#instances)
+  - [equivalence](#equivalence)
 - [models](#models)
   - [Equal (interface)](#equal-interface)
+- [structural](#structural)
+  - [considerByValue](#considerbyvalue)
 - [symbols](#symbols)
-  - [symbolEqual](#symbolequal)
-  - [symbolHash](#symbolhash)
-- [utils](#utils)
-  - [addTagToPreCheck](#addtagtoprecheck)
-  - [considerByRef](#considerbyref)
-  - [considerProtoByRef](#considerprotobyref)
+  - [symbol](#symbol)
 
 ---
 
@@ -44,44 +40,26 @@ export declare function equals<A, B>(self: A, that: B): boolean
 
 Added in v1.0.0
 
-# hashing
+# guards
 
-## hash
+## isEqual
 
 **Signature**
 
 ```ts
-export declare const hash: <A>(self: A) => number
+export declare const isEqual: (u: unknown) => u is Equal
 ```
 
 Added in v1.0.0
 
-## hashCombine
+# instances
+
+## equivalence
 
 **Signature**
 
 ```ts
-export declare const hashCombine: (b: number) => (self: number) => number
-```
-
-Added in v1.0.0
-
-## hashOptimize
-
-**Signature**
-
-```ts
-export declare const hashOptimize: (n: number) => number
-```
-
-Added in v1.0.0
-
-## hashRandom
-
-**Signature**
-
-```ts
-export declare const hashRandom: <A extends object>(self: A) => number
+export declare const equivalence: <A>() => Equivalence<A>
 ```
 
 Added in v1.0.0
@@ -93,64 +71,33 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Equal {
-  [symbolEqual](that: unknown): boolean
-  [symbolHash](): number
+export interface Equal extends Hash.Hash {
+  [symbol](that: Equal): boolean
 }
+```
+
+Added in v1.0.0
+
+# structural
+
+## considerByValue
+
+**Signature**
+
+```ts
+export declare const considerByValue: (tag: string) => void
 ```
 
 Added in v1.0.0
 
 # symbols
 
-## symbolEqual
+## symbol
 
 **Signature**
 
 ```ts
-export declare const symbolEqual: typeof symbolEqual
-```
-
-Added in v1.0.0
-
-## symbolHash
-
-**Signature**
-
-```ts
-export declare const symbolHash: typeof symbolHash
-```
-
-Added in v1.0.0
-
-# utils
-
-## addTagToPreCheck
-
-**Signature**
-
-```ts
-export declare const addTagToPreCheck: <K extends string>(self: K) => void
-```
-
-Added in v1.0.0
-
-## considerByRef
-
-**Signature**
-
-```ts
-export declare const considerByRef: <A extends object>(self: A) => A
-```
-
-Added in v1.0.0
-
-## considerProtoByRef
-
-**Signature**
-
-```ts
-export declare const considerProtoByRef: <A extends object>(self: A) => A
+export declare const symbol: typeof symbol
 ```
 
 Added in v1.0.0

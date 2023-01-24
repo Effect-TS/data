@@ -85,7 +85,7 @@ A patch which describes updates to a map of keys and values.
 **Signature**
 
 ```ts
-export interface HashMapPatch<Key, Value, Patch> {
+export interface HashMapPatch<Key, Value, Patch> extends Equal {
   readonly _id: TypeId
   readonly _Key: (_: Key) => Key
   readonly _Value: (_: Value) => Value
