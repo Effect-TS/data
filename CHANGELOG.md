@@ -1,5 +1,15 @@
 # @fp-ts/data
 
+## 0.1.0
+
+### Minor Changes
+
+- [#198](https://github.com/fp-ts/data/pull/198) [`e3c7d55`](https://github.com/fp-ts/data/commit/e3c7d55c65e5a2702f2f70d945536dcc898c2089) Thanks [@gcanti](https://github.com/gcanti)! - upgrade to /core 0.1.1
+
+### Patch Changes
+
+- [#198](https://github.com/fp-ts/data/pull/198) [`1bcc20a`](https://github.com/fp-ts/data/commit/1bcc20a115c27cbe25698cab0f483958aa9b04c3) Thanks [@gcanti](https://github.com/gcanti)! - Switch to symbol presence for structural check and move Gen to root
+
 ## 0.0.41
 
 ### Patch Changes
