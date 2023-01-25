@@ -1,6 +1,6 @@
 ---
-title: typeclass/Gen.ts
-nav_order: 27
+title: Gen.ts
+nav_order: 13
 parent: Modules
 ---
 

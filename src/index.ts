@@ -14,6 +14,7 @@ import * as hashSetPatch from "@fp-ts/data/Differ/HashSetPatch"
 import * as orPatch from "@fp-ts/data/Differ/OrPatch"
 import * as duration from "@fp-ts/data/Duration"
 import * as equal from "@fp-ts/data/Equal"
+import * as gen from "@fp-ts/data/Gen"
 import * as hash from "@fp-ts/data/Hash"
 import * as hashMap from "@fp-ts/data/HashMap"
 import * as hashSet from "@fp-ts/data/HashSet"
@@ -27,7 +28,6 @@ import * as random from "@fp-ts/data/Random"
 import * as redBlackTree from "@fp-ts/data/RedBlackTree"
 import * as sortedMap from "@fp-ts/data/SortedMap"
 import * as sortedSet from "@fp-ts/data/SortedSet"
-import * as gen from "@fp-ts/data/typeclass/Gen"
 
 export {
   /**

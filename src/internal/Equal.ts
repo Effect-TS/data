@@ -1,8 +1,2 @@
 /** @internal */
-export const structural = new Set([
-  "Left",
-  "Right",
-  "Both",
-  "Some",
-  "None"
-])
+export const structural = Symbol.for("@effect/data/Equal/structural")

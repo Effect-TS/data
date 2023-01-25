@@ -56,7 +56,7 @@ export const hash: <A>(self: A) => number = <A>(self: A) => {
       if (isHash(self)) {
         return self[symbol]()
       } else {
-        if ("_tag" in (self as object | Function) && structural.has(self["_tag"])) {
+        if (structural in (self as object | Function)) {
           return structure(self)
         }
         return random(self)
