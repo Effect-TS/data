@@ -20,8 +20,6 @@ Added in v1.0.0
   - [equivalence](#equivalence)
 - [models](#models)
   - [Equal (interface)](#equal-interface)
-- [structural](#structural)
-  - [considerByValue](#considerbyvalue)
 - [symbols](#symbols)
   - [symbol](#symbol)
 
@@ -74,18 +72,6 @@ Added in v1.0.0
 export interface Equal extends Hash.Hash {
   [symbol](that: Equal): boolean
 }
-```
-
-Added in v1.0.0
-
-# structural
-
-## considerByValue
-
-**Signature**
-
-```ts
-export declare const considerByValue: (tag: string) => void
 ```
 
 Added in v1.0.0
