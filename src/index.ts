@@ -12,12 +12,14 @@ import * as contextPatch from "@fp-ts/data/Differ/ContextPatch"
 import * as hashMapPatch from "@fp-ts/data/Differ/HashMapPatch"
 import * as hashSetPatch from "@fp-ts/data/Differ/HashSetPatch"
 import * as orPatch from "@fp-ts/data/Differ/OrPatch"
+import * as dual from "@fp-ts/data/Dual"
 import * as duration from "@fp-ts/data/Duration"
 import * as equal from "@fp-ts/data/Equal"
 import * as gen from "@fp-ts/data/Gen"
 import * as hash from "@fp-ts/data/Hash"
 import * as hashMap from "@fp-ts/data/HashMap"
 import * as hashSet from "@fp-ts/data/HashSet"
+import * as list from "@fp-ts/data/List"
 import * as mutableHashMap from "@fp-ts/data/MutableHashMap"
 import * as mutableHashSet from "@fp-ts/data/MutableHashSet"
 import * as mutableList from "@fp-ts/data/MutableList"
@@ -61,6 +63,10 @@ export {
   /**
    * @since 1.0.0
    */
+  dual,
+  /**
+   * @since 1.0.0
+   */
   duration,
   /**
    * @since 1.0.0
@@ -90,6 +96,10 @@ export {
    * @since 1.0.0
    */
   hashSetPatch,
+  /**
+   * @since 1.0.0
+   */
+  list,
   /**
    * @since 1.0.0
    */
