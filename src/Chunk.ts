@@ -1,7 +1,6 @@
 /**
  * @since 1.0.0
  */
-
 import type { Either } from "@fp-ts/core/Either"
 import { identity, pipe } from "@fp-ts/core/Function"
 import type { TypeLambda } from "@fp-ts/core/HKT"
@@ -10,6 +9,7 @@ import * as O from "@fp-ts/core/Option"
 import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
 import * as RA from "@fp-ts/core/ReadonlyArray"
 import type { Order } from "@fp-ts/core/typeclass/Order"
+import * as Dual from "@fp-ts/data/Dual"
 import * as Equal from "@fp-ts/data/Equal"
 import * as Hash from "@fp-ts/data/Hash"
 import type { NonEmptyIterable } from "@fp-ts/data/NonEmpty"
@@ -447,7 +447,10 @@ export const toReadonlyArray = <A>(self: Chunk<A>): ReadonlyArray<A> => self.toR
  * @since 1.0.0
  * @category elements
  */
-export const get = (index: number) => <A>(self: Chunk<A>): Option<A> => self.get(index)
+export const get = Dual.dual<
+  <A>(self: Chunk<A>, index: number) => Option<A>,
+  (index: number) => <A>(self: Chunk<A>) => Option<A>
+>(2, (self, index) => self.get(index))
 
 /**
  * Wraps an array into a chunk without copying, unsafe on mutable arrays
@@ -464,7 +467,10 @@ export const unsafeFromArray = <A>(self: ReadonlyArray<A>): Chunk<A> =>
  * @since 1.0.0
  * @category unsafe
  */
-export const unsafeGet = (index: number) => <A>(self: Chunk<A>): A => self.unsafeGet(index)
+export const unsafeGet = Dual.dual<
+  <A>(self: Chunk<A>, index: number) => A,
+  (index: number) => <A>(self: Chunk<A>) => A
+>(2, (self, index) => self.unsafeGet(index))
 
 /**
  * Appends the value to the chunk
@@ -472,7 +478,10 @@ export const unsafeGet = (index: number) => <A>(self: Chunk<A>): A => self.unsaf
  * @since 1.0.0
  * @category mutations
  */
-export const append = <A1>(a: A1) => <A>(self: Chunk<A>): Chunk<A | A1> => self.append(a)
+export const append = Dual.dual<
+  <A, A2>(self: Chunk<A>, a: A2) => Chunk<A | A2>,
+  <A2>(a: A2) => <A>(self: Chunk<A>) => Chunk<A | A2>
+>(2, (self, a) => self.append(a))
 
 /**
  * Prepends the value to the chunk
@@ -480,7 +489,10 @@ export const append = <A1>(a: A1) => <A>(self: Chunk<A>): Chunk<A | A1> => self.
  * @since 1.0.0
  * @category mutations
  */
-export const prepend = <B>(elem: B) => <A>(self: Chunk<A>): Chunk<A | B> => self.prepend(elem)
+export const prepend = Dual.dual<
+  <A, B>(self: Chunk<A>, elem: B) => Chunk<A | B>,
+  <B>(elem: B) => <A>(self: Chunk<A>) => Chunk<A | B>
+>(2, (self, elem) => self.prepend(elem))
 
 /**
  * Takes the first up to `n` elements from the chunk
@@ -488,16 +500,18 @@ export const prepend = <B>(elem: B) => <A>(self: Chunk<A>): Chunk<A | B> => self
  * @since 1.0.0
  * @category mutations
  */
-export const take = (n: number) =>
-  <A>(self: Chunk<A>): Chunk<A> => {
-    if (n <= 0) {
-      return _empty
-    } else if (n >= self.length) {
-      return self
-    } else {
-      return unsafeFromArray(RA.take(n)(self.toReadonlyArray()))
-    }
+export const take = Dual.dual<
+  <A>(self: Chunk<A>, n: number) => Chunk<A>,
+  (n: number) => <A>(self: Chunk<A>) => Chunk<A>
+>(2, (self, n) => {
+  if (n <= 0) {
+    return _empty
+  } else if (n >= self.length) {
+    return self
+  } else {
+    return unsafeFromArray(RA.take(n)(self.toReadonlyArray()))
   }
+})
 
 /**
  * Drops the first up to `n` elements from the chunk
@@ -505,16 +519,18 @@ export const take = (n: number) =>
  * @since 1.0.0
  * @category mutations
  */
-export const drop = (n: number) =>
-  <A>(self: Chunk<A>): Chunk<A> => {
-    if (n <= 0) {
-      return self
-    } else if (n >= self.length) {
-      return _empty
-    } else {
-      return unsafeFromArray(RA.drop(n)(self.toReadonlyArray()))
-    }
+export const drop = Dual.dual<
+  <A>(self: Chunk<A>, n: number) => Chunk<A>,
+  (n: number) => <A>(self: Chunk<A>) => Chunk<A>
+>(2, (self, n) => {
+  if (n <= 0) {
+    return self
+  } else if (n >= self.length) {
+    return _empty
+  } else {
+    return unsafeFromArray(RA.drop(n)(self.toReadonlyArray()))
   }
+})
 
 /**
  * Drops the last `n` elements.
@@ -522,8 +538,10 @@ export const drop = (n: number) =>
  * @since 1.0.0
  * @category mutations
  */
-export const dropRight = (n: number) =>
-  <A>(self: Chunk<A>): Chunk<A> => pipe(self, take(Math.max(0, self.length - n)))
+export const dropRight = Dual.dual<
+  <A>(self: Chunk<A>, n: number) => Chunk<A>,
+  (n: number) => <A>(self: Chunk<A>) => Chunk<A>
+>(2, (self, n) => take(self, Math.max(0, self.length - n)))
 
 /**
  * Drops all elements so long as the predicate returns true.
@@ -531,33 +549,33 @@ export const dropRight = (n: number) =>
  * @since 1.0.0
  * @category mutations
  */
-export const dropWhile = <A>(f: (a: A) => boolean) => {
-  return (self: Chunk<A>): Chunk<A> => {
-    const arr = toReadonlyArray(self)
-    const len = arr.length
-    let i = 0
-    while (i < len && f(arr[i]!)) {
-      i++
-    }
-    return pipe(self, drop(i))
+export const dropWhile = Dual.dual<
+  <A>(self: Chunk<A>, f: (a: A) => boolean) => Chunk<A>,
+  <A>(f: (a: A) => boolean) => (self: Chunk<A>) => Chunk<A>
+>(2, (self, f) => {
+  const arr = toReadonlyArray(self)
+  const len = arr.length
+  let i = 0
+  while (i < len && f(arr[i]!)) {
+    i++
   }
-}
+  return pipe(self, drop(i))
+})
 
 /**
  * @category mutations
  * @since 1.0.0
  */
-export function prependAllNonEmpty<B>(
-  that: NonEmptyChunk<B>
-): <A>(self: Chunk<A>) => NonEmptyChunk<A | B>
-export function prependAllNonEmpty<B>(
-  that: Chunk<B>
-): <A>(self: NonEmptyChunk<A>) => NonEmptyChunk<A | B>
-export function prependAllNonEmpty<B>(
-  that: Chunk<B>
-): <A>(self: NonEmptyChunk<A>) => Chunk<A | B> {
-  return (self) => concat(self)(that)
-}
+export const prependAllNonEmpty = Dual.dual<
+  {
+    <A, B>(self: Chunk<A>, that: NonEmptyChunk<B>): NonEmptyChunk<A | B>
+    <A, B>(self: NonEmptyChunk<A>, that: Chunk<B>): NonEmptyChunk<A | B>
+  },
+  {
+    <B>(that: NonEmptyChunk<B>): <A>(self: Chunk<A>) => NonEmptyChunk<A | B>
+    <B>(that: Chunk<B>): <A>(self: NonEmptyChunk<A>) => NonEmptyChunk<A | B>
+  }
+>(2, (self, that) => that.concat(self) as any)
 
 /**
  * Concatenates the two chunks
@@ -565,7 +583,10 @@ export function prependAllNonEmpty<B>(
  * @since 1.0.0
  * @category mutations
  */
-export const concat = <B>(that: Chunk<B>) => <A>(self: Chunk<A>): Chunk<A | B> => self.concat(that)
+export const concat = Dual.dual<
+  <A, B>(self: Chunk<A>, that: Chunk<B>) => Chunk<A | B>,
+  <B>(that: Chunk<B>) => <A>(self: Chunk<A>) => Chunk<A | B>
+>(2, (self, that) => self.concat(that))
 
 /**
  * Compares the two chunks of equal length using the specified function
@@ -573,15 +594,17 @@ export const concat = <B>(that: Chunk<B>) => <A>(self: Chunk<A>): Chunk<A | B> =
  * @since 1.0.0
  * @category elements
  */
-export const correspondsTo = <A, B>(that: Chunk<B>, f: (a: A, b: B) => boolean) =>
-  (self: Chunk<A>): boolean => {
-    if (self.length !== that.length) {
-      return false
-    }
-    const selfArray = toReadonlyArray(self)
-    const thatArray = toReadonlyArray(that)
-    return selfArray.every((v, i) => f(v, thatArray[i]))
+export const correspondsTo = Dual.dual<
+  <A, B>(self: Chunk<A>, that: Chunk<B>, f: (a: A, b: B) => boolean) => boolean,
+  <A, B>(that: Chunk<B>, f: (a: A, b: B) => boolean) => (self: Chunk<A>) => boolean
+>(3, (self, that, f) => {
+  if (self.length !== that.length) {
+    return false
   }
+  const selfArray = toReadonlyArray(self)
+  const thatArray = toReadonlyArray(that)
+  return selfArray.every((v, i) => f(v, thatArray[i]))
+})
 
 /**
  * Returns a filtered and mapped subset of the elements.
@@ -589,8 +612,10 @@ export const correspondsTo = <A, B>(that: Chunk<B>, f: (a: A, b: B) => boolean) 
  * @since 1.0.0
  * @category filtering
  */
-export const filterMap = <A, B>(f: (a: A) => Option<B>) =>
-  (self: Iterable<A>): Chunk<B> => unsafeFromArray(RA.filterMap(f)(self))
+export const filterMap = Dual.dual<
+  <A, B>(self: Iterable<A>, f: (a: A) => Option<B>) => Chunk<B>,
+  <A, B>(f: (a: A) => Option<B>) => (self: Iterable<A>) => Chunk<B>
+>(2, (self, f) => unsafeFromArray(RA.filterMap(f)(self)))
 
 /**
  * Returns a filtered and mapped subset of the elements.
@@ -598,13 +623,20 @@ export const filterMap = <A, B>(f: (a: A) => Option<B>) =>
  * @since 1.0.0
  * @category filtering
  */
-export const filter: {
-  <C extends A, B extends A, A = C>(
-    refinement: Refinement<A, B>
-  ): (self: Chunk<C>) => Chunk<B>
-  <B extends A, A = B>(predicate: Predicate<A>): (self: Chunk<B>) => Chunk<B>
-} = <A>(f: Predicate<A>) =>
-  (self: Chunk<A>) => unsafeFromArray(RA.filterMap(O.liftPredicate(f))(self))
+export const filter = Dual.dual<
+  {
+    <C extends A, B extends A, A = C>(self: Chunk<C>, refinement: Refinement<A, B>): Chunk<B>
+    <B extends A, A = B>(self: Chunk<B>, predicate: Predicate<A>): Chunk<B>
+  },
+  {
+    <C extends A, B extends A, A = C>(refinement: Refinement<A, B>): (self: Chunk<C>) => Chunk<B>
+    <B extends A, A = B>(predicate: Predicate<A>): (self: Chunk<B>) => Chunk<B>
+  }
+>(
+  2,
+  <B extends A, A = B>(self: Chunk<B>, predicate: Predicate<A>) =>
+    unsafeFromArray(RA.filterMap(O.liftPredicate(predicate))(self))
+)
 
 /**
  * Returns a filtered and mapped subset of the elements.
@@ -612,8 +644,10 @@ export const filter: {
  * @since 1.0.0
  * @category filtering
  */
-export const filterMapWithIndex = <A, B>(f: (a: A, i: number) => Option<B>) =>
-  (self: Iterable<A>): Chunk<B> => unsafeFromArray(RA.filterMapWithIndex(f)(self))
+export const filterMapWithIndex = Dual.dual<
+  <A, B>(self: Iterable<A>, f: (a: A, i: number) => Option<B>) => Chunk<B>,
+  <A, B>(f: (a: A, i: number) => Option<B>) => (self: Iterable<A>) => Chunk<B>
+>(2, (self, f) => unsafeFromArray(RA.filterMapWithIndex(f)(self)))
 
 /**
  * Transforms all elements of the chunk for as long as the specified function returns some value
@@ -621,19 +655,21 @@ export const filterMapWithIndex = <A, B>(f: (a: A, i: number) => Option<B>) =>
  * @since 1.0.0
  * @category filtering
  */
-export const filterMapWhile = <A, B>(f: (a: A) => Option<B>) =>
-  (self: Iterable<A>): Chunk<B> => {
-    const res: Array<B> = []
-    for (const a of self) {
-      const b = f(a)
-      if (O.isSome(b)) {
-        res.push(b.value)
-      } else {
-        break
-      }
+export const filterMapWhile = Dual.dual<
+  <A, B>(self: Iterable<A>, f: (a: A) => Option<B>) => Chunk<B>,
+  <A, B>(f: (a: A) => Option<B>) => (self: Iterable<A>) => Chunk<B>
+>(2, <A, B>(self: Iterable<A>, f: (a: A) => Option<B>) => {
+  const res: Array<B> = []
+  for (const a of self) {
+    const b = f(a)
+    if (O.isSome(b)) {
+      res.push(b.value)
+    } else {
+      break
     }
-    return unsafeFromArray(res)
   }
+  return unsafeFromArray(res)
+})
 
 /**
  * Tests whether a value is a member of a `Chunk<A>`.
@@ -641,8 +677,10 @@ export const filterMapWhile = <A, B>(f: (a: A) => Option<B>) =>
  * @since 1.0.0
  * @category elements
  */
-export const elem = <B>(b: B) =>
-  <A>(self: Chunk<A>): boolean => pipe(toReadonlyArray(self), RA.contains(Equal.equivalence())(b))
+export const elem = Dual.dual<
+  <A, B>(self: Chunk<A>, b: B) => boolean,
+  <B>(b: B) => <A>(self: Chunk<A>) => boolean
+>(2, (self, b) => pipe(toReadonlyArray(self), RA.contains(Equal.equivalence())(b)))
 
 /**
  * Filter out optional values
@@ -650,7 +688,7 @@ export const elem = <B>(b: B) =>
  * @since 1.0.0
  * @category filtering
  */
-export const compact = <A>(self: Iterable<Option<A>>): Chunk<A> => pipe(self, filterMap(identity))
+export const compact = <A>(self: Iterable<Option<A>>): Chunk<A> => filterMap(self, identity)
 
 /**
  * Deduplicates adjacent elements that are identical.
@@ -661,14 +699,12 @@ export const compact = <A>(self: Iterable<Option<A>>): Chunk<A> => pipe(self, fi
 export const dedupeAdjacent = <A>(self: Chunk<A>): Chunk<A> => {
   const builder: Array<A> = []
   let lastA: O.Option<A> = O.none()
-
   for (const a of self) {
     if (O.isNone(lastA) || !Equal.equals(a, lastA.value)) {
       builder.push(a)
       lastA = O.some(a)
     }
   }
-
   return unsafeFromArray(builder)
 }
 
@@ -678,8 +714,10 @@ export const dedupeAdjacent = <A>(self: Chunk<A>): Chunk<A> => {
  * @since 1.0.0
  * @category elements
  */
-export const some = <A>(f: (a: A) => boolean) =>
-  (self: Chunk<A>): boolean => toReadonlyArray(self).findIndex((v) => f(v)) !== -1
+export const some = Dual.dual<
+  <A>(self: Chunk<A>, f: Predicate<A>) => boolean,
+  <A>(f: Predicate<A>) => (self: Chunk<A>) => boolean
+>(2, (self, f) => toReadonlyArray(self).findIndex((v) => f(v)) !== -1)
 
 /**
  * Check if a predicate holds true for every `Chunk` member.
@@ -687,8 +725,10 @@ export const some = <A>(f: (a: A) => boolean) =>
  * @since 1.0.0
  * @category elements
  */
-export const every = <A>(f: (a: A) => boolean) =>
-  (self: Chunk<A>): boolean => toReadonlyArray(self).every((v) => f(v))
+export const every = Dual.dual<
+  <A>(self: Chunk<A>, f: Predicate<A>) => boolean,
+  <A>(f: Predicate<A>) => (self: Chunk<A>) => boolean
+>(2, (self, f) => toReadonlyArray(self).every((v) => f(v)))
 
 /**
  * Find the first element which satisfies a predicate (or a refinement) function.
@@ -696,13 +736,16 @@ export const every = <A>(f: (a: A) => boolean) =>
  * @since 1.0.0
  * @category elements
  */
-export function findFirst<A, B extends A>(
-  refinement: Refinement<A, B>
-): (self: Chunk<A>) => Option<B>
-export function findFirst<A>(predicate: Predicate<A>): (self: Chunk<A>) => Option<A>
-export function findFirst<A>(predicate: Predicate<A>) {
-  return (self: Chunk<A>): Option<A> => RA.findFirst(predicate)(toReadonlyArray(self))
-}
+export const findFirst = Dual.dual<
+  {
+    <A, B extends A>(self: Chunk<A>, refinement: Refinement<A, B>): Option<B>
+    <A>(self: Chunk<A>, predicate: Predicate<A>): Option<A>
+  },
+  {
+    <A, B extends A>(refinement: Refinement<A, B>): (self: Chunk<A>) => Option<B>
+    <A>(predicate: Predicate<A>): (self: Chunk<A>) => Option<A>
+  }
+>(2, <A>(self: Chunk<A>, predicate: Predicate<A>) => RA.findFirst(predicate)(toReadonlyArray(self)))
 
 /**
  * Find the first index for which a predicate holds
@@ -710,8 +753,10 @@ export function findFirst<A>(predicate: Predicate<A>) {
  * @since 1.0.0
  * @category elements
  */
-export const findFirstIndex = <A>(f: Predicate<A>) =>
-  (self: Chunk<A>): Option<number> => RA.findFirstIndex(f)(toReadonlyArray(self))
+export const findFirstIndex = Dual.dual<
+  <A>(self: Chunk<A>, f: Predicate<A>) => Option<number>,
+  <A>(f: Predicate<A>) => (self: Chunk<A>) => Option<number>
+>(2, (self, f) => RA.findFirstIndex(f)(toReadonlyArray(self)))
 
 /**
  * Find the first index for which a predicate holds
@@ -719,8 +764,10 @@ export const findFirstIndex = <A>(f: Predicate<A>) =>
  * @since 1.0.0
  * @category elements
  */
-export const findLastIndex = <A>(f: Predicate<A>) =>
-  (self: Chunk<A>): Option<number> => RA.findLastIndex(f)(toReadonlyArray(self))
+export const findLastIndex = Dual.dual<
+  <A>(self: Chunk<A>, f: Predicate<A>) => Option<number>,
+  <A>(f: Predicate<A>) => (self: Chunk<A>) => Option<number>
+>(2, (self, f) => RA.findLastIndex(f)(toReadonlyArray(self)))
 
 /**
  * Find the last element which satisfies a predicate function
@@ -728,11 +775,16 @@ export const findLastIndex = <A>(f: Predicate<A>) =>
  * @since 1.0.0
  * @category elements
  */
-export function findLast<A, B extends A>(f: Refinement<A, B>): (self: Chunk<A>) => Option<B>
-export function findLast<A>(f: Predicate<A>): (self: Chunk<A>) => Option<A>
-export function findLast<A>(f: Predicate<A>) {
-  return (self: Chunk<A>): Option<A> => RA.findLast(f)(toReadonlyArray(self))
-}
+export const findLast = Dual.dual<
+  {
+    <A, B extends A>(self: Chunk<A>, f: Refinement<A, B>): Option<B>
+    <A>(self: Chunk<A>, f: Predicate<A>): Option<A>
+  },
+  {
+    <A, B extends A>(f: Refinement<A, B>): (self: Chunk<A>) => Option<B>
+    <A>(f: Predicate<A>): (self: Chunk<A>) => Option<A>
+  }
+>(2, <A>(self: Chunk<A>, f: Predicate<A>) => RA.findLast(f)(toReadonlyArray(self)))
 
 /**
  * Returns a chunk with the elements mapped by the specified function.
@@ -740,17 +792,19 @@ export function findLast<A>(f: Predicate<A>) {
  * @since 1.0.0
  * @category sequencing
  */
-export const flatMap = <A, B>(f: (a: A) => Chunk<B>) =>
-  (self: Chunk<A>): Chunk<B> => {
-    if (self.backing._tag === "ISingleton") {
-      return f(self.backing.a)
-    }
-    let r: Chunk<B> = _empty
-    for (const k of self) {
-      r = concat(f(k))(r)
-    }
-    return r
+export const flatMap = Dual.dual<
+  <A, B>(self: Chunk<A>, f: (a: A) => Chunk<B>) => Chunk<B>,
+  <A, B>(f: (a: A) => Chunk<B>) => (self: Chunk<A>) => Chunk<B>
+>(2, <A, B>(self: Chunk<A>, f: (a: A) => Chunk<B>) => {
+  if (self.backing._tag === "ISingleton") {
+    return f(self.backing.a)
   }
+  let r: Chunk<B> = _empty
+  for (const k of self) {
+    r = concat(f(k))(r)
+  }
+  return r
+})
 
 /**
  * Flattens a chunk of chunks into a single chunk by concatenating all chunks.
@@ -766,7 +820,10 @@ export const flatten: <A>(self: Chunk<Chunk<A>>) => Chunk<A> = flatMap(identity)
  * @since 1.0.0
  * @category elements
  */
-export const forEach = <A>(f: (a: A) => void) => (self: Chunk<A>): void => self.forEach(f)
+export const forEach = Dual.dual<
+  <A>(self: Chunk<A>, f: (a: A) => void) => void,
+  <A>(f: (a: A) => void) => (self: Chunk<A>) => void
+>(2, (self, f) => self.forEach(f))
 
 /**
  * Groups elements in chunks of up to `n` elements.
@@ -774,25 +831,24 @@ export const forEach = <A>(f: (a: A) => void) => (self: Chunk<A>): void => self.
  * @since 1.0.0
  * @category elements
  */
-export const chunksOf = (n: number) =>
-  <A>(self: Chunk<A>): Chunk<Chunk<A>> => {
-    const gr: Array<Chunk<A>> = []
-    let current: Array<A> = []
-
-    toReadonlyArray(self).forEach((a) => {
-      current.push(a)
-      if (current.length >= n) {
-        gr.push(unsafeFromArray(current))
-        current = []
-      }
-    })
-
-    if (current.length > 0) {
+export const chunksOf = Dual.dual<
+  <A>(self: Chunk<A>, n: number) => Chunk<Chunk<A>>,
+  (n: number) => <A>(self: Chunk<A>) => Chunk<Chunk<A>>
+>(2, <A>(self: Chunk<A>, n: number) => {
+  const gr: Array<Chunk<A>> = []
+  let current: Array<A> = []
+  toReadonlyArray(self).forEach((a) => {
+    current.push(a)
+    if (current.length >= n) {
       gr.push(unsafeFromArray(current))
+      current = []
     }
-
-    return unsafeFromArray(gr)
+  })
+  if (current.length > 0) {
+    gr.push(unsafeFromArray(current))
   }
+  return unsafeFromArray(gr)
+})
 
 /**
  * Returns the first element of this chunk if it exists.
@@ -810,13 +866,15 @@ export const head: <A>(self: Chunk<A>) => Option<A> = get(0)
  * @since 1.0.0
  * @category elements
  */
-export const intersection = <A>(that: Chunk<A>) =>
-  <B>(self: Chunk<B>): Chunk<A & B> =>
-    pipe(
-      toReadonlyArray(self),
-      RA.intersection(Equal.equivalence<any>())(toReadonlyArray(that)),
-      unsafeFromArray
-    )
+export const intersection = Dual.dual<
+  <A, B>(self: Chunk<A>, that: Chunk<B>) => Chunk<A & B>,
+  <A>(that: Chunk<A>) => <B>(self: Chunk<B>) => Chunk<A & B>
+>(2, (self, that) =>
+  pipe(
+    toReadonlyArray(self),
+    RA.intersection(Equal.equivalence<any>())(toReadonlyArray(that)),
+    unsafeFromArray
+  ))
 
 /**
  * Determines if the chunk is empty.
@@ -840,8 +898,10 @@ export const isNonEmpty = <A>(self: Chunk<A>): self is NonEmptyChunk<A> => self.
  * @since 1.0.0
  * @category folding
  */
-export const reduce = <A, B>(b: B, f: (s: B, a: A) => B) =>
-  (self: Chunk<A>): B => pipe(toReadonlyArray(self), RA.reduce(b, f))
+export const reduce = Dual.dual<
+  <A, B>(self: Chunk<A>, b: B, f: (s: B, a: A) => B) => B,
+  <A, B>(b: B, f: (s: B, a: A) => B) => (self: Chunk<A>) => B
+>(3, (self, b, f) => pipe(toReadonlyArray(self), RA.reduce(b, f)))
 
 /**
  * Folds over the elements in this chunk from the left.
@@ -849,8 +909,10 @@ export const reduce = <A, B>(b: B, f: (s: B, a: A) => B) =>
  * @since 1.0.0
  * @category folding
  */
-export const reduceWithIndex = <B, A>(b: B, f: (b: B, a: A, i: number) => B) =>
-  (self: Chunk<A>): B => pipe(toReadonlyArray(self), RA.reduceWithIndex(b, f))
+export const reduceWithIndex = Dual.dual<
+  <A, B>(self: Chunk<A>, b: B, f: (b: B, a: A, i: number) => B) => B,
+  <B, A>(b: B, f: (b: B, a: A, i: number) => B) => (self: Chunk<A>) => B
+>(3, (self, b, f) => pipe(toReadonlyArray(self), RA.reduceWithIndex(b, f)))
 
 /**
  * Folds over the elements in this chunk from the right.
@@ -858,8 +920,10 @@ export const reduceWithIndex = <B, A>(b: B, f: (b: B, a: A, i: number) => B) =>
  * @since 1.0.0
  * @category folding
  */
-export const reduceRight = <A, S>(s: S, f: (s: S, a: A) => S) =>
-  (self: Chunk<A>): S => pipe(toReadonlyArray(self), RA.reduceRight(s, (s, a) => f(s, a)))
+export const reduceRight = Dual.dual<
+  <A, B>(self: Chunk<A>, b: B, f: (b: B, a: A) => B) => B,
+  <B, A>(b: B, f: (b: B, a: A) => B) => (self: Chunk<A>) => B
+>(3, (self, b, f) => pipe(toReadonlyArray(self), RA.reduceRight(b, (b, a) => f(b, a))))
 
 /**
  * Folds over the elements in this chunk from the right.
@@ -867,8 +931,10 @@ export const reduceRight = <A, S>(s: S, f: (s: S, a: A) => S) =>
  * @since 1.0.0
  * @category folding
  */
-export const reduceRightWithIndex = <B, A>(b: B, f: (b: B, a: A, i: number) => B) =>
-  (self: Chunk<A>): B => pipe(toReadonlyArray(self), RA.reduceRightWithIndex(b, f))
+export const reduceRightWithIndex = Dual.dual<
+  <A, B>(self: Chunk<A>, b: B, f: (b: B, a: A, i: number) => B) => B,
+  <B, A>(b: B, f: (b: B, a: A, i: number) => B) => (self: Chunk<A>) => B
+>(3, (self, b, f) => pipe(toReadonlyArray(self), RA.reduceRightWithIndex(b, f)))
 
 /**
  * Joins the elements together with "sep" in the middle.
@@ -876,9 +942,10 @@ export const reduceRightWithIndex = <B, A>(b: B, f: (b: B, a: A, i: number) => B
  * @since 1.0.0
  * @category folding
  */
-export const join = (sep: string) =>
-  (self: Chunk<string>): string =>
-    pipe(self, reduce("", (s, a) => (s.length > 0 ? `${s}${sep}${a}` : a)))
+export const join = Dual.dual<
+  (self: Chunk<string>, sep: string) => string,
+  (sep: string) => (self: Chunk<string>) => string
+>(2, (self, sep) => reduce(self, "", (s, a) => (s.length > 0 ? `${s}${sep}${a}` : a)))
 
 /**
  * Returns the last element of this chunk if it exists.
@@ -886,7 +953,7 @@ export const join = (sep: string) =>
  * @since 1.0.0
  * @category elements
  */
-export const last = <A>(self: Chunk<A>): Option<A> => get(self.length - 1)(self)
+export const last = <A>(self: Chunk<A>): Option<A> => get(self, self.length - 1)
 
 /**
  * Builds a `NonEmptyChunk` from an non-empty collection of elements.
@@ -914,8 +981,10 @@ export const of = <A>(a: A): NonEmptyChunk<A> => new ChunkImpl({ _tag: "ISinglet
  * @since 1.0.0
  * @category constructors
  */
-export const makeBy = <A>(f: (i: number) => A) =>
-  (n: number): NonEmptyChunk<A> => make(...RA.makeBy(f)(n))
+export const makeBy = Dual.dual<
+  <A>(n: number, f: (i: number) => A) => NonEmptyChunk<A>,
+  <A>(f: (i: number) => A) => (n: number) => NonEmptyChunk<A>
+>(2, (n, f) => make(...RA.makeBy(f)(n)))
 
 /**
  * Returns an effect whose success is mapped by the specified f function.
@@ -923,7 +992,10 @@ export const makeBy = <A>(f: (i: number) => A) =>
  * @since 1.0.0
  * @category mapping
  */
-export const map = <A, B>(f: (a: A) => B) => (self: Chunk<A>): Chunk<B> => self.map(f)
+export const map = Dual.dual<
+  <A, B>(self: Chunk<A>, f: (a: A) => B) => Chunk<B>,
+  <A, B>(f: (a: A) => B) => (self: Chunk<A>) => Chunk<B>
+>(2, (self, f) => self.map(f))
 
 /**
  * Returns an effect whose success is mapped by the specified f function.
@@ -931,11 +1003,13 @@ export const map = <A, B>(f: (a: A) => B) => (self: Chunk<A>): Chunk<B> => self.
  * @since 1.0.0
  * @category mapping
  */
-export const mapWithIndex = <A, B>(f: (a: A, i: number) => B) =>
-  (self: Chunk<A>): Chunk<B> =>
-    self.backing._tag === "ISingleton" ?
-      of(f(self.backing.a, 0)) :
-      unsafeFromArray(pipe(toReadonlyArray(self), RA.mapWithIndex(f)))
+export const mapWithIndex = Dual.dual<
+  <A, B>(self: Chunk<A>, f: (a: A, i: number) => B) => Chunk<B>,
+  <A, B>(f: (a: A, i: number) => B) => (self: Chunk<A>) => Chunk<B>
+>(2, (self, f) =>
+  self.backing._tag === "ISingleton" ?
+    of(f(self.backing.a, 0)) :
+    unsafeFromArray(pipe(toReadonlyArray(self), RA.mapWithIndex(f))))
 
 /**
  * Statefully maps over the chunk, producing new elements of type `B`.
@@ -943,18 +1017,19 @@ export const mapWithIndex = <A, B>(f: (a: A, i: number) => B) =>
  * @since 1.0.0
  * @category folding
  */
-export function mapAccum<S, A, B>(s: S, f: (s: S, a: A) => readonly [S, B]) {
-  return (self: Chunk<A>): readonly [S, Chunk<B>] => {
-    let s1 = s
-    const res: Array<B> = []
-    for (const a of toReadonlyArray(self)) {
-      const r = f(s1, a)
-      s1 = r[0]
-      res.push(r[1])
-    }
-    return [s1, unsafeFromArray(res)]
+export const mapAccum = Dual.dual<
+  <S, A, B>(self: Chunk<A>, s: S, f: (s: S, a: A) => readonly [S, B]) => readonly [S, Chunk<B>],
+  <S, A, B>(s: S, f: (s: S, a: A) => readonly [S, B]) => (self: Chunk<A>) => readonly [S, Chunk<B>]
+>(3, <S, A, B>(self: Chunk<A>, s: S, f: (s: S, a: A) => readonly [S, B]) => {
+  let s1 = s
+  const res: Array<B> = []
+  for (const a of toReadonlyArray(self)) {
+    const r = f(s1, a)
+    s1 = r[0]
+    res.push(r[1])
   }
-}
+  return [s1, unsafeFromArray(res)]
+})
 
 /**
  * Separate elements based on a predicate that also exposes the index of the element.
@@ -962,21 +1037,31 @@ export function mapAccum<S, A, B>(s: S, f: (s: S, a: A) => readonly [S, B]) {
  * @category filtering
  * @since 1.0.0
  */
-export const partitionWithIndex: {
-  <C extends A, B extends A, A = C>(refinement: (a: A, i: number) => a is B): (
-    fb: Chunk<C>
-  ) => readonly [Chunk<C>, Chunk<B>]
-  <B extends A, A = B>(predicate: (a: A, i: number) => boolean): (
-    fb: Chunk<B>
-  ) => readonly [Chunk<B>, Chunk<B>]
-} = <A>(f: (a: A, i: number) => boolean) => {
-  return (self: Chunk<A>): readonly [Chunk<A>, Chunk<A>] =>
-    pipe(
-      toReadonlyArray(self),
-      RA.partitionWithIndex(f),
-      ([l, r]) => [unsafeFromArray(l), unsafeFromArray(r)]
-    )
-}
+export const partitionWithIndex = Dual.dual<
+  {
+    <C extends A, B extends A, A = C>(
+      self: Chunk<C>,
+      refinement: (a: A, i: number) => a is B
+    ): readonly [Chunk<C>, Chunk<B>]
+    <B extends A, A = B>(
+      self: Chunk<B>,
+      predicate: (a: A, i: number) => boolean
+    ): readonly [Chunk<B>, Chunk<B>]
+  },
+  {
+    <C extends A, B extends A, A = C>(refinement: (a: A, i: number) => a is B): (
+      self: Chunk<C>
+    ) => readonly [Chunk<C>, Chunk<B>]
+    <B extends A, A = B>(predicate: (a: A, i: number) => boolean): (
+      self: Chunk<B>
+    ) => readonly [Chunk<B>, Chunk<B>]
+  }
+>(2, <B extends A, A = B>(self: Chunk<B>, f: (a: A, i: number) => boolean) =>
+  pipe(
+    toReadonlyArray(self),
+    RA.partitionWithIndex(f),
+    ([l, r]) => [unsafeFromArray(l), unsafeFromArray(r)] as const
+  ))
 
 /**
  * Separate elements based on a predicate.
@@ -984,20 +1069,31 @@ export const partitionWithIndex: {
  * @category filtering
  * @since 1.0.0
  */
-export const partition: {
-  <C extends A, B extends A, A = C>(refinement: Refinement<A, B>): (
-    fc: Chunk<C>
-  ) => readonly [Chunk<C>, Chunk<B>]
-  <B extends A, A = B>(
-    predicate: Predicate<A>
-  ): (fb: Chunk<B>) => readonly [Chunk<B>, Chunk<B>]
-} = <B extends A, A = B>(predicate: Predicate<A>) =>
-  (fb: Chunk<B>): readonly [Chunk<B>, Chunk<B>] =>
-    pipe(
-      toReadonlyArray(fb),
-      RA.partition(predicate),
-      ([l, r]) => [unsafeFromArray(l), unsafeFromArray(r)]
-    )
+export const partition = Dual.dual<
+  {
+    <C extends A, B extends A, A = C>(
+      self: Chunk<C>,
+      refinement: Refinement<A, B>
+    ): readonly [Chunk<C>, Chunk<B>]
+    <B extends A, A = B>(
+      self: Chunk<B>,
+      predicate: Predicate<A>
+    ): readonly [Chunk<B>, Chunk<B>]
+  },
+  {
+    <C extends A, B extends A, A = C>(refinement: Refinement<A, B>): (
+      self: Chunk<C>
+    ) => readonly [Chunk<C>, Chunk<B>]
+    <B extends A, A = B>(
+      predicate: Predicate<A>
+    ): (self: Chunk<B>) => readonly [Chunk<B>, Chunk<B>]
+  }
+>(2, <B extends A, A = B>(self: Chunk<B>, predicate: Predicate<A>) =>
+  pipe(
+    toReadonlyArray(self),
+    RA.partition(predicate),
+    ([l, r]) => [unsafeFromArray(l), unsafeFromArray(r)] as const
+  ))
 
 /**
  * Partitions the elements of this chunk into two chunks using f.
@@ -1005,16 +1101,16 @@ export const partition: {
  * @category filtering
  * @since 1.0.0
  */
-export const partitionMap = <A, B, C>(
-  f: (a: A) => Either<B, C>
-) =>
-  (fa: Chunk<A>): readonly [Chunk<B>, Chunk<C>] =>
-    pipe(
-      fa,
-      toReadonlyArray,
-      RA.partitionMap(f),
-      ([l, r]) => [unsafeFromArray(l), unsafeFromArray(r)]
-    )
+export const partitionMap = Dual.dual<
+  <A, B, C>(self: Chunk<A>, f: (a: A) => Either<B, C>) => readonly [Chunk<B>, Chunk<C>],
+  <A, B, C>(f: (a: A) => Either<B, C>) => (self: Chunk<A>) => readonly [Chunk<B>, Chunk<C>]
+>(2, (self, f) =>
+  pipe(
+    self,
+    toReadonlyArray,
+    RA.partitionMap(f),
+    ([l, r]) => [unsafeFromArray(l), unsafeFromArray(r)]
+  ))
 
 /**
  * Partitions the elements of this chunk into two chunks.
@@ -1037,7 +1133,7 @@ export const separate = <A, B>(self: Chunk<Either<A, B>>): readonly [Chunk<A>, C
  * @since 1.0.0
  */
 export const range = (start: number, end: number): NonEmptyChunk<number> =>
-  start <= end ? makeBy((i) => start + i)(end - start + 1) : of(start)
+  start <= end ? makeBy(end - start + 1, (i) => start + i) : of(start)
 
 /**
  * Reverse a Chunk, creating a new Chunk.
@@ -1062,13 +1158,10 @@ export const size = <A>(self: Chunk<A>): number => self.length
  * @since 1.0.0
  * @category elements
  */
-export const sort = <B>(O: Order<B>) =>
-  <A extends B>(as: Chunk<A>): Chunk<A> =>
-    pipe(
-      toReadonlyArray(as),
-      RA.sort(O),
-      unsafeFromArray
-    )
+export const sort = Dual.dual<
+  <A extends B, B>(self: Chunk<A>, O: Order<B>) => Chunk<A>,
+  <B>(O: Order<B>) => <A extends B>(self: Chunk<A>) => Chunk<A>
+>(2, (self, O) => pipe(toReadonlyArray(self), RA.sort(O), unsafeFromArray))
 
 /**
  *  Returns two splits of this chunk at the specified index.
@@ -1076,8 +1169,10 @@ export const sort = <B>(O: Order<B>) =>
  * @since 1.0.0
  * @category elements
  */
-export const splitAt = (n: number) =>
-  <A>(self: Chunk<A>): readonly [Chunk<A>, Chunk<A>] => [take(n)(self), drop(n)(self)]
+export const splitAt = Dual.dual<
+  <A>(self: Chunk<A>, n: number) => readonly [Chunk<A>, Chunk<A>],
+  (n: number) => <A>(self: Chunk<A>) => readonly [Chunk<A>, Chunk<A>]
+>(2, (self, n) => [take(n)(self), drop(n)(self)])
 
 /**
  * Splits this chunk into `n` equally sized chunks.
@@ -1085,36 +1180,33 @@ export const splitAt = (n: number) =>
  * @since 1.0.0
  * @category elements
  */
-export const split = (n: number) =>
-  <A>(self: Chunk<A>): Chunk<Chunk<A>> => {
-    const length = self.length
-    const k = Math.floor(n)
-    const quotient = Math.floor(length / k)
-    const remainder = length % k
-
-    const chunks: Array<Chunk<A>> = []
-    let i = 0
-
-    let chunk: Array<A> = []
-
-    toReadonlyArray(self).forEach((a) => {
-      chunk.push(a)
-      if (
-        (i <= remainder && chunk.length > quotient) ||
-        (i > remainder && chunk.length >= quotient)
-      ) {
-        chunks.push(unsafeFromArray(chunk))
-        chunk = []
-      }
-      i++
-    })
-
-    if (chunk.length > 0) {
+export const split = Dual.dual<
+  <A>(self: Chunk<A>, n: number) => Chunk<Chunk<A>>,
+  (n: number) => <A>(self: Chunk<A>) => Chunk<Chunk<A>>
+>(2, <A>(self: Chunk<A>, n: number) => {
+  const length = self.length
+  const k = Math.floor(n)
+  const quotient = Math.floor(length / k)
+  const remainder = length % k
+  const chunks: Array<Chunk<A>> = []
+  let i = 0
+  let chunk: Array<A> = []
+  toReadonlyArray(self).forEach((a) => {
+    chunk.push(a)
+    if (
+      (i <= remainder && chunk.length > quotient) ||
+      (i > remainder && chunk.length >= quotient)
+    ) {
       chunks.push(unsafeFromArray(chunk))
+      chunk = []
     }
-
-    return unsafeFromArray(chunks)
+    i++
+  })
+  if (chunk.length > 0) {
+    chunks.push(unsafeFromArray(chunk))
   }
+  return unsafeFromArray(chunks)
+})
 
 /**
  * Splits this chunk on the first element that matches this predicate.
@@ -1122,18 +1214,20 @@ export const split = (n: number) =>
  * @since 1.0.0
  * @category elements
  */
-export const splitWhere = <A>(f: Predicate<A>) =>
-  (self: Chunk<A>): readonly [Chunk<A>, Chunk<A>] => {
-    let i = 0
-    for (const a of toReadonlyArray(self)) {
-      if (f(a)) {
-        break
-      } else {
-        i++
-      }
+export const splitWhere = Dual.dual<
+  <A>(self: Chunk<A>, f: Predicate<A>) => readonly [Chunk<A>, Chunk<A>],
+  <A>(f: Predicate<A>) => (self: Chunk<A>) => readonly [Chunk<A>, Chunk<A>]
+>(2, (self, f) => {
+  let i = 0
+  for (const a of toReadonlyArray(self)) {
+    if (f(a)) {
+      break
+    } else {
+      i++
     }
-    return splitAt(i)(self)
   }
+  return splitAt(i)(self)
+})
 
 /**
  * Returns every elements after the first.
@@ -1150,8 +1244,10 @@ export const tail = <A>(self: Chunk<A>): Option<Chunk<A>> =>
  * @since 1.0.0
  * @category elements
  */
-export const takeRight = (n: number) =>
-  <A>(self: Chunk<A>): Chunk<A> => pipe(self, drop(self.length - n))
+export const takeRight = Dual.dual<
+  <A>(self: Chunk<A>, n: number) => Chunk<A>,
+  (n: number) => <A>(self: Chunk<A>) => Chunk<A>
+>(2, (self, n) => drop(self, self.length - n))
 
 /**
  * Takes all elements so long as the predicate returns true.
@@ -1159,18 +1255,20 @@ export const takeRight = (n: number) =>
  * @since 1.0.0
  * @category elements
  */
-export const takeWhile = <A>(f: Predicate<A>) =>
-  (self: Chunk<A>): Chunk<A> => {
-    const res: Array<A> = []
-    for (const a of toReadonlyArray(self)) {
-      if (f(a)) {
-        res.push(a)
-      } else {
-        break
-      }
+export const takeWhile = Dual.dual<
+  <A>(self: Chunk<A>, f: Predicate<A>) => Chunk<A>,
+  <A>(f: Predicate<A>) => (self: Chunk<A>) => Chunk<A>
+>(2, <A>(self: Chunk<A>, f: Predicate<A>) => {
+  const res: Array<A> = []
+  for (const a of toReadonlyArray(self)) {
+    if (f(a)) {
+      res.push(a)
+    } else {
+      break
     }
-    return unsafeFromArray(res)
   }
+  return unsafeFromArray(res)
+})
 
 /**
  * Constructs a `Chunk` by repeatedly applying the function `f` as long as it * returns `Some`.
@@ -1200,12 +1298,13 @@ export const unfold = <A, S>(s: S, f: (s: S) => Option<readonly [A, S]>): Chunk<
  * @since 1.0.0
  * @category elements
  */
-export function union<A>(that: Chunk<A>) {
-  return <B>(self: Chunk<B>): Chunk<A | B> =>
-    unsafeFromArray(
-      RA.union(Equal.equivalence<A | B>())(toReadonlyArray(that))(toReadonlyArray(self))
-    )
-}
+export const union = Dual.dual<
+  <A, B>(self: Chunk<A>, that: Chunk<B>) => Chunk<A | B>,
+  <A>(that: Chunk<A>) => <B>(self: Chunk<B>) => Chunk<A | B>
+>(2, <A, B>(self: Chunk<A>, that: Chunk<B>) =>
+  unsafeFromArray(
+    RA.union(Equal.equivalence<A | B>())(toReadonlyArray(that))(toReadonlyArray(self))
+  ))
 
 /**
  * Remove duplicates from an array, keeping the first occurrence of an element.
@@ -1243,12 +1342,10 @@ export const unsafeLast = <A>(self: Chunk<A>): A => unsafeGet(self.length - 1)(s
 export const unzip = <A, B>(as: Chunk<readonly [A, B]>): readonly [Chunk<A>, Chunk<B>] => {
   const fa: Array<A> = []
   const fb: Array<B> = []
-
   toReadonlyArray(as).forEach(([a, b]) => {
     fa.push(a)
     fb.push(b)
   })
-
   return [unsafeFromArray(fa), unsafeFromArray(fb)]
 }
 
@@ -1258,8 +1355,10 @@ export const unzip = <A, B>(as: Chunk<readonly [A, B]>): readonly [Chunk<A>, Chu
  * @since 1.0.0
  * @category elements
  */
-export const zip = <B>(that: Chunk<B>) =>
-  <A>(self: Chunk<A>): Chunk<readonly [A, B]> => pipe(self, zipWith(that, (a, b) => [a, b]))
+export const zip = Dual.dual<
+  <A, B>(self: Chunk<A>, that: Chunk<B>) => Chunk<readonly [A, B]>,
+  <B>(that: Chunk<B>) => <A>(self: Chunk<A>) => Chunk<readonly [A, B]>
+>(2, (self, that) => zipWith(self, that, (a, b) => [a, b]))
 
 /**
  * Zips this chunk pointwise with the specified chunk using the specified combiner.
@@ -1267,12 +1366,14 @@ export const zip = <B>(that: Chunk<B>) =>
  * @since 1.0.0
  * @category elements
  */
-export const zipWith = <A, B, C>(that: Chunk<B>, f: (a: A, b: B) => C) =>
-  (self: Chunk<A>): Chunk<C> => {
-    const selfA = toReadonlyArray(self)
-    const thatA = toReadonlyArray(that)
-    return pipe(selfA, RA.zipWith(thatA, f), unsafeFromArray)
-  }
+export const zipWith = Dual.dual<
+  <A, B, C>(self: Chunk<A>, that: Chunk<B>, f: (a: A, b: B) => C) => Chunk<C>,
+  <A, B, C>(that: Chunk<B>, f: (a: A, b: B) => C) => (self: Chunk<A>) => Chunk<C>
+>(3, (self, that, f) => {
+  const selfA = toReadonlyArray(self)
+  const thatA = toReadonlyArray(that)
+  return pipe(selfA, RA.zipWith(thatA, f), unsafeFromArray)
+})
 
 /**
  * Zips this chunk pointwise with the specified chunk to produce a new chunk with
@@ -1283,17 +1384,17 @@ export const zipWith = <A, B, C>(that: Chunk<B>, f: (a: A, b: B) => C) =>
  * @since 1.0.0
  * @category elements
  */
-export const zipAll = <B>(that: Chunk<B>) =>
-  <A>(self: Chunk<A>): Chunk<readonly [Option<A>, Option<B>]> =>
-    pipe(
-      self,
-      zipAllWith(
-        that,
-        (a, b) => [O.some(a), O.some(b)],
-        (a) => [O.some(a), O.none()],
-        (b) => [O.none(), O.some(b)]
-      )
-    )
+export const zipAll = Dual.dual<
+  <A, B>(self: Chunk<A>, that: Chunk<B>) => Chunk<readonly [Option<A>, Option<B>]>,
+  <B>(that: Chunk<B>) => <A>(self: Chunk<A>) => Chunk<readonly [Option<A>, Option<B>]>
+>(2, (self, that) =>
+  zipAllWith(
+    self,
+    that,
+    (a, b) => [O.some(a), O.some(b)],
+    (a) => [O.some(a), O.none()],
+    (b) => [O.none(), O.some(b)]
+  ))
 
 /**
  * Zips with chunk with the specified chunk to produce a new chunk with
@@ -1305,43 +1406,57 @@ export const zipAll = <B>(that: Chunk<B>) =>
  * @since 1.0.0
  * @category elements
  */
-export const zipAllWith = <A, B, C, D, E>(
+export const zipAllWith = Dual.dual<
+  <A, B, C, D, E>(
+    self: Chunk<A>,
+    that: Chunk<B>,
+    f: (a: A, b: B) => C,
+    left: (a: A) => D,
+    right: (b: B) => E
+  ) => Chunk<C | D | E>,
+  <A, B, C, D, E>(
+    that: Chunk<B>,
+    f: (a: A, b: B) => C,
+    left: (a: A) => D,
+    right: (b: B) => E
+  ) => (self: Chunk<A>) => Chunk<C | D | E>
+>(5, <A, B, C, D, E>(
+  self: Chunk<A>,
   that: Chunk<B>,
   f: (a: A, b: B) => C,
   left: (a: A) => D,
   right: (b: B) => E
-) =>
-  (self: Chunk<A>): Chunk<C | D | E> => {
-    const length = Math.max(self.length, that.length)
-    if (length === 0) {
-      return _empty
-    }
-    const leftarr = toReadonlyArray(self)
-    const rightArr = toReadonlyArray(that)
-    let i = 0
-    let j = 0
-    let k = 0
-    const leftLength = leftarr.length
-    const rightLength = rightArr.length
-    const builder: Array<C | D | E> = new Array(length)
-    while (i < length) {
-      if (j < leftLength && k < rightLength) {
-        builder[i] = f(leftarr![j]!, rightArr![k]!)
-        i++
-        j++
-        k++
-      } else if (j < leftLength) {
-        builder[i] = left(leftarr![j]!)
-        i++
-        j++
-      } else if (k < rightLength) {
-        builder[i] = right(rightArr![k]!)
-        i++
-        k++
-      }
-    }
-    return unsafeFromArray(builder)
+) => {
+  const length = Math.max(self.length, that.length)
+  if (length === 0) {
+    return _empty
   }
+  const leftarr = toReadonlyArray(self)
+  const rightArr = toReadonlyArray(that)
+  let i = 0
+  let j = 0
+  let k = 0
+  const leftLength = leftarr.length
+  const rightLength = rightArr.length
+  const builder: Array<C | D | E> = new Array(length)
+  while (i < length) {
+    if (j < leftLength && k < rightLength) {
+      builder[i] = f(leftarr![j]!, rightArr![k]!)
+      i++
+      j++
+      k++
+    } else if (j < leftLength) {
+      builder[i] = left(leftarr![j]!)
+      i++
+      j++
+    } else if (k < rightLength) {
+      builder[i] = right(rightArr![k]!)
+      i++
+      k++
+    }
+  }
+  return unsafeFromArray(builder)
+})
 
 /**
  * Zips this chunk crosswise with the specified chunk using the specified combiner.
@@ -1349,8 +1464,10 @@ export const zipAllWith = <A, B, C, D, E>(
  * @since 1.0.0
  * @category elements
  */
-export const crossWith = <A, B, C>(that: Chunk<B>, f: (a: A, b: B) => C) =>
-  (self: Chunk<A>): Chunk<C> => pipe(self, flatMap((a) => pipe(that, map((b) => f(a, b)))))
+export const crossWith = Dual.dual<
+  <A, B, C>(self: Chunk<A>, that: Chunk<B>, f: (a: A, b: B) => C) => Chunk<C>,
+  <A, B, C>(that: Chunk<B>, f: (a: A, b: B) => C) => (self: Chunk<A>) => Chunk<C>
+>(3, (self, that, f) => flatMap(self, (a) => pipe(that, map((b) => f(a, b)))))
 
 /**
  * Zips this chunk crosswise with the specified chunk.
@@ -1358,8 +1475,10 @@ export const crossWith = <A, B, C>(that: Chunk<B>, f: (a: A, b: B) => C) =>
  * @since 1.0.0
  * @category elements
  */
-export const cross = <B>(that: Chunk<B>) =>
-  <A>(self: Chunk<A>): Chunk<readonly [A, B]> => pipe(self, crossWith(that, (a, b) => [a, b]))
+export const cross = Dual.dual<
+  <A, B>(self: Chunk<A>, that: Chunk<B>) => Chunk<readonly [A, B]>,
+  <B>(that: Chunk<B>) => <A>(self: Chunk<A>) => Chunk<readonly [A, B]>
+>(2, (self, that) => crossWith(self, that, (a, b) => [a, b]))
 
 /**
  * Zips this chunk with the index of every element, starting from the initial
@@ -1378,18 +1497,20 @@ export const zipWithIndex = <A>(self: Chunk<A>): Chunk<readonly [A, number]> =>
  * @category elements
  * @since 1.0.0
  */
-export const zipWithIndexOffset = (offset: number) =>
-  <A>(self: Chunk<A>): Chunk<[A, number]> => {
-    const iterator = self[Symbol.iterator]()
-    let next: IteratorResult<A>
-    let i = offset
-    const builder: Array<[A, number]> = []
-    while (!(next = iterator.next()).done) {
-      builder.push([next.value, i])
-      i = i + 1
-    }
-    return unsafeFromArray(builder)
+export const zipWithIndexOffset = Dual.dual<
+  <A>(self: Chunk<A>, offset: number) => Chunk<[A, number]>,
+  (offset: number) => <A>(self: Chunk<A>) => Chunk<[A, number]>
+>(2, <A>(self: Chunk<A>, offset: number) => {
+  const iterator = self[Symbol.iterator]()
+  let next: IteratorResult<A>
+  let i = offset
+  const builder: Array<[A, number]> = []
+  while (!(next = iterator.next()).done) {
+    builder.push([next.value, i])
+    i = i + 1
   }
+  return unsafeFromArray(builder)
+})
 
 /**
  * Delete the element at the specified index, creating a new `Chunk`,
@@ -1398,8 +1519,10 @@ export const zipWithIndexOffset = (offset: number) =>
  * @category mutations
  * @since 1.0.0
  */
-export const remove = (i: number) =>
-  <A>(self: Chunk<A>): Chunk<A> => pipe(self, toReadonlyArray, RA.remove(i), unsafeFromArray)
+export const remove = Dual.dual<
+  <A>(self: Chunk<A>, i: number) => Chunk<A>,
+  (i: number) => <A>(self: Chunk<A>) => Chunk<A>
+>(2, (self, i) => pipe(self, toReadonlyArray, RA.remove(i), unsafeFromArray))
 
 /**
  * Change the element at the specified index, creating a new `Chunk`,
@@ -1408,15 +1531,19 @@ export const remove = (i: number) =>
  * @category mutations
  * @since 1.0.0
  */
-export const replace = <B>(i: number, b: B): <A>(self: Chunk<A>) => Chunk<B | A> =>
-  modify(i, () => b)
+export const replace = Dual.dual<
+  <A, B>(self: Chunk<A>, i: number, b: B) => Chunk<B | A>,
+  <B>(i: number, b: B) => <A>(self: Chunk<A>) => Chunk<B | A>
+>(3, (self, i, b) => modify(self, i, () => b))
 
 /**
  * @category mutations
  * @since 1.0.0
  */
-export const replaceOption = <B>(i: number, b: B): <A>(self: Chunk<A>) => Option<Chunk<B | A>> =>
-  modifyOption(i, () => b)
+export const replaceOption = Dual.dual<
+  <A, B>(self: Chunk<A>, i: number, b: B) => Option<Chunk<B | A>>,
+  <B>(i: number, b: B) => <A>(self: Chunk<A>) => Option<Chunk<B | A>>
+>(3, (self, i, b) => modifyOption(self, i, () => b))
 
 /**
  * Apply a function to the element at the specified index, creating a new `Chunk`,
@@ -1425,16 +1552,19 @@ export const replaceOption = <B>(i: number, b: B): <A>(self: Chunk<A>) => Option
  * @category mutations
  * @since 1.0.0
  */
-export const modify = <A, B>(i: number, f: (a: A) => B) =>
-  (self: Chunk<A>): Chunk<A | B> => pipe(modifyOption(i, f)(self), O.getOrElse(() => self))
+export const modify = Dual.dual<
+  <A, B>(self: Chunk<A>, i: number, f: (a: A) => B) => Chunk<A | B>,
+  <A, B>(i: number, f: (a: A) => B) => (self: Chunk<A>) => Chunk<A | B>
+>(3, (self, i, f) => pipe(modifyOption(self, i, f), O.getOrElse(() => self)))
 
 /**
  * @category mutations
  * @since 1.0.0
  */
-export const modifyOption = <A, B>(i: number, f: (a: A) => B) =>
-  (self: Chunk<A>): Option<Chunk<A | B>> =>
-    pipe(self, toReadonlyArray, RA.modifyOption(i, f), O.map(unsafeFromArray))
+export const modifyOption = Dual.dual<
+  <A, B>(self: Chunk<A>, i: number, f: (a: A) => B) => Option<Chunk<A | B>>,
+  <A, B>(i: number, f: (a: A) => B) => (self: Chunk<A>) => Option<Chunk<A | B>>
+>(3, (self, i, f) => pipe(self, toReadonlyArray, RA.modifyOption(i, f), O.map(unsafeFromArray)))
 
 /**
  * Returns the first element of this non empty chunk.
@@ -1450,4 +1580,4 @@ export const headNonEmpty: <A>(self: NonEmptyChunk<A>) => A = unsafeHead
  * @since 1.0.0
  * @category elements
  */
-export const tailNonEmpty = <A>(self: NonEmptyChunk<A>): Chunk<A> => drop(1)(self)
+export const tailNonEmpty = <A>(self: NonEmptyChunk<A>): Chunk<A> => drop(self, 1)
