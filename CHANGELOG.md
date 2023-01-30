@@ -1,5 +1,31 @@
 # @fp-ts/data
 
+## 0.1.1
+
+### Patch Changes
+
+- [#202](https://github.com/fp-ts/data/pull/202) [`e4053cc`](https://github.com/fp-ts/data/commit/e4053cc132c94f84450fc09719ddc6bbfacb4f87) Thanks [@IMax153](https://github.com/IMax153)! - convert patch types to dual
+
+- [#202](https://github.com/fp-ts/data/pull/202) [`65bc349`](https://github.com/fp-ts/data/commit/65bc349812abca01d044c0a2cda31e4918e75c24) Thanks [@IMax153](https://github.com/IMax153)! - convert mutable types to dual
+
+- [#202](https://github.com/fp-ts/data/pull/202) [`bfd4382`](https://github.com/fp-ts/data/commit/bfd43823ecce2d7e6676634d795be50ee0d449c7) Thanks [@IMax153](https://github.com/IMax153)! - convert Context to dual
+
+- [#202](https://github.com/fp-ts/data/pull/202) [`fa2b9be`](https://github.com/fp-ts/data/commit/fa2b9be76b761efe79bf4231709c1c17d1128f06) Thanks [@IMax153](https://github.com/IMax153)! - convert Differ to dual
+
+- [#202](https://github.com/fp-ts/data/pull/202) [`188305e`](https://github.com/fp-ts/data/commit/188305e4c5be22e00ed64837539608d5d8fb2b74) Thanks [@IMax153](https://github.com/IMax153)! - convert HashSet to dual
+
+- [#202](https://github.com/fp-ts/data/pull/202) [`f30df0e`](https://github.com/fp-ts/data/commit/f30df0e1c1f47085e8168c854775a6ffac68bb5d) Thanks [@IMax153](https://github.com/IMax153)! - convert Duration to dual
+
+- [#202](https://github.com/fp-ts/data/pull/202) [`bcfb40c`](https://github.com/fp-ts/data/commit/bcfb40c388ff039c4009f7299225da7c3b1087b0) Thanks [@IMax153](https://github.com/IMax153)! - convert HashMap to dual
+
+- [#202](https://github.com/fp-ts/data/pull/202) [`74a3a27`](https://github.com/fp-ts/data/commit/74a3a2710bd89a4efb3b65847b870a9f6770d87b) Thanks [@IMax153](https://github.com/IMax153)! - convert Context to dual
+
+- [#200](https://github.com/fp-ts/data/pull/200) [`274525e`](https://github.com/fp-ts/data/commit/274525eb6a5844507f38773f11183b714a8bd793) Thanks [@IMax153](https://github.com/IMax153)! - re-implement List
+
+- [#200](https://github.com/fp-ts/data/pull/200) [`627fe65`](https://github.com/fp-ts/data/commit/627fe657cd8066f5379e79afa54c4c933ee371a0) Thanks [@IMax153](https://github.com/IMax153)! - make Chunk dual
+
+- [#202](https://github.com/fp-ts/data/pull/202) [`1b6bb97`](https://github.com/fp-ts/data/commit/1b6bb97a2c89f149f0f77e00fa87e8e39e24972b) Thanks [@IMax153](https://github.com/IMax153)! - convert sorted data types to dual
+
 ## 0.1.0
 
 ### Minor Changes
