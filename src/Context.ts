@@ -1,7 +1,6 @@
 /**
  * @since 1.0.0
  */
-
 import type { Option } from "@fp-ts/core/Option"
 import type { Equal } from "@fp-ts/data/Equal"
 import * as C from "@fp-ts/data/internal/Context"
@@ -89,48 +88,60 @@ export const empty: () => Context<never> = C.empty
  * @since 1.0.0
  * @category constructors
  */
-export const make: <S>(tag: Tag<S>) => (service: S) => Context<S> = C.make
+export const make: {
+  <S>(service: S, tag: Tag<S>): Context<S>
+  <S>(tag: Tag<S>): (service: S) => Context<S>
+} = C.make
 
 /**
  * @since 1.0.0
  * @category mutations
  */
-export const add: <S>(
-  tag: Tag<S>
-) => (
-  service: S
-) => <Services>(self: Context<Services>) => Context<S | Services> = C.add
+export const add: {
+  <Services, S>(self: Context<Services>, tag: Tag<S>): (service: S) => Context<Services | S>
+  <S>(tag: Tag<S>): (service: S) => <Services>(self: Context<Services>) => Context<S | Services>
+} = C.add
 
 /**
  * @since 1.0.0
  * @category getters
  */
-export const get: <Services, T extends Tags<Services>>(
-  tag: T
-) => (self: Context<Services>) => T extends Tag<infer S> ? S : never = C.get
+export const get: {
+  <Services, T extends Tags<Services>>(
+    self: Context<Services>,
+    tag: T
+  ): T extends Tag<infer S> ? S : never
+  <Services, T extends Tags<Services>>(
+    tag: T
+  ): (self: Context<Services>) => T extends Tag<infer S> ? S : never
+} = C.get
 
 /**
  * @since 1.0.0
  * @category unsafe
  */
-export const unsafeGet: <S>(tag: Tag<S>) => <Services>(self: Context<Services>) => S = C.unsafeGet
+export const unsafeGet: {
+  <Services, S>(self: Context<Services>, tag: Tag<S>): S
+  <S>(tag: Tag<S>): <Services>(self: Context<Services>) => S
+} = C.unsafeGet
 
 /**
  * @since 1.0.0
  * @category getters
  */
-export const getOption: <S>(tag: Tag<S>) => <Services>(self: Context<Services>) => Option<S> =
-  C.getOption
+export const getOption: {
+  <Services, S>(self: Context<Services>, tag: Tag<S>): Option<S>
+  <S>(tag: Tag<S>): <Services>(self: Context<Services>) => Option<S>
+} = C.getOption
 
 /**
  * @since 1.0.0
  * @category mutations
  */
-export const merge: <R1>(
-  that: Context<R1>
-) => <Services>(
-  self: Context<Services>
-) => Context<R1 | Services> = C.merge
+export const merge: {
+  <Services, R1>(self: Context<Services>, that: Context<R1>): Context<Services | R1>
+  <R1>(that: Context<R1>): <Services>(self: Context<Services>) => Context<R1 | Services>
+} = C.merge
 
 /**
  * @since 1.0.0
