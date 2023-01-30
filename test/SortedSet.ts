@@ -23,7 +23,7 @@ const OrdMember: Order.Order<Member> = pipe(Str.Order, Order.contramap((member) 
 function makeNumericSortedSet(
   ...numbers: Array<number>
 ): SortedSet.SortedSet<number> {
-  return SortedSet.from({
+  return SortedSet.fromIterable({
     compare: (self, that: number) => self > that ? 1 : self < that ? -1 : 0
   })(numbers)
 }
@@ -159,7 +159,7 @@ describe.concurrent("SortedSet", () => {
       new Member("worker_000003")
     ]
 
-    const result = pipe(set1, SortedSet.flatMap(OrdMember)((a) => [...set2, a]))
+    const result = pipe(set1, SortedSet.flatMap(OrdMember, (a) => [...set2, a]))
 
     assert.deepEqual(
       Array.from(result),
@@ -268,7 +268,7 @@ describe.concurrent("SortedSet", () => {
 
     const result = pipe(
       set,
-      SortedSet.map(Str.Order)((member) => member.id.replace(/_\d+/g, ""))
+      SortedSet.map(Str.Order, (member) => member.id.replace(/_\d+/g, ""))
     )
 
     assert.deepEqual(Array.from(result), ["worker"])

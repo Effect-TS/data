@@ -45,7 +45,7 @@ export const empty: <A = never>() => HashSet<A> = HS.empty
  * @since 1.0.0
  * @category constructors
  */
-export const from: <A>(elements: Iterable<A>) => HashSet<A> = HS.from
+export const fromIterable: <A>(elements: Iterable<A>) => HashSet<A> = HS.fromIterable
 
 /**
  * Construct a new `HashSet` from a variable number of values.

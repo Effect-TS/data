@@ -102,7 +102,7 @@ describe.concurrent("RedBlackTree", () => {
     )
 
     assert.strictEqual(RedBlackTree.size(tree), 5)
-    deepStrictEqual(Array.from(RedBlackTree.backwards(tree)), [
+    deepStrictEqual(Array.from(RedBlackTree.reversed(tree)), [
       [3, "e"],
       [1, "a"],
       [0, "b"],
@@ -115,7 +115,7 @@ describe.concurrent("RedBlackTree", () => {
     const tree = RedBlackTree.empty<number, string>(number.Order)
 
     assert.strictEqual(RedBlackTree.size(tree), 0)
-    deepStrictEqual(Array.from(RedBlackTree.backwards(tree)), [])
+    deepStrictEqual(Array.from(RedBlackTree.reversed(tree)), [])
   })
 
   it("values", () => {
@@ -129,7 +129,7 @@ describe.concurrent("RedBlackTree", () => {
     )
 
     assert.strictEqual(RedBlackTree.size(tree), 5)
-    deepStrictEqual(Array.from(RedBlackTree.values()(tree)), ["d", "c", "b", "a", "e"])
+    deepStrictEqual(Array.from(RedBlackTree.values(tree)), ["d", "c", "b", "a", "e"])
   })
 
   it("keys", () => {
@@ -143,7 +143,7 @@ describe.concurrent("RedBlackTree", () => {
     )
 
     assert.strictEqual(RedBlackTree.size(tree), 5)
-    deepStrictEqual(Array.from(RedBlackTree.keys()(tree)), [-2, -1, 0, 1, 3])
+    deepStrictEqual(Array.from(RedBlackTree.keys(tree)), [-2, -1, 0, 1, 3])
   })
 
   it("begin/end", () => {
@@ -227,7 +227,7 @@ describe.concurrent("RedBlackTree", () => {
       [3, "e"]
     ])
     deepStrictEqual(
-      Array.from(RedBlackTree.greaterThan(0, RedBlackTree.Direction.Backward)(tree)),
+      Array.from(RedBlackTree.greaterThanReversed(0)(tree)),
       [
         [1, "a"],
         [0, "b"],
@@ -253,7 +253,7 @@ describe.concurrent("RedBlackTree", () => {
       [3, "e"]
     ])
     deepStrictEqual(
-      Array.from(RedBlackTree.greaterThanEqual(0, RedBlackTree.Direction.Backward)(tree)),
+      Array.from(RedBlackTree.greaterThanEqualReversed(0)(tree)),
       [
         [0, "b"],
         [-1, "c"],
@@ -279,7 +279,7 @@ describe.concurrent("RedBlackTree", () => {
       [3, "e"]
     ])
     deepStrictEqual(
-      Array.from(RedBlackTree.lessThan(0, RedBlackTree.Direction.Backward)(tree)),
+      Array.from(RedBlackTree.lessThanReversed(0)(tree)),
       [
         [-1, "c"],
         [-2, "d"]
@@ -303,7 +303,7 @@ describe.concurrent("RedBlackTree", () => {
       [3, "e"]
     ])
     deepStrictEqual(
-      Array.from(RedBlackTree.lessThanEqual(0, RedBlackTree.Direction.Backward)(tree)),
+      Array.from(RedBlackTree.lessThanEqualReversed(0)(tree)),
       [
         [0, "b"],
         [-1, "c"],
@@ -351,10 +351,10 @@ describe.concurrent("RedBlackTree", () => {
       RedBlackTree.insert(new Key(1, "1"), "g")
     )
 
-    deepStrictEqual(Array.from(RedBlackTree.values()(tree)), ["g", "f", "e", "b", "a", "c", "d"])
+    deepStrictEqual(Array.from(RedBlackTree.values(tree)), ["g", "f", "e", "b", "a", "c", "d"])
     deepStrictEqual(Array.from(RedBlackTree.find(new Key(1, "0"))(tree)), ["f", "e", "a"])
     deepStrictEqual(
-      Array.from(RedBlackTree.values()(RedBlackTree.removeFirst(new Key(1, "1"))(tree))),
+      Array.from(RedBlackTree.values(RedBlackTree.removeFirst(new Key(1, "1"))(tree))),
       [
         "f",
         "e",
@@ -365,7 +365,7 @@ describe.concurrent("RedBlackTree", () => {
       ]
     )
     deepStrictEqual(
-      Array.from(RedBlackTree.values()(RedBlackTree.removeFirst(new Key(1, "0"))(tree))),
+      Array.from(RedBlackTree.values(RedBlackTree.removeFirst(new Key(1, "0"))(tree))),
       [
         "g",
         "f",
