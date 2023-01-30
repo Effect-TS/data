@@ -1,6 +1,7 @@
 /**
  * @since 1.0.0
  */
+import * as Dual from "@fp-ts/data/Dual"
 import * as Equal from "@fp-ts/data/Equal"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableRef") as TypeId
@@ -153,89 +154,127 @@ export const make = <T>(value: T): MutableRef<T> => new MutableRefImpl(value)
  * @since 1.0.0
  * @category general
  */
+export const compareAndSet: {
+  <T>(self: MutableRef<T>, oldValue: T, newValue: T): boolean
+  <T>(oldValue: T, newValue: T): (self: MutableRef<T>) => boolean
+} = Dual.dual<
+  <T>(self: MutableRef<T>, oldValue: T, newValue: T) => boolean,
+  <T>(oldValue: T, newValue: T) => (self: MutableRef<T>) => boolean
+>(3, (self, oldValue, newValue) => self.compareAndSet(oldValue, newValue))
+
+/**
+ * @since 1.0.0
+ * @category numeric
+ */
+export const decrement = (self: MutableRef<number>): MutableRef<number> => self.update((n) => n - 1)
+
+/**
+ * @since 1.0.0
+ * @category numeric
+ */
+export const decrementAndGet = (self: MutableRef<number>): number => self.updateAndGet((n) => n - 1)
+
+/**
+ * @since 1.0.0
+ * @category general
+ */
 export const get = <T>(self: MutableRef<T>): T => self.current
 
 /**
  * @since 1.0.0
- * @category general
+ * @category numeric
  */
-export const set = <T>(value: T) => (self: MutableRef<T>): MutableRef<T> => self.set(value)
-
-/**
- * @since 1.0.0
- * @category general
- */
-export const update = <T>(f: (value: T) => T) =>
-  (self: MutableRef<T>): MutableRef<T> => self.update(f)
-
-/**
- * @since 1.0.0
- * @category general
- */
-export const updateAndGet = <T>(f: (value: T) => T) =>
-  (self: MutableRef<T>): T => self.updateAndGet(f)
-
-/**
- * @since 1.0.0
- * @category general
- */
-export const getAndUpdate = <T>(f: (value: T) => T) =>
-  (self: MutableRef<T>): T => self.getAndUpdate(f)
-
-/**
- * @since 1.0.0
- * @category general
- */
-export const setAndGet = <T>(value: T) => (self: MutableRef<T>): T => self.setAndGet(value)
-
-/**
- * @since 1.0.0
- * @category general
- */
-export const getAndSet = <T>(value: T) => (self: MutableRef<T>): T => self.getAndSet(value)
-
-/**
- * @since 1.0.0
- * @category general
- */
-export const compareAndSet = <T>(oldValue: T, newValue: T) =>
-  (self: MutableRef<T>): boolean => self.compareAndSet(oldValue, newValue)
+export const getAndDecrement = (self: MutableRef<number>): number => self.getAndUpdate((n) => n - 1)
 
 /**
  * @since 1.0.0
  * @category numeric
  */
-export const incrementAndGet = (self: MutableRef<number>): number => self.updateAndGet((_) => _ + 1)
+export const getAndIncrement = (self: MutableRef<number>): number => self.getAndUpdate((n) => n + 1)
+
+/**
+ * @since 1.0.0
+ * @category general
+ */
+export const getAndSet: {
+  <T>(self: MutableRef<T>, value: T): T
+  <T>(value: T): (self: MutableRef<T>) => T
+} = Dual.dual<
+  <T>(self: MutableRef<T>, value: T) => T,
+  <T>(value: T) => (self: MutableRef<T>) => T
+>(2, (self, value) => self.getAndSet(value))
+
+/**
+ * @since 1.0.0
+ * @category general
+ */
+export const getAndUpdate: {
+  <T>(self: MutableRef<T>, f: (value: T) => T): T
+  <T>(f: (value: T) => T): (self: MutableRef<T>) => T
+} = Dual.dual<
+  <T>(self: MutableRef<T>, f: (value: T) => T) => T,
+  <T>(f: (value: T) => T) => (self: MutableRef<T>) => T
+>(2, (self, f) => self.getAndUpdate(f))
 
 /**
  * @since 1.0.0
  * @category numeric
  */
-export const getAndIncrement = (self: MutableRef<number>): number => self.getAndUpdate((_) => _ + 1)
+export const increment = (self: MutableRef<number>): MutableRef<number> => self.update((n) => n + 1)
 
 /**
  * @since 1.0.0
  * @category numeric
  */
-export const increment = (self: MutableRef<number>): MutableRef<number> => self.update((_) => _ + 1)
+export const incrementAndGet = (self: MutableRef<number>): number => self.updateAndGet((n) => n + 1)
 
 /**
  * @since 1.0.0
- * @category numeric
+ * @category general
  */
-export const decrementAndGet = (self: MutableRef<number>): number => self.updateAndGet((_) => _ - 1)
+export const set: {
+  <T>(self: MutableRef<T>, value: T): MutableRef<T>
+  <T>(value: T): (self: MutableRef<T>) => MutableRef<T>
+} = Dual.dual<
+  <T>(self: MutableRef<T>, value: T) => MutableRef<T>,
+  <T>(value: T) => (self: MutableRef<T>) => MutableRef<T>
+>(2, (self, value) => self.set(value))
 
 /**
  * @since 1.0.0
- * @category numeric
+ * @category general
  */
-export const getAndDecrement = (self: MutableRef<number>): number => self.getAndUpdate((_) => _ - 1)
+export const setAndGet: {
+  <T>(self: MutableRef<T>, value: T): T
+  <T>(value: T): (self: MutableRef<T>) => T
+} = Dual.dual<
+  <T>(self: MutableRef<T>, value: T) => T,
+  <T>(value: T) => (self: MutableRef<T>) => T
+>(2, (self, value) => self.setAndGet(value))
 
 /**
  * @since 1.0.0
- * @category numeric
+ * @category general
  */
-export const decrement = (self: MutableRef<number>): MutableRef<number> => self.update((_) => _ - 1)
+export const update: {
+  <T>(self: MutableRef<T>, f: (value: T) => T): MutableRef<T>
+  <T>(f: (value: T) => T): (self: MutableRef<T>) => MutableRef<T>
+} = Dual.dual<
+  <T>(self: MutableRef<T>, f: (value: T) => T) => MutableRef<T>,
+  <T>(f: (value: T) => T) => (self: MutableRef<T>) => MutableRef<T>
+>(2, (self, f) => self.update(f))
+
+/**
+ * @since 1.0.0
+ * @category general
+ */
+export const updateAndGet: {
+  <T>(self: MutableRef<T>, f: (value: T) => T): T
+  <T>(f: (value: T) => T): (self: MutableRef<T>) => T
+} = Dual.dual<
+  <T>(self: MutableRef<T>, f: (value: T) => T) => T,
+  <T>(f: (value: T) => T) => (self: MutableRef<T>) => T
+>(2, (self, f) => self.updateAndGet(f))
 
 /**
  * @since 1.0.0

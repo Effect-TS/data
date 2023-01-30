@@ -1,8 +1,8 @@
 /**
  * @since 1.0.0
  */
-
 import * as Chunk from "@fp-ts/data/Chunk"
+import * as Dual from "@fp-ts/data/Dual"
 import * as MutableList from "@fp-ts/data/MutableList"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableQueue") as TypeId
@@ -129,15 +129,20 @@ export const capacity = <A>(self: MutableQueue<A>): number =>
  * @since 1.0.0
  * @category mutations
  */
-export const offer = <A>(value: A) =>
-  (self: MutableQueue<A>): boolean => {
-    const queueLength = MutableList.length((self as MutableQueueImpl<A>).queue)
-    if (self.capacity !== undefined && queueLength === self.capacity) {
-      return false
-    }
-    MutableList.append(value)(self.queue)
-    return true
+export const offer: {
+  <A>(self: MutableQueue<A>, value: A): boolean
+  <A>(value: A): (self: MutableQueue<A>) => boolean
+} = Dual.dual<
+  <A>(self: MutableQueue<A>, value: A) => boolean,
+  <A>(value: A) => (self: MutableQueue<A>) => boolean
+>(2, <A>(self: MutableQueue<A>, value: A) => {
+  const queueLength = MutableList.length((self as MutableQueueImpl<A>).queue)
+  if (self.capacity !== undefined && queueLength === self.capacity) {
+    return false
   }
+  MutableList.append(value)(self.queue)
+  return true
+})
 
 /**
  * Enqueues a collection of values into the queue.
@@ -147,21 +152,26 @@ export const offer = <A>(value: A) =>
  * @since 1.0.0
  * @category mutations
  */
-export const offerAll = <A>(values: Iterable<A>) =>
-  (self: MutableQueue<A>): Chunk.Chunk<A> => {
-    const iterator = values[Symbol.iterator]()
-    let next: IteratorResult<A> | undefined
-    let remainder = Chunk.empty<A>()
-    let offering = true
-    while (offering && (next = iterator.next()) && !next.done) {
-      offering = offer(next.value)(self)
-    }
-    while (next != null && !next.done) {
-      remainder = Chunk.prepend<A>(next.value)(remainder)
-      next = iterator.next()
-    }
-    return Chunk.reverse(remainder)
+export const offerAll: {
+  <A>(self: MutableQueue<A>, values: Iterable<A>): Chunk.Chunk<A>
+  <A>(values: Iterable<A>): (self: MutableQueue<A>) => Chunk.Chunk<A>
+} = Dual.dual<
+  <A>(self: MutableQueue<A>, values: Iterable<A>) => Chunk.Chunk<A>,
+  <A>(values: Iterable<A>) => (self: MutableQueue<A>) => Chunk.Chunk<A>
+>(2, <A>(self: MutableQueue<A>, values: Iterable<A>) => {
+  const iterator = values[Symbol.iterator]()
+  let next: IteratorResult<A> | undefined
+  let remainder = Chunk.empty<A>()
+  let offering = true
+  while (offering && (next = iterator.next()) && !next.done) {
+    offering = offer(next.value)(self)
   }
+  while (next != null && !next.done) {
+    remainder = Chunk.prepend<A>(next.value)(remainder)
+    next = iterator.next()
+  }
+  return Chunk.reverse(remainder)
+})
 
 /**
  * Dequeues an element from the queue.
@@ -174,13 +184,18 @@ export const offerAll = <A>(values: Iterable<A>) =>
  * @since 1.0.0
  * @category mutations
  */
-export const poll = <D>(def: D) =>
-  <A>(self: MutableQueue<A>): A | D => {
-    if (MutableList.isEmpty(self.queue)) {
-      return def
-    }
-    return MutableList.shift(self.queue)!
+export const poll: {
+  <A, D>(self: MutableQueue<A>, def: D): A | D
+  <D>(def: D): <A>(self: MutableQueue<A>) => D | A
+} = Dual.dual<
+  <A, D>(self: MutableQueue<A>, def: D) => A | D,
+  <D>(def: D) => <A>(self: MutableQueue<A>) => A | D
+>(2, (self, def) => {
+  if (MutableList.isEmpty(self.queue)) {
+    return def
   }
+  return MutableList.shift(self.queue)!
+})
 
 /**
  * Dequeues up to `n` elements from the queue.
@@ -190,17 +205,22 @@ export const poll = <D>(def: D) =>
  * @since 1.0.0
  * @category mutations
  */
-export const pollUpTo = (n: number) =>
-  <A>(self: MutableQueue<A>): Chunk.Chunk<A> => {
-    let result = Chunk.empty<A>()
-    let count = 0
-    while (count < n) {
-      const element = poll(EmptyMutableQueue)(self)
-      if (element === EmptyMutableQueue) {
-        break
-      }
-      result = Chunk.prepend(element)(result)
-      count += 1
+export const pollUpTo: {
+  <A>(self: MutableQueue<A>, n: number): Chunk.Chunk<A>
+  (n: number): <A>(self: MutableQueue<A>) => Chunk.Chunk<A>
+} = Dual.dual<
+  <A>(self: MutableQueue<A>, n: number) => Chunk.Chunk<A>,
+  (n: number) => <A>(self: MutableQueue<A>) => Chunk.Chunk<A>
+>(2, <A>(self: MutableQueue<A>, n: number) => {
+  let result = Chunk.empty<A>()
+  let count = 0
+  while (count < n) {
+    const element = poll(EmptyMutableQueue)(self)
+    if (element === EmptyMutableQueue) {
+      break
     }
-    return Chunk.reverse(result)
+    result = Chunk.prepend(element)(result)
+    count += 1
   }
+  return Chunk.reverse(result)
+})
