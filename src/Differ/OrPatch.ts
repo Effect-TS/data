@@ -63,11 +63,17 @@ export const diff: <Value, Value2, Patch, Patch2>(
  * @since 1.0.0
  * @category mutations
  */
-export const combine: <Value, Value2, Patch, Patch2>(
-  that: OrPatch<Value, Value2, Patch, Patch2>
-) => (
-  self: OrPatch<Value, Value2, Patch, Patch2>
-) => OrPatch<Value, Value2, Patch, Patch2> = OP.combine
+export const combine: {
+  <Value, Value2, Patch, Patch2>(
+    self: OrPatch<Value, Value2, Patch, Patch2>,
+    that: OrPatch<Value, Value2, Patch, Patch2>
+  ): OrPatch<Value, Value2, Patch, Patch2>
+  <Value, Value2, Patch, Patch2>(
+    that: OrPatch<Value, Value2, Patch, Patch2>
+  ): (
+    self: OrPatch<Value, Value2, Patch, Patch2>
+  ) => OrPatch<Value, Value2, Patch, Patch2>
+} = OP.combine
 
 /**
  * Applies an `OrPatch` to a value to produce a new value which represents
@@ -76,10 +82,18 @@ export const combine: <Value, Value2, Patch, Patch2>(
  * @since 1.0.0
  * @category destructors
  */
-export const patch: <Value, Value2, Patch, Patch2>(
-  oldValue: Either<Value, Value2>,
-  left: Differ<Value, Patch>,
-  right: Differ<Value2, Patch2>
-) => (
-  self: OrPatch<Value, Value2, Patch, Patch2>
-) => Either<Value, Value2> = OP.patch
+export const patch: {
+  <Value, Value2, Patch, Patch2>(
+    self: OrPatch<Value, Value2, Patch, Patch2>,
+    oldValue: Either<Value, Value2>,
+    left: Differ<Value, Patch>,
+    right: Differ<Value2, Patch2>
+  ): Either<Value, Value2>
+  <Value, Value2, Patch, Patch2>(
+    oldValue: Either<Value, Value2>,
+    left: Differ<Value, Patch>,
+    right: Differ<Value2, Patch2>
+  ): (
+    self: OrPatch<Value, Value2, Patch, Patch2>
+  ) => Either<Value, Value2>
+} = OP.patch

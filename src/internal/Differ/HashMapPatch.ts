@@ -1,6 +1,7 @@
 import * as Chunk from "@fp-ts/data/Chunk"
 import type * as Differ from "@fp-ts/data/Differ"
 import type * as HMP from "@fp-ts/data/Differ/HashMapPatch"
+import * as Dual from "@fp-ts/data/Dual"
 import * as Equal from "@fp-ts/data/Equal"
 import * as Hash from "@fp-ts/data/Hash"
 import * as HashMap from "@fp-ts/data/HashMap"
@@ -121,16 +122,14 @@ type Instruction =
   | AndThen<any, any, any>
 
 /** @internal */
-export function empty<Key, Value, Patch>(): HMP.HashMapPatch<Key, Value, Patch> {
-  return new Empty()
-}
+export const empty = <Key, Value, Patch>(): HMP.HashMapPatch<Key, Value, Patch> => new Empty()
 
 /** @internal */
-export function diff<Key, Value, Patch>(
+export const diff = <Key, Value, Patch>(
   oldValue: HashMap.HashMap<Key, Value>,
   newValue: HashMap.HashMap<Key, Value>,
   differ: Differ.Differ<Value, Patch>
-): HMP.HashMapPatch<Key, Value, Patch> {
+): HMP.HashMapPatch<Key, Value, Patch> => {
   const [removed, patch] = HashMap.reduceWithIndex(
     [oldValue, empty<Key, Value, Patch>()] as const,
     ([map, patch], newValue: Value, key: Key) => {
@@ -159,52 +158,69 @@ export function diff<Key, Value, Patch>(
 }
 
 /** @internal */
-export function combine<Key, Value, Patch>(that: HMP.HashMapPatch<Key, Value, Patch>) {
-  return (self: HMP.HashMapPatch<Key, Value, Patch>): HMP.HashMapPatch<Key, Value, Patch> => {
-    return new AndThen(self, that)
-  }
-}
+export const combine = Dual.dual<
+  <Key, Value, Patch>(
+    self: HMP.HashMapPatch<Key, Value, Patch>,
+    that: HMP.HashMapPatch<Key, Value, Patch>
+  ) => HMP.HashMapPatch<Key, Value, Patch>,
+  <Key, Value, Patch>(
+    that: HMP.HashMapPatch<Key, Value, Patch>
+  ) => (
+    self: HMP.HashMapPatch<Key, Value, Patch>
+  ) => HMP.HashMapPatch<Key, Value, Patch>
+>(2, (self, that) => new AndThen(self, that))
 
 /** @internal */
-export function patch<Key, Value, Patch>(
+export const patch = Dual.dual<
+  <Key, Value, Patch>(
+    self: HMP.HashMapPatch<Key, Value, Patch>,
+    oldValue: HashMap.HashMap<Key, Value>,
+    differ: Differ.Differ<Value, Patch>
+  ) => HashMap.HashMap<Key, Value>,
+  <Key, Value, Patch>(
+    oldValue: HashMap.HashMap<Key, Value>,
+    differ: Differ.Differ<Value, Patch>
+  ) => (
+    self: HMP.HashMapPatch<Key, Value, Patch>
+  ) => HashMap.HashMap<Key, Value>
+>(3, <Key, Value, Patch>(
+  self: HMP.HashMapPatch<Key, Value, Patch>,
   oldValue: HashMap.HashMap<Key, Value>,
   differ: Differ.Differ<Value, Patch>
-) {
-  return (self: HMP.HashMapPatch<Key, Value, Patch>): HashMap.HashMap<Key, Value> => {
-    let map = oldValue
-    let patches: Chunk.Chunk<HMP.HashMapPatch<Key, Value, Patch>> = Chunk.of(self)
-    while (Chunk.isNonEmpty(patches)) {
-      const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
-      const tail = Chunk.tailNonEmpty(patches)
-      switch (head._tag) {
-        case "Empty": {
-          patches = tail
-          break
+) => {
+  let map = oldValue
+  let patches: Chunk.Chunk<HMP.HashMapPatch<Key, Value, Patch>> = Chunk.of(self)
+  while (Chunk.isNonEmpty(patches)) {
+    const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
+    const tail = Chunk.tailNonEmpty(patches)
+    switch (head._tag) {
+      case "Empty": {
+        patches = tail
+        break
+      }
+      case "AndThen": {
+        patches = Chunk.prepend(head.first)(Chunk.prepend(head.second)(tail))
+        break
+      }
+      case "Add": {
+        map = HashMap.set(head.key, head.value)(map)
+        patches = tail
+        break
+      }
+      case "Remove": {
+        map = HashMap.remove(head.key)(map)
+        patches = tail
+        break
+      }
+      case "Update": {
+        const option = HashMap.get(head.key)(map)
+        if (option._tag === "Some") {
+          map = HashMap.set(head.key, differ.patch(head.patch, option.value))(map)
         }
-        case "AndThen": {
-          patches = Chunk.prepend(head.first)(Chunk.prepend(head.second)(tail))
-          break
-        }
-        case "Add": {
-          map = HashMap.set(head.key, head.value)(map)
-          patches = tail
-          break
-        }
-        case "Remove": {
-          map = HashMap.remove(head.key)(map)
-          patches = tail
-          break
-        }
-        case "Update": {
-          const option = HashMap.get(head.key)(map)
-          if (option._tag === "Some") {
-            map = HashMap.set(head.key, differ.patch(head.patch, option.value))(map)
-          }
-          patches = tail
-          break
-        }
+        patches = tail
+        break
       }
     }
-    return map
   }
-}
+  return map
+})

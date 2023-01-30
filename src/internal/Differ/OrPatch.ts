@@ -3,6 +3,7 @@ import * as E from "@fp-ts/core/Either"
 import * as Chunk from "@fp-ts/data/Chunk"
 import type { Differ } from "@fp-ts/data/Differ"
 import type * as OP from "@fp-ts/data/Differ/OrPatch"
+import * as Dual from "@fp-ts/data/Dual"
 import * as Equal from "@fp-ts/data/Equal"
 import * as Hash from "@fp-ts/data/Hash"
 
@@ -162,22 +163,20 @@ type Instruction =
   | UpdateRight<any, any, any, any>
 
 /** @internal */
-export function empty<Value, Value2, Patch, Patch2>(): OP.OrPatch<
+export const empty = <Value, Value2, Patch, Patch2>(): OP.OrPatch<
   Value,
   Value2,
   Patch,
   Patch2
-> {
-  return new Empty()
-}
+> => new Empty()
 
 /** @internal */
-export function diff<Value, Value2, Patch, Patch2>(
+export const diff = <Value, Value2, Patch, Patch2>(
   oldValue: Either<Value, Value2>,
   newValue: Either<Value, Value2>,
   left: Differ<Value, Patch>,
   right: Differ<Value2, Patch2>
-): OP.OrPatch<Value, Value2, Patch, Patch2> {
+): OP.OrPatch<Value, Value2, Patch, Patch2> => {
   switch (oldValue._tag) {
     case "Left": {
       switch (newValue._tag) {
@@ -211,61 +210,76 @@ export function diff<Value, Value2, Patch, Patch2>(
 }
 
 /** @internal */
-export function combine<Value, Value2, Patch, Patch2>(
-  that: OP.OrPatch<Value, Value2, Patch, Patch2>
-) {
-  return (
+export const combine = Dual.dual<
+  <Value, Value2, Patch, Patch2>(
+    self: OP.OrPatch<Value, Value2, Patch, Patch2>,
+    that: OP.OrPatch<Value, Value2, Patch, Patch2>
+  ) => OP.OrPatch<Value, Value2, Patch, Patch2>,
+  <Value, Value2, Patch, Patch2>(
+    that: OP.OrPatch<Value, Value2, Patch, Patch2>
+  ) => (
     self: OP.OrPatch<Value, Value2, Patch, Patch2>
-  ): OP.OrPatch<Value, Value2, Patch, Patch2> => new AndThen(self, that)
-}
+  ) => OP.OrPatch<Value, Value2, Patch, Patch2>
+>(2, (self, that) => new AndThen(self, that))
 
 /** @internal */
-export function patch<Value, Value2, Patch, Patch2>(
+export const patch = Dual.dual<
+  <Value, Value2, Patch, Patch2>(
+    self: OP.OrPatch<Value, Value2, Patch, Patch2>,
+    oldValue: Either<Value, Value2>,
+    left: Differ<Value, Patch>,
+    right: Differ<Value2, Patch2>
+  ) => Either<Value, Value2>,
+  <Value, Value2, Patch, Patch2>(
+    oldValue: Either<Value, Value2>,
+    left: Differ<Value, Patch>,
+    right: Differ<Value2, Patch2>
+  ) => (self: OP.OrPatch<Value, Value2, Patch, Patch2>) => Either<Value, Value2>
+>(4, <Value, Value2, Patch, Patch2>(
+  self: OP.OrPatch<Value, Value2, Patch, Patch2>,
   oldValue: Either<Value, Value2>,
   left: Differ<Value, Patch>,
   right: Differ<Value2, Patch2>
-) {
-  return (self: OP.OrPatch<Value, Value2, Patch, Patch2>): Either<Value, Value2> => {
-    let patches: Chunk.Chunk<OP.OrPatch<Value, Value2, Patch, Patch2>> = Chunk.of(self)
-    let result = oldValue
-    while (Chunk.isNonEmpty(patches)) {
-      const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
-      const tail = Chunk.tailNonEmpty(patches)
-      switch (head._tag) {
-        case "Empty": {
-          patches = tail
-          break
+) => {
+  let patches: Chunk.Chunk<OP.OrPatch<Value, Value2, Patch, Patch2>> = Chunk.of(self)
+  let result = oldValue
+  while (Chunk.isNonEmpty(patches)) {
+    const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
+    const tail = Chunk.tailNonEmpty(patches)
+    switch (head._tag) {
+      case "Empty": {
+        patches = tail
+        break
+      }
+      case "AndThen": {
+        patches = Chunk.prepend(head.first)(Chunk.prepend(head.second)(tail))
+        break
+      }
+      case "UpdateLeft": {
+        if (result._tag === "Left") {
+          result = E.left(left.patch(head.patch, result.left))
         }
-        case "AndThen": {
-          patches = Chunk.prepend(head.first)(Chunk.prepend(head.second)(tail))
-          break
+        patches = tail
+        break
+      }
+      case "UpdateRight": {
+        if (result._tag === "Right") {
+          result = E.right(right.patch(head.patch, result.right))
         }
-        case "UpdateLeft": {
-          if (result._tag === "Left") {
-            result = E.left(left.patch(head.patch, result.left))
-          }
-          patches = tail
-          break
-        }
-        case "UpdateRight": {
-          if (result._tag === "Right") {
-            result = E.right(right.patch(head.patch, result.right))
-          }
-          patches = tail
-          break
-        }
-        case "SetLeft": {
-          result = E.left(head.value)
-          patches = tail
-          break
-        }
-        case "SetRight": {
-          result = E.right(head.value)
-          patches = tail
-          break
-        }
+        patches = tail
+        break
+      }
+      case "SetLeft": {
+        result = E.left(head.value)
+        patches = tail
+        break
+      }
+      case "SetRight": {
+        result = E.right(head.value)
+        patches = tail
+        break
       }
     }
-    return result
   }
-}
+  return result
+})

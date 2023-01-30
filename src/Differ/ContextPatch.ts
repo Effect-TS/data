@@ -52,11 +52,17 @@ export const diff: <Input, Output>(
  * @since 1.0.0
  * @category mutations
  */
-export const combine: <Output, Output2>(
-  that: ContextPatch<Output, Output2>
-) => <Input>(
-  self: ContextPatch<Input, Output>
-) => ContextPatch<Input, Output2> = CP.combine
+export const combine: {
+  <Input, Output, Output2>(
+    self: ContextPatch<Input, Output>,
+    that: ContextPatch<Output, Output2>
+  ): ContextPatch<Input, Output2>
+  <Output, Output2>(
+    that: ContextPatch<Output, Output2>
+  ): <Input>(
+    self: ContextPatch<Input, Output>
+  ) => ContextPatch<Input, Output2>
+} = CP.combine
 
 /**
  * Applies a `Patch` to the specified `Context` to produce a new patched
@@ -65,8 +71,7 @@ export const combine: <Output, Output2>(
  * @since 1.0.0
  * @category destructors
  */
-export const patch: <Input>(
-  context: Context<Input>
-) => <Output>(
-  self: ContextPatch<Input, Output>
-) => Context<Output> = CP.patch
+export const patch: {
+  <Input, Output>(self: ContextPatch<Input, Output>, context: Context<Input>): Context<Output>
+  <Input>(context: Context<Input>): <Output>(self: ContextPatch<Input, Output>) => Context<Output>
+} = CP.patch
