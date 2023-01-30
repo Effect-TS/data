@@ -1,6 +1,7 @@
 /**
  * @since 1.0.0
  */
+import * as Dual from "@fp-ts/data/Dual"
 import * as Equal from "@fp-ts/data/Equal"
 import * as Hash from "@fp-ts/data/Hash"
 
@@ -92,52 +93,94 @@ export const weeks = (weeks: number): Duration => new DurationImpl(weeks * 604_8
  * @since 1.0.0
  * @category mutations
  */
-export const times = (times: number) =>
-  (self: Duration): Duration => new DurationImpl(self.millis * times)
+export const times: {
+  (self: Duration, times: number): Duration
+  (times: number): (self: Duration) => Duration
+} = Dual.dual<
+  (self: Duration, times: number) => Duration,
+  (times: number) => (self: Duration) => Duration
+>(2, (self, times) => new DurationImpl(self.millis * times))
 
 /**
  * @since 1.0.0
  * @category mutations
  */
-export const add = (that: Duration) =>
-  (self: Duration): Duration => new DurationImpl(self.millis + that.millis)
+export const add: {
+  (self: Duration, that: Duration): Duration
+  (that: Duration): (self: Duration) => Duration
+} = Dual.dual<
+  (self: Duration, that: Duration) => Duration,
+  (that: Duration) => (self: Duration) => Duration
+>(2, (self, that) => new DurationImpl(self.millis + that.millis))
 
 /**
  * @since 1.0.0
  * @category mutations
  */
-export const subtract = (that: Duration) =>
-  (self: Duration): Duration => new DurationImpl(self.millis - that.millis)
+export const subtract: {
+  (self: Duration, that: Duration): Duration
+  (that: Duration): (self: Duration) => Duration
+} = Dual.dual<
+  (self: Duration, that: Duration) => Duration,
+  (that: Duration) => (self: Duration) => Duration
+>(2, (self, that) => new DurationImpl(self.millis - that.millis))
 
 /**
  * @since 1.0.0
  * @category comparisons
  */
-export const lessThan = (that: Duration) => (self: Duration): boolean => self.millis < that.millis
+export const lessThan: {
+  (self: Duration, that: Duration): boolean
+  (that: Duration): (self: Duration) => boolean
+} = Dual.dual<
+  (self: Duration, that: Duration) => boolean,
+  (that: Duration) => (self: Duration) => boolean
+>(2, (self, that) => self.millis < that.millis)
 
 /**
  * @since 1.0.0
  * @category comparisons
  */
-export const lessThanOrEqualTo = (that: Duration) =>
-  (self: Duration): boolean => self.millis <= that.millis
+export const lessThanOrEqualTo: {
+  (self: Duration, that: Duration): boolean
+  (that: Duration): (self: Duration) => boolean
+} = Dual.dual<
+  (self: Duration, that: Duration) => boolean,
+  (that: Duration) => (self: Duration) => boolean
+>(2, (self, that) => self.millis <= that.millis)
 
 /**
  * @since 1.0.0
  * @category comparisons
  */
-export const greaterThan = (that: Duration) =>
-  (self: Duration): boolean => self.millis > that.millis
+export const greaterThan: {
+  (self: Duration, that: Duration): boolean
+  (that: Duration): (self: Duration) => boolean
+} = Dual.dual<
+  (self: Duration, that: Duration) => boolean,
+  (that: Duration) => (self: Duration) => boolean
+>(2, (self, that) => self.millis > that.millis)
 
 /**
  * @since 1.0.0
  * @category comparisons
  */
-export const greaterThanOrEqualTo = (that: Duration) =>
-  (self: Duration): boolean => self.millis >= that.millis
+export const greaterThanOrEqualTo: {
+  (self: Duration, that: Duration): boolean
+  (that: Duration): (self: Duration) => boolean
+} = Dual.dual<
+  (self: Duration, that: Duration) => boolean,
+  (that: Duration) => (self: Duration) => boolean
+>(2, (self, that) => self.millis >= that.millis)
 
 /**
  * @since 1.0.0
  * @category comparisons
  */
-export const equals = (that: Duration) => (self: Duration): boolean => self.millis === that.millis
+export const equals: {
+  (self: Duration, that: Duration): boolean
+  (that: Duration): (self: Duration) => boolean
+} = Dual.dual<
+  (self: Duration, that: Duration) => boolean,
+  (that: Duration) => (self: Duration) => boolean
+>(2, (self, that) => self.millis === that.millis)
