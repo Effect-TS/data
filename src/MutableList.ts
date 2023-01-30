@@ -1,6 +1,7 @@
 /**
  * @since 1.0.0
  */
+import * as Dual from "@fp-ts/data/Dual"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableList") as TypeId
 
@@ -97,7 +98,7 @@ export const empty = <A>(): MutableList<A> => new MutableListImpl()
 export const from = <A>(iterable: Iterable<A>): MutableList<A> => {
   const list: MutableList<A> = new MutableListImpl()
   for (const element of iterable) {
-    append<A>(element)(list)
+    append(list, element)
   }
   return list
 }
@@ -150,14 +151,19 @@ export const head = <A>(self: MutableList<A>): A | undefined =>
  * @since 1.0.0
  * @category traversing
  */
-export const forEach = <A>(f: (element: A) => void) =>
-  (self: MutableList<A>): void => {
-    let current = self.head
-    while (current !== undefined) {
-      f(current.value)
-      current = current.right
-    }
+export const forEach: {
+  <A>(self: MutableList<A>, f: (element: A) => void): void
+  <A>(f: (element: A) => void): (self: MutableList<A>) => void
+} = Dual.dual<
+  <A>(self: MutableList<A>, f: (element: A) => void) => void,
+  <A>(f: (element: A) => void) => (self: MutableList<A>) => void
+>(2, (self, f) => {
+  let current = self.head
+  while (current !== undefined) {
+    f(current.value)
+    current = current.right
   }
+})
 
 /**
  * Removes all elements from the doubly-linked list.
@@ -178,22 +184,27 @@ export const reset = <A>(self: MutableList<A>): MutableList<A> => {
  * @since 1.0.0
  * @category mutations
  */
-export const append = <A>(value: A) =>
-  (self: MutableList<A>): MutableList<A> => {
-    const node = new LinkedListNode(value)
-    if ((self as MutableListImpl<A>)._length === 0) {
-      self.head = node
-    }
-    if (self.tail === undefined) {
-      self.tail = node
-    } else {
-      self.tail.right = node
-      node.left = self.tail
-      self.tail = node
-    }
-    ;(self as MutableListImpl<A>)._length += 1
-    return self
+export const append: {
+  <A>(self: MutableList<A>, value: A): MutableList<A>
+  <A>(value: A): (self: MutableList<A>) => MutableList<A>
+} = Dual.dual<
+  <A>(self: MutableList<A>, value: A) => MutableList<A>,
+  <A>(value: A) => (self: MutableList<A>) => MutableList<A>
+>(2, <A>(self: MutableList<A>, value: A) => {
+  const node = new LinkedListNode(value)
+  if ((self as MutableListImpl<A>)._length === 0) {
+    self.head = node
   }
+  if (self.tail === undefined) {
+    self.tail = node
+  } else {
+    self.tail.right = node
+    node.left = self.tail
+    self.tail = node
+  }
+  ;(self as MutableListImpl<A>)._length += 1
+  return self
+})
 
 /**
  * Removes the first value from the list and returns it, if it exists.
@@ -204,7 +215,7 @@ export const append = <A>(value: A) =>
 export const shift = <A>(self: MutableList<A>): A | undefined => {
   const head = self.head
   if (head !== undefined) {
-    remove(head)(self)
+    remove(self, head)
     return head.value
   }
   return undefined
@@ -219,33 +230,31 @@ export const shift = <A>(self: MutableList<A>): A | undefined => {
 export const pop = <A>(self: MutableList<A>): A | undefined => {
   const tail = self.tail
   if (tail !== undefined) {
-    remove(tail)(self)
+    remove(self, tail)
     return tail.value
   }
   return undefined
 }
 
-function remove<A>(node: LinkedListNode<A>) {
-  return (self: MutableList<A>): void => {
-    if (node.removed) {
-      return
-    }
-    node.removed = true
-    if (node.left !== undefined && node.right !== undefined) {
-      node.left.right = node.right
-      node.right.left = node.left
-    } else if (node.left !== undefined) {
-      self.tail = node.left
-      node.left.right = undefined
-    } else if (node.right !== undefined) {
-      self.head = node.right
-      node.right.left = undefined
-    } else {
-      self.tail = undefined
-      self.head = undefined
-    }
-    if ((self as MutableListImpl<A>)._length > 0) {
-      ;(self as MutableListImpl<A>)._length -= 1
-    }
+const remove = <A>(self: MutableList<A>, node: LinkedListNode<A>): void => {
+  if (node.removed) {
+    return
+  }
+  node.removed = true
+  if (node.left !== undefined && node.right !== undefined) {
+    node.left.right = node.right
+    node.right.left = node.left
+  } else if (node.left !== undefined) {
+    self.tail = node.left
+    node.left.right = undefined
+  } else if (node.right !== undefined) {
+    self.head = node.right
+    node.right.left = undefined
+  } else {
+    self.tail = undefined
+    self.head = undefined
+  }
+  if ((self as MutableListImpl<A>)._length > 0) {
+    ;(self as MutableListImpl<A>)._length -= 1
   }
 }

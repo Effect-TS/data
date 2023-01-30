@@ -1,9 +1,8 @@
 /**
  * @since 1.0.0
  */
-import { pipe } from "@fp-ts/core/Function"
-import * as O from "@fp-ts/core/Option"
-import type { Option } from "@fp-ts/core/Option"
+import * as Option from "@fp-ts/core/Option"
+import * as Dual from "@fp-ts/data/Dual"
 import * as Equal from "@fp-ts/data/Equal"
 import * as Hash from "@fp-ts/data/Hash"
 
@@ -98,169 +97,6 @@ class MutableHashMapImpl<K, V> implements MutableHashMap<K, V> {
 
 /**
  * @since 1.0.0
- * @category elements
- */
-export const get = <K>(k: K) =>
-  <V>(self: MutableHashMap<K, V>): Option<V> => {
-    const hash = Hash.hash(k)
-    const arr = self.backingMap.get(hash)
-
-    if (arr == null) {
-      return O.none()
-    }
-
-    let c: Node<K, V> | undefined = arr
-
-    while (c) {
-      if (Equal.equals(k, c.k)) {
-        return O.some(c.v)
-      }
-      c = c.next
-    }
-
-    return O.none()
-  }
-
-/**
- * @since 1.0.0
- * @category elements
- */
-export const has = <K>(k: K) =>
-  <V>(self: MutableHashMap<K, V>): boolean =>
-    pipe(
-      self,
-      get(k),
-      O.isSome
-    )
-
-/**
- * @since 1.0.0
- * @category elements
- */
-export const size = <K, V>(self: MutableHashMap<K, V>): number => {
-  return self.length
-}
-
-/**
- * Updates the value of the specified key within the `MutableHashMap` if it exists.
- *
- * @since 1.0.0
- * @category mutations
- */
-export const modify = <K, V>(k: K, f: (v: V) => V) =>
-  (self: MutableHashMap<K, V>): MutableHashMap<K, V> => {
-    const hash = Hash.hash(k)
-    const arr = self.backingMap.get(hash)
-
-    if (arr == null) {
-      return self
-    }
-
-    let c: Node<K, V> | undefined = arr
-
-    while (c) {
-      if (Equal.equals(k, c.k)) {
-        c.v = f(c.v)
-        return self
-      }
-      c = c.next
-    }
-
-    return self
-  }
-
-/**
- * @since 1.0.0
- * @category mutations
- */
-export const set = <K, V>(k: K, v: V) =>
-  (self: MutableHashMap<K, V>): MutableHashMap<K, V> => {
-    const hash = Hash.hash(k)
-    const arr = self.backingMap.get(hash)
-
-    if (arr == null) {
-      self.backingMap.set(hash, new Node(k, v))
-      self.length = self.length + 1
-      return self
-    }
-
-    let c: Node<K, V> | undefined = arr
-    let l = arr
-
-    while (c) {
-      if (Equal.equals(k, c.k)) {
-        c.v = v
-        return self
-      }
-      l = c
-      c = c.next
-    }
-
-    self.length = self.length + 1
-    l.next = new Node(k, v)
-
-    return self
-  }
-
-/**
- * Set or remove the specified key in the `MutableHashMap` using the specified
- * update function.
- *
- * @since 1.0.0
- * @category mutations
- */
-export const modifyAt = <K, V>(key: K, f: (value: Option<V>) => Option<V>) =>
-  (self: MutableHashMap<K, V>) => {
-    const result = f(pipe(self, get(key)))
-    if (O.isSome(result)) {
-      pipe(self, set(key, result.value))
-    } else {
-      pipe(self, remove(key))
-    }
-    return self
-  }
-
-/**
- * @since 1.0.0
- * @category mutations
- */
-export const remove = <K>(k: K) =>
-  <V>(self: MutableHashMap<K, V>): MutableHashMap<K, V> => {
-    const hash = Hash.hash(k)
-    const arr = self.backingMap.get(hash)
-
-    if (arr == null) {
-      return self
-    }
-
-    if (Equal.equals(k, arr.k)) {
-      if (arr.next != null) {
-        self.backingMap.set(hash, arr.next)
-      } else {
-        self.backingMap.delete(hash)
-      }
-      self.length = self.length - 1
-      return self
-    }
-
-    let next: Node<K, V> | undefined = arr.next
-    let curr = arr
-
-    while (next) {
-      if (Equal.equals(k, next.k)) {
-        curr.next = next.next
-        self.length = self.length - 1
-        return self
-      }
-      curr = next
-      next = next.next
-    }
-
-    return self
-  }
-
-/**
- * @since 1.0.0
  * @category constructors
  */
 export const empty = <K = never, V = never>(): MutableHashMap<K, V> =>
@@ -281,14 +117,196 @@ export const make: <Entries extends Array<readonly [any, any]>>(
  * @since 1.0.0
  * @category conversions
  */
-export const fromIterable = <K, V>(
-  entries: Iterable<readonly [K, V]>
-): MutableHashMap<K, V> => {
+export const fromIterable = <K, V>(entries: Iterable<readonly [K, V]>): MutableHashMap<K, V> => {
   const map = empty<K, V>()
-
   for (const entry of entries) {
-    pipe(map, set(entry[0], entry[1]))
+    set(map, entry[0], entry[1])
   }
-
   return map
 }
+
+/**
+ * @since 1.0.0
+ * @category elements
+ */
+export const get: {
+  <K, V>(self: MutableHashMap<K, V>, key: K): Option.Option<V>
+  <K>(key: K): <V>(self: MutableHashMap<K, V>) => Option.Option<V>
+} = Dual.dual<
+  <K, V>(self: MutableHashMap<K, V>, key: K) => Option.Option<V>,
+  <K>(key: K) => <V>(self: MutableHashMap<K, V>) => Option.Option<V>
+>(2, <K, V>(self: MutableHashMap<K, V>, key: K) => {
+  const hash = Hash.hash(key)
+  const arr = self.backingMap.get(hash)
+  if (arr === undefined) {
+    return Option.none()
+  }
+  let c: Node<K, V> | undefined = arr
+  while (c !== undefined) {
+    if (Equal.equals(key, c.k)) {
+      return Option.some(c.v)
+    }
+    c = c.next
+  }
+  return Option.none()
+})
+
+/**
+ * @since 1.0.0
+ * @category elements
+ */
+export const has: {
+  <K, V>(self: MutableHashMap<K, V>, key: K): boolean
+  <K>(key: K): <V>(self: MutableHashMap<K, V>) => boolean
+} = Dual.dual<
+  <K, V>(self: MutableHashMap<K, V>, key: K) => boolean,
+  <K>(key: K) => <V>(self: MutableHashMap<K, V>) => boolean
+>(2, (self, key) => Option.isSome(get(self, key)))
+
+/**
+ * Updates the value of the specified key within the `MutableHashMap` if it exists.
+ *
+ * @since 1.0.0
+ * @category mutations
+ */
+export const modify: {
+  <K, V>(self: MutableHashMap<K, V>, key: K, f: (v: V) => V): MutableHashMap<K, V>
+  <K, V>(key: K, f: (v: V) => V): (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+} = Dual.dual<
+  <K, V>(self: MutableHashMap<K, V>, key: K, f: (v: V) => V) => MutableHashMap<K, V>,
+  <K, V>(key: K, f: (v: V) => V) => (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+>(3, <K, V>(self: MutableHashMap<K, V>, key: K, f: (v: V) => V) => {
+  const hash = Hash.hash(key)
+  const arr = self.backingMap.get(hash)
+  if (arr === undefined) {
+    return self
+  }
+  let c: Node<K, V> | undefined = arr
+  while (c !== undefined) {
+    if (Equal.equals(key, c.k)) {
+      c.v = f(c.v)
+      return self
+    }
+    c = c.next
+  }
+  return self
+})
+
+/**
+ * Set or remove the specified key in the `MutableHashMap` using the specified
+ * update function.
+ *
+ * @since 1.0.0
+ * @category mutations
+ */
+export const modifyAt: {
+  <K, V>(
+    self: MutableHashMap<K, V>,
+    key: K,
+    f: (value: Option.Option<V>) => Option.Option<V>
+  ): MutableHashMap<K, V>
+  <K, V>(
+    key: K,
+    f: (value: Option.Option<V>) => Option.Option<V>
+  ): (
+    self: MutableHashMap<K, V>
+  ) => MutableHashMap<K, V>
+} = Dual.dual<
+  <K, V>(
+    self: MutableHashMap<K, V>,
+    key: K,
+    f: (value: Option.Option<V>) => Option.Option<V>
+  ) => MutableHashMap<K, V>,
+  <K, V>(
+    key: K,
+    f: (value: Option.Option<V>) => Option.Option<V>
+  ) => (
+    self: MutableHashMap<K, V>
+  ) => MutableHashMap<K, V>
+>(3, (self, key, f) => {
+  const result = f(get(self, key))
+  if (Option.isSome(result)) {
+    set(self, key, result.value)
+  } else {
+    remove(self, key)
+  }
+  return self
+})
+
+/**
+ * @since 1.0.0
+ * @category mutations
+ */
+export const remove: {
+  <K, V>(self: MutableHashMap<K, V>, key: K): MutableHashMap<K, V>
+  <K>(key: K): <V>(self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+} = Dual.dual<
+  <K, V>(self: MutableHashMap<K, V>, key: K) => MutableHashMap<K, V>,
+  <K>(key: K) => <V>(self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+>(2, <K, V>(self: MutableHashMap<K, V>, key: K) => {
+  const hash = Hash.hash(key)
+  const arr = self.backingMap.get(hash)
+  if (arr === undefined) {
+    return self
+  }
+  if (Equal.equals(key, arr.k)) {
+    if (arr.next !== undefined) {
+      self.backingMap.set(hash, arr.next)
+    } else {
+      self.backingMap.delete(hash)
+    }
+    self.length = self.length - 1
+    return self
+  }
+  let next: Node<K, V> | undefined = arr.next
+  let curr = arr
+  while (next !== undefined) {
+    if (Equal.equals(key, next.k)) {
+      curr.next = next.next
+      self.length = self.length - 1
+      return self
+    }
+    curr = next
+    next = next.next
+  }
+  return self
+})
+
+/**
+ * @since 1.0.0
+ * @category mutations
+ */
+export const set: {
+  <K, V>(self: MutableHashMap<K, V>, key: K, value: V): MutableHashMap<K, V>
+  <K, V>(key: K, value: V): (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+} = Dual.dual<
+  <K, V>(self: MutableHashMap<K, V>, key: K, value: V) => MutableHashMap<K, V>,
+  <K, V>(key: K, value: V) => (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+>(3, <K, V>(self: MutableHashMap<K, V>, key: K, value: V) => {
+  const hash = Hash.hash(key)
+  const arr = self.backingMap.get(hash)
+  if (arr === undefined) {
+    self.backingMap.set(hash, new Node(key, value))
+    self.length = self.length + 1
+    return self
+  }
+  let c: Node<K, V> | undefined = arr
+  let l = arr
+  while (c !== undefined) {
+    if (Equal.equals(key, c.k)) {
+      c.v = value
+      return self
+    }
+    l = c
+    c = c.next
+  }
+  self.length = self.length + 1
+  l.next = new Node(key, value)
+  return self
+})
+
+/**
+ * @since 1.0.0
+ * @category elements
+ */
+export const size = <K, V>(self: MutableHashMap<K, V>): number => self.length

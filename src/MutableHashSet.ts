@@ -1,7 +1,8 @@
 /**
  * @since 1.0.0
  */
-import * as MHashMap from "@fp-ts/data/MutableHashMap"
+import * as Dual from "@fp-ts/data/Dual"
+import * as MutableHashMap from "@fp-ts/data/MutableHashMap"
 
 const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableHashSet") as TypeId
 
@@ -15,26 +16,26 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface MutableHashSet<K> extends Iterable<K> {
+export interface MutableHashSet<V> extends Iterable<V> {
   readonly _id: TypeId
-  readonly _V: (_: K) => K
+  readonly _V: (_: V) => V
 
   /** @internal */
-  readonly keyMap: MHashMap.MutableHashMap<K, boolean>
+  readonly keyMap: MutableHashMap.MutableHashMap<V, boolean>
 }
 
 /** @internal */
-class MutableHashSetImpl<K> implements MutableHashSet<K> {
+class MutableHashSetImpl<V> implements MutableHashSet<V> {
   readonly _id: TypeId = TypeId
-  readonly _V: (_: K) => K = (_) => _
+  readonly _V: (_: V) => V = (_) => _
 
-  constructor(readonly keyMap: MHashMap.MutableHashMap<K, boolean>) {}
+  constructor(readonly keyMap: MutableHashMap.MutableHashMap<V, boolean>) {}
 
   get length() {
     return this.keyMap.length
   }
 
-  [Symbol.iterator](): Iterator<K> {
+  [Symbol.iterator](): Iterator<V> {
     return Array.from(this.keyMap).map(([_]) => _)[Symbol.iterator]()
   }
 
@@ -58,14 +59,15 @@ class MutableHashSetImpl<K> implements MutableHashSet<K> {
  * @since 1.0.0
  * @category constructors
  */
-export const empty = <K = never>(): MutableHashSet<K> => new MutableHashSetImpl(MHashMap.empty())
+export const empty = <K = never>(): MutableHashSet<K> =>
+  new MutableHashSetImpl(MutableHashMap.empty())
 
 /**
  * @since 1.0.0
  * @category constructors
  */
 export const fromIterable = <K = never>(keys: Iterable<K>): MutableHashSet<K> =>
-  new MutableHashSetImpl(MHashMap.fromIterable(Array.from(keys).map((k) => [k, true])))
+  new MutableHashSetImpl(MutableHashMap.fromIterable(Array.from(keys).map((k) => [k, true])))
 
 /**
  * @since 1.0.0
@@ -79,25 +81,40 @@ export const make = <Keys extends ReadonlyArray<unknown>>(
  * @since 1.0.0
  * @category elements
  */
-export const has = <K>(key: K) =>
-  (self: MutableHashSet<K>): boolean => MHashMap.has(key)(self.keyMap)
+export const add: {
+  <V>(self: MutableHashSet<V>, key: V): MutableHashSet<V>
+  <V>(key: V): (self: MutableHashSet<V>) => MutableHashSet<V>
+} = Dual.dual<
+  <V>(self: MutableHashSet<V>, key: V) => MutableHashSet<V>,
+  <V>(key: V) => (self: MutableHashSet<V>) => MutableHashSet<V>
+>(2, (self, key) => (MutableHashMap.set(self.keyMap, key, true), self))
 
 /**
  * @since 1.0.0
  * @category elements
  */
-export const add = <K>(key: K) =>
-  (self: MutableHashSet<K>): MutableHashSet<K> => (MHashMap.set(key, true)(self.keyMap), self)
+export const has: {
+  <V>(self: MutableHashSet<V>, key: V): boolean
+  <V>(key: V): (self: MutableHashSet<V>) => boolean
+} = Dual.dual<
+  <V>(self: MutableHashSet<V>, key: V) => boolean,
+  <V>(key: V) => (self: MutableHashSet<V>) => boolean
+>(2, (self, key) => MutableHashMap.has(self.keyMap, key))
 
 /**
  * @since 1.0.0
  * @category elements
  */
-export const remove = <K>(key: K) =>
-  (self: MutableHashSet<K>): MutableHashSet<K> => (MHashMap.remove(key)(self.keyMap), self)
+export const remove: {
+  <V>(self: MutableHashSet<V>, key: V): MutableHashSet<V>
+  <V>(key: V): (self: MutableHashSet<V>) => MutableHashSet<V>
+} = Dual.dual<
+  <V>(self: MutableHashSet<V>, key: V) => MutableHashSet<V>,
+  <V>(key: V) => (self: MutableHashSet<V>) => MutableHashSet<V>
+>(2, (self, key) => (MutableHashMap.remove(self.keyMap, key), self))
 
 /**
  * @since 1.0.0
  * @category elements
  */
-export const size = <K>(self: MutableHashSet<K>): number => MHashMap.size(self.keyMap)
+export const size = <V>(self: MutableHashSet<V>): number => MutableHashMap.size(self.keyMap)
