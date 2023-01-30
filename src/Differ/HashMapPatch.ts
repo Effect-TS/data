@@ -56,11 +56,17 @@ export const diff: <Key, Value, Patch>(
  * @since 1.0.0
  * @category mutations
  */
-export const combine: <Key, Value, Patch>(
-  that: HashMapPatch<Key, Value, Patch>
-) => (
-  self: HashMapPatch<Key, Value, Patch>
-) => HashMapPatch<Key, Value, Patch> = HMP.combine
+export const combine: {
+  <Key, Value, Patch>(
+    self: HashMapPatch<Key, Value, Patch>,
+    that: HashMapPatch<Key, Value, Patch>
+  ): HashMapPatch<Key, Value, Patch>
+  <Key, Value, Patch>(
+    that: HashMapPatch<Key, Value, Patch>
+  ): (
+    self: HashMapPatch<Key, Value, Patch>
+  ) => HashMapPatch<Key, Value, Patch>
+} = HMP.combine
 
 /**
  * Applies a map patch to a map of keys and values to produce a new map of
@@ -70,9 +76,16 @@ export const combine: <Key, Value, Patch>(
  * @since 1.0.0
  * @category destructors
  */
-export const patch: <Key, Value, Patch>(
-  oldValue: HashMap<Key, Value>,
-  differ: Differ<Value, Patch>
-) => (
-  self: HashMapPatch<Key, Value, Patch>
-) => HashMap<Key, Value> = HMP.patch
+export const patch: {
+  <Key, Value, Patch>(
+    self: HashMapPatch<Key, Value, Patch>,
+    oldValue: HashMap<Key, Value>,
+    differ: Differ<Value, Patch>
+  ): HashMap<Key, Value>
+  <Key, Value, Patch>(
+    oldValue: HashMap<Key, Value>,
+    differ: Differ<Value, Patch>
+  ): (
+    self: HashMapPatch<Key, Value, Patch>
+  ) => HashMap<Key, Value>
+} = HMP.patch

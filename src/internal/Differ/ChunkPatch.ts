@@ -2,6 +2,7 @@ import { pipe } from "@fp-ts/core/Function"
 import * as Chunk from "@fp-ts/data/Chunk"
 import type { Differ } from "@fp-ts/data/Differ"
 import type * as CP from "@fp-ts/data/Differ/ChunkPatch"
+import * as Dual from "@fp-ts/data/Dual"
 import * as Equal from "@fp-ts/data/Equal"
 import * as Hash from "@fp-ts/data/Hash"
 
@@ -115,16 +116,14 @@ type Instruction =
   | Update<any, any>
 
 /** @internal */
-export function empty<Value, Patch>(): CP.ChunkPatch<Value, Patch> {
-  return new Empty()
-}
+export const empty = <Value, Patch>(): CP.ChunkPatch<Value, Patch> => new Empty()
 
 /** @internal */
-export function diff<Value, Patch>(
+export const diff = <Value, Patch>(
   oldValue: Chunk.Chunk<Value>,
   newValue: Chunk.Chunk<Value>,
   differ: Differ<Value, Patch>
-): CP.ChunkPatch<Value, Patch> {
+): CP.ChunkPatch<Value, Patch> => {
   let i = 0
   let patch = empty<Value, Patch>()
   while (i < oldValue.length && i < newValue.length) {
@@ -146,49 +145,67 @@ export function diff<Value, Patch>(
 }
 
 /** @internal */
-export function combine<Value, Patch>(that: CP.ChunkPatch<Value, Patch>) {
-  return (self: CP.ChunkPatch<Value, Patch>): CP.ChunkPatch<Value, Patch> => {
-    return new AndThen(self, that)
-  }
-}
+export const combine = Dual.dual<
+  <Value, Patch>(
+    self: CP.ChunkPatch<Value, Patch>,
+    that: CP.ChunkPatch<Value, Patch>
+  ) => CP.ChunkPatch<Value, Patch>,
+  <Value, Patch>(
+    that: CP.ChunkPatch<Value, Patch>
+  ) => (
+    self: CP.ChunkPatch<Value, Patch>
+  ) => CP.ChunkPatch<Value, Patch>
+>(2, (self, that) => new AndThen(self, that))
 
 /** @internal */
-export function patch<Value, Patch>(oldValue: Chunk.Chunk<Value>, differ: Differ<Value, Patch>) {
-  return (self: CP.ChunkPatch<Value, Patch>): Chunk.Chunk<Value> => {
-    let chunk = oldValue
-    let patches: Chunk.Chunk<CP.ChunkPatch<Value, Patch>> = Chunk.of(self)
-    while (Chunk.isNonEmpty(patches)) {
-      const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
-      const tail = Chunk.tailNonEmpty(patches)
-      switch (head._tag) {
-        case "Empty": {
-          patches = tail
-          break
-        }
-        case "AndThen": {
-          patches = Chunk.prepend(head.first)(Chunk.prepend(head.second)(tail))
-          break
-        }
-        case "Append": {
-          chunk = Chunk.concat(head.values)(chunk)
-          patches = tail
-          break
-        }
-        case "Slice": {
-          const array = Chunk.toReadonlyArray(chunk)
-          chunk = Chunk.unsafeFromArray(array.slice(head.from, head.until))
-          patches = tail
-          break
-        }
-        case "Update": {
-          const array = Chunk.toReadonlyArray(chunk) as Array<Value>
-          array[head.index] = differ.patch(head.patch, array[head.index]!)
-          chunk = Chunk.unsafeFromArray(array)
-          patches = tail
-          break
-        }
+export const patch = Dual.dual<
+  <Value, Patch>(
+    self: CP.ChunkPatch<Value, Patch>,
+    oldValue: Chunk.Chunk<Value>,
+    differ: Differ<Value, Patch>
+  ) => Chunk.Chunk<Value>,
+  <Value, Patch>(
+    oldValue: Chunk.Chunk<Value>,
+    differ: Differ<Value, Patch>
+  ) => (self: CP.ChunkPatch<Value, Patch>) => Chunk.Chunk<Value>
+>(3, <Value, Patch>(
+  self: CP.ChunkPatch<Value, Patch>,
+  oldValue: Chunk.Chunk<Value>,
+  differ: Differ<Value, Patch>
+) => {
+  let chunk = oldValue
+  let patches: Chunk.Chunk<CP.ChunkPatch<Value, Patch>> = Chunk.of(self)
+  while (Chunk.isNonEmpty(patches)) {
+    const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
+    const tail = Chunk.tailNonEmpty(patches)
+    switch (head._tag) {
+      case "Empty": {
+        patches = tail
+        break
+      }
+      case "AndThen": {
+        patches = Chunk.prepend(head.first)(Chunk.prepend(head.second)(tail))
+        break
+      }
+      case "Append": {
+        chunk = Chunk.concat(head.values)(chunk)
+        patches = tail
+        break
+      }
+      case "Slice": {
+        const array = Chunk.toReadonlyArray(chunk)
+        chunk = Chunk.unsafeFromArray(array.slice(head.from, head.until))
+        patches = tail
+        break
+      }
+      case "Update": {
+        const array = Chunk.toReadonlyArray(chunk) as Array<Value>
+        array[head.index] = differ.patch(head.patch, array[head.index]!)
+        chunk = Chunk.unsafeFromArray(array)
+        patches = tail
+        break
       }
     }
-    return chunk
   }
-}
+  return chunk
+})

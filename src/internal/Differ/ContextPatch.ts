@@ -1,6 +1,7 @@
 import * as Chunk from "@fp-ts/data/Chunk"
 import type { Context, Tag } from "@fp-ts/data/Context"
 import type * as CP from "@fp-ts/data/Differ/ContextPatch"
+import * as Dual from "@fp-ts/data/Dual"
 import * as Equal from "@fp-ts/data/Equal"
 import * as Hash from "@fp-ts/data/Hash"
 import { ContextImpl } from "@fp-ts/data/internal/Context"
@@ -125,15 +126,14 @@ type Instruction =
   | UpdateService<any, any>
 
 /** @internal */
-export function empty<Input = never, Output = never>(): CP.ContextPatch<Input, Output> {
-  return new Empty()
-}
+export const empty = <Input = never, Output = never>(): CP.ContextPatch<Input, Output> =>
+  new Empty()
 
 /** @internal */
-export function diff<Input, Output>(
+export const diff = <Input, Output>(
   oldValue: Context<Input>,
   newValue: Context<Output>
-): CP.ContextPatch<Input, Output> {
+): CP.ContextPatch<Input, Output> => {
   const missingServices = new Map(oldValue.unsafeMap)
   let patch = empty<any, any>()
   for (const [tag, newService] of newValue.unsafeMap.entries()) {
@@ -155,63 +155,77 @@ export function diff<Input, Output>(
 }
 
 /** @internal */
-export function combine<Output, Output2>(that: CP.ContextPatch<Output, Output2>) {
-  return <Input>(self: CP.ContextPatch<Input, Output>): CP.ContextPatch<Input, Output2> => {
-    return new AndThen(self, that)
-  }
-}
+export const combine = Dual.dual<
+  <Input, Output, Output2>(
+    self: CP.ContextPatch<Input, Output>,
+    that: CP.ContextPatch<Output, Output2>
+  ) => CP.ContextPatch<Input, Output2>,
+  <Output, Output2>(
+    that: CP.ContextPatch<Output, Output2>
+  ) => <Input>(
+    self: CP.ContextPatch<Input, Output>
+  ) => CP.ContextPatch<Input, Output2>
+>(2, (self, that) => new AndThen(self, that))
 
 /** @internal */
-export function patch<Input>(context: Context<Input>) {
-  return <Output>(self: CP.ContextPatch<Input, Output>): Context<Output> => {
-    let wasServiceUpdated = false
-    let patches: Chunk.Chunk<CP.ContextPatch<unknown, unknown>> = Chunk.of(
-      self as CP.ContextPatch<unknown, unknown>
-    )
-    const updatedContext: Map<Tag<unknown>, unknown> = new Map(context.unsafeMap)
-    while (Chunk.isNonEmpty(patches)) {
-      const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
-      const tail = Chunk.tailNonEmpty(patches)
-      switch (head._tag) {
-        case "Empty": {
-          patches = tail
-          break
-        }
-        case "AddService": {
-          updatedContext.set(head.tag, head.service)
-          patches = tail
-          break
-        }
-        case "AndThen": {
-          patches = Chunk.prepend(head.first)(Chunk.prepend(head.second)(tail))
-          break
-        }
-        case "RemoveService": {
-          updatedContext.delete(head.tag)
-          patches = tail
-          break
-        }
-        case "UpdateService": {
-          updatedContext.set(head.tag, head.update(updatedContext.get(head.tag)))
-          wasServiceUpdated = true
-          patches = tail
-          break
-        }
+export const patch = Dual.dual<
+  <Input, Output>(
+    self: CP.ContextPatch<Input, Output>,
+    context: Context<Input>
+  ) => Context<Output>,
+  <Input>(
+    context: Context<Input>
+  ) => <Output>(
+    self: CP.ContextPatch<Input, Output>
+  ) => Context<Output>
+>(2, <Input, Output>(self: CP.ContextPatch<Input, Output>, context: Context<Input>) => {
+  let wasServiceUpdated = false
+  let patches: Chunk.Chunk<CP.ContextPatch<unknown, unknown>> = Chunk.of(
+    self as CP.ContextPatch<unknown, unknown>
+  )
+  const updatedContext: Map<Tag<unknown>, unknown> = new Map(context.unsafeMap)
+  while (Chunk.isNonEmpty(patches)) {
+    const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
+    const tail = Chunk.tailNonEmpty(patches)
+    switch (head._tag) {
+      case "Empty": {
+        patches = tail
+        break
+      }
+      case "AddService": {
+        updatedContext.set(head.tag, head.service)
+        patches = tail
+        break
+      }
+      case "AndThen": {
+        patches = Chunk.prepend(head.first)(Chunk.prepend(head.second)(tail))
+        break
+      }
+      case "RemoveService": {
+        updatedContext.delete(head.tag)
+        patches = tail
+        break
+      }
+      case "UpdateService": {
+        updatedContext.set(head.tag, head.update(updatedContext.get(head.tag)))
+        wasServiceUpdated = true
+        patches = tail
+        break
       }
     }
-    if (!wasServiceUpdated) {
-      return new ContextImpl(updatedContext) as Context<Output>
-    }
-    const map = new Map()
-    for (const [tag] of context.unsafeMap) {
-      if (updatedContext.has(tag)) {
-        map.set(tag, updatedContext.get(tag))
-        updatedContext.delete(tag)
-      }
-    }
-    for (const [tag, s] of updatedContext) {
-      map.set(tag, s)
-    }
-    return new ContextImpl(map) as Context<Output>
   }
-}
+  if (!wasServiceUpdated) {
+    return new ContextImpl(updatedContext) as Context<Output>
+  }
+  const map = new Map()
+  for (const [tag] of context.unsafeMap) {
+    if (updatedContext.has(tag)) {
+      map.set(tag, updatedContext.get(tag))
+      updatedContext.delete(tag)
+    }
+  }
+  for (const [tag, s] of updatedContext) {
+    map.set(tag, s)
+  }
+  return new ContextImpl(map) as Context<Output>
+})

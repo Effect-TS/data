@@ -51,11 +51,10 @@ export const diff: <Value>(
  * @since 1.0.0
  * @category mutations
  */
-export const combine: <Value>(
-  that: HashSetPatch<Value>
-) => (
-  self: HashSetPatch<Value>
-) => HashSetPatch<Value> = HSP.combine
+export const combine: {
+  <Value>(self: HashSetPatch<Value>, that: HashSetPatch<Value>): HashSetPatch<Value>
+  <Value>(that: HashSetPatch<Value>): (self: HashSetPatch<Value>) => HashSetPatch<Value>
+} = HSP.combine
 
 /**
  * Applies a set patch to a set of values to produce a new set of values
@@ -65,8 +64,7 @@ export const combine: <Value>(
  * @since 1.0.0
  * @category destructors
  */
-export const patch: <Value>(
-  oldValue: HashSet<Value>
-) => (
-  self: HashSetPatch<Value>
-) => HashSet<Value> = HSP.patch
+export const patch: {
+  <Value>(self: HashSetPatch<Value>, oldValue: HashSet<Value>): HashSet<Value>
+  <Value>(oldValue: HashSet<Value>): (self: HashSetPatch<Value>) => HashSet<Value>
+} = HSP.patch

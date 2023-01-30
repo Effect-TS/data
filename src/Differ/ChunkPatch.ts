@@ -55,11 +55,17 @@ export const diff: <Value, Patch>(
  * @since 1.0.0
  * @category mutations
  */
-export const combine: <Value, Patch>(
-  that: ChunkPatch<Value, Patch>
-) => (
-  self: ChunkPatch<Value, Patch>
-) => ChunkPatch<Value, Patch> = CP.combine
+export const combine: {
+  <Value, Patch>(
+    self: ChunkPatch<Value, Patch>,
+    that: ChunkPatch<Value, Patch>
+  ): ChunkPatch<Value, Patch>
+  <Value, Patch>(
+    that: ChunkPatch<Value, Patch>
+  ): (
+    self: ChunkPatch<Value, Patch>
+  ) => ChunkPatch<Value, Patch>
+} = CP.combine
 
 /**
  * Applies a chunk patch to a chunk of values to produce a new chunk of
@@ -69,9 +75,16 @@ export const combine: <Value, Patch>(
  * @since 1.0.0
  * @category destructors
  */
-export const patch: <Value, Patch>(
-  oldValue: Chunk<Value>,
-  differ: Differ<Value, Patch>
-) => (
-  self: ChunkPatch<Value, Patch>
-) => Chunk<Value> = CP.patch
+export const patch: {
+  <Value, Patch>(
+    self: ChunkPatch<Value, Patch>,
+    oldValue: Chunk<Value>,
+    differ: Differ<Value, Patch>
+  ): Chunk<Value>
+  <Value, Patch>(
+    oldValue: Chunk<Value>,
+    differ: Differ<Value, Patch>
+  ): (
+    self: ChunkPatch<Value, Patch>
+  ) => Chunk<Value>
+} = CP.patch
