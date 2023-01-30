@@ -1,7 +1,6 @@
 /**
  * @since 1.0.0
  */
-
 import type { Option } from "@fp-ts/core/Option"
 import type { Order } from "@fp-ts/core/typeclass/Order"
 import type { Chunk } from "@fp-ts/data/Chunk"
@@ -60,6 +59,98 @@ export const isRedBlackTree: {
 export const empty: <K, V = never>(ord: Order<K>) => RedBlackTree<K, V> = RBT.empty
 
 /**
+ * Constructs a new tree from an iterable of key-value pairs.
+ *
+ * @since 1.0.0
+ * @category constructors
+ */
+export const fromIterable: <K, V>(
+  ord: Order<K>
+) => (entries: Iterable<readonly [K, V]>) => RedBlackTree<K, V> = RBT.fromIterable
+
+/**
+ * Constructs a new `RedBlackTree` from the specified entries.
+ *
+ * @since 1.0.0
+ * @category constructors
+ */
+export const make: <K>(
+  ord: Order<K>
+) => <Entries extends Array<readonly [K, any]>>(
+  ...entries: Entries
+) => RedBlackTree<K, Entries[number] extends readonly [any, infer V] ? V : never> = RBT.make
+
+/**
+ * Returns an iterator that points to the element at the specified index of the
+ * tree.
+ *
+ * **Note**: The iterator will run through elements in order.
+ *
+ * @since 1.0.0
+ * @category traversing
+ */
+export const at: {
+  <K, V>(self: RedBlackTree<K, V>, index: number): Iterable<readonly [K, V]>
+  (index: number): <K, V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+} = RBT.atForwards
+
+/**
+ * Returns an iterator that points to the element at the specified index of the
+ * tree.
+ *
+ * **Note**: The iterator will run through elements in reverse order.
+ *
+ * @since 1.0.0
+ * @category traversing
+ */
+export const atReversed: {
+  <K, V>(self: RedBlackTree<K, V>, index: number): Iterable<readonly [K, V]>
+  (index: number): <K, V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+} = RBT.atBackwards
+
+/**
+ * Finds all values in the tree associated with the specified key.
+ *
+ * @since 1.0.0
+ * @category elements
+ */
+export const find: {
+  <K, V>(self: RedBlackTree<K, V>, key: K): Chunk<V>
+  <K>(key: K): <V>(self: RedBlackTree<K, V>) => Chunk<V>
+} = RBT.find
+
+/**
+ * Finds the value in the tree associated with the specified key, if it exists.
+ *
+ * @since 1.0.0
+ * @category elements
+ */
+export const findFirst: {
+  <K, V>(self: RedBlackTree<K, V>, key: K): Option<V>
+  <K>(key: K): <V>(self: RedBlackTree<K, V>) => Option<V>
+} = RBT.findFirst
+
+/**
+ * Returns the first entry in the tree, if it exists.
+ *
+ * @since 1.0.0
+ * @category getters
+ */
+export const first: <K, V>(self: RedBlackTree<K, V>) => Option<readonly [K, V]> = RBT.first
+
+/**
+ * Returns the element at the specified index within the tree or `None` if the
+ * specified index does not exist.
+ *
+ * @since 1.0.0
+ * @category elements
+ */
+export const getAt: {
+  <K, V>(self: RedBlackTree<K, V>, index: number): Option<readonly [K, V]>
+  (index: number): <K, V>(self: RedBlackTree<K, V>) => Option<readonly [K, V]>
+} = RBT.getAt
+
+/**
  * Gets the `Order<K>` that the `RedBlackTree<K, V>` is using.
  *
  * @since 1.0.0
@@ -68,52 +159,233 @@ export const empty: <K, V = never>(ord: Order<K>) => RedBlackTree<K, V> = RBT.em
 export const getOrder: <K, V>(self: RedBlackTree<K, V>) => Order<K> = RBT.getOrder
 
 /**
- * Constructs a new tree from an iterable of key-value pairs.
+ * Returns an iterator that traverse entries in order with keys greater than the
+ * specified key.
  *
  * @since 1.0.0
- * @category constructors
+ * @category traversing
  */
-export const from: <K, V>(
-  ord: Order<K>
-) => (
-  entries: Iterable<readonly [K, V]>
-) => RedBlackTree<K, V> = RBT.from
+export const greaterThan: {
+  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
+  <K>(key: K): <V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+} = RBT.greaterThanForwards
 
 /**
- * Constructs a new `RedBlackTree` from the specified entries.
+ * Returns an iterator that traverse entries in reverse order with keys greater
+ * than the specified key.
  *
  * @since 1.0.0
- * @category constructors
+ * @category traversing
  */
-export const make: <K, Entries extends Array<readonly [K, any]>>(
-  ord: Order<K>
-) => (
-  ...entries: Entries
-) => RedBlackTree<K, Entries[number] extends readonly [any, infer V] ? V : never> = RBT.make
+export const greaterThanReversed: {
+  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
+  <K>(key: K): <V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+} = RBT.greaterThanBackwards
 
 /**
- * Get all the keys present in the tree.
+ * Returns an iterator that traverse entries in order with keys greater than or
+ * equal to the specified key.
+ *
+ * @since 1.0.0
+ * @category traversing
+ */
+export const greaterThanEqual: {
+  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
+  <K>(key: K): <V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+} = RBT.greaterThanEqualForwards
+
+/**
+ * Returns an iterator that traverse entries in reverse order with keys greater
+ * than or equal to the specified key.
+ *
+ * @since 1.0.0
+ * @category traversing
+ */
+export const greaterThanEqualReversed: {
+  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
+  <K>(key: K): <V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+} = RBT.greaterThanEqualBackwards
+
+/**
+ * Finds the item with key, if it exists.
+ *
+ * @since 1.0.0
+ * @category elements
+ */
+export const has: {
+  <K, V>(self: RedBlackTree<K, V>, key: K): boolean
+  <K>(key: K): <V>(self: RedBlackTree<K, V>) => boolean
+} = RBT.has
+
+/**
+ * Insert a new item into the tree.
+ *
+ * @since 1.0.0
+ * @category mutations
+ */
+export const insert: {
+  <K, V>(self: RedBlackTree<K, V>, key: K, value: V): RedBlackTree<K, V>
+  <K, V>(key: K, value: V): (self: RedBlackTree<K, V>) => RedBlackTree<K, V>
+} = RBT.insert
+
+/**
+ * Get all the keys present in the tree in order.
  *
  * @since 1.0.0
  * @category getters
  */
-export const keys: (
-  direction?: RedBlackTree.Direction
-) => <K, V>(
-  self: RedBlackTree<K, V>
-) => IterableIterator<K> = RBT.keys
+export const keys: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<K> = RBT.keysForward
 
 /**
- * Get all values present in the tree.
+ * Get all the keys present in the tree in reverse order.
  *
  * @since 1.0.0
  * @category getters
  */
-export const values: (
-  direction?: RedBlackTree.Direction
-) => <K, V>(
-  self: RedBlackTree<K, V>
-) => IterableIterator<V> = RBT.values
+export const keysReversed: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<K> =
+  RBT.keysBackward
+
+/**
+ * Returns the last entry in the tree, if it exists.
+ *
+ * @since 1.0.0
+ * @category getters
+ */
+export const last: <K, V>(self: RedBlackTree<K, V>) => Option<readonly [K, V]> = RBT.last
+
+/**
+ * Returns an iterator that traverse entries in order with keys less than the
+ * specified key.
+ *
+ * @since 1.0.0
+ * @category traversing
+ */
+export const lessThan: {
+  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
+  <K>(key: K): <V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+} = RBT.lessThanForwards
+
+/**
+ * Returns an iterator that traverse entries in reverse order with keys less
+ * than the specified key.
+ *
+ * @since 1.0.0
+ * @category traversing
+ */
+export const lessThanReversed: {
+  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
+  <K>(key: K): <V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+} = RBT.lessThanBackwards
+
+/**
+ * Returns an iterator that traverse entries in order with keys less than or
+ * equal to the specified key.
+ *
+ * @since 1.0.0
+ * @category traversing
+ */
+export const lessThanEqual: {
+  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
+  <K>(key: K): <V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+} = RBT.lessThanEqualForwards
+
+/**
+ * Returns an iterator that traverse entries in reverse order with keys less
+ * than or equal to the specified key.
+ *
+ * @since 1.0.0
+ * @category traversing
+ */
+export const lessThanEqualReversed: {
+  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
+  <K>(key: K): <V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+} = RBT.lessThanEqualBackwards
+
+/**
+ * Execute the specified function for each node of the tree, in order.
+ *
+ * @since 1.0.0
+ * @category traversing
+ */
+export const forEach: {
+  <K, V>(self: RedBlackTree<K, V>, f: (key: K, value: V) => void): void
+  <K, V>(f: (key: K, value: V) => void): (self: RedBlackTree<K, V>) => void
+} = RBT.forEach
+
+/**
+ * Visit each node of the tree in order with key greater then or equal to max.
+ *
+ * @since 1.0.0
+ * @category traversing
+ */
+export const forEachGreaterThanEqual: {
+  <K, V>(self: RedBlackTree<K, V>, min: K, f: (key: K, value: V) => void): void
+  <K, V>(min: K, f: (key: K, value: V) => void): (self: RedBlackTree<K, V>) => void
+} = RBT.forEachGreaterThanEqual
+
+/**
+ * Visit each node of the tree in order with key lower then max.
+ *
+ * @since 1.0.0
+ * @category traversing
+ */
+export const forEachLessThan: {
+  <K, V>(self: RedBlackTree<K, V>, max: K, f: (key: K, value: V) => void): void
+  <K, V>(max: K, f: (key: K, value: V) => void): (self: RedBlackTree<K, V>) => void
+} = RBT.forEachLessThan
+
+/**
+ * Visit each node of the tree in order with key lower than max and greater
+ * than or equal to min.
+ *
+ * @since 1.0.0
+ * @category traversing
+ */
+export const forEachBetween: {
+  <K, V>(self: RedBlackTree<K, V>, min: K, max: K, f: (key: K, value: V) => void): void
+  <K, V>(min: K, max: K, f: (key: K, value: V) => void): (self: RedBlackTree<K, V>) => void
+} = RBT.forEachBetween
+
+/**
+ * Reduce a state over the map entries.
+ *
+ * @since 1.0.0
+ * @category folding
+ */
+export const reduce: {
+  <Z, K, V>(self: RedBlackTree<K, V>, zero: Z, f: (accumulator: Z, value: V) => Z): Z
+  <Z, V>(zero: Z, f: (accumulator: Z, value: V) => Z): <K>(self: RedBlackTree<K, V>) => Z
+} = RBT.reduce
+
+/**
+ * Reduce a state over the entries of the tree.
+ *
+ * @since 1.0.0
+ * @category folding
+ */
+export const reduceWithIndex: {
+  <Z, V, K>(self: RedBlackTree<K, V>, zero: Z, f: (accumulator: Z, value: V, key: K) => Z): Z
+  <Z, V, K>(zero: Z, f: (accumulator: Z, value: V, key: K) => Z): (self: RedBlackTree<K, V>) => Z
+} = RBT.reduceWithIndex
+
+/**
+ * Removes the entry with the specified key, if it exists.
+ *
+ * @since 1.0.0
+ * @category mutations
+ */
+export const removeFirst: {
+  <K, V>(self: RedBlackTree<K, V>, key: K): RedBlackTree<K, V>
+  <K>(key: K): <V>(self: RedBlackTree<K, V>) => RedBlackTree<K, V>
+} = RBT.removeFirst
+
+/**
+ * Traverse the tree in reverse order.
+ *
+ * @since 1.0.0
+ * @category traversing
+ */
+export const reversed: <K, V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]> = RBT.reversed
 
 /**
  * Returns the size of the tree.
@@ -124,238 +396,18 @@ export const values: (
 export const size: <K, V>(self: RedBlackTree<K, V>) => number = RBT.size
 
 /**
- * Returns the first entry in the tree, if it exists.
+ * Get all values present in the tree in order.
  *
  * @since 1.0.0
  * @category getters
  */
-export const first: <K, V>(tree: RedBlackTree<K, V>) => Option<readonly [K, V]> = RBT.first
+export const values: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<V> = RBT.valuesForward
 
 /**
- * Returns the last entry in the tree, if it exists.
+ * Get all values present in the tree in reverse order.
  *
  * @since 1.0.0
  * @category getters
  */
-export const last: <K, V>(tree: RedBlackTree<K, V>) => Option<readonly [K, V]> = RBT.last
-
-/**
- * Finds the item with key, if it exists.
- *
- * @since 1.0.0
- * @category elements
- */
-export const has: <K>(key: K) => <V>(self: RedBlackTree<K, V>) => boolean = RBT.has
-
-/**
- * Returns the element at the specified index within the tree or `None` if the
- * specified index does not exist.
- *
- * @since 1.0.0
- * @category elements
- */
-export const getAt: (
-  index: number
-) => <K, V>(
-  self: RedBlackTree<K, V>
-) => Option<readonly [K, V]> = RBT.getAt
-
-/**
- * Finds all values in the tree associated with the specified key.
- *
- * @since 1.0.0
- * @category elements
- */
-export const find: <K>(key: K) => <V>(self: RedBlackTree<K, V>) => Chunk<V> = RBT.find
-
-/**
- * Finds the value in the tree associated with the specified key, if it exists.
- *
- * @since 1.0.0
- * @category elements
- */
-export const findFirst: <K>(key: K) => <V>(self: RedBlackTree<K, V>) => Option<V> = RBT.findFirst
-
-/**
- * Insert a new item into the tree.
- *
- * @since 1.0.0
- * @category mutations
- */
-export const insert: <K, V>(
-  key: K,
-  value: V
-) => (
-  self: RedBlackTree<K, V>
-) => RedBlackTree<K, V> = RBT.insert
-
-/**
- * Removes the entry with the specified key, if it exists.
- *
- * @since 1.0.0
- * @category mutations
- */
-export const removeFirst: <K>(
-  key: K
-) => <V>(
-  self: RedBlackTree<K, V>
-) => RedBlackTree<K, V> = RBT.removeFirst
-
-/**
- * Returns an iterator that points to the element at the spcified index of the
- * tree.
- *
- * @since 1.0.0
- * @category traversing
- */
-export const at: (
-  index: number,
-  direction?: RedBlackTree.Direction
-) => <K, V>(
-  self: RedBlackTree<K, V>
-) => Iterable<readonly [K, V]> = RBT.at
-
-/**
- * Traverse the tree backwards.
- *
- * @since 1.0.0
- * @category traversing
- */
-export const backwards: <K, V>(
-  self: RedBlackTree<K, V>
-) => Iterable<readonly [K, V]> = RBT.backwards
-
-/**
- * Returns an iterator that traverse entries with keys greater than the
- * specified key.
- *
- * @since 1.0.0
- * @category traversing
- */
-export const greaterThan: <K>(
-  key: K,
-  direction?: RedBlackTree.Direction
-) => <V>(
-  self: RedBlackTree<K, V>
-) => Iterable<readonly [K, V]> = RBT.greaterThan
-
-/**
- * Returns an iterator that traverse entries with keys greater than or equal to
- * the specified key.
- *
- * @since 1.0.0
- * @category traversing
- */
-export const greaterThanEqual: <K>(
-  key: K,
-  direction?: RedBlackTree.Direction
-) => <V>(
-  self: RedBlackTree<K, V>
-) => Iterable<readonly [K, V]> = RBT.greaterThanEqual
-
-/**
- * Returns an iterator that traverse entries with keys less than the specified
- * key.
- *
- * @since 1.0.0
- * @category traversing
- */
-export const lessThan: <K>(
-  key: K,
-  direction?: RedBlackTree.Direction
-) => <V>(
-  self: RedBlackTree<K, V>
-) => Iterable<readonly [K, V]> = RBT.lessThan
-
-/**
- * Returns an iterator that traverse entries with keys less than or equal to
- * the specified key.
- *
- * @since 1.0.0
- * @category traversing
- */
-export const lessThanEqual: <K>(
-  key: K,
-  direction?: RedBlackTree.Direction
-) => <V>(
-  self: RedBlackTree<K, V>
-) => Iterable<readonly [K, V]> = RBT.lessThanEqual
-
-/**
- * Execute the specified function for each node of the tree, in order.
- *
- * @since 1.0.0
- * @category traversing
- */
-export const forEach: <K, V>(
-  f: (key: K, value: V) => void
-) => (
-  self: RedBlackTree<K, V>
-) => void = RBT.forEach
-
-/**
- * Visit each node of the tree in order with key greater then or equal to max.
- *
- * @since 1.0.0
- * @category traversing
- */
-export const forEachGreaterThanEqual: <K, V>(
-  min: K,
-  f: (key: K, value: V) => void
-) => (
-  self: RedBlackTree<K, V>
-) => void = RBT.forEachGreaterThanEqual
-
-/**
- * Visit each node of the tree in order with key lower then max.
- *
- * @since 1.0.0
- * @category traversing
- */
-export const forEachLessThan: <K, V>(
-  max: K,
-  f: (key: K, value: V) => void
-) => (
-  self: RedBlackTree<K, V>
-) => void = RBT.forEachLessThan
-
-/**
- * Visit each node of the tree in order with key lower than max and greater
- * than or equal to min.
- *
- * @since 1.0.0
- * @category traversing
- */
-export const forEachBetween: <K, V>(
-  min: K,
-  max: K,
-  f: (key: K, value: V) => void
-) => (
-  self: RedBlackTree<K, V>
-) => void = RBT.forEachBetween
-
-/**
- * Reduce a state over the map entries.
- *
- * @since 1.0.0
- * @category folding
- */
-export const reduce: <Z, V>(
-  zero: Z,
-  f: (accumulator: Z, value: V) => Z
-) => <K>(
-  self: RedBlackTree<K, V>
-) => Z = RBT.reduce
-
-/**
- * Reduce a state over the entries of the tree.
- *
- * @since 1.0.0
- * @category folding
- */
-export const reduceWithIndex: <B, A, K>(
-  b: B,
-  f: (b: B, value: A, key: K) => B
-) => (
-  self: RedBlackTree<K, A>
-) => B = RBT.reduceWithIndex
+export const valuesReversed: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<V> =
+  RBT.valuesBackward

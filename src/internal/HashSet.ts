@@ -60,7 +60,7 @@ export const isHashSet: {
 export const empty = <A = never>(): HS.HashSet<A> => new HashSetImpl(HM.empty<A, unknown>())
 
 /** @internal */
-export const from = <A>(elements: Iterable<A>): HS.HashSet<A> => {
+export const fromIterable = <A>(elements: Iterable<A>): HS.HashSet<A> => {
   const set = beginMutation(empty<A>())
   for (const value of elements) {
     add(set, value)

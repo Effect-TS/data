@@ -57,12 +57,13 @@ export const make: <Entries extends ReadonlyArray<readonly [any, any]>>(
 > = HM.make
 
 /**
- * Constructs a new `HashMap` from an array of key/value pairs.
+ * Constructs a new `HashMap` from an iterable of key/value pairs.
  *
  * @since 1.0.0
  * @category constructors
  */
-export const from: <K, V>(entries: Iterable<readonly [K, V]>) => HashMap<K, V> = HM.from
+export const fromIterable: <K, V>(entries: Iterable<readonly [K, V]>) => HashMap<K, V> =
+  HM.fromIterable
 
 /**
  * Checks if the `HashMap` contains any entries.

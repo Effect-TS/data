@@ -169,10 +169,10 @@ export const make = <Entries extends ReadonlyArray<readonly [any, any]>>(
 ): HM.HashMap<
   Entries[number] extends readonly [infer K, any] ? K : never,
   Entries[number] extends readonly [any, infer V] ? V : never
-> => from(entries)
+> => fromIterable(entries)
 
 /** @internal */
-export const from = <K, V>(entries: Iterable<readonly [K, V]>): HM.HashMap<K, V> => {
+export const fromIterable = <K, V>(entries: Iterable<readonly [K, V]>): HM.HashMap<K, V> => {
   const map = beginMutation(empty<K, V>())
   for (const entry of entries) {
     set(entry[0], entry[1])(map)

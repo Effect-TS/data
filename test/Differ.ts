@@ -76,12 +76,12 @@ function randomHashMap(): HashMap.HashMap<number, number> {
   return pipe(
     Chunk.fromIterable(Array.from({ length: 2 }, smallInt)),
     Chunk.cross(Chunk.fromIterable(Array.from({ length: 2 }, smallInt))),
-    HashMap.from
+    HashMap.fromIterable
   )
 }
 
 function randomHashSet(): HashSet.HashSet<number> {
-  return HashSet.from(Array.from({ length: 20 }, smallInt))
+  return HashSet.fromIterable(Array.from({ length: 20 }, smallInt))
 }
 
 function randomPair(): readonly [number, number] {
