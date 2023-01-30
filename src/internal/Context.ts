@@ -1,6 +1,7 @@
 import type * as O from "@fp-ts/core/Option"
 import * as option from "@fp-ts/core/Option"
 import type * as C from "@fp-ts/data/Context"
+import * as Dual from "@fp-ts/data/Dual"
 import * as Equal from "@fp-ts/data/Equal"
 import * as Hash from "@fp-ts/data/Hash"
 
@@ -57,78 +58,95 @@ export class ContextImpl<Services> implements C.Context<Services> {
 }
 
 /** @internal */
-export function isContext(u: unknown): u is C.Context<never> {
-  return typeof u === "object" && u !== null && "_id" in u && u["_id"] === ContextTypeId
-}
+export const isContext = (u: unknown): u is C.Context<never> =>
+  typeof u === "object" && u !== null && "_id" in u && u["_id"] === ContextTypeId
 
 /** @internal */
-export function isTag(u: unknown): u is C.Tag<never> {
-  return typeof u === "object" && u !== null && "_id" in u && u["_id"] === TagTypeId
-}
+export const isTag = (u: unknown): u is C.Tag<never> =>
+  typeof u === "object" && u !== null && "_id" in u && u["_id"] === TagTypeId
 
 /** @internal */
-export function empty(): C.Context<never> {
-  return new ContextImpl<never>(new Map())
-}
+export const empty = (): C.Context<never> => new ContextImpl<never>(new Map())
 
-export function make<S>(tag: C.Tag<S>) {
-  return (service: S): C.Context<S> => new ContextImpl<S>(new Map([[tag, service]]))
-}
+export const make = Dual.dual<
+  <S>(service: S, tag: C.Tag<S>) => C.Context<S>,
+  <S>(tag: C.Tag<S>) => (service: S) => C.Context<S>
+>(2, (service, tag) => new ContextImpl(new Map([[tag, service]])))
 
-export function add<S>(tag: C.Tag<S>) {
-  return (service: S) => {
-    return <Services>(self: C.Context<Services>): C.Context<Services | S> => {
-      const map = new Map(self.unsafeMap)
-      map.set(tag, service)
-      return new ContextImpl<Services | S>(map)
-    }
-  }
-}
-
-/** @internal */
-export function get<Services, T extends C.Tags<Services>>(tag: T) {
-  return (self: C.Context<Services>): T extends C.Tag<infer S> ? S : never => {
-    if (!self.unsafeMap.has(tag)) {
-      throw new Error("Service not found")
-    }
-    return self.unsafeMap.get(tag)!
-  }
-}
-
-/** @internal */
-export function unsafeGet<S>(tag: C.Tag<S>) {
-  return <Services>(self: C.Context<Services>): S => {
-    if (!self.unsafeMap.has(tag)) {
-      throw new Error("Service not found")
-    }
-    return self.unsafeMap.get(tag)!
-  }
-}
-
-/** @internal */
-export function getOption<S>(tag: C.Tag<S>) {
-  return <Services>(self: C.Context<Services>): O.Option<S> => {
-    if (!self.unsafeMap.has(tag)) {
-      return option.none()
-    }
-    return option.some(self.unsafeMap.get(tag)!)
-  }
-}
-
-/** @internal */
-export function merge<R1>(that: C.Context<R1>) {
-  return <Services>(self: C.Context<Services>): C.Context<Services | R1> => {
+export const add = Dual.dual<
+  <Services, S>(
+    self: C.Context<Services>,
+    tag: C.Tag<S>
+  ) => (service: S) => C.Context<Services | S>,
+  <S>(
+    tag: C.Tag<S>
+  ) => (
+    service: S
+  ) => <Services>(
+    self: C.Context<Services>
+  ) => C.Context<Services | S>
+>(2, (self, tag) =>
+  (service) => {
     const map = new Map(self.unsafeMap)
-    for (const [tag, s] of that.unsafeMap) {
-      map.set(tag, s)
-    }
-    return new ContextImpl<Services | R1>(map)
-  }
-}
+    map.set(tag, service)
+    return new ContextImpl(map)
+  })
 
 /** @internal */
-export function prune<Services, S extends Array<C.Tags<Services>>>(...tags: S) {
-  return (self: C.Context<Services>): C.Context<
+export const get = Dual.dual<
+  <Services, T extends C.Tags<Services>>(
+    self: C.Context<Services>,
+    tag: T
+  ) => T extends C.Tag<infer S> ? S : never,
+  <Services, T extends C.Tags<Services>>(
+    tag: T
+  ) => (
+    self: C.Context<Services>
+  ) => T extends C.Tag<infer S> ? S : never
+>(2, (self, tag) => {
+  if (!self.unsafeMap.has(tag)) {
+    throw new Error("Service not found")
+  }
+  return self.unsafeMap.get(tag)!
+})
+
+/** @internal */
+export const unsafeGet = Dual.dual<
+  <Services, S>(self: C.Context<Services>, tag: C.Tag<S>) => S,
+  <S>(tag: C.Tag<S>) => <Services>(self: C.Context<Services>) => S
+>(2, (self, tag) => {
+  if (!self.unsafeMap.has(tag)) {
+    throw new Error("Service not found")
+  }
+  return self.unsafeMap.get(tag)!
+})
+
+/** @internal */
+export const getOption = Dual.dual<
+  <Services, S>(self: C.Context<Services>, tag: C.Tag<S>) => O.Option<S>,
+  <S>(tag: C.Tag<S>) => <Services>(self: C.Context<Services>) => O.Option<S>
+>(2, (self, tag) => {
+  if (!self.unsafeMap.has(tag)) {
+    return option.none()
+  }
+  return option.some(self.unsafeMap.get(tag)!)
+})
+
+/** @internal */
+export const merge = Dual.dual<
+  <Services, R1>(self: C.Context<Services>, that: C.Context<R1>) => C.Context<Services | R1>,
+  <R1>(that: C.Context<R1>) => <Services>(self: C.Context<Services>) => C.Context<Services | R1>
+>(2, (self, that) => {
+  const map = new Map(self.unsafeMap)
+  for (const [tag, s] of that.unsafeMap) {
+    map.set(tag, s)
+  }
+  return new ContextImpl(map)
+})
+
+/** @internal */
+export const prune = <Services, S extends Array<C.Tags<Services>>>(...tags: S) =>
+  (self: C.Context<Services>): C.Context<
     { [k in keyof S]: C.Tag.Service<S[k]> }[number]
   > => {
     const tagSet = new Set<C.Tag<any>>(tags)
@@ -140,4 +158,3 @@ export function prune<Services, S extends Array<C.Tags<Services>>>(...tags: S) {
     }
     return new ContextImpl<{ [k in keyof S]: C.Tag.Service<S[k]> }[number]>(newEnv)
   }
-}
