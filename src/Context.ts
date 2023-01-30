@@ -100,7 +100,7 @@ export const make: <T extends Tag<any>>(
 export const add: {
   <Services, T extends Tag<any>>(
     self: Context<Services>,
-    tag: Tag<T>,
+    tag: T,
     service: Tag.Service<T>
   ): Context<Services | Tag.Service<T>>
   <T extends Tag<any>>(
