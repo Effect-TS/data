@@ -88,18 +88,25 @@ export const empty: () => Context<never> = C.empty
  * @since 1.0.0
  * @category constructors
  */
-export const make: {
-  <S>(service: S, tag: Tag<S>): Context<S>
-  <S>(tag: Tag<S>): (service: S) => Context<S>
-} = C.make
+export const make: <T extends Tag<any>>(
+  tag: T,
+  service: Tag.Service<T>
+) => Context<Tag.Service<T>> = C.make
 
 /**
  * @since 1.0.0
  * @category mutations
  */
 export const add: {
-  <Services, S>(self: Context<Services>, tag: Tag<S>): (service: S) => Context<Services | S>
-  <S>(tag: Tag<S>): (service: S) => <Services>(self: Context<Services>) => Context<S | Services>
+  <Services, T extends Tag<any>>(
+    self: Context<Services>,
+    tag: Tag<T>,
+    service: Tag.Service<T>
+  ): Context<Services | Tag.Service<T>>
+  <T extends Tag<any>>(
+    tag: T,
+    service: Tag.Service<T>
+  ): <Services>(self: Context<Services>) => Context<Tag.Service<T> | Services>
 } = C.add
 
 /**

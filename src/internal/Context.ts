@@ -68,29 +68,30 @@ export const isTag = (u: unknown): u is C.Tag<never> =>
 /** @internal */
 export const empty = (): C.Context<never> => new ContextImpl<never>(new Map())
 
-export const make = Dual.dual<
-  <S>(service: S, tag: C.Tag<S>) => C.Context<S>,
-  <S>(tag: C.Tag<S>) => (service: S) => C.Context<S>
->(2, (service, tag) => new ContextImpl(new Map([[tag, service]])))
+/** @internal */
+export const make = <T extends C.Tag<any>>(
+  tag: T,
+  service: C.Tag.Service<T>
+): C.Context<C.Tag.Service<T>> => new ContextImpl(new Map([[tag, service]]))
 
+/** @internal */
 export const add = Dual.dual<
-  <Services, S>(
+  <Services, T extends C.Tag<any>>(
     self: C.Context<Services>,
-    tag: C.Tag<S>
-  ) => (service: S) => C.Context<Services | S>,
-  <S>(
-    tag: C.Tag<S>
-  ) => (
-    service: S
+    tag: C.Tag<T>,
+    service: C.Tag.Service<T>
+  ) => C.Context<Services | C.Tag.Service<T>>,
+  <T extends C.Tag<any>>(
+    tag: T,
+    service: C.Tag.Service<T>
   ) => <Services>(
     self: C.Context<Services>
-  ) => C.Context<Services | S>
->(2, (self, tag) =>
-  (service) => {
-    const map = new Map(self.unsafeMap)
-    map.set(tag, service)
-    return new ContextImpl(map)
-  })
+  ) => C.Context<Services | C.Tag.Service<T>>
+>(3, (self, tag, service) => {
+  const map = new Map(self.unsafeMap)
+  map.set(tag, service)
+  return new ContextImpl(map)
+})
 
 /** @internal */
 export const get = Dual.dual<

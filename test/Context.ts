@@ -27,14 +27,11 @@ describe.concurrent("Context", () => {
 
   it("adds and retrieve services", () => {
     const Services = pipe(
-      Context.make(A)({ a: 0 }),
-      Context.add(B)({ b: 1 })
+      Context.make(A, { a: 0 }),
+      Context.add(B, { b: 1 })
     )
 
-    expect(pipe(
-      Services,
-      Context.get(A)
-    )).toEqual({ a: 0 })
+    expect(Context.get(Services, A)).toEqual({ a: 0 })
 
     expect(pipe(
       Services,
@@ -57,11 +54,11 @@ describe.concurrent("Context", () => {
   it("prunes services in env and merges", () => {
     const env = pipe(
       Context.empty(),
-      Context.add(A)({ a: 0 }),
+      Context.add(A, { a: 0 }),
       Context.merge(pipe(
         Context.empty(),
-        Context.add(B)({ b: 1 }),
-        Context.add(C)({ c: 2 })
+        Context.add(B, { b: 1 }),
+        Context.add(C, { c: 2 })
       ))
     )
 
@@ -97,14 +94,14 @@ describe.concurrent("Context", () => {
     const c: C = { c: 2 }
     const oldEnv = pipe(
       Context.empty(),
-      Context.add(A)(a),
-      Context.add(B)(b),
-      Context.add(C)(c)
+      Context.add(A, a),
+      Context.add(B, b),
+      Context.add(C, c)
     ) as Context.Context<A | B | C>
     const newEnv = pipe(
       Context.empty(),
-      Context.add(A)(a),
-      Context.add(B)({ b: 3 })
+      Context.add(A, a),
+      Context.add(B, { b: 3 })
     ) as Context.Context<A | B | C>
     const differ = Differ.environment<A | B | C>()
     const patch = differ.diff(oldEnv, newEnv)
@@ -122,14 +119,14 @@ describe.concurrent("Context", () => {
     const c: C = { c: 2 }
     const oldEnv = pipe(
       Context.empty(),
-      Context.add(A)(a),
-      Context.add(B)(b),
-      Context.add(C)(c)
+      Context.add(A, a),
+      Context.add(B, b),
+      Context.add(C, c)
     ) as Context.Context<A | B | C>
     const newEnv = pipe(
       Context.empty(),
-      Context.add(A)(a),
-      Context.add(B)({ b: 3 })
+      Context.add(A, a),
+      Context.add(B, { b: 3 })
     ) as Context.Context<A | B | C>
     const differ = Differ.environment<A | B | C>()
     const result = differ.diff(oldEnv, newEnv)
