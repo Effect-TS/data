@@ -229,7 +229,10 @@ export const length = <A>(self: List<A>): number => {
  * @since 1.0.0
  * @category combinators
  */
-export const equalsWith = Dual.dual<
+export const equalsWith: {
+  <A, B>(self: List<A>, that: List<B>, f: (a: A, b: B) => boolean): boolean
+  <A, B>(that: List<B>, f: (a: A, b: B) => boolean): (self: List<A>) => boolean
+} = Dual.dual<
   <A, B>(self: List<A>, that: List<B>, f: (a: A, b: B) => boolean) => boolean,
   <A, B>(that: List<B>, f: (a: A, b: B) => boolean) => (self: List<A>) => boolean
 >(3, <A, B>(self: List<A>, that: List<B>, f: (a: A, b: B) => boolean) => {
@@ -335,7 +338,10 @@ export const compact = <A>(self: Iterable<Option.Option<A>>): List<A> => filterM
  * @since 1.0.0
  * @category combinators
  */
-export const concat = Dual.dual<
+export const concat: {
+  <A, B>(self: List<A>, that: List<B>): List<A | B>
+  <B>(that: List<B>): <A>(self: List<A>) => List<A | B>
+} = Dual.dual<
   <A, B>(self: List<A>, that: List<B>) => List<A | B>,
   <B>(that: List<B>) => <A>(self: List<A>) => List<A | B>
 >(2, (self, that) => prependAll(that, self))
@@ -346,7 +352,10 @@ export const concat = Dual.dual<
  * @since 1.0.0
  * @category combinators
  */
-export const drop = Dual.dual<
+export const drop: {
+  <A>(self: List<A>, n: number): List<A>
+  (n: number): <A>(self: List<A>) => List<A>
+} = Dual.dual<
   <A>(self: List<A>, n: number) => List<A>,
   (n: number) => <A>(self: List<A>) => List<A>
 >(2, (self, n) => {
@@ -372,7 +381,10 @@ export const drop = Dual.dual<
  * @since 1.0.0
  * @category combinators
  */
-export const every = Dual.dual<
+export const every: {
+  <A>(self: List<A>, predicate: Predicate<A>): boolean
+  <A>(predicate: Predicate<A>): (self: List<A>) => boolean
+} = Dual.dual<
   <A>(self: List<A>, predicate: Predicate<A>) => boolean,
   <A>(predicate: Predicate<A>) => (self: List<A>) => boolean
 >(2, (self, predicate) => {
@@ -390,7 +402,12 @@ export const every = Dual.dual<
  * @since 1.0.0
  * @category combinators
  */
-export const filter = Dual.dual<{
+export const filter: {
+  <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): List<B>
+  <A>(self: List<A>, predicate: Predicate<A>): List<A>
+  <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => List<B>
+  <A>(predicate: Predicate<A>): (self: List<A>) => List<A>
+} = Dual.dual<{
   <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): List<B>
   <A>(self: List<A>, predicate: Predicate<A>): List<A>
 }, {
@@ -406,7 +423,10 @@ export const filter = Dual.dual<{
  * @since 1.0.0
  * @category combinators
  */
-export const filterMap = Dual.dual<
+export const filterMap: {
+  <A, B>(self: Iterable<A>, pf: (a: A) => Option.Option<B>): List<B>
+  <A, B>(pf: (a: A) => Option.Option<B>): (self: Iterable<A>) => List<B>
+} = Dual.dual<
   <A, B>(self: Iterable<A>, pf: (a: A) => Option.Option<B>) => List<B>,
   <A, B>(pf: (a: A) => Option.Option<B>) => (self: Iterable<A>) => List<B>
 >(2, <A, B>(self: Iterable<A>, pf: (a: A) => Option.Option<B>) => {
@@ -427,7 +447,12 @@ export const filterMap = Dual.dual<
  * @since 1.0.0
  * @category combinators
  */
-export const findFirst = Dual.dual<
+export const findFirst: {
+  <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): Option.Option<B>
+  <A>(self: List<A>, predicate: Predicate<A>): Option.Option<A>
+  <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => Option.Option<B>
+  <A>(predicate: Predicate<A>): (self: List<A>) => Option.Option<A>
+} = Dual.dual<
   {
     <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): Option.Option<B>
     <A>(self: List<A>, predicate: Predicate<A>): Option.Option<A>
@@ -453,7 +478,10 @@ export const findFirst = Dual.dual<
  * @since 1.0.0
  * @category combinators
  */
-export const flatMap = Dual.dual<
+export const flatMap: {
+  <A, B>(self: List<A>, f: (a: A) => List<B>): List<B>
+  <A, B>(f: (a: A) => List<B>): (self: List<A>) => List<B>
+} = Dual.dual<
   <A, B>(self: List<A>, f: (a: A) => List<B>) => List<B>,
   <A, B>(f: (a: A) => List<B>) => (self: List<A>) => List<B>
 >(2, <A, B>(self: List<A>, f: (a: A) => List<B>) => {
@@ -486,7 +514,10 @@ export const flatMap = Dual.dual<
  * @since 1.0.0
  * @category combinators
  */
-export const forEach = Dual.dual<
+export const forEach: {
+  <A, B>(self: List<A>, f: (a: A) => B): void
+  <A, B>(f: (a: A) => B): (self: List<A>) => void
+} = Dual.dual<
   <A, B>(self: List<A>, f: (a: A) => B) => void,
   <A, B>(f: (a: A) => B) => (self: List<A>) => void
 >(2, (self, f) => {
@@ -523,7 +554,10 @@ export const last = <A>(self: List<A>): Option.Option<A> =>
  * @since 1.0.0
  * @category combinators
  */
-export const map = Dual.dual<
+export const map: {
+  <A, B>(self: List<A>, f: (a: A) => B): List<B>
+  <A, B>(f: (a: A) => B): (self: List<A>) => List<B>
+} = Dual.dual<
   <A, B>(self: List<A>, f: (a: A) => B) => List<B>,
   <A, B>(f: (a: A) => B) => (self: List<A>) => List<B>
 >(2, <A, B>(self: List<A>, f: (a: A) => B) => {
@@ -551,7 +585,10 @@ export const map = Dual.dual<
  * @since 1.0.0
  * @category combinators
  */
-export const partition = Dual.dual<
+export const partition: {
+  <A>(self: List<A>, predicate: Predicate<A>): readonly [List<A>, List<A>]
+  <A>(predicate: Predicate<A>): (self: List<A>) => readonly [List<A>, List<A>]
+} = Dual.dual<
   <A>(self: List<A>, predicate: Predicate<A>) => readonly [List<A>, List<A>],
   <A>(predicate: Predicate<A>) => (self: List<A>) => readonly [List<A>, List<A>]
 >(2, <A>(self: List<A>, predicate: Predicate<A>) => {
@@ -575,7 +612,10 @@ export const partition = Dual.dual<
  * @since 1.0.0
  * @category combinators
  */
-export const partitionMap = Dual.dual<
+export const partitionMap: {
+  <A, B, C>(self: List<A>, f: (a: A) => Either.Either<B, C>): readonly [List<B>, List<C>]
+  <A, B, C>(f: (a: A) => Either.Either<B, C>): (self: List<A>) => readonly [List<B>, List<C>]
+} = Dual.dual<
   <A, B, C>(self: List<A>, f: (a: A) => Either.Either<B, C>) => readonly [List<B>, List<C>],
   <A, B, C>(f: (a: A) => Either.Either<B, C>) => (self: List<A>) => readonly [List<B>, List<C>]
 >(2, <A, B, C>(self: List<A>, f: (a: A) => Either.Either<B, C>) => {
@@ -598,7 +638,10 @@ export const partitionMap = Dual.dual<
  * @since 1.0.0
  * @category combinators
  */
-export const prepend = Dual.dual<
+export const prepend: {
+  <A, B>(self: List<A>, element: B): Cons<A | B>
+  <B>(element: B): <A>(self: List<A>) => Cons<A | B>
+} = Dual.dual<
   <A, B>(self: List<A>, element: B) => Cons<A | B>,
   <B>(element: B) => <A>(self: List<A>) => Cons<A | B>
 >(2, <A, B>(self: List<A>, element: B) => cons<A | B>(element, self))
@@ -609,7 +652,10 @@ export const prepend = Dual.dual<
  * @since 1.0.0
  * @category combinators
  */
-export const prependAll = Dual.dual<
+export const prependAll: {
+  <A, B>(self: List<A>, prefix: List<B>): List<A | B>
+  <B>(prefix: List<B>): <A>(self: List<A>) => List<A | B>
+} = Dual.dual<
   <A, B>(self: List<A>, prefix: List<B>) => List<A | B>,
   <B>(prefix: List<B>) => <A>(self: List<A>) => List<A | B>
 >(2, <A, B>(self: List<A>, prefix: List<B>) => {
@@ -638,7 +684,10 @@ export const prependAll = Dual.dual<
  * @since 1.0.0
  * @category combinators
  */
-export const prependAllReversed = Dual.dual<
+export const prependAllReversed: {
+  <A, B>(self: List<A>, prefix: List<B>): List<A | B>
+  <B>(prefix: List<B>): <A>(self: List<A>) => List<A | B>
+} = Dual.dual<
   <A, B>(self: List<A>, prefix: List<B>) => List<A | B>,
   <B>(prefix: List<B>) => <A>(self: List<A>) => List<A | B>
 >(2, <A, B>(self: List<A>, prefix: List<B>) => {
@@ -658,7 +707,10 @@ export const prependAllReversed = Dual.dual<
  * @since 1.0.0
  * @category combinators
  */
-export const reduce = Dual.dual<
+export const reduce: {
+  <A, Z>(self: List<A>, zero: Z, f: (b: Z, a: A) => Z): Z
+  <Z, A>(zero: Z, f: (b: Z, a: A) => Z): (self: List<A>) => Z
+} = Dual.dual<
   <A, Z>(self: List<A>, zero: Z, f: (b: Z, a: A) => Z) => Z,
   <Z, A>(zero: Z, f: (b: Z, a: A) => Z) => (self: List<A>) => Z
 >(3, (self, zero, f) => {
@@ -678,7 +730,10 @@ export const reduce = Dual.dual<
  * @since 1.0.0
  * @category combinators
  */
-export const reduceRight = Dual.dual<
+export const reduceRight: {
+  <Z, A>(self: List<A>, zero: Z, f: (accumulator: Z, value: A) => Z): Z
+  <Z, A>(zero: Z, f: (accumulator: Z, value: A) => Z): (self: List<A>) => Z
+} = Dual.dual<
   <Z, A>(self: List<A>, zero: Z, f: (accumulator: Z, value: A) => Z) => Z,
   <Z, A>(zero: Z, f: (accumulator: Z, value: A) => Z) => (self: List<A>) => Z
 >(3, (self, zero, f) => {
@@ -714,7 +769,10 @@ export const reverse = <A>(self: List<A>): List<A> => {
  * @since 1.0.0
  * @category combinators
  */
-export const some = Dual.dual<
+export const some: {
+  <A>(self: List<A>, predicate: Predicate<A>): boolean
+  <A>(predicate: Predicate<A>): (self: List<A>) => boolean
+} = Dual.dual<
   <A>(self: List<A>, predicate: Predicate<A>) => boolean,
   <A>(predicate: Predicate<A>) => (self: List<A>) => boolean
 >(2, (self, predicate) => {
@@ -734,7 +792,10 @@ export const some = Dual.dual<
  * @since 1.0.0
  * @category combinators
  */
-export const splitAt = Dual.dual<
+export const splitAt: {
+  <A>(self: List<A>, n: number): readonly [List<A>, List<A>]
+  (n: number): <A>(self: List<A>) => readonly [List<A>, List<A>]
+} = Dual.dual<
   <A>(self: List<A>, n: number) => readonly [List<A>, List<A>],
   (n: number) => <A>(self: List<A>) => readonly [List<A>, List<A>]
 >(2, (self, n) => [take(self, n), drop(self, n)])
@@ -755,7 +816,10 @@ export const tail = <A>(self: List<A>): Option.Option<List<A>> =>
  * @since 1.0.0
  * @category combinators
  */
-export const take = Dual.dual<
+export const take: {
+  <A>(self: List<A>, n: number): List<A>
+  (n: number): <A>(self: List<A>) => List<A>
+} = Dual.dual<
   <A>(self: List<A>, n: number) => List<A>,
   (n: number) => <A>(self: List<A>) => List<A>
 >(2, (self, n) => {
