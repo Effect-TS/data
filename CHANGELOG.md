@@ -1,5 +1,13 @@
 # @fp-ts/data
 
+## 0.1.2
+
+### Patch Changes
+
+- [#205](https://github.com/fp-ts/data/pull/205) [`ea70c80`](https://github.com/fp-ts/data/commit/ea70c80882afe664297413a6c71c3c89c6248154) Thanks [@tim-smart](https://github.com/tim-smart)! - update dual api signatures for Chunk / List
+
+- [#203](https://github.com/fp-ts/data/pull/203) [`b5d27da`](https://github.com/fp-ts/data/commit/b5d27daf482600acececfc65cf7d42fac6d3cd02) Thanks [@tim-smart](https://github.com/tim-smart)! - remove nested Tag in Context/add dual API
+
 ## 0.1.1
 
 ### Patch Changes
