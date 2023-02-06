@@ -1,5 +1,5 @@
 {
-  "name": "@effect/io",
+  "name": "@effect/data",
   "version": "0.0.0",
   "publishConfig": {
     "access": "public",
@@ -7,14 +7,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Effect-TS/io.git"
+    "url": "https://github.com/Effect-TS/data.git"
   },
   "author": "Michael Arnaldi <ma@matechs.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Effect-TS/io/issues"
+    "url": "https://github.com/Effect-TS/data/issues"
   },
-  "homepage": "https://github.com/Effect-TS/io",
+  "homepage": "https://github.com/Effect-TS/data",
   "description": "Functional programming in TypeScript",
   "tags": [
     "typescript",
