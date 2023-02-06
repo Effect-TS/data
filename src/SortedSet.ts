@@ -1,15 +1,15 @@
 /**
  * @since 1.0.0
  */
+import * as Dual from "@effect/data/Dual"
+import * as Equal from "@effect/data/Equal"
+import * as Hash from "@effect/data/Hash"
+import * as RBT from "@effect/data/RedBlackTree"
 import { pipe } from "@fp-ts/core/Function"
 import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
 import type { Order } from "@fp-ts/core/typeclass/Order"
-import * as Dual from "@fp-ts/data/Dual"
-import * as Equal from "@fp-ts/data/Equal"
-import * as Hash from "@fp-ts/data/Hash"
-import * as RBT from "@fp-ts/data/RedBlackTree"
 
-const TypeId: unique symbol = Symbol.for("@fp-ts/data/SortedSet")
+const TypeId: unique symbol = Symbol.for("@effect/data/SortedSet")
 
 /**
  * @since 1.0.0
@@ -34,7 +34,7 @@ class SortedSetImpl<A> implements Iterable<A>, Equal.Equal {
   constructor(readonly keyTree: RBT.RedBlackTree<A, boolean>) {}
 
   [Hash.symbol](): number {
-    return pipe(Hash.hash(this.keyTree), Hash.combine(Hash.hash("@fp-ts/data/SortedSet")))
+    return pipe(Hash.hash(this.keyTree), Hash.combine(Hash.hash("@effect/data/SortedSet")))
   }
 
   [Equal.symbol](that: unknown): boolean {
@@ -68,8 +68,7 @@ class SortedSetImpl<A> implements Iterable<A>, Equal.Equal {
 export const isSortedSet: {
   <A>(u: Iterable<A>): u is SortedSet<A>
   (u: unknown): u is SortedSet<unknown>
-} = (u: unknown): u is SortedSet<unknown> =>
-  typeof u === "object" && u != null && "_id" in u && u["_id"] === TypeId
+} = (u: unknown): u is SortedSet<unknown> => typeof u === "object" && u != null && "_id" in u && u["_id"] === TypeId
 
 /**
  * @since 1.0.0
@@ -84,16 +83,14 @@ export const empty = <A>(O: Order<A>): SortedSet<A> => new SortedSetImpl(RBT.emp
 export const fromIterable = <K>(ord: Order<K>) =>
   (
     iterable: Iterable<K>
-  ): SortedSet<K> =>
-    new SortedSetImpl(RBT.fromIterable<K, boolean>(ord)(Array.from(iterable).map((k) => [k, true])))
+  ): SortedSet<K> => new SortedSetImpl(RBT.fromIterable<K, boolean>(ord)(Array.from(iterable).map((k) => [k, true])))
 
 /**
  * @since 1.0.0
  * @category constructors
  */
 export const make = <K>(ord: Order<K>) =>
-  <Entries extends ReadonlyArray<K>>(...entries: Entries): SortedSet<Entries[number]> =>
-    fromIterable(ord)(entries)
+  <Entries extends ReadonlyArray<K>>(...entries: Entries): SortedSet<Entries[number]> => fromIterable(ord)(entries)
 
 /**
  * @since 1.0.0

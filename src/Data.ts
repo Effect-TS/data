@@ -1,8 +1,8 @@
 /**
  * @since 1.0.0
  */
-import * as Equal from "@fp-ts/data/Equal"
-import * as Hash from "@fp-ts/data/Hash"
+import * as Equal from "@effect/data/Equal"
+import * as Hash from "@effect/data/Hash"
 
 /**
  * @category models
@@ -94,15 +94,13 @@ export const tuple = <As extends ReadonlyArray<any>>(...as: As): Data<As> => uns
  * @category constructors
  * @since 1.0.0
  */
-export const array = <As extends ReadonlyArray<any>>(as: As): Data<As> =>
-  unsafeArray(as.slice(0) as unknown as As)
+export const array = <As extends ReadonlyArray<any>>(as: As): Data<As> => unsafeArray(as.slice(0) as unknown as As)
 
 /**
  * @category constructors
  * @since 1.0.0
  */
-export const unsafeArray = <As extends ReadonlyArray<any>>(as: As): Data<As> =>
-  Object.setPrototypeOf(as, protoArr)
+export const unsafeArray = <As extends ReadonlyArray<any>>(as: As): Data<As> => Object.setPrototypeOf(as, protoArr)
 
 const _case = <A extends Case>(): Case.Constructor<A> => struct as any
 

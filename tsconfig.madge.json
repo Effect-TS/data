@@ -4,8 +4,8 @@
     "allowJs": true,
     "baseUrl": ".",
     "paths": {
-      "@fp-ts/data": ["./build/esm/index.js"],
-      "@fp-ts/data/*": ["./build/esm/*"]
+      "@effect/data": ["./build/esm/index.js"],
+      "@effect/data/*": ["./build/esm/*"]
     }
   },
   "include": ["./build/esm/**/*.js"]

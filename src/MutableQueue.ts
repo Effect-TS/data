@@ -1,11 +1,11 @@
 /**
  * @since 1.0.0
  */
-import * as Chunk from "@fp-ts/data/Chunk"
-import * as Dual from "@fp-ts/data/Dual"
-import * as MutableList from "@fp-ts/data/MutableList"
+import * as Chunk from "@effect/data/Chunk"
+import * as Dual from "@effect/data/Dual"
+import * as MutableList from "@effect/data/MutableList"
 
-const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableQueue") as TypeId
+const TypeId: unique symbol = Symbol.for("@effect/data/MutableQueue") as TypeId
 
 /**
  * @since 1.0.0
@@ -17,7 +17,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category symbol
  */
-export const EmptyMutableQueue = Symbol.for("@fp-ts/data/mutable/MutableQueue/Empty")
+export const EmptyMutableQueue = Symbol.for("@effect/data/mutable/MutableQueue/Empty")
 
 /**
  * @since 1.0.0
@@ -118,8 +118,7 @@ export const isFull = <A>(self: MutableQueue<A>): boolean =>
  * @since 1.0.0
  * @category getters
  */
-export const capacity = <A>(self: MutableQueue<A>): number =>
-  self.capacity === undefined ? Infinity : self.capacity
+export const capacity = <A>(self: MutableQueue<A>): number => self.capacity === undefined ? Infinity : self.capacity
 
 /**
  * Offers an element to the queue.

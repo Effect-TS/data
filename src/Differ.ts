@@ -1,18 +1,18 @@
 /**
  * @since 1.0.0
  */
+import type { Chunk } from "@effect/data/Chunk"
+import type { Context } from "@effect/data/Context"
+import type { ChunkPatch } from "@effect/data/Differ/ChunkPatch"
+import type { ContextPatch } from "@effect/data/Differ/ContextPatch"
+import type { HashMapPatch } from "@effect/data/Differ/HashMapPatch"
+import type { HashSetPatch } from "@effect/data/Differ/HashSetPatch"
+import type { OrPatch } from "@effect/data/Differ/OrPatch"
+import * as Dual from "@effect/data/Dual"
+import type { HashMap } from "@effect/data/HashMap"
+import type { HashSet } from "@effect/data/HashSet"
+import * as D from "@effect/data/internal/Differ"
 import type { Either } from "@fp-ts/core/Either"
-import type { Chunk } from "@fp-ts/data/Chunk"
-import type { Context } from "@fp-ts/data/Context"
-import type { ChunkPatch } from "@fp-ts/data/Differ/ChunkPatch"
-import type { ContextPatch } from "@fp-ts/data/Differ/ContextPatch"
-import type { HashMapPatch } from "@fp-ts/data/Differ/HashMapPatch"
-import type { HashSetPatch } from "@fp-ts/data/Differ/HashSetPatch"
-import type { OrPatch } from "@fp-ts/data/Differ/OrPatch"
-import * as Dual from "@fp-ts/data/Dual"
-import type { HashMap } from "@fp-ts/data/HashMap"
-import type { HashSet } from "@fp-ts/data/HashSet"
-import * as D from "@fp-ts/data/internal/Differ"
 
 const TypeId: unique symbol = D.DifferTypeId as TypeId
 

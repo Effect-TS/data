@@ -1,10 +1,10 @@
 /**
  * @since 1.0.0
  */
-import * as Dual from "@fp-ts/data/Dual"
-import * as MutableHashMap from "@fp-ts/data/MutableHashMap"
+import * as Dual from "@effect/data/Dual"
+import * as MutableHashMap from "@effect/data/MutableHashMap"
 
-const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableHashSet") as TypeId
+const TypeId: unique symbol = Symbol.for("@effect/data/MutableHashSet") as TypeId
 
 /**
  * @since 1.0.0
@@ -59,8 +59,7 @@ class MutableHashSetImpl<V> implements MutableHashSet<V> {
  * @since 1.0.0
  * @category constructors
  */
-export const empty = <K = never>(): MutableHashSet<K> =>
-  new MutableHashSetImpl(MutableHashMap.empty())
+export const empty = <K = never>(): MutableHashSet<K> => new MutableHashSetImpl(MutableHashMap.empty())
 
 /**
  * @since 1.0.0

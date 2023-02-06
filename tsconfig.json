@@ -5,7 +5,7 @@
       "path": "./tsconfig.build.json"
     },
     {
-      "path": "./tsconfig.build-test.json"
+      "path": "./tsconfig.test.json"
     }
   ]
 }

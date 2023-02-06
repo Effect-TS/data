@@ -2,13 +2,13 @@
  * @since 1.0.0
  */
 
+import type { Equal } from "@effect/data/Equal"
+import type { HashSet } from "@effect/data/HashSet"
+import * as HM from "@effect/data/internal/HashMap"
+import * as _keySet from "@effect/data/internal/HashMap/keySet"
+import type { UpdateFn } from "@effect/data/internal/HashMap/node"
 import type { Option } from "@fp-ts/core/Option"
 import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
-import type { Equal } from "@fp-ts/data/Equal"
-import type { HashSet } from "@fp-ts/data/HashSet"
-import * as HM from "@fp-ts/data/internal/HashMap"
-import * as _keySet from "@fp-ts/data/internal/HashMap/keySet"
-import type { UpdateFn } from "@fp-ts/data/internal/HashMap/node"
 
 const TypeId: unique symbol = HM.HashMapTypeId as TypeId
 
@@ -62,8 +62,7 @@ export const make: <Entries extends ReadonlyArray<readonly [any, any]>>(
  * @since 1.0.0
  * @category constructors
  */
-export const fromIterable: <K, V>(entries: Iterable<readonly [K, V]>) => HashMap<K, V> =
-  HM.fromIterable
+export const fromIterable: <K, V>(entries: Iterable<readonly [K, V]>) => HashMap<K, V> = HM.fromIterable
 
 /**
  * Checks if the `HashMap` contains any entries.

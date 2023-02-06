@@ -1,5 +1,5 @@
-import * as Chunk from "@fp-ts/data/Chunk"
-import * as NonEmpty from "@fp-ts/data/NonEmpty"
+import * as Chunk from "@effect/data/Chunk"
+import * as NonEmpty from "@effect/data/NonEmpty"
 
 describe("NonEmpty", () => {
   it("should get head and rest", () => {

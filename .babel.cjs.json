@@ -1,3 +1,7 @@
 {
-  "plugins": [["@babel/transform-modules-commonjs"], ["annotate-pure-calls"]]
+  "plugins": [
+    ["@effect/babel-plugin"],
+    ["@babel/transform-modules-commonjs"],
+    ["annotate-pure-calls"]
+  ]
 }

@@ -1,5 +1,5 @@
-import * as Data from "@fp-ts/data/Data"
-import * as Equal from "@fp-ts/data/Equal"
+import * as Data from "@effect/data/Data"
+import * as Equal from "@effect/data/Equal"
 
 describe("Data", () => {
   it("struct", () => {

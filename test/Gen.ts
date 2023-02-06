@@ -1,7 +1,7 @@
+import * as Gen from "@effect/data/Gen"
 import * as E from "@fp-ts/core/Either"
 import * as O from "@fp-ts/core/Option"
 import * as T from "@fp-ts/core/These"
-import * as Gen from "@fp-ts/data/Gen"
 
 describe("Gen", () => {
   it("Option", () => {

@@ -1,9 +1,9 @@
 /**
  * @since 1.0.0
  */
+import type { Equal } from "@effect/data/Equal"
+import * as C from "@effect/data/internal/Context"
 import type { Option } from "@fp-ts/core/Option"
-import type { Equal } from "@fp-ts/data/Equal"
-import * as C from "@fp-ts/data/internal/Context"
 
 const TagTypeId: unique symbol = C.TagTypeId
 

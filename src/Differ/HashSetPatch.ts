@@ -2,9 +2,9 @@
  * @since 1.0.0
  */
 
-import type { Equal } from "@fp-ts/data/Equal"
-import type { HashSet } from "@fp-ts/data/HashSet"
-import * as HSP from "@fp-ts/data/internal/Differ/HashSetPatch"
+import type { Equal } from "@effect/data/Equal"
+import type { HashSet } from "@effect/data/HashSet"
+import * as HSP from "@effect/data/internal/Differ/HashSetPatch"
 
 const TypeId: unique symbol = HSP.HashSetPatchTypeId as TypeId
 

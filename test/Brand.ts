@@ -1,6 +1,6 @@
+import * as Brand from "@effect/data/Brand"
 import * as Either from "@fp-ts/core/Either"
 import * as Option from "@fp-ts/core/Option"
-import * as Brand from "@fp-ts/data/Brand"
 
 type Int = number & Brand.Brand<"Int">
 const Int = Brand.refined<Int>(

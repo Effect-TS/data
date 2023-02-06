@@ -1,7 +1,7 @@
+import type { RedBlackTreeImpl } from "@effect/data/internal/RedBlackTree"
+import type * as Node from "@effect/data/internal/RedBlackTree/node"
+import type * as RBT from "@effect/data/RedBlackTree"
 import * as Option from "@fp-ts/core/Option"
-import type { RedBlackTreeImpl } from "@fp-ts/data/internal/RedBlackTree"
-import type * as Node from "@fp-ts/data/internal/RedBlackTree/node"
-import type * as RBT from "@fp-ts/data/RedBlackTree"
 
 /** @internal */
 export const Direction = {

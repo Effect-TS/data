@@ -1,13 +1,9 @@
 remote_theme: mikearnaldi/just-the-docs
-
-# Enable or disable the site search
 search_enabled: true
-
-# Aux links for the upper right navigation
 aux_links:
   "Docs":
-    - "//fp-ts.github.io/data"
+    - "//effect-ts.github.io/io"
   "API Reference":
-    - "//fp-ts.github.io/data/docs/modules"
+    - "//effect-ts.github.io/io/docs/modules"
   "GitHub":
-    - "//github.com/fp-ts/data"
+    - "//github.com/effect-ts/io"

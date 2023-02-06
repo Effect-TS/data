@@ -1,7 +1,7 @@
+import * as Context from "@effect/data/Context"
+import * as Differ from "@effect/data/Differ"
 import { pipe } from "@fp-ts/core/Function"
 import * as O from "@fp-ts/core/Option"
-import * as Context from "@fp-ts/data/Context"
-import * as Differ from "@fp-ts/data/Differ"
 
 interface A {
   a: number
@@ -20,8 +20,8 @@ const C = Context.Tag<C>()
 
 describe.concurrent("Context", () => {
   it("global tag", () => {
-    const a = Context.Tag<number>("@fp-ts/data/test/Context/Tag")
-    const b = Context.Tag<number>("@fp-ts/data/test/Context/Tag")
+    const a = Context.Tag<number>("@effect/data/test/Context/Tag")
+    const b = Context.Tag<number>("@effect/data/test/Context/Tag")
     expect(a).toBe(b)
   })
 

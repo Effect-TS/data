@@ -2,10 +2,10 @@
  * @since 1.0.0
  */
 
+import type { Differ } from "@effect/data/Differ"
+import type { Equal } from "@effect/data/Equal"
+import * as OP from "@effect/data/internal/Differ/OrPatch"
 import type { Either } from "@fp-ts/core/Either"
-import type { Differ } from "@fp-ts/data/Differ"
-import type { Equal } from "@fp-ts/data/Equal"
-import * as OP from "@fp-ts/data/internal/Differ/OrPatch"
 
 const TypeId: unique symbol = OP.OrPatchTypeId as TypeId
 

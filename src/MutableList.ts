@@ -1,9 +1,9 @@
 /**
  * @since 1.0.0
  */
-import * as Dual from "@fp-ts/data/Dual"
+import * as Dual from "@effect/data/Dual"
 
-const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableList") as TypeId
+const TypeId: unique symbol = Symbol.for("@effect/data/MutableList") as TypeId
 
 /**
  * @since 1.0.0
@@ -133,8 +133,7 @@ export const length = <A>(self: MutableList<A>): number => (self as MutableListI
  * @since 1.0.0
  * @category getters
  */
-export const tail = <A>(self: MutableList<A>): A | undefined =>
-  self.tail === undefined ? undefined : self.tail.value
+export const tail = <A>(self: MutableList<A>): A | undefined => self.tail === undefined ? undefined : self.tail.value
 
 /**
  * Returns the first element of the list, if it exists.
@@ -142,8 +141,7 @@ export const tail = <A>(self: MutableList<A>): A | undefined =>
  * @since 1.0.0
  * @category getters
  */
-export const head = <A>(self: MutableList<A>): A | undefined =>
-  self.head === undefined ? undefined : self.head.value
+export const head = <A>(self: MutableList<A>): A | undefined => self.head === undefined ? undefined : self.head.value
 
 /**
  * Executes the specified function `f` for each element in the list.

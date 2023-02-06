@@ -1,6 +1,6 @@
 {
-  "$schema": "https://unpkg.com/@changesets/config@1.6.4/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "fp-ts/data" }],
+  "$schema": "https://unpkg.com/@changesets/config@2.3.0/schema.json",
+  "changelog": ["@changesets/changelog-github", { "repo": "Effect-TS/data" }],
   "commit": false,
   "linked": [],
   "access": "restricted",

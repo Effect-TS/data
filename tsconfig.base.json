@@ -37,12 +37,19 @@
     "incremental": true,
     "removeComments": false,
     "paths": {
-      "@fp-ts/data": ["./src/index.ts"],
-      "@fp-ts/data/test/*": ["./test/*"],
-      "@fp-ts/data/examples/*": ["./examples/*"],
-      "@fp-ts/data/*": ["./src/*"]
+      "@effect/data": ["./src/index.ts"],
+      "@effect/data/test/*": ["./test/*"],
+      "@effect/data/examples/*": ["./examples/*"],
+      "@effect/data/*": ["./src/*"]
     },
-    "plugins": [{ "name": "@effect/language-service" }]
+    "plugins": [
+      {
+        "name": "@effect/language-service",
+        "diagnostics": {
+          "1002": "none"
+        }
+      }
+    ]
   },
   "include": [],
   "exclude": ["node_modules", "build", "lib"]

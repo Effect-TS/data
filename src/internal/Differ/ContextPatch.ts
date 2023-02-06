@@ -1,14 +1,14 @@
-import * as Chunk from "@fp-ts/data/Chunk"
-import type { Context, Tag } from "@fp-ts/data/Context"
-import type * as CP from "@fp-ts/data/Differ/ContextPatch"
-import * as Dual from "@fp-ts/data/Dual"
-import * as Equal from "@fp-ts/data/Equal"
-import * as Hash from "@fp-ts/data/Hash"
-import { ContextImpl } from "@fp-ts/data/internal/Context"
+import * as Chunk from "@effect/data/Chunk"
+import type { Context, Tag } from "@effect/data/Context"
+import type * as CP from "@effect/data/Differ/ContextPatch"
+import * as Dual from "@effect/data/Dual"
+import * as Equal from "@effect/data/Equal"
+import * as Hash from "@effect/data/Hash"
+import { ContextImpl } from "@effect/data/internal/Context"
 
 /** @internal */
 export const ContextPatchTypeId: CP.TypeId = Symbol.for(
-  "@fp-ts/data/Differ/ContextPatch"
+  "@effect/data/Differ/ContextPatch"
 ) as CP.TypeId
 
 function variance<A, B>(a: A): B {
@@ -126,8 +126,7 @@ type Instruction =
   | UpdateService<any, any>
 
 /** @internal */
-export const empty = <Input = never, Output = never>(): CP.ContextPatch<Input, Output> =>
-  new Empty()
+export const empty = <Input = never, Output = never>(): CP.ContextPatch<Input, Output> => new Empty()
 
 /** @internal */
 export const diff = <Input, Output>(

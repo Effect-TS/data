@@ -1,11 +1,11 @@
+import * as Equal from "@effect/data/Equal"
+import * as Hash from "@effect/data/Hash"
+import * as RedBlackTree from "@effect/data/RedBlackTree"
+import { deepStrictEqual } from "@effect/data/test/util"
 import { pipe } from "@fp-ts/core/Function"
 import * as number from "@fp-ts/core/Number"
 import * as Option from "@fp-ts/core/Option"
 import * as Order from "@fp-ts/core/typeclass/Order"
-import * as Equal from "@fp-ts/data/Equal"
-import * as Hash from "@fp-ts/data/Hash"
-import * as RedBlackTree from "@fp-ts/data/RedBlackTree"
-import { deepStrictEqual } from "@fp-ts/data/test/util"
 import { inspect } from "node:util"
 
 describe.concurrent("RedBlackTree", () => {

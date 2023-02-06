@@ -1,13 +1,13 @@
+import * as Chunk from "@effect/data/Chunk"
+import type { Differ } from "@effect/data/Differ"
+import type * as CP from "@effect/data/Differ/ChunkPatch"
+import * as Dual from "@effect/data/Dual"
+import * as Equal from "@effect/data/Equal"
+import * as Hash from "@effect/data/Hash"
 import { pipe } from "@fp-ts/core/Function"
-import * as Chunk from "@fp-ts/data/Chunk"
-import type { Differ } from "@fp-ts/data/Differ"
-import type * as CP from "@fp-ts/data/Differ/ChunkPatch"
-import * as Dual from "@fp-ts/data/Dual"
-import * as Equal from "@fp-ts/data/Equal"
-import * as Hash from "@fp-ts/data/Hash"
 
 /** @internal */
-export const ChunkPatchTypeId: CP.TypeId = Symbol.for("@fp-ts/data/Differ/ChunkPatch") as CP.TypeId
+export const ChunkPatchTypeId: CP.TypeId = Symbol.for("@effect/data/Differ/ChunkPatch") as CP.TypeId
 
 function variance<A, B>(a: A): B {
   return a as unknown as B

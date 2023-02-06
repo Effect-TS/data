@@ -2,10 +2,10 @@
  * @since 1.0.0
  */
 
-import type { Chunk } from "@fp-ts/data/Chunk"
-import type { Differ } from "@fp-ts/data/Differ"
-import type { Equal } from "@fp-ts/data/Equal"
-import * as CP from "@fp-ts/data/internal/Differ/ChunkPatch"
+import type { Chunk } from "@effect/data/Chunk"
+import type { Differ } from "@effect/data/Differ"
+import type { Equal } from "@effect/data/Equal"
+import * as CP from "@effect/data/internal/Differ/ChunkPatch"
 
 const TypeId: unique symbol = CP.ChunkPatchTypeId as TypeId
 
