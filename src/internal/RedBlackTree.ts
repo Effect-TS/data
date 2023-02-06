@@ -1,16 +1,16 @@
+import * as Chunk from "@effect/data/Chunk"
+import * as Dual from "@effect/data/Dual"
+import * as Equal from "@effect/data/Equal"
+import * as Hash from "@effect/data/Hash"
+import { Direction, RedBlackTreeIterator } from "@effect/data/internal/RedBlackTree/iterator"
+import * as Node from "@effect/data/internal/RedBlackTree/node"
+import { Stack } from "@effect/data/internal/Stack"
+import type * as RBT from "@effect/data/RedBlackTree"
 import * as Option from "@fp-ts/core/Option"
 import type * as Ordering from "@fp-ts/core/Ordering"
 import type * as Order from "@fp-ts/core/typeclass/Order"
-import * as Chunk from "@fp-ts/data/Chunk"
-import * as Dual from "@fp-ts/data/Dual"
-import * as Equal from "@fp-ts/data/Equal"
-import * as Hash from "@fp-ts/data/Hash"
-import { Direction, RedBlackTreeIterator } from "@fp-ts/data/internal/RedBlackTree/iterator"
-import * as Node from "@fp-ts/data/internal/RedBlackTree/node"
-import { Stack } from "@fp-ts/data/internal/Stack"
-import type * as RBT from "@fp-ts/data/RedBlackTree"
 
-const RedBlackTreeSymbolKey = "@fp-ts/data/RedBlackTree"
+const RedBlackTreeSymbolKey = "@effect/data/RedBlackTree"
 /** @internal */
 export const RedBlackTreeTypeId: RBT.TypeId = Symbol.for(RedBlackTreeSymbolKey) as RBT.TypeId
 
@@ -47,9 +47,7 @@ export class RedBlackTreeImpl<K, V> implements RBT.RedBlackTree<K, V> {
   }
 
   toString() {
-    return `RedBlackTree(${
-      Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")
-    })`
+    return `RedBlackTree(${Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")})`
   }
 
   toJSON() {
@@ -237,8 +235,7 @@ export const getAt = Dual.dual<
 })
 
 /** @internal */
-export const getOrder = <K, V>(tree: RBT.RedBlackTree<K, V>): Order.Order<K> =>
-  (tree as RedBlackTreeImpl<K, V>)._ord
+export const getOrder = <K, V>(tree: RBT.RedBlackTree<K, V>): Order.Order<K> => (tree as RedBlackTreeImpl<K, V>)._ord
 
 /** @internal */
 export const has = Dual.dual<
@@ -420,12 +417,10 @@ export const insert = Dual.dual<
 })
 
 /** @internal */
-export const keysForward = <K, V>(self: RBT.RedBlackTree<K, V>): IterableIterator<K> =>
-  keys(self, Direction.Forward)
+export const keysForward = <K, V>(self: RBT.RedBlackTree<K, V>): IterableIterator<K> => keys(self, Direction.Forward)
 
 /** @internal */
-export const keysBackward = <K, V>(self: RBT.RedBlackTree<K, V>): IterableIterator<K> =>
-  keys(self, Direction.Backward)
+export const keysBackward = <K, V>(self: RBT.RedBlackTree<K, V>): IterableIterator<K> => keys(self, Direction.Backward)
 
 const keys = <K, V>(
   self: RBT.RedBlackTree<K, V>,
@@ -849,8 +844,7 @@ export const removeFirst = Dual.dual<
 })
 
 /** @internal */
-export const size = <K, V>(self: RBT.RedBlackTree<K, V>): number =>
-  (self as RedBlackTreeImpl<K, V>)._root?.count ?? 0
+export const size = <K, V>(self: RBT.RedBlackTree<K, V>): number => (self as RedBlackTreeImpl<K, V>)._root?.count ?? 0
 
 /** @internal */
 export const valuesForward = <K, V>(self: RBT.RedBlackTree<K, V>): IterableIterator<V> =>

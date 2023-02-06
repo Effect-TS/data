@@ -1,4 +1,4 @@
-import * as _ from "@fp-ts/data"
+import * as _ from "@effect/data"
 import * as assert from "assert"
 import glob from "glob"
 import * as path from "path"

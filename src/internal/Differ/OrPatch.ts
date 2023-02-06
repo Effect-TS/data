@@ -1,23 +1,21 @@
+import * as Chunk from "@effect/data/Chunk"
+import type { Differ } from "@effect/data/Differ"
+import type * as OP from "@effect/data/Differ/OrPatch"
+import * as Dual from "@effect/data/Dual"
+import * as Equal from "@effect/data/Equal"
+import * as Hash from "@effect/data/Hash"
 import type { Either } from "@fp-ts/core/Either"
 import * as E from "@fp-ts/core/Either"
-import * as Chunk from "@fp-ts/data/Chunk"
-import type { Differ } from "@fp-ts/data/Differ"
-import type * as OP from "@fp-ts/data/Differ/OrPatch"
-import * as Dual from "@fp-ts/data/Dual"
-import * as Equal from "@fp-ts/data/Equal"
-import * as Hash from "@fp-ts/data/Hash"
 
 /** @internal */
-export const OrPatchTypeId: OP.TypeId = Symbol.for("@fp-ts/data/Differ/OrPatch") as OP.TypeId
+export const OrPatchTypeId: OP.TypeId = Symbol.for("@effect/data/Differ/OrPatch") as OP.TypeId
 
 function variance<A, B>(a: A): B {
   return a as unknown as B
 }
 
 /** @internal */
-export class Empty<Value, Value2, Patch, Patch2>
-  implements OP.OrPatch<Value, Value2, Patch, Patch2>
-{
+export class Empty<Value, Value2, Patch, Patch2> implements OP.OrPatch<Value, Value2, Patch, Patch2> {
   readonly _tag = "Empty"
   readonly _Value: (_: Value) => Value = variance
   readonly _Value2: (_: Value2) => Value2 = variance
@@ -36,9 +34,7 @@ export class Empty<Value, Value2, Patch, Patch2>
 }
 
 /** @internal */
-export class AndThen<Value, Value2, Patch, Patch2>
-  implements OP.OrPatch<Value, Value2, Patch, Patch2>
-{
+export class AndThen<Value, Value2, Patch, Patch2> implements OP.OrPatch<Value, Value2, Patch, Patch2> {
   readonly _tag = "AndThen"
   readonly _Value: (_: Value) => Value = variance
   readonly _Value2: (_: Value2) => Value2 = variance
@@ -63,9 +59,7 @@ export class AndThen<Value, Value2, Patch, Patch2>
 }
 
 /** @internal */
-export class SetLeft<Value, Value2, Patch, Patch2>
-  implements OP.OrPatch<Value, Value2, Patch, Patch2>
-{
+export class SetLeft<Value, Value2, Patch, Patch2> implements OP.OrPatch<Value, Value2, Patch, Patch2> {
   readonly _tag = "SetLeft"
   readonly _Value: (_: Value) => Value = variance
   readonly _Value2: (_: Value2) => Value2 = variance
@@ -86,9 +80,7 @@ export class SetLeft<Value, Value2, Patch, Patch2>
 }
 
 /** @internal */
-export class SetRight<Value, Value2, Patch, Patch2>
-  implements OP.OrPatch<Value, Value2, Patch, Patch2>
-{
+export class SetRight<Value, Value2, Patch, Patch2> implements OP.OrPatch<Value, Value2, Patch, Patch2> {
   readonly _tag = "SetRight"
   readonly _Value: (_: Value) => Value = variance
   readonly _Value2: (_: Value2) => Value2 = variance
@@ -109,9 +101,7 @@ export class SetRight<Value, Value2, Patch, Patch2>
 }
 
 /** @internal */
-export class UpdateLeft<Value, Value2, Patch, Patch2>
-  implements OP.OrPatch<Value, Value2, Patch, Patch2>
-{
+export class UpdateLeft<Value, Value2, Patch, Patch2> implements OP.OrPatch<Value, Value2, Patch, Patch2> {
   readonly _tag = "UpdateLeft"
   readonly _Value: (_: Value) => Value = variance
   readonly _Value2: (_: Value2) => Value2 = variance
@@ -132,9 +122,7 @@ export class UpdateLeft<Value, Value2, Patch, Patch2>
 }
 
 /** @internal */
-export class UpdateRight<Value, Value2, Patch, Patch2>
-  implements OP.OrPatch<Value, Value2, Patch, Patch2>
-{
+export class UpdateRight<Value, Value2, Patch, Patch2> implements OP.OrPatch<Value, Value2, Patch, Patch2> {
   readonly _tag = "UpdateRight"
   readonly _Value: (_: Value) => Value = variance
   readonly _Value2: (_: Value2) => Value2 = variance

@@ -1,12 +1,12 @@
+import type * as C from "@effect/data/Context"
+import * as Dual from "@effect/data/Dual"
+import * as Equal from "@effect/data/Equal"
+import * as Hash from "@effect/data/Hash"
 import type * as O from "@fp-ts/core/Option"
 import * as option from "@fp-ts/core/Option"
-import type * as C from "@fp-ts/data/Context"
-import * as Dual from "@fp-ts/data/Dual"
-import * as Equal from "@fp-ts/data/Equal"
-import * as Hash from "@fp-ts/data/Hash"
 
 /** @internal */
-export const TagTypeId: C.TagTypeId = Symbol.for("@fp-ts/data/Context/Tag") as C.TagTypeId
+export const TagTypeId: C.TagTypeId = Symbol.for("@effect/data/Context/Tag") as C.TagTypeId
 
 /** @internal */
 export class TagImpl<Service> implements C.Tag<Service> {
@@ -27,7 +27,7 @@ export class TagImpl<Service> implements C.Tag<Service> {
 }
 
 /** @internal */
-export const ContextTypeId: C.TypeId = Symbol.for("@fp-ts/data/Context") as C.TypeId
+export const ContextTypeId: C.TypeId = Symbol.for("@effect/data/Context") as C.TypeId
 
 /** @internal */
 export class ContextImpl<Services> implements C.Context<Services> {

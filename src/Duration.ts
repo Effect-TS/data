@@ -1,11 +1,11 @@
 /**
  * @since 1.0.0
  */
-import * as Dual from "@fp-ts/data/Dual"
-import * as Equal from "@fp-ts/data/Equal"
-import * as Hash from "@fp-ts/data/Hash"
+import * as Dual from "@effect/data/Dual"
+import * as Equal from "@effect/data/Equal"
+import * as Hash from "@effect/data/Hash"
 
-const TypeId: unique symbol = Symbol.for("@fp-ts/data/Duration")
+const TypeId: unique symbol = Symbol.for("@effect/data/Duration")
 
 /**
  * @since 1.0.0

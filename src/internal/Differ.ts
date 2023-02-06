@@ -1,20 +1,20 @@
+import type { Chunk } from "@effect/data/Chunk"
+import type { Context } from "@effect/data/Context"
+import type * as D from "@effect/data/Differ"
+import * as ChunkPatch from "@effect/data/Differ/ChunkPatch"
+import * as ContextPatch from "@effect/data/Differ/ContextPatch"
+import * as HashMapPatch from "@effect/data/Differ/HashMapPatch"
+import * as HashSetPatch from "@effect/data/Differ/HashSetPatch"
+import * as OrPatch from "@effect/data/Differ/OrPatch"
+import * as Dual from "@effect/data/Dual"
+import * as Equal from "@effect/data/Equal"
+import type { HashMap } from "@effect/data/HashMap"
+import type { HashSet } from "@effect/data/HashSet"
 import type { Either } from "@fp-ts/core/Either"
 import { constant, identity } from "@fp-ts/core/Function"
-import type { Chunk } from "@fp-ts/data/Chunk"
-import type { Context } from "@fp-ts/data/Context"
-import type * as D from "@fp-ts/data/Differ"
-import * as ChunkPatch from "@fp-ts/data/Differ/ChunkPatch"
-import * as ContextPatch from "@fp-ts/data/Differ/ContextPatch"
-import * as HashMapPatch from "@fp-ts/data/Differ/HashMapPatch"
-import * as HashSetPatch from "@fp-ts/data/Differ/HashSetPatch"
-import * as OrPatch from "@fp-ts/data/Differ/OrPatch"
-import * as Dual from "@fp-ts/data/Dual"
-import * as Equal from "@fp-ts/data/Equal"
-import type { HashMap } from "@fp-ts/data/HashMap"
-import type { HashSet } from "@fp-ts/data/HashSet"
 
 /** @internal */
-export const DifferTypeId: D.TypeId = Symbol.for("@fp-ts/data/Differ") as D.TypeId
+export const DifferTypeId: D.TypeId = Symbol.for("@effect/data/Differ") as D.TypeId
 
 /** @internal */
 class DifferImpl<Value, Patch> implements D.Differ<Value, Patch> {

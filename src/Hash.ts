@@ -1,9 +1,9 @@
 /**
  * @since 1.0.0
  */
+import { structural } from "@effect/data/internal/Equal"
+import { PCGRandom } from "@effect/data/Random"
 import { pipe } from "@fp-ts/core/Function"
-import { structural } from "@fp-ts/data/internal/Equal"
-import { PCGRandom } from "@fp-ts/data/Random"
 
 /** @internal */
 const randomHashCache = new WeakMap<object, number>()
@@ -14,7 +14,7 @@ const pcgr = new PCGRandom()
  * @since 1.0.0
  * @category symbols
  */
-export const symbol: unique symbol = Symbol.for("@fp-ts/data/Hash")
+export const symbol: unique symbol = Symbol.for("@effect/data/Hash")
 
 /**
  * @since 1.0.0

@@ -1,12 +1,12 @@
 /**
  * @since 1.0.0
  */
+import type { Chunk } from "@effect/data/Chunk"
+import type { Equal } from "@effect/data/Equal"
+import * as RBT from "@effect/data/internal/RedBlackTree"
+import * as RBTI from "@effect/data/internal/RedBlackTree/iterator"
 import type { Option } from "@fp-ts/core/Option"
 import type { Order } from "@fp-ts/core/typeclass/Order"
-import type { Chunk } from "@fp-ts/data/Chunk"
-import type { Equal } from "@fp-ts/data/Equal"
-import * as RBT from "@fp-ts/data/internal/RedBlackTree"
-import * as RBTI from "@fp-ts/data/internal/RedBlackTree/iterator"
 
 const TypeId: unique symbol = RBT.RedBlackTreeTypeId as TypeId
 
@@ -242,8 +242,7 @@ export const keys: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<K> = RBT
  * @since 1.0.0
  * @category getters
  */
-export const keysReversed: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<K> =
-  RBT.keysBackward
+export const keysReversed: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<K> = RBT.keysBackward
 
 /**
  * Returns the last entry in the tree, if it exists.
@@ -409,5 +408,4 @@ export const values: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<V> = R
  * @since 1.0.0
  * @category getters
  */
-export const valuesReversed: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<V> =
-  RBT.valuesBackward
+export const valuesReversed: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<V> = RBT.valuesBackward

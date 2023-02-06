@@ -11,7 +11,7 @@ import * as ReadonlyArray from "@fp-ts/core/ReadonlyArray"
  * @since 1.0.0
  * @category symbols
  */
-export const BrandTypeId: unique symbol = Symbol.for("@fp-ts/data/Brand")
+export const BrandTypeId: unique symbol = Symbol.for("@effect/data/Brand")
 
 /**
  * @since 1.0.0
@@ -23,7 +23,7 @@ export type BrandTypeId = typeof BrandTypeId
  * @since 1.0.0
  * @category symbols
  */
-export const NominalConstructorTypeId: unique symbol = Symbol.for("@fp-ts/data/Brand/Nominal")
+export const NominalConstructorTypeId: unique symbol = Symbol.for("@effect/data/Brand/Nominal")
 
 /**
  * @since 1.0.0
@@ -35,7 +35,7 @@ export type NominalConstructorTypeId = typeof NominalConstructorTypeId
  * @since 1.0.0
  * @category symbols
  */
-export const RefinedConstructorsTypeId: unique symbol = Symbol.for("@fp-ts/data/Brand/Refined")
+export const RefinedConstructorsTypeId: unique symbol = Symbol.for("@effect/data/Brand/Refined")
 
 /**
  * @since 1.0.0
@@ -159,8 +159,9 @@ export declare namespace Brand {
   > = {
     [B in keyof Brands]: Brand.Unbranded<Brand.FromConstructor<Brands[0]>> extends
       Brand.Unbranded<Brand.FromConstructor<Brands[B]>>
-      ? Brand.Unbranded<Brand.FromConstructor<Brands[B]>> extends
-        Brand.Unbranded<Brand.FromConstructor<Brands[0]>> ? Brands[B] : Brands[B]
+      ? Brand.Unbranded<Brand.FromConstructor<Brands[B]>> extends Brand.Unbranded<Brand.FromConstructor<Brands[0]>>
+        ? Brands[B]
+      : Brands[B]
       : "ERROR: All brands should have the same base type"
   }
 
@@ -168,8 +169,7 @@ export declare namespace Brand {
    * @since 1.0.0
    * @category models
    */
-  export type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends
-    (x: infer R) => any ? R
+  export type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x: infer R) => any ? R
     : never
 }
 
@@ -186,8 +186,7 @@ export const error = (message: string, meta?: unknown): Brand.BrandErrors => [{
  * @since 1.0.0
  * @category constructors
  */
-export const errors = (...errors: Array<Brand.BrandErrors>): Brand.BrandErrors =>
-  ReadonlyArray.flatten(errors)
+export const errors = (...errors: Array<Brand.BrandErrors>): Brand.BrandErrors => ReadonlyArray.flatten(errors)
 
 /**
  * Returns `true` if the provided `Brand` is nominal, `false` otherwise.

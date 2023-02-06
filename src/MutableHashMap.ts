@@ -1,12 +1,12 @@
 /**
  * @since 1.0.0
  */
+import * as Dual from "@effect/data/Dual"
+import * as Equal from "@effect/data/Equal"
+import * as Hash from "@effect/data/Hash"
 import * as Option from "@fp-ts/core/Option"
-import * as Dual from "@fp-ts/data/Dual"
-import * as Equal from "@fp-ts/data/Equal"
-import * as Hash from "@fp-ts/data/Hash"
 
-const TypeId: unique symbol = Symbol.for("@fp-ts/data/MutableHashMap") as TypeId
+const TypeId: unique symbol = Symbol.for("@effect/data/MutableHashMap") as TypeId
 
 /**
  * @since 1.0.0
@@ -78,9 +78,7 @@ class MutableHashMapImpl<K, V> implements MutableHashMap<K, V> {
   }
 
   toString() {
-    return `MutableHashMap(${
-      Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")
-    })`
+    return `MutableHashMap(${Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")})`
   }
 
   toJSON() {
@@ -99,8 +97,7 @@ class MutableHashMapImpl<K, V> implements MutableHashMap<K, V> {
  * @since 1.0.0
  * @category constructors
  */
-export const empty = <K = never, V = never>(): MutableHashMap<K, V> =>
-  new MutableHashMapImpl<K, V>()
+export const empty = <K = never, V = never>(): MutableHashMap<K, V> => new MutableHashMapImpl<K, V>()
 
 /**
  * @since 1.0.0

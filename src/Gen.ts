@@ -12,7 +12,7 @@ import type { Monad } from "@fp-ts/core/typeclass/Monad"
  * @category symbols
  * @since 1.0.0
  */
-export const GenKindTypeId = Symbol.for("@fp-ts/data/Gen/GenKind")
+export const GenKindTypeId = Symbol.for("@effect/data/Gen/GenKind")
 
 /**
  * @category symbols

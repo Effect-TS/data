@@ -1,15 +1,15 @@
 /**
  * @since 1.0.0
  */
+import * as Hash from "@effect/data/Hash"
+import { structural } from "@effect/data/internal/Equal"
 import type { Equivalence } from "@fp-ts/core/typeclass/Equivalence"
-import * as Hash from "@fp-ts/data/Hash"
-import { structural } from "@fp-ts/data/internal/Equal"
 
 /**
  * @since 1.0.0
  * @category symbols
  */
-export const symbol: unique symbol = Symbol.for("@fp-ts/data/Equal")
+export const symbol: unique symbol = Symbol.for("@effect/data/Equal")
 
 /**
  * @since 1.0.0
@@ -79,8 +79,7 @@ function compareBoth(self: unknown, that: unknown) {
  * @since 1.0.0
  * @category guards
  */
-export const isEqual = (u: unknown): u is Equal =>
-  typeof u === "object" && u !== null && symbol in u
+export const isEqual = (u: unknown): u is Equal => typeof u === "object" && u !== null && symbol in u
 
 /**
  * @since 1.0.0

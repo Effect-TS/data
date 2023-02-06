@@ -12,16 +12,16 @@
  * Licensed under Apache License 2.0
  * (http://www.apache.org/licenses/LICENSE-2.0).
  */
+import * as Chunk from "@effect/data/Chunk"
+import * as Dual from "@effect/data/Dual"
+import * as Equal from "@effect/data/Equal"
+import * as Hash from "@effect/data/Hash"
 import * as Either from "@fp-ts/core/Either"
 import { identity, unsafeCoerce } from "@fp-ts/core/Function"
 import * as Option from "@fp-ts/core/Option"
 import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
-import * as Chunk from "@fp-ts/data/Chunk"
-import * as Dual from "@fp-ts/data/Dual"
-import * as Equal from "@fp-ts/data/Equal"
-import * as Hash from "@fp-ts/data/Hash"
 
-const ListSymbolKey = "@fp-ts/data/List"
+const ListSymbolKey = "@effect/data/List"
 
 /**
  * @since 1.0.0
@@ -535,8 +535,7 @@ export const forEach: {
  * @since 1.0.0
  * @category getters
  */
-export const head = <A>(self: List<A>): Option.Option<A> =>
-  isNil(self) ? Option.none() : Option.some(self.head)
+export const head = <A>(self: List<A>): Option.Option<A> => isNil(self) ? Option.none() : Option.some(self.head)
 
 /**
  * Returns the last element of the specified list, or `None` if the list is
@@ -545,8 +544,7 @@ export const head = <A>(self: List<A>): Option.Option<A> =>
  * @since 1.0.0
  * @category getters
  */
-export const last = <A>(self: List<A>): Option.Option<A> =>
-  isNil(self) ? Option.none() : Option.some(unsafeLast(self)!)
+export const last = <A>(self: List<A>): Option.Option<A> => isNil(self) ? Option.none() : Option.some(unsafeLast(self)!)
 
 /**
  * Applies the specified mapping function to each element of the list.
@@ -806,8 +804,7 @@ export const splitAt: {
  * @since 1.0.0
  * @category getters
  */
-export const tail = <A>(self: List<A>): Option.Option<List<A>> =>
-  isNil(self) ? Option.none() : Option.some(self.tail)
+export const tail = <A>(self: List<A>): Option.Option<List<A>> => isNil(self) ? Option.none() : Option.some(self.tail)
 
 /**
  * Takes the specified number of elements from the beginning of the specified

@@ -1,6 +1,10 @@
 /**
  * @since 1.0.0
  */
+import * as Dual from "@effect/data/Dual"
+import * as Equal from "@effect/data/Equal"
+import * as Hash from "@effect/data/Hash"
+import type { NonEmptyIterable } from "@effect/data/NonEmpty"
 import type { Either } from "@fp-ts/core/Either"
 import { identity, pipe } from "@fp-ts/core/Function"
 import type { TypeLambda } from "@fp-ts/core/HKT"
@@ -9,12 +13,8 @@ import * as O from "@fp-ts/core/Option"
 import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
 import * as RA from "@fp-ts/core/ReadonlyArray"
 import type { Order } from "@fp-ts/core/typeclass/Order"
-import * as Dual from "@fp-ts/data/Dual"
-import * as Equal from "@fp-ts/data/Equal"
-import * as Hash from "@fp-ts/data/Hash"
-import type { NonEmptyIterable } from "@fp-ts/data/NonEmpty"
 
-const TypeId: unique symbol = Symbol.for("@fp-ts/data/Chunk") as TypeId
+const TypeId: unique symbol = Symbol.for("@effect/data/Chunk") as TypeId
 
 /**
  * @since 1.0.0
@@ -408,8 +408,7 @@ const copyToArray = <A>(self: Chunk<A>, array: Array<any>, n: number) => {
 export const isChunk: {
   <A>(u: Iterable<A>): u is Chunk<A>
   (u: unknown): u is Chunk<unknown>
-} = (u: unknown): u is Chunk<unknown> =>
-  typeof u === "object" && u != null && "_id" in u && u["_id"] === TypeId
+} = (u: unknown): u is Chunk<unknown> => typeof u === "object" && u != null && "_id" in u && u["_id"] === TypeId
 
 const _empty = new ChunkImpl<never>({ _tag: "IEmpty" })
 
@@ -461,8 +460,7 @@ export const get: {
  * @since 1.0.0
  * @category unsafe
  */
-export const unsafeFromArray = <A>(self: ReadonlyArray<A>): Chunk<A> =>
-  new ChunkImpl({ _tag: "IArray", array: self })
+export const unsafeFromArray = <A>(self: ReadonlyArray<A>): Chunk<A> => new ChunkImpl({ _tag: "IArray", array: self })
 
 /**
  * Gets an element unsafely, will throw on out of bounds
@@ -1247,8 +1245,7 @@ export const range = (start: number, end: number): NonEmptyChunk<number> =>
  * @since 1.0.0
  * @category elements
  */
-export const reverse = <A>(self: Chunk<A>): Chunk<A> =>
-  unsafeFromArray(RA.reverse(toReadonlyArray(self)))
+export const reverse = <A>(self: Chunk<A>): Chunk<A> => unsafeFromArray(RA.reverse(toReadonlyArray(self)))
 
 /**
  * Retireves the size of the chunk
@@ -1353,8 +1350,7 @@ export const splitWhere: {
  * @since 1.0.0
  * @category elements
  */
-export const tail = <A>(self: Chunk<A>): Option<Chunk<A>> =>
-  self.length > 0 ? O.some(drop(1)(self)) : O.none()
+export const tail = <A>(self: Chunk<A>): Option<Chunk<A>> => self.length > 0 ? O.some(drop(1)(self)) : O.none()
 
 /**
  * Takes the last `n` elements.
@@ -1643,8 +1639,7 @@ export const cross: {
  * @category elements
  * @since 1.0.0
  */
-export const zipWithIndex = <A>(self: Chunk<A>): Chunk<readonly [A, number]> =>
-  zipWithIndexOffset(0)(self)
+export const zipWithIndex = <A>(self: Chunk<A>): Chunk<readonly [A, number]> => zipWithIndexOffset(0)(self)
 
 /**
  * Zips this chunk with the index of every element, starting from the initial

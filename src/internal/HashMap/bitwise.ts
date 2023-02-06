@@ -1,4 +1,4 @@
-import { MASK } from "@fp-ts/data/internal/HashMap/config"
+import { MASK } from "@effect/data/internal/HashMap/config"
 
 /**
  * Hamming weight.

@@ -1,7 +1,7 @@
+import * as C from "@effect/data/Chunk"
+import { equals } from "@effect/data/Equal"
 import { pipe } from "@fp-ts/core/Function"
 import * as O from "@fp-ts/core/Option"
-import * as C from "@fp-ts/data/Chunk"
-import { equals } from "@fp-ts/data/Equal"
 import * as fc from "fast-check"
 import { inspect } from "node:util"
 

@@ -2,10 +2,10 @@
  * @since 1.0.0
  */
 
-import type { Differ } from "@fp-ts/data/Differ"
-import type { Equal } from "@fp-ts/data/Equal"
-import type { HashMap } from "@fp-ts/data/HashMap"
-import * as HMP from "@fp-ts/data/internal/Differ/HashMapPatch"
+import type { Differ } from "@effect/data/Differ"
+import type { Equal } from "@effect/data/Equal"
+import type { HashMap } from "@effect/data/HashMap"
+import * as HMP from "@effect/data/internal/Differ/HashMapPatch"
 
 const TypeId: unique symbol = HMP.HashMapPatchTypeId as TypeId
 

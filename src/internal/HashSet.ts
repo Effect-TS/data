@@ -1,13 +1,13 @@
+import * as Dual from "@effect/data/Dual"
+import * as Equal from "@effect/data/Equal"
+import * as Hash from "@effect/data/Hash"
+import type { HashMap } from "@effect/data/HashMap"
+import type * as HS from "@effect/data/HashSet"
+import * as HM from "@effect/data/internal/HashMap"
 import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
-import * as Dual from "@fp-ts/data/Dual"
-import * as Equal from "@fp-ts/data/Equal"
-import * as Hash from "@fp-ts/data/Hash"
-import type { HashMap } from "@fp-ts/data/HashMap"
-import type * as HS from "@fp-ts/data/HashSet"
-import * as HM from "@fp-ts/data/internal/HashMap"
 
 /** @internal */
-export const HashSetTypeId: HS.TypeId = Symbol.for("@fp-ts/data/HashSet") as HS.TypeId
+export const HashSetTypeId: HS.TypeId = Symbol.for("@effect/data/HashSet") as HS.TypeId
 
 /** @internal */
 export class HashSetImpl<A> implements HS.HashSet<A> {
@@ -111,8 +111,7 @@ export const isSubset = Dual.dual<
 >(2, (self, that) => every(self, (value) => has(that, value)))
 
 /** @internal */
-export const values = <A>(self: HS.HashSet<A>): IterableIterator<A> =>
-  HM.keys((self as HashSetImpl<A>)._keyMap)
+export const values = <A>(self: HS.HashSet<A>): IterableIterator<A> => HM.keys((self as HashSetImpl<A>)._keyMap)
 
 /** @internal */
 export const size = <A>(self: HS.HashSet<A>): number => HM.size((self as HashSetImpl<A>)._keyMap)

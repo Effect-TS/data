@@ -1,15 +1,15 @@
 /**
  * @since 1.0.0
  */
+import * as Dual from "@effect/data/Dual"
+import * as Equal from "@effect/data/Equal"
+import * as Hash from "@effect/data/Hash"
+import * as RBT from "@effect/data/RedBlackTree"
 import { pipe } from "@fp-ts/core/Function"
 import * as Option from "@fp-ts/core/Option"
 import type { Order } from "@fp-ts/core/typeclass/Order"
-import * as Dual from "@fp-ts/data/Dual"
-import * as Equal from "@fp-ts/data/Equal"
-import * as Hash from "@fp-ts/data/Hash"
-import * as RBT from "@fp-ts/data/RedBlackTree"
 
-const TypeId: unique symbol = Symbol.for("@fp-ts/data/SortedMap")
+const TypeId: unique symbol = Symbol.for("@effect/data/SortedMap")
 
 /**
  * @since 1.0.0
@@ -34,7 +34,7 @@ class SortedMapImpl<K, V> implements Iterable<readonly [K, V]>, Equal.Equal {
   constructor(readonly tree: RBT.RedBlackTree<K, V>) {}
 
   [Hash.symbol](): number {
-    return pipe(Hash.hash(this.tree), Hash.combine(Hash.hash("@fp-ts/data/SortedMap")))
+    return pipe(Hash.hash(this.tree), Hash.combine(Hash.hash("@effect/data/SortedMap")))
   }
 
   [Equal.symbol](that: unknown): boolean {
@@ -46,9 +46,7 @@ class SortedMapImpl<K, V> implements Iterable<readonly [K, V]>, Equal.Equal {
   }
 
   toString() {
-    return `SortedMap(${
-      Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")
-    })`
+    return `SortedMap(${Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")})`
   }
 
   toJSON() {
@@ -77,16 +75,14 @@ export const isSortedMap: {
  * @since 1.0.0
  * @category constructors
  */
-export const empty = <K, V = never>(ord: Order<K>): SortedMap<K, V> =>
-  new SortedMapImpl<K, V>(RBT.empty<K, V>(ord))
+export const empty = <K, V = never>(ord: Order<K>): SortedMap<K, V> => new SortedMapImpl<K, V>(RBT.empty<K, V>(ord))
 
 /**
  * @since 1.0.0
  * @category constructors
  */
 export const fromIterable = <K>(ord: Order<K>) =>
-  <V>(iterable: Iterable<readonly [K, V]>): SortedMap<K, V> =>
-    new SortedMapImpl(RBT.fromIterable<K, V>(ord)(iterable))
+  <V>(iterable: Iterable<readonly [K, V]>): SortedMap<K, V> => new SortedMapImpl(RBT.fromIterable<K, V>(ord)(iterable))
 
 /**
  * @since 1.0.0
@@ -114,8 +110,7 @@ export const isNonEmpty = <K, V>(self: SortedMap<K, V>): boolean => size(self) >
  * @since 1.0.0
  * @category getters
  */
-export const entries = <K, V>(self: SortedMap<K, V>): Iterator<readonly [K, V]> =>
-  self[Symbol.iterator]()
+export const entries = <K, V>(self: SortedMap<K, V>): Iterator<readonly [K, V]> => self[Symbol.iterator]()
 
 /**
  * @since 1.0.0
@@ -153,8 +148,7 @@ export const has: {
  * @since 1.0.0
  * @category elements
  */
-export const headOption = <K, V>(self: SortedMap<K, V>): Option.Option<readonly [K, V]> =>
-  RBT.first(self.tree)
+export const headOption = <K, V>(self: SortedMap<K, V>): Option.Option<readonly [K, V]> => RBT.first(self.tree)
 
 /**
  * @since 1.0.0

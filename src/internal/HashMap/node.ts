@@ -1,9 +1,9 @@
+import { equals } from "@effect/data/Equal"
+import { arraySpliceIn, arraySpliceOut, arrayUpdate } from "@effect/data/internal/HashMap/array"
+import { fromBitmap, hashFragment, toBitmap } from "@effect/data/internal/HashMap/bitwise"
+import { MAX_INDEX_NODE, MIN_ARRAY_NODE, SIZE } from "@effect/data/internal/HashMap/config"
+import { Stack } from "@effect/data/internal/Stack"
 import * as O from "@fp-ts/core/Option"
-import { equals } from "@fp-ts/data/Equal"
-import { arraySpliceIn, arraySpliceOut, arrayUpdate } from "@fp-ts/data/internal/HashMap/array"
-import { fromBitmap, hashFragment, toBitmap } from "@fp-ts/data/internal/HashMap/bitwise"
-import { MAX_INDEX_NODE, MIN_ARRAY_NODE, SIZE } from "@fp-ts/data/internal/HashMap/config"
-import { Stack } from "@fp-ts/data/internal/Stack"
 
 /** @internal */
 export type Node<K, V> =

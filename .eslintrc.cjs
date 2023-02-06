@@ -4,8 +4,7 @@ module.exports = {
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: 2018,
-    sourceType: "module",
-    project: "./tsconfig.eslint.json"
+    sourceType: "module"
   },
   settings: {
     "import/parsers": {
@@ -44,7 +43,6 @@ module.exports = {
     "sort-destructure-keys/sort-destructure-keys": "error",
     "deprecation/deprecation": "off",
     "@typescript-eslint/array-type": ["warn", { "default": "generic", "readonly": "generic" }],
-    "@typescript-eslint/prefer-readonly": "warn",
     "@typescript-eslint/member-delimiter-style": 0,
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/ban-types": "off",
@@ -68,7 +66,7 @@ module.exports = {
       {
         config: {
           "indentWidth": 2,
-          "lineWidth": 100,
+          "lineWidth": 120,
           "semiColons": "asi",
           "quoteStyle": "alwaysDouble",
           "trailingCommas": "never",

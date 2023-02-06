@@ -2,9 +2,9 @@
  * @since 1.0.0
  */
 
-import type { Context } from "@fp-ts/data/Context"
-import type { Equal } from "@fp-ts/data/Equal"
-import * as CP from "@fp-ts/data/internal/Differ/ContextPatch"
+import type { Context } from "@effect/data/Context"
+import type { Equal } from "@effect/data/Equal"
+import * as CP from "@effect/data/internal/Differ/ContextPatch"
 
 const TypeId: unique symbol = CP.ContextPatchTypeId as TypeId
 

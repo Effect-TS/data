@@ -1,16 +1,16 @@
+import * as Dual from "@effect/data/Dual"
+import * as Equal from "@effect/data/Equal"
+import * as Hash from "@effect/data/Hash"
+import type * as HM from "@effect/data/HashMap"
+import { fromBitmap, hashFragment, toBitmap } from "@effect/data/internal/HashMap/bitwise"
+import { SIZE } from "@effect/data/internal/HashMap/config"
+import * as Node from "@effect/data/internal/HashMap/node"
 import { identity, pipe } from "@fp-ts/core/Function"
 import * as Option from "@fp-ts/core/Option"
 import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
-import * as Dual from "@fp-ts/data/Dual"
-import * as Equal from "@fp-ts/data/Equal"
-import * as Hash from "@fp-ts/data/Hash"
-import type * as HM from "@fp-ts/data/HashMap"
-import { fromBitmap, hashFragment, toBitmap } from "@fp-ts/data/internal/HashMap/bitwise"
-import { SIZE } from "@fp-ts/data/internal/HashMap/config"
-import * as Node from "@fp-ts/data/internal/HashMap/node"
 
 /** @internal */
-export const HashMapTypeId: HM.TypeId = Symbol.for("@fp-ts/data/HashMap") as HM.TypeId
+export const HashMapTypeId: HM.TypeId = Symbol.for("@effect/data/HashMap") as HM.TypeId
 
 type TraversalFn<K, V, A> = (k: K, v: V) => A
 
