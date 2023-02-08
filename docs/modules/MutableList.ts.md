@@ -1,6 +1,6 @@
 ---
 title: MutableList.ts
-nav_order: 20
+nav_order: 21
 parent: Modules
 ---
 
@@ -151,7 +151,10 @@ Appends the specified value to the end of the list.
 **Signature**
 
 ```ts
-export declare const append: <A>(value: A) => (self: MutableList<A>) => MutableList<A>
+export declare const append: {
+  <A>(value: A): (self: MutableList<A>) => MutableList<A>
+  <A>(self: MutableList<A>, value: A): MutableList<A>
+}
 ```
 
 Added in v1.0.0
@@ -213,7 +216,10 @@ Executes the specified function `f` for each element in the list.
 **Signature**
 
 ```ts
-export declare const forEach: <A>(f: (element: A) => void) => (self: MutableList<A>) => void
+export declare const forEach: {
+  <A>(f: (element: A) => void): (self: MutableList<A>) => void
+  <A>(self: MutableList<A>, f: (element: A) => void): void
+}
 ```
 
 Added in v1.0.0

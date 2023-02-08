@@ -33,7 +33,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const array: <As extends readonly any[]>(as: As) => Data<As>
+export declare const array: <As extends readonly any[]>(as: As) => any
 ```
 
 Added in v1.0.0
@@ -55,7 +55,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const struct: <As extends Readonly<Record<string, any>>>(as: As) => Data<As>
+export declare const struct: <As extends Readonly<Record<string, any>>>(as: As) => any
 ```
 
 Added in v1.0.0
@@ -77,7 +77,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const tuple: <As extends readonly any[]>(...as: As) => Data<As>
+export declare const tuple: <As extends readonly any[]>(...as: As) => any
 ```
 
 Added in v1.0.0
@@ -87,7 +87,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unsafeArray: <As extends readonly any[]>(as: As) => Data<As>
+export declare const unsafeArray: <As extends readonly any[]>(as: As) => any
 ```
 
 Added in v1.0.0
@@ -97,7 +97,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unsafeStruct: <As extends Readonly<Record<string, any>>>(as: As) => Data<As>
+export declare const unsafeStruct: <As extends Readonly<Record<string, any>>>(as: As) => any
 ```
 
 Added in v1.0.0

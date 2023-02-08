@@ -1,6 +1,6 @@
 ---
 title: List.ts
-nav_order: 19
+nav_order: 18
 parent: Modules
 ---
 
@@ -89,8 +89,10 @@ Concatentates the specified lists together.
 **Signature**
 
 ```ts
-export declare const concat: (<A, B>(self: List<A>, that: List<B>) => List<A | B>) &
-  (<B>(that: List<B>) => <A>(self: List<A>) => List<B | A>)
+export declare const concat: {
+  <B>(that: List<B>): <A>(self: List<A>) => List<B | A>
+  <A, B>(self: List<A>, that: List<B>): List<A | B>
+}
 ```
 
 Added in v1.0.0
@@ -102,7 +104,7 @@ Drops the first `n` elements from the specified list.
 **Signature**
 
 ```ts
-export declare const drop: (<A>(self: List<A>, n: number) => List<A>) & ((n: number) => <A>(self: List<A>) => List<A>)
+export declare const drop: { (n: number): <A>(self: List<A>) => List<A>; <A>(self: List<A>, n: number): List<A> }
 ```
 
 Added in v1.0.0
@@ -115,8 +117,10 @@ Returns `true` if the two lists are equal according to the provided function,
 **Signature**
 
 ```ts
-export declare const equalsWith: (<A, B>(self: List<A>, that: List<B>, f: (a: A, b: B) => boolean) => boolean) &
-  (<A, B>(that: List<B>, f: (a: A, b: B) => boolean) => (self: List<A>) => boolean)
+export declare const equalsWith: {
+  <A, B>(that: List<B>, f: (a: A, b: B) => boolean): (self: List<A>) => boolean
+  <A, B>(self: List<A>, that: List<B>, f: (a: A, b: B) => boolean): boolean
+}
 ```
 
 Added in v1.0.0
@@ -129,8 +133,10 @@ predicate, `false` otherwise.
 **Signature**
 
 ```ts
-export declare const every: (<A>(self: List<A>, predicate: Predicate<A>) => boolean) &
-  (<A>(predicate: Predicate<A>) => (self: List<A>) => boolean)
+export declare const every: {
+  <A>(predicate: Predicate<A>): (self: List<A>) => boolean
+  <A>(self: List<A>, predicate: Predicate<A>): boolean
+}
 ```
 
 Added in v1.0.0
@@ -143,11 +149,10 @@ Filters a list using the specified predicate.
 
 ```ts
 export declare const filter: {
-  <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): List<B>
-  <A>(self: List<A>, predicate: Predicate<A>): List<A>
-} & {
   <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => List<B>
   <A>(predicate: Predicate<A>): (self: List<A>) => List<A>
+  <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): List<B>
+  <A>(self: List<A>, predicate: Predicate<A>): List<A>
 }
 ```
 
@@ -162,8 +167,10 @@ function not being defined for some elements.
 **Signature**
 
 ```ts
-export declare const filterMap: (<A, B>(self: Iterable<A>, pf: (a: A) => Option.Option<B>) => List<B>) &
-  (<A, B>(pf: (a: A) => Option.Option<B>) => (self: Iterable<A>) => List<B>)
+export declare const filterMap: {
+  <A, B>(pf: (a: A) => Option.Option<B>): (self: Iterable<A>) => List<B>
+  <A, B>(self: Iterable<A>, pf: (a: A) => Option.Option<B>): List<B>
+}
 ```
 
 Added in v1.0.0
@@ -177,11 +184,10 @@ predicate, or `None` if no such element exists.
 
 ```ts
 export declare const findFirst: {
-  <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): Option.Option<B>
-  <A>(self: List<A>, predicate: Predicate<A>): Option.Option<A>
-} & {
   <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => Option.Option<B>
   <A>(predicate: Predicate<A>): (self: List<A>) => Option.Option<A>
+  <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): Option.Option<B>
+  <A>(self: List<A>, predicate: Predicate<A>): Option.Option<A>
 }
 ```
 
@@ -194,8 +200,10 @@ Flat maps a list using the specified function.
 **Signature**
 
 ```ts
-export declare const flatMap: (<A, B>(self: List<A>, f: (a: A) => List<B>) => List<B>) &
-  (<A, B>(f: (a: A) => List<B>) => (self: List<A>) => List<B>)
+export declare const flatMap: {
+  <A, B>(f: (a: A) => List<B>): (self: List<A>) => List<B>
+  <A, B>(self: List<A>, f: (a: A) => List<B>): List<B>
+}
 ```
 
 Added in v1.0.0
@@ -207,8 +215,10 @@ Applies the specified function to each element of the list.
 **Signature**
 
 ```ts
-export declare const forEach: (<A, B>(self: List<A>, f: (a: A) => B) => void) &
-  (<A, B>(f: (a: A) => B) => (self: List<A>) => void)
+export declare const forEach: {
+  <A, B>(f: (a: A) => B): (self: List<A>) => void
+  <A, B>(self: List<A>, f: (a: A) => B): void
+}
 ```
 
 Added in v1.0.0
@@ -220,8 +230,10 @@ Applies the specified mapping function to each element of the list.
 **Signature**
 
 ```ts
-export declare const map: (<A, B>(self: List<A>, f: (a: A) => B) => List<B>) &
-  (<A, B>(f: (a: A) => B) => (self: List<A>) => List<B>)
+export declare const map: {
+  <A, B>(f: (a: A) => B): (self: List<A>) => List<B>
+  <A, B>(self: List<A>, f: (a: A) => B): List<B>
+}
 ```
 
 Added in v1.0.0
@@ -235,8 +247,10 @@ all elements that did satisfy the specified predicate.
 **Signature**
 
 ```ts
-export declare const partition: (<A>(self: List<A>, predicate: Predicate<A>) => readonly [List<A>, List<A>]) &
-  (<A>(predicate: Predicate<A>) => (self: List<A>) => readonly [List<A>, List<A>])
+export declare const partition: {
+  <A>(predicate: Predicate<A>): (self: List<A>) => readonly [List<A>, List<A>]
+  <A>(self: List<A>, predicate: Predicate<A>): readonly [List<A>, List<A>]
+}
 ```
 
 Added in v1.0.0
@@ -250,11 +264,10 @@ contains all elements for which the specified function returned a `Right`.
 **Signature**
 
 ```ts
-export declare const partitionMap: (<A, B, C>(
-  self: List<A>,
-  f: (a: A) => Either.Either<B, C>
-) => readonly [List<B>, List<C>]) &
-  (<A, B, C>(f: (a: A) => Either.Either<B, C>) => (self: List<A>) => readonly [List<B>, List<C>])
+export declare const partitionMap: {
+  <A, B, C>(f: (a: A) => Either.Either<B, C>): (self: List<A>) => readonly [List<B>, List<C>]
+  <A, B, C>(self: List<A>, f: (a: A) => Either.Either<B, C>): readonly [List<B>, List<C>]
+}
 ```
 
 Added in v1.0.0
@@ -266,8 +279,10 @@ Prepends the specified element to the beginning of the list.
 **Signature**
 
 ```ts
-export declare const prepend: (<A, B>(self: List<A>, element: B) => Cons<A | B>) &
-  (<B>(element: B) => <A>(self: List<A>) => Cons<B | A>)
+export declare const prepend: {
+  <B>(element: B): <A>(self: List<A>) => Cons<B | A>
+  <A, B>(self: List<A>, element: B): Cons<A | B>
+}
 ```
 
 Added in v1.0.0
@@ -279,8 +294,10 @@ Prepends the specified prefix list to the beginning of the specified list.
 **Signature**
 
 ```ts
-export declare const prependAll: (<A, B>(self: List<A>, prefix: List<B>) => List<A | B>) &
-  (<B>(prefix: List<B>) => <A>(self: List<A>) => List<B | A>)
+export declare const prependAll: {
+  <B>(prefix: List<B>): <A>(self: List<A>) => List<B | A>
+  <A, B>(self: List<A>, prefix: List<B>): List<A | B>
+}
 ```
 
 Added in v1.0.0
@@ -293,8 +310,10 @@ specified list.
 **Signature**
 
 ```ts
-export declare const prependAllReversed: (<A, B>(self: List<A>, prefix: List<B>) => List<A | B>) &
-  (<B>(prefix: List<B>) => <A>(self: List<A>) => List<B | A>)
+export declare const prependAllReversed: {
+  <B>(prefix: List<B>): <A>(self: List<A>) => List<B | A>
+  <A, B>(self: List<A>, prefix: List<B>): List<A | B>
+}
 ```
 
 Added in v1.0.0
@@ -307,8 +326,10 @@ specified initial value.
 **Signature**
 
 ```ts
-export declare const reduce: (<A, Z>(self: List<A>, zero: Z, f: (b: Z, a: A) => Z) => Z) &
-  (<Z, A>(zero: Z, f: (b: Z, a: A) => Z) => (self: List<A>) => Z)
+export declare const reduce: {
+  <Z, A>(zero: Z, f: (b: Z, a: A) => Z): (self: List<A>) => Z
+  <A, Z>(self: List<A>, zero: Z, f: (b: Z, a: A) => Z): Z
+}
 ```
 
 Added in v1.0.0
@@ -321,8 +342,10 @@ with the last element of the list, using the specified initial value.
 **Signature**
 
 ```ts
-export declare const reduceRight: (<Z, A>(self: List<A>, zero: Z, f: (accumulator: Z, value: A) => Z) => Z) &
-  (<Z, A>(zero: Z, f: (accumulator: Z, value: A) => Z) => (self: List<A>) => Z)
+export declare const reduceRight: {
+  <Z, A>(zero: Z, f: (accumulator: Z, value: A) => Z): (self: List<A>) => Z
+  <Z, A>(self: List<A>, zero: Z, f: (accumulator: Z, value: A) => Z): Z
+}
 ```
 
 Added in v1.0.0
@@ -347,8 +370,10 @@ predicate, `false` otherwise.
 **Signature**
 
 ```ts
-export declare const some: (<A>(self: List<A>, predicate: Predicate<A>) => boolean) &
-  (<A>(predicate: Predicate<A>) => (self: List<A>) => boolean)
+export declare const some: {
+  <A>(predicate: Predicate<A>): (self: List<A>) => boolean
+  <A>(self: List<A>, predicate: Predicate<A>): boolean
+}
 ```
 
 Added in v1.0.0
@@ -360,8 +385,10 @@ Splits the specified list into two lists at the specified index.
 **Signature**
 
 ```ts
-export declare const splitAt: (<A>(self: List<A>, n: number) => readonly [List<A>, List<A>]) &
-  ((n: number) => <A>(self: List<A>) => readonly [List<A>, List<A>])
+export declare const splitAt: {
+  (n: number): <A>(self: List<A>) => readonly [List<A>, List<A>]
+  <A>(self: List<A>, n: number): readonly [List<A>, List<A>]
+}
 ```
 
 Added in v1.0.0
@@ -374,7 +401,7 @@ list.
 **Signature**
 
 ```ts
-export declare const take: (<A>(self: List<A>, n: number) => List<A>) & ((n: number) => <A>(self: List<A>) => List<A>)
+export declare const take: { (n: number): <A>(self: List<A>) => List<A>; <A>(self: List<A>, n: number): List<A> }
 ```
 
 Added in v1.0.0
@@ -462,7 +489,7 @@ Converts the specified list to a `Chunk`.
 **Signature**
 
 ```ts
-export declare const toChunk: <A>(self: List<A>) => Chunk.Chunk<A>
+export declare const toChunk: <A>(self: List<A>) => any
 ```
 
 Added in v1.0.0

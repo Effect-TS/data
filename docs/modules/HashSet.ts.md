@@ -14,7 +14,7 @@ Added in v1.0.0
 
 - [constructors](#constructors)
   - [empty](#empty)
-  - [from](#from)
+  - [fromIterable](#fromiterable)
   - [make](#make)
 - [elements](#elements)
   - [every](#every)
@@ -69,14 +69,14 @@ export declare const empty: <A = never>() => HashSet<A>
 
 Added in v1.0.0
 
-## from
+## fromIterable
 
 Construct a new `HashSet` from a `Collection` of values
 
 **Signature**
 
 ```ts
-export declare const from: <A>(elements: Iterable<A>) => HashSet<A>
+export declare const fromIterable: <A>(elements: Iterable<A>) => HashSet<A>
 ```
 
 Added in v1.0.0
@@ -103,7 +103,10 @@ predicate.
 **Signature**
 
 ```ts
-export declare const every: <A>(f: Predicate<A>) => (self: HashSet<A>) => boolean
+export declare const every: {
+  <A>(f: Predicate<A>): (self: HashSet<A>) => boolean
+  <A>(self: HashSet<A>, f: Predicate<A>): boolean
+}
 ```
 
 Added in v1.0.0
@@ -115,7 +118,7 @@ Checks if the specified value exists in the `HashSet`.
 **Signature**
 
 ```ts
-export declare const has: <A>(value: A) => (self: HashSet<A>) => boolean
+export declare const has: { <A>(value: A): (self: HashSet<A>) => boolean; <A>(self: HashSet<A>, value: A): boolean }
 ```
 
 Added in v1.0.0
@@ -130,7 +133,10 @@ element of the second set,
 **Signature**
 
 ```ts
-export declare const isSubset: <A>(that: HashSet<A>) => (self: HashSet<A>) => boolean
+export declare const isSubset: {
+  <A>(that: HashSet<A>): (self: HashSet<A>) => boolean
+  <A>(self: HashSet<A>, that: HashSet<A>): boolean
+}
 ```
 
 Added in v1.0.0
@@ -142,7 +148,10 @@ Returns `true` if any value in the `HashSet` matches the specified predicate.
 **Signature**
 
 ```ts
-export declare const some: <A>(f: Predicate<A>) => (self: HashSet<A>) => boolean
+export declare const some: {
+  <A>(f: Predicate<A>): (self: HashSet<A>) => boolean
+  <A>(self: HashSet<A>, f: Predicate<A>): boolean
+}
 ```
 
 Added in v1.0.0
@@ -159,6 +168,8 @@ Filters values out of a `HashSet` using the specified predicate.
 export declare const filter: {
   <A, B extends A>(f: Refinement<A, B>): (self: HashSet<A>) => HashSet<B>
   <A>(f: Predicate<A>): (self: HashSet<A>) => HashSet<A>
+  <A, B extends A>(self: HashSet<A>, f: Refinement<A, B>): HashSet<B>
+  <A>(self: HashSet<A>, f: Predicate<A>): HashSet<A>
 }
 ```
 
@@ -173,7 +184,10 @@ Reduces the specified state over the values of the `HashSet`.
 **Signature**
 
 ```ts
-export declare const reduce: <A, Z>(zero: Z, f: (accumulator: Z, value: A) => Z) => (self: HashSet<A>) => Z
+export declare const reduce: {
+  <A, Z>(zero: Z, f: (accumulator: Z, value: A) => Z): (self: HashSet<A>) => Z
+  <A, Z>(self: HashSet<A>, zero: Z, f: (accumulator: Z, value: A) => Z): Z
+}
 ```
 
 Added in v1.0.0
@@ -213,7 +227,10 @@ Maps over the values of the `HashSet` using the specified function.
 **Signature**
 
 ```ts
-export declare const map: <A, B>(f: (a: A) => B) => (self: HashSet<A>) => HashSet<B>
+export declare const map: {
+  <A, B>(f: (a: A) => B): (self: HashSet<A>) => HashSet<B>
+  <A, B>(self: HashSet<A>, f: (a: A) => B): HashSet<B>
+}
 ```
 
 Added in v1.0.0
@@ -241,7 +258,10 @@ Adds a value to the `HashSet`.
 **Signature**
 
 ```ts
-export declare const add: <A>(value: A) => (self: HashSet<A>) => HashSet<A>
+export declare const add: {
+  <A>(value: A): (self: HashSet<A>) => HashSet<A>
+  <A>(self: HashSet<A>, value: A): HashSet<A>
+}
 ```
 
 Added in v1.0.0
@@ -269,7 +289,10 @@ must be the same.
 **Signature**
 
 ```ts
-export declare const difference: <A>(that: Iterable<A>) => (self: HashSet<A>) => HashSet<A>
+export declare const difference: {
+  <A>(that: Iterable<A>): (self: HashSet<A>) => HashSet<A>
+  <A>(self: HashSet<A>, that: Iterable<A>): HashSet<A>
+}
 ```
 
 Added in v1.0.0
@@ -297,7 +320,10 @@ must be the same.
 **Signature**
 
 ```ts
-export declare const intersection: <A>(that: Iterable<A>) => (self: HashSet<A>) => HashSet<A>
+export declare const intersection: {
+  <A>(that: Iterable<A>): (self: HashSet<A>) => HashSet<A>
+  <A>(self: HashSet<A>, that: Iterable<A>): HashSet<A>
+}
 ```
 
 Added in v1.0.0
@@ -309,7 +335,10 @@ Mutates the `HashSet` within the context of the provided function.
 **Signature**
 
 ```ts
-export declare const mutate: <A>(f: (set: HashSet<A>) => void) => (self: HashSet<A>) => HashSet<A>
+export declare const mutate: {
+  <A>(f: (set: HashSet<A>) => void): (self: HashSet<A>) => HashSet<A>
+  <A>(self: HashSet<A>, f: (set: HashSet<A>) => void): HashSet<A>
+}
 ```
 
 Added in v1.0.0
@@ -321,7 +350,10 @@ Removes a value from the `HashSet`.
 **Signature**
 
 ```ts
-export declare const remove: <A>(value: A) => (self: HashSet<A>) => HashSet<A>
+export declare const remove: {
+  <A>(value: A): (self: HashSet<A>) => HashSet<A>
+  <A>(self: HashSet<A>, value: A): HashSet<A>
+}
 ```
 
 Added in v1.0.0
@@ -335,7 +367,10 @@ will be removed from the `HashSet`, otherwise the value will be added to the
 **Signature**
 
 ```ts
-export declare const toggle: <A>(value: A) => (self: HashSet<A>) => HashSet<A>
+export declare const toggle: {
+  <A>(value: A): (self: HashSet<A>) => HashSet<A>
+  <A>(self: HashSet<A>, value: A): HashSet<A>
+}
 ```
 
 Added in v1.0.0
@@ -351,7 +386,10 @@ must be the same.
 **Signature**
 
 ```ts
-export declare const union: <A>(that: Iterable<A>) => (self: HashSet<A>) => HashSet<A>
+export declare const union: {
+  <A>(that: Iterable<A>): (self: HashSet<A>) => HashSet<A>
+  <A>(self: HashSet<A>, that: Iterable<A>): HashSet<A>
+}
 ```
 
 Added in v1.0.0
@@ -372,6 +410,8 @@ the left side.
 export declare const partition: {
   <A, B extends A>(f: Refinement<A, B>): (self: HashSet<A>) => readonly [HashSet<A>, HashSet<B>]
   <A>(f: Predicate<A>): (self: HashSet<A>) => readonly [HashSet<A>, HashSet<A>]
+  <A, B extends A>(self: HashSet<A>, f: Refinement<A, B>): readonly [HashSet<A>, HashSet<B>]
+  <A>(self: HashSet<A>, f: Predicate<A>): readonly [HashSet<A>, HashSet<A>]
 }
 ```
 
@@ -398,7 +438,10 @@ Chains over the values of the `HashSet` using the specified function.
 **Signature**
 
 ```ts
-export declare const flatMap: <A, B>(f: (a: A) => Iterable<B>) => (self: HashSet<A>) => HashSet<B>
+export declare const flatMap: {
+  <A, B>(f: (a: A) => Iterable<B>): (self: HashSet<A>) => HashSet<B>
+  <A, B>(self: HashSet<A>, f: (a: A) => Iterable<B>): HashSet<B>
+}
 ```
 
 Added in v1.0.0
@@ -424,7 +467,10 @@ Applies the specified function to the values of the `HashSet`.
 **Signature**
 
 ```ts
-export declare const forEach: <A>(f: (value: A) => void) => (self: HashSet<A>) => void
+export declare const forEach: {
+  <A>(f: (value: A) => void): (self: HashSet<A>) => void
+  <A>(self: HashSet<A>, f: (value: A) => void): void
+}
 ```
 
 Added in v1.0.0

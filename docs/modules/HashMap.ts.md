@@ -14,7 +14,7 @@ Added in v1.0.0
 
 - [constructors](#constructors)
   - [empty](#empty)
-  - [from](#from)
+  - [fromIterable](#fromiterable)
   - [make](#make)
 - [elements](#elements)
   - [get](#get)
@@ -82,14 +82,14 @@ export declare const empty: <K = never, V = never>() => HashMap<K, V>
 
 Added in v1.0.0
 
-## from
+## fromIterable
 
-Constructs a new `HashMap` from an array of key/value pairs.
+Constructs a new `HashMap` from an iterable of key/value pairs.
 
 **Signature**
 
 ```ts
-export declare const from: <K, V>(entries: Iterable<readonly [K, V]>) => HashMap<K, V>
+export declare const fromIterable: <K, V>(entries: Iterable<readonly [K, V]>) => HashMap<K, V>
 ```
 
 Added in v1.0.0
@@ -121,7 +121,10 @@ internal hashing function.
 **Signature**
 
 ```ts
-export declare const get: <K1>(key: K1) => <K, V>(self: HashMap<K, V>) => Option<V>
+export declare const get: {
+  <K1>(key: K1): <K, V>(self: HashMap<K, V>) => Option<V>
+  <K, V, K1>(self: HashMap<K, V>, key: K1): Option<V>
+}
 ```
 
 Added in v1.0.0
@@ -133,7 +136,10 @@ Lookup the value for the specified key in the `HashMap` using a custom hash.
 **Signature**
 
 ```ts
-export declare const getHash: <K1>(key: K1, hash: number) => <K, V>(self: HashMap<K, V>) => Option<V>
+export declare const getHash: {
+  <K1>(key: K1, hash: number): <K, V>(self: HashMap<K, V>) => Option<V>
+  <K, V, K1>(self: HashMap<K, V>, key: K1, hash: number): Option<V>
+}
 ```
 
 Added in v1.0.0
@@ -145,7 +151,10 @@ Checks if the specified key has an entry in the `HashMap`.
 **Signature**
 
 ```ts
-export declare const has: <K1>(key: K1) => <K, V>(self: HashMap<K, V>) => boolean
+export declare const has: {
+  <K1>(key: K1): <K, V>(self: HashMap<K, V>) => boolean
+  <K, V, K1>(self: HashMap<K, V>, key: K1): boolean
+}
 ```
 
 Added in v1.0.0
@@ -158,7 +167,10 @@ hash.
 **Signature**
 
 ```ts
-export declare const hasHash: <K1>(key: K1, hash: number) => <K, V>(self: HashMap<K, V>) => boolean
+export declare const hasHash: {
+  <K1>(key: K1, hash: number): <K, V>(self: HashMap<K, V>) => boolean
+  <K, V, K1>(self: HashMap<K, V>, key: K1, hash: number): boolean
+}
 ```
 
 Added in v1.0.0
@@ -199,6 +211,8 @@ Filters entries out of a `HashMap` using the specified predicate.
 export declare const filter: {
   <A, B extends A>(f: Refinement<A, B>): <K>(self: HashMap<K, A>) => HashMap<K, B>
   <A>(f: Predicate<A>): <K>(self: HashMap<K, A>) => HashMap<K, A>
+  <K, A, B extends A>(self: HashMap<K, A>, f: Refinement<A, B>): HashMap<K, B>
+  <K, A>(self: HashMap<K, A>, f: Predicate<A>): HashMap<K, A>
 }
 ```
 
@@ -212,7 +226,10 @@ and filters out `None` values.
 **Signature**
 
 ```ts
-export declare const filterMap: <A, B>(f: (value: A) => Option<B>) => <K>(self: HashMap<K, A>) => HashMap<K, B>
+export declare const filterMap: {
+  <A, B>(f: (value: A) => Option<B>): <K>(self: HashMap<K, A>) => HashMap<K, B>
+  <K, A, B>(self: HashMap<K, A>, f: (value: A) => Option<B>): HashMap<K, B>
+}
 ```
 
 Added in v1.0.0
@@ -225,9 +242,10 @@ and filters out `None` values.
 **Signature**
 
 ```ts
-export declare const filterMapWithIndex: <A, K, B>(
-  f: (a: A, k: K) => Option<B>
-) => (self: HashMap<K, A>) => HashMap<K, B>
+export declare const filterMapWithIndex: {
+  <A, K, B>(f: (value: A, key: K) => Option<B>): (self: HashMap<K, A>) => HashMap<K, B>
+  <K, A, B>(self: HashMap<K, A>, f: (value: A, key: K) => Option<B>): HashMap<K, B>
+}
 ```
 
 Added in v1.0.0
@@ -240,8 +258,10 @@ Filters entries out of a `HashMap` using the specified predicate.
 
 ```ts
 export declare const filterWithIndex: {
-  <A, B extends A, K>(f: (a: A, k: K) => a is B): (self: HashMap<K, A>) => HashMap<K, B>
-  <A, K>(f: (a: A, k: K) => boolean): (self: HashMap<K, A>) => HashMap<K, A>
+  <K, A, B extends A>(f: (a: A, k: K) => a is B): (self: HashMap<K, A>) => HashMap<K, B>
+  <K, A>(f: (a: A, k: K) => boolean): (self: HashMap<K, A>) => HashMap<K, A>
+  <K, A, B extends A>(self: HashMap<K, A>, f: (a: A, k: K) => a is B): HashMap<K, B>
+  <K, A>(self: HashMap<K, A>, f: (a: A, k: K) => boolean): HashMap<K, A>
 }
 ```
 
@@ -256,7 +276,10 @@ Reduces the specified state over the values of the `HashMap`.
 **Signature**
 
 ```ts
-export declare const reduce: <V, Z>(z: Z, f: (z: Z, v: V) => Z) => <K>(self: HashMap<K, V>) => Z
+export declare const reduce: {
+  <V, Z>(z: Z, f: (z: Z, v: V) => Z): <K>(self: HashMap<K, V>) => Z
+  <K, V, Z>(self: HashMap<K, V>, z: Z, f: (z: Z, v: V) => Z): Z
+}
 ```
 
 Added in v1.0.0
@@ -268,7 +291,10 @@ Reduces the specified state over the entries of the `HashMap`.
 **Signature**
 
 ```ts
-export declare const reduceWithIndex: <B, A, K>(b: B, f: (b: B, a: A, k: K) => B) => (self: HashMap<K, A>) => B
+export declare const reduceWithIndex: {
+  <Z, V, K>(zero: Z, f: (accumulator: Z, value: V, key: K) => Z): (self: HashMap<K, V>) => Z
+  <Z, V, K>(self: HashMap<K, V>, zero: Z, f: (accumulator: Z, value: V, key: K) => Z): Z
+}
 ```
 
 Added in v1.0.0
@@ -282,7 +308,7 @@ Returns a `HashSet` of keys within the `HashMap`.
 **Signature**
 
 ```ts
-export declare const keySet: <K, V>(self: HashMap<K, V>) => HashSet<K>
+export declare const keySet: <K, V>(self: HashMap<K, V>) => any
 ```
 
 Added in v1.0.0
@@ -334,7 +360,10 @@ Maps over the values of the `HashMap` using the specified function.
 **Signature**
 
 ```ts
-export declare const map: <V, A>(f: (value: V) => A) => <K>(self: HashMap<K, V>) => HashMap<K, A>
+export declare const map: {
+  <V, A>(f: (value: V) => A): <K>(self: HashMap<K, V>) => HashMap<K, A>
+  <K, V, A>(self: HashMap<K, V>, f: (value: V) => A): HashMap<K, A>
+}
 ```
 
 Added in v1.0.0
@@ -346,7 +375,10 @@ Maps over the entries of the `HashMap` using the specified function.
 **Signature**
 
 ```ts
-export declare const mapWithIndex: <A, K, B>(f: (a: A, k: K) => B) => (self: HashMap<K, A>) => HashMap<K, B>
+export declare const mapWithIndex: {
+  <A, V, K>(f: (value: V, key: K) => A): (self: HashMap<K, V>) => HashMap<K, A>
+  <K, V, A>(self: HashMap<K, V>, f: (value: V, key: K) => A): HashMap<K, A>
+}
 ```
 
 Added in v1.0.0
@@ -398,7 +430,10 @@ Updates the value of the specified key within the `HashMap` if it exists.
 **Signature**
 
 ```ts
-export declare const modify: <K, V>(key: K, f: (v: V) => V) => (self: HashMap<K, V>) => HashMap<K, V>
+export declare const modify: {
+  <K, V>(key: K, f: (v: V) => V): (self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, key: K, f: (v: V) => V): HashMap<K, V>
+}
 ```
 
 Added in v1.0.0
@@ -415,7 +450,10 @@ exists, or `None` if no such value exists.
 **Signature**
 
 ```ts
-export declare const modifyAt: <K, V>(key: K, f: (v: Option<V>) => Option<V>) => (self: HashMap<K, V>) => HashMap<K, V>
+export declare const modifyAt: {
+  <K, V>(key: K, f: any): (self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, key: K, f: any): HashMap<K, V>
+}
 ```
 
 Added in v1.0.0
@@ -434,11 +472,10 @@ This function will always either update or insert a value into the `HashMap`.
 **Signature**
 
 ```ts
-export declare const modifyHash: <K, V>(
-  key: K,
-  hash: number,
-  f: (v: Option<V>) => Option<V>
-) => (self: HashMap<K, V>) => HashMap<K, V>
+export declare const modifyHash: {
+  <K, V>(key: K, hash: number, f: any): (self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, key: K, hash: number, f: any): HashMap<K, V>
+}
 ```
 
 Added in v1.0.0
@@ -450,7 +487,10 @@ Mutates the `HashMap` within the context of the provided function.
 **Signature**
 
 ```ts
-export declare const mutate: <K, V>(f: (self: HashMap<K, V>) => void) => (self: HashMap<K, V>) => HashMap<K, V>
+export declare const mutate: {
+  <K, V>(f: (self: HashMap<K, V>) => void): (self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, f: (self: HashMap<K, V>) => void): HashMap<K, V>
+}
 ```
 
 Added in v1.0.0
@@ -463,7 +503,10 @@ hashing function.
 **Signature**
 
 ```ts
-export declare const remove: <K>(key: K) => <V>(self: HashMap<K, V>) => HashMap<K, V>
+export declare const remove: {
+  <K>(key: K): <V>(self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, key: K): HashMap<K, V>
+}
 ```
 
 Added in v1.0.0
@@ -475,7 +518,10 @@ Removes all entries in the `HashMap` which have the specified keys.
 **Signature**
 
 ```ts
-export declare const removeMany: <K>(keys: Iterable<K>) => <V>(self: HashMap<K, V>) => HashMap<K, V>
+export declare const removeMany: {
+  <K>(keys: Iterable<K>): <V>(self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, keys: Iterable<K>): HashMap<K, V>
+}
 ```
 
 Added in v1.0.0
@@ -488,7 +534,10 @@ function.
 **Signature**
 
 ```ts
-export declare const set: <K, V>(key: K, value: V) => (self: HashMap<K, V>) => HashMap<K, V>
+export declare const set: {
+  <K, V>(key: K, value: V): (self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, key: K, value: V): HashMap<K, V>
+}
 ```
 
 Added in v1.0.0
@@ -500,9 +549,10 @@ Performs a union of this `HashMap` and that `HashMap`.
 **Signature**
 
 ```ts
-export declare const union: <K1, V1>(
-  that: HashMap<K1, V1>
-) => <K0, V0>(self: HashMap<K0, V0>) => HashMap<K1 | K0, V1 | V0>
+export declare const union: {
+  <K1, V1>(that: HashMap<K1, V1>): <K0, V0>(self: HashMap<K0, V0>) => HashMap<K1 | K0, V1 | V0>
+  <K0, V0, K1, V1>(self: HashMap<K0, V0>, that: HashMap<K1, V1>): HashMap<K0 | K1, V0 | V1>
+}
 ```
 
 Added in v1.0.0
@@ -533,7 +583,10 @@ Chains over the values of the `HashMap` using the specified function.
 **Signature**
 
 ```ts
-export declare const flatMap: <K, A, B>(f: (value: A) => HashMap<K, B>) => (self: HashMap<K, A>) => HashMap<K, B>
+export declare const flatMap: {
+  <K, A, B>(f: (value: A) => HashMap<K, B>): (self: HashMap<K, A>) => HashMap<K, B>
+  <K, A, B>(self: HashMap<K, A>, f: (value: A) => HashMap<K, B>): HashMap<K, B>
+}
 ```
 
 Added in v1.0.0
@@ -547,9 +600,10 @@ Chains over the entries of the `HashMap` using the specified function.
 **Signature**
 
 ```ts
-export declare const flatMapWithIndex: <A, K, B>(
-  f: (a: A, k: K) => HashMap<K, B>
-) => (self: HashMap<K, A>) => HashMap<K, B>
+export declare const flatMapWithIndex: {
+  <A, K, B>(f: (value: A, key: K) => HashMap<K, B>): (self: HashMap<K, A>) => HashMap<K, B>
+  <K, A, B>(self: HashMap<K, A>, f: (value: A, key: K) => HashMap<K, B>): HashMap<K, B>
+}
 ```
 
 Added in v1.0.0
@@ -575,7 +629,10 @@ Applies the specified function to the values of the `HashMap`.
 **Signature**
 
 ```ts
-export declare const forEach: <V>(f: (value: V) => void) => <K>(self: HashMap<K, V>) => void
+export declare const forEach: {
+  <V>(f: (value: V) => void): <K>(self: HashMap<K, V>) => void
+  <K, V>(self: HashMap<K, V>, f: (value: V) => void): void
+}
 ```
 
 Added in v1.0.0
@@ -587,7 +644,10 @@ Applies the specified function to the entries of the `HashMap`.
 **Signature**
 
 ```ts
-export declare const forEachWithIndex: <A, K>(f: (a: A, k: K) => void) => (self: HashMap<K, A>) => void
+export declare const forEachWithIndex: {
+  <V, K>(f: (value: V, key: K) => void): (self: HashMap<K, V>) => void
+  <V, K>(self: HashMap<K, V>, f: (value: V, key: K) => void): void
+}
 ```
 
 Added in v1.0.0
@@ -602,7 +662,10 @@ internal hashing function.
 **Signature**
 
 ```ts
-export declare const unsafeGet: <K1>(key: K1) => <K, V>(self: HashMap<K, V>) => V
+export declare const unsafeGet: {
+  <K1>(key: K1): <K, V>(self: HashMap<K, V>) => V
+  <K, V, K1>(self: HashMap<K, V>, key: K1): V
+}
 ```
 
 Added in v1.0.0

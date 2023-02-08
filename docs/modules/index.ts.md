@@ -28,6 +28,7 @@ Added in v1.0.0
   - [hashMapPatch](#hashmappatch)
   - [hashSet](#hashset)
   - [hashSetPatch](#hashsetpatch)
+  - [list](#list)
   - [mutableHashMap](#mutablehashmap)
   - [mutableHashSet](#mutablehashset)
   - [mutableList](#mutablelist)
@@ -49,7 +50,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const brand: typeof brand
+export declare const brand: any
 ```
 
 Added in v1.0.0
@@ -59,7 +60,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const chunk: typeof chunk
+export declare const chunk: any
 ```
 
 Added in v1.0.0
@@ -69,7 +70,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const chunkPatch: typeof chunkPatch
+export declare const chunkPatch: any
 ```
 
 Added in v1.0.0
@@ -79,7 +80,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const context: typeof context
+export declare const context: any
 ```
 
 Added in v1.0.0
@@ -89,7 +90,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const contextPatch: typeof contextPatch
+export declare const contextPatch: any
 ```
 
 Added in v1.0.0
@@ -99,7 +100,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const data: typeof data
+export declare const data: any
 ```
 
 Added in v1.0.0
@@ -109,7 +110,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const differ: typeof differ
+export declare const differ: any
 ```
 
 Added in v1.0.0
@@ -119,7 +120,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const duration: typeof duration
+export declare const duration: any
 ```
 
 Added in v1.0.0
@@ -129,7 +130,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const equal: typeof equal
+export declare const equal: any
 ```
 
 Added in v1.0.0
@@ -139,7 +140,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const gen: typeof gen
+export declare const gen: any
 ```
 
 Added in v1.0.0
@@ -149,7 +150,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const hash: typeof hash
+export declare const hash: any
 ```
 
 Added in v1.0.0
@@ -159,7 +160,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const hashMap: typeof hashMap
+export declare const hashMap: any
 ```
 
 Added in v1.0.0
@@ -169,7 +170,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const hashMapPatch: typeof hashMapPatch
+export declare const hashMapPatch: any
 ```
 
 Added in v1.0.0
@@ -179,7 +180,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const hashSet: typeof hashSet
+export declare const hashSet: any
 ```
 
 Added in v1.0.0
@@ -189,7 +190,17 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const hashSetPatch: typeof hashSetPatch
+export declare const hashSetPatch: any
+```
+
+Added in v1.0.0
+
+## list
+
+**Signature**
+
+```ts
+export declare const list: any
 ```
 
 Added in v1.0.0
@@ -199,7 +210,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const mutableHashMap: typeof mutableHashMap
+export declare const mutableHashMap: any
 ```
 
 Added in v1.0.0
@@ -209,7 +220,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const mutableHashSet: typeof mutableHashSet
+export declare const mutableHashSet: any
 ```
 
 Added in v1.0.0
@@ -219,7 +230,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const mutableList: typeof mutableList
+export declare const mutableList: any
 ```
 
 Added in v1.0.0
@@ -229,7 +240,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const mutableQueue: typeof mutableQueue
+export declare const mutableQueue: any
 ```
 
 Added in v1.0.0
@@ -239,7 +250,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const mutableRef: typeof mutableRef
+export declare const mutableRef: any
 ```
 
 Added in v1.0.0
@@ -249,7 +260,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const nonEmpty: typeof nonEmpty
+export declare const nonEmpty: any
 ```
 
 Added in v1.0.0
@@ -259,7 +270,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const orPatch: typeof orPatch
+export declare const orPatch: any
 ```
 
 Added in v1.0.0
@@ -269,7 +280,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const random: typeof random
+export declare const random: any
 ```
 
 Added in v1.0.0
@@ -279,7 +290,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const redBlackTree: typeof redBlackTree
+export declare const redBlackTree: any
 ```
 
 Added in v1.0.0
@@ -289,7 +300,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const sortedMap: typeof sortedMap
+export declare const sortedMap: any
 ```
 
 Added in v1.0.0
@@ -299,7 +310,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const sortedSet: typeof sortedSet
+export declare const sortedSet: any
 ```
 
 Added in v1.0.0
