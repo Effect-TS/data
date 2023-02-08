@@ -12,7 +12,6 @@ import * as contextPatch from "@effect/data/Differ/ContextPatch"
 import * as hashMapPatch from "@effect/data/Differ/HashMapPatch"
 import * as hashSetPatch from "@effect/data/Differ/HashSetPatch"
 import * as orPatch from "@effect/data/Differ/OrPatch"
-import * as dual from "@effect/data/Dual"
 import * as duration from "@effect/data/Duration"
 import * as equal from "@effect/data/Equal"
 import * as gen from "@effect/data/Gen"
@@ -60,10 +59,6 @@ export {
    * @since 1.0.0
    */
   differ,
-  /**
-   * @since 1.0.0
-   */
-  dual,
   /**
    * @since 1.0.0
    */

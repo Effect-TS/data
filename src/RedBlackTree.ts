@@ -64,9 +64,8 @@ export const empty: <K, V = never>(ord: Order<K>) => RedBlackTree<K, V> = RBT.em
  * @since 1.0.0
  * @category constructors
  */
-export const fromIterable: <K, V>(
-  ord: Order<K>
-) => (entries: Iterable<readonly [K, V]>) => RedBlackTree<K, V> = RBT.fromIterable
+export const fromIterable: <K, V>(ord: Order<K>) => (entries: Iterable<readonly [K, V]>) => RedBlackTree<K, V> =
+  RBT.fromIterable
 
 /**
  * Constructs a new `RedBlackTree` from the specified entries.
@@ -90,8 +89,8 @@ export const make: <K>(
  * @category traversing
  */
 export const at: {
-  <K, V>(self: RedBlackTree<K, V>, index: number): Iterable<readonly [K, V]>
   (index: number): <K, V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+  <K, V>(self: RedBlackTree<K, V>, index: number): Iterable<readonly [K, V]>
 } = RBT.atForwards
 
 /**
@@ -104,8 +103,8 @@ export const at: {
  * @category traversing
  */
 export const atReversed: {
-  <K, V>(self: RedBlackTree<K, V>, index: number): Iterable<readonly [K, V]>
   (index: number): <K, V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+  <K, V>(self: RedBlackTree<K, V>, index: number): Iterable<readonly [K, V]>
 } = RBT.atBackwards
 
 /**
@@ -115,8 +114,8 @@ export const atReversed: {
  * @category elements
  */
 export const find: {
-  <K, V>(self: RedBlackTree<K, V>, key: K): Chunk<V>
   <K>(key: K): <V>(self: RedBlackTree<K, V>) => Chunk<V>
+  <K, V>(self: RedBlackTree<K, V>, key: K): Chunk<V>
 } = RBT.find
 
 /**
@@ -126,8 +125,8 @@ export const find: {
  * @category elements
  */
 export const findFirst: {
-  <K, V>(self: RedBlackTree<K, V>, key: K): Option<V>
   <K>(key: K): <V>(self: RedBlackTree<K, V>) => Option<V>
+  <K, V>(self: RedBlackTree<K, V>, key: K): Option<V>
 } = RBT.findFirst
 
 /**
@@ -146,8 +145,8 @@ export const first: <K, V>(self: RedBlackTree<K, V>) => Option<readonly [K, V]> 
  * @category elements
  */
 export const getAt: {
-  <K, V>(self: RedBlackTree<K, V>, index: number): Option<readonly [K, V]>
   (index: number): <K, V>(self: RedBlackTree<K, V>) => Option<readonly [K, V]>
+  <K, V>(self: RedBlackTree<K, V>, index: number): Option<readonly [K, V]>
 } = RBT.getAt
 
 /**
@@ -166,8 +165,8 @@ export const getOrder: <K, V>(self: RedBlackTree<K, V>) => Order<K> = RBT.getOrd
  * @category traversing
  */
 export const greaterThan: {
-  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
   <K>(key: K): <V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
 } = RBT.greaterThanForwards
 
 /**
@@ -178,8 +177,8 @@ export const greaterThan: {
  * @category traversing
  */
 export const greaterThanReversed: {
-  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
   <K>(key: K): <V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
 } = RBT.greaterThanBackwards
 
 /**
@@ -190,8 +189,8 @@ export const greaterThanReversed: {
  * @category traversing
  */
 export const greaterThanEqual: {
-  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
   <K>(key: K): <V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
 } = RBT.greaterThanEqualForwards
 
 /**
@@ -202,8 +201,8 @@ export const greaterThanEqual: {
  * @category traversing
  */
 export const greaterThanEqualReversed: {
-  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
   <K>(key: K): <V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
 } = RBT.greaterThanEqualBackwards
 
 /**
@@ -213,8 +212,8 @@ export const greaterThanEqualReversed: {
  * @category elements
  */
 export const has: {
-  <K, V>(self: RedBlackTree<K, V>, key: K): boolean
   <K>(key: K): <V>(self: RedBlackTree<K, V>) => boolean
+  <K, V>(self: RedBlackTree<K, V>, key: K): boolean
 } = RBT.has
 
 /**
@@ -224,8 +223,8 @@ export const has: {
  * @category mutations
  */
 export const insert: {
-  <K, V>(self: RedBlackTree<K, V>, key: K, value: V): RedBlackTree<K, V>
   <K, V>(key: K, value: V): (self: RedBlackTree<K, V>) => RedBlackTree<K, V>
+  <K, V>(self: RedBlackTree<K, V>, key: K, value: V): RedBlackTree<K, V>
 } = RBT.insert
 
 /**
@@ -260,8 +259,8 @@ export const last: <K, V>(self: RedBlackTree<K, V>) => Option<readonly [K, V]> =
  * @category traversing
  */
 export const lessThan: {
-  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
   <K>(key: K): <V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
 } = RBT.lessThanForwards
 
 /**
@@ -272,8 +271,8 @@ export const lessThan: {
  * @category traversing
  */
 export const lessThanReversed: {
-  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
   <K>(key: K): <V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
 } = RBT.lessThanBackwards
 
 /**
@@ -284,8 +283,8 @@ export const lessThanReversed: {
  * @category traversing
  */
 export const lessThanEqual: {
-  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
   <K>(key: K): <V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
 } = RBT.lessThanEqualForwards
 
 /**
@@ -296,8 +295,8 @@ export const lessThanEqual: {
  * @category traversing
  */
 export const lessThanEqualReversed: {
-  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
   <K>(key: K): <V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+  <K, V>(self: RedBlackTree<K, V>, key: K): Iterable<readonly [K, V]>
 } = RBT.lessThanEqualBackwards
 
 /**
@@ -307,8 +306,8 @@ export const lessThanEqualReversed: {
  * @category traversing
  */
 export const forEach: {
-  <K, V>(self: RedBlackTree<K, V>, f: (key: K, value: V) => void): void
   <K, V>(f: (key: K, value: V) => void): (self: RedBlackTree<K, V>) => void
+  <K, V>(self: RedBlackTree<K, V>, f: (key: K, value: V) => void): void
 } = RBT.forEach
 
 /**
@@ -318,8 +317,8 @@ export const forEach: {
  * @category traversing
  */
 export const forEachGreaterThanEqual: {
-  <K, V>(self: RedBlackTree<K, V>, min: K, f: (key: K, value: V) => void): void
   <K, V>(min: K, f: (key: K, value: V) => void): (self: RedBlackTree<K, V>) => void
+  <K, V>(self: RedBlackTree<K, V>, min: K, f: (key: K, value: V) => void): void
 } = RBT.forEachGreaterThanEqual
 
 /**
@@ -329,8 +328,8 @@ export const forEachGreaterThanEqual: {
  * @category traversing
  */
 export const forEachLessThan: {
-  <K, V>(self: RedBlackTree<K, V>, max: K, f: (key: K, value: V) => void): void
   <K, V>(max: K, f: (key: K, value: V) => void): (self: RedBlackTree<K, V>) => void
+  <K, V>(self: RedBlackTree<K, V>, max: K, f: (key: K, value: V) => void): void
 } = RBT.forEachLessThan
 
 /**
@@ -341,8 +340,8 @@ export const forEachLessThan: {
  * @category traversing
  */
 export const forEachBetween: {
-  <K, V>(self: RedBlackTree<K, V>, min: K, max: K, f: (key: K, value: V) => void): void
   <K, V>(min: K, max: K, f: (key: K, value: V) => void): (self: RedBlackTree<K, V>) => void
+  <K, V>(self: RedBlackTree<K, V>, min: K, max: K, f: (key: K, value: V) => void): void
 } = RBT.forEachBetween
 
 /**
@@ -352,8 +351,8 @@ export const forEachBetween: {
  * @category folding
  */
 export const reduce: {
-  <Z, K, V>(self: RedBlackTree<K, V>, zero: Z, f: (accumulator: Z, value: V) => Z): Z
   <Z, V>(zero: Z, f: (accumulator: Z, value: V) => Z): <K>(self: RedBlackTree<K, V>) => Z
+  <Z, K, V>(self: RedBlackTree<K, V>, zero: Z, f: (accumulator: Z, value: V) => Z): Z
 } = RBT.reduce
 
 /**
@@ -363,8 +362,8 @@ export const reduce: {
  * @category folding
  */
 export const reduceWithIndex: {
-  <Z, V, K>(self: RedBlackTree<K, V>, zero: Z, f: (accumulator: Z, value: V, key: K) => Z): Z
   <Z, V, K>(zero: Z, f: (accumulator: Z, value: V, key: K) => Z): (self: RedBlackTree<K, V>) => Z
+  <Z, V, K>(self: RedBlackTree<K, V>, zero: Z, f: (accumulator: Z, value: V, key: K) => Z): Z
 } = RBT.reduceWithIndex
 
 /**
@@ -374,8 +373,8 @@ export const reduceWithIndex: {
  * @category mutations
  */
 export const removeFirst: {
-  <K, V>(self: RedBlackTree<K, V>, key: K): RedBlackTree<K, V>
   <K>(key: K): <V>(self: RedBlackTree<K, V>) => RedBlackTree<K, V>
+  <K, V>(self: RedBlackTree<K, V>, key: K): RedBlackTree<K, V>
 } = RBT.removeFirst
 
 /**

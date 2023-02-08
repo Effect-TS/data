@@ -1,10 +1,10 @@
 import * as Chunk from "@effect/data/Chunk"
 import type * as Differ from "@effect/data/Differ"
 import type * as HMP from "@effect/data/Differ/HashMapPatch"
-import * as Dual from "@effect/data/Dual"
 import * as Equal from "@effect/data/Equal"
 import * as Hash from "@effect/data/Hash"
 import * as HashMap from "@effect/data/HashMap"
+import * as Dual from "@fp-ts/core/Function"
 
 /** @internal */
 export const HashMapPatchTypeId: HMP.TypeId = Symbol.for(
@@ -160,28 +160,28 @@ export const diff = <Key, Value, Patch>(
 /** @internal */
 export const combine = Dual.dual<
   <Key, Value, Patch>(
-    self: HMP.HashMapPatch<Key, Value, Patch>,
-    that: HMP.HashMapPatch<Key, Value, Patch>
-  ) => HMP.HashMapPatch<Key, Value, Patch>,
-  <Key, Value, Patch>(
     that: HMP.HashMapPatch<Key, Value, Patch>
   ) => (
     self: HMP.HashMapPatch<Key, Value, Patch>
+  ) => HMP.HashMapPatch<Key, Value, Patch>,
+  <Key, Value, Patch>(
+    self: HMP.HashMapPatch<Key, Value, Patch>,
+    that: HMP.HashMapPatch<Key, Value, Patch>
   ) => HMP.HashMapPatch<Key, Value, Patch>
 >(2, (self, that) => new AndThen(self, that))
 
 /** @internal */
 export const patch = Dual.dual<
   <Key, Value, Patch>(
-    self: HMP.HashMapPatch<Key, Value, Patch>,
-    oldValue: HashMap.HashMap<Key, Value>,
-    differ: Differ.Differ<Value, Patch>
-  ) => HashMap.HashMap<Key, Value>,
-  <Key, Value, Patch>(
     oldValue: HashMap.HashMap<Key, Value>,
     differ: Differ.Differ<Value, Patch>
   ) => (
     self: HMP.HashMapPatch<Key, Value, Patch>
+  ) => HashMap.HashMap<Key, Value>,
+  <Key, Value, Patch>(
+    self: HMP.HashMapPatch<Key, Value, Patch>,
+    oldValue: HashMap.HashMap<Key, Value>,
+    differ: Differ.Differ<Value, Patch>
   ) => HashMap.HashMap<Key, Value>
 >(3, <Key, Value, Patch>(
   self: HMP.HashMapPatch<Key, Value, Patch>,

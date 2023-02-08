@@ -1,8 +1,8 @@
 /**
  * @since 1.0.0
  */
-import * as Dual from "@effect/data/Dual"
 import * as MutableHashMap from "@effect/data/MutableHashMap"
+import * as Dual from "@fp-ts/core/Function"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/MutableHashSet") as TypeId
 
@@ -81,11 +81,11 @@ export const make = <Keys extends ReadonlyArray<unknown>>(
  * @category elements
  */
 export const add: {
-  <V>(self: MutableHashSet<V>, key: V): MutableHashSet<V>
   <V>(key: V): (self: MutableHashSet<V>) => MutableHashSet<V>
+  <V>(self: MutableHashSet<V>, key: V): MutableHashSet<V>
 } = Dual.dual<
-  <V>(self: MutableHashSet<V>, key: V) => MutableHashSet<V>,
-  <V>(key: V) => (self: MutableHashSet<V>) => MutableHashSet<V>
+  <V>(key: V) => (self: MutableHashSet<V>) => MutableHashSet<V>,
+  <V>(self: MutableHashSet<V>, key: V) => MutableHashSet<V>
 >(2, (self, key) => (MutableHashMap.set(self.keyMap, key, true), self))
 
 /**
@@ -93,11 +93,11 @@ export const add: {
  * @category elements
  */
 export const has: {
-  <V>(self: MutableHashSet<V>, key: V): boolean
   <V>(key: V): (self: MutableHashSet<V>) => boolean
+  <V>(self: MutableHashSet<V>, key: V): boolean
 } = Dual.dual<
-  <V>(self: MutableHashSet<V>, key: V) => boolean,
-  <V>(key: V) => (self: MutableHashSet<V>) => boolean
+  <V>(key: V) => (self: MutableHashSet<V>) => boolean,
+  <V>(self: MutableHashSet<V>, key: V) => boolean
 >(2, (self, key) => MutableHashMap.has(self.keyMap, key))
 
 /**
@@ -105,11 +105,11 @@ export const has: {
  * @category elements
  */
 export const remove: {
-  <V>(self: MutableHashSet<V>, key: V): MutableHashSet<V>
   <V>(key: V): (self: MutableHashSet<V>) => MutableHashSet<V>
+  <V>(self: MutableHashSet<V>, key: V): MutableHashSet<V>
 } = Dual.dual<
-  <V>(self: MutableHashSet<V>, key: V) => MutableHashSet<V>,
-  <V>(key: V) => (self: MutableHashSet<V>) => MutableHashSet<V>
+  <V>(key: V) => (self: MutableHashSet<V>) => MutableHashSet<V>,
+  <V>(self: MutableHashSet<V>, key: V) => MutableHashSet<V>
 >(2, (self, key) => (MutableHashMap.remove(self.keyMap, key), self))
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @since 1.0.0
  */
-import * as Dual from "@effect/data/Dual"
+import * as Dual from "@fp-ts/core/Function"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/MutableList") as TypeId
 
@@ -150,11 +150,11 @@ export const head = <A>(self: MutableList<A>): A | undefined => self.head === un
  * @category traversing
  */
 export const forEach: {
-  <A>(self: MutableList<A>, f: (element: A) => void): void
   <A>(f: (element: A) => void): (self: MutableList<A>) => void
+  <A>(self: MutableList<A>, f: (element: A) => void): void
 } = Dual.dual<
-  <A>(self: MutableList<A>, f: (element: A) => void) => void,
-  <A>(f: (element: A) => void) => (self: MutableList<A>) => void
+  <A>(f: (element: A) => void) => (self: MutableList<A>) => void,
+  <A>(self: MutableList<A>, f: (element: A) => void) => void
 >(2, (self, f) => {
   let current = self.head
   while (current !== undefined) {
@@ -183,11 +183,11 @@ export const reset = <A>(self: MutableList<A>): MutableList<A> => {
  * @category mutations
  */
 export const append: {
-  <A>(self: MutableList<A>, value: A): MutableList<A>
   <A>(value: A): (self: MutableList<A>) => MutableList<A>
+  <A>(self: MutableList<A>, value: A): MutableList<A>
 } = Dual.dual<
-  <A>(self: MutableList<A>, value: A) => MutableList<A>,
-  <A>(value: A) => (self: MutableList<A>) => MutableList<A>
+  <A>(value: A) => (self: MutableList<A>) => MutableList<A>,
+  <A>(self: MutableList<A>, value: A) => MutableList<A>
 >(2, <A>(self: MutableList<A>, value: A) => {
   const node = new LinkedListNode(value)
   if ((self as MutableListImpl<A>)._length === 0) {

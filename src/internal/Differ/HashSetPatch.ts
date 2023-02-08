@@ -1,9 +1,9 @@
 import * as Chunk from "@effect/data/Chunk"
 import type * as HSP from "@effect/data/Differ/HashSetPatch"
-import * as Dual from "@effect/data/Dual"
 import * as Equal from "@effect/data/Equal"
 import * as Hash from "@effect/data/Hash"
 import * as HashSet from "@effect/data/HashSet"
+import * as Dual from "@fp-ts/core/Function"
 
 /** @internal */
 export const HashSetPatchTypeId: HSP.TypeId = Symbol.for(
@@ -113,26 +113,26 @@ export const diff = <Value>(
 /** @internal */
 export const combine = Dual.dual<
   <Value>(
-    self: HSP.HashSetPatch<Value>,
-    that: HSP.HashSetPatch<Value>
-  ) => HSP.HashSetPatch<Value>,
-  <Value>(
     that: HSP.HashSetPatch<Value>
   ) => (
     self: HSP.HashSetPatch<Value>
+  ) => HSP.HashSetPatch<Value>,
+  <Value>(
+    self: HSP.HashSetPatch<Value>,
+    that: HSP.HashSetPatch<Value>
   ) => HSP.HashSetPatch<Value>
 >(2, (self, that) => new AndThen(self, that))
 
 /** @internal */
 export const patch = Dual.dual<
   <Value>(
-    self: HSP.HashSetPatch<Value>,
-    oldValue: HashSet.HashSet<Value>
-  ) => HashSet.HashSet<Value>,
-  <Value>(
     oldValue: HashSet.HashSet<Value>
   ) => (
     self: HSP.HashSetPatch<Value>
+  ) => HashSet.HashSet<Value>,
+  <Value>(
+    self: HSP.HashSetPatch<Value>,
+    oldValue: HashSet.HashSet<Value>
   ) => HashSet.HashSet<Value>
 >(2, <Value>(
   self: HSP.HashSetPatch<Value>,

@@ -1,9 +1,9 @@
 /**
  * @since 1.0.0
  */
-import * as Dual from "@effect/data/Dual"
 import * as Equal from "@effect/data/Equal"
 import * as Hash from "@effect/data/Hash"
+import * as Dual from "@fp-ts/core/Function"
 import * as Option from "@fp-ts/core/Option"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/MutableHashMap") as TypeId
@@ -127,11 +127,11 @@ export const fromIterable = <K, V>(entries: Iterable<readonly [K, V]>): MutableH
  * @category elements
  */
 export const get: {
-  <K, V>(self: MutableHashMap<K, V>, key: K): Option.Option<V>
   <K>(key: K): <V>(self: MutableHashMap<K, V>) => Option.Option<V>
+  <K, V>(self: MutableHashMap<K, V>, key: K): Option.Option<V>
 } = Dual.dual<
-  <K, V>(self: MutableHashMap<K, V>, key: K) => Option.Option<V>,
-  <K>(key: K) => <V>(self: MutableHashMap<K, V>) => Option.Option<V>
+  <K>(key: K) => <V>(self: MutableHashMap<K, V>) => Option.Option<V>,
+  <K, V>(self: MutableHashMap<K, V>, key: K) => Option.Option<V>
 >(2, <K, V>(self: MutableHashMap<K, V>, key: K) => {
   const hash = Hash.hash(key)
   const arr = self.backingMap.get(hash)
@@ -153,11 +153,11 @@ export const get: {
  * @category elements
  */
 export const has: {
-  <K, V>(self: MutableHashMap<K, V>, key: K): boolean
   <K>(key: K): <V>(self: MutableHashMap<K, V>) => boolean
+  <K, V>(self: MutableHashMap<K, V>, key: K): boolean
 } = Dual.dual<
-  <K, V>(self: MutableHashMap<K, V>, key: K) => boolean,
-  <K>(key: K) => <V>(self: MutableHashMap<K, V>) => boolean
+  <K>(key: K) => <V>(self: MutableHashMap<K, V>) => boolean,
+  <K, V>(self: MutableHashMap<K, V>, key: K) => boolean
 >(2, (self, key) => Option.isSome(get(self, key)))
 
 /**
@@ -167,11 +167,11 @@ export const has: {
  * @category mutations
  */
 export const modify: {
-  <K, V>(self: MutableHashMap<K, V>, key: K, f: (v: V) => V): MutableHashMap<K, V>
   <K, V>(key: K, f: (v: V) => V): (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+  <K, V>(self: MutableHashMap<K, V>, key: K, f: (v: V) => V): MutableHashMap<K, V>
 } = Dual.dual<
-  <K, V>(self: MutableHashMap<K, V>, key: K, f: (v: V) => V) => MutableHashMap<K, V>,
-  <K, V>(key: K, f: (v: V) => V) => (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+  <K, V>(key: K, f: (v: V) => V) => (self: MutableHashMap<K, V>) => MutableHashMap<K, V>,
+  <K, V>(self: MutableHashMap<K, V>, key: K, f: (v: V) => V) => MutableHashMap<K, V>
 >(3, <K, V>(self: MutableHashMap<K, V>, key: K, f: (v: V) => V) => {
   const hash = Hash.hash(key)
   const arr = self.backingMap.get(hash)
@@ -197,28 +197,17 @@ export const modify: {
  * @category mutations
  */
 export const modifyAt: {
-  <K, V>(
-    self: MutableHashMap<K, V>,
-    key: K,
-    f: (value: Option.Option<V>) => Option.Option<V>
-  ): MutableHashMap<K, V>
-  <K, V>(
-    key: K,
-    f: (value: Option.Option<V>) => Option.Option<V>
-  ): (
-    self: MutableHashMap<K, V>
-  ) => MutableHashMap<K, V>
+  <K, V>(key: K, f: (value: Option.Option<V>) => Option.Option<V>): (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+  <K, V>(self: MutableHashMap<K, V>, key: K, f: (value: Option.Option<V>) => Option.Option<V>): MutableHashMap<K, V>
 } = Dual.dual<
   <K, V>(
+    key: K,
+    f: (value: Option.Option<V>) => Option.Option<V>
+  ) => (self: MutableHashMap<K, V>) => MutableHashMap<K, V>,
+  <K, V>(
     self: MutableHashMap<K, V>,
     key: K,
     f: (value: Option.Option<V>) => Option.Option<V>
-  ) => MutableHashMap<K, V>,
-  <K, V>(
-    key: K,
-    f: (value: Option.Option<V>) => Option.Option<V>
-  ) => (
-    self: MutableHashMap<K, V>
   ) => MutableHashMap<K, V>
 >(3, (self, key, f) => {
   const result = f(get(self, key))
@@ -235,11 +224,11 @@ export const modifyAt: {
  * @category mutations
  */
 export const remove: {
-  <K, V>(self: MutableHashMap<K, V>, key: K): MutableHashMap<K, V>
   <K>(key: K): <V>(self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+  <K, V>(self: MutableHashMap<K, V>, key: K): MutableHashMap<K, V>
 } = Dual.dual<
-  <K, V>(self: MutableHashMap<K, V>, key: K) => MutableHashMap<K, V>,
-  <K>(key: K) => <V>(self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+  <K>(key: K) => <V>(self: MutableHashMap<K, V>) => MutableHashMap<K, V>,
+  <K, V>(self: MutableHashMap<K, V>, key: K) => MutableHashMap<K, V>
 >(2, <K, V>(self: MutableHashMap<K, V>, key: K) => {
   const hash = Hash.hash(key)
   const arr = self.backingMap.get(hash)
@@ -274,11 +263,11 @@ export const remove: {
  * @category mutations
  */
 export const set: {
-  <K, V>(self: MutableHashMap<K, V>, key: K, value: V): MutableHashMap<K, V>
   <K, V>(key: K, value: V): (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+  <K, V>(self: MutableHashMap<K, V>, key: K, value: V): MutableHashMap<K, V>
 } = Dual.dual<
-  <K, V>(self: MutableHashMap<K, V>, key: K, value: V) => MutableHashMap<K, V>,
-  <K, V>(key: K, value: V) => (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+  <K, V>(key: K, value: V) => (self: MutableHashMap<K, V>) => MutableHashMap<K, V>,
+  <K, V>(self: MutableHashMap<K, V>, key: K, value: V) => MutableHashMap<K, V>
 >(3, <K, V>(self: MutableHashMap<K, V>, key: K, value: V) => {
   const hash = Hash.hash(key)
   const arr = self.backingMap.get(hash)

@@ -2,8 +2,8 @@
  * @since 1.0.0
  */
 import * as Chunk from "@effect/data/Chunk"
-import * as Dual from "@effect/data/Dual"
 import * as MutableList from "@effect/data/MutableList"
+import * as Dual from "@fp-ts/core/Function"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/MutableQueue") as TypeId
 
@@ -132,8 +132,8 @@ export const offer: {
   <A>(self: MutableQueue<A>, value: A): boolean
   <A>(value: A): (self: MutableQueue<A>) => boolean
 } = Dual.dual<
-  <A>(self: MutableQueue<A>, value: A) => boolean,
-  <A>(value: A) => (self: MutableQueue<A>) => boolean
+  <A>(value: A) => (self: MutableQueue<A>) => boolean,
+  <A>(self: MutableQueue<A>, value: A) => boolean
 >(2, <A>(self: MutableQueue<A>, value: A) => {
   const queueLength = MutableList.length((self as MutableQueueImpl<A>).queue)
   if (self.capacity !== undefined && queueLength === self.capacity) {
@@ -152,11 +152,11 @@ export const offer: {
  * @category mutations
  */
 export const offerAll: {
-  <A>(self: MutableQueue<A>, values: Iterable<A>): Chunk.Chunk<A>
   <A>(values: Iterable<A>): (self: MutableQueue<A>) => Chunk.Chunk<A>
+  <A>(self: MutableQueue<A>, values: Iterable<A>): Chunk.Chunk<A>
 } = Dual.dual<
-  <A>(self: MutableQueue<A>, values: Iterable<A>) => Chunk.Chunk<A>,
-  <A>(values: Iterable<A>) => (self: MutableQueue<A>) => Chunk.Chunk<A>
+  <A>(values: Iterable<A>) => (self: MutableQueue<A>) => Chunk.Chunk<A>,
+  <A>(self: MutableQueue<A>, values: Iterable<A>) => Chunk.Chunk<A>
 >(2, <A>(self: MutableQueue<A>, values: Iterable<A>) => {
   const iterator = values[Symbol.iterator]()
   let next: IteratorResult<A> | undefined
@@ -184,11 +184,11 @@ export const offerAll: {
  * @category mutations
  */
 export const poll: {
-  <A, D>(self: MutableQueue<A>, def: D): A | D
   <D>(def: D): <A>(self: MutableQueue<A>) => D | A
+  <A, D>(self: MutableQueue<A>, def: D): A | D
 } = Dual.dual<
-  <A, D>(self: MutableQueue<A>, def: D) => A | D,
-  <D>(def: D) => <A>(self: MutableQueue<A>) => A | D
+  <D>(def: D) => <A>(self: MutableQueue<A>) => A | D,
+  <A, D>(self: MutableQueue<A>, def: D) => A | D
 >(2, (self, def) => {
   if (MutableList.isEmpty(self.queue)) {
     return def
@@ -205,11 +205,11 @@ export const poll: {
  * @category mutations
  */
 export const pollUpTo: {
-  <A>(self: MutableQueue<A>, n: number): Chunk.Chunk<A>
   (n: number): <A>(self: MutableQueue<A>) => Chunk.Chunk<A>
+  <A>(self: MutableQueue<A>, n: number): Chunk.Chunk<A>
 } = Dual.dual<
-  <A>(self: MutableQueue<A>, n: number) => Chunk.Chunk<A>,
-  (n: number) => <A>(self: MutableQueue<A>) => Chunk.Chunk<A>
+  (n: number) => <A>(self: MutableQueue<A>) => Chunk.Chunk<A>,
+  <A>(self: MutableQueue<A>, n: number) => Chunk.Chunk<A>
 >(2, <A>(self: MutableQueue<A>, n: number) => {
   let result = Chunk.empty<A>()
   let count = 0

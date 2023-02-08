@@ -13,10 +13,10 @@
  * (http://www.apache.org/licenses/LICENSE-2.0).
  */
 import * as Chunk from "@effect/data/Chunk"
-import * as Dual from "@effect/data/Dual"
 import * as Equal from "@effect/data/Equal"
 import * as Hash from "@effect/data/Hash"
 import * as Either from "@fp-ts/core/Either"
+import * as Dual from "@fp-ts/core/Function"
 import { identity, unsafeCoerce } from "@fp-ts/core/Function"
 import * as Option from "@fp-ts/core/Option"
 import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
@@ -230,11 +230,11 @@ export const length = <A>(self: List<A>): number => {
  * @category combinators
  */
 export const equalsWith: {
-  <A, B>(self: List<A>, that: List<B>, f: (a: A, b: B) => boolean): boolean
   <A, B>(that: List<B>, f: (a: A, b: B) => boolean): (self: List<A>) => boolean
+  <A, B>(self: List<A>, that: List<B>, f: (a: A, b: B) => boolean): boolean
 } = Dual.dual<
-  <A, B>(self: List<A>, that: List<B>, f: (a: A, b: B) => boolean) => boolean,
-  <A, B>(that: List<B>, f: (a: A, b: B) => boolean) => (self: List<A>) => boolean
+  <A, B>(that: List<B>, f: (a: A, b: B) => boolean) => (self: List<A>) => boolean,
+  <A, B>(self: List<A>, that: List<B>, f: (a: A, b: B) => boolean) => boolean
 >(3, <A, B>(self: List<A>, that: List<B>, f: (a: A, b: B) => boolean) => {
   if ((self as List<A | B>) === that) {
     return true
@@ -339,11 +339,11 @@ export const compact = <A>(self: Iterable<Option.Option<A>>): List<A> => filterM
  * @category combinators
  */
 export const concat: {
-  <A, B>(self: List<A>, that: List<B>): List<A | B>
   <B>(that: List<B>): <A>(self: List<A>) => List<A | B>
+  <A, B>(self: List<A>, that: List<B>): List<A | B>
 } = Dual.dual<
-  <A, B>(self: List<A>, that: List<B>) => List<A | B>,
-  <B>(that: List<B>) => <A>(self: List<A>) => List<A | B>
+  <B>(that: List<B>) => <A>(self: List<A>) => List<A | B>,
+  <A, B>(self: List<A>, that: List<B>) => List<A | B>
 >(2, (self, that) => prependAll(that, self))
 
 /**
@@ -353,11 +353,11 @@ export const concat: {
  * @category combinators
  */
 export const drop: {
-  <A>(self: List<A>, n: number): List<A>
   (n: number): <A>(self: List<A>) => List<A>
+  <A>(self: List<A>, n: number): List<A>
 } = Dual.dual<
-  <A>(self: List<A>, n: number) => List<A>,
-  (n: number) => <A>(self: List<A>) => List<A>
+  (n: number) => <A>(self: List<A>) => List<A>,
+  <A>(self: List<A>, n: number) => List<A>
 >(2, (self, n) => {
   if (n <= 0) {
     return self
@@ -382,11 +382,11 @@ export const drop: {
  * @category combinators
  */
 export const every: {
-  <A>(self: List<A>, predicate: Predicate<A>): boolean
   <A>(predicate: Predicate<A>): (self: List<A>) => boolean
+  <A>(self: List<A>, predicate: Predicate<A>): boolean
 } = Dual.dual<
-  <A>(self: List<A>, predicate: Predicate<A>) => boolean,
-  <A>(predicate: Predicate<A>) => (self: List<A>) => boolean
+  <A>(predicate: Predicate<A>) => (self: List<A>) => boolean,
+  <A>(self: List<A>, predicate: Predicate<A>) => boolean
 >(2, (self, predicate) => {
   for (const a of self) {
     if (!predicate(a)) {
@@ -403,16 +403,16 @@ export const every: {
  * @category combinators
  */
 export const filter: {
-  <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): List<B>
-  <A>(self: List<A>, predicate: Predicate<A>): List<A>
   <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => List<B>
   <A>(predicate: Predicate<A>): (self: List<A>) => List<A>
+  <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): List<B>
+  <A>(self: List<A>, predicate: Predicate<A>): List<A>
 } = Dual.dual<{
-  <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): List<B>
-  <A>(self: List<A>, predicate: Predicate<A>): List<A>
-}, {
   <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => List<B>
   <A>(predicate: Predicate<A>): (self: List<A>) => List<A>
+}, {
+  <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): List<B>
+  <A>(self: List<A>, predicate: Predicate<A>): List<A>
 }>(2, <A>(self: List<A>, predicate: Predicate<A>) => noneIn(self, predicate, false))
 
 /**
@@ -424,11 +424,11 @@ export const filter: {
  * @category combinators
  */
 export const filterMap: {
-  <A, B>(self: Iterable<A>, pf: (a: A) => Option.Option<B>): List<B>
   <A, B>(pf: (a: A) => Option.Option<B>): (self: Iterable<A>) => List<B>
+  <A, B>(self: Iterable<A>, pf: (a: A) => Option.Option<B>): List<B>
 } = Dual.dual<
-  <A, B>(self: Iterable<A>, pf: (a: A) => Option.Option<B>) => List<B>,
-  <A, B>(pf: (a: A) => Option.Option<B>) => (self: Iterable<A>) => List<B>
+  <A, B>(pf: (a: A) => Option.Option<B>) => (self: Iterable<A>) => List<B>,
+  <A, B>(self: Iterable<A>, pf: (a: A) => Option.Option<B>) => List<B>
 >(2, <A, B>(self: Iterable<A>, pf: (a: A) => Option.Option<B>) => {
   const bs: Array<B> = []
   for (const a of self) {
@@ -448,18 +448,18 @@ export const filterMap: {
  * @category combinators
  */
 export const findFirst: {
-  <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): Option.Option<B>
-  <A>(self: List<A>, predicate: Predicate<A>): Option.Option<A>
   <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => Option.Option<B>
   <A>(predicate: Predicate<A>): (self: List<A>) => Option.Option<A>
+  <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): Option.Option<B>
+  <A>(self: List<A>, predicate: Predicate<A>): Option.Option<A>
 } = Dual.dual<
-  {
-    <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): Option.Option<B>
-    <A>(self: List<A>, predicate: Predicate<A>): Option.Option<A>
-  },
   {
     <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => Option.Option<B>
     <A>(predicate: Predicate<A>): (self: List<A>) => Option.Option<A>
+  },
+  {
+    <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): Option.Option<B>
+    <A>(self: List<A>, predicate: Predicate<A>): Option.Option<A>
   }
 >(2, <A>(self: List<A>, predicate: Predicate<A>) => {
   let these = self
@@ -479,11 +479,11 @@ export const findFirst: {
  * @category combinators
  */
 export const flatMap: {
-  <A, B>(self: List<A>, f: (a: A) => List<B>): List<B>
   <A, B>(f: (a: A) => List<B>): (self: List<A>) => List<B>
+  <A, B>(self: List<A>, f: (a: A) => List<B>): List<B>
 } = Dual.dual<
-  <A, B>(self: List<A>, f: (a: A) => List<B>) => List<B>,
-  <A, B>(f: (a: A) => List<B>) => (self: List<A>) => List<B>
+  <A, B>(f: (a: A) => List<B>) => (self: List<A>) => List<B>,
+  <A, B>(self: List<A>, f: (a: A) => List<B>) => List<B>
 >(2, <A, B>(self: List<A>, f: (a: A) => List<B>) => {
   let rest = self
   let head: ConsImpl<B> | undefined = undefined
@@ -515,11 +515,11 @@ export const flatMap: {
  * @category combinators
  */
 export const forEach: {
-  <A, B>(self: List<A>, f: (a: A) => B): void
   <A, B>(f: (a: A) => B): (self: List<A>) => void
+  <A, B>(self: List<A>, f: (a: A) => B): void
 } = Dual.dual<
-  <A, B>(self: List<A>, f: (a: A) => B) => void,
-  <A, B>(f: (a: A) => B) => (self: List<A>) => void
+  <A, B>(f: (a: A) => B) => (self: List<A>) => void,
+  <A, B>(self: List<A>, f: (a: A) => B) => void
 >(2, (self, f) => {
   let these = self
   while (!isNil(these)) {
@@ -553,11 +553,11 @@ export const last = <A>(self: List<A>): Option.Option<A> => isNil(self) ? Option
  * @category combinators
  */
 export const map: {
-  <A, B>(self: List<A>, f: (a: A) => B): List<B>
   <A, B>(f: (a: A) => B): (self: List<A>) => List<B>
+  <A, B>(self: List<A>, f: (a: A) => B): List<B>
 } = Dual.dual<
-  <A, B>(self: List<A>, f: (a: A) => B) => List<B>,
-  <A, B>(f: (a: A) => B) => (self: List<A>) => List<B>
+  <A, B>(f: (a: A) => B) => (self: List<A>) => List<B>,
+  <A, B>(self: List<A>, f: (a: A) => B) => List<B>
 >(2, <A, B>(self: List<A>, f: (a: A) => B) => {
   if (isNil(self)) {
     return self as unknown as List<B>
@@ -584,11 +584,11 @@ export const map: {
  * @category combinators
  */
 export const partition: {
-  <A>(self: List<A>, predicate: Predicate<A>): readonly [List<A>, List<A>]
   <A>(predicate: Predicate<A>): (self: List<A>) => readonly [List<A>, List<A>]
+  <A>(self: List<A>, predicate: Predicate<A>): readonly [List<A>, List<A>]
 } = Dual.dual<
-  <A>(self: List<A>, predicate: Predicate<A>) => readonly [List<A>, List<A>],
-  <A>(predicate: Predicate<A>) => (self: List<A>) => readonly [List<A>, List<A>]
+  <A>(predicate: Predicate<A>) => (self: List<A>) => readonly [List<A>, List<A>],
+  <A>(self: List<A>, predicate: Predicate<A>) => readonly [List<A>, List<A>]
 >(2, <A>(self: List<A>, predicate: Predicate<A>) => {
   const left: Array<A> = []
   const right: Array<A> = []
@@ -611,11 +611,11 @@ export const partition: {
  * @category combinators
  */
 export const partitionMap: {
-  <A, B, C>(self: List<A>, f: (a: A) => Either.Either<B, C>): readonly [List<B>, List<C>]
   <A, B, C>(f: (a: A) => Either.Either<B, C>): (self: List<A>) => readonly [List<B>, List<C>]
+  <A, B, C>(self: List<A>, f: (a: A) => Either.Either<B, C>): readonly [List<B>, List<C>]
 } = Dual.dual<
-  <A, B, C>(self: List<A>, f: (a: A) => Either.Either<B, C>) => readonly [List<B>, List<C>],
-  <A, B, C>(f: (a: A) => Either.Either<B, C>) => (self: List<A>) => readonly [List<B>, List<C>]
+  <A, B, C>(f: (a: A) => Either.Either<B, C>) => (self: List<A>) => readonly [List<B>, List<C>],
+  <A, B, C>(self: List<A>, f: (a: A) => Either.Either<B, C>) => readonly [List<B>, List<C>]
 >(2, <A, B, C>(self: List<A>, f: (a: A) => Either.Either<B, C>) => {
   const left: Array<B> = []
   const right: Array<C> = []
@@ -637,11 +637,11 @@ export const partitionMap: {
  * @category combinators
  */
 export const prepend: {
-  <A, B>(self: List<A>, element: B): Cons<A | B>
   <B>(element: B): <A>(self: List<A>) => Cons<A | B>
+  <A, B>(self: List<A>, element: B): Cons<A | B>
 } = Dual.dual<
-  <A, B>(self: List<A>, element: B) => Cons<A | B>,
-  <B>(element: B) => <A>(self: List<A>) => Cons<A | B>
+  <B>(element: B) => <A>(self: List<A>) => Cons<A | B>,
+  <A, B>(self: List<A>, element: B) => Cons<A | B>
 >(2, <A, B>(self: List<A>, element: B) => cons<A | B>(element, self))
 
 /**
@@ -651,11 +651,11 @@ export const prepend: {
  * @category combinators
  */
 export const prependAll: {
-  <A, B>(self: List<A>, prefix: List<B>): List<A | B>
   <B>(prefix: List<B>): <A>(self: List<A>) => List<A | B>
+  <A, B>(self: List<A>, prefix: List<B>): List<A | B>
 } = Dual.dual<
-  <A, B>(self: List<A>, prefix: List<B>) => List<A | B>,
-  <B>(prefix: List<B>) => <A>(self: List<A>) => List<A | B>
+  <B>(prefix: List<B>) => <A>(self: List<A>) => List<A | B>,
+  <A, B>(self: List<A>, prefix: List<B>) => List<A | B>
 >(2, <A, B>(self: List<A>, prefix: List<B>) => {
   if (isNil(self)) {
     return prefix
@@ -683,11 +683,11 @@ export const prependAll: {
  * @category combinators
  */
 export const prependAllReversed: {
-  <A, B>(self: List<A>, prefix: List<B>): List<A | B>
   <B>(prefix: List<B>): <A>(self: List<A>) => List<A | B>
+  <A, B>(self: List<A>, prefix: List<B>): List<A | B>
 } = Dual.dual<
-  <A, B>(self: List<A>, prefix: List<B>) => List<A | B>,
-  <B>(prefix: List<B>) => <A>(self: List<A>) => List<A | B>
+  <B>(prefix: List<B>) => <A>(self: List<A>) => List<A | B>,
+  <A, B>(self: List<A>, prefix: List<B>) => List<A | B>
 >(2, <A, B>(self: List<A>, prefix: List<B>) => {
   let these: List<A | B> = self
   let pres = prefix
@@ -706,11 +706,11 @@ export const prependAllReversed: {
  * @category combinators
  */
 export const reduce: {
-  <A, Z>(self: List<A>, zero: Z, f: (b: Z, a: A) => Z): Z
   <Z, A>(zero: Z, f: (b: Z, a: A) => Z): (self: List<A>) => Z
+  <A, Z>(self: List<A>, zero: Z, f: (b: Z, a: A) => Z): Z
 } = Dual.dual<
-  <A, Z>(self: List<A>, zero: Z, f: (b: Z, a: A) => Z) => Z,
-  <Z, A>(zero: Z, f: (b: Z, a: A) => Z) => (self: List<A>) => Z
+  <Z, A>(zero: Z, f: (b: Z, a: A) => Z) => (self: List<A>) => Z,
+  <A, Z>(self: List<A>, zero: Z, f: (b: Z, a: A) => Z) => Z
 >(3, (self, zero, f) => {
   let acc = zero
   let these = self
@@ -729,11 +729,11 @@ export const reduce: {
  * @category combinators
  */
 export const reduceRight: {
-  <Z, A>(self: List<A>, zero: Z, f: (accumulator: Z, value: A) => Z): Z
   <Z, A>(zero: Z, f: (accumulator: Z, value: A) => Z): (self: List<A>) => Z
+  <Z, A>(self: List<A>, zero: Z, f: (accumulator: Z, value: A) => Z): Z
 } = Dual.dual<
-  <Z, A>(self: List<A>, zero: Z, f: (accumulator: Z, value: A) => Z) => Z,
-  <Z, A>(zero: Z, f: (accumulator: Z, value: A) => Z) => (self: List<A>) => Z
+  <Z, A>(zero: Z, f: (accumulator: Z, value: A) => Z) => (self: List<A>) => Z,
+  <Z, A>(self: List<A>, zero: Z, f: (accumulator: Z, value: A) => Z) => Z
 >(3, (self, zero, f) => {
   let acc = zero
   let these = reverse(self)
@@ -768,11 +768,11 @@ export const reverse = <A>(self: List<A>): List<A> => {
  * @category combinators
  */
 export const some: {
-  <A>(self: List<A>, predicate: Predicate<A>): boolean
   <A>(predicate: Predicate<A>): (self: List<A>) => boolean
+  <A>(self: List<A>, predicate: Predicate<A>): boolean
 } = Dual.dual<
-  <A>(self: List<A>, predicate: Predicate<A>) => boolean,
-  <A>(predicate: Predicate<A>) => (self: List<A>) => boolean
+  <A>(predicate: Predicate<A>) => (self: List<A>) => boolean,
+  <A>(self: List<A>, predicate: Predicate<A>) => boolean
 >(2, (self, predicate) => {
   let these = self
   while (!isNil(these)) {
@@ -791,11 +791,11 @@ export const some: {
  * @category combinators
  */
 export const splitAt: {
-  <A>(self: List<A>, n: number): readonly [List<A>, List<A>]
   (n: number): <A>(self: List<A>) => readonly [List<A>, List<A>]
+  <A>(self: List<A>, n: number): readonly [List<A>, List<A>]
 } = Dual.dual<
-  <A>(self: List<A>, n: number) => readonly [List<A>, List<A>],
-  (n: number) => <A>(self: List<A>) => readonly [List<A>, List<A>]
+  (n: number) => <A>(self: List<A>) => readonly [List<A>, List<A>],
+  <A>(self: List<A>, n: number) => readonly [List<A>, List<A>]
 >(2, (self, n) => [take(self, n), drop(self, n)])
 
 /**
@@ -814,11 +814,11 @@ export const tail = <A>(self: List<A>): Option.Option<List<A>> => isNil(self) ? 
  * @category combinators
  */
 export const take: {
-  <A>(self: List<A>, n: number): List<A>
   (n: number): <A>(self: List<A>) => List<A>
+  <A>(self: List<A>, n: number): List<A>
 } = Dual.dual<
-  <A>(self: List<A>, n: number) => List<A>,
-  (n: number) => <A>(self: List<A>) => List<A>
+  (n: number) => <A>(self: List<A>) => List<A>,
+  <A>(self: List<A>, n: number) => List<A>
 >(2, (self, n) => {
   if (n <= 0) {
     return _Nil

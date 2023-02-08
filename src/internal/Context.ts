@@ -1,7 +1,7 @@
 import type * as C from "@effect/data/Context"
-import * as Dual from "@effect/data/Dual"
 import * as Equal from "@effect/data/Equal"
 import * as Hash from "@effect/data/Hash"
+import * as Dual from "@fp-ts/core/Function"
 import type * as O from "@fp-ts/core/Option"
 import * as option from "@fp-ts/core/Option"
 
@@ -76,16 +76,16 @@ export const make = <T extends C.Tag<any>>(
 
 /** @internal */
 export const add = Dual.dual<
-  <Services, T extends C.Tag<any>>(
-    self: C.Context<Services>,
-    tag: C.Tag<T>,
-    service: C.Tag.Service<T>
-  ) => C.Context<Services | C.Tag.Service<T>>,
   <T extends C.Tag<any>>(
     tag: T,
     service: C.Tag.Service<T>
   ) => <Services>(
     self: C.Context<Services>
+  ) => C.Context<Services | C.Tag.Service<T>>,
+  <Services, T extends C.Tag<any>>(
+    self: C.Context<Services>,
+    tag: C.Tag<T>,
+    service: C.Tag.Service<T>
   ) => C.Context<Services | C.Tag.Service<T>>
 >(3, (self, tag, service) => {
   const map = new Map(self.unsafeMap)
@@ -96,13 +96,13 @@ export const add = Dual.dual<
 /** @internal */
 export const get = Dual.dual<
   <Services, T extends C.Tags<Services>>(
-    self: C.Context<Services>,
-    tag: T
-  ) => T extends C.Tag<infer S> ? S : never,
-  <Services, T extends C.Tags<Services>>(
     tag: T
   ) => (
     self: C.Context<Services>
+  ) => T extends C.Tag<infer S> ? S : never,
+  <Services, T extends C.Tags<Services>>(
+    self: C.Context<Services>,
+    tag: T
   ) => T extends C.Tag<infer S> ? S : never
 >(2, (self, tag) => {
   if (!self.unsafeMap.has(tag)) {
@@ -113,8 +113,8 @@ export const get = Dual.dual<
 
 /** @internal */
 export const unsafeGet = Dual.dual<
-  <Services, S>(self: C.Context<Services>, tag: C.Tag<S>) => S,
-  <S>(tag: C.Tag<S>) => <Services>(self: C.Context<Services>) => S
+  <S>(tag: C.Tag<S>) => <Services>(self: C.Context<Services>) => S,
+  <Services, S>(self: C.Context<Services>, tag: C.Tag<S>) => S
 >(2, (self, tag) => {
   if (!self.unsafeMap.has(tag)) {
     throw new Error("Service not found")
@@ -124,8 +124,8 @@ export const unsafeGet = Dual.dual<
 
 /** @internal */
 export const getOption = Dual.dual<
-  <Services, S>(self: C.Context<Services>, tag: C.Tag<S>) => O.Option<S>,
-  <S>(tag: C.Tag<S>) => <Services>(self: C.Context<Services>) => O.Option<S>
+  <S>(tag: C.Tag<S>) => <Services>(self: C.Context<Services>) => O.Option<S>,
+  <Services, S>(self: C.Context<Services>, tag: C.Tag<S>) => O.Option<S>
 >(2, (self, tag) => {
   if (!self.unsafeMap.has(tag)) {
     return option.none()
@@ -135,8 +135,8 @@ export const getOption = Dual.dual<
 
 /** @internal */
 export const merge = Dual.dual<
-  <Services, R1>(self: C.Context<Services>, that: C.Context<R1>) => C.Context<Services | R1>,
-  <R1>(that: C.Context<R1>) => <Services>(self: C.Context<Services>) => C.Context<Services | R1>
+  <R1>(that: C.Context<R1>) => <Services>(self: C.Context<Services>) => C.Context<Services | R1>,
+  <Services, R1>(self: C.Context<Services>, that: C.Context<R1>) => C.Context<Services | R1>
 >(2, (self, that) => {
   const map = new Map(self.unsafeMap)
   for (const [tag, s] of that.unsafeMap) {
