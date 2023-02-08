@@ -46,9 +46,7 @@ differ that knows how to diff the values.
 **Signature**
 
 ```ts
-export declare const chunk: <Value, Patch>(
-  differ: Differ<Value, Patch>
-) => Differ<Chunk<Value>, ChunkPatch<Value, Patch>>
+export declare const chunk: <Value, Patch>(differ: Differ<Value, Patch>) => Differ<any, any>
 ```
 
 Added in v1.0.0
@@ -60,7 +58,7 @@ Constructs a differ that knows how to diff `Env` values.
 **Signature**
 
 ```ts
-export declare const environment: <A>() => Differ<Context<A>, ContextPatch<A, A>>
+export declare const environment: <A>() => Differ<any, any>
 ```
 
 Added in v1.0.0
@@ -73,9 +71,7 @@ a differ that knows how to diff the values.
 **Signature**
 
 ```ts
-export declare const hashMap: <Key, Value, Patch>(
-  differ: Differ<Value, Patch>
-) => Differ<HashMap<Key, Value>, HashMapPatch<Key, Value, Patch>>
+export declare const hashMap: <Key, Value, Patch>(differ: Differ<Value, Patch>) => Differ<any, any>
 ```
 
 Added in v1.0.0
@@ -87,7 +83,7 @@ Constructs a differ that knows how to diff a `HashSet` of values.
 **Signature**
 
 ```ts
-export declare const hashSet: <Value>() => Differ<HashSet<Value>, HashSetPatch<Value>>
+export declare const hashSet: <Value>() => Differ<any, any>
 ```
 
 Added in v1.0.0
@@ -158,9 +154,15 @@ knows how to diff the sum of their values.
 **Signature**
 
 ```ts
-export declare const orElseResult: <Value2, Patch2>(
-  that: Differ<Value2, Patch2>
-) => <Value, Patch>(self: Differ<Value, Patch>) => Differ<Either<Value, Value2>, OrPatch<Value, Value2, Patch, Patch2>>
+export declare const orElseResult: {
+  <Value2, Patch2>(that: Differ<Value2, Patch2>): <Value, Patch>(
+    self: Differ<Value, Patch>
+  ) => Differ<Either<Value, Value2>, any>
+  <Value, Patch, Value2, Patch2>(self: Differ<Value, Patch>, that: Differ<Value2, Patch2>): Differ<
+    Either<Value, Value2>,
+    any
+  >
+}
 ```
 
 Added in v1.0.0
@@ -173,10 +175,15 @@ the specified functions that map the new and old value types to each other.
 **Signature**
 
 ```ts
-export declare const transform: <Value, Value2>(
-  f: (value: Value) => Value2,
-  g: (value: Value2) => Value
-) => <Patch>(self: Differ<Value, Patch>) => Differ<Value2, Patch>
+export declare const transform: {
+  <Value, Value2>(f: (value: Value) => Value2, g: (value: Value2) => Value): <Patch>(
+    self: Differ<Value, Patch>
+  ) => Differ<Value2, Patch>
+  <Value, Patch, Value2>(self: Differ<Value, Patch>, f: (value: Value) => Value2, g: (value: Value2) => Value): Differ<
+    Value2,
+    Patch
+  >
+}
 ```
 
 Added in v1.0.0
@@ -217,9 +224,15 @@ knows how to diff the product of their values.
 **Signature**
 
 ```ts
-export declare const zip: <Value2, Patch2>(
-  that: Differ<Value2, Patch2>
-) => <Value, Patch>(self: Differ<Value, Patch>) => Differ<readonly [Value, Value2], readonly [Patch, Patch2]>
+export declare const zip: {
+  <Value2, Patch2>(that: Differ<Value2, Patch2>): <Value, Patch>(
+    self: Differ<Value, Patch>
+  ) => Differ<readonly [Value, Value2], readonly [Patch, Patch2]>
+  <Value, Patch, Value2, Patch2>(self: Differ<Value, Patch>, that: Differ<Value2, Patch2>): Differ<
+    readonly [Value, Value2],
+    readonly [Patch, Patch2]
+  >
+}
 ```
 
 Added in v1.0.0
@@ -237,7 +250,10 @@ deterministic `FiberRef` values.
 **Signature**
 
 ```ts
-export declare const combine: <Patch>(first: Patch, second: Patch) => <Value>(self: Differ<Value, Patch>) => Patch
+export declare const combine: {
+  <Patch>(first: Patch, second: Patch): <Value>(self: Differ<Value, Patch>) => Patch
+  <Value, Patch>(self: Differ<Value, Patch>, first: Patch, second: Patch): Patch
+}
 ```
 
 Added in v1.0.0
@@ -249,7 +265,10 @@ An empty patch that describes no changes.
 **Signature**
 
 ```ts
-export declare const diff: <Value>(oldValue: Value, newValue: Value) => <Patch>(differ: Differ<Value, Patch>) => Patch
+export declare const diff: {
+  <Value>(oldValue: Value, newValue: Value): <Patch>(differ: Differ<Value, Patch>) => Patch
+  <Value, Patch>(differ: Differ<Value, Patch>, oldValue: Value, newValue: Value): Patch
+}
 ```
 
 Added in v1.0.0
@@ -274,7 +293,10 @@ old value with the updates described by the patch.
 **Signature**
 
 ```ts
-export declare const patch: <Patch, Value>(patch: Patch, oldValue: Value) => (self: Differ<Value, Patch>) => Value
+export declare const patch: {
+  <Patch, Value>(patch: Patch, oldValue: Value): (self: Differ<Value, Patch>) => Value
+  <Patch, Value>(self: Differ<Value, Patch>, patch: Patch, oldValue: Value): Value
+}
 ```
 
 Added in v1.0.0

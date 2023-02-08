@@ -47,7 +47,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const equals: (that: Duration) => (self: Duration) => boolean
+export declare const equals: {
+  (that: Duration): (self: Duration) => boolean
+  (self: Duration, that: Duration): boolean
+}
 ```
 
 Added in v1.0.0
@@ -57,7 +60,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const greaterThan: (that: Duration) => (self: Duration) => boolean
+export declare const greaterThan: {
+  (that: Duration): (self: Duration) => boolean
+  (self: Duration, that: Duration): boolean
+}
 ```
 
 Added in v1.0.0
@@ -67,7 +73,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const greaterThanOrEqualTo: (that: Duration) => (self: Duration) => boolean
+export declare const greaterThanOrEqualTo: {
+  (self: Duration, that: Duration): boolean
+  (that: Duration): (self: Duration) => boolean
+}
 ```
 
 Added in v1.0.0
@@ -77,7 +86,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const lessThan: (that: Duration) => (self: Duration) => boolean
+export declare const lessThan: {
+  (that: Duration): (self: Duration) => boolean
+  (self: Duration, that: Duration): boolean
+}
 ```
 
 Added in v1.0.0
@@ -87,7 +99,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const lessThanOrEqualTo: (that: Duration) => (self: Duration) => boolean
+export declare const lessThanOrEqualTo: {
+  (self: Duration, that: Duration): boolean
+  (that: Duration): (self: Duration) => boolean
+}
 ```
 
 Added in v1.0.0
@@ -208,7 +223,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const add: (that: Duration) => (self: Duration) => Duration
+export declare const add: { (that: Duration): (self: Duration) => Duration; (self: Duration, that: Duration): Duration }
 ```
 
 Added in v1.0.0
@@ -218,7 +233,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const subtract: (that: Duration) => (self: Duration) => Duration
+export declare const subtract: {
+  (that: Duration): (self: Duration) => Duration
+  (self: Duration, that: Duration): Duration
+}
 ```
 
 Added in v1.0.0
@@ -228,7 +246,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const times: (times: number) => (self: Duration) => Duration
+export declare const times: { (times: number): (self: Duration) => Duration; (self: Duration, times: number): Duration }
 ```
 
 Added in v1.0.0

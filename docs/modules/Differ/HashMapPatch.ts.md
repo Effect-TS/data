@@ -37,9 +37,9 @@ differ for the values.
 
 ```ts
 export declare const diff: <Key, Value, Patch>(
-  oldValue: HashMap<Key, Value>,
-  newValue: HashMap<Key, Value>,
-  differ: Differ<Value, Patch>
+  oldValue: any,
+  newValue: any,
+  differ: any
 ) => HashMapPatch<Key, Value, Patch>
 ```
 
@@ -68,10 +68,10 @@ values updated with the changes described by this patch.
 **Signature**
 
 ```ts
-export declare const patch: <Key, Value, Patch>(
-  oldValue: HashMap<Key, Value>,
-  differ: Differ<Value, Patch>
-) => (self: HashMapPatch<Key, Value, Patch>) => HashMap<Key, Value>
+export declare const patch: {
+  <Key, Value, Patch>(oldValue: any, differ: any): (self: HashMapPatch<Key, Value, Patch>) => any
+  <Key, Value, Patch>(self: HashMapPatch<Key, Value, Patch>, oldValue: any, differ: any): any
+}
 ```
 
 Added in v1.0.0
@@ -105,9 +105,16 @@ applying their changes sequentially.
 **Signature**
 
 ```ts
-export declare const combine: <Key, Value, Patch>(
-  that: HashMapPatch<Key, Value, Patch>
-) => (self: HashMapPatch<Key, Value, Patch>) => HashMapPatch<Key, Value, Patch>
+export declare const combine: {
+  <Key, Value, Patch>(that: HashMapPatch<Key, Value, Patch>): (
+    self: HashMapPatch<Key, Value, Patch>
+  ) => HashMapPatch<Key, Value, Patch>
+  <Key, Value, Patch>(self: HashMapPatch<Key, Value, Patch>, that: HashMapPatch<Key, Value, Patch>): HashMapPatch<
+    Key,
+    Value,
+    Patch
+  >
+}
 ```
 
 Added in v1.0.0

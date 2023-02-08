@@ -1,6 +1,6 @@
 ---
 title: MutableHashSet.ts
-nav_order: 19
+nav_order: 20
 parent: Modules
 ---
 
@@ -67,7 +67,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const add: <K>(key: K) => (self: MutableHashSet<K>) => MutableHashSet<K>
+export declare const add: {
+  <V>(key: V): (self: MutableHashSet<V>) => MutableHashSet<V>
+  <V>(self: MutableHashSet<V>, key: V): MutableHashSet<V>
+}
 ```
 
 Added in v1.0.0
@@ -77,7 +80,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const has: <K>(key: K) => (self: MutableHashSet<K>) => boolean
+export declare const has: {
+  <V>(key: V): (self: MutableHashSet<V>) => boolean
+  <V>(self: MutableHashSet<V>, key: V): boolean
+}
 ```
 
 Added in v1.0.0
@@ -87,7 +93,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const remove: <K>(key: K) => (self: MutableHashSet<K>) => MutableHashSet<K>
+export declare const remove: {
+  <V>(key: V): (self: MutableHashSet<V>) => MutableHashSet<V>
+  <V>(self: MutableHashSet<V>, key: V): MutableHashSet<V>
+}
 ```
 
 Added in v1.0.0
@@ -97,7 +106,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const size: <K>(self: MutableHashSet<K>) => number
+export declare const size: <V>(self: MutableHashSet<V>) => number
 ```
 
 Added in v1.0.0
@@ -109,12 +118,12 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface MutableHashSet<K> extends Iterable<K> {
+export interface MutableHashSet<V> extends Iterable<V> {
   readonly _id: TypeId
-  readonly _V: (_: K) => K
+  readonly _V: (_: V) => V
 
   /** @internal */
-  readonly keyMap: MHashMap.MutableHashMap<K, boolean>
+  readonly keyMap: MutableHashMap.MutableHashMap<V, boolean>
 }
 ```
 

@@ -1,6 +1,6 @@
 ---
 title: MutableRef.ts
-nav_order: 22
+nav_order: 23
 parent: Modules
 ---
 
@@ -70,7 +70,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const compareAndSet: <T>(oldValue: T, newValue: T) => (self: MutableRef<T>) => boolean
+export declare const compareAndSet: {
+  <T>(oldValue: T, newValue: T): (self: MutableRef<T>) => boolean
+  <T>(self: MutableRef<T>, oldValue: T, newValue: T): boolean
+}
 ```
 
 Added in v1.0.0
@@ -90,7 +93,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getAndSet: <T>(value: T) => (self: MutableRef<T>) => T
+export declare const getAndSet: { <T>(value: T): (self: MutableRef<T>) => T; <T>(self: MutableRef<T>, value: T): T }
 ```
 
 Added in v1.0.0
@@ -100,7 +103,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getAndUpdate: <T>(f: (value: T) => T) => (self: MutableRef<T>) => T
+export declare const getAndUpdate: {
+  <T>(f: (value: T) => T): (self: MutableRef<T>) => T
+  <T>(self: MutableRef<T>, f: (value: T) => T): T
+}
 ```
 
 Added in v1.0.0
@@ -110,7 +116,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const set: <T>(value: T) => (self: MutableRef<T>) => MutableRef<T>
+export declare const set: {
+  <T>(value: T): (self: MutableRef<T>) => MutableRef<T>
+  <T>(self: MutableRef<T>, value: T): MutableRef<T>
+}
 ```
 
 Added in v1.0.0
@@ -120,7 +129,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const setAndGet: <T>(value: T) => (self: MutableRef<T>) => T
+export declare const setAndGet: { <T>(value: T): (self: MutableRef<T>) => T; <T>(self: MutableRef<T>, value: T): T }
 ```
 
 Added in v1.0.0
@@ -130,7 +139,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const update: <T>(f: (value: T) => T) => (self: MutableRef<T>) => MutableRef<T>
+export declare const update: {
+  <T>(f: (value: T) => T): (self: MutableRef<T>) => MutableRef<T>
+  <T>(self: MutableRef<T>, f: (value: T) => T): MutableRef<T>
+}
 ```
 
 Added in v1.0.0
@@ -140,7 +152,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const updateAndGet: <T>(f: (value: T) => T) => (self: MutableRef<T>) => T
+export declare const updateAndGet: {
+  <T>(f: (value: T) => T): (self: MutableRef<T>) => T
+  <T>(self: MutableRef<T>, f: (value: T) => T): T
+}
 ```
 
 Added in v1.0.0

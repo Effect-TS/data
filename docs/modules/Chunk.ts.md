@@ -161,7 +161,10 @@ Return a Chunk of length n with element i initialized with f(i).
 **Signature**
 
 ```ts
-export declare const makeBy: <A>(f: (i: number) => A) => (n: number) => NonEmptyChunk<A>
+export declare const makeBy: {
+  <A>(f: (i: number) => A): (n: number) => NonEmptyChunk<A>
+  <A>(n: number, f: (i: number) => A): NonEmptyChunk<A>
+}
 ```
 
 Added in v1.0.0
@@ -225,7 +228,10 @@ Groups elements in chunks of up to `n` elements.
 **Signature**
 
 ```ts
-export declare const chunksOf: (n: number) => <A>(self: Chunk<A>) => Chunk<Chunk<A>>
+export declare const chunksOf: {
+  (n: number): <A>(self: Chunk<A>) => Chunk<Chunk<A>>
+  <A>(self: Chunk<A>, n: number): Chunk<Chunk<A>>
+}
 ```
 
 Added in v1.0.0
@@ -237,7 +243,10 @@ Compares the two chunks of equal length using the specified function
 **Signature**
 
 ```ts
-export declare const correspondsTo: <A, B>(that: Chunk<B>, f: (a: A, b: B) => boolean) => (self: Chunk<A>) => boolean
+export declare const correspondsTo: {
+  <A, B>(that: Chunk<B>, f: (a: A, b: B) => boolean): (self: Chunk<A>) => boolean
+  <A, B>(self: Chunk<A>, that: Chunk<B>, f: (a: A, b: B) => boolean): boolean
+}
 ```
 
 Added in v1.0.0
@@ -249,7 +258,10 @@ Zips this chunk crosswise with the specified chunk.
 **Signature**
 
 ```ts
-export declare const cross: <B>(that: Chunk<B>) => <A>(self: Chunk<A>) => Chunk<readonly [A, B]>
+export declare const cross: {
+  <B>(that: Chunk<B>): <A>(self: Chunk<A>) => Chunk<readonly [A, B]>
+  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<readonly [A, B]>
+}
 ```
 
 Added in v1.0.0
@@ -261,7 +273,10 @@ Zips this chunk crosswise with the specified chunk using the specified combiner.
 **Signature**
 
 ```ts
-export declare const crossWith: <A, B, C>(that: Chunk<B>, f: (a: A, b: B) => C) => (self: Chunk<A>) => Chunk<C>
+export declare const crossWith: {
+  <A, B, C>(that: Chunk<B>, f: (a: A, b: B) => C): (self: Chunk<A>) => Chunk<C>
+  <A, B, C>(self: Chunk<A>, that: Chunk<B>, f: (a: A, b: B) => C): Chunk<C>
+}
 ```
 
 Added in v1.0.0
@@ -285,7 +300,7 @@ Tests whether a value is a member of a `Chunk<A>`.
 **Signature**
 
 ```ts
-export declare const elem: <B>(b: B) => <A>(self: Chunk<A>) => boolean
+export declare const elem: { <B>(b: B): <A>(self: Chunk<A>) => boolean; <A, B>(self: Chunk<A>, b: B): boolean }
 ```
 
 Added in v1.0.0
@@ -297,7 +312,10 @@ Check if a predicate holds true for every `Chunk` member.
 **Signature**
 
 ```ts
-export declare const every: <A>(f: (a: A) => boolean) => (self: Chunk<A>) => boolean
+export declare const every: {
+  <A>(f: Predicate<A>): (self: Chunk<A>) => boolean
+  <A>(self: Chunk<A>, f: Predicate<A>): boolean
+}
 ```
 
 Added in v1.0.0
@@ -309,8 +327,12 @@ Find the first element which satisfies a predicate (or a refinement) function.
 **Signature**
 
 ```ts
-export declare function findFirst<A, B extends A>(refinement: Refinement<A, B>): (self: Chunk<A>) => Option<B>
-export declare function findFirst<A>(predicate: Predicate<A>): (self: Chunk<A>) => Option<A>
+export declare const findFirst: {
+  <A, B extends A>(refinement: Refinement<A, B>): (self: Chunk<A>) => Option<B>
+  <A>(predicate: Predicate<A>): (self: Chunk<A>) => Option<A>
+  <A, B extends A>(self: Chunk<A>, refinement: Refinement<A, B>): Option<B>
+  <A>(self: Chunk<A>, predicate: Predicate<A>): Option<A>
+}
 ```
 
 Added in v1.0.0
@@ -322,7 +344,10 @@ Find the first index for which a predicate holds
 **Signature**
 
 ```ts
-export declare const findFirstIndex: <A>(f: Predicate<A>) => (self: Chunk<A>) => Option<number>
+export declare const findFirstIndex: {
+  <A>(f: Predicate<A>): (self: Chunk<A>) => Option<number>
+  <A>(self: Chunk<A>, f: Predicate<A>): Option<number>
+}
 ```
 
 Added in v1.0.0
@@ -334,8 +359,12 @@ Find the last element which satisfies a predicate function
 **Signature**
 
 ```ts
-export declare function findLast<A, B extends A>(f: Refinement<A, B>): (self: Chunk<A>) => Option<B>
-export declare function findLast<A>(f: Predicate<A>): (self: Chunk<A>) => Option<A>
+export declare const findLast: {
+  <A, B extends A>(f: Refinement<A, B>): (self: Chunk<A>) => Option<B>
+  <A>(f: Predicate<A>): (self: Chunk<A>) => Option<A>
+  <A, B extends A>(self: Chunk<A>, f: Refinement<A, B>): Option<B>
+  <A>(self: Chunk<A>, f: Predicate<A>): Option<A>
+}
 ```
 
 Added in v1.0.0
@@ -347,7 +376,10 @@ Find the first index for which a predicate holds
 **Signature**
 
 ```ts
-export declare const findLastIndex: <A>(f: Predicate<A>) => (self: Chunk<A>) => Option<number>
+export declare const findLastIndex: {
+  <A>(f: Predicate<A>): (self: Chunk<A>) => Option<number>
+  <A>(self: Chunk<A>, f: Predicate<A>): Option<number>
+}
 ```
 
 Added in v1.0.0
@@ -359,7 +391,10 @@ Iterate over the chunk applying `f`.
 **Signature**
 
 ```ts
-export declare const forEach: <A>(f: (a: A) => void) => (self: Chunk<A>) => void
+export declare const forEach: {
+  <A>(f: (a: A) => void): (self: Chunk<A>) => void
+  <A>(self: Chunk<A>, f: (a: A) => void): void
+}
 ```
 
 Added in v1.0.0
@@ -371,7 +406,10 @@ This function provides a safe way to read a value at a particular index from a `
 **Signature**
 
 ```ts
-export declare const get: (index: number) => <A>(self: Chunk<A>) => Option<A>
+export declare const get: {
+  (index: number): <A>(self: Chunk<A>) => Option<A>
+  <A>(self: Chunk<A>, index: number): Option<A>
+}
 ```
 
 Added in v1.0.0
@@ -409,7 +447,10 @@ The order and references of result values are determined by the Chunk.
 **Signature**
 
 ```ts
-export declare const intersection: <A>(that: Chunk<A>) => <B>(self: Chunk<B>) => Chunk<A & B>
+export declare const intersection: {
+  <A>(that: Chunk<A>): <B>(self: Chunk<B>) => Chunk<A & B>
+  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<A & B>
+}
 ```
 
 Added in v1.0.0
@@ -481,7 +522,10 @@ Check if a predicate holds true for any `Chunk` member.
 **Signature**
 
 ```ts
-export declare const some: <A>(f: (a: A) => boolean) => (self: Chunk<A>) => boolean
+export declare const some: {
+  <A>(f: Predicate<A>): (self: Chunk<A>) => boolean
+  <A>(self: Chunk<A>, f: Predicate<A>): boolean
+}
 ```
 
 Added in v1.0.0
@@ -493,7 +537,10 @@ Sort the elements of a Chunk in increasing order, creating a new Chunk.
 **Signature**
 
 ```ts
-export declare const sort: <B>(O: Order<B>) => <A extends B>(as: Chunk<A>) => Chunk<A>
+export declare const sort: {
+  <B>(O: Order<B>): <A extends B>(self: Chunk<A>) => Chunk<A>
+  <A extends B, B>(self: Chunk<A>, O: Order<B>): Chunk<A>
+}
 ```
 
 Added in v1.0.0
@@ -505,7 +552,10 @@ Splits this chunk into `n` equally sized chunks.
 **Signature**
 
 ```ts
-export declare const split: (n: number) => <A>(self: Chunk<A>) => Chunk<Chunk<A>>
+export declare const split: {
+  (n: number): <A>(self: Chunk<A>) => Chunk<Chunk<A>>
+  <A>(self: Chunk<A>, n: number): Chunk<Chunk<A>>
+}
 ```
 
 Added in v1.0.0
@@ -517,7 +567,10 @@ Returns two splits of this chunk at the specified index.
 **Signature**
 
 ```ts
-export declare const splitAt: (n: number) => <A>(self: Chunk<A>) => readonly [Chunk<A>, Chunk<A>]
+export declare const splitAt: {
+  (n: number): <A>(self: Chunk<A>) => readonly [Chunk<A>, Chunk<A>]
+  <A>(self: Chunk<A>, n: number): readonly [Chunk<A>, Chunk<A>]
+}
 ```
 
 Added in v1.0.0
@@ -529,7 +582,10 @@ Splits this chunk on the first element that matches this predicate.
 **Signature**
 
 ```ts
-export declare const splitWhere: <A>(f: Predicate<A>) => (self: Chunk<A>) => readonly [Chunk<A>, Chunk<A>]
+export declare const splitWhere: {
+  <A>(f: Predicate<A>): (self: Chunk<A>) => readonly [Chunk<A>, Chunk<A>]
+  <A>(self: Chunk<A>, f: Predicate<A>): readonly [Chunk<A>, Chunk<A>]
+}
 ```
 
 Added in v1.0.0
@@ -565,7 +621,10 @@ Takes the last `n` elements.
 **Signature**
 
 ```ts
-export declare const takeRight: (n: number) => <A>(self: Chunk<A>) => Chunk<A>
+export declare const takeRight: {
+  (n: number): <A>(self: Chunk<A>) => Chunk<A>
+  <A>(self: Chunk<A>, n: number): Chunk<A>
+}
 ```
 
 Added in v1.0.0
@@ -577,7 +636,10 @@ Takes all elements so long as the predicate returns true.
 **Signature**
 
 ```ts
-export declare const takeWhile: <A>(f: Predicate<A>) => (self: Chunk<A>) => Chunk<A>
+export declare const takeWhile: {
+  <A>(f: Predicate<A>): (self: Chunk<A>) => Chunk<A>
+  <A>(self: Chunk<A>, f: Predicate<A>): Chunk<A>
+}
 ```
 
 Added in v1.0.0
@@ -601,7 +663,10 @@ Creates a Chunks of unique values, in order, from all given Chunks.
 **Signature**
 
 ```ts
-export declare function union<A>(that: Chunk<A>)
+export declare const union: {
+  <A>(that: Chunk<A>): <B>(self: Chunk<B>) => Chunk<A | B>
+  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<A | B>
+}
 ```
 
 Added in v1.0.0
@@ -627,7 +692,10 @@ Zips this chunk pointwise with the specified chunk.
 **Signature**
 
 ```ts
-export declare const zip: <B>(that: Chunk<B>) => <A>(self: Chunk<A>) => Chunk<readonly [A, B]>
+export declare const zip: {
+  <B>(that: Chunk<B>): <A>(self: Chunk<A>) => Chunk<readonly [A, B]>
+  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<readonly [A, B]>
+}
 ```
 
 Added in v1.0.0
@@ -642,7 +710,10 @@ longer chunk.
 **Signature**
 
 ```ts
-export declare const zipAll: <B>(that: Chunk<B>) => <A>(self: Chunk<A>) => Chunk<readonly [Option<A>, Option<B>]>
+export declare const zipAll: {
+  <B>(that: Chunk<B>): <A>(self: Chunk<A>) => Chunk<readonly [Option<A>, Option<B>]>
+  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<readonly [Option<A>, Option<B>]>
+}
 ```
 
 Added in v1.0.0
@@ -658,12 +729,14 @@ result type.
 **Signature**
 
 ```ts
-export declare const zipAllWith: <A, B, C, D, E>(
-  that: Chunk<B>,
-  f: (a: A, b: B) => C,
-  left: (a: A) => D,
-  right: (b: B) => E
-) => (self: Chunk<A>) => Chunk<C | D | E>
+export declare const zipAllWith: {
+  <A, B, C, D, E>(that: Chunk<B>, f: (a: A, b: B) => C, left: (a: A) => D, right: (b: B) => E): (
+    self: Chunk<A>
+  ) => Chunk<C | D | E>
+  <A, B, C, D, E>(self: Chunk<A>, that: Chunk<B>, f: (a: A, b: B) => C, left: (a: A) => D, right: (b: B) => E): Chunk<
+    C | D | E
+  >
+}
 ```
 
 Added in v1.0.0
@@ -675,7 +748,10 @@ Zips this chunk pointwise with the specified chunk using the specified combiner.
 **Signature**
 
 ```ts
-export declare const zipWith: <A, B, C>(that: Chunk<B>, f: (a: A, b: B) => C) => (self: Chunk<A>) => Chunk<C>
+export declare const zipWith: {
+  <A, B, C>(that: Chunk<B>, f: (a: A, b: B) => C): (self: Chunk<A>) => Chunk<C>
+  <A, B, C>(self: Chunk<A>, that: Chunk<B>, f: (a: A, b: B) => C): Chunk<C>
+}
 ```
 
 Added in v1.0.0
@@ -701,7 +777,10 @@ index value.
 **Signature**
 
 ```ts
-export declare const zipWithIndexOffset: (offset: number) => <A>(self: Chunk<A>) => Chunk<[A, number]>
+export declare const zipWithIndexOffset: {
+  (offset: number): <A>(self: Chunk<A>) => Chunk<[A, number]>
+  <A>(self: Chunk<A>, offset: number): Chunk<[A, number]>
+}
 ```
 
 Added in v1.0.0
@@ -742,6 +821,8 @@ Returns a filtered and mapped subset of the elements.
 export declare const filter: {
   <C extends A, B extends A, A = C>(refinement: Refinement<A, B>): (self: Chunk<C>) => Chunk<B>
   <B extends A, A = B>(predicate: Predicate<A>): (self: Chunk<B>) => Chunk<B>
+  <C extends A, B extends A, A = C>(self: Chunk<C>, refinement: Refinement<A, B>): Chunk<B>
+  <B extends A, A = B>(self: Chunk<B>, predicate: Predicate<A>): Chunk<B>
 }
 ```
 
@@ -754,7 +835,10 @@ Returns a filtered and mapped subset of the elements.
 **Signature**
 
 ```ts
-export declare const filterMap: <A, B>(f: (a: A) => Option<B>) => (self: Iterable<A>) => Chunk<B>
+export declare const filterMap: {
+  <A, B>(f: (a: A) => Option<B>): (self: Iterable<A>) => Chunk<B>
+  <A, B>(self: Iterable<A>, f: (a: A) => Option<B>): Chunk<B>
+}
 ```
 
 Added in v1.0.0
@@ -766,7 +850,10 @@ Transforms all elements of the chunk for as long as the specified function retur
 **Signature**
 
 ```ts
-export declare const filterMapWhile: <A, B>(f: (a: A) => Option<B>) => (self: Iterable<A>) => Chunk<B>
+export declare const filterMapWhile: {
+  <A, B>(f: (a: A) => Option<B>): (self: Iterable<A>) => Chunk<B>
+  <A, B>(self: Iterable<A>, f: (a: A) => Option<B>): Chunk<B>
+}
 ```
 
 Added in v1.0.0
@@ -778,7 +865,10 @@ Returns a filtered and mapped subset of the elements.
 **Signature**
 
 ```ts
-export declare const filterMapWithIndex: <A, B>(f: (a: A, i: number) => Option<B>) => (self: Iterable<A>) => Chunk<B>
+export declare const filterMapWithIndex: {
+  <A, B>(f: (a: A, i: number) => Option<B>): (self: Iterable<A>) => Chunk<B>
+  <A, B>(self: Iterable<A>, f: (a: A, i: number) => Option<B>): Chunk<B>
+}
 ```
 
 Added in v1.0.0
@@ -791,8 +881,10 @@ Separate elements based on a predicate.
 
 ```ts
 export declare const partition: {
-  <C extends A, B extends A, A = C>(refinement: Refinement<A, B>): (fc: Chunk<C>) => readonly [Chunk<C>, Chunk<B>]
-  <B extends A, A = B>(predicate: Predicate<A>): (fb: Chunk<B>) => readonly [Chunk<B>, Chunk<B>]
+  <C extends A, B extends A, A = C>(refinement: Refinement<A, B>): (self: Chunk<C>) => readonly [Chunk<C>, Chunk<B>]
+  <B extends A, A = B>(predicate: Predicate<A>): (self: Chunk<B>) => readonly [Chunk<B>, Chunk<B>]
+  <C extends A, B extends A, A = C>(self: Chunk<C>, refinement: Refinement<A, B>): readonly [Chunk<C>, Chunk<B>]
+  <B extends A, A = B>(self: Chunk<B>, predicate: Predicate<A>): readonly [Chunk<B>, Chunk<B>]
 }
 ```
 
@@ -805,9 +897,10 @@ Partitions the elements of this chunk into two chunks using f.
 **Signature**
 
 ```ts
-export declare const partitionMap: <A, B, C>(
-  f: (a: A) => Either<B, C>
-) => (fa: Chunk<A>) => readonly [Chunk<B>, Chunk<C>]
+export declare const partitionMap: {
+  <A, B, C>(f: (a: A) => Either<B, C>): (self: Chunk<A>) => readonly [Chunk<B>, Chunk<C>]
+  <A, B, C>(self: Chunk<A>, f: (a: A) => Either<B, C>): readonly [Chunk<B>, Chunk<C>]
+}
 ```
 
 Added in v1.0.0
@@ -821,9 +914,14 @@ Separate elements based on a predicate that also exposes the index of the elemen
 ```ts
 export declare const partitionWithIndex: {
   <C extends A, B extends A, A = C>(refinement: (a: A, i: number) => a is B): (
-    fb: Chunk<C>
+    self: Chunk<C>
   ) => readonly [Chunk<C>, Chunk<B>]
-  <B extends A, A = B>(predicate: (a: A, i: number) => boolean): (fb: Chunk<B>) => readonly [Chunk<B>, Chunk<B>]
+  <B extends A, A = B>(predicate: (a: A, i: number) => boolean): (self: Chunk<B>) => readonly [Chunk<B>, Chunk<B>]
+  <C extends A, B extends A, A = C>(self: Chunk<C>, refinement: (a: A, i: number) => a is B): readonly [
+    Chunk<C>,
+    Chunk<B>
+  ]
+  <B extends A, A = B>(self: Chunk<B>, predicate: (a: A, i: number) => boolean): readonly [Chunk<B>, Chunk<B>]
 }
 ```
 
@@ -850,7 +948,10 @@ Joins the elements together with "sep" in the middle.
 **Signature**
 
 ```ts
-export declare const join: (sep: string) => (self: Chunk<string>) => string
+export declare const join: {
+  (sep: string): (self: Chunk<string>) => string
+  (self: Chunk<string>, sep: string): string
+}
 ```
 
 Added in v1.0.0
@@ -862,7 +963,10 @@ Statefully maps over the chunk, producing new elements of type `B`.
 **Signature**
 
 ```ts
-export declare function mapAccum<S, A, B>(s: S, f: (s: S, a: A) => readonly [S, B])
+export declare const mapAccum: {
+  <S, A, B>(s: S, f: (s: S, a: A) => readonly [S, B]): (self: Chunk<A>) => readonly [S, Chunk<B>]
+  <S, A, B>(self: Chunk<A>, s: S, f: (s: S, a: A) => readonly [S, B]): readonly [S, Chunk<B>]
+}
 ```
 
 Added in v1.0.0
@@ -874,7 +978,10 @@ Folds over the elements in this chunk from the left.
 **Signature**
 
 ```ts
-export declare const reduce: <A, B>(b: B, f: (s: B, a: A) => B) => (self: Chunk<A>) => B
+export declare const reduce: {
+  <A, B>(b: B, f: (s: B, a: A) => B): (self: Chunk<A>) => B
+  <A, B>(self: Chunk<A>, b: B, f: (s: B, a: A) => B): B
+}
 ```
 
 Added in v1.0.0
@@ -886,7 +993,10 @@ Folds over the elements in this chunk from the right.
 **Signature**
 
 ```ts
-export declare const reduceRight: <A, S>(s: S, f: (s: S, a: A) => S) => (self: Chunk<A>) => S
+export declare const reduceRight: {
+  <B, A>(b: B, f: (b: B, a: A) => B): (self: Chunk<A>) => B
+  <A, B>(self: Chunk<A>, b: B, f: (b: B, a: A) => B): B
+}
 ```
 
 Added in v1.0.0
@@ -898,7 +1008,10 @@ Folds over the elements in this chunk from the right.
 **Signature**
 
 ```ts
-export declare const reduceRightWithIndex: <B, A>(b: B, f: (b: B, a: A, i: number) => B) => (self: Chunk<A>) => B
+export declare const reduceRightWithIndex: {
+  <B, A>(b: B, f: (b: B, a: A, i: number) => B): (self: Chunk<A>) => B
+  <A, B>(self: Chunk<A>, b: B, f: (b: B, a: A, i: number) => B): B
+}
 ```
 
 Added in v1.0.0
@@ -910,7 +1023,10 @@ Folds over the elements in this chunk from the left.
 **Signature**
 
 ```ts
-export declare const reduceWithIndex: <B, A>(b: B, f: (b: B, a: A, i: number) => B) => (self: Chunk<A>) => B
+export declare const reduceWithIndex: {
+  <B, A>(b: B, f: (b: B, a: A, i: number) => B): (self: Chunk<A>) => B
+  <A, B>(self: Chunk<A>, b: B, f: (b: B, a: A, i: number) => B): B
+}
 ```
 
 Added in v1.0.0
@@ -924,7 +1040,10 @@ Returns an effect whose success is mapped by the specified f function.
 **Signature**
 
 ```ts
-export declare const map: <A, B>(f: (a: A) => B) => (self: Chunk<A>) => Chunk<B>
+export declare const map: {
+  <A, B>(f: (a: A) => B): (self: Chunk<A>) => Chunk<B>
+  <A, B>(self: Chunk<A>, f: (a: A) => B): Chunk<B>
+}
 ```
 
 Added in v1.0.0
@@ -936,7 +1055,10 @@ Returns an effect whose success is mapped by the specified f function.
 **Signature**
 
 ```ts
-export declare const mapWithIndex: <A, B>(f: (a: A, i: number) => B) => (self: Chunk<A>) => Chunk<B>
+export declare const mapWithIndex: {
+  <A, B>(f: (a: A, i: number) => B): (self: Chunk<A>) => Chunk<B>
+  <A, B>(self: Chunk<A>, f: (a: A, i: number) => B): Chunk<B>
+}
 ```
 
 Added in v1.0.0
@@ -986,7 +1108,10 @@ Appends the value to the chunk
 **Signature**
 
 ```ts
-export declare const append: <A1>(a: A1) => <A>(self: Chunk<A>) => Chunk<A1 | A>
+export declare const append: {
+  <A2>(a: A2): <A>(self: Chunk<A>) => Chunk<A2 | A>
+  <A, A2>(self: Chunk<A>, a: A2): Chunk<A | A2>
+}
 ```
 
 Added in v1.0.0
@@ -998,7 +1123,10 @@ Concatenates the two chunks
 **Signature**
 
 ```ts
-export declare const concat: <B>(that: Chunk<B>) => <A>(self: Chunk<A>) => Chunk<B | A>
+export declare const concat: {
+  <B>(that: Chunk<B>): <A>(self: Chunk<A>) => Chunk<B | A>
+  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<A | B>
+}
 ```
 
 Added in v1.0.0
@@ -1010,7 +1138,7 @@ Drops the first up to `n` elements from the chunk
 **Signature**
 
 ```ts
-export declare const drop: (n: number) => <A>(self: Chunk<A>) => Chunk<A>
+export declare const drop: { (n: number): <A>(self: Chunk<A>) => Chunk<A>; <A>(self: Chunk<A>, n: number): Chunk<A> }
 ```
 
 Added in v1.0.0
@@ -1022,7 +1150,10 @@ Drops the last `n` elements.
 **Signature**
 
 ```ts
-export declare const dropRight: (n: number) => <A>(self: Chunk<A>) => Chunk<A>
+export declare const dropRight: {
+  (n: number): <A>(self: Chunk<A>) => Chunk<A>
+  <A>(self: Chunk<A>, n: number): Chunk<A>
+}
 ```
 
 Added in v1.0.0
@@ -1034,7 +1165,10 @@ Drops all elements so long as the predicate returns true.
 **Signature**
 
 ```ts
-export declare const dropWhile: <A>(f: (a: A) => boolean) => (self: Chunk<A>) => Chunk<A>
+export declare const dropWhile: {
+  <A>(f: (a: A) => boolean): (self: Chunk<A>) => Chunk<A>
+  <A>(self: Chunk<A>, f: (a: A) => boolean): Chunk<A>
+}
 ```
 
 Added in v1.0.0
@@ -1047,7 +1181,10 @@ or returning the input if the index is out of bounds.
 **Signature**
 
 ```ts
-export declare const modify: <A, B>(i: number, f: (a: A) => B) => (self: Chunk<A>) => Chunk<A | B>
+export declare const modify: {
+  <A, B>(i: number, f: (a: A) => B): (self: Chunk<A>) => Chunk<A | B>
+  <A, B>(self: Chunk<A>, i: number, f: (a: A) => B): Chunk<A | B>
+}
 ```
 
 Added in v1.0.0
@@ -1057,7 +1194,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const modifyOption: <A, B>(i: number, f: (a: A) => B) => (self: Chunk<A>) => Option<Chunk<A | B>>
+export declare const modifyOption: {
+  <A, B>(i: number, f: (a: A) => B): (self: Chunk<A>) => Option<Chunk<A | B>>
+  <A, B>(self: Chunk<A>, i: number, f: (a: A) => B): Option<Chunk<A | B>>
+}
 ```
 
 Added in v1.0.0
@@ -1069,7 +1209,10 @@ Prepends the value to the chunk
 **Signature**
 
 ```ts
-export declare const prepend: <B>(elem: B) => <A>(self: Chunk<A>) => Chunk<B | A>
+export declare const prepend: {
+  <B>(elem: B): <A>(self: Chunk<A>) => Chunk<B | A>
+  <A, B>(self: Chunk<A>, elem: B): Chunk<A | B>
+}
 ```
 
 Added in v1.0.0
@@ -1079,8 +1222,12 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare function prependAllNonEmpty<B>(that: NonEmptyChunk<B>): <A>(self: Chunk<A>) => NonEmptyChunk<A | B>
-export declare function prependAllNonEmpty<B>(that: Chunk<B>): <A>(self: NonEmptyChunk<A>) => NonEmptyChunk<A | B>
+export declare const prependAllNonEmpty: {
+  <B>(that: NonEmptyChunk<B>): <A>(self: Chunk<A>) => NonEmptyChunk<B | A>
+  <B>(that: Chunk<B>): <A>(self: NonEmptyChunk<A>) => NonEmptyChunk<B | A>
+  <A, B>(self: Chunk<A>, that: NonEmptyChunk<B>): NonEmptyChunk<A | B>
+  <A, B>(self: NonEmptyChunk<A>, that: Chunk<B>): NonEmptyChunk<A | B>
+}
 ```
 
 Added in v1.0.0
@@ -1093,7 +1240,7 @@ or returning the input if the index is out of bounds.
 **Signature**
 
 ```ts
-export declare const remove: (i: number) => <A>(self: Chunk<A>) => Chunk<A>
+export declare const remove: { (i: number): <A>(self: Chunk<A>) => Chunk<A>; <A>(self: Chunk<A>, i: number): Chunk<A> }
 ```
 
 Added in v1.0.0
@@ -1106,7 +1253,10 @@ or returning the input if the index is out of bounds.
 **Signature**
 
 ```ts
-export declare const replace: <B>(i: number, b: B) => <A>(self: Chunk<A>) => Chunk<B | A>
+export declare const replace: {
+  <B>(i: number, b: B): <A>(self: Chunk<A>) => Chunk<B | A>
+  <A, B>(self: Chunk<A>, i: number, b: B): Chunk<A | B>
+}
 ```
 
 Added in v1.0.0
@@ -1116,7 +1266,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const replaceOption: <B>(i: number, b: B) => <A>(self: Chunk<A>) => Option<Chunk<B | A>>
+export declare const replaceOption: {
+  <B>(i: number, b: B): <A>(self: Chunk<A>) => Option<Chunk<B | A>>
+  <A, B>(self: Chunk<A>, i: number, b: B): Option<Chunk<A | B>>
+}
 ```
 
 Added in v1.0.0
@@ -1128,7 +1281,7 @@ Takes the first up to `n` elements from the chunk
 **Signature**
 
 ```ts
-export declare const take: (n: number) => <A>(self: Chunk<A>) => Chunk<A>
+export declare const take: { (n: number): <A>(self: Chunk<A>) => Chunk<A>; <A>(self: Chunk<A>, n: number): Chunk<A> }
 ```
 
 Added in v1.0.0
@@ -1142,7 +1295,10 @@ Returns a chunk with the elements mapped by the specified function.
 **Signature**
 
 ```ts
-export declare const flatMap: <A, B>(f: (a: A) => Chunk<B>) => (self: Chunk<A>) => Chunk<B>
+export declare const flatMap: {
+  <A, B>(f: (a: A) => Chunk<B>): (self: Chunk<A>) => Chunk<B>
+  <A, B>(self: Chunk<A>, f: (a: A) => Chunk<B>): Chunk<B>
+}
 ```
 
 Added in v1.0.0
@@ -1206,7 +1362,7 @@ Gets an element unsafely, will throw on out of bounds
 **Signature**
 
 ```ts
-export declare const unsafeGet: (index: number) => <A>(self: Chunk<A>) => A
+export declare const unsafeGet: { (index: number): <A>(self: Chunk<A>) => A; <A>(self: Chunk<A>, index: number): A }
 ```
 
 Added in v1.0.0

@@ -33,10 +33,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const diff: <Input, Output>(
-  oldValue: Context<Input>,
-  newValue: Context<Output>
-) => ContextPatch<Input, Output>
+export declare const diff: <Input, Output>(oldValue: any, newValue: any) => ContextPatch<Input, Output>
 ```
 
 Added in v1.0.0
@@ -63,9 +60,10 @@ Applies a `Patch` to the specified `Context` to produce a new patched
 **Signature**
 
 ```ts
-export declare const patch: <Input>(
-  context: Context<Input>
-) => <Output>(self: ContextPatch<Input, Output>) => Context<Output>
+export declare const patch: {
+  <Input>(context: any): <Output>(self: ContextPatch<Input, Output>) => any
+  <Input, Output>(self: ContextPatch<Input, Output>, context: any): any
+}
 ```
 
 Added in v1.0.0
@@ -100,9 +98,15 @@ updates from this patch and then the updates from the specified patch.
 **Signature**
 
 ```ts
-export declare const combine: <Output, Output2>(
-  that: ContextPatch<Output, Output2>
-) => <Input>(self: ContextPatch<Input, Output>) => ContextPatch<Input, Output2>
+export declare const combine: {
+  <Output, Output2>(that: ContextPatch<Output, Output2>): <Input>(
+    self: ContextPatch<Input, Output>
+  ) => ContextPatch<Input, Output2>
+  <Input, Output, Output2>(self: ContextPatch<Input, Output>, that: ContextPatch<Output, Output2>): ContextPatch<
+    Input,
+    Output2
+  >
+}
 ```
 
 Added in v1.0.0

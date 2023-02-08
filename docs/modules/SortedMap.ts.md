@@ -1,6 +1,6 @@
 ---
 title: SortedMap.ts
-nav_order: 26
+nav_order: 27
 parent: Modules
 ---
 
@@ -14,7 +14,7 @@ Added in v1.0.0
 
 - [constructors](#constructors)
   - [empty](#empty)
-  - [from](#from)
+  - [fromIterable](#fromiterable)
   - [make](#make)
 - [elements](#elements)
   - [get](#get)
@@ -58,12 +58,12 @@ export declare const empty: <K, V = never>(ord: Order<K>) => SortedMap<K, V>
 
 Added in v1.0.0
 
-## from
+## fromIterable
 
 **Signature**
 
 ```ts
-export declare const from: <K>(ord: Order<K>) => <V>(iterable: Iterable<readonly [K, V]>) => SortedMap<K, V>
+export declare const fromIterable: <K>(ord: Order<K>) => <V>(iterable: Iterable<readonly [K, V]>) => SortedMap<K, V>
 ```
 
 Added in v1.0.0
@@ -89,7 +89,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const get: <K>(key: K) => <V>(self: SortedMap<K, V>) => O.Option<V>
+export declare const get: {
+  <K>(key: K): <V>(self: SortedMap<K, V>) => Option.Option<V>
+  <K, V>(self: SortedMap<K, V>, key: K): Option.Option<V>
+}
 ```
 
 Added in v1.0.0
@@ -99,7 +102,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const has: <K>(key: K) => <V>(self: SortedMap<K, V>) => boolean
+export declare const has: {
+  <K>(key: K): <V>(self: SortedMap<K, V>) => boolean
+  <K, V>(self: SortedMap<K, V>, key: K): boolean
+}
 ```
 
 Added in v1.0.0
@@ -109,7 +115,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const headOption: <K, V>(self: SortedMap<K, V>) => O.Option<readonly [K, V]>
+export declare const headOption: <K, V>(self: SortedMap<K, V>) => Option.Option<readonly [K, V]>
 ```
 
 Added in v1.0.0
@@ -119,7 +125,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const remove: <K>(key: K) => <V>(self: SortedMap<K, V>) => SortedMap<K, V>
+export declare const remove: {
+  <K>(key: K): <V>(self: SortedMap<K, V>) => SortedMap<K, V>
+  <K, V>(self: SortedMap<K, V>, key: K): SortedMap<K, V>
+}
 ```
 
 Added in v1.0.0
@@ -129,7 +138,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const set: <K, V>(key: K, value: V) => (self: SortedMap<K, V>) => SortedMap<K, V>
+export declare const set: {
+  <K, V>(key: K, value: V): (self: SortedMap<K, V>) => SortedMap<K, V>
+  <K, V>(self: SortedMap<K, V>, key: K, value: V): SortedMap<K, V>
+}
 ```
 
 Added in v1.0.0
@@ -141,7 +153,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const reduce: <V, B>(zero: B, f: (accumulator: B, value: V) => B) => <K>(self: SortedMap<K, V>) => B
+export declare const reduce: {
+  <V, B>(zero: B, f: (accumulator: B, value: V) => B): <K>(self: SortedMap<K, V>) => B
+  <K, V, B>(self: SortedMap<K, V>, zero: B, f: (accumulator: B, value: V) => B): B
+}
 ```
 
 Added in v1.0.0
@@ -151,7 +166,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const reduceWithIndex: <B, A, K>(b: B, f: (b: B, value: A, key: K) => B) => (self: SortedMap<K, A>) => B
+export declare const reduceWithIndex: {
+  <B, A, K>(zero: B, f: (acc: B, value: A, key: K) => B): (self: SortedMap<K, A>) => B
+  <K, A, B>(self: SortedMap<K, A>, zero: B, f: (acc: B, value: A, key: K) => B): B
+}
 ```
 
 Added in v1.0.0
@@ -217,7 +235,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const map: <A, B>(f: (a: A) => B) => <K>(self: SortedMap<K, A>) => SortedMap<K, B>
+export declare const map: {
+  <A, B>(f: (a: A) => B): <K>(self: SortedMap<K, A>) => SortedMap<K, B>
+  <K, A, B>(self: SortedMap<K, A>, f: (a: A) => B): SortedMap<K, B>
+}
 ```
 
 Added in v1.0.0
@@ -227,7 +248,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const mapWithIndex: <A, K, B>(f: (a: A, k: K) => B) => (self: SortedMap<K, A>) => SortedMap<K, B>
+export declare const mapWithIndex: {
+  <A, K, B>(f: (a: A, k: K) => B): (self: SortedMap<K, A>) => SortedMap<K, B>
+  <K, A, B>(self: SortedMap<K, A>, f: (a: A, k: K) => B): SortedMap<K, B>
+}
 ```
 
 Added in v1.0.0

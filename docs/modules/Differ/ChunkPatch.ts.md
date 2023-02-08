@@ -36,11 +36,7 @@ for the values.
 **Signature**
 
 ```ts
-export declare const diff: <Value, Patch>(
-  oldValue: Chunk<Value>,
-  newValue: Chunk<Value>,
-  differ: Differ<Value, Patch>
-) => ChunkPatch<Value, Patch>
+export declare const diff: <Value, Patch>(oldValue: any, newValue: any, differ: any) => ChunkPatch<Value, Patch>
 ```
 
 Added in v1.0.0
@@ -68,10 +64,10 @@ changes described by this patch.
 **Signature**
 
 ```ts
-export declare const patch: <Value, Patch>(
-  oldValue: Chunk<Value>,
-  differ: Differ<Value, Patch>
-) => (self: ChunkPatch<Value, Patch>) => Chunk<Value>
+export declare const patch: {
+  <Value, Patch>(oldValue: any, differ: any): (self: ChunkPatch<Value, Patch>) => any
+  <Value, Patch>(self: ChunkPatch<Value, Patch>, oldValue: any, differ: any): any
+}
 ```
 
 Added in v1.0.0
@@ -104,9 +100,10 @@ applying their changes sequentially.
 **Signature**
 
 ```ts
-export declare const combine: <Value, Patch>(
-  that: ChunkPatch<Value, Patch>
-) => (self: ChunkPatch<Value, Patch>) => ChunkPatch<Value, Patch>
+export declare const combine: {
+  <Value, Patch>(that: ChunkPatch<Value, Patch>): (self: ChunkPatch<Value, Patch>) => ChunkPatch<Value, Patch>
+  <Value, Patch>(self: ChunkPatch<Value, Patch>, that: ChunkPatch<Value, Patch>): ChunkPatch<Value, Patch>
+}
 ```
 
 Added in v1.0.0

@@ -35,7 +35,7 @@ Constructs a set patch from a new set of values.
 **Signature**
 
 ```ts
-export declare const diff: <Value>(oldValue: HashSet<Value>, newValue: HashSet<Value>) => HashSetPatch<Value>
+export declare const diff: <Value>(oldValue: any, newValue: any) => HashSetPatch<Value>
 ```
 
 Added in v1.0.0
@@ -63,7 +63,10 @@ described by this patch.
 **Signature**
 
 ```ts
-export declare const patch: <Value>(oldValue: HashSet<Value>) => (self: HashSetPatch<Value>) => HashSet<Value>
+export declare const patch: {
+  <Value>(oldValue: any): (self: HashSetPatch<Value>) => any
+  <Value>(self: HashSetPatch<Value>, oldValue: any): any
+}
 ```
 
 Added in v1.0.0
@@ -95,7 +98,10 @@ applying their changes sequentially.
 **Signature**
 
 ```ts
-export declare const combine: <Value>(that: HashSetPatch<Value>) => (self: HashSetPatch<Value>) => HashSetPatch<Value>
+export declare const combine: {
+  <Value>(that: HashSetPatch<Value>): (self: HashSetPatch<Value>) => HashSetPatch<Value>
+  <Value>(self: HashSetPatch<Value>, that: HashSetPatch<Value>): HashSetPatch<Value>
+}
 ```
 
 Added in v1.0.0

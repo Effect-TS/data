@@ -1,6 +1,6 @@
 ---
 title: MutableQueue.ts
-nav_order: 21
+nav_order: 22
 parent: Modules
 ---
 
@@ -142,7 +142,10 @@ Returns whether the enqueue was successful or not.
 **Signature**
 
 ```ts
-export declare const offer: <A>(value: A) => (self: MutableQueue<A>) => boolean
+export declare const offer: {
+  <A>(self: MutableQueue<A>, value: A): boolean
+  <A>(value: A): (self: MutableQueue<A>) => boolean
+}
 ```
 
 Added in v1.0.0
@@ -156,7 +159,10 @@ Returns a `List` of the values that were **not** able to be enqueued.
 **Signature**
 
 ```ts
-export declare const offerAll: <A>(values: Iterable<A>) => (self: MutableQueue<A>) => Chunk.Chunk<A>
+export declare const offerAll: {
+  <A>(values: Iterable<A>): (self: MutableQueue<A>) => any
+  <A>(self: MutableQueue<A>, values: Iterable<A>): any
+}
 ```
 
 Added in v1.0.0
@@ -173,7 +179,10 @@ use `poll(MutableQueue.EmptyMutableQueue)`.
 **Signature**
 
 ```ts
-export declare const poll: <D>(def: D) => <A>(self: MutableQueue<A>) => D | A
+export declare const poll: {
+  <D>(def: D): <A>(self: MutableQueue<A>) => D | A
+  <A, D>(self: MutableQueue<A>, def: D): A | D
+}
 ```
 
 Added in v1.0.0
@@ -187,7 +196,10 @@ Returns a `List` of up to `n` elements.
 **Signature**
 
 ```ts
-export declare const pollUpTo: (n: number) => <A>(self: MutableQueue<A>) => Chunk.Chunk<A>
+export declare const pollUpTo: {
+  (n: number): <A>(self: MutableQueue<A>) => any
+  <A>(self: MutableQueue<A>, n: number): any
+}
 ```
 
 Added in v1.0.0

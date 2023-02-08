@@ -1,6 +1,6 @@
 ---
 title: MutableHashMap.ts
-nav_order: 18
+nav_order: 19
 parent: Modules
 ---
 
@@ -79,7 +79,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const get: <K>(k: K) => <V>(self: MutableHashMap<K, V>) => O.Option<V>
+export declare const get: {
+  <K>(key: K): <V>(self: MutableHashMap<K, V>) => Option.Option<V>
+  <K, V>(self: MutableHashMap<K, V>, key: K): Option.Option<V>
+}
 ```
 
 Added in v1.0.0
@@ -89,7 +92,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const has: <K>(k: K) => <V>(self: MutableHashMap<K, V>) => boolean
+export declare const has: {
+  <K>(key: K): <V>(self: MutableHashMap<K, V>) => boolean
+  <K, V>(self: MutableHashMap<K, V>, key: K): boolean
+}
 ```
 
 Added in v1.0.0
@@ -132,7 +138,10 @@ Updates the value of the specified key within the `MutableHashMap` if it exists.
 **Signature**
 
 ```ts
-export declare const modify: <K, V>(k: K, f: (v: V) => V) => (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+export declare const modify: {
+  <K, V>(key: K, f: (v: V) => V): (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+  <K, V>(self: MutableHashMap<K, V>, key: K, f: (v: V) => V): MutableHashMap<K, V>
+}
 ```
 
 Added in v1.0.0
@@ -145,10 +154,10 @@ update function.
 **Signature**
 
 ```ts
-export declare const modifyAt: <K, V>(
-  key: K,
-  f: (value: O.Option<V>) => O.Option<V>
-) => (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+export declare const modifyAt: {
+  <K, V>(key: K, f: (value: Option.Option<V>) => Option.Option<V>): (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+  <K, V>(self: MutableHashMap<K, V>, key: K, f: (value: Option.Option<V>) => Option.Option<V>): MutableHashMap<K, V>
+}
 ```
 
 Added in v1.0.0
@@ -158,7 +167,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const remove: <K>(k: K) => <V>(self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+export declare const remove: {
+  <K>(key: K): <V>(self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+  <K, V>(self: MutableHashMap<K, V>, key: K): MutableHashMap<K, V>
+}
 ```
 
 Added in v1.0.0
@@ -168,7 +180,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const set: <K, V>(k: K, v: V) => (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+export declare const set: {
+  <K, V>(key: K, value: V): (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
+  <K, V>(self: MutableHashMap<K, V>, key: K, value: V): MutableHashMap<K, V>
+}
 ```
 
 Added in v1.0.0

@@ -71,7 +71,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const make: <S>(tag: Tag<S>) => (service: S) => Context<S>
+export declare const make: <T extends Tag<any>>(tag: T, service: Tag.Service<T>) => Context<Tag.Service<T>>
 ```
 
 Added in v1.0.0
@@ -83,9 +83,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const get: <Services, T extends Tags<Services>>(
-  tag: T
-) => (self: Context<Services>) => T extends Tag<infer S> ? S : never
+export declare const get: {
+  <Services, T extends Tags<Services>>(tag: T): (self: Context<Services>) => T extends Tag<infer S> ? S : never
+  <Services, T extends Tags<Services>>(self: Context<Services>, tag: T): T extends Tag<infer S> ? S : never
+}
 ```
 
 Added in v1.0.0
@@ -95,7 +96,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getOption: <S>(tag: Tag<S>) => <Services>(self: Context<Services>) => Option<S>
+export declare const getOption: {
+  <S>(tag: Tag<S>): <Services>(self: Context<Services>) => Option<S>
+  <Services, S>(self: Context<Services>, tag: Tag<S>): Option<S>
+}
 ```
 
 Added in v1.0.0
@@ -169,9 +173,14 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const add: <S>(
-  tag: Tag<S>
-) => (service: S) => <Services>(self: Context<Services>) => Context<S | Services>
+export declare const add: {
+  <T extends Tag<any>>(tag: T, service: Tag.Service<T>): <Services>(
+    self: Context<Services>
+  ) => Context<Tag.Service<T> | Services>
+  <Services, T extends Tag<any>>(self: Context<Services>, tag: Tag<T>, service: Tag.Service<T>): Context<
+    Services | Tag.Service<T>
+  >
+}
 ```
 
 Added in v1.0.0
@@ -181,7 +190,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const merge: <R1>(that: Context<R1>) => <Services>(self: Context<Services>) => Context<R1 | Services>
+export declare const merge: {
+  <R1>(that: Context<R1>): <Services>(self: Context<Services>) => Context<R1 | Services>
+  <Services, R1>(self: Context<Services>, that: Context<R1>): Context<Services | R1>
+}
 ```
 
 Added in v1.0.0
@@ -227,7 +239,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unsafeGet: <S>(tag: Tag<S>) => <Services>(self: Context<Services>) => S
+export declare const unsafeGet: {
+  <S>(tag: Tag<S>): <Services>(self: Context<Services>) => S
+  <Services, S>(self: Context<Services>, tag: Tag<S>): S
+}
 ```
 
 Added in v1.0.0
