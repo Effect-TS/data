@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.1.0
+
+### Minor Changes
+
+- [#210](https://github.com/Effect-TS/data/pull/210) [`ecaedab`](https://github.com/Effect-TS/data/commit/ecaedab8785bc9a0e12254a71764a214c95714db) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Update to fp-ts/core@0.2.0
+
 ## 0.0.1
 
 ### Patch Changes
