@@ -98,15 +98,15 @@ export const make: <T extends Tag<any>>(
  * @category mutations
  */
 export const add: {
-  <Services, T extends Tag<any>>(
-    self: Context<Services>,
-    tag: T,
-    service: Tag.Service<T>
-  ): Context<Services | Tag.Service<T>>
   <T extends Tag<any>>(
     tag: T,
     service: Tag.Service<T>
   ): <Services>(self: Context<Services>) => Context<Tag.Service<T> | Services>
+  <Services, T extends Tag<any>>(
+    self: Context<Services>,
+    tag: Tag<T>,
+    service: Tag.Service<T>
+  ): Context<Services | Tag.Service<T>>
 } = C.add
 
 /**
@@ -114,13 +114,8 @@ export const add: {
  * @category getters
  */
 export const get: {
-  <Services, T extends Tags<Services>>(
-    self: Context<Services>,
-    tag: T
-  ): T extends Tag<infer S> ? S : never
-  <Services, T extends Tags<Services>>(
-    tag: T
-  ): (self: Context<Services>) => T extends Tag<infer S> ? S : never
+  <Services, T extends Tags<Services>>(tag: T): (self: Context<Services>) => T extends Tag<infer S> ? S : never
+  <Services, T extends Tags<Services>>(self: Context<Services>, tag: T): T extends Tag<infer S> ? S : never
 } = C.get
 
 /**
@@ -128,8 +123,8 @@ export const get: {
  * @category unsafe
  */
 export const unsafeGet: {
-  <Services, S>(self: Context<Services>, tag: Tag<S>): S
   <S>(tag: Tag<S>): <Services>(self: Context<Services>) => S
+  <Services, S>(self: Context<Services>, tag: Tag<S>): S
 } = C.unsafeGet
 
 /**
@@ -137,8 +132,8 @@ export const unsafeGet: {
  * @category getters
  */
 export const getOption: {
-  <Services, S>(self: Context<Services>, tag: Tag<S>): Option<S>
   <S>(tag: Tag<S>): <Services>(self: Context<Services>) => Option<S>
+  <Services, S>(self: Context<Services>, tag: Tag<S>): Option<S>
 } = C.getOption
 
 /**
@@ -146,8 +141,8 @@ export const getOption: {
  * @category mutations
  */
 export const merge: {
-  <Services, R1>(self: Context<Services>, that: Context<R1>): Context<Services | R1>
   <R1>(that: Context<R1>): <Services>(self: Context<Services>) => Context<R1 | Services>
+  <Services, R1>(self: Context<Services>, that: Context<R1>): Context<Services | R1>
 } = C.merge
 
 /**
@@ -156,6 +151,4 @@ export const merge: {
  */
 export const prune: <Services, S extends Array<Tags<Services>>>(
   ...tags: S
-) => (
-  self: Context<Services>
-) => Context<{ [k in keyof S]: Tag.Service<S[k]> }[number]> = C.prune
+) => (self: Context<Services>) => Context<{ [k in keyof S]: Tag.Service<S[k]> }[number]> = C.prune

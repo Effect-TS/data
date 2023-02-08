@@ -52,8 +52,8 @@ export const diff: <Value>(
  * @category mutations
  */
 export const combine: {
-  <Value>(self: HashSetPatch<Value>, that: HashSetPatch<Value>): HashSetPatch<Value>
   <Value>(that: HashSetPatch<Value>): (self: HashSetPatch<Value>) => HashSetPatch<Value>
+  <Value>(self: HashSetPatch<Value>, that: HashSetPatch<Value>): HashSetPatch<Value>
 } = HSP.combine
 
 /**
@@ -65,6 +65,6 @@ export const combine: {
  * @category destructors
  */
 export const patch: {
-  <Value>(self: HashSetPatch<Value>, oldValue: HashSet<Value>): HashSet<Value>
   <Value>(oldValue: HashSet<Value>): (self: HashSetPatch<Value>) => HashSet<Value>
+  <Value>(self: HashSetPatch<Value>, oldValue: HashSet<Value>): HashSet<Value>
 } = HSP.patch

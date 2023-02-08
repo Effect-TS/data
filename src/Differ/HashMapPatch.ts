@@ -58,14 +58,12 @@ export const diff: <Key, Value, Patch>(
  */
 export const combine: {
   <Key, Value, Patch>(
+    that: HashMapPatch<Key, Value, Patch>
+  ): (self: HashMapPatch<Key, Value, Patch>) => HashMapPatch<Key, Value, Patch>
+  <Key, Value, Patch>(
     self: HashMapPatch<Key, Value, Patch>,
     that: HashMapPatch<Key, Value, Patch>
   ): HashMapPatch<Key, Value, Patch>
-  <Key, Value, Patch>(
-    that: HashMapPatch<Key, Value, Patch>
-  ): (
-    self: HashMapPatch<Key, Value, Patch>
-  ) => HashMapPatch<Key, Value, Patch>
 } = HMP.combine
 
 /**
@@ -78,14 +76,12 @@ export const combine: {
  */
 export const patch: {
   <Key, Value, Patch>(
+    oldValue: HashMap<Key, Value>,
+    differ: Differ<Value, Patch>
+  ): (self: HashMapPatch<Key, Value, Patch>) => HashMap<Key, Value>
+  <Key, Value, Patch>(
     self: HashMapPatch<Key, Value, Patch>,
     oldValue: HashMap<Key, Value>,
     differ: Differ<Value, Patch>
   ): HashMap<Key, Value>
-  <Key, Value, Patch>(
-    oldValue: HashMap<Key, Value>,
-    differ: Differ<Value, Patch>
-  ): (
-    self: HashMapPatch<Key, Value, Patch>
-  ) => HashMap<Key, Value>
 } = HMP.patch

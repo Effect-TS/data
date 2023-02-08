@@ -1,11 +1,11 @@
 import * as Chunk from "@effect/data/Chunk"
 import type { Differ } from "@effect/data/Differ"
 import type * as OP from "@effect/data/Differ/OrPatch"
-import * as Dual from "@effect/data/Dual"
 import * as Equal from "@effect/data/Equal"
 import * as Hash from "@effect/data/Hash"
 import type { Either } from "@fp-ts/core/Either"
 import * as E from "@fp-ts/core/Either"
+import * as Dual from "@fp-ts/core/Function"
 
 /** @internal */
 export const OrPatchTypeId: OP.TypeId = Symbol.for("@effect/data/Differ/OrPatch") as OP.TypeId
@@ -200,29 +200,29 @@ export const diff = <Value, Value2, Patch, Patch2>(
 /** @internal */
 export const combine = Dual.dual<
   <Value, Value2, Patch, Patch2>(
-    self: OP.OrPatch<Value, Value2, Patch, Patch2>,
-    that: OP.OrPatch<Value, Value2, Patch, Patch2>
-  ) => OP.OrPatch<Value, Value2, Patch, Patch2>,
-  <Value, Value2, Patch, Patch2>(
     that: OP.OrPatch<Value, Value2, Patch, Patch2>
   ) => (
     self: OP.OrPatch<Value, Value2, Patch, Patch2>
+  ) => OP.OrPatch<Value, Value2, Patch, Patch2>,
+  <Value, Value2, Patch, Patch2>(
+    self: OP.OrPatch<Value, Value2, Patch, Patch2>,
+    that: OP.OrPatch<Value, Value2, Patch, Patch2>
   ) => OP.OrPatch<Value, Value2, Patch, Patch2>
 >(2, (self, that) => new AndThen(self, that))
 
 /** @internal */
 export const patch = Dual.dual<
   <Value, Value2, Patch, Patch2>(
+    oldValue: Either<Value, Value2>,
+    left: Differ<Value, Patch>,
+    right: Differ<Value2, Patch2>
+  ) => (self: OP.OrPatch<Value, Value2, Patch, Patch2>) => Either<Value, Value2>,
+  <Value, Value2, Patch, Patch2>(
     self: OP.OrPatch<Value, Value2, Patch, Patch2>,
     oldValue: Either<Value, Value2>,
     left: Differ<Value, Patch>,
     right: Differ<Value2, Patch2>
-  ) => Either<Value, Value2>,
-  <Value, Value2, Patch, Patch2>(
-    oldValue: Either<Value, Value2>,
-    left: Differ<Value, Patch>,
-    right: Differ<Value2, Patch2>
-  ) => (self: OP.OrPatch<Value, Value2, Patch, Patch2>) => Either<Value, Value2>
+  ) => Either<Value, Value2>
 >(4, <Value, Value2, Patch, Patch2>(
   self: OP.OrPatch<Value, Value2, Patch, Patch2>,
   oldValue: Either<Value, Value2>,

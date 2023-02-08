@@ -53,15 +53,13 @@ export const diff: <Input, Output>(
  * @category mutations
  */
 export const combine: {
+  <Output, Output2>(
+    that: ContextPatch<Output, Output2>
+  ): <Input>(self: ContextPatch<Input, Output>) => ContextPatch<Input, Output2>
   <Input, Output, Output2>(
     self: ContextPatch<Input, Output>,
     that: ContextPatch<Output, Output2>
   ): ContextPatch<Input, Output2>
-  <Output, Output2>(
-    that: ContextPatch<Output, Output2>
-  ): <Input>(
-    self: ContextPatch<Input, Output>
-  ) => ContextPatch<Input, Output2>
 } = CP.combine
 
 /**
@@ -72,6 +70,6 @@ export const combine: {
  * @category destructors
  */
 export const patch: {
-  <Input, Output>(self: ContextPatch<Input, Output>, context: Context<Input>): Context<Output>
   <Input>(context: Context<Input>): <Output>(self: ContextPatch<Input, Output>) => Context<Output>
+  <Input, Output>(self: ContextPatch<Input, Output>, context: Context<Input>): Context<Output>
 } = CP.patch

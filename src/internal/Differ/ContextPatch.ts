@@ -1,10 +1,10 @@
 import * as Chunk from "@effect/data/Chunk"
 import type { Context, Tag } from "@effect/data/Context"
 import type * as CP from "@effect/data/Differ/ContextPatch"
-import * as Dual from "@effect/data/Dual"
 import * as Equal from "@effect/data/Equal"
 import * as Hash from "@effect/data/Hash"
 import { ContextImpl } from "@effect/data/internal/Context"
+import * as Dual from "@fp-ts/core/Function"
 
 /** @internal */
 export const ContextPatchTypeId: CP.TypeId = Symbol.for(
@@ -155,27 +155,27 @@ export const diff = <Input, Output>(
 
 /** @internal */
 export const combine = Dual.dual<
-  <Input, Output, Output2>(
-    self: CP.ContextPatch<Input, Output>,
-    that: CP.ContextPatch<Output, Output2>
-  ) => CP.ContextPatch<Input, Output2>,
   <Output, Output2>(
     that: CP.ContextPatch<Output, Output2>
   ) => <Input>(
     self: CP.ContextPatch<Input, Output>
+  ) => CP.ContextPatch<Input, Output2>,
+  <Input, Output, Output2>(
+    self: CP.ContextPatch<Input, Output>,
+    that: CP.ContextPatch<Output, Output2>
   ) => CP.ContextPatch<Input, Output2>
 >(2, (self, that) => new AndThen(self, that))
 
 /** @internal */
 export const patch = Dual.dual<
-  <Input, Output>(
-    self: CP.ContextPatch<Input, Output>,
-    context: Context<Input>
-  ) => Context<Output>,
   <Input>(
     context: Context<Input>
   ) => <Output>(
     self: CP.ContextPatch<Input, Output>
+  ) => Context<Output>,
+  <Input, Output>(
+    self: CP.ContextPatch<Input, Output>,
+    context: Context<Input>
   ) => Context<Output>
 >(2, <Input, Output>(self: CP.ContextPatch<Input, Output>, context: Context<Input>) => {
   let wasServiceUpdated = false

@@ -230,7 +230,13 @@ export const refined = <A extends Brand<any>>(
     refinement(args) ? Either.right(args as A) : Either.left(onFailure(args))
   return {
     [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
-    of: (args) => pipe(either(args), Either.getOrThrow(identity)),
+    of: (args) =>
+      pipe(
+        either(args),
+        Either.match((e) => {
+          throw e
+        }, identity)
+      ),
     option: (args) => Option.fromEither(either(args)),
     either,
     refine: (args): args is Brand.Unbranded<A> & A => Either.isRight(either(args))
@@ -268,7 +274,13 @@ export const all = <
   }
   return {
     [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
-    of: (args) => pipe(either(args), Either.getOrThrow(identity)),
+    of: (args) =>
+      pipe(
+        either(args),
+        Either.match((e) => {
+          throw e
+        }, identity)
+      ),
     option: (args) => Option.fromEither(either(args)),
     either,
     refine: (args): args is any => Either.isRight(either(args))

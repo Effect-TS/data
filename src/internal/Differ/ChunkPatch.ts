@@ -1,9 +1,9 @@
 import * as Chunk from "@effect/data/Chunk"
 import type { Differ } from "@effect/data/Differ"
 import type * as CP from "@effect/data/Differ/ChunkPatch"
-import * as Dual from "@effect/data/Dual"
 import * as Equal from "@effect/data/Equal"
 import * as Hash from "@effect/data/Hash"
+import * as Dual from "@fp-ts/core/Function"
 import { pipe } from "@fp-ts/core/Function"
 
 /** @internal */
@@ -147,27 +147,27 @@ export const diff = <Value, Patch>(
 /** @internal */
 export const combine = Dual.dual<
   <Value, Patch>(
-    self: CP.ChunkPatch<Value, Patch>,
-    that: CP.ChunkPatch<Value, Patch>
-  ) => CP.ChunkPatch<Value, Patch>,
-  <Value, Patch>(
     that: CP.ChunkPatch<Value, Patch>
   ) => (
     self: CP.ChunkPatch<Value, Patch>
+  ) => CP.ChunkPatch<Value, Patch>,
+  <Value, Patch>(
+    self: CP.ChunkPatch<Value, Patch>,
+    that: CP.ChunkPatch<Value, Patch>
   ) => CP.ChunkPatch<Value, Patch>
 >(2, (self, that) => new AndThen(self, that))
 
 /** @internal */
 export const patch = Dual.dual<
   <Value, Patch>(
+    oldValue: Chunk.Chunk<Value>,
+    differ: Differ<Value, Patch>
+  ) => (self: CP.ChunkPatch<Value, Patch>) => Chunk.Chunk<Value>,
+  <Value, Patch>(
     self: CP.ChunkPatch<Value, Patch>,
     oldValue: Chunk.Chunk<Value>,
     differ: Differ<Value, Patch>
-  ) => Chunk.Chunk<Value>,
-  <Value, Patch>(
-    oldValue: Chunk.Chunk<Value>,
-    differ: Differ<Value, Patch>
-  ) => (self: CP.ChunkPatch<Value, Patch>) => Chunk.Chunk<Value>
+  ) => Chunk.Chunk<Value>
 >(3, <Value, Patch>(
   self: CP.ChunkPatch<Value, Patch>,
   oldValue: Chunk.Chunk<Value>,

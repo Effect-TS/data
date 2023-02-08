@@ -62,8 +62,8 @@ export const make: <As extends ReadonlyArray<any>>(...elements: As) => HashSet<A
  * @category elements
  */
 export const has: {
-  <A>(self: HashSet<A>, value: A): boolean
   <A>(value: A): (self: HashSet<A>) => boolean
+  <A>(self: HashSet<A>, value: A): boolean
 } = HS.has
 
 /**
@@ -73,8 +73,8 @@ export const has: {
  * @category elements
  */
 export const some: {
-  <A>(self: HashSet<A>, f: Predicate<A>): boolean
   <A>(f: Predicate<A>): (self: HashSet<A>) => boolean
+  <A>(self: HashSet<A>, f: Predicate<A>): boolean
 } = HS.some
 
 /**
@@ -85,8 +85,8 @@ export const some: {
  * @category elements
  */
 export const every: {
-  <A>(self: HashSet<A>, f: Predicate<A>): boolean
   <A>(f: Predicate<A>): (self: HashSet<A>) => boolean
+  <A>(self: HashSet<A>, f: Predicate<A>): boolean
 } = HS.every
 
 /**
@@ -99,8 +99,8 @@ export const every: {
  * @category elements
  */
 export const isSubset: {
-  <A>(self: HashSet<A>, that: HashSet<A>): boolean
   <A>(that: HashSet<A>): (self: HashSet<A>) => boolean
+  <A>(self: HashSet<A>, that: HashSet<A>): boolean
 } = HS.isSubset
 
 /**
@@ -142,8 +142,8 @@ export const endMutation: <A>(self: HashSet<A>) => HashSet<A> = HS.endMutation
  * @category mutations
  */
 export const mutate: {
-  <A>(self: HashSet<A>, f: (set: HashSet<A>) => void): HashSet<A>
   <A>(f: (set: HashSet<A>) => void): (self: HashSet<A>) => HashSet<A>
+  <A>(self: HashSet<A>, f: (set: HashSet<A>) => void): HashSet<A>
 } = HS.mutate
 
 /**
@@ -153,8 +153,8 @@ export const mutate: {
  * @category mutations
  */
 export const add: {
-  <A>(self: HashSet<A>, value: A): HashSet<A>
   <A>(value: A): (self: HashSet<A>) => HashSet<A>
+  <A>(self: HashSet<A>, value: A): HashSet<A>
 } = HS.add
 
 /**
@@ -164,8 +164,8 @@ export const add: {
  * @category mutations
  */
 export const remove: {
-  <A>(self: HashSet<A>, value: A): HashSet<A>
   <A>(value: A): (self: HashSet<A>) => HashSet<A>
+  <A>(self: HashSet<A>, value: A): HashSet<A>
 } = HS.remove
 
 /**
@@ -179,8 +179,8 @@ export const remove: {
  * @category mutations
  */
 export const difference: {
-  <A>(self: HashSet<A>, that: Iterable<A>): HashSet<A>
   <A>(that: Iterable<A>): (self: HashSet<A>) => HashSet<A>
+  <A>(self: HashSet<A>, that: Iterable<A>): HashSet<A>
 } = HS.difference
 
 /**
@@ -194,8 +194,8 @@ export const difference: {
  * @category mutations
  */
 export const intersection: {
-  <A>(self: HashSet<A>, that: Iterable<A>): HashSet<A>
   <A>(that: Iterable<A>): (self: HashSet<A>) => HashSet<A>
+  <A>(self: HashSet<A>, that: Iterable<A>): HashSet<A>
 } = HS.intersection
 
 /**
@@ -209,8 +209,8 @@ export const intersection: {
  * @category mutations
  */
 export const union: {
-  <A>(self: HashSet<A>, that: Iterable<A>): HashSet<A>
   <A>(that: Iterable<A>): (self: HashSet<A>) => HashSet<A>
+  <A>(self: HashSet<A>, that: Iterable<A>): HashSet<A>
 } = HS.union
 
 /**
@@ -222,8 +222,8 @@ export const union: {
  * @category mutations
  */
 export const toggle: {
-  <A>(self: HashSet<A>, value: A): HashSet<A>
   <A>(value: A): (self: HashSet<A>) => HashSet<A>
+  <A>(self: HashSet<A>, value: A): HashSet<A>
 } = HS.toggle
 
 /**
@@ -233,8 +233,8 @@ export const toggle: {
  * @category mapping
  */
 export const map: {
-  <A, B>(self: HashSet<A>, f: (a: A) => B): HashSet<B>
   <A, B>(f: (a: A) => B): (self: HashSet<A>) => HashSet<B>
+  <A, B>(self: HashSet<A>, f: (a: A) => B): HashSet<B>
 } = HS.map
 
 /**
@@ -244,8 +244,8 @@ export const map: {
  * @category sequencing
  */
 export const flatMap: {
-  <A, B>(self: HashSet<A>, f: (a: A) => Iterable<B>): HashSet<B>
   <A, B>(f: (a: A) => Iterable<B>): (self: HashSet<A>) => HashSet<B>
+  <A, B>(self: HashSet<A>, f: (a: A) => Iterable<B>): HashSet<B>
 } = HS.flatMap
 
 /**
@@ -255,8 +255,8 @@ export const flatMap: {
  * @category traversing
  */
 export const forEach: {
-  <A>(self: HashSet<A>, f: (value: A) => void): void
   <A>(f: (value: A) => void): (self: HashSet<A>) => void
+  <A>(self: HashSet<A>, f: (value: A) => void): void
 } = HS.forEach
 
 /**
@@ -266,8 +266,8 @@ export const forEach: {
  * @category folding
  */
 export const reduce: {
-  <A, Z>(self: HashSet<A>, zero: Z, f: (accumulator: Z, value: A) => Z): Z
   <A, Z>(zero: Z, f: (accumulator: Z, value: A) => Z): (self: HashSet<A>) => Z
+  <A, Z>(self: HashSet<A>, zero: Z, f: (accumulator: Z, value: A) => Z): Z
 } = HS.reduce
 
 /**
@@ -277,10 +277,10 @@ export const reduce: {
  * @category filtering
  */
 export const filter: {
-  <A, B extends A>(self: HashSet<A>, f: Refinement<A, B>): HashSet<B>
-  <A>(self: HashSet<A>, f: Predicate<A>): HashSet<A>
   <A, B extends A>(f: Refinement<A, B>): (self: HashSet<A>) => HashSet<B>
   <A>(f: Predicate<A>): (self: HashSet<A>) => HashSet<A>
+  <A, B extends A>(self: HashSet<A>, f: Refinement<A, B>): HashSet<B>
+  <A>(self: HashSet<A>, f: Predicate<A>): HashSet<A>
 } = HS.filter
 
 /**
@@ -294,8 +294,8 @@ export const filter: {
  * @category partitioning
  */
 export const partition: {
-  <A, B extends A>(self: HashSet<A>, f: Refinement<A, B>): readonly [HashSet<A>, HashSet<B>]
-  <A>(self: HashSet<A>, f: Predicate<A>): readonly [HashSet<A>, HashSet<A>]
   <A, B extends A>(f: Refinement<A, B>): (self: HashSet<A>) => readonly [HashSet<A>, HashSet<B>]
   <A>(f: Predicate<A>): (self: HashSet<A>) => readonly [HashSet<A>, HashSet<A>]
+  <A, B extends A>(self: HashSet<A>, f: Refinement<A, B>): readonly [HashSet<A>, HashSet<B>]
+  <A>(self: HashSet<A>, f: Predicate<A>): readonly [HashSet<A>, HashSet<A>]
 } = HS.partition

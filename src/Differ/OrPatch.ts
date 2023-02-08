@@ -65,14 +65,12 @@ export const diff: <Value, Value2, Patch, Patch2>(
  */
 export const combine: {
   <Value, Value2, Patch, Patch2>(
+    that: OrPatch<Value, Value2, Patch, Patch2>
+  ): (self: OrPatch<Value, Value2, Patch, Patch2>) => OrPatch<Value, Value2, Patch, Patch2>
+  <Value, Value2, Patch, Patch2>(
     self: OrPatch<Value, Value2, Patch, Patch2>,
     that: OrPatch<Value, Value2, Patch, Patch2>
   ): OrPatch<Value, Value2, Patch, Patch2>
-  <Value, Value2, Patch, Patch2>(
-    that: OrPatch<Value, Value2, Patch, Patch2>
-  ): (
-    self: OrPatch<Value, Value2, Patch, Patch2>
-  ) => OrPatch<Value, Value2, Patch, Patch2>
 } = OP.combine
 
 /**
@@ -84,16 +82,14 @@ export const combine: {
  */
 export const patch: {
   <Value, Value2, Patch, Patch2>(
+    oldValue: Either<Value, Value2>,
+    left: Differ<Value, Patch>,
+    right: Differ<Value2, Patch2>
+  ): (self: OrPatch<Value, Value2, Patch, Patch2>) => Either<Value, Value2>
+  <Value, Value2, Patch, Patch2>(
     self: OrPatch<Value, Value2, Patch, Patch2>,
     oldValue: Either<Value, Value2>,
     left: Differ<Value, Patch>,
     right: Differ<Value2, Patch2>
   ): Either<Value, Value2>
-  <Value, Value2, Patch, Patch2>(
-    oldValue: Either<Value, Value2>,
-    left: Differ<Value, Patch>,
-    right: Differ<Value2, Patch2>
-  ): (
-    self: OrPatch<Value, Value2, Patch, Patch2>
-  ) => Either<Value, Value2>
 } = OP.patch

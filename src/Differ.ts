@@ -8,11 +8,11 @@ import type { ContextPatch } from "@effect/data/Differ/ContextPatch"
 import type { HashMapPatch } from "@effect/data/Differ/HashMapPatch"
 import type { HashSetPatch } from "@effect/data/Differ/HashSetPatch"
 import type { OrPatch } from "@effect/data/Differ/OrPatch"
-import * as Dual from "@effect/data/Dual"
 import type { HashMap } from "@effect/data/HashMap"
 import type { HashSet } from "@effect/data/HashSet"
 import * as D from "@effect/data/internal/Differ"
 import type { Either } from "@fp-ts/core/Either"
+import * as Dual from "@fp-ts/core/Function"
 
 const TypeId: unique symbol = D.DifferTypeId as TypeId
 
@@ -92,11 +92,11 @@ export const empty: <Value, Patch>(self: Differ<Value, Patch>) => Patch = (self)
  * @category patch
  */
 export const diff: {
-  <Value, Patch>(differ: Differ<Value, Patch>, oldValue: Value, newValue: Value): Patch
   <Value>(oldValue: Value, newValue: Value): <Patch>(differ: Differ<Value, Patch>) => Patch
+  <Value, Patch>(differ: Differ<Value, Patch>, oldValue: Value, newValue: Value): Patch
 } = Dual.dual<
-  <Value, Patch>(differ: Differ<Value, Patch>, oldValue: Value, newValue: Value) => Patch,
-  <Value>(oldValue: Value, newValue: Value) => <Patch>(differ: Differ<Value, Patch>) => Patch
+  <Value>(oldValue: Value, newValue: Value) => <Patch>(differ: Differ<Value, Patch>) => Patch,
+  <Value, Patch>(differ: Differ<Value, Patch>, oldValue: Value, newValue: Value) => Patch
 >(3, (self, oldValue, newValue) => self.diff(oldValue, newValue))
 
 /**
@@ -110,11 +110,11 @@ export const diff: {
  * @category patch
  */
 export const combine: {
-  <Value, Patch>(self: Differ<Value, Patch>, first: Patch, second: Patch): Patch
   <Patch>(first: Patch, second: Patch): <Value>(self: Differ<Value, Patch>) => Patch
+  <Value, Patch>(self: Differ<Value, Patch>, first: Patch, second: Patch): Patch
 } = Dual.dual<
-  <Value, Patch>(self: Differ<Value, Patch>, first: Patch, second: Patch) => Patch,
-  <Patch>(first: Patch, second: Patch) => <Value>(self: Differ<Value, Patch>) => Patch
+  <Patch>(first: Patch, second: Patch) => <Value>(self: Differ<Value, Patch>) => Patch,
+  <Value, Patch>(self: Differ<Value, Patch>, first: Patch, second: Patch) => Patch
 >(3, (self, first, second) => self.combine(first, second))
 
 /**
@@ -125,11 +125,11 @@ export const combine: {
  * @category patch
  */
 export const patch: {
-  <Patch, Value>(self: Differ<Value, Patch>, patch: Patch, oldValue: Value): Value
   <Patch, Value>(patch: Patch, oldValue: Value): (self: Differ<Value, Patch>) => Value
+  <Patch, Value>(self: Differ<Value, Patch>, patch: Patch, oldValue: Value): Value
 } = Dual.dual<
-  <Patch, Value>(self: Differ<Value, Patch>, patch: Patch, oldValue: Value) => Value,
-  <Patch, Value>(patch: Patch, oldValue: Value) => (self: Differ<Value, Patch>) => Value
+  <Patch, Value>(patch: Patch, oldValue: Value) => (self: Differ<Value, Patch>) => Value,
+  <Patch, Value>(self: Differ<Value, Patch>, patch: Patch, oldValue: Value) => Value
 >(3, (self, patch, oldValue) => self.patch(patch, oldValue))
 
 /**
@@ -138,12 +138,14 @@ export const patch: {
  * @since 1.0.0
  * @category constructors
  */
-export const make: <Value, Patch>(params: {
-  readonly empty: Patch
-  readonly diff: (oldValue: Value, newValue: Value) => Patch
-  readonly combine: (first: Patch, second: Patch) => Patch
-  readonly patch: (patch: Patch, oldValue: Value) => Value
-}) => Differ<Value, Patch> = D.make
+export const make: <Value, Patch>(
+  params: {
+    readonly empty: Patch
+    readonly diff: (oldValue: Value, newValue: Value) => Patch
+    readonly combine: (first: Patch, second: Patch) => Patch
+    readonly patch: (patch: Patch, oldValue: Value) => Value
+  }
+) => Differ<Value, Patch> = D.make
 
 /**
  * Constructs a differ that knows how to diff `Env` values.
@@ -191,15 +193,13 @@ export const hashSet: <Value>() => Differ<HashSet<Value>, HashSetPatch<Value>> =
  * @category mutations
  */
 export const orElseResult: {
+  <Value2, Patch2>(
+    that: Differ<Value2, Patch2>
+  ): <Value, Patch>(self: Differ<Value, Patch>) => Differ<Either<Value, Value2>, OrPatch<Value, Value2, Patch, Patch2>>
   <Value, Patch, Value2, Patch2>(
     self: Differ<Value, Patch>,
     that: Differ<Value2, Patch2>
   ): Differ<Either<Value, Value2>, OrPatch<Value, Value2, Patch, Patch2>>
-  <Value2, Patch2>(
-    that: Differ<Value2, Patch2>
-  ): <Value, Patch>(
-    self: Differ<Value, Patch>
-  ) => Differ<Either<Value, Value2>, OrPatch<Value, Value2, Patch, Patch2>>
 } = D.orElseResult
 
 /**
@@ -210,15 +210,15 @@ export const orElseResult: {
  * @category mutations
  */
 export const transform: {
+  <Value, Value2>(
+    f: (value: Value) => Value2,
+    g: (value: Value2) => Value
+  ): <Patch>(self: Differ<Value, Patch>) => Differ<Value2, Patch>
   <Value, Patch, Value2>(
     self: Differ<Value, Patch>,
     f: (value: Value) => Value2,
     g: (value: Value2) => Value
   ): Differ<Value2, Patch>
-  <Value, Value2>(
-    f: (value: Value) => Value2,
-    g: (value: Value2) => Value
-  ): <Patch>(self: Differ<Value, Patch>) => Differ<Value2, Patch>
 } = D.transform
 
 /**
@@ -249,13 +249,11 @@ export const updateWith: <A>(f: (x: A, y: A) => A) => Differ<A, (a: A) => A> = D
  * @category mutations
  */
 export const zip: {
+  <Value2, Patch2>(
+    that: Differ<Value2, Patch2>
+  ): <Value, Patch>(self: Differ<Value, Patch>) => Differ<readonly [Value, Value2], readonly [Patch, Patch2]>
   <Value, Patch, Value2, Patch2>(
     self: Differ<Value, Patch>,
     that: Differ<Value2, Patch2>
   ): Differ<readonly [Value, Value2], readonly [Patch, Patch2]>
-  <Value2, Patch2>(
-    that: Differ<Value2, Patch2>
-  ): <Value, Patch>(
-    self: Differ<Value, Patch>
-  ) => Differ<readonly [Value, Value2], readonly [Patch, Patch2]>
 } = D.zip

@@ -80,8 +80,8 @@ export const isEmpty: <K, V>(self: HashMap<K, V>) => boolean = HM.isEmpty
  * @category elements
  */
 export const get: {
-  <K, V, K1>(self: HashMap<K, V>, key: K1): Option<V>
   <K1>(key: K1): <K, V>(self: HashMap<K, V>) => Option<V>
+  <K, V, K1>(self: HashMap<K, V>, key: K1): Option<V>
 } = HM.get
 
 /**
@@ -91,8 +91,8 @@ export const get: {
  * @category elements
  */
 export const getHash: {
-  <K, V, K1>(self: HashMap<K, V>, key: K1, hash: number): Option<V>
   <K1>(key: K1, hash: number): <K, V>(self: HashMap<K, V>) => Option<V>
+  <K, V, K1>(self: HashMap<K, V>, key: K1, hash: number): Option<V>
 } = HM.getHash
 
 /**
@@ -103,8 +103,8 @@ export const getHash: {
  * @category unsafe
  */
 export const unsafeGet: {
-  <K, V, K1>(self: HashMap<K, V>, key: K1): V
   <K1>(key: K1): <K, V>(self: HashMap<K, V>) => V
+  <K, V, K1>(self: HashMap<K, V>, key: K1): V
 } = HM.unsafeGet
 
 /**
@@ -114,8 +114,8 @@ export const unsafeGet: {
  * @category elements
  */
 export const has: {
-  <K, V, K1>(self: HashMap<K, V>, key: K1): boolean
   <K1>(key: K1): <K, V>(self: HashMap<K, V>) => boolean
+  <K, V, K1>(self: HashMap<K, V>, key: K1): boolean
 } = HM.has
 
 /**
@@ -126,8 +126,8 @@ export const has: {
  * @category elements
  */
 export const hasHash: {
-  <K, V, K1>(self: HashMap<K, V>, key: K1, hash: number): boolean
   <K1>(key: K1, hash: number): <K, V>(self: HashMap<K, V>) => boolean
+  <K, V, K1>(self: HashMap<K, V>, key: K1, hash: number): boolean
 } = HM.hasHash
 
 /**
@@ -138,8 +138,8 @@ export const hasHash: {
  * @category mutations
  */
 export const set: {
-  <K, V>(self: HashMap<K, V>, key: K, value: V): HashMap<K, V>
   <K, V>(key: K, value: V): (self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, key: K, value: V): HashMap<K, V>
 } = HM.set
 
 /**
@@ -197,8 +197,8 @@ export const endMutation: <K, V>(self: HashMap<K, V>) => HashMap<K, V> = HM.endM
  * @category mutations
  */
 export const mutate: {
-  <K, V>(self: HashMap<K, V>, f: (self: HashMap<K, V>) => void): HashMap<K, V>
   <K, V>(f: (self: HashMap<K, V>) => void): (self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, f: (self: HashMap<K, V>) => void): HashMap<K, V>
 } = HM.mutate
 
 /**
@@ -213,8 +213,8 @@ export const mutate: {
  * @category mutations
  */
 export const modifyAt: {
-  <K, V>(self: HashMap<K, V>, key: K, f: UpdateFn<V>): HashMap<K, V>
   <K, V>(key: K, f: UpdateFn<V>): (self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, key: K, f: UpdateFn<V>): HashMap<K, V>
 } = HM.modifyAt
 
 /**
@@ -231,8 +231,8 @@ export const modifyAt: {
  * @category mutations
  */
 export const modifyHash: {
-  <K, V>(self: HashMap<K, V>, key: K, hash: number, f: UpdateFn<V>): HashMap<K, V>
   <K, V>(key: K, hash: number, f: UpdateFn<V>): (self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, key: K, hash: number, f: UpdateFn<V>): HashMap<K, V>
 } = HM.modifyHash
 
 /**
@@ -242,8 +242,8 @@ export const modifyHash: {
  * @category mutations
  */
 export const modify: {
-  <K, V>(self: HashMap<K, V>, key: K, f: (v: V) => V): HashMap<K, V>
   <K, V>(key: K, f: (v: V) => V): (self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, key: K, f: (v: V) => V): HashMap<K, V>
 } = HM.modify
 
 /**
@@ -253,8 +253,8 @@ export const modify: {
  * @category mutations
  */
 export const union: {
-  <K0, V0, K1, V1>(self: HashMap<K0, V0>, that: HashMap<K1, V1>): HashMap<K0 | K1, V0 | V1>
   <K1, V1>(that: HashMap<K1, V1>): <K0, V0>(self: HashMap<K0, V0>) => HashMap<K1 | K0, V1 | V0>
+  <K0, V0, K1, V1>(self: HashMap<K0, V0>, that: HashMap<K1, V1>): HashMap<K0 | K1, V0 | V1>
 } = HM.union
 
 /**
@@ -265,8 +265,8 @@ export const union: {
  * @category mutations
  */
 export const remove: {
-  <K, V>(self: HashMap<K, V>, key: K): HashMap<K, V>
   <K>(key: K): <V>(self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, key: K): HashMap<K, V>
 } = HM.remove
 
 /**
@@ -276,8 +276,8 @@ export const remove: {
  * @category mutations
  */
 export const removeMany: {
-  <K, V>(self: HashMap<K, V>, keys: Iterable<K>): HashMap<K, V>
   <K>(keys: Iterable<K>): <V>(self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, keys: Iterable<K>): HashMap<K, V>
 } = HM.removeMany
 
 /**
@@ -287,8 +287,8 @@ export const removeMany: {
  * @category mapping
  */
 export const map: {
-  <K, V, A>(self: HashMap<K, V>, f: (value: V) => A): HashMap<K, A>
   <V, A>(f: (value: V) => A): <K>(self: HashMap<K, V>) => HashMap<K, A>
+  <K, V, A>(self: HashMap<K, V>, f: (value: V) => A): HashMap<K, A>
 } = HM.map
 
 /**
@@ -298,8 +298,8 @@ export const map: {
  * @category mapping
  */
 export const mapWithIndex: {
-  <K, V, A>(self: HashMap<K, V>, f: (value: V, key: K) => A): HashMap<K, A>
   <A, V, K>(f: (value: V, key: K) => A): (self: HashMap<K, V>) => HashMap<K, A>
+  <K, V, A>(self: HashMap<K, V>, f: (value: V, key: K) => A): HashMap<K, A>
 } = HM.mapWithIndex
 
 /**
@@ -311,8 +311,8 @@ export const mapWithIndex: {
  * @category sequencing
  */
 export const flatMap: {
-  <K, A, B>(self: HashMap<K, A>, f: (value: A) => HashMap<K, B>): HashMap<K, B>
   <K, A, B>(f: (value: A) => HashMap<K, B>): (self: HashMap<K, A>) => HashMap<K, B>
+  <K, A, B>(self: HashMap<K, A>, f: (value: A) => HashMap<K, B>): HashMap<K, B>
 } = HM.flatMap
 
 /**
@@ -324,8 +324,8 @@ export const flatMap: {
  * @category sequencing
  */
 export const flatMapWithIndex: {
-  <K, A, B>(self: HashMap<K, A>, f: (value: A, key: K) => HashMap<K, B>): HashMap<K, B>
   <A, K, B>(f: (value: A, key: K) => HashMap<K, B>): (self: HashMap<K, A>) => HashMap<K, B>
+  <K, A, B>(self: HashMap<K, A>, f: (value: A, key: K) => HashMap<K, B>): HashMap<K, B>
 } = HM.flatMapWithIndex
 
 /**
@@ -335,8 +335,8 @@ export const flatMapWithIndex: {
  * @category traversing
  */
 export const forEach: {
-  <K, V>(self: HashMap<K, V>, f: (value: V) => void): void
   <V>(f: (value: V) => void): <K>(self: HashMap<K, V>) => void
+  <K, V>(self: HashMap<K, V>, f: (value: V) => void): void
 } = HM.forEach
 
 /**
@@ -346,8 +346,8 @@ export const forEach: {
  * @category traversing
  */
 export const forEachWithIndex: {
-  <V, K>(self: HashMap<K, V>, f: (value: V, key: K) => void): void
   <V, K>(f: (value: V, key: K) => void): (self: HashMap<K, V>) => void
+  <V, K>(self: HashMap<K, V>, f: (value: V, key: K) => void): void
 } = HM.forEachWithIndex
 
 /**
@@ -357,8 +357,8 @@ export const forEachWithIndex: {
  * @category folding
  */
 export const reduce: {
-  <K, V, Z>(self: HashMap<K, V>, z: Z, f: (z: Z, v: V) => Z): Z
   <V, Z>(z: Z, f: (z: Z, v: V) => Z): <K>(self: HashMap<K, V>) => Z
+  <K, V, Z>(self: HashMap<K, V>, z: Z, f: (z: Z, v: V) => Z): Z
 } = HM.reduce
 
 /**
@@ -368,8 +368,8 @@ export const reduce: {
  * @category folding
  */
 export const reduceWithIndex: {
-  <Z, V, K>(self: HashMap<K, V>, zero: Z, f: (accumulator: Z, value: V, key: K) => Z): Z
   <Z, V, K>(zero: Z, f: (accumulator: Z, value: V, key: K) => Z): (self: HashMap<K, V>) => Z
+  <Z, V, K>(self: HashMap<K, V>, zero: Z, f: (accumulator: Z, value: V, key: K) => Z): Z
 } = HM.reduceWithIndex
 
 /**
@@ -379,10 +379,10 @@ export const reduceWithIndex: {
  * @category filtering
  */
 export const filter: {
-  <K, A, B extends A>(self: HashMap<K, A>, f: Refinement<A, B>): HashMap<K, B>
-  <K, A>(self: HashMap<K, A>, f: Predicate<A>): HashMap<K, A>
   <A, B extends A>(f: Refinement<A, B>): <K>(self: HashMap<K, A>) => HashMap<K, B>
   <A>(f: Predicate<A>): <K>(self: HashMap<K, A>) => HashMap<K, A>
+  <K, A, B extends A>(self: HashMap<K, A>, f: Refinement<A, B>): HashMap<K, B>
+  <K, A>(self: HashMap<K, A>, f: Predicate<A>): HashMap<K, A>
 } = HM.filter
 
 /**
@@ -392,10 +392,10 @@ export const filter: {
  * @category filtering
  */
 export const filterWithIndex: {
-  <K, A, B extends A>(self: HashMap<K, A>, f: (a: A, k: K) => a is B): HashMap<K, B>
-  <K, A>(self: HashMap<K, A>, f: (a: A, k: K) => boolean): HashMap<K, A>
   <K, A, B extends A>(f: (a: A, k: K) => a is B): (self: HashMap<K, A>) => HashMap<K, B>
   <K, A>(f: (a: A, k: K) => boolean): (self: HashMap<K, A>) => HashMap<K, A>
+  <K, A, B extends A>(self: HashMap<K, A>, f: (a: A, k: K) => a is B): HashMap<K, B>
+  <K, A>(self: HashMap<K, A>, f: (a: A, k: K) => boolean): HashMap<K, A>
 } = HM.filterWithIndex
 
 /**
@@ -414,8 +414,8 @@ export const compact: <K, A>(self: HashMap<K, Option<A>>) => HashMap<K, A> = HM.
  * @category filtering
  */
 export const filterMap: {
-  <K, A, B>(self: HashMap<K, A>, f: (value: A) => Option<B>): HashMap<K, B>
   <A, B>(f: (value: A) => Option<B>): <K>(self: HashMap<K, A>) => HashMap<K, B>
+  <K, A, B>(self: HashMap<K, A>, f: (value: A) => Option<B>): HashMap<K, B>
 } = HM.filterMap
 
 /**
@@ -426,6 +426,6 @@ export const filterMap: {
  * @category filtering
  */
 export const filterMapWithIndex: {
-  <K, A, B>(self: HashMap<K, A>, f: (value: A, key: K) => Option<B>): HashMap<K, B>
   <A, K, B>(f: (value: A, key: K) => Option<B>): (self: HashMap<K, A>) => HashMap<K, B>
+  <K, A, B>(self: HashMap<K, A>, f: (value: A, key: K) => Option<B>): HashMap<K, B>
 } = HM.filterMapWithIndex
