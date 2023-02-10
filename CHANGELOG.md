@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.1.1
+
+### Patch Changes
+
+- [#213](https://github.com/Effect-TS/data/pull/213) [`dbe4421`](https://github.com/Effect-TS/data/commit/dbe442131511f09a15e51d835dc033a60759c7a5) Thanks [@IMax153](https://github.com/IMax153)! - add MutableList.prepend
+
 ## 0.1.0
 
 ### Minor Changes
