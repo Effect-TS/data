@@ -45,7 +45,7 @@ class MutableListImpl<A> implements MutableList<A> {
           return this.return!()
         }
         const value = head.value
-        head = head.right
+        head = head.next
         return { done, value }
       },
       return(value?: unknown) {
@@ -76,8 +76,8 @@ class MutableListImpl<A> implements MutableList<A> {
 /** @internal */
 class LinkedListNode<T> {
   removed = false
-  left: LinkedListNode<T> | undefined = undefined
-  right: LinkedListNode<T> | undefined = undefined
+  prev: LinkedListNode<T> | undefined = undefined
+  next: LinkedListNode<T> | undefined = undefined
   constructor(readonly value: T) {}
 }
 
@@ -159,7 +159,7 @@ export const forEach: {
   let current = self.head
   while (current !== undefined) {
     f(current.value)
-    current = current.right
+    current = current.next
   }
 })
 
@@ -190,14 +190,14 @@ export const append: {
   <A>(self: MutableList<A>, value: A) => MutableList<A>
 >(2, <A>(self: MutableList<A>, value: A) => {
   const node = new LinkedListNode(value)
-  if ((self as MutableListImpl<A>)._length === 0) {
+  if (self.head === undefined) {
     self.head = node
   }
   if (self.tail === undefined) {
     self.tail = node
   } else {
-    self.tail.right = node
-    node.left = self.tail
+    self.tail.next = node
+    node.prev = self.tail
     self.tail = node
   }
   ;(self as MutableListImpl<A>)._length += 1
@@ -234,20 +234,46 @@ export const pop = <A>(self: MutableList<A>): A | undefined => {
   return undefined
 }
 
+/**
+ * Prepends the specified value to the beginning of the list.
+ *
+ * @since 1.0.0
+ * @category mutations
+ */
+export const prepend: {
+  <A>(value: A): (self: MutableList<A>) => MutableList<A>
+  <A>(self: MutableList<A>, value: A): MutableList<A>
+} = Dual.dual<
+  <A>(value: A) => (self: MutableList<A>) => MutableList<A>,
+  <A>(self: MutableList<A>, value: A) => MutableList<A>
+>(2, <A>(self: MutableList<A>, value: A) => {
+  const node = new LinkedListNode(value)
+  node.next = self.head
+  if (self.head !== undefined) {
+    self.head.prev = node
+  }
+  self.head = node
+  if (self.tail === undefined) {
+    self.tail = node
+  }
+  ;(self as MutableListImpl<A>)._length += 1
+  return self
+})
+
 const remove = <A>(self: MutableList<A>, node: LinkedListNode<A>): void => {
   if (node.removed) {
     return
   }
   node.removed = true
-  if (node.left !== undefined && node.right !== undefined) {
-    node.left.right = node.right
-    node.right.left = node.left
-  } else if (node.left !== undefined) {
-    self.tail = node.left
-    node.left.right = undefined
-  } else if (node.right !== undefined) {
-    self.head = node.right
-    node.right.left = undefined
+  if (node.prev !== undefined && node.next !== undefined) {
+    node.prev.next = node.next
+    node.next.prev = node.prev
+  } else if (node.prev !== undefined) {
+    self.tail = node.prev
+    node.prev.next = undefined
+  } else if (node.next !== undefined) {
+    self.head = node.next
+    node.next.prev = undefined
   } else {
     self.tail = undefined
     self.head = undefined

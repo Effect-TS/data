@@ -100,4 +100,15 @@ describe.concurrent("MutableList", () => {
     deepStrictEqual(MutableList.pop(list), 1)
     deepStrictEqual(MutableList.pop(list), undefined)
   })
+
+  it("prepend", () => {
+    const list = pipe(
+      MutableList.empty<number>(),
+      MutableList.prepend(1),
+      MutableList.prepend(2),
+      MutableList.prepend(3),
+      MutableList.append(4)
+    )
+    deepStrictEqual(Array.from(list), [3, 2, 1, 4])
+  })
 })
