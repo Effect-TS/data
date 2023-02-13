@@ -132,7 +132,7 @@ export const tagged = <A extends Case & { _tag: string }>(
  * @since 1.0.0
  * @category constructors
  */
-export const Tagged = <Key extends string>(
+export const TaggedClass = <Key extends string>(
   tag: Key
 ) =>
   <A extends Record<string, any>>() => {
@@ -145,3 +145,19 @@ export const Tagged = <Key extends string>(
     }
     return Base as unknown as { new(args: Omit<A, "_tag" | keyof Equal.Equal>): Data<A> & { readonly _tag: Key } }
   }
+
+/**
+ * Provides a constructor for a Case Class.
+ *
+ * @since 1.0.0
+ * @category constructors
+ */
+export const Class = <A extends Record<string, any>>() => {
+  class Base {
+    constructor(args: Omit<A, keyof Equal.Equal>) {
+      Object.assign(this, args)
+      unsafeStruct(this)
+    }
+  }
+  return Base as unknown as { new(args: Omit<A, keyof Equal.Equal>): Data<A> }
+}

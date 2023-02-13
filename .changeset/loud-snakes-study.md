@@ -2,4 +2,4 @@
 "@effect/data": patch
 ---
 
-add Tagged case class constructor
+add Class and TaggedClass case class constructors
