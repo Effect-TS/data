@@ -143,6 +143,5 @@ export const Tagged = <Key extends string>(
         unsafeStruct(this)
       }
     }
-    return Base as unknown as { new(args: Omit<A, "_tag" | keyof Equal.Equal>): Data<A> }
+    return Base as unknown as { new(args: Omit<A, "_tag" | keyof Equal.Equal>): Data<A> & { readonly _tag: Key } }
   }
-
