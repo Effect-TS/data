@@ -72,4 +72,17 @@ describe("Data", () => {
     expect(Equal.equals(a, b)).toBe(true)
     expect(Equal.equals(a, c)).toBe(false)
   })
+
+  it("tagged class", () => {
+    class Person extends Data.Tagged("Person")<{ name: string }>() {}
+    const a = new Person({ name: "Mike" })
+    const b = new Person({ name: "Mike" })
+    const c = new Person({ name: "Foo" })
+
+    expect(a.name).toBe("Mike")
+    expect(b.name).toBe("Mike")
+    expect(c.name).toBe("Foo")
+    expect(Equal.equals(a, b)).toBe(true)
+    expect(Equal.equals(a, c)).toBe(false)
+  })
 })
