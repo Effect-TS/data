@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.1.2
+
+### Patch Changes
+
+- [#215](https://github.com/Effect-TS/data/pull/215) [`47ed7ea`](https://github.com/Effect-TS/data/commit/47ed7eac310ef190d22a456aaeb57311ba206ef9) Thanks [@patroza](https://github.com/patroza)! - add Class and TaggedClass case class constructors
+
 ## 0.1.1
 
 ### Patch Changes
