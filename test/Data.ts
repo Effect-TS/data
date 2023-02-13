@@ -100,4 +100,17 @@ describe("Data", () => {
     expect(Equal.equals(a, b)).toBe(true)
     expect(Equal.equals(a, c)).toBe(false)
   })
+
+  it("tagged - empty", () => {
+    interface Person extends Data.Case {
+      readonly _tag: "Person"
+    }
+
+    const Person = Data.tagged<Person>("Person")
+
+    const a = Person()
+    const b = Person()
+
+    expect(Equal.equals(a, b)).toBe(true)
+  })
 })

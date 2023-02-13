@@ -31,6 +31,9 @@
           nodejs-16_x
           nodePackages.pnpm
         ];
+        shellHook = ''
+          pnpm install
+        '';
       };
     });
   };

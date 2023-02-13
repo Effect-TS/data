@@ -28,7 +28,7 @@ export declare namespace Case {
    * @category models
    */
   export interface Constructor<A extends Case, T extends keyof A = never> {
-    (args: Omit<A, T | keyof Equal.Equal>): A
+    (args: Omit<A, T | keyof Equal.Equal> extends Record<PropertyKey, never> ? void : Omit<A, T | keyof Equal.Equal>): A
   }
 }
 
@@ -102,7 +102,8 @@ export const array = <As extends ReadonlyArray<any>>(as: As): Data<As> => unsafe
  */
 export const unsafeArray = <As extends ReadonlyArray<any>>(as: As): Data<As> => Object.setPrototypeOf(as, protoArr)
 
-const _case = <A extends Case>(): Case.Constructor<A> => struct as any
+const _case = <A extends Case>(): Case.Constructor<A> =>
+  (args) => (args === undefined ? struct({}) : struct(args)) as any
 
 export {
   /**
@@ -124,7 +125,7 @@ export const tagged = <A extends Case & { _tag: string }>(
   tag: A["_tag"]
 ): Case.Constructor<A, "_tag"> =>
   // @ts-expect-error
-  (args) => struct({ _tag: tag, ...args })
+  (args) => args === undefined ? struct({}) : struct({ _tag: tag, ...args })
 
 /**
  * Provides a Tagged constructor for a Case Class.
