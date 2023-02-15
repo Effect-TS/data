@@ -32,7 +32,8 @@
           nodePackages.pnpm
         ];
         shellHook = ''
-          pnpm install
+          pnpm install;
+          pnpm run build;
         '';
       };
     });
