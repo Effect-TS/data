@@ -23,18 +23,6 @@ export type BrandTypeId = typeof BrandTypeId
  * @since 1.0.0
  * @category symbols
  */
-export const NominalConstructorTypeId: unique symbol = Symbol.for("@effect/data/Brand/Nominal")
-
-/**
- * @since 1.0.0
- * @category symbols
- */
-export type NominalConstructorTypeId = typeof NominalConstructorTypeId
-
-/**
- * @since 1.0.0
- * @category symbols
- */
 export const RefinedConstructorsTypeId: unique symbol = Symbol.for("@effect/data/Brand/Refined")
 
 /**
@@ -76,33 +64,13 @@ export declare namespace Brand {
    * @since 1.0.0
    * @category models
    */
-  export type Constructor<A extends Brand<any>> =
-    | Brand.NominalConstructor<A>
-    | Brand.RefinedConstructors<A>
-
-  /**
-   * @since 1.0.0
-   * @category models
-   */
-  export interface NominalConstructor<in out A extends Brand<any>> {
-    readonly [NominalConstructorTypeId]: NominalConstructorTypeId
-    /**
-     * Constructs a branded type from a value of type `A`.
-     */
-    (args: Omit<Brand.Unbranded<A>, BrandTypeId>): A
-  }
-
-  /**
-   * @since 1.0.0
-   * @category models
-   */
-  export interface RefinedConstructors<in out A extends Brand<any>> {
+  export interface Constructor<in out A extends Brand<any>> {
     readonly [RefinedConstructorsTypeId]: RefinedConstructorsTypeId
     /**
      * Constructs a branded type from a value of type `A`, throwing an error if
      * the provided `A` is not valid.
      */
-    of: (args: Brand.Unbranded<A>) => A
+    (args: Brand.Unbranded<A>): A
     /**
      * Constructs a branded type from a value of type `A`, returning `Some<A>`
      * if the provided `A` is valid, `None` otherwise.
@@ -189,58 +157,42 @@ export const error = (message: string, meta?: unknown): Brand.BrandErrors => [{
 export const errors = (...errors: Array<Brand.BrandErrors>): Brand.BrandErrors => ReadonlyArray.flatten(errors)
 
 /**
- * Returns `true` if the provided `Brand` is nominal, `false` otherwise.
- *
- * @since 1.0.0
- * @category refinements
- */
-export const isNominal = <A extends Brand<any>>(
-  u: Brand.Constructor<A>
-): u is Brand.NominalConstructor<A> => NominalConstructorTypeId in u
-
-/**
- * Returns `true` if the provided `Brand` is refined, `false` otherwise.
- *
- * @since 1.0.0
- * @category refinements
- */
-export const isRefined = <A extends Brand<any>>(
-  u: Brand.Constructor<A>
-): u is Brand.RefinedConstructors<A> => RefinedConstructorsTypeId in u
-
-/**
- * @since 1.0.0
- * @category constructors
- */
-export const nominal = <A extends Brand<any>>(): Brand.NominalConstructor<A> =>
-  // @ts-expect-error
-  Object.assign((args) => args, {
-    [NominalConstructorTypeId]: NominalConstructorTypeId
-  })
-
-/**
  * @since 1.0.0
  * @category constructors
  */
 export const refined = <A extends Brand<any>>(
   refinement: Predicate<Brand.Unbranded<A>>,
   onFailure: (a: Brand.Unbranded<A>) => Brand.BrandErrors
-): Brand.RefinedConstructors<A> => {
+): Brand.Constructor<A> => {
   const either = (args: Brand.Unbranded<A>): Either.Either<Brand.BrandErrors, A> =>
     refinement(args) ? Either.right(args as A) : Either.left(onFailure(args))
-  return {
+  // @ts-expect-error
+  return Object.assign((args) =>
+    pipe(
+      either(args),
+      Either.match((e) => {
+        throw e
+      }, identity)
+    ), {
     [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
-    of: (args) =>
-      pipe(
-        either(args),
-        Either.match((e) => {
-          throw e
-        }, identity)
-      ),
-    option: (args) => Option.fromEither(either(args)),
+    option: (args: any) => Option.fromEither(either(args)),
     either,
-    refine: (args): args is Brand.Unbranded<A> & A => Either.isRight(either(args))
-  }
+    refine: (args: any): args is Brand.Unbranded<A> & A => Either.isRight(either(args))
+  })
+}
+
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
+export const nominal = <A extends Brand<any>>(): Brand.Constructor<A> => {
+  // @ts-expect-error
+  return Object.assign((args) => args, {
+    [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
+    option: (args: any) => Option.some(args),
+    either: (args: any) => Either.right(args),
+    refine: (args: any): args is Brand.Unbranded<A> & A => true
+  })
 }
 
 /**
@@ -251,7 +203,7 @@ export const refined = <A extends Brand<any>>(
  */
 export const all = <
   Brands extends readonly [Brand.Constructor<any>, ...Array<Brand.Constructor<any>>]
->(...brands: Brand.EnsureCommonBase<Brands>): Brand.RefinedConstructors<
+>(...brands: Brand.EnsureCommonBase<Brands>): Brand.Constructor<
   Brand.UnionToIntersection<
     {
       [B in keyof Brands]: Brand.FromConstructor<Brands[B]>
@@ -261,28 +213,26 @@ export const all = <
   const either = (args: any): Either.Either<Brand.BrandErrors, any> => {
     let result: Either.Either<Brand.BrandErrors, any> = Either.right(args)
     for (const brand of brands) {
-      if (isRefined(brand)) {
-        const nextResult = brand.either(args)
-        if (Either.isLeft(result) && Either.isLeft(nextResult)) {
-          result = Either.left([...result.left, ...nextResult.left])
-        } else {
-          result = Either.isLeft(result) ? result : nextResult
-        }
+      const nextResult = brand.either(args)
+      if (Either.isLeft(result) && Either.isLeft(nextResult)) {
+        result = Either.left([...result.left, ...nextResult.left])
+      } else {
+        result = Either.isLeft(result) ? result : nextResult
       }
     }
     return result
   }
-  return {
+  // @ts-expect-error
+  return Object.assign((args) =>
+    pipe(
+      either(args),
+      Either.match((e) => {
+        throw e
+      }, identity)
+    ), {
     [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
-    of: (args) =>
-      pipe(
-        either(args),
-        Either.match((e) => {
-          throw e
-        }, identity)
-      ),
-    option: (args) => Option.fromEither(either(args)),
+    option: (args: any) => Option.fromEither(either(args)),
     either,
-    refine: (args): args is any => Either.isRight(either(args))
-  }
+    refine: (args: any): args is any => Either.isRight(either(args))
+  })
 }

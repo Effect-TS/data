@@ -24,8 +24,8 @@ describe.concurrent("Brand", () => {
   })
 
   it("refined", () => {
-    assert.strictEqual(Int.of(1), 1)
-    assert.throws(() => Int.of(1.1))
+    assert.strictEqual(Int(1), 1)
+    assert.throws(() => Int(1.1))
     assert.deepStrictEqual(Int.option(1), Option.some(1))
     assert.deepStrictEqual(Int.option(1.1), Option.none())
     assert.deepStrictEqual(Int.either(1), Either.right(1 as Int))
@@ -38,8 +38,8 @@ describe.concurrent("Brand", () => {
   })
 
   it("composition", () => {
-    assert.strictEqual(PositiveInt.of(1), 1)
-    assert.throws(() => PositiveInt.of(1.1))
+    assert.strictEqual(PositiveInt(1), 1)
+    assert.throws(() => PositiveInt(1.1))
     assert.deepStrictEqual(PositiveInt.option(1), Option.some(1))
     assert.deepStrictEqual(PositiveInt.option(1.1), Option.none())
     assert.deepStrictEqual(PositiveInt.either(1), Either.right(1 as PositiveInt))
