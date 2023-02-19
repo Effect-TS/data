@@ -674,7 +674,7 @@ export const every = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => ge
 /**
  * @since 1.0.0
  */
-export const any = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => getMonoidAny<A>().combineAll(collection)
+export const some = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => getMonoidAny<A>().combineAll(collection)
 
 // -------------------------------------------------------------------------------------
 // do notation
