@@ -45,7 +45,8 @@
     "docs-update": "git add --force --all docs/modules || true",
     "circular": "madge --ts-config ./tsconfig.madge.json --circular --no-color --no-spinner --warning build/esm",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "dtslint": "dtslint dtslint"
   },
   "exports": {
     ".": {
