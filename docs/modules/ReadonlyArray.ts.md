@@ -91,8 +91,8 @@ Added in v1.0.0
   - [group](#group)
   - [groupBy](#groupby)
 - [guards](#guards)
-  - [isEmpty](#isempty)
   - [isEmptyArray](#isemptyarray)
+  - [isEmptyReadonlyArray](#isemptyreadonlyarray)
   - [isNonEmpty](#isnonempty)
   - [isNonEmptyArray](#isnonemptyarray)
 - [instances](#instances)
@@ -1169,27 +1169,6 @@ Added in v1.0.0
 
 # guards
 
-## isEmpty
-
-Determine if a `ReadonlyArray` is empty narrowing down the type to `readonly []`.
-
-**Signature**
-
-```ts
-export declare const isEmpty: <A>(self: readonly A[]) => self is readonly []
-```
-
-**Example**
-
-```ts
-import { isEmpty } from '@effect/data/ReadonlyArray'
-
-assert.deepStrictEqual(isEmpty([]), true)
-assert.deepStrictEqual(isEmpty([1, 2, 3]), false)
-```
-
-Added in v1.0.0
-
 ## isEmptyArray
 
 Determine if an `Array` is empty narrowing down the type to `[]`.
@@ -1207,6 +1186,27 @@ import { isEmptyArray } from '@effect/data/ReadonlyArray'
 
 assert.deepStrictEqual(isEmptyArray([]), true)
 assert.deepStrictEqual(isEmptyArray([1, 2, 3]), false)
+```
+
+Added in v1.0.0
+
+## isEmptyReadonlyArray
+
+Determine if a `ReadonlyArray` is empty narrowing down the type to `readonly []`.
+
+**Signature**
+
+```ts
+export declare const isEmptyReadonlyArray: <A>(self: readonly A[]) => self is readonly []
+```
+
+**Example**
+
+```ts
+import { isEmptyReadonlyArray } from '@effect/data/ReadonlyArray'
+
+assert.deepStrictEqual(isEmptyReadonlyArray([]), true)
+assert.deepStrictEqual(isEmptyReadonlyArray([1, 2, 3]), false)
 ```
 
 Added in v1.0.0

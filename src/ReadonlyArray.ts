@@ -330,16 +330,15 @@ export const isEmptyArray = <A>(self: Array<A>): self is [] => self.length === 0
  * @param self - The `ReadonlyArray` to check.
  *
  * @example
- * import { isEmpty } from "@effect/data/ReadonlyArray"
+ * import { isEmptyReadonlyArray } from "@effect/data/ReadonlyArray"
  *
- * assert.deepStrictEqual(isEmpty([]), true);
- * assert.deepStrictEqual(isEmpty([1, 2, 3]), false);
+ * assert.deepStrictEqual(isEmptyReadonlyArray([]), true);
+ * assert.deepStrictEqual(isEmptyReadonlyArray([1, 2, 3]), false);
  *
  * @category guards
  * @since 1.0.0
  */
-// TODO: rename to isEmptyReadonlyArray
-export const isEmpty: <A>(self: ReadonlyArray<A>) => self is readonly [] = isEmptyArray as any
+export const isEmptyReadonlyArray: <A>(self: ReadonlyArray<A>) => self is readonly [] = isEmptyArray as any
 
 /**
  * Determine if an `Array` is non empty narrowing down the type to `NonEmptyArray`.
@@ -1224,7 +1223,7 @@ export const splitAt: {
   const input = Array.from(self)
   return n >= 1 && isNonEmpty(input) ?
     splitNonEmptyAt(input, n) :
-    isEmpty(input) ?
+    isEmptyReadonlyArray(input) ?
     [input, []] :
     [[], input]
 })
@@ -1507,7 +1506,7 @@ export const flatMap: {
 } = dual(
   2,
   <A, B>(self: ReadonlyArray<A>, f: (a: A, i: number) => ReadonlyArray<B>): Array<B> => {
-    if (isEmpty(self)) {
+    if (isEmptyReadonlyArray(self)) {
       return []
     }
     const out: Array<B> = []
@@ -1801,7 +1800,7 @@ export const sequenceNonEmpty = <F extends TypeLambda>(
 ) => Kind<F, R, O, E, NonEmptyArray<A>>) => traverseNonEmpty(F)(identity)
 
 const product = <A, B>(self: ReadonlyArray<A>, that: ReadonlyArray<B>): ReadonlyArray<[A, B]> => {
-  if (isEmpty(self) || isEmpty(that)) {
+  if (isEmptyReadonlyArray(self) || isEmptyReadonlyArray(that)) {
     return empty()
   }
   const out: Array<[A, B]> = []
@@ -1868,7 +1867,7 @@ export const Product: product_.Product<ReadonlyArrayTypeLambda> = {
   productMany,
   productAll: (collection) => {
     const arrays = fromIterable(collection)
-    return isEmpty(arrays) ? empty() : SemiProduct.productMany(arrays[0], arrays.slice(1))
+    return isEmptyReadonlyArray(arrays) ? empty() : SemiProduct.productMany(arrays[0], arrays.slice(1))
   }
 }
 
