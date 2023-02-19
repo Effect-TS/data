@@ -88,17 +88,17 @@ export const SemigroupEvery: semigroup.Semigroup<boolean> = semigroup.booleanEve
  * `boolean` semigroup under disjunction.
  *
  * @example
- * import { SemigroupAny } from '@effect/data/Boolean'
+ * import { SemigroupSome } from '@effect/data/Boolean'
  *
- * assert.deepStrictEqual(SemigroupAny.combine(true, true), true)
- * assert.deepStrictEqual(SemigroupAny.combine(true, false), true)
- * assert.deepStrictEqual(SemigroupAny.combine(false, true), true)
- * assert.deepStrictEqual(SemigroupAny.combine(false, false), false)
+ * assert.deepStrictEqual(SemigroupSome.combine(true, true), true)
+ * assert.deepStrictEqual(SemigroupSome.combine(true, false), true)
+ * assert.deepStrictEqual(SemigroupSome.combine(false, true), true)
+ * assert.deepStrictEqual(SemigroupSome.combine(false, false), false)
  *
  * @category instances
  * @since 1.0.0
  */
-export const SemigroupAny: semigroup.Semigroup<boolean> = semigroup.booleanAny
+export const SemigroupSome: semigroup.Semigroup<boolean> = semigroup.booleanSome
 
 /**
  * `boolean` semigroup under exclusive disjunction.
@@ -143,14 +143,14 @@ export const SemigroupEqv: semigroup.Semigroup<boolean> = semigroup.booleanEqv
 export const MonoidEvery: monoid.Monoid<boolean> = monoid.booleanEvery
 
 /**
- * `boolean` monoid under disjunction, see also {@link SemigroupAny}.
+ * `boolean` monoid under disjunction, see also {@link SemigroupSome}.
  *
  * The `empty` value is `false`.
  *
  * @category instances
  * @since 1.0.0
  */
-export const MonoidAny: monoid.Monoid<boolean> = monoid.booleanAny
+export const MonoidSome: monoid.Monoid<boolean> = monoid.booleanSome
 
 /**
  * `boolean` monoid under exclusive disjunction, see also {@link SemigroupXor}.
@@ -241,7 +241,7 @@ export const nand: {
 export const or: {
   (that: boolean): (self: boolean) => boolean
   (self: boolean, that: boolean): boolean
-} = dual(2, semigroup.booleanAny.combine)
+} = dual(2, semigroup.booleanSome.combine)
 
 /**
  * Combines two booleans using NOR: `!(self || that)`.
@@ -260,7 +260,7 @@ export const or: {
 export const nor: {
   (that: boolean): (self: boolean) => boolean
   (self: boolean, that: boolean): boolean
-} = dual(2, flow(semigroup.booleanAny.combine, not))
+} = dual(2, flow(semigroup.booleanSome.combine, not))
 
 /**
  * Combines two booleans using XOR: `(!self && that) || (self && !that)`.
@@ -347,4 +347,4 @@ export const every: (collection: Iterable<boolean>) => boolean = MonoidEvery.com
  *
  * @since 1.0.0
  */
-export const some: (collection: Iterable<boolean>) => boolean = MonoidAny.combineAll
+export const some: (collection: Iterable<boolean>) => boolean = MonoidSome.combineAll

@@ -117,7 +117,7 @@ export const booleanEvery: Monoid<boolean> = fromSemigroup(semigroup.booleanEver
  * @category instances
  * @since 1.0.0
  */
-export const booleanAny: Monoid<boolean> = fromSemigroup(semigroup.booleanAny, false)
+export const booleanSome: Monoid<boolean> = fromSemigroup(semigroup.booleanSome, false)
 
 /**
  * `boolean` monoid under exclusive disjunction.

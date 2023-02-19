@@ -27,9 +27,9 @@ Added in v1.0.0
   - [SemiProduct](#semiproduct)
   - [bigintMultiply](#bigintmultiply)
   - [bigintSum](#bigintsum)
-  - [booleanAny](#booleanany)
   - [booleanEqv](#booleaneqv)
   - [booleanEvery](#booleanevery)
+  - [booleanSome](#booleansome)
   - [booleanXor](#booleanxor)
   - [first](#first)
   - [last](#last)
@@ -207,18 +207,6 @@ export declare const bigintSum: Semigroup<bigint>
 
 Added in v1.0.0
 
-## booleanAny
-
-`boolean` semigroup under disjunction.
-
-**Signature**
-
-```ts
-export declare const booleanAny: Semigroup<boolean>
-```
-
-Added in v1.0.0
-
 ## booleanEqv
 
 `boolean` semigroup under equivalence.
@@ -239,6 +227,18 @@ Added in v1.0.0
 
 ```ts
 export declare const booleanEvery: Semigroup<boolean>
+```
+
+Added in v1.0.0
+
+## booleanSome
+
+`boolean` semigroup under disjunction.
+
+**Signature**
+
+```ts
+export declare const booleanSome: Semigroup<boolean>
 ```
 
 Added in v1.0.0

@@ -103,8 +103,8 @@ describe.concurrent("Predicate", () => {
     deepStrictEqual(p(3), false)
   })
 
-  it("getSemigroupAny", () => {
-    const S = _.getSemigroupAny<number>()
+  it("getSemigroupSome", () => {
+    const S = _.getSemigroupSome<number>()
     const p1 = S.combine(isPositive, isNegative)
     deepStrictEqual(p1(0), false)
     deepStrictEqual(p1(-1), true)
@@ -115,8 +115,8 @@ describe.concurrent("Predicate", () => {
     deepStrictEqual(p2(1), true)
   })
 
-  it("getMonoidAny", () => {
-    const M = _.getMonoidAny<number>()
+  it("getMonoidSome", () => {
+    const M = _.getMonoidSome<number>()
     const predicate = M.combine(isPositive, M.empty)
     deepStrictEqual(predicate(0), isPositive(0))
     deepStrictEqual(predicate(-1), isPositive(-1))
