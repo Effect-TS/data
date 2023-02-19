@@ -643,7 +643,7 @@ export const getMonoidAny = <A>(): monoid.Monoid<Predicate<A>> => monoid.fromSem
  * @category instances
  * @since 1.0.0
  */
-export const getSemigroupAll = <A>(): Semigroup<Predicate<A>> =>
+export const getSemigroupEvery = <A>(): Semigroup<Predicate<A>> =>
   semigroup.make<Predicate<A>>(
     and,
     (self, collection) =>
@@ -664,12 +664,13 @@ export const getSemigroupAll = <A>(): Semigroup<Predicate<A>> =>
  * @category instances
  * @since 1.0.0
  */
-export const getMonoidAll = <A>(): monoid.Monoid<Predicate<A>> => monoid.fromSemigroup(getSemigroupAll<A>(), constTrue)
+export const getMonoidEvery = <A>(): monoid.Monoid<Predicate<A>> =>
+  monoid.fromSemigroup(getSemigroupEvery<A>(), constTrue)
 
 /**
  * @since 1.0.0
  */
-export const every = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => getMonoidAll<A>().combineAll(collection)
+export const every = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => getMonoidEvery<A>().combineAll(collection)
 
 /**
  * @since 1.0.0

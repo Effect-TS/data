@@ -115,7 +115,7 @@ export const bigintMultiply: Semigroup<bigint> = make(
  * @category instances
  * @since 1.0.0
  */
-export const booleanAll: Semigroup<boolean> = make(
+export const booleanEvery: Semigroup<boolean> = make(
   (self, that) => self && that,
   (self, collection) => {
     if (self === false) {

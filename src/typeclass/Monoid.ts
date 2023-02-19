@@ -107,7 +107,7 @@ export const bigintMultiply: Monoid<bigint> = fromSemigroup(semigroup.bigintMult
  * @category instances
  * @since 1.0.0
  */
-export const booleanAll: Monoid<boolean> = fromSemigroup(semigroup.booleanAll, true)
+export const booleanEvery: Monoid<boolean> = fromSemigroup(semigroup.booleanEvery, true)
 
 /**
  * `boolean` monoid under disjunction.
