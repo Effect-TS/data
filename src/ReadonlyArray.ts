@@ -157,7 +157,7 @@ export const match: {
   self: ReadonlyArray<A>,
   onEmpty: LazyArg<B>,
   onNonEmpty: (self: NonEmptyReadonlyArray<A>) => C
-): B | C => isNonEmpty(self) ? onNonEmpty(self) : onEmpty())
+): B | C => isNonEmptyReadonlyArray(self) ? onNonEmpty(self) : onEmpty())
 
 /**
  * @category pattern matching
@@ -177,7 +177,7 @@ export const matchLeft: {
   self: ReadonlyArray<A>,
   onEmpty: LazyArg<B>,
   onNonEmpty: (head: A, tail: Array<A>) => C
-): B | C => isNonEmpty(self) ? onNonEmpty(headNonEmpty(self), tailNonEmpty(self)) : onEmpty())
+): B | C => isNonEmptyReadonlyArray(self) ? onNonEmpty(headNonEmpty(self), tailNonEmpty(self)) : onEmpty())
 
 /**
  * @category pattern matching
@@ -198,7 +198,7 @@ export const matchRight: {
   onEmpty: LazyArg<B>,
   onNonEmpty: (init: Array<A>, last: A) => C
 ): B | C =>
-  isNonEmpty(self) ?
+  isNonEmptyReadonlyArray(self) ?
     onNonEmpty(initNonEmpty(self), lastNonEmpty(self)) :
     onEmpty())
 
@@ -366,16 +366,16 @@ export const isNonEmptyArray: <A>(self: Array<A>) => self is NonEmptyArray<A> = 
  * @param self - The `ReadonlyArray` to check.
  *
  * @example
- * import { isNonEmpty } from "@effect/data/ReadonlyArray"
+ * import { isNonEmptyReadonlyArray } from "@effect/data/ReadonlyArray"
  *
- * assert.deepStrictEqual(isNonEmpty([]), false);
- * assert.deepStrictEqual(isNonEmpty([1, 2, 3]), true);
+ * assert.deepStrictEqual(isNonEmptyReadonlyArray([]), false);
+ * assert.deepStrictEqual(isNonEmptyReadonlyArray([1, 2, 3]), true);
  *
  * @category guards
  * @since 1.0.0
  */
-// TODO: rename to isNonEmptyReadonlyArray
-export const isNonEmpty: <A>(self: ReadonlyArray<A>) => self is NonEmptyReadonlyArray<A> = readonlyArray.isNonEmptyArray
+export const isNonEmptyReadonlyArray: <A>(self: ReadonlyArray<A>) => self is NonEmptyReadonlyArray<A> =
+  readonlyArray.isNonEmptyArray
 
 /**
  * Return the number of elements in a `ReadonlyArray`.
@@ -460,7 +460,8 @@ export const headNonEmpty: <A>(self: NonEmptyReadonlyArray<A>) => A = unsafeGet(
  * @category getters
  * @since 1.0.0
  */
-export const last = <A>(self: ReadonlyArray<A>): Option<A> => isNonEmpty(self) ? O.some(lastNonEmpty(self)) : O.none()
+export const last = <A>(self: ReadonlyArray<A>): Option<A> =>
+  isNonEmptyReadonlyArray(self) ? O.some(lastNonEmpty(self)) : O.none()
 
 /**
  * @category getters
@@ -476,7 +477,7 @@ export const lastNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): A => self[self.
  */
 export const tail = <A>(self: Iterable<A>): Option<Array<A>> => {
   const input = fromIterable(self)
-  return isNonEmpty(input) ? O.some(tailNonEmpty(input)) : O.none()
+  return isNonEmptyReadonlyArray(input) ? O.some(tailNonEmpty(input)) : O.none()
 }
 
 /**
@@ -493,7 +494,7 @@ export const tailNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): Array<A> => sel
  */
 export const init = <A>(self: Iterable<A>): Option<Array<A>> => {
   const input = fromIterable(self)
-  return isNonEmpty(input) ? O.some(initNonEmpty(input)) : O.none()
+  return isNonEmptyReadonlyArray(input) ? O.some(initNonEmpty(input)) : O.none()
 }
 
 /**
@@ -881,7 +882,7 @@ export const sortNonEmpty = <B>(O: Order<B>) =>
 export const sortBy = <B>(...orders: ReadonlyArray<Order<B>>) =>
   <A extends B>(self: Iterable<A>): Array<A> => {
     const input = fromIterable(self)
-    return (isNonEmpty(input) ? sortByNonEmpty(...orders)(input) : [])
+    return (isNonEmptyReadonlyArray(input) ? sortByNonEmpty(...orders)(input) : [])
   }
 
 /**
@@ -920,7 +921,7 @@ export const zipWith: {
 } = dual(3, <B, A, C>(self: Iterable<A>, that: Iterable<B>, f: (a: A, b: B) => C): Array<C> => {
   const as = fromIterable(self)
   const bs = fromIterable(that)
-  return isNonEmpty(as) && isNonEmpty(bs) ? zipNonEmptyWith(bs, f)(as) : []
+  return isNonEmptyReadonlyArray(as) && isNonEmptyReadonlyArray(bs) ? zipNonEmptyWith(bs, f)(as) : []
 })
 
 /**
@@ -968,7 +969,7 @@ export const zipNonEmptyWith: {
  */
 export const unzip = <A, B>(self: Iterable<[A, B]>): [Array<A>, Array<B>] => {
   const input = fromIterable(self)
-  return isNonEmpty(input) ? unzipNonEmpty(input) : [[], []]
+  return isNonEmptyReadonlyArray(input) ? unzipNonEmpty(input) : [[], []]
 }
 
 /**
@@ -996,7 +997,7 @@ export const intersperse: {
   <A, B>(self: Iterable<A>, middle: B): Array<A | B>
 } = dual(2, <A, B>(self: Iterable<A>, middle: B): Array<A | B> => {
   const input = fromIterable(self)
-  return (isNonEmpty(input) ? intersperseNonEmpty(input, middle) : [])
+  return (isNonEmptyReadonlyArray(input) ? intersperseNonEmpty(input, middle) : [])
 })
 
 /**
@@ -1085,7 +1086,7 @@ export const rotate: {
   <A>(self: Iterable<A>, n: number): Array<A>
 } = dual(2, <A>(self: Iterable<A>, n: number): Array<A> => {
   const input = fromIterable(self)
-  return isNonEmpty(input) ? rotateNonEmpty(input, n) : []
+  return isNonEmptyReadonlyArray(input) ? rotateNonEmpty(input, n) : []
 })
 
 /**
@@ -1137,7 +1138,7 @@ export const contains = <A>(isEquivalent: (self: A, that: A) => boolean): {
 export const uniq = <A>(isEquivalent: (self: A, that: A) => boolean) =>
   (self: Iterable<A>): Array<A> => {
     const input = fromIterable(self)
-    return isNonEmpty(input) ? uniqNonEmpty(isEquivalent)(input) : []
+    return isNonEmptyReadonlyArray(input) ? uniqNonEmpty(isEquivalent)(input) : []
   }
 
 /**
@@ -1177,7 +1178,7 @@ export const chop: {
   f: (as: NonEmptyReadonlyArray<A>) => readonly [B, ReadonlyArray<A>]
 ): Array<B> => {
   const input = fromIterable(self)
-  return isNonEmpty(input) ? chopNonEmpty(input, f) : []
+  return isNonEmptyReadonlyArray(input) ? chopNonEmpty(input, f) : []
 })
 
 /**
@@ -1221,7 +1222,7 @@ export const splitAt: {
   <A>(self: Iterable<A>, n: number): [Array<A>, Array<A>]
 } = dual(2, <A>(self: Iterable<A>, n: number): [Array<A>, Array<A>] => {
   const input = Array.from(self)
-  return n >= 1 && isNonEmpty(input) ?
+  return n >= 1 && isNonEmptyReadonlyArray(input) ?
     splitNonEmptyAt(input, n) :
     isEmptyReadonlyArray(input) ?
     [input, []] :
@@ -1271,7 +1272,7 @@ export const chunksOf: {
   <A>(self: Iterable<A>, n: number): Array<NonEmptyArray<A>>
 } = dual(2, <A>(self: Iterable<A>, n: number): Array<NonEmptyArray<A>> => {
   const input = fromIterable(self)
-  return isNonEmpty(input) ? chunksOfNonEmpty(input, n) : []
+  return isNonEmptyReadonlyArray(input) ? chunksOfNonEmpty(input, n) : []
 })
 
 /**
@@ -1346,9 +1347,9 @@ export const union = <A>(isEquivalent: (self: A, that: A) => boolean): {
   dual(2, (self: ReadonlyArray<A>, that: ReadonlyArray<A>): Array<A> => {
     const a = Array.from(self)
     const b = Array.from(that)
-    return isNonEmpty(a) && isNonEmpty(b) ?
+    return isNonEmptyReadonlyArray(a) && isNonEmptyReadonlyArray(b) ?
       unionNonEmpty(isEquivalent)(a, b) :
-      isNonEmpty(a) ?
+      isNonEmptyReadonlyArray(a) ?
       a :
       b
   })
@@ -2128,7 +2129,7 @@ export const flatMapNullable: {
 } = dual(
   2,
   <A, B>(self: ReadonlyArray<A>, f: (a: A) => B | null | undefined): Array<NonNullable<B>> =>
-    isNonEmpty(self) ? fromNullable(f(headNonEmpty(self))) : empty()
+    isNonEmptyReadonlyArray(self) ? fromNullable(f(headNonEmpty(self))) : empty()
 )
 
 /**
@@ -2180,7 +2181,7 @@ export const intercalate = <A>(M: Monoid<A>): {
     2,
     (self: Iterable<A>, middle: A): A => {
       const as = fromIterable(self)
-      return isNonEmpty(as) ? intercalateNonEmpty(M)(as, middle) : M.empty
+      return isNonEmptyReadonlyArray(as) ? intercalateNonEmpty(M)(as, middle) : M.empty
     }
   )
 
