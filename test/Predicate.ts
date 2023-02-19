@@ -143,8 +143,8 @@ describe.concurrent("Predicate", () => {
     deepStrictEqual(predicate(1), isPositive(1))
   })
 
-  it("any", () => {
-    const predicate = _.any([isPositive, isNegative])
+  it("some", () => {
+    const predicate = _.some([isPositive, isNegative])
     deepStrictEqual(predicate(0), false)
     deepStrictEqual(predicate(-1), true)
     deepStrictEqual(predicate(1), true)

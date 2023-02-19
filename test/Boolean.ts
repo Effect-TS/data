@@ -13,7 +13,7 @@ describe.concurrent("Boolean", () => {
     expect(Boolean.SemigroupEqv).exist
     expect(Boolean.MonoidEqv).exist
     expect(Boolean.every).exist
-    expect(Boolean.any).exist
+    expect(Boolean.some).exist
     expect(Boolean.xor).exist
     expect(Boolean.eqv).exist
     expect(Boolean.nand).exist

@@ -57,10 +57,10 @@ Added in v1.0.0
 - [type lambdas](#type-lambdas)
   - [PredicateTypeLambda (interface)](#predicatetypelambda-interface)
 - [utils](#utils)
-  - [any](#any)
   - [appendElement](#appendelement)
   - [compose](#compose)
   - [every](#every)
+  - [some](#some)
   - [struct](#struct)
   - [tuple](#tuple)
   - [tupled](#tupled)
@@ -796,16 +796,6 @@ Added in v1.0.0
 
 # utils
 
-## any
-
-**Signature**
-
-```ts
-export declare const any: <A>(collection: Iterable<Predicate<A>>) => Predicate<A>
-```
-
-Added in v1.0.0
-
 ## appendElement
 
 This function appends a predicate to a tuple-like predicate, allowing you to create a new predicate that includes
@@ -841,6 +831,16 @@ Added in v1.0.0
 
 ```ts
 export declare const every: <A>(collection: Iterable<Predicate<A>>) => Predicate<A>
+```
+
+Added in v1.0.0
+
+## some
+
+**Signature**
+
+```ts
+export declare const some: <A>(collection: Iterable<Predicate<A>>) => Predicate<A>
 ```
 
 Added in v1.0.0

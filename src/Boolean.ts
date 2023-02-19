@@ -340,11 +340,11 @@ export const every: (collection: Iterable<boolean>) => boolean = MonoidAll.combi
  * @param collection - An iterable collection of booleans.
  *
  * @example
- * import { any } from '@effect/data/Boolean'
+ * import { some } from '@effect/data/Boolean'
  *
- * assert.deepStrictEqual(any([true, false, true]), true)
- * assert.deepStrictEqual(any([false, false, false]), false)
+ * assert.deepStrictEqual(some([true, false, true]), true)
+ * assert.deepStrictEqual(some([false, false, false]), false)
  *
  * @since 1.0.0
  */
-export const any: (collection: Iterable<boolean>) => boolean = MonoidAny.combineAll
+export const some: (collection: Iterable<boolean>) => boolean = MonoidAny.combineAll
