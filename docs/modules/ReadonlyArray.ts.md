@@ -93,8 +93,8 @@ Added in v1.0.0
 - [guards](#guards)
   - [isEmptyArray](#isemptyarray)
   - [isEmptyReadonlyArray](#isemptyreadonlyarray)
-  - [isNonEmpty](#isnonempty)
   - [isNonEmptyArray](#isnonemptyarray)
+  - [isNonEmptyReadonlyArray](#isnonemptyreadonlyarray)
 - [instances](#instances)
   - [Applicative](#applicative)
   - [Chainable](#chainable)
@@ -1211,29 +1211,6 @@ assert.deepStrictEqual(isEmptyReadonlyArray([1, 2, 3]), false)
 
 Added in v1.0.0
 
-## isNonEmpty
-
-Determine if a `ReadonlyArray` is non empty narrowing down the type to `NonEmptyReadonlyArray`.
-
-A `ReadonlyArray` is considered to be a `NonEmptyReadonlyArray` if it contains at least one element.
-
-**Signature**
-
-```ts
-export declare const isNonEmpty: <A>(self: readonly A[]) => self is readonly [A, ...A[]]
-```
-
-**Example**
-
-```ts
-import { isNonEmpty } from '@effect/data/ReadonlyArray'
-
-assert.deepStrictEqual(isNonEmpty([]), false)
-assert.deepStrictEqual(isNonEmpty([1, 2, 3]), true)
-```
-
-Added in v1.0.0
-
 ## isNonEmptyArray
 
 Determine if an `Array` is non empty narrowing down the type to `NonEmptyArray`.
@@ -1253,6 +1230,29 @@ import { isNonEmptyArray } from '@effect/data/ReadonlyArray'
 
 assert.deepStrictEqual(isNonEmptyArray([]), false)
 assert.deepStrictEqual(isNonEmptyArray([1, 2, 3]), true)
+```
+
+Added in v1.0.0
+
+## isNonEmptyReadonlyArray
+
+Determine if a `ReadonlyArray` is non empty narrowing down the type to `NonEmptyReadonlyArray`.
+
+A `ReadonlyArray` is considered to be a `NonEmptyReadonlyArray` if it contains at least one element.
+
+**Signature**
+
+```ts
+export declare const isNonEmptyReadonlyArray: <A>(self: readonly A[]) => self is readonly [A, ...A[]]
+```
+
+**Example**
+
+```ts
+import { isNonEmptyReadonlyArray } from '@effect/data/ReadonlyArray'
+
+assert.deepStrictEqual(isNonEmptyReadonlyArray([]), false)
+assert.deepStrictEqual(isNonEmptyReadonlyArray([1, 2, 3]), true)
 ```
 
 Added in v1.0.0
