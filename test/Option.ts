@@ -27,8 +27,6 @@ describe.concurrent("Option", () => {
     expect(_.as).exist
     expect(_.asUnit).exist
 
-    expect(_.Of).exist
-    expect(_.of).exist
     expect(_.Do).exist
 
     expect(_.Pointed).exist
@@ -197,10 +195,6 @@ describe.concurrent("Option", () => {
     expect(() => pipe(_.none(), _.getOrThrowWith(() => new Error("Unexpected None")))).toThrowError(
       new Error("Unexpected None")
     )
-  })
-
-  it("of", () => {
-    Util.deepStrictEqual(_.of(1), _.some(1))
   })
 
   it("Foldable", () => {

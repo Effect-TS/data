@@ -84,14 +84,6 @@ export const right: <A>(a: A) => Either<never, A> = either.right
 export const left: <E>(e: E) => Either<E, never> = either.left
 
 /**
- * Alias of {@link right}.
- *
- * @category constructors
- * @since 1.0.0
- */
-export const of: <A>(a: A) => Either<never, A> = right
-
-/**
  * Tests if a value is a `Either`.
  *
  * @param input - The value to test.
@@ -347,11 +339,9 @@ export const asUnit: <E, _>(self: Either<E, _>) => Either<E, void> = covariant.a
   Covariant
 )
 
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Of: of_.Of<EitherTypeLambda> = {
+const of: <A>(a: A) => Either<never, A> = right
+
+const Of: of_.Of<EitherTypeLambda> = {
   of
 }
 

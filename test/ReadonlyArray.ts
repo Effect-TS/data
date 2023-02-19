@@ -21,7 +21,6 @@ describe.concurrent("ReadonlyArray", () => {
     expect(RA.let).exist
     expect(RA.flap).exist
 
-    expect(RA.Of).exist
     expect(RA.of).exist
     expect(RA.Do).exist
 

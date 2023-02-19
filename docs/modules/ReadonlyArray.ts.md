@@ -104,7 +104,6 @@ Added in v1.0.0
   - [Foldable](#foldable)
   - [Invariant](#invariant)
   - [Monad](#monad)
-  - [Of](#of)
   - [Pointed](#pointed)
   - [Product](#product)
   - [SemiApplicative](#semiapplicative)
@@ -321,6 +320,8 @@ assert.deepStrictEqual(
 Added in v1.0.0
 
 ## of
+
+Constructs a new `NonEmptyArray<A>` from the specified value.
 
 **Signature**
 
@@ -1334,16 +1335,6 @@ Added in v1.0.0
 
 ```ts
 export declare const Monad: monad.Monad<ReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
-## Of
-
-**Signature**
-
-```ts
-export declare const Of: of_.Of<ReadonlyArrayTypeLambda>
 ```
 
 Added in v1.0.0

@@ -449,23 +449,11 @@ export const tupled: <A>(self: Predicate<A>) => Predicate<readonly [A]> = invari
   Invariant
 ) as any
 
-/**
- * @since 1.0.0
- */
-export const of = <A>(_: A): Predicate<A> => isUnknown
+const of = <A>(_: A): Predicate<A> => isUnknown
 
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Of: of_.Of<PredicateTypeLambda> = {
+const Of: of_.Of<PredicateTypeLambda> = {
   of
 }
-
-/**
- * @since 1.0.0
- */
-export const unit: Predicate<void> = of_.unit(Of)
 
 const product = <A, B>(self: Predicate<A>, that: Predicate<B>): Predicate<readonly [A, B]> =>
   ([a, b]) => self(a) && that(b)
