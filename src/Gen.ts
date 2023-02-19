@@ -1,12 +1,11 @@
 /**
  * @since 1.0.0
  */
-import * as E from "@fp-ts/core/Either"
-import { identity, pipe } from "@fp-ts/core/Function"
-import type { Kind, TypeLambda } from "@fp-ts/core/HKT"
-import * as O from "@fp-ts/core/Option"
-import * as T from "@fp-ts/core/These"
-import type { Monad } from "@fp-ts/core/typeclass/Monad"
+import * as E from "@effect/data/Either"
+import { identity, pipe } from "@effect/data/Function"
+import type { Kind, TypeLambda } from "@effect/data/HKT"
+import * as O from "@effect/data/Option"
+import type { Monad } from "@effect/data/typeclass/Monad"
 
 /**
  * @category symbols
@@ -223,12 +222,6 @@ export const singleShot: <F extends TypeLambda>(
  * @category instances
  */
 export const Either = singleShot(E.Monad)(adapter<E.EitherTypeLambda>())
-
-/**
- * @since 1.0.0
- * @category instances
- */
-export const These = singleShot(T.Monad)(adapter<T.ValidatedTypeLambda>())
 
 /**
  * @since 1.0.0

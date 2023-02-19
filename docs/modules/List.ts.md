@@ -1,6 +1,6 @@
 ---
 title: List.ts
-nav_order: 18
+nav_order: 24
 parent: Modules
 ---
 
@@ -489,7 +489,7 @@ Converts the specified list to a `Chunk`.
 **Signature**
 
 ```ts
-export declare const toChunk: <A>(self: List<A>) => any
+export declare const toChunk: <A>(self: List<A>) => Chunk.Chunk<A>
 ```
 
 Added in v1.0.0

@@ -13,13 +13,13 @@
  * (http://www.apache.org/licenses/LICENSE-2.0).
  */
 import * as Chunk from "@effect/data/Chunk"
+import * as Either from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
+import * as Dual from "@effect/data/Function"
+import { identity, unsafeCoerce } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
-import * as Either from "@fp-ts/core/Either"
-import * as Dual from "@fp-ts/core/Function"
-import { identity, unsafeCoerce } from "@fp-ts/core/Function"
-import * as Option from "@fp-ts/core/Option"
-import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
+import * as Option from "@effect/data/Option"
+import type { Predicate, Refinement } from "@effect/data/Predicate"
 
 const ListSymbolKey = "@effect/data/List"
 

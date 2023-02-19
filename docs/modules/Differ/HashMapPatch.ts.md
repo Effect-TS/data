@@ -1,6 +1,6 @@
 ---
 title: Differ/HashMapPatch.ts
-nav_order: 8
+nav_order: 10
 parent: Modules
 ---
 
@@ -37,9 +37,9 @@ differ for the values.
 
 ```ts
 export declare const diff: <Key, Value, Patch>(
-  oldValue: any,
-  newValue: any,
-  differ: any
+  oldValue: HashMap<Key, Value>,
+  newValue: HashMap<Key, Value>,
+  differ: Differ<Value, Patch>
 ) => HashMapPatch<Key, Value, Patch>
 ```
 
@@ -69,8 +69,14 @@ values updated with the changes described by this patch.
 
 ```ts
 export declare const patch: {
-  <Key, Value, Patch>(oldValue: any, differ: any): (self: HashMapPatch<Key, Value, Patch>) => any
-  <Key, Value, Patch>(self: HashMapPatch<Key, Value, Patch>, oldValue: any, differ: any): any
+  <Key, Value, Patch>(oldValue: HashMap<Key, Value>, differ: Differ<Value, Patch>): (
+    self: HashMapPatch<Key, Value, Patch>
+  ) => HashMap<Key, Value>
+  <Key, Value, Patch>(
+    self: HashMapPatch<Key, Value, Patch>,
+    oldValue: HashMap<Key, Value>,
+    differ: Differ<Value, Patch>
+  ): HashMap<Key, Value>
 }
 ```
 

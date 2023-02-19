@@ -2,9 +2,9 @@
  * @since 1.0.0
  */
 import * as Equal from "@effect/data/Equal"
+import * as Dual from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
-import * as Dual from "@fp-ts/core/Function"
-import * as Option from "@fp-ts/core/Option"
+import * as Option from "@effect/data/Option"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/MutableHashMap") as TypeId
 

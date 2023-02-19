@@ -2,8 +2,8 @@
  * @since 1.0.0
  */
 import * as Chunk from "@effect/data/Chunk"
+import * as Dual from "@effect/data/Function"
 import * as MutableList from "@effect/data/MutableList"
-import * as Dual from "@fp-ts/core/Function"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/MutableQueue") as TypeId
 

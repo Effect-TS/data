@@ -1,6 +1,6 @@
 ---
 title: MutableQueue.ts
-nav_order: 22
+nav_order: 28
 parent: Modules
 ---
 
@@ -160,8 +160,8 @@ Returns a `List` of the values that were **not** able to be enqueued.
 
 ```ts
 export declare const offerAll: {
-  <A>(values: Iterable<A>): (self: MutableQueue<A>) => any
-  <A>(self: MutableQueue<A>, values: Iterable<A>): any
+  <A>(values: Iterable<A>): (self: MutableQueue<A>) => Chunk.Chunk<A>
+  <A>(self: MutableQueue<A>, values: Iterable<A>): Chunk.Chunk<A>
 }
 ```
 
@@ -197,8 +197,8 @@ Returns a `List` of up to `n` elements.
 
 ```ts
 export declare const pollUpTo: {
-  (n: number): <A>(self: MutableQueue<A>) => any
-  <A>(self: MutableQueue<A>, n: number): any
+  (n: number): <A>(self: MutableQueue<A>) => Chunk.Chunk<A>
+  <A>(self: MutableQueue<A>, n: number): Chunk.Chunk<A>
 }
 ```
 

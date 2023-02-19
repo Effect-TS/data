@@ -1,6 +1,6 @@
 ---
 title: Differ/ContextPatch.ts
-nav_order: 7
+nav_order: 9
 parent: Modules
 ---
 
@@ -33,7 +33,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const diff: <Input, Output>(oldValue: any, newValue: any) => ContextPatch<Input, Output>
+export declare const diff: <Input, Output>(
+  oldValue: Context<Input>,
+  newValue: Context<Output>
+) => ContextPatch<Input, Output>
 ```
 
 Added in v1.0.0
@@ -61,8 +64,8 @@ Applies a `Patch` to the specified `Context` to produce a new patched
 
 ```ts
 export declare const patch: {
-  <Input>(context: any): <Output>(self: ContextPatch<Input, Output>) => any
-  <Input, Output>(self: ContextPatch<Input, Output>, context: any): any
+  <Input>(context: Context<Input>): <Output>(self: ContextPatch<Input, Output>) => Context<Output>
+  <Input, Output>(self: ContextPatch<Input, Output>, context: Context<Input>): Context<Output>
 }
 ```
 

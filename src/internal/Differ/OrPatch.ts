@@ -1,11 +1,11 @@
 import * as Chunk from "@effect/data/Chunk"
 import type { Differ } from "@effect/data/Differ"
 import type * as OP from "@effect/data/Differ/OrPatch"
+import type { Either } from "@effect/data/Either"
+import * as E from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
+import * as Dual from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
-import type { Either } from "@fp-ts/core/Either"
-import * as E from "@fp-ts/core/Either"
-import * as Dual from "@fp-ts/core/Function"
 
 /** @internal */
 export const OrPatchTypeId: OP.TypeId = Symbol.for("@effect/data/Differ/OrPatch") as OP.TypeId

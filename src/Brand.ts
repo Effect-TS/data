@@ -1,11 +1,11 @@
 /**
  * @since 1.0.0
  */
-import * as Either from "@fp-ts/core/Either"
-import { identity, pipe } from "@fp-ts/core/Function"
-import * as Option from "@fp-ts/core/Option"
-import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
-import * as ReadonlyArray from "@fp-ts/core/ReadonlyArray"
+import * as Either from "@effect/data/Either"
+import { identity, pipe } from "@effect/data/Function"
+import * as Option from "@effect/data/Option"
+import type { Predicate, Refinement } from "@effect/data/Predicate"
+import * as ReadonlyArray from "@effect/data/ReadonlyArray"
 
 /**
  * @since 1.0.0

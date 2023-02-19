@@ -2,9 +2,9 @@ import * as Chunk from "@effect/data/Chunk"
 import type { Context, Tag } from "@effect/data/Context"
 import type * as CP from "@effect/data/Differ/ContextPatch"
 import * as Equal from "@effect/data/Equal"
+import * as Dual from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import { ContextImpl } from "@effect/data/internal/Context"
-import * as Dual from "@fp-ts/core/Function"
 
 /** @internal */
 export const ContextPatchTypeId: CP.TypeId = Symbol.for(

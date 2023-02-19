@@ -1,6 +1,6 @@
 ---
 title: Differ/OrPatch.ts
-nav_order: 10
+nav_order: 12
 parent: Modules
 ---
 
@@ -39,8 +39,8 @@ values.
 export declare const diff: <Value, Value2, Patch, Patch2>(
   oldValue: Either<Value, Value2>,
   newValue: Either<Value, Value2>,
-  left: any,
-  right: any
+  left: Differ<Value, Patch>,
+  right: Differ<Value2, Patch2>
 ) => OrPatch<Value, Value2, Patch, Patch2>
 ```
 
@@ -69,14 +69,16 @@ the original value updated with the changes described by this patch.
 
 ```ts
 export declare const patch: {
-  <Value, Value2, Patch, Patch2>(oldValue: Either<Value, Value2>, left: any, right: any): (
-    self: OrPatch<Value, Value2, Patch, Patch2>
-  ) => Either<Value, Value2>
+  <Value, Value2, Patch, Patch2>(
+    oldValue: Either<Value, Value2>,
+    left: Differ<Value, Patch>,
+    right: Differ<Value2, Patch2>
+  ): (self: OrPatch<Value, Value2, Patch, Patch2>) => Either<Value, Value2>
   <Value, Value2, Patch, Patch2>(
     self: OrPatch<Value, Value2, Patch, Patch2>,
     oldValue: Either<Value, Value2>,
-    left: any,
-    right: any
+    left: Differ<Value, Patch>,
+    right: Differ<Value2, Patch2>
   ): Either<Value, Value2>
 }
 ```

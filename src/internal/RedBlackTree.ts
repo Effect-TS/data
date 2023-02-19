@@ -1,14 +1,14 @@
 import * as Chunk from "@effect/data/Chunk"
 import * as Equal from "@effect/data/Equal"
+import * as Dual from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import { Direction, RedBlackTreeIterator } from "@effect/data/internal/RedBlackTree/iterator"
 import * as Node from "@effect/data/internal/RedBlackTree/node"
 import { Stack } from "@effect/data/internal/Stack"
+import * as Option from "@effect/data/Option"
+import type * as Ordering from "@effect/data/Ordering"
 import type * as RBT from "@effect/data/RedBlackTree"
-import * as Dual from "@fp-ts/core/Function"
-import * as Option from "@fp-ts/core/Option"
-import type * as Ordering from "@fp-ts/core/Ordering"
-import type * as Order from "@fp-ts/core/typeclass/Order"
+import type * as Order from "@effect/data/typeclass/Order"
 
 const RedBlackTreeSymbolKey = "@effect/data/RedBlackTree"
 /** @internal */

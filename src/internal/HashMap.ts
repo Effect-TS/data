@@ -1,13 +1,13 @@
 import * as Equal from "@effect/data/Equal"
+import * as Dual from "@effect/data/Function"
+import { identity, pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import type * as HM from "@effect/data/HashMap"
 import { fromBitmap, hashFragment, toBitmap } from "@effect/data/internal/HashMap/bitwise"
 import { SIZE } from "@effect/data/internal/HashMap/config"
 import * as Node from "@effect/data/internal/HashMap/node"
-import * as Dual from "@fp-ts/core/Function"
-import { identity, pipe } from "@fp-ts/core/Function"
-import * as Option from "@fp-ts/core/Option"
-import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
+import * as Option from "@effect/data/Option"
+import type { Predicate, Refinement } from "@effect/data/Predicate"
 
 /** @internal */
 export const HashMapTypeId: HM.TypeId = Symbol.for("@effect/data/HashMap") as HM.TypeId

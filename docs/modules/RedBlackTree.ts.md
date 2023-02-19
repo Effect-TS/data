@@ -1,6 +1,6 @@
 ---
 title: RedBlackTree.ts
-nav_order: 26
+nav_order: 38
 parent: Modules
 ---
 
@@ -70,7 +70,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Direction: any
+export declare const Direction: { readonly Forward: RedBlackTree.Direction; readonly Backward: RedBlackTree.Direction }
 ```
 
 Added in v1.0.0
@@ -127,8 +127,8 @@ Finds all values in the tree associated with the specified key.
 
 ```ts
 export declare const find: {
-  <K>(key: K): <V>(self: RedBlackTree<K, V>) => any
-  <K, V>(self: RedBlackTree<K, V>, key: K): any
+  <K>(key: K): <V>(self: RedBlackTree<K, V>) => Chunk<V>
+  <K, V>(self: RedBlackTree<K, V>, key: K): Chunk<V>
 }
 ```
 

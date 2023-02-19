@@ -3,7 +3,7 @@
  */
 import type { Equal } from "@effect/data/Equal"
 import * as C from "@effect/data/internal/Context"
-import type { Option } from "@fp-ts/core/Option"
+import type { Option } from "@effect/data/Option"
 
 const TagTypeId: unique symbol = C.TagTypeId
 

@@ -1,6 +1,6 @@
 ---
 title: HashMap.ts
-nav_order: 15
+nav_order: 19
 parent: Modules
 ---
 
@@ -308,7 +308,7 @@ Returns a `HashSet` of keys within the `HashMap`.
 **Signature**
 
 ```ts
-export declare const keySet: <K, V>(self: HashMap<K, V>) => any
+export declare const keySet: <K, V>(self: HashMap<K, V>) => HashSet<K>
 ```
 
 Added in v1.0.0
@@ -451,8 +451,8 @@ exists, or `None` if no such value exists.
 
 ```ts
 export declare const modifyAt: {
-  <K, V>(key: K, f: any): (self: HashMap<K, V>) => HashMap<K, V>
-  <K, V>(self: HashMap<K, V>, key: K, f: any): HashMap<K, V>
+  <K, V>(key: K, f: UpdateFn<V>): (self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, key: K, f: UpdateFn<V>): HashMap<K, V>
 }
 ```
 
@@ -473,8 +473,8 @@ This function will always either update or insert a value into the `HashMap`.
 
 ```ts
 export declare const modifyHash: {
-  <K, V>(key: K, hash: number, f: any): (self: HashMap<K, V>) => HashMap<K, V>
-  <K, V>(self: HashMap<K, V>, key: K, hash: number, f: any): HashMap<K, V>
+  <K, V>(key: K, hash: number, f: UpdateFn<V>): (self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, key: K, hash: number, f: UpdateFn<V>): HashMap<K, V>
 }
 ```
 

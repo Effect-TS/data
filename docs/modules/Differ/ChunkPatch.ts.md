@@ -1,6 +1,6 @@
 ---
 title: Differ/ChunkPatch.ts
-nav_order: 6
+nav_order: 8
 parent: Modules
 ---
 
@@ -36,7 +36,11 @@ for the values.
 **Signature**
 
 ```ts
-export declare const diff: <Value, Patch>(oldValue: any, newValue: any, differ: any) => ChunkPatch<Value, Patch>
+export declare const diff: <Value, Patch>(
+  oldValue: Chunk<Value>,
+  newValue: Chunk<Value>,
+  differ: Differ<Value, Patch>
+) => ChunkPatch<Value, Patch>
 ```
 
 Added in v1.0.0
@@ -65,8 +69,8 @@ changes described by this patch.
 
 ```ts
 export declare const patch: {
-  <Value, Patch>(oldValue: any, differ: any): (self: ChunkPatch<Value, Patch>) => any
-  <Value, Patch>(self: ChunkPatch<Value, Patch>, oldValue: any, differ: any): any
+  <Value, Patch>(oldValue: Chunk<Value>, differ: Differ<Value, Patch>): (self: ChunkPatch<Value, Patch>) => Chunk<Value>
+  <Value, Patch>(self: ChunkPatch<Value, Patch>, oldValue: Chunk<Value>, differ: Differ<Value, Patch>): Chunk<Value>
 }
 ```
 

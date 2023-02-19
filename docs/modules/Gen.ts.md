@@ -1,6 +1,6 @@
 ---
 title: Gen.ts
-nav_order: 13
+nav_order: 17
 parent: Modules
 ---
 
@@ -28,7 +28,6 @@ Added in v1.0.0
 - [instances](#instances)
   - [Either](#either)
   - [Option](#option)
-  - [These](#these)
 - [models](#models)
   - [Adapter (interface)](#adapter-interface)
   - [Gen (interface)](#gen-interface)
@@ -183,16 +182,6 @@ Added in v1.0.0
 
 ```ts
 export declare const Option: Gen<O.OptionTypeLambda, Adapter<O.OptionTypeLambda>>
-```
-
-Added in v1.0.0
-
-## These
-
-**Signature**
-
-```ts
-export declare const These: Gen<T.ValidatedTypeLambda, Adapter<T.ValidatedTypeLambda>>
 ```
 
 Added in v1.0.0

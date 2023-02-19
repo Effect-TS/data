@@ -1,18 +1,18 @@
 /**
  * @since 1.0.0
  */
+import type { Either } from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
+import * as Dual from "@effect/data/Function"
+import { identity, pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
+import type { TypeLambda } from "@effect/data/HKT"
 import type { NonEmptyIterable } from "@effect/data/NonEmpty"
-import type { Either } from "@fp-ts/core/Either"
-import * as Dual from "@fp-ts/core/Function"
-import { identity, pipe } from "@fp-ts/core/Function"
-import type { TypeLambda } from "@fp-ts/core/HKT"
-import type { Option } from "@fp-ts/core/Option"
-import * as O from "@fp-ts/core/Option"
-import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
-import * as RA from "@fp-ts/core/ReadonlyArray"
-import type { Order } from "@fp-ts/core/typeclass/Order"
+import type { Option } from "@effect/data/Option"
+import * as O from "@effect/data/Option"
+import type { Predicate, Refinement } from "@effect/data/Predicate"
+import * as RA from "@effect/data/ReadonlyArray"
+import type { Order } from "@effect/data/typeclass/Order"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/Chunk") as TypeId
 

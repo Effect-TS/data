@@ -20,13 +20,13 @@ index c0f282ca9e3ddd93e44a62e1d05c1cc45b9f5c6a..616f7f6223459e0621522279ea7fc1cf
 +                  "noUnusedParameters": false,
 +                  "noFallthroughCasesInSwitch": true,
 +                  "moduleResolution": "node",
-+                  "target": "es2015",
-+                  "lib": ["es2015"],
++                  "target": "es2021",
++                  "lib": ["es2021"],
 +                  "paths": {
-+                    "@fp-ts/data": ["../../src/index.ts"],
-+                    "@fp-ts/data/test/*": ["../../test/*"],
-+                    "@fp-ts/data/examples/*": ["../../examples/*"],
-+                    "@fp-ts/data/*": ["../../src/*"]
++                    "@effect/data": ["../../src/index.ts"],
++                    "@effect/data/test/*": ["../../test/*"],
++                    "@effect/data/examples/*": ["../../examples/*"],
++                    "@effect/data/*": ["../../src/*"]
 +                  }
 +                }
 +              }
@@ -45,10 +45,10 @@ index 51bdb346c4c33e8835bbda0c16aea71bc0c3115e..7d084d363efd3f8aad76051f4253b0b5
 -    strict: true
 +    strict: true,
 +    paths: {
-+      "@fp-ts/data": ["./src/index.ts"],
-+      "@fp-ts/data/test/*": ["./test/*"],
-+      "@fp-ts/data/examples/*": ["./examples/*"],
-+      "@fp-ts/data/*": ["./src/*"]
++      "@effect/data": ["./src/index.ts"],
++      "@effect/data/test/*": ["./test/*"],
++      "@effect/data/examples/*": ["./examples/*"],
++      "@effect/data/*": ["./src/*"]
 +    }
  };
  var capabilities = {
