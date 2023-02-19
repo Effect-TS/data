@@ -516,4 +516,12 @@ describe.concurrent("Either", () => {
     expect(E.toArray(E.right(1))).toEqual([1])
     expect(E.toArray(E.left("error"))).toEqual([])
   })
+
+  it("gen", () => {
+    expect(E.gen(function*($) {
+      const a = yield* $(E.right(1))
+      const b = yield* $(E.right(2))
+      return a + b
+    })).toEqual(E.right(3))
+  })
 })

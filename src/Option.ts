@@ -4,6 +4,7 @@
 import type { Either } from "@effect/data/Either"
 import type { LazyArg } from "@effect/data/Function"
 import { constNull, constUndefined, dual } from "@effect/data/Function"
+import * as Gen from "@effect/data/Gen"
 import type { Kind, TypeLambda } from "@effect/data/HKT"
 import * as either from "@effect/data/internal/Either"
 import { structural } from "@effect/data/internal/Equal"
@@ -1690,3 +1691,26 @@ export const andThenBind: {
     that: Option<B>
   ): Option<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
 } = semiProduct.andThenBind(SemiProduct)
+
+/**
+ * The `gen` API is a helper function that provides a generator interface for the `Option` monad instance.
+ * It can be used to easily create complex `Option` computations in a readable and concise manner.
+ *
+ * @example
+ * import * as O from "@effect/data/Option"
+ *
+ * assert.deepStrictEqual(
+ *   O.gen(function*($) {
+ *     const a = yield* $(O.some(1))
+ *     const b = yield* $(O.some(2))
+ *     return a + b
+ *   }),
+ *   O.some(3)
+ * )
+ *
+ * @since 1.0.0
+ * @category generators
+ */
+export const gen: Gen.Gen<OptionTypeLambda, Gen.Adapter<OptionTypeLambda>> = Gen.singleShot(Monad)(
+  Gen.adapter<OptionTypeLambda>()
+)

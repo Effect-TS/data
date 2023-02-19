@@ -4,6 +4,7 @@
 
 import type { LazyArg } from "@effect/data/Function"
 import { constNull, constUndefined, dual, identity } from "@effect/data/Function"
+import * as Gen from "@effect/data/Gen"
 import type { Kind, TypeLambda } from "@effect/data/HKT"
 import * as either from "@effect/data/internal/Either"
 import { structural } from "@effect/data/internal/Equal"
@@ -1474,3 +1475,26 @@ export const andThenBind: {
     that: Either<E2, B>
   ): Either<E1 | E2, { [K in N | keyof A]: K extends keyof A ? A[K] : B }>
 } = semiProduct.andThenBind(SemiProduct)
+
+/**
+ * The `gen` API is a helper function that provides a generator interface for the `Either` monad instance.
+ * It can be used to easily create complex `Either` computations in a readable and concise manner.
+ *
+ * @example
+ * import * as E from "@effect/data/Either"
+ *
+ * assert.deepStrictEqual(
+ *   E.gen(function*($) {
+ *     const a = yield* $(E.right(1))
+ *     const b = yield* $(E.right(2))
+ *     return a + b
+ *   }),
+ *   E.right(3)
+ * )
+ *
+ * @since 1.0.0
+ * @category generators
+ */
+export const gen: Gen.Gen<EitherTypeLambda, Gen.Adapter<EitherTypeLambda>> = Gen.singleShot(Monad)(
+  Gen.adapter<EitherTypeLambda>()
+)
