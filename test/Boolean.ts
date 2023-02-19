@@ -4,8 +4,8 @@ import { deepStrictEqual } from "@effect/data/test/util"
 
 describe.concurrent("Boolean", () => {
   it("exports", () => {
-    expect(Boolean.SemigroupAll).exist
-    expect(Boolean.MonoidAll).exist
+    expect(Boolean.SemigroupEvery).exist
+    expect(Boolean.MonoidEvery).exist
     expect(Boolean.SemigroupAny).exist
     expect(Boolean.MonoidAny).exist
     expect(Boolean.SemigroupXor).exist
@@ -124,19 +124,19 @@ describe.concurrent("Boolean", () => {
     })
   })
 
-  describe.concurrent("MonoidAll", () => {
+  describe.concurrent("MonoidEvery", () => {
     it("baseline", () => {
-      deepStrictEqual(Boolean.MonoidAll.combineMany(true, [true, true]), true)
-      deepStrictEqual(Boolean.MonoidAll.combineMany(true, [true, false]), false)
-      deepStrictEqual(Boolean.MonoidAll.combineMany(false, [true, false]), false)
-      deepStrictEqual(Boolean.MonoidAll.combineAll([true, true, true]), true)
-      deepStrictEqual(Boolean.MonoidAll.combineAll([true, true, false]), false)
+      deepStrictEqual(Boolean.MonoidEvery.combineMany(true, [true, true]), true)
+      deepStrictEqual(Boolean.MonoidEvery.combineMany(true, [true, false]), false)
+      deepStrictEqual(Boolean.MonoidEvery.combineMany(false, [true, false]), false)
+      deepStrictEqual(Boolean.MonoidEvery.combineAll([true, true, true]), true)
+      deepStrictEqual(Boolean.MonoidEvery.combineAll([true, true, false]), false)
     })
 
     it("should handle iterables", () => {
-      deepStrictEqual(Boolean.MonoidAll.combineAll(new Set([true, true])), true)
-      deepStrictEqual(Boolean.MonoidAll.combineAll(new Set([true, false])), false)
-      deepStrictEqual(Boolean.MonoidAll.combineAll(new Set([false, false])), false)
+      deepStrictEqual(Boolean.MonoidEvery.combineAll(new Set([true, true])), true)
+      deepStrictEqual(Boolean.MonoidEvery.combineAll(new Set([true, false])), false)
+      deepStrictEqual(Boolean.MonoidEvery.combineAll(new Set([false, false])), false)
     })
   })
 
