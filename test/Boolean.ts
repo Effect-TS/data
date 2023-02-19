@@ -6,8 +6,8 @@ describe.concurrent("Boolean", () => {
   it("exports", () => {
     expect(Boolean.SemigroupEvery).exist
     expect(Boolean.MonoidEvery).exist
-    expect(Boolean.SemigroupAny).exist
-    expect(Boolean.MonoidAny).exist
+    expect(Boolean.SemigroupSome).exist
+    expect(Boolean.MonoidSome).exist
     expect(Boolean.SemigroupXor).exist
     expect(Boolean.MonoidXor).exist
     expect(Boolean.SemigroupEqv).exist
@@ -140,20 +140,20 @@ describe.concurrent("Boolean", () => {
     })
   })
 
-  describe.concurrent("MonoidAny", () => {
+  describe.concurrent("MonoidSome", () => {
     it("baseline", () => {
-      deepStrictEqual(Boolean.MonoidAny.combineMany(true, [true, true]), true)
-      deepStrictEqual(Boolean.MonoidAny.combineMany(true, [true, false]), true)
-      deepStrictEqual(Boolean.MonoidAny.combineMany(false, [false, false]), false)
-      deepStrictEqual(Boolean.MonoidAny.combineAll([true, true, true]), true)
-      deepStrictEqual(Boolean.MonoidAny.combineAll([true, true, false]), true)
-      deepStrictEqual(Boolean.MonoidAny.combineAll([false, false, false]), false)
+      deepStrictEqual(Boolean.MonoidSome.combineMany(true, [true, true]), true)
+      deepStrictEqual(Boolean.MonoidSome.combineMany(true, [true, false]), true)
+      deepStrictEqual(Boolean.MonoidSome.combineMany(false, [false, false]), false)
+      deepStrictEqual(Boolean.MonoidSome.combineAll([true, true, true]), true)
+      deepStrictEqual(Boolean.MonoidSome.combineAll([true, true, false]), true)
+      deepStrictEqual(Boolean.MonoidSome.combineAll([false, false, false]), false)
     })
 
     it("should handle iterables", () => {
-      deepStrictEqual(Boolean.MonoidAny.combineAll(new Set([true, true])), true)
-      deepStrictEqual(Boolean.MonoidAny.combineAll(new Set([true, false])), true)
-      deepStrictEqual(Boolean.MonoidAny.combineAll(new Set([false, false])), false)
+      deepStrictEqual(Boolean.MonoidSome.combineAll(new Set([true, true])), true)
+      deepStrictEqual(Boolean.MonoidSome.combineAll(new Set([true, false])), true)
+      deepStrictEqual(Boolean.MonoidSome.combineAll(new Set([false, false])), false)
     })
   })
 

@@ -47,10 +47,10 @@ Added in v1.0.0
   - [Invariant](#invariant)
   - [Product](#product)
   - [SemiProduct](#semiproduct)
-  - [getMonoidAny](#getmonoidany)
   - [getMonoidEvery](#getmonoidevery)
-  - [getSemigroupAny](#getsemigroupany)
+  - [getMonoidSome](#getmonoidsome)
   - [getSemigroupEvery](#getsemigroupevery)
+  - [getSemigroupSome](#getsemigroupsome)
 - [models](#models)
   - [Predicate (interface)](#predicate-interface)
   - [Refinement (interface)](#refinement-interface)
@@ -714,16 +714,6 @@ export declare const SemiProduct: semiProduct.SemiProduct<PredicateTypeLambda>
 
 Added in v1.0.0
 
-## getMonoidAny
-
-**Signature**
-
-```ts
-export declare const getMonoidAny: <A>() => monoid.Monoid<Predicate<A>>
-```
-
-Added in v1.0.0
-
 ## getMonoidEvery
 
 **Signature**
@@ -734,12 +724,12 @@ export declare const getMonoidEvery: <A>() => monoid.Monoid<Predicate<A>>
 
 Added in v1.0.0
 
-## getSemigroupAny
+## getMonoidSome
 
 **Signature**
 
 ```ts
-export declare const getSemigroupAny: <A>() => semigroup.Semigroup<Predicate<A>>
+export declare const getMonoidSome: <A>() => monoid.Monoid<Predicate<A>>
 ```
 
 Added in v1.0.0
@@ -750,6 +740,16 @@ Added in v1.0.0
 
 ```ts
 export declare const getSemigroupEvery: <A>() => semigroup.Semigroup<Predicate<A>>
+```
+
+Added in v1.0.0
+
+## getSemigroupSome
+
+**Signature**
+
+```ts
+export declare const getSemigroupSome: <A>() => semigroup.Semigroup<Predicate<A>>
 ```
 
 Added in v1.0.0

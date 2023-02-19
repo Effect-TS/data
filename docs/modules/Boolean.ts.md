@@ -29,14 +29,14 @@ Added in v1.0.0
   - [isBoolean](#isboolean)
 - [instances](#instances)
   - [Equivalence](#equivalence)
-  - [MonoidAny](#monoidany)
   - [MonoidEqv](#monoideqv)
   - [MonoidEvery](#monoidevery)
+  - [MonoidSome](#monoidsome)
   - [MonoidXor](#monoidxor)
   - [Order](#order)
-  - [SemigroupAny](#semigroupany)
   - [SemigroupEqv](#semigroupeqv)
   - [SemigroupEvery](#semigroupevery)
+  - [SemigroupSome](#semigroupsome)
   - [SemigroupXor](#semigroupxor)
 - [pattern matching](#pattern-matching)
   - [match](#match)
@@ -265,20 +265,6 @@ export declare const Equivalence: equivalence.Equivalence<boolean>
 
 Added in v1.0.0
 
-## MonoidAny
-
-`boolean` monoid under disjunction, see also {@link SemigroupAny}.
-
-The `empty` value is `false`.
-
-**Signature**
-
-```ts
-export declare const MonoidAny: monoid.Monoid<boolean>
-```
-
-Added in v1.0.0
-
 ## MonoidEqv
 
 `boolean` monoid under equivalence.
@@ -307,6 +293,20 @@ export declare const MonoidEvery: monoid.Monoid<boolean>
 
 Added in v1.0.0
 
+## MonoidSome
+
+`boolean` monoid under disjunction, see also {@link SemigroupSome}.
+
+The `empty` value is `false`.
+
+**Signature**
+
+```ts
+export declare const MonoidSome: monoid.Monoid<boolean>
+```
+
+Added in v1.0.0
+
 ## MonoidXor
 
 `boolean` monoid under exclusive disjunction, see also {@link SemigroupXor}.
@@ -327,29 +327,6 @@ Added in v1.0.0
 
 ```ts
 export declare const Order: order.Order<boolean>
-```
-
-Added in v1.0.0
-
-## SemigroupAny
-
-`boolean` semigroup under disjunction.
-
-**Signature**
-
-```ts
-export declare const SemigroupAny: semigroup.Semigroup<boolean>
-```
-
-**Example**
-
-```ts
-import { SemigroupAny } from '@effect/data/Boolean'
-
-assert.deepStrictEqual(SemigroupAny.combine(true, true), true)
-assert.deepStrictEqual(SemigroupAny.combine(true, false), true)
-assert.deepStrictEqual(SemigroupAny.combine(false, true), true)
-assert.deepStrictEqual(SemigroupAny.combine(false, false), false)
 ```
 
 Added in v1.0.0
@@ -396,6 +373,29 @@ assert.deepStrictEqual(SemigroupEvery.combine(true, true), true)
 assert.deepStrictEqual(SemigroupEvery.combine(true, false), false)
 assert.deepStrictEqual(SemigroupEvery.combine(false, true), false)
 assert.deepStrictEqual(SemigroupEvery.combine(false, false), false)
+```
+
+Added in v1.0.0
+
+## SemigroupSome
+
+`boolean` semigroup under disjunction.
+
+**Signature**
+
+```ts
+export declare const SemigroupSome: semigroup.Semigroup<boolean>
+```
+
+**Example**
+
+```ts
+import { SemigroupSome } from '@effect/data/Boolean'
+
+assert.deepStrictEqual(SemigroupSome.combine(true, true), true)
+assert.deepStrictEqual(SemigroupSome.combine(true, false), true)
+assert.deepStrictEqual(SemigroupSome.combine(false, true), true)
+assert.deepStrictEqual(SemigroupSome.combine(false, false), false)
 ```
 
 Added in v1.0.0

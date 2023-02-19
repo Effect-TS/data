@@ -136,7 +136,7 @@ export const booleanEvery: Semigroup<boolean> = make(
  * @category instances
  * @since 1.0.0
  */
-export const booleanAny: Semigroup<boolean> = make(
+export const booleanSome: Semigroup<boolean> = make(
   (self, that) => self || that,
   (self, collection) => {
     if (self === true) {

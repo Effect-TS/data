@@ -616,7 +616,7 @@ export const and: {
  * @category instances
  * @since 1.0.0
  */
-export const getSemigroupAny = <A>(): Semigroup<Predicate<A>> =>
+export const getSemigroupSome = <A>(): Semigroup<Predicate<A>> =>
   semigroup.make<Predicate<A>>(
     or,
     (self, collection) =>
@@ -637,7 +637,8 @@ export const getSemigroupAny = <A>(): Semigroup<Predicate<A>> =>
  * @category instances
  * @since 1.0.0
  */
-export const getMonoidAny = <A>(): monoid.Monoid<Predicate<A>> => monoid.fromSemigroup(getSemigroupAny<A>(), constFalse)
+export const getMonoidSome = <A>(): monoid.Monoid<Predicate<A>> =>
+  monoid.fromSemigroup(getSemigroupSome<A>(), constFalse)
 
 /**
  * @category instances
@@ -675,7 +676,7 @@ export const every = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => ge
 /**
  * @since 1.0.0
  */
-export const some = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => getMonoidAny<A>().combineAll(collection)
+export const some = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => getMonoidSome<A>().combineAll(collection)
 
 // -------------------------------------------------------------------------------------
 // do notation
