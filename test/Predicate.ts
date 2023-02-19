@@ -150,8 +150,8 @@ describe.concurrent("Predicate", () => {
     deepStrictEqual(predicate(1), true)
   })
 
-  it("all", () => {
-    const predicate = _.all([isPositive, isLessThan2])
+  it("every", () => {
+    const predicate = _.every([isPositive, isLessThan2])
     deepStrictEqual(predicate(0), false)
     deepStrictEqual(predicate(-2), false)
     deepStrictEqual(predicate(1), true)

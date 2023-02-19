@@ -57,10 +57,10 @@ Added in v1.0.0
 - [type lambdas](#type-lambdas)
   - [PredicateTypeLambda (interface)](#predicatetypelambda-interface)
 - [utils](#utils)
-  - [all](#all)
   - [any](#any)
   - [appendElement](#appendelement)
   - [compose](#compose)
+  - [every](#every)
   - [struct](#struct)
   - [tuple](#tuple)
   - [tupled](#tupled)
@@ -796,16 +796,6 @@ Added in v1.0.0
 
 # utils
 
-## all
-
-**Signature**
-
-```ts
-export declare const all: <A>(collection: Iterable<Predicate<A>>) => Predicate<A>
-```
-
-Added in v1.0.0
-
 ## any
 
 **Signature**
@@ -841,6 +831,16 @@ export declare const compose: {
   <A, B extends A, C extends B>(bc: Refinement<B, C>): (ab: Refinement<A, B>) => Refinement<A, C>
   <A, B extends A, C extends B>(ab: Refinement<A, B>, bc: Refinement<B, C>): Refinement<A, C>
 }
+```
+
+Added in v1.0.0
+
+## every
+
+**Signature**
+
+```ts
+export declare const every: <A>(collection: Iterable<Predicate<A>>) => Predicate<A>
 ```
 
 Added in v1.0.0
