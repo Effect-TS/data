@@ -125,7 +125,6 @@ Added in v1.0.0
   - [liftOption](#liftoption)
   - [liftPredicate](#liftpredicate)
 - [mapping](#mapping)
-  - [as](#as)
   - [flap](#flap)
   - [map](#map)
   - [mapNonEmpty](#mapnonempty)
@@ -1552,18 +1551,6 @@ export declare const liftPredicate: {
 Added in v1.0.0
 
 # mapping
-
-## as
-
-Maps the success value of this effect to the specified constant value.
-
-**Signature**
-
-```ts
-export declare const as: { <_, B>(self: readonly _[], b: B): B[]; <B>(b: B): <_>(self: readonly _[]) => B[] }
-```
-
-Added in v1.0.0
 
 ## flap
 

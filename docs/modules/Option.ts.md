@@ -1520,7 +1520,7 @@ Added in v1.0.0
 
 ## asUnit
 
-Returns the `Option` resulting from mapping the `Some` value to `void`.
+Maps the `Some` value of this `Option` to the `void` constant value.
 
 This is useful when the value of the `Option` is not needed, but the presence or absence of the value is important.
 

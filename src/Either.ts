@@ -327,7 +327,7 @@ export const flap: {
 } = covariant.flap(Covariant)
 
 /**
- * Maps the Right value of this effect to the specified constant value.
+ * Maps the `Right` value of this `Either` to the specified constant value.
  *
  * @category mapping
  * @since 1.0.0
@@ -338,7 +338,7 @@ export const as: {
 } = covariant.as(Covariant)
 
 /**
- * Returns the effect Eithering from mapping the Right of this effect to unit.
+ * Maps the `Right` value of this `Either` to the `void` constant value.
  *
  * @category mapping
  * @since 1.0.0
