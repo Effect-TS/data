@@ -1019,9 +1019,9 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(O.compare(["b", "b"], ["b", "a"]), 1)
   })
 
-  it("isEmpty", () => {
-    deepStrictEqual(RA.isEmpty([1, 2, 3]), false)
-    deepStrictEqual(RA.isEmpty([]), true)
+  it("isEmptyReadonlyArray", () => {
+    deepStrictEqual(RA.isEmptyReadonlyArray([1, 2, 3]), false)
+    deepStrictEqual(RA.isEmptyReadonlyArray([]), true)
   })
 
   it("isEmptyArray", () => {
