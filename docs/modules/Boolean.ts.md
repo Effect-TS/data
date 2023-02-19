@@ -41,8 +41,8 @@ Added in v1.0.0
 - [pattern matching](#pattern-matching)
   - [match](#match)
 - [utils](#utils)
-  - [all](#all)
   - [any](#any)
+  - [every](#every)
 
 ---
 
@@ -458,27 +458,6 @@ Added in v1.0.0
 
 # utils
 
-## all
-
-This utility function is used to check if all the elements in a collection of boolean values are `true`.
-
-**Signature**
-
-```ts
-export declare const all: (collection: Iterable<boolean>) => boolean
-```
-
-**Example**
-
-```ts
-import { all } from '@effect/data/Boolean'
-
-assert.deepStrictEqual(all([true, true, true]), true)
-assert.deepStrictEqual(all([true, false, true]), false)
-```
-
-Added in v1.0.0
-
 ## any
 
 This utility function is used to check if at least one of the elements in a collection of boolean values is `true`.
@@ -496,6 +475,27 @@ import { any } from '@effect/data/Boolean'
 
 assert.deepStrictEqual(any([true, false, true]), true)
 assert.deepStrictEqual(any([false, false, false]), false)
+```
+
+Added in v1.0.0
+
+## every
+
+This utility function is used to check if all the elements in a collection of boolean values are `true`.
+
+**Signature**
+
+```ts
+export declare const every: (collection: Iterable<boolean>) => boolean
+```
+
+**Example**
+
+```ts
+import { every } from '@effect/data/Boolean'
+
+assert.deepStrictEqual(every([true, true, true]), true)
+assert.deepStrictEqual(every([true, false, true]), false)
 ```
 
 Added in v1.0.0

@@ -669,7 +669,7 @@ export const getMonoidAll = <A>(): monoid.Monoid<Predicate<A>> => monoid.fromSem
 /**
  * @since 1.0.0
  */
-export const all = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => getMonoidAll<A>().combineAll(collection)
+export const every = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => getMonoidAll<A>().combineAll(collection)
 
 /**
  * @since 1.0.0

@@ -325,14 +325,14 @@ export const implies: {
  * @param collection - An iterable collection of booleans.
  *
  * @example
- * import { all } from '@effect/data/Boolean'
+ * import { every } from '@effect/data/Boolean'
  *
- * assert.deepStrictEqual(all([true, true, true]), true)
- * assert.deepStrictEqual(all([true, false, true]), false)
+ * assert.deepStrictEqual(every([true, true, true]), true)
+ * assert.deepStrictEqual(every([true, false, true]), false)
  *
  * @since 1.0.0
  */
-export const all: (collection: Iterable<boolean>) => boolean = MonoidAll.combineAll
+export const every: (collection: Iterable<boolean>) => boolean = MonoidAll.combineAll
 
 /**
  * This utility function is used to check if at least one of the elements in a collection of boolean values is `true`.
