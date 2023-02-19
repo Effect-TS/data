@@ -96,7 +96,7 @@ Added in v1.0.0
   - [andThenDiscard](#andthendiscard)
   - [as](#as)
   - [asUnit](#asunit)
-  - [composeKleisliArrow](#composekleisliarrow)
+  - [composeK](#composek)
   - [flap](#flap)
   - [flatMap](#flatmap)
   - [flatMapEither](#flatmapeither)
@@ -1532,12 +1532,12 @@ export declare const asUnit: <_>(self: Option<_>) => Option<void>
 
 Added in v1.0.0
 
-## composeKleisliArrow
+## composeK
 
 **Signature**
 
 ```ts
-export declare const composeKleisliArrow: {
+export declare const composeK: {
   <A, B, C>(afb: (a: A) => Option<B>, bfc: (b: B) => Option<C>): (a: A) => Option<C>
   <B, C>(bfc: (b: B) => Option<C>): <A>(afb: (a: A) => Option<B>) => (a: A) => Option<C>
 }

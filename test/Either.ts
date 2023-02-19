@@ -38,7 +38,7 @@ describe.concurrent("Either", () => {
     expect(E.flatMap).exist
     expect(E.flatten).exist
     expect(E.andThen).exist
-    expect(E.composeKleisliArrow).exist
+    expect(E.composeK).exist
 
     expect(E.Chainable).exist
     expect(E.bind).exist

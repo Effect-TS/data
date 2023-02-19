@@ -806,10 +806,10 @@ export const andThen: {
  * @category transforming
  * @since 1.0.0
  */
-export const composeKleisliArrow: {
+export const composeK: {
   <A, B, C>(afb: (a: A) => Option<B>, bfc: (b: B) => Option<C>): (a: A) => Option<C>
   <B, C>(bfc: (b: B) => Option<C>): <A>(afb: (a: A) => Option<B>) => (a: A) => Option<C>
-} = flatMap_.composeKleisliArrow(FlatMap)
+} = flatMap_.composeK(FlatMap)
 
 /**
  * @since 1.0.0
