@@ -1477,17 +1477,6 @@ export const flap: {
 } = covariant.flap(Covariant) as any
 
 /**
- * Maps the success value of this effect to the specified constant value.
- *
- * @category mapping
- * @since 1.0.0
- */
-export const as: {
-  <_, B>(self: ReadonlyArray<_>, b: B): Array<B>
-  <B>(b: B): <_>(self: ReadonlyArray<_>) => Array<B>
-} = covariant.as(Covariant) as any
-
-/**
  * @category instances
  * @since 1.0.0
  */

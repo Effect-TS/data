@@ -1326,7 +1326,7 @@ Added in v1.0.0
 
 ## as
 
-Maps the Right value of this effect to the specified constant value.
+Maps the `Right` value of this `Either` to the specified constant value.
 
 **Signature**
 
@@ -1341,7 +1341,7 @@ Added in v1.0.0
 
 ## asUnit
 
-Returns the effect Eithering from mapping the Right of this effect to unit.
+Maps the `Right` value of this `Either` to the `void` constant value.
 
 **Signature**
 
