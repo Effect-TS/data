@@ -19,11 +19,11 @@ describe("FlatMap", () => {
     U.deepStrictEqual(pipe(O.some(1), andThen(O.some(2))), O.some(2))
   })
 
-  it("composeKleisliArrow", () => {
-    const composeKleisliArrow = _.composeKleisliArrow(O.FlatMap)
+  it("composeK", () => {
+    const composeK = _.composeK(O.FlatMap)
     const f = (s: string): O.Option<number> => s.length > 0 ? O.some(s.length) : O.none()
     const g = (n: number): O.Option<number> => n > 1 ? O.some(n) : O.none()
-    const h = pipe(f, composeKleisliArrow(g))
+    const h = pipe(f, composeK(g))
     U.deepStrictEqual(h(""), O.none())
     U.deepStrictEqual(h("a"), O.none())
     U.deepStrictEqual(h("aa"), O.some(2))

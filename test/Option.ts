@@ -37,7 +37,7 @@ describe.concurrent("Option", () => {
     expect(_.flatMap).exist
     expect(_.flatten).exist
     expect(_.andThen).exist
-    expect(_.composeKleisliArrow).exist
+    expect(_.composeK).exist
 
     expect(_.Chainable).exist
     expect(_.bind).exist

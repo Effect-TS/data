@@ -125,7 +125,7 @@ Added in v1.0.0
 - [utils](#utils)
   - [andThen](#andthen)
   - [ap](#ap)
-  - [composeKleisliArrow](#composekleisliarrow)
+  - [composeK](#composek)
   - [contains](#contains)
   - [exists](#exists)
   - [flatten](#flatten)
@@ -1602,12 +1602,12 @@ export declare const ap: {
 
 Added in v1.0.0
 
-## composeKleisliArrow
+## composeK
 
 **Signature**
 
 ```ts
-export declare const composeKleisliArrow: {
+export declare const composeK: {
   <A, E1, B, E2, C>(afb: (a: A) => Either<E1, B>, bfc: (b: B) => Either<E2, C>): (a: A) => Either<E1 | E2, C>
   <B, E2, C>(bfc: (b: B) => Either<E2, C>): <A, E1>(afb: (a: A) => Either<E1, B>) => (a: A) => Either<E2 | E1, C>
 }

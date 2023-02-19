@@ -16,7 +16,7 @@ Added in v1.0.0
   - [FlatMap (interface)](#flatmap-interface)
 - [utils](#utils)
   - [andThen](#andthen)
-  - [composeKleisliArrow](#composekleisliarrow)
+  - [composeK](#composek)
   - [flatten](#flatten)
 
 ---
@@ -73,12 +73,12 @@ export declare const andThen: <F extends TypeLambda>(
 
 Added in v1.0.0
 
-## composeKleisliArrow
+## composeK
 
 **Signature**
 
 ```ts
-export declare const composeKleisliArrow: <F extends TypeLambda>(
+export declare const composeK: <F extends TypeLambda>(
   F: FlatMap<F>
 ) => {
   <B, R2, O2, E2, C>(bfc: (b: B) => Kind<F, R2, O2, E2, C>): <A, R1, O1, E1>(

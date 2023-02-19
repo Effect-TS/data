@@ -408,7 +408,7 @@ export const andThen: {
 /**
  * @since 1.0.0
  */
-export const composeKleisliArrow: {
+export const composeK: {
   <A, E1, B, E2, C>(
     afb: (a: A) => Either<E1, B>,
     bfc: (b: B) => Either<E2, C>
@@ -416,7 +416,7 @@ export const composeKleisliArrow: {
   <B, E2, C>(
     bfc: (b: B) => Either<E2, C>
   ): <A, E1>(afb: (a: A) => Either<E1, B>) => (a: A) => Either<E2 | E1, C>
-} = flatMap_.composeKleisliArrow(FlatMap)
+} = flatMap_.composeK(FlatMap)
 
 /**
  * @category instances

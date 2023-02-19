@@ -31,7 +31,7 @@ describe.concurrent("ReadonlyArray", () => {
     expect(RA.FlatMap).exist
     expect(RA.flatMap).exist
     expect(RA.flatten).exist
-    expect(RA.composeKleisliArrow).exist
+    expect(RA.composeK).exist
 
     expect(RA.Chainable).exist
     expect(RA.bind).exist

@@ -163,7 +163,7 @@ Added in v1.0.0
   - [appendAllNonEmpty](#appendallnonempty)
   - [chop](#chop)
   - [chopNonEmpty](#chopnonempty)
-  - [composeKleisliArrow](#composekleisliarrow)
+  - [composeK](#composek)
   - [copy](#copy)
   - [difference](#difference)
   - [extend](#extend)
@@ -1974,12 +1974,12 @@ export declare const chopNonEmpty: {
 
 Added in v1.0.0
 
-## composeKleisliArrow
+## composeK
 
 **Signature**
 
 ```ts
-export declare const composeKleisliArrow: {
+export declare const composeK: {
   <A, B, C>(afb: (a: A) => readonly B[], bfc: (b: B) => readonly C[]): (a: A) => readonly C[]
   <B, C>(bfc: (b: B) => readonly C[]): <A>(afb: (a: A) => readonly B[]) => (a: A) => readonly C[]
 }
