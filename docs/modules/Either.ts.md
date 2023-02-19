@@ -59,6 +59,8 @@ Added in v1.0.0
   - [compact](#compact)
   - [filter](#filter)
   - [filterMap](#filtermap)
+- [generators](#generators)
+  - [gen](#gen)
 - [getters](#getters)
   - [getOrElse](#getorelse)
   - [getOrNull](#getornull)
@@ -794,6 +796,36 @@ export declare const filterMap: {
   <A, B, E2>(f: (a: A) => Option<B>, onNone: LazyArg<E2>): <E1>(self: Either<E1, A>) => Either<E2 | E1, B>
   <E1, A, B, E2>(self: Either<E1, A>, f: (a: A) => Option<B>, onNone: LazyArg<E2>): Either<E1 | E2, B>
 }
+```
+
+Added in v1.0.0
+
+# generators
+
+## gen
+
+The `gen` API is a helper function that provides a generator interface for the `Either` monad instance.
+It can be used to easily create complex `Either` computations in a readable and concise manner.
+
+**Signature**
+
+```ts
+export declare const gen: Gen.Gen<EitherTypeLambda, Gen.Adapter<EitherTypeLambda>>
+```
+
+**Example**
+
+```ts
+import * as E from '@effect/data/Either'
+
+assert.deepStrictEqual(
+  E.gen(function* ($) {
+    const a = yield* $(E.right(1))
+    const b = yield* $(E.right(2))
+    return a + b
+  }),
+  E.right(3)
+)
 ```
 
 Added in v1.0.0

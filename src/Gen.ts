@@ -1,10 +1,8 @@
 /**
  * @since 1.0.0
  */
-import * as E from "@effect/data/Either"
 import { identity, pipe } from "@effect/data/Function"
 import type { Kind, TypeLambda } from "@effect/data/HKT"
-import * as O from "@effect/data/Option"
 import type { Monad } from "@effect/data/typeclass/Monad"
 
 /**
@@ -216,15 +214,3 @@ export const singleShot: <F extends TypeLambda>(
           return runGen(F, state, iterator)
         })
       )
-
-/**
- * @since 1.0.0
- * @category instances
- */
-export const Either = singleShot(E.Monad)(adapter<E.EitherTypeLambda>())
-
-/**
- * @since 1.0.0
- * @category instances
- */
-export const Option = singleShot(O.Monad)(adapter<O.OptionTypeLambda>())

@@ -83,6 +83,7 @@
     "concurrently": "^7.6.0",
     "cpx": "^1.5.0",
     "docs-ts": "0.6.10",
+    "dtslint": "github:gcanti/dtslint",
     "error-stack-parser": "^2.1.4",
     "eslint": "^8.33.0",
     "eslint-import-resolver-typescript": "^3.5.3",

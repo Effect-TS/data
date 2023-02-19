@@ -601,4 +601,12 @@ describe.concurrent("Option", () => {
     expect(isEquivalent(_.some(1), _.some(2))).toEqual(false)
     expect(isEquivalent(_.some(2), _.some(2))).toEqual(true)
   })
+
+  it("gen", () => {
+    expect(_.gen(function*($) {
+      const a = yield* $(_.some(1))
+      const b = yield* $(_.some(2))
+      return a + b
+    })).toEqual(_.some(3))
+  })
 })
