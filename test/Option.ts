@@ -1,7 +1,6 @@
 import { equivalence } from "@effect/data"
 import * as E from "@effect/data/Either"
 import { pipe } from "@effect/data/Function"
-import { structural } from "@effect/data/internal/effect"
 import * as N from "@effect/data/Number"
 import * as _ from "@effect/data/Option"
 import * as ReadonlyArray from "@effect/data/ReadonlyArray"
@@ -85,12 +84,6 @@ describe.concurrent("Option", () => {
   })
 
   it("structural tracking", () => {
-    expect(Util.ownKeys(_.none())).toEqual(["_tag"])
-    expect(Util.ownKeys(_.some(1))).toEqual(["_tag", "value"])
-
-    expect(Object.prototype.hasOwnProperty.call(_.none(), structural)).toEqual(false)
-    expect(Object.prototype.hasOwnProperty.call(_.some(1), structural)).toEqual(false)
-
     expect(Util.isStructural(_.none())).toEqual(true)
     expect(Util.isStructural(_.some(1))).toEqual(true)
   })

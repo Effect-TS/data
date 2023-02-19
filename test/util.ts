@@ -1,4 +1,4 @@
-import { structural } from "@effect/data/internal/effect"
+import { structural } from "@effect/data/internal/Equal"
 import * as assert from "assert"
 
 export const assertTrue = (self: boolean) => {

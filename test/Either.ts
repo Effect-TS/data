@@ -1,6 +1,5 @@
 import * as E from "@effect/data/Either"
 import { flow, identity, pipe } from "@effect/data/Function"
-import { structural } from "@effect/data/internal/effect"
 import * as N from "@effect/data/Number"
 import * as O from "@effect/data/Option"
 import * as S from "@effect/data/String"
@@ -76,12 +75,6 @@ describe.concurrent("Either", () => {
   })
 
   it("structural tracking", () => {
-    expect(Util.ownKeys(E.left("a"))).toEqual(["_tag", "left"])
-    expect(Util.ownKeys(E.right(1))).toEqual(["_tag", "right"])
-
-    expect(Object.prototype.hasOwnProperty.call(E.left("a"), structural)).toEqual(false)
-    expect(Object.prototype.hasOwnProperty.call(E.right(1), structural)).toEqual(false)
-
     expect(Util.isStructural(E.left("a"))).toEqual(true)
     expect(Util.isStructural(E.right(1))).toEqual(true)
   })
