@@ -1407,19 +1407,17 @@ export const difference = <A>(isEquivalent: (self: A, that: A) => boolean): {
  * @category constructors
  * @since 1.0.0
  */
-export const of = <A>(a: A): NonEmptyArray<A> => [a]
-
-/**
- * @category constructors
- * @since 1.0.0
- */
 export const empty: <A = never>() => Array<A> = () => []
 
 /**
- * @category instances
+ * Constructs a new `NonEmptyArray<A>` from the specified value.
+ *
+ * @category constructors
  * @since 1.0.0
  */
-export const Of: of_.Of<ReadonlyArrayTypeLambda> = {
+export const of = <A>(a: A): NonEmptyArray<A> => [a]
+
+const Of: of_.Of<ReadonlyArrayTypeLambda> = {
   of
 }
 

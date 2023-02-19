@@ -26,7 +26,6 @@ Added in v1.0.0
   - [zipWith](#zipwith)
 - [constructors](#constructors)
   - [left](#left)
-  - [of](#of)
   - [right](#right)
 - [conversions](#conversions)
   - [fromIterable](#fromiterable)
@@ -79,7 +78,6 @@ Added in v1.0.0
   - [Foldable](#foldable)
   - [Invariant](#invariant)
   - [Monad](#monad)
-  - [Of](#of)
   - [Pointed](#pointed)
   - [Product](#product)
   - [SemiAlternative](#semialternative)
@@ -326,18 +324,6 @@ structure.
 
 ```ts
 export declare const left: <E>(e: E) => Either<E, never>
-```
-
-Added in v1.0.0
-
-## of
-
-Alias of {@link right}.
-
-**Signature**
-
-```ts
-export declare const of: <A>(a: A) => Either<never, A>
 ```
 
 Added in v1.0.0
@@ -1033,16 +1019,6 @@ Added in v1.0.0
 
 ```ts
 export declare const Monad: monad.Monad<EitherTypeLambda>
-```
-
-Added in v1.0.0
-
-## Of
-
-**Signature**
-
-```ts
-export declare const Of: of_.Of<EitherTypeLambda>
 ```
 
 Added in v1.0.0

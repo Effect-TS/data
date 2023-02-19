@@ -26,7 +26,6 @@ Added in v1.0.0
   - [zipWith](#zipwith)
 - [constructors](#constructors)
   - [none](#none)
-  - [of](#of)
   - [some](#some)
 - [conversions](#conversions)
   - [fromEither](#fromeither)
@@ -117,7 +116,6 @@ Added in v1.0.0
   - [Foldable](#foldable)
   - [Invariant](#invariant)
   - [Monad](#monad)
-  - [Of](#of)
   - [Pointed](#pointed)
   - [Product](#product)
   - [SemiAlternative](#semialternative)
@@ -371,18 +369,6 @@ Creates a new `Option` that represents the absence of a value.
 
 ```ts
 export declare const none: <A = never>() => Option<A>
-```
-
-Added in v1.0.0
-
-## of
-
-Alias of {@link some}.
-
-**Signature**
-
-```ts
-export declare const of: <A>(value: A) => Option<A>
 ```
 
 Added in v1.0.0
@@ -1808,16 +1794,6 @@ Added in v1.0.0
 
 ```ts
 export declare const Monad: monad.Monad<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## Of
-
-**Signature**
-
-```ts
-export declare const Of: of_.Of<OptionTypeLambda>
 ```
 
 Added in v1.0.0

@@ -45,7 +45,6 @@ Added in v1.0.0
 - [instances](#instances)
   - [Contravariant](#contravariant)
   - [Invariant](#invariant)
-  - [Of](#of)
   - [Product](#product)
   - [SemiProduct](#semiproduct)
   - [getMonoidAll](#getmonoidall)
@@ -62,11 +61,9 @@ Added in v1.0.0
   - [any](#any)
   - [appendElement](#appendelement)
   - [compose](#compose)
-  - [of](#of)
   - [struct](#struct)
   - [tuple](#tuple)
   - [tupled](#tupled)
-  - [unit](#unit)
 
 ---
 
@@ -697,16 +694,6 @@ export declare const Invariant: invariant.Invariant<PredicateTypeLambda>
 
 Added in v1.0.0
 
-## Of
-
-**Signature**
-
-```ts
-export declare const Of: of_.Of<PredicateTypeLambda>
-```
-
-Added in v1.0.0
-
 ## Product
 
 **Signature**
@@ -858,16 +845,6 @@ export declare const compose: {
 
 Added in v1.0.0
 
-## of
-
-**Signature**
-
-```ts
-export declare const of: <A>(_: A) => Predicate<A>
-```
-
-Added in v1.0.0
-
 ## struct
 
 **Signature**
@@ -904,16 +881,6 @@ Added in v1.0.0
 
 ```ts
 export declare const tupled: <A>(self: Predicate<A>) => Predicate<readonly [A]>
-```
-
-Added in v1.0.0
-
-## unit
-
-**Signature**
-
-```ts
-export declare const unit: Predicate<void>
 ```
 
 Added in v1.0.0

@@ -87,14 +87,6 @@ export const none = <A = never>(): Option<A> => option.none
 export const some: <A>(value: A) => Option<A> = option.some
 
 /**
- * Alias of {@link some}.
- *
- * @category constructors
- * @since 1.0.0
- */
-export const of: <A>(value: A) => Option<A> = some
-
-/**
  * Tests if a value is a `Option`.
  *
  * @param input - The value to check.
@@ -669,10 +661,9 @@ export const as: {
  */
 export const asUnit: <_>(self: Option<_>) => Option<void> = covariant.asUnit(Covariant)
 
-/**
- * @since 1.0.0
- */
-export const Of: of_.Of<OptionTypeLambda> = {
+const of: <A>(value: A) => Option<A> = some
+
+const Of: of_.Of<OptionTypeLambda> = {
   of
 }
 

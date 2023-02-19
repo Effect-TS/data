@@ -27,8 +27,6 @@ describe.concurrent("Either", () => {
     expect(E.bimap).exist
     expect(E.mapLeft).exist
 
-    expect(E.Of).exist
-    expect(E.of).exist
     expect(E.unit).exist
     expect(E.Do).exist
 
