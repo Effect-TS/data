@@ -1,6 +1,6 @@
+import { pipe } from "@effect/data/Function"
 import * as MutableList from "@effect/data/MutableList"
 import { deepStrictEqual, strictEqual } from "@effect/data/test/util"
-import { pipe } from "@fp-ts/core/Function"
 import { inspect } from "node:util"
 
 describe.concurrent("MutableList", () => {

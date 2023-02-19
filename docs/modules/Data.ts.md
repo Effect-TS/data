@@ -1,6 +1,6 @@
 ---
 title: Data.ts
-nav_order: 4
+nav_order: 6
 parent: Modules
 ---
 
@@ -13,6 +13,8 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [constructors](#constructors)
+  - [Class](#class)
+  - [TaggedClass](#taggedclass)
   - [array](#array)
   - [case](#case)
   - [struct](#struct)
@@ -28,12 +30,42 @@ Added in v1.0.0
 
 # constructors
 
+## Class
+
+Provides a constructor for a Case Class.
+
+**Signature**
+
+```ts
+export declare const Class: <A extends Record<string, any>>() => new (
+  args: Pick<A, Exclude<keyof A, typeof Hash.symbol | typeof Equal.symbol>>
+) => Data<A>
+```
+
+Added in v1.0.0
+
+## TaggedClass
+
+Provides a Tagged constructor for a Case Class.
+
+**Signature**
+
+```ts
+export declare const TaggedClass: <Key extends string>(
+  tag: Key
+) => <A extends Record<string, any>>() => new (
+  args: Pick<A, Exclude<keyof A, typeof Hash.symbol | typeof Equal.symbol | '_tag'>>
+) => Readonly<A> & Equal.Equal & { readonly _tag: Key }
+```
+
+Added in v1.0.0
+
 ## array
 
 **Signature**
 
 ```ts
-export declare const array: <As extends readonly any[]>(as: As) => any
+export declare const array: <As extends readonly any[]>(as: As) => Data<As>
 ```
 
 Added in v1.0.0
@@ -55,7 +87,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const struct: <As extends Readonly<Record<string, any>>>(as: As) => any
+export declare const struct: <As extends Readonly<Record<string, any>>>(as: As) => Data<As>
 ```
 
 Added in v1.0.0
@@ -77,7 +109,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const tuple: <As extends readonly any[]>(...as: As) => any
+export declare const tuple: <As extends readonly any[]>(...as: As) => Data<As>
 ```
 
 Added in v1.0.0
@@ -87,7 +119,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unsafeArray: <As extends readonly any[]>(as: As) => any
+export declare const unsafeArray: <As extends readonly any[]>(as: As) => Data<As>
 ```
 
 Added in v1.0.0
@@ -97,7 +129,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unsafeStruct: <As extends Readonly<Record<string, any>>>(as: As) => any
+export declare const unsafeStruct: <As extends Readonly<Record<string, any>>>(as: As) => Data<As>
 ```
 
 Added in v1.0.0

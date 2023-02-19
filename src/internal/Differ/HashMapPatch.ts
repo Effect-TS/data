@@ -2,9 +2,9 @@ import * as Chunk from "@effect/data/Chunk"
 import type * as Differ from "@effect/data/Differ"
 import type * as HMP from "@effect/data/Differ/HashMapPatch"
 import * as Equal from "@effect/data/Equal"
+import * as Dual from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import * as HashMap from "@effect/data/HashMap"
-import * as Dual from "@fp-ts/core/Function"
 
 /** @internal */
 export const HashMapPatchTypeId: HMP.TypeId = Symbol.for(

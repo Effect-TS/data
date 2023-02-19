@@ -3,9 +3,9 @@
  */
 
 import type { Differ } from "@effect/data/Differ"
+import type { Either } from "@effect/data/Either"
 import type { Equal } from "@effect/data/Equal"
 import * as OP from "@effect/data/internal/Differ/OrPatch"
-import type { Either } from "@fp-ts/core/Either"
 
 const TypeId: unique symbol = OP.OrPatchTypeId as TypeId
 

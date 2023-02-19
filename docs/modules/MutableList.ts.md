@@ -1,6 +1,6 @@
 ---
 title: MutableList.ts
-nav_order: 21
+nav_order: 27
 parent: Modules
 ---
 
@@ -26,6 +26,7 @@ Added in v1.0.0
 - [mutations](#mutations)
   - [append](#append)
   - [pop](#pop)
+  - [prepend](#prepend)
   - [reset](#reset)
   - [shift](#shift)
 - [symbol](#symbol)
@@ -170,6 +171,21 @@ export declare const pop: <A>(self: MutableList<A>) => A | undefined
 ```
 
 Added in v0.0.1
+
+## prepend
+
+Prepends the specified value to the beginning of the list.
+
+**Signature**
+
+```ts
+export declare const prepend: {
+  <A>(value: A): (self: MutableList<A>) => MutableList<A>
+  <A>(self: MutableList<A>, value: A): MutableList<A>
+}
+```
+
+Added in v1.0.0
 
 ## reset
 

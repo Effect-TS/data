@@ -7,8 +7,8 @@ import type { HashSet } from "@effect/data/HashSet"
 import * as HM from "@effect/data/internal/HashMap"
 import * as _keySet from "@effect/data/internal/HashMap/keySet"
 import type { UpdateFn } from "@effect/data/internal/HashMap/node"
-import type { Option } from "@fp-ts/core/Option"
-import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
+import type { Option } from "@effect/data/Option"
+import type { Predicate, Refinement } from "@effect/data/Predicate"
 
 const TypeId: unique symbol = HM.HashMapTypeId as TypeId
 

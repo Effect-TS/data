@@ -3,7 +3,7 @@ import { arraySpliceIn, arraySpliceOut, arrayUpdate } from "@effect/data/interna
 import { fromBitmap, hashFragment, toBitmap } from "@effect/data/internal/HashMap/bitwise"
 import { MAX_INDEX_NODE, MIN_ARRAY_NODE, SIZE } from "@effect/data/internal/HashMap/config"
 import { Stack } from "@effect/data/internal/Stack"
-import * as O from "@fp-ts/core/Option"
+import * as O from "@effect/data/Option"
 
 /** @internal */
 export type Node<K, V> =

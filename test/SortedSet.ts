@@ -1,9 +1,9 @@
 import * as Eq from "@effect/data/Equal"
+import { pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import * as SortedSet from "@effect/data/SortedSet"
-import { pipe } from "@fp-ts/core/Function"
-import * as Str from "@fp-ts/core/String"
-import * as Order from "@fp-ts/core/typeclass/Order"
+import * as Str from "@effect/data/String"
+import * as Order from "@effect/data/typeclass/Order"
 import { inspect } from "node:util"
 
 class Member implements Eq.Equal {

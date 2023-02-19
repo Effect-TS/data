@@ -2,7 +2,7 @@
  * @since 1.0.0
  */
 import * as Equal from "@effect/data/Equal"
-import * as Dual from "@fp-ts/core/Function"
+import * as Dual from "@effect/data/Function"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/MutableRef") as TypeId
 

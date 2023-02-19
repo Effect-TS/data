@@ -1,9 +1,9 @@
 import * as Eq from "@effect/data/Equal"
+import { pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
+import * as N from "@effect/data/Number"
+import * as O from "@effect/data/Option"
 import * as SM from "@effect/data/SortedMap"
-import { pipe } from "@fp-ts/core/Function"
-import * as N from "@fp-ts/core/Number"
-import * as O from "@fp-ts/core/Option"
 import { inspect } from "node:util"
 
 class Key implements Eq.Equal {

@@ -8,11 +8,11 @@ import type { ContextPatch } from "@effect/data/Differ/ContextPatch"
 import type { HashMapPatch } from "@effect/data/Differ/HashMapPatch"
 import type { HashSetPatch } from "@effect/data/Differ/HashSetPatch"
 import type { OrPatch } from "@effect/data/Differ/OrPatch"
+import type { Either } from "@effect/data/Either"
+import * as Dual from "@effect/data/Function"
 import type { HashMap } from "@effect/data/HashMap"
 import type { HashSet } from "@effect/data/HashSet"
 import * as D from "@effect/data/internal/Differ"
-import type { Either } from "@fp-ts/core/Either"
-import * as Dual from "@fp-ts/core/Function"
 
 const TypeId: unique symbol = D.DifferTypeId as TypeId
 

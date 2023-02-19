@@ -1,6 +1,6 @@
+import * as Either from "@effect/data/Either"
 import * as List from "@effect/data/List"
-import * as Either from "@fp-ts/core/Either"
-import * as Option from "@fp-ts/core/Option"
+import * as Option from "@effect/data/Option"
 import { describe, expect, it } from "vitest"
 
 describe.concurrent("List", () => {

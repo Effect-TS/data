@@ -1,9 +1,9 @@
 /**
  * @since 1.0.0
  */
+import { pipe } from "@effect/data/Function"
 import { structural } from "@effect/data/internal/Equal"
 import { PCGRandom } from "@effect/data/Random"
-import { pipe } from "@fp-ts/core/Function"
 
 /** @internal */
 const randomHashCache = new WeakMap<object, number>()

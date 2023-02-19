@@ -5,8 +5,8 @@ import type { Chunk } from "@effect/data/Chunk"
 import type { Equal } from "@effect/data/Equal"
 import * as RBT from "@effect/data/internal/RedBlackTree"
 import * as RBTI from "@effect/data/internal/RedBlackTree/iterator"
-import type { Option } from "@fp-ts/core/Option"
-import type { Order } from "@fp-ts/core/typeclass/Order"
+import type { Option } from "@effect/data/Option"
+import type { Order } from "@effect/data/typeclass/Order"
 
 const TypeId: unique symbol = RBT.RedBlackTreeTypeId as TypeId
 

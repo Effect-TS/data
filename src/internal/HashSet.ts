@@ -1,10 +1,10 @@
 import * as Equal from "@effect/data/Equal"
+import * as Dual from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import type { HashMap } from "@effect/data/HashMap"
 import type * as HS from "@effect/data/HashSet"
 import * as HM from "@effect/data/internal/HashMap"
-import * as Dual from "@fp-ts/core/Function"
-import type { Predicate, Refinement } from "@fp-ts/core/Predicate"
+import type { Predicate, Refinement } from "@effect/data/Predicate"
 
 /** @internal */
 export const HashSetTypeId: HS.TypeId = Symbol.for("@effect/data/HashSet") as HS.TypeId

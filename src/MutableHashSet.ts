@@ -1,8 +1,8 @@
 /**
  * @since 1.0.0
  */
+import * as Dual from "@effect/data/Function"
 import * as MutableHashMap from "@effect/data/MutableHashMap"
-import * as Dual from "@fp-ts/core/Function"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/MutableHashSet") as TypeId
 

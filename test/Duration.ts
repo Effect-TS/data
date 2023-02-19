@@ -1,5 +1,5 @@
 import * as D from "@effect/data/Duration"
-import { pipe } from "@fp-ts/core/Function"
+import { pipe } from "@effect/data/Function"
 
 describe.concurrent("Duration", () => {
   it("equals", () => {

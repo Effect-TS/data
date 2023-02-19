@@ -1,6 +1,6 @@
 ---
 title: Differ/HashSetPatch.ts
-nav_order: 9
+nav_order: 11
 parent: Modules
 ---
 
@@ -35,7 +35,7 @@ Constructs a set patch from a new set of values.
 **Signature**
 
 ```ts
-export declare const diff: <Value>(oldValue: any, newValue: any) => HashSetPatch<Value>
+export declare const diff: <Value>(oldValue: HashSet<Value>, newValue: HashSet<Value>) => HashSetPatch<Value>
 ```
 
 Added in v1.0.0
@@ -64,8 +64,8 @@ described by this patch.
 
 ```ts
 export declare const patch: {
-  <Value>(oldValue: any): (self: HashSetPatch<Value>) => any
-  <Value>(self: HashSetPatch<Value>, oldValue: any): any
+  <Value>(oldValue: HashSet<Value>): (self: HashSetPatch<Value>) => HashSet<Value>
+  <Value>(self: HashSetPatch<Value>, oldValue: HashSet<Value>): HashSet<Value>
 }
 ```
 

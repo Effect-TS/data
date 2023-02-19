@@ -1,8 +1,8 @@
 import * as Equal from "@effect/data/Equal"
+import { pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import * as HashSet from "@effect/data/HashSet"
 import { deepStrictEqual } from "@effect/data/test/util"
-import { pipe } from "@fp-ts/core/Function"
 import { inspect } from "node:util"
 
 class Value implements Equal.Equal {

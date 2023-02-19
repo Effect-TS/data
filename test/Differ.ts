@@ -1,9 +1,9 @@
 import * as Chunk from "@effect/data/Chunk"
 import * as Differ from "@effect/data/Differ"
 import * as Equal from "@effect/data/Equal"
+import { pipe } from "@effect/data/Function"
 import * as HashMap from "@effect/data/HashMap"
 import * as HashSet from "@effect/data/HashSet"
-import { pipe } from "@fp-ts/core/Function"
 import { it as it_ } from "vitest"
 
 function diffLaws<Value, Patch>(

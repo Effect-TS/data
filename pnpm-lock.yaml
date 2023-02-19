@@ -2,7 +2,7 @@ lockfileVersion: 5.4
 
 patchedDependencies:
   docs-ts@0.6.10:
-    hash: hxi4q35dpslvaqd64zvxr4fn6m
+    hash: t6ba26u2cusmq7qp5ixcyvelci
     path: patches/docs-ts@0.6.10.patch
 
 importers:
@@ -19,7 +19,6 @@ importers:
       '@effect/babel-plugin': ^0.1.0
       '@effect/core': ^0.0.16
       '@effect/language-service': ^0.0.19
-      '@fp-ts/core': ~0.2.1
       '@repo-tooling/eslint-plugin-dprint': ^0.0.4
       '@rollup/pluginutils': ^5.0.2
       '@types/benchmark': ^2.1.2
@@ -57,8 +56,6 @@ importers:
       ultra-runner: ^3.10.5
       vite: ^4.1.1
       vitest: 0.28.4
-    dependencies:
-      '@fp-ts/core': 0.2.1
     devDependencies:
       '@babel/cli': 7.20.7_@babel+core@7.20.12
       '@babel/core': 7.20.12
@@ -85,7 +82,7 @@ importers:
       babel-plugin-annotate-pure-calls: 0.4.0_@babel+core@7.20.12
       concurrently: 7.6.0
       cpx: 1.5.0
-      docs-ts: 0.6.10_hxi4q35dpslvaqd64zvxr4fn6m_silln3pw57har7jydmecgzoypa
+      docs-ts: 0.6.10_t6ba26u2cusmq7qp5ixcyvelci_silln3pw57har7jydmecgzoypa
       error-stack-parser: 2.1.4
       eslint: 8.33.0
       eslint-import-resolver-typescript: 3.5.3_ohdts44xlqyeyrlje4qnefqeay
@@ -921,10 +918,6 @@ packages:
   /@fp-ts/core/0.0.11:
     resolution: {integrity: sha512-BCAJBYzghwoJpcUOARJ1tui50HoYJFlV2pJlVMlsEkDFhD8MTtq8xQVpZCRF66RmtkxtGBYINCQ+5H1lRaL35Q==}
     dev: true
-
-  /@fp-ts/core/0.2.1:
-    resolution: {integrity: sha512-gjp/LTCsxqe8KYvPOcMcsEXT+J6tKC4v1nNqK4RZsZcB6pMcQgrullh5Oa371O9WHSULivpgOvjWyeioFevg5g==}
-    dev: false
 
   /@fp-ts/data/0.0.41:
     resolution: {integrity: sha512-0S93kOQ91D7wp60q/PSVWvMsJjSWJutjt4qX/BvVNV7+fymuC2hTfW2HlE2OcMK11xCNiI6Rq2AkvyzoMhOlpg==}
@@ -2771,7 +2764,7 @@ packages:
       path-type: 4.0.0
     dev: true
 
-  /docs-ts/0.6.10_hxi4q35dpslvaqd64zvxr4fn6m_silln3pw57har7jydmecgzoypa:
+  /docs-ts/0.6.10_t6ba26u2cusmq7qp5ixcyvelci_silln3pw57har7jydmecgzoypa:
     resolution: {integrity: sha512-DTX9c5AJ92ojMOKqqvwF8t77C8Gdgs9FPB8seymHs+F+Wl6aapc3ZkHUM+p8o+jwcBmPoihxssdK903dfwQ1JQ==}
     hasBin: true
     peerDependencies:

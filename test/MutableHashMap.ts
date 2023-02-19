@@ -1,8 +1,8 @@
 import * as Equal from "@effect/data/Equal"
+import { pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import * as HM from "@effect/data/MutableHashMap"
-import { pipe } from "@fp-ts/core/Function"
-import * as O from "@fp-ts/core/Option"
+import * as O from "@effect/data/Option"
 import { inspect } from "node:util"
 
 class Key implements Equal.Equal {

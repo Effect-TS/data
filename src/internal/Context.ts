@@ -1,9 +1,9 @@
 import type * as C from "@effect/data/Context"
 import * as Equal from "@effect/data/Equal"
+import * as Dual from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
-import * as Dual from "@fp-ts/core/Function"
-import type * as O from "@fp-ts/core/Option"
-import * as option from "@fp-ts/core/Option"
+import type * as O from "@effect/data/Option"
+import * as option from "@effect/data/Option"
 
 /** @internal */
 export const TagTypeId: C.TagTypeId = Symbol.for("@effect/data/Context/Tag") as C.TagTypeId

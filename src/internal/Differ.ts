@@ -6,12 +6,12 @@ import * as ContextPatch from "@effect/data/Differ/ContextPatch"
 import * as HashMapPatch from "@effect/data/Differ/HashMapPatch"
 import * as HashSetPatch from "@effect/data/Differ/HashSetPatch"
 import * as OrPatch from "@effect/data/Differ/OrPatch"
+import type { Either } from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
+import * as Dual from "@effect/data/Function"
+import { constant, identity } from "@effect/data/Function"
 import type { HashMap } from "@effect/data/HashMap"
 import type { HashSet } from "@effect/data/HashSet"
-import type { Either } from "@fp-ts/core/Either"
-import * as Dual from "@fp-ts/core/Function"
-import { constant, identity } from "@fp-ts/core/Function"
 
 /** @internal */
 export const DifferTypeId: D.TypeId = Symbol.for("@effect/data/Differ") as D.TypeId

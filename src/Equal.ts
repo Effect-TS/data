@@ -3,7 +3,7 @@
  */
 import * as Hash from "@effect/data/Hash"
 import { structural } from "@effect/data/internal/Equal"
-import type { Equivalence } from "@fp-ts/core/typeclass/Equivalence"
+import type { Equivalence } from "@effect/data/typeclass/Equivalence"
 
 /**
  * @since 1.0.0
