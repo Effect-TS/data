@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noImplicitReturns": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
+    "target": "ES2021",
+    "lib": ["ES2021"],
+    "paths": {
+      "@effect/data": ["../../src/index.ts"],
+      "@effect/data/test/*": ["../../test/*"],
+      "@effect/data/examples/*": ["../../examples/*"],
+      "@effect/data/*": ["../../src/*"]
+    }
+  }
+}
