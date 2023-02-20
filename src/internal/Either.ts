@@ -2,9 +2,9 @@
  * @since 1.0.0
  */
 
+import * as Data from "@effect/data/Data"
 import type { Either, Left, Right } from "@effect/data/Either"
 import { dual } from "@effect/data/Function"
-import { structural } from "@effect/data/internal/Equal"
 import * as option from "@effect/data/internal/Option"
 import type { Option } from "@effect/data/Option"
 
@@ -15,20 +15,10 @@ export const isLeft = <E, A>(ma: Either<E, A>): ma is Left<E> => ma._tag === "Le
 export const isRight = <E, A>(ma: Either<E, A>): ma is Right<A> => ma._tag === "Right"
 
 /** @internal */
-export const left = <E>(e: E): Either<E, never> =>
-  Object.defineProperty(
-    { _tag: "Left", left: e },
-    structural,
-    { enumerable: false, value: true }
-  )
+export const left = <E>(e: E): Either<E, never> => Data.struct({ _tag: "Left", left: e })
 
 /** @internal */
-export const right = <A>(a: A): Either<never, A> =>
-  Object.defineProperty(
-    { _tag: "Right", right: a },
-    structural,
-    { enumerable: false, value: true }
-  )
+export const right = <A>(a: A): Either<never, A> => Data.struct({ _tag: "Right", right: a })
 
 /** @internal */
 export const getLeft = <E, A>(

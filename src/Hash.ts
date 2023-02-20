@@ -2,7 +2,6 @@
  * @since 1.0.0
  */
 import { pipe } from "@effect/data/Function"
-import { structural } from "@effect/data/internal/Equal"
 import { PCGRandom } from "@effect/data/Random"
 
 /** @internal */
@@ -56,9 +55,6 @@ export const hash: <A>(self: A) => number = <A>(self: A) => {
       if (isHash(self)) {
         return self[symbol]()
       } else {
-        if (structural in (self as object | Function)) {
-          return structure(self)
-        }
         return random(self)
       }
     }

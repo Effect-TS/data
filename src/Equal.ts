@@ -2,7 +2,6 @@
  * @since 1.0.0
  */
 import * as Hash from "@effect/data/Hash"
-import { structural } from "@effect/data/internal/Equal"
 import type { Equivalence } from "@effect/data/typeclass/Equivalence"
 
 /**
@@ -51,25 +50,6 @@ function compareBoth(self: unknown, that: unknown) {
   ) {
     if (isEqual(self) && isEqual(that)) {
       return Hash.hash(self) === Hash.hash(that) && self[symbol](that)
-    }
-    if (
-      structural in (self as object | Function) &&
-      structural in (that as object | Function)
-    ) {
-      const selfKeys = Object.keys(self as object | Function)
-      const thatKeys = Object.keys(that as object | Function)
-      if (selfKeys.length !== thatKeys.length) {
-        return false
-      }
-      for (const key of selfKeys) {
-        if (
-          !(key in (that as object | Function)) ||
-          !equals((self as object | Function)[key], (that as object | Function)[key])
-        ) {
-          return false
-        }
-      }
-      return true
     }
   }
   return false

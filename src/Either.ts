@@ -2,14 +2,15 @@
  * @since 1.0.0
  */
 
+import type * as Data from "@effect/data/Data"
 import type { LazyArg } from "@effect/data/Function"
 import { constNull, constUndefined, dual, identity } from "@effect/data/Function"
 import * as Gen from "@effect/data/Gen"
 import type { Kind, TypeLambda } from "@effect/data/HKT"
 import * as either from "@effect/data/internal/Either"
-import { structural } from "@effect/data/internal/Equal"
 import * as option from "@effect/data/internal/Option"
 import * as N from "@effect/data/Number"
+import * as Equal from "@effect/data/Equal"
 import type { Option } from "@effect/data/Option"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as applicative from "@effect/data/typeclass/Applicative"
@@ -44,7 +45,7 @@ export type Either<E, A> = Left<E> | Right<A>
  * @category models
  * @since 1.0.0
  */
-export interface Left<E> {
+export interface Left<E> extends Data.Case {
   readonly _tag: "Left"
   readonly left: E
 }
@@ -53,7 +54,7 @@ export interface Left<E> {
  * @category models
  * @since 1.0.0
  */
-export interface Right<A> {
+export interface Right<A> extends Data.Case {
   readonly _tag: "Right"
   readonly right: A
 }
@@ -100,8 +101,8 @@ export const left: <E>(e: E) => Either<E, never> = either.left
  * @since 1.0.0
  */
 export const isEither = (input: unknown): input is Either<unknown, unknown> =>
-  typeof input === "object" && input != null && structural in input && "_tag" in input &&
-  (input["_tag"] === "Left" || input["_tag"] === "Right")
+  typeof input === "object" && input != null && "_tag" in input &&
+  (input["_tag"] === "Left" || input["_tag"] === "Right") && Equal.isEqual(input)
 
 /**
  * Determine if a `Either` is a `Left`.

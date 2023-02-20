@@ -1382,7 +1382,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface None {
+export interface None extends Data.Case {
   readonly _tag: 'None'
 }
 ```
@@ -1404,7 +1404,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Some<A> {
+export interface Some<A> extends Data.Case {
   readonly _tag: 'Some'
   readonly value: A
 }

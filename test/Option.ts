@@ -83,11 +83,6 @@ describe.concurrent("Option", () => {
     expect(_.filter).exist
   })
 
-  it("structural tracking", () => {
-    expect(Util.isStructural(_.none())).toEqual(true)
-    expect(Util.isStructural(_.some(1))).toEqual(true)
-  })
-
   it("toRefinement", () => {
     const f = (
       s: string | number
