@@ -1471,7 +1471,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Left<E> {
+export interface Left<E> extends Data.Case {
   readonly _tag: 'Left'
   readonly left: E
 }
@@ -1484,7 +1484,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Right<A> {
+export interface Right<A> extends Data.Case {
   readonly _tag: 'Right'
   readonly right: A
 }

@@ -1,13 +1,14 @@
 /**
  * @since 1.0.0
  */
+import type * as Data from "@effect/data/Data"
 import type { Either } from "@effect/data/Either"
+import * as Equal from "@effect/data/Equal"
 import type { LazyArg } from "@effect/data/Function"
 import { constNull, constUndefined, dual } from "@effect/data/Function"
 import * as Gen from "@effect/data/Gen"
 import type { Kind, TypeLambda } from "@effect/data/HKT"
 import * as either from "@effect/data/internal/Either"
-import { structural } from "@effect/data/internal/Equal"
 import * as option from "@effect/data/internal/Option"
 import * as N from "@effect/data/Number"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
@@ -48,7 +49,7 @@ export type Option<A> = None | Some<A>
  * @category models
  * @since 1.0.0
  */
-export interface None {
+export interface None extends Data.Case {
   readonly _tag: "None"
 }
 
@@ -56,7 +57,7 @@ export interface None {
  * @category models
  * @since 1.0.0
  */
-export interface Some<A> {
+export interface Some<A> extends Data.Case {
   readonly _tag: "Some"
   readonly value: A
 }
@@ -103,8 +104,8 @@ export const some: <A>(value: A) => Option<A> = option.some
  * @since 1.0.0
  */
 export const isOption = (input: unknown): input is Option<unknown> =>
-  typeof input === "object" && input != null && structural in input && "_tag" in input &&
-  (input["_tag"] === "None" || input["_tag"] === "Some")
+  typeof input === "object" && input != null && "_tag" in input &&
+  (input["_tag"] === "None" || input["_tag"] === "Some") && Equal.isEqual(input)
 
 /**
  * Determine if a `Option` is a `None`.

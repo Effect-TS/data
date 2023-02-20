@@ -74,11 +74,6 @@ describe.concurrent("Either", () => {
     expect(E.traverseTap).exist
   })
 
-  it("structural tracking", () => {
-    expect(Util.isStructural(E.left("a"))).toEqual(true)
-    expect(Util.isStructural(E.right(1))).toEqual(true)
-  })
-
   it("toRefinement", () => {
     const f = (s: string | number): E.Either<string, string> =>
       typeof s === "string" ? E.right(s) : E.left("not a string")

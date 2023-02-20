@@ -1,4 +1,3 @@
-import { structural } from "@effect/data/internal/Equal"
 import * as assert from "assert"
 
 export const assertTrue = (self: boolean) => {
@@ -21,5 +20,3 @@ export const double = (n: number): number => n * 2
 
 export const ownKeys = (o: object): ReadonlyArray<PropertyKey> =>
   (Object.keys(o) as ReadonlyArray<PropertyKey>).concat(Object.getOwnPropertySymbols(o))
-
-export const isStructural = (u: unknown) => typeof u === "object" && u != null && structural in u

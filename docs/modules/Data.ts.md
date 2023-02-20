@@ -38,7 +38,7 @@ Provides a constructor for a Case Class.
 
 ```ts
 export declare const Class: <A extends Record<string, any>>() => new (
-  args: Pick<A, Exclude<keyof A, typeof Hash.symbol | typeof Equal.symbol>>
+  args: Pick<A, Exclude<keyof A, typeof Equal.symbol | typeof Hash.symbol>>
 ) => Data<A>
 ```
 
@@ -54,7 +54,7 @@ Provides a Tagged constructor for a Case Class.
 export declare const TaggedClass: <Key extends string>(
   tag: Key
 ) => <A extends Record<string, any>>() => new (
-  args: Pick<A, Exclude<keyof A, typeof Hash.symbol | typeof Equal.symbol | '_tag'>>
+  args: Pick<A, Exclude<keyof A, typeof Equal.symbol | typeof Hash.symbol | '_tag'>>
 ) => Readonly<A> & Equal.Equal & { readonly _tag: Key }
 ```
 
