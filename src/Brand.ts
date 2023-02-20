@@ -1,4 +1,19 @@
 /**
+ * This module provides types and utility functions to create and work with branded types,
+ * which are TypeScript types with an added type tag to prevent accidental usage of a value in the wrong context.
+ *
+ * The `refined` and `nominal` functions are both used to create branded types in TypeScript.
+ * The main difference between them is that `refined` allows for validation of the data, while `nominal` does not.
+ *
+ * The `nominal` function is used to create a new branded type that has the same underlying type as the input, but with a different name.
+ * This is useful when you want to distinguish between two values of the same type that have different meanings.
+ * The `nominal` function does not perform any validation of the input data.
+ *
+ * On the other hand, the `refined` function is used to create a new branded type that has the same underlying type as the input,
+ * but with a different name, and it also allows for validation of the input data.
+ * The `refined` function takes a predicate that is used to validate the input data.
+ * If the input data fails the validation, a `BrandErrors` is returned, which provides information about the specific validation failure.
+ *
  * @since 1.0.0
  */
 import * as Either from "@effect/data/Either"
@@ -32,6 +47,9 @@ export const RefinedConstructorsTypeId: unique symbol = Symbol.for("@effect/data
 export type RefinedConstructorsTypeId = typeof RefinedConstructorsTypeId
 
 /**
+ * A generic interface that defines a branded type. It contains a `unique symbol` property `[BrandTypeId]` with a `string` property,
+ * which represents the brand.
+ *
  * @since 1.0.0
  * @category models
  */
@@ -46,12 +64,16 @@ export interface Brand<in out K extends string> {
  */
 export declare namespace Brand {
   /**
+   * Represents a list of refinement errors.
+   *
    * @since 1.0.0
    * @category models
    */
   export interface BrandErrors extends ReadonlyArray<RefinementError> {}
 
   /**
+   * Represents an error that occurs when the provided value of the branded type does not pass the refinement predicate.
+   *
    * @since 1.0.0
    * @category models
    */
@@ -119,6 +141,8 @@ export declare namespace Brand {
     : never
 
   /**
+   * A utility type that checks that all brands have the same base type.
+   *
    * @since 1.0.0
    * @category models
    */
@@ -134,6 +158,8 @@ export declare namespace Brand {
   }
 
   /**
+   * A utility type that transforms a union type `T` into an intersection type.
+   *
    * @since 1.0.0
    * @category models
    */
@@ -142,25 +168,59 @@ export declare namespace Brand {
 }
 
 /**
+ * Returns a `BrandErrors` that contains a single `RefinementError`.
+ *
  * @since 1.0.0
  * @category constructors
  */
-export const error = (message: string, meta?: unknown): Brand.BrandErrors => [{
+export const error: (message: string, meta?: unknown) => Brand.BrandErrors = (
+  message: string,
+  meta?: unknown
+): Brand.BrandErrors => [{
   message,
   meta
 }]
 
 /**
+ * Takes a variable number of `BrandErrors` and returns a single `BrandErrors` that contains all refinement errors.
+ *
  * @since 1.0.0
  * @category constructors
  */
-export const errors = (...errors: Array<Brand.BrandErrors>): Brand.BrandErrors => ReadonlyArray.flatten(errors)
+export const errors: (...errors: Array<Brand.BrandErrors>) => Brand.BrandErrors = (
+  ...errors: Array<Brand.BrandErrors>
+): Brand.BrandErrors => ReadonlyArray.flatten(errors)
 
 /**
+ * Returns a `Brand.Constructor` that can construct a branded type from an unbranded value using the provided `refinement`
+ * predicate as validation of the input data.
+ *
+ * If you don't want to perform any validation but only distinguish between two values of the same type but with different meanings,
+ * see {@link nominal}.
+ *
+ * @param refinement - The refinement predicate to apply to the unbranded value.
+ * @param onFailure - Takes the unbranded value that did not pass the `refinement` predicate and returns a `BrandErrors`.
+ *
+ * @example
+ * import * as Brand from "@effect/data/Brand"
+ *
+ * type Int = number & Brand.Brand<"Int">
+ *
+ * const Int = Brand.refined<Int>(
+ *   (n) => Number.isInteger(n),
+ *   (n) => Brand.error(`Expected ${n} to be an integer`)
+ * )
+ *
+ * assert.strictEqual(Int(1), 1)
+ * assert.throws(() => Int(1.1))
+ *
  * @since 1.0.0
  * @category constructors
  */
-export const refined = <A extends Brand<any>>(
+export const refined: <A extends Brand<any>>(
+  refinement: Predicate<Brand.Unbranded<A>>,
+  onFailure: (a: Brand.Unbranded<A>) => Brand.BrandErrors
+) => Brand.Constructor<A> = <A extends Brand<any>>(
   refinement: Predicate<Brand.Unbranded<A>>,
   onFailure: (a: Brand.Unbranded<A>) => Brand.BrandErrors
 ): Brand.Constructor<A> => {
@@ -182,26 +242,67 @@ export const refined = <A extends Brand<any>>(
 }
 
 /**
+ * This function returns a `Brand.Constructor` that **does not apply any runtime checks**, it just returns the provided value.
+ * It can be used to create nominal types that allow distinguishing between two values of the same type but with different meanings.
+ *
+ * If you also want to perform some validation, see {@link refined}.
+ *
+ * @example
+ * import * as Brand from "@effect/data/Brand"
+ *
+ * type UserId = number & Brand.Brand<"UserId">
+ *
+ * const UserId = Brand.nominal<UserId>()
+ *
+ * assert.strictEqual(UserId(1), 1)
+ *
  * @since 1.0.0
  * @category constructors
  */
-export const nominal = <A extends Brand<any>>(): Brand.Constructor<A> => {
+export const nominal: <A extends Brand<any>>() => Brand.Constructor<A> = <A extends Brand<any>>(): Brand.Constructor<
+  A
+> => {
   // @ts-expect-error
   return Object.assign((args) => args, {
     [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
     option: (args: any) => Option.some(args),
     either: (args: any) => Either.right(args),
-    refine: (args: any): args is Brand.Unbranded<A> & A => true
+    refine: (_args: any): _args is Brand.Unbranded<A> & A => true
   })
 }
 
 /**
- * Composes two brands together to form a single branded type.
+ * Combines two or more brands together to form a single branded type.
+ * This API is useful when you want to validate that the input data passes multiple brand validators.
+ *
+ * @example
+ * import * as Brand from "@effect/data/Brand"
+ *
+ * type Int = number & Brand.Brand<"Int">
+ * const Int = Brand.refined<Int>(
+ *   (n) => Number.isInteger(n),
+ *   (n) => Brand.error(`Expected ${n} to be an integer`)
+ * )
+ * type Positive = number & Brand.Brand<"Positive">
+ * const Positive = Brand.refined<Positive>(
+ *   (n) => n > 0,
+ *   (n) => Brand.error(`Expected ${n} to be positive`)
+ * )
+ *
+ * const PositiveInt = Brand.all(Int, Positive)
+ *
+ * assert.strictEqual(PositiveInt(1), 1)
+ * assert.throws(() => PositiveInt(1.1))
  *
  * @since 1.0.0
- * @category mutations
+ * @category combining
  */
-export const all = <
+export const all: <Brands extends readonly [Brand.Constructor<any>, ...Array<Brand.Constructor<any>>]>(
+  ...brands: Brand.EnsureCommonBase<Brands>
+) => Brand.Constructor<
+  Brand.UnionToIntersection<{ [B in keyof Brands]: Brand.FromConstructor<Brands[B]> }[number]> extends
+    infer X extends Brand<any> ? X : Brand<any>
+> = <
   Brands extends readonly [Brand.Constructor<any>, ...Array<Brand.Constructor<any>>]
 >(...brands: Brand.EnsureCommonBase<Brands>): Brand.Constructor<
   Brand.UnionToIntersection<
