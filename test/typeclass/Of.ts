@@ -3,7 +3,7 @@ import * as RA from "@effect/data/ReadonlyArray"
 import * as _ from "@effect/data/typeclass/Of"
 import * as U from "../util"
 
-describe("Of", () => {
+describe.concurrent("Of", () => {
   it("ofComposition", () => {
     const of = _.ofComposition<RA.ReadonlyArrayTypeLambda, O.OptionTypeLambda>({ of: RA.of }, { of: O.some })
     U.deepStrictEqual(of(1), [O.some(1)])

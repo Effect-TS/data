@@ -4,7 +4,7 @@ import * as RA from "@effect/data/ReadonlyArray"
 import * as _ from "@effect/data/typeclass/Traversable"
 import * as U from "../util"
 
-describe("Traversable", () => {
+describe.concurrent("Traversable", () => {
   it("traverseComposition", () => {
     const traverse = _.traverseComposition(RA.Traversable, RA.Traversable)(O.Applicative)
     U.deepStrictEqual(

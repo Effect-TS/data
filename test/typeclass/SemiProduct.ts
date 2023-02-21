@@ -11,7 +11,7 @@ import * as semigroup from "@effect/data/typeclass/Semigroup"
 import * as _ from "@effect/data/typeclass/SemiProduct"
 import * as U from "../util"
 
-describe("SemiProduct", () => {
+describe.concurrent("SemiProduct", () => {
   it("productMany should be equivalent to `ap`", () => {
     const curry = (f: Function, n: number, acc: ReadonlyArray<unknown>) =>
       (x: unknown) => {
@@ -56,7 +56,7 @@ describe("SemiProduct", () => {
     assertSameResult(RA.SemiApplicative)([[4, 5, 6], [7, 8], [9, 10, 11]])([1, 2, 3])
   })
 
-  describe("productComposition", () => {
+  describe.concurrent("productComposition", () => {
     it("ReadonlyArray", () => {
       const product = _.productComposition(RA.SemiApplicative, O.SemiProduct)
       U.deepStrictEqual(product([], [O.none()]), [])
@@ -79,7 +79,7 @@ describe("SemiProduct", () => {
     })
   })
 
-  describe("productManyComposition", () => {
+  describe.concurrent("productManyComposition", () => {
     it("ReadonlyArray", () => {
       const productMany = _.productManyComposition(RA.SemiApplicative, O.SemiProduct)
       expect(productMany([O.some(1), O.none()], [])).toEqual([
@@ -123,7 +123,7 @@ describe("SemiProduct", () => {
     })
   })
 
-  describe("andThenBind", () => {
+  describe.concurrent("andThenBind", () => {
     it("Covariant (Option)", () => {
       const andThenBind = _.andThenBind(O.Applicative)
       U.deepStrictEqual(pipe(O.some({ a: 1 }), andThenBind("b", O.none())), O.none())
@@ -141,7 +141,7 @@ describe("SemiProduct", () => {
     })
   })
 
-  describe("appendElement", () => {
+  describe.concurrent("appendElement", () => {
     it("Covariant (Option)", () => {
       const appendElement = _.appendElement(O.SemiProduct)
       U.deepStrictEqual(pipe(O.some([1, 2]), appendElement(O.none())), O.none())
@@ -157,7 +157,7 @@ describe("SemiProduct", () => {
     })
   })
 
-  describe("nonEmptyTuple", () => {
+  describe.concurrent("nonEmptyTuple", () => {
     it("Covariant (Option)", () => {
       const nonEmptyTuple = _.nonEmptyTuple(O.SemiProduct)
       expect(nonEmptyTuple(O.some("a"))).toEqual(O.some(["a"]))
@@ -183,7 +183,7 @@ describe("SemiProduct", () => {
     })
   })
 
-  describe("nonEmptyStruct", () => {
+  describe.concurrent("nonEmptyStruct", () => {
     it("Covariant (Option)", () => {
       const nonEmptyStruct = _.nonEmptyStruct(O.Product)
       U.deepStrictEqual(nonEmptyStruct({ a: O.some("a") }), O.some({ a: "a" }))

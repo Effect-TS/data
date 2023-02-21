@@ -4,7 +4,7 @@ import * as RA from "@effect/data/ReadonlyArray"
 import * as _ from "@effect/data/typeclass/Bicovariant"
 import * as U from "../util"
 
-describe("Bicovariant", () => {
+describe.concurrent("Bicovariant", () => {
   it("mapLeft", () => {
     const mapLeft = _.mapLeft(E.Bicovariant)
     const f = (s: string) => s.length

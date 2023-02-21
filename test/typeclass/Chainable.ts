@@ -3,7 +3,7 @@ import * as O from "@effect/data/Option"
 import * as _ from "@effect/data/typeclass/Chainable"
 import * as U from "../util"
 
-describe("Chainable", () => {
+describe.concurrent("Chainable", () => {
   it("andThenDiscard", () => {
     const andThenDiscard = _.andThenDiscard(O.Chainable)
     U.deepStrictEqual(pipe(O.none(), andThenDiscard(O.none())), O.none())

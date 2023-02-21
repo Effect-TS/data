@@ -3,7 +3,7 @@ import { sort } from "@effect/data/ReadonlyArray"
 import * as _ from "@effect/data/typeclass/Order"
 import * as U from "../util"
 
-describe("Order", () => {
+describe.concurrent("Order", () => {
   it("exports", () => {
     expect(_.Invariant).exist
     expect(_.Contravariant).exist
@@ -187,7 +187,7 @@ describe("Order", () => {
     U.strictEqual(max(first, second), first)
   })
 
-  describe("SemiProduct", () => {
+  describe.concurrent("SemiProduct", () => {
     it("product", () => {
       const O = _.SemiProduct.product(_.string, _.number)
       U.deepStrictEqual(O.compare(["a", 1], ["a", 2]), -1)
@@ -205,7 +205,7 @@ describe("Order", () => {
     })
   })
 
-  describe("Product", () => {
+  describe.concurrent("Product", () => {
     it("of", () => {
       const O = _.Product.of("a")
       U.deepStrictEqual(O.compare("b", "a"), 0)

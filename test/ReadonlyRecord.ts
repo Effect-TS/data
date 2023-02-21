@@ -70,7 +70,7 @@ describe.concurrent("ReadonlyRecord", () => {
     assert.deepStrictEqual(RR.remove({ a: 1, b: 2 }, "c"), { a: 1, b: 2 })
   })
 
-  describe("pop", () => {
+  describe.concurrent("pop", () => {
     it("should return the value associated with the given key, if the key is present in the record", () => {
       const record = { a: 1, b: 2 }
       const result = RR.pop("a")(record)
@@ -86,7 +86,7 @@ describe.concurrent("ReadonlyRecord", () => {
     })
   })
 
-  describe("filterMap", () => {
+  describe.concurrent("filterMap", () => {
     it("should filter the properties of an object", () => {
       const obj = { a: 1, b: 2, c: 3 }
       const filtered = RR.filterMap(obj, (value, key) => (value > 2 ? O.some(key) : O.none()))

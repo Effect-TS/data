@@ -5,7 +5,7 @@ import * as RA from "@effect/data/ReadonlyArray"
 import * as _ from "@effect/data/typeclass/Foldable"
 import * as U from "../util"
 
-describe("Foldable", () => {
+describe.concurrent("Foldable", () => {
   it("reduceComposition", () => {
     const reduce = _.reduceComposition(RA.Foldable, RA.Foldable)
     const f = (b: string, a: string) => b + a

@@ -73,8 +73,8 @@ describe.concurrent("Chunk", () => {
     )
   })
 
-  describe("toReadonlyArray", () => {
-    describe("Given an empty Chunk", () => {
+  describe.concurrent("toReadonlyArray", () => {
+    describe.concurrent("Given an empty Chunk", () => {
       const chunk = C.empty()
       it("should give back an empty readonly array", () => {
         expect(C.toReadonlyArray(chunk)).toEqual([])
@@ -82,14 +82,14 @@ describe.concurrent("Chunk", () => {
     })
   })
 
-  describe("is", () => {
-    describe("Given a chunk", () => {
+  describe.concurrent("is", () => {
+    describe.concurrent("Given a chunk", () => {
       const chunk = C.make(0, 1)
       it("should be true", () => {
         expect(C.isChunk(chunk)).toBe(true)
       })
     })
-    describe("Given an object", () => {
+    describe.concurrent("Given an object", () => {
       const object = {}
       it("should be false", () => {
         expect(C.isChunk(object)).toBe(false)
@@ -97,8 +97,8 @@ describe.concurrent("Chunk", () => {
     })
   })
 
-  describe("fromIterable", () => {
-    describe("Given an iterable", () => {
+  describe.concurrent("fromIterable", () => {
+    describe.concurrent("Given an iterable", () => {
       const myIterable = {
         [Symbol.iterator]() {
           let i = 0
@@ -118,8 +118,8 @@ describe.concurrent("Chunk", () => {
     })
   })
 
-  describe("get", () => {
-    describe("Given a Chunk and an index within the bounds", () => {
+  describe.concurrent("get", () => {
+    describe.concurrent("Given a Chunk and an index within the bounds", () => {
       const chunk = C.unsafeFromArray([1, 2, 3])
       const index = 0
 
@@ -131,7 +131,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given a Chunk and an index out of bounds", () => {
+    describe.concurrent("Given a Chunk and an index out of bounds", () => {
       const chunk = C.unsafeFromArray([1, 2, 3])
 
       it("should return a None", () => {
@@ -140,8 +140,8 @@ describe.concurrent("Chunk", () => {
     })
   })
 
-  describe("unsafeGet", () => {
-    describe("Given an empty Chunk and an index", () => {
+  describe.concurrent("unsafeGet", () => {
+    describe.concurrent("Given an empty Chunk and an index", () => {
       const chunk = C.empty()
       const index = 4
 
@@ -150,7 +150,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given an appended Chunk and an index out of bounds", () => {
+    describe.concurrent("Given an appended Chunk and an index out of bounds", () => {
       const chunk = pipe(C.empty(), C.append(1))
       const index = 4
 
@@ -159,14 +159,14 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given an appended Chunk and an index in bounds", () => {
+    describe.concurrent("Given an appended Chunk and an index in bounds", () => {
       it("should return the value", () => {
         const chunk = pipe(C.make(0, 1, 2), C.append(3))
         expect(C.unsafeGet(1)(chunk)).toEqual(1)
       })
     })
 
-    describe("Given a prepended Chunk and an index out of bounds", () => {
+    describe.concurrent("Given a prepended Chunk and an index out of bounds", () => {
       it("should throw", () => {
         fc.assert(fc.property(fc.array(fc.anything()), (array) => {
           let chunk: C.Chunk<unknown> = C.empty()
@@ -178,14 +178,14 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given a prepended Chunk and an index in bounds", () => {
+    describe.concurrent("Given a prepended Chunk and an index in bounds", () => {
       it("should return the value", () => {
         const chunk = pipe(C.make(0, 1, 2), C.prepend(3))
         expect(C.unsafeGet(1)(chunk)).toEqual(0)
       })
     })
 
-    describe("Given a singleton Chunk and an index out of bounds", () => {
+    describe.concurrent("Given a singleton Chunk and an index out of bounds", () => {
       const chunk = pipe(C.make(1))
       const index = 4
 
@@ -194,7 +194,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given an array Chunk and an index out of bounds", () => {
+    describe.concurrent("Given an array Chunk and an index out of bounds", () => {
       const chunk = pipe(C.unsafeFromArray([1, 2]))
       const index = 4
 
@@ -203,7 +203,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given a concat Chunk and an index out of bounds", () => {
+    describe.concurrent("Given a concat Chunk and an index out of bounds", () => {
       it("should throw", () => {
         fc.assert(fc.property(fc.array(fc.anything()), fc.array(fc.anything()), (arr1, arr2) => {
           const chunk: C.Chunk<unknown> = C.concat(C.fromIterable(arr2))(C.unsafeFromArray(arr1))
@@ -212,7 +212,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given an appended Chunk and an index in bounds", () => {
+    describe.concurrent("Given an appended Chunk and an index in bounds", () => {
       const chunk = pipe(C.empty(), C.append(1), C.append(2))
       const index = 1
 
@@ -221,7 +221,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given a prepended Chunk and an index in bounds", () => {
+    describe.concurrent("Given a prepended Chunk and an index in bounds", () => {
       const chunk = pipe(C.empty(), C.prepend(2), C.prepend(1))
       const index = 1
 
@@ -230,7 +230,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given a singleton Chunk and an index in bounds", () => {
+    describe.concurrent("Given a singleton Chunk and an index in bounds", () => {
       const chunk = pipe(C.make(1))
       const index = 0
 
@@ -239,7 +239,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given an array Chunk and an index in bounds", () => {
+    describe.concurrent("Given an array Chunk and an index in bounds", () => {
       const chunk = pipe(C.unsafeFromArray([1, 2, 3]))
       const index = 1
 
@@ -248,7 +248,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given a concat Chunk and an index in bounds", () => {
+    describe.concurrent("Given a concat Chunk and an index in bounds", () => {
       it("should return the value", () => {
         fc.assert(fc.property(fc.array(fc.anything()), fc.array(fc.anything()), (a, b) => {
           const c = [...a, ...b]
@@ -304,15 +304,15 @@ describe.concurrent("Chunk", () => {
     )
   })
 
-  describe("take", () => {
-    describe("Given a Chunk with more elements than the amount taken", () => {
+  describe.concurrent("take", () => {
+    describe.concurrent("Given a Chunk with more elements than the amount taken", () => {
       it("should return the subset", () => {
         expect(pipe(C.unsafeFromArray([1, 2, 3]), C.take(2)))
           .toEqual(C.unsafeFromArray([1, 2]))
       })
     })
 
-    describe("Given a Chunk with fewer elements than the amount taken", () => {
+    describe.concurrent("Given a Chunk with fewer elements than the amount taken", () => {
       const chunk = C.unsafeFromArray([1, 2, 3])
       const amount = 5
 
@@ -325,7 +325,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given a slice Chunk with and an amount", () => {
+    describe.concurrent("Given a slice Chunk with and an amount", () => {
       const chunk = pipe(C.unsafeFromArray([1, 2, 3, 4, 5]), C.take(4))
       const amount = 3
 
@@ -338,7 +338,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given a singleton Chunk with and an amount > 1", () => {
+    describe.concurrent("Given a singleton Chunk with and an amount > 1", () => {
       const chunk = C.make(1)
       const amount = 2
 
@@ -349,7 +349,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given a concatenated Chunk and an amount > 1", () => {
+    describe.concurrent("Given a concatenated Chunk and an amount > 1", () => {
       const chunk = pipe(C.of(1), C.concat(C.make(2, 3, 4)))
       const amount = 2
 
@@ -359,13 +359,13 @@ describe.concurrent("Chunk", () => {
     })
   })
 
-  describe("make", () => {
+  describe.concurrent("make", () => {
     it("should return a NonEmptyChunk", () => {
       expect(C.make(0, 1).length).toStrictEqual(2)
     })
   })
 
-  describe("singleton", () => {
+  describe.concurrent("singleton", () => {
     it("should return a NonEmptyChunk", () => {
       expect(C.of(1).length).toStrictEqual(1)
     })
@@ -374,7 +374,7 @@ describe.concurrent("Chunk", () => {
     })
   })
 
-  describe("drop", () => {
+  describe.concurrent("drop", () => {
     it("should return self on 0", () => {
       const self = C.make(0, 1)
       expect(C.drop(0)(self)).toStrictEqual(self)
@@ -389,8 +389,8 @@ describe.concurrent("Chunk", () => {
     })
   })
 
-  describe("dropRight", () => {
-    describe("Given a Chunk and an amount to drop below the length", () => {
+  describe.concurrent("dropRight", () => {
+    describe.concurrent("Given a Chunk and an amount to drop below the length", () => {
       const chunk = C.unsafeFromArray([1, 2, 3])
       const toDrop = 1
 
@@ -399,7 +399,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given a Chunk and an amount to drop above the length", () => {
+    describe.concurrent("Given a Chunk and an amount to drop above the length", () => {
       const chunk = C.unsafeFromArray([1, 2])
       const toDrop = 3
 
@@ -409,8 +409,8 @@ describe.concurrent("Chunk", () => {
     })
   })
 
-  describe("dropWhile", () => {
-    describe("Given a Chunk and a criteria that applies to part of the chunk", () => {
+  describe.concurrent("dropWhile", () => {
+    describe.concurrent("Given a Chunk and a criteria that applies to part of the chunk", () => {
       const chunk = C.unsafeFromArray([1, 2, 3])
       const criteria = (n: number) => n < 3
 
@@ -419,7 +419,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given a Chunk and a criteria that applies to the whole chunk", () => {
+    describe.concurrent("Given a Chunk and a criteria that applies to the whole chunk", () => {
       const chunk = C.unsafeFromArray([1, 2, 3])
       const criteria = (n: number) => n < 4
 
@@ -429,8 +429,8 @@ describe.concurrent("Chunk", () => {
     })
   })
 
-  describe("concat", () => {
-    describe("Given 2 chunks of the same length", () => {
+  describe.concurrent("concat", () => {
+    describe.concurrent("Given 2 chunks of the same length", () => {
       const chunk1 = C.unsafeFromArray([0, 1])
       const chunk2 = C.unsafeFromArray([2, 3])
 
@@ -439,7 +439,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given 2 chunks where the first one has more elements than the second one", () => {
+    describe.concurrent("Given 2 chunks where the first one has more elements than the second one", () => {
       const chunk1 = C.unsafeFromArray([1, 2])
       const chunk2 = C.unsafeFromArray([3])
 
@@ -448,7 +448,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given 2 chunks where the first one has fewer elements than the second one", () => {
+    describe.concurrent("Given 2 chunks where the first one has fewer elements than the second one", () => {
       const chunk1 = C.unsafeFromArray([1])
       const chunk2 = C.unsafeFromArray([2, 3, 4])
 
@@ -457,7 +457,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given 2 chunks where the first one is appended", () => {
+    describe.concurrent("Given 2 chunks where the first one is appended", () => {
       const chunk1 = pipe(
         C.empty(),
         C.append(1)
@@ -469,7 +469,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given 2 chunks where the second one is appended", () => {
+    describe.concurrent("Given 2 chunks where the second one is appended", () => {
       const chunk1 = C.unsafeFromArray([1])
       const chunk2 = pipe(
         C.empty(),
@@ -481,7 +481,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given 2 chunks where the first one is empty", () => {
+    describe.concurrent("Given 2 chunks where the first one is empty", () => {
       const chunk1 = C.empty()
       const chunk2 = C.unsafeFromArray([1, 2])
 
@@ -490,7 +490,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given 2 chunks where the second one is empty", () => {
+    describe.concurrent("Given 2 chunks where the second one is empty", () => {
       const chunk1 = C.unsafeFromArray([1, 2])
       const chunk2 = C.empty()
 
@@ -499,7 +499,7 @@ describe.concurrent("Chunk", () => {
       })
     })
 
-    describe("Given several chunks concatenated with each", () => {
+    describe.concurrent("Given several chunks concatenated with each", () => {
       const chunk1 = C.empty()
       const chunk2 = C.unsafeFromArray([1])
       const chunk3 = C.unsafeFromArray([2])
@@ -596,7 +596,7 @@ describe.concurrent("Chunk", () => {
     )).toEqual([[1, 5], [2, 6], [3, 7], [4, 8]])
   })
 
-  describe("Given two non-materialized chunks of different sizes", () => {
+  describe.concurrent("Given two non-materialized chunks of different sizes", () => {
     it("should zip the chunks together and drop the leftover", () => {
       // Create two non-materialized Chunks
       const left = pipe(C.make(-1, 0, 1), C.drop(1))

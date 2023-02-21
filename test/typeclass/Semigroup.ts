@@ -5,7 +5,7 @@ import * as order from "@effect/data/typeclass/Order"
 import * as _ from "@effect/data/typeclass/Semigroup"
 import * as U from "../util"
 
-describe("Semigroup", () => {
+describe.concurrent("Semigroup", () => {
   it("exports", () => {
     expect(_.Invariant).exist
   })
@@ -33,7 +33,7 @@ describe("Semigroup", () => {
     U.deepStrictEqual(S.combineMany("a", ["b", "c", "d"]), "a|b|c|d")
   })
 
-  describe("min", () => {
+  describe.concurrent("min", () => {
     it("should return the minimum", () => {
       const S = _.min(Number.Order)
       U.deepStrictEqual(S.combineMany(1, []), 1)
@@ -49,7 +49,7 @@ describe("Semigroup", () => {
     })
   })
 
-  describe("max", () => {
+  describe.concurrent("max", () => {
     it("should return the maximum", () => {
       const S = _.max(Number.Order)
       U.deepStrictEqual(S.combineMany(1, []), 1)

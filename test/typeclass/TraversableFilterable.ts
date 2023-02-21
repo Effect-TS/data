@@ -4,7 +4,7 @@ import * as RA from "@effect/data/ReadonlyArray"
 import * as _ from "@effect/data/typeclass/TraversableFilterable"
 import * as U from "../util"
 
-describe("TraversableFilterable", () => {
+describe.concurrent("TraversableFilterable", () => {
   it("traversePartitionMap", () => {
     const traversePartitionMap: <A, B, C>(
       self: ReadonlyArray<A>,
