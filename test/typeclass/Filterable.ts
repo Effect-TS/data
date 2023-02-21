@@ -5,7 +5,7 @@ import * as RA from "@effect/data/ReadonlyArray"
 import * as _ from "@effect/data/typeclass/Filterable"
 import * as U from "../util"
 
-describe("Filterable", () => {
+describe.concurrent("Filterable", () => {
   it("filterMapComposition", () => {
     const filterMap = _.filterMapComposition(RA.Covariant, O.Filterable)
     const f = (s: string) => s.length > 1 ? O.some(s.length) : O.none()

@@ -4,7 +4,7 @@ import * as _ from "@effect/data/typeclass/Contravariant"
 import * as order from "@effect/data/typeclass/Order"
 import * as U from "../util"
 
-describe("Contravariant", () => {
+describe.concurrent("Contravariant", () => {
   it("mapComposition", () => {
     const map = _.contramapComposition(P.Contravariant, P.Contravariant)
     const emptyString: P.Predicate<P.Predicate<string>> = (p) => p("") === true

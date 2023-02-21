@@ -3,7 +3,7 @@ import * as O from "@effect/data/Option"
 import * as _ from "@effect/data/typeclass/FlatMap"
 import * as U from "../util"
 
-describe("FlatMap", () => {
+describe.concurrent("FlatMap", () => {
   it("flatten", () => {
     const flatten = _.flatten(O.FlatMap)
     U.deepStrictEqual(pipe(O.none(), flatten), O.none())

@@ -4,7 +4,7 @@ import * as RA from "@effect/data/ReadonlyArray"
 import * as _ from "@effect/data/typeclass/Covariant"
 import * as U from "../util"
 
-describe("Covariant", () => {
+describe.concurrent("Covariant", () => {
   it("mapComposition", () => {
     const map = _.mapComposition(RA.Covariant, RA.Covariant)
     const f = (a: string) => a + "!"

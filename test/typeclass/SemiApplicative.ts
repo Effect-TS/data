@@ -4,7 +4,7 @@ import * as String from "@effect/data/String"
 import * as _ from "@effect/data/typeclass/SemiApplicative"
 import * as U from "../util"
 
-describe("SemiApplicative", () => {
+describe.concurrent("SemiApplicative", () => {
   it("ap", () => {
     const ap = _.ap(O.SemiApplicative)
     const double = (n: number) => n * 2

@@ -3,7 +3,7 @@ import * as String from "@effect/data/String"
 import * as _ from "@effect/data/typeclass/Monoid"
 import * as U from "../util"
 
-describe("Monoid", () => {
+describe.concurrent("Monoid", () => {
   it("min", () => {
     const M = _.min(N.Bounded)
     U.deepStrictEqual(M.combineAll([]), +Infinity)
@@ -29,7 +29,7 @@ describe("Monoid", () => {
     U.deepStrictEqual(M.combineMany(M.empty, ["a"]), "a")
   })
 
-  describe("struct", () => {
+  describe.concurrent("struct", () => {
     it("baseline", () => {
       const M = _.struct({
         name: String.Monoid,

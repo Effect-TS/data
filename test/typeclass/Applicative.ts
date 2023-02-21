@@ -3,7 +3,7 @@ import * as O from "@effect/data/Option"
 import * as _ from "@effect/data/typeclass/Applicative"
 import * as U from "../util"
 
-describe("Applicative", () => {
+describe.concurrent("Applicative", () => {
   it("liftMonoid", () => {
     const liftMonoid = _.getMonoid(O.Applicative)
     const M = liftMonoid(N.MonoidSum)

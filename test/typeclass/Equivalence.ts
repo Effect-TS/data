@@ -1,7 +1,7 @@
 import { pipe } from "@effect/data/Function"
 import * as _ from "@effect/data/typeclass/Equivalence"
 
-describe("Equivalence", () => {
+describe.concurrent("Equivalence", () => {
   it("exports", () => {
     expect(_.Invariant).exist
     expect(_.Contravariant).exist

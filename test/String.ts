@@ -2,6 +2,7 @@ import { pipe } from "@effect/data/Function"
 import * as S from "@effect/data/String"
 import { deepStrictEqual } from "@effect/data/test/util"
 import * as Order from "@effect/data/typeclass/Order"
+import { describe, expect, it } from "vitest"
 
 describe.concurrent("String", () => {
   it("isString", () => {
@@ -40,35 +41,35 @@ describe.concurrent("String", () => {
   })
 
   it("concat", () => {
-    deepStrictEqual(pipe("a", S.concat("b")), "ab")
+    expect(pipe("a", S.concat("b"))).toBe("ab")
   })
 
   it("isEmpty", () => {
-    deepStrictEqual(S.isEmpty(""), true)
-    deepStrictEqual(S.isEmpty("a"), false)
+    expect(S.isEmpty("")).toBe(true)
+    expect(S.isEmpty("a")).toBe(false)
   })
 
   it("isNonEmpty", () => {
-    deepStrictEqual(S.isNonEmpty(""), false)
-    deepStrictEqual(S.isNonEmpty("a"), true)
+    expect(S.isNonEmpty("")).toBe(false)
+    expect(S.isNonEmpty("a")).toBe(true)
   })
 
   it("length", () => {
-    deepStrictEqual(S.length(""), 0)
-    deepStrictEqual(S.length("a"), 1)
-    deepStrictEqual(S.length("aaa"), 3)
+    expect(S.length("")).toBe(0)
+    expect(S.length("a")).toBe(1)
+    expect(S.length("aaa")).toBe(3)
   })
 
   it("toUpperCase", () => {
-    deepStrictEqual(S.toUpperCase("a"), "A")
+    expect(S.toUpperCase("a")).toBe("A")
   })
 
   it("toLowerCase", () => {
-    deepStrictEqual(S.toLowerCase("A"), "a")
+    expect(S.toLowerCase("A")).toBe("a")
   })
 
   it("replace", () => {
-    deepStrictEqual(pipe("abc", S.replace("b", "d")), "adc")
+    expect(pipe("abc", S.replace("b", "d"))).toBe("adc")
   })
 
   it("split", () => {
@@ -77,45 +78,45 @@ describe.concurrent("String", () => {
   })
 
   it("trim", () => {
-    deepStrictEqual(pipe(" a ", S.trim), "a")
+    expect(pipe(" a ", S.trim)).toBe("a")
   })
 
   it("trimStart", () => {
-    deepStrictEqual(pipe(" a ", S.trimStart), "a ")
+    expect(pipe(" a ", S.trimStart)).toBe("a ")
   })
 
   it("trimEnd", () => {
-    deepStrictEqual(pipe(" a ", S.trimEnd), " a")
+    expect(pipe(" a ", S.trimEnd)).toBe(" a")
   })
 
   it("includes", () => {
-    assert.deepStrictEqual(S.includes("abc", "b"), true)
-    assert.deepStrictEqual(S.includes("abc", "d"), false)
+    expect(S.includes("abc", "b")).toBe(true)
+    expect(S.includes("abc", "d")).toBe(false)
   })
 
   it("includesWithPosition", () => {
-    assert.deepStrictEqual(S.includesWithPosition("abc", "b", 1), true)
-    assert.deepStrictEqual(S.includesWithPosition("abc", "a", 1), false)
+    expect(S.includesWithPosition("abc", "b", 1)).toBe(true)
+    expect(S.includesWithPosition("abc", "a", 1)).toBe(false)
   })
 
   it("startsWith", () => {
-    assert.deepStrictEqual(S.startsWith("abc", "a"), true)
-    assert.deepStrictEqual(S.startsWith("bc", "a"), false)
+    expect(S.startsWith("abc", "a")).toBe(true)
+    expect(S.startsWith("bc", "a")).toBe(false)
   })
 
   it("startsWithPosition", () => {
-    assert.deepStrictEqual(S.startsWithPosition("abc", "b", 1), true)
-    assert.deepStrictEqual(S.startsWithPosition("bc", "a", 1), false)
+    expect(S.startsWithPosition("abc", "b", 1)).toBe(true)
+    expect(S.startsWithPosition("bc", "a", 1)).toBe(false)
   })
 
   it("endsWith", () => {
-    assert.deepStrictEqual(S.endsWith("abc", "c"), true)
-    assert.deepStrictEqual(S.endsWith("ab", "c"), false)
+    expect(S.endsWith("abc", "c")).toBe(true)
+    expect(S.endsWith("ab", "c")).toBe(false)
   })
 
   it("endsWithPosition", () => {
-    assert.deepStrictEqual(S.endsWithPosition("abc", "b", 2), true)
-    assert.deepStrictEqual(S.endsWithPosition("abc", "c", 2), false)
+    expect(S.endsWithPosition("abc", "b", 2)).toBe(true)
+    expect(S.endsWithPosition("abc", "c", 2)).toBe(false)
   })
 
   it("slice", () => {
@@ -124,94 +125,64 @@ describe.concurrent("String", () => {
 
   describe.concurrent("takeLeft", () => {
     it("should take the specified number of characters from the left side of a string", () => {
-      const string = "Hello, World!"
-
-      const result = pipe(string, S.takeLeft(7))
-
-      assert.strictEqual(result, "Hello, ")
+      expect(S.takeLeft("Hello, World!", 7)).toBe("Hello, ")
     })
 
     it("should return the string for `n` larger than the string length", () => {
       const string = "Hello, World!"
-
-      const result = pipe(string, S.takeLeft(100))
-
-      assert.strictEqual(result, string)
+      expect(S.takeLeft(string, 100)).toBe(string)
     })
 
     it("should return the empty string for a negative `n`", () => {
-      const string = "Hello, World!"
-
-      const result = pipe(string, S.takeLeft(-1))
-
-      assert.strictEqual(result, "")
+      expect(S.takeLeft("Hello, World!", -1)).toBe("")
     })
 
     it("should round down if `n` is a float", () => {
-      const string = "Hello, World!"
-
-      const result = pipe(string, S.takeLeft(5.5))
-
-      assert.strictEqual(result, "Hello")
+      expect(S.takeLeft("Hello, World!", 5.5)).toBe("Hello")
     })
   })
 
   describe.concurrent("takeRight", () => {
     it("should take the specified number of characters from the right side of a string", () => {
-      const string = "Hello, World!"
-
-      const result = pipe(string, S.takeRight(7))
-
-      assert.strictEqual(result, " World!")
+      expect(S.takeRight("Hello, World!", 7)).toBe(" World!")
     })
 
     it("should return the string for `n` larger than the string length", () => {
       const string = "Hello, World!"
-
-      const result = pipe(string, S.takeRight(100))
-
-      assert.strictEqual(result, string)
+      expect(S.takeRight(string, 100)).toBe(string)
     })
 
     it("should return the empty string for a negative `n`", () => {
-      const string = "Hello, World!"
-
-      const result = pipe(string, S.takeRight(-1))
-
-      assert.strictEqual(result, "")
+      expect(S.takeRight("Hello, World!", -1)).toBe("")
     })
 
     it("should round down if `n` is a float", () => {
-      const string = "Hello, World!"
-
-      const result = pipe(string, S.takeRight(6.5))
-
-      assert.strictEqual(result, "World!")
+      expect(S.takeRight("Hello, World!", 6.5)).toBe("World!")
     })
   })
 
-  // TODO: 100% coverage tests (ask Max)
-  // describe.concurrent("stripMargin", () => {
-  //   it("should strip a leading prefix from each line", () => {
-  //     const string = `|
-  //   |Hello,
-  //   |World!
-  //   |`
+  describe.concurrent("stripMargin", () => {
+    it("should strip a leading prefix from each line", () => {
+      const string = `|
+    |Hello,
+    |World!
+    |`
+      const result = S.stripMargin(string)
+      expect(result).toBe("\nHello,\nWorld!\n")
+    })
 
-  //     const result = pipe(string, String.stripMargin)
+    it("should strip a leading prefix from each line using a margin character", () => {
+      const string = "\n$\n    $Hello,\r\n    $World!\n $"
+      const result = S.stripMarginWith(string, "$")
+      expect(result).toBe("\n\nHello,\r\nWorld!\n")
+    })
+  })
 
-  //     assert.strictEqual(result, "\nHello,\nWorld!\n")
-  //   })
-
-  //   it("should strip a leading prefix from each line using a margin character", () => {
-  //     const string = `$
-  //   $Hello,
-  //   $World!
-  //   $`
-
-  //     const result = pipe(string, String.stripMarginWith("$"))
-
-  //     assert.strictEqual(result, "\nHello,\nWorld!\n")
-  //   })
-  // })
+  describe.concurrent("linesWithSeparators", () => {
+    it("should split a string into lines with separators", () => {
+      const string = "\n$\n    $Hello,\r\n    $World!\n $"
+      const result = S.linesWithSeparators(string)
+      deepStrictEqual(Array.from(result), ["\n", "$\n", "    $Hello,\r\n", "    $World!\n", " $"])
+    })
+  })
 })

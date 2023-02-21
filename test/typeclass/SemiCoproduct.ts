@@ -2,7 +2,7 @@ import * as E from "@effect/data/Either"
 import * as _ from "@effect/data/typeclass/SemiCoproduct"
 import * as U from "../util"
 
-describe("SemiCoproduct", () => {
+describe.concurrent("SemiCoproduct", () => {
   it("getSemigroup", () => {
     const S = _.getSemigroup(E.SemiCoproduct)<unknown, never, string, number>()
     U.deepStrictEqual(S.combine(E.right(1), E.right(2)), E.right(1))

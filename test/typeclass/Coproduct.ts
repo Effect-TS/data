@@ -2,7 +2,7 @@ import * as O from "@effect/data/Option"
 import * as _ from "@effect/data/typeclass/Coproduct"
 import * as U from "../util"
 
-describe("Coproduct", () => {
+describe.concurrent("Coproduct", () => {
   it("getMonoid", () => {
     const M = _.getMonoid(O.Alternative)<unknown, never, never, number>()
     U.deepStrictEqual(M.combine(O.none(), O.none()), O.none())

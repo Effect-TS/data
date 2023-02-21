@@ -6,7 +6,7 @@ import * as _ from "@effect/data/typeclass/Invariant"
 import * as semigroup from "@effect/data/typeclass/Semigroup"
 import * as U from "../util"
 
-describe("Invariant", () => {
+describe.concurrent("Invariant", () => {
   it("imapComposition", () => {
     const imap = _.imapComposition(semigroup.Invariant, O.Invariant)
     const S = imap(O.getOptionalMonoid(String.Semigroup), (s) => [s], ([s]) => s)
@@ -19,7 +19,7 @@ describe("Invariant", () => {
     )
   })
 
-  describe("bindTo", () => {
+  describe.concurrent("bindTo", () => {
     it("Covariant (Option)", () => {
       const bindTo = _.bindTo(O.Invariant)
       U.deepStrictEqual(pipe(O.none(), bindTo("a")), O.none())
@@ -34,7 +34,7 @@ describe("Invariant", () => {
     })
   })
 
-  describe("tupled", () => {
+  describe.concurrent("tupled", () => {
     it("Covariant (Option)", () => {
       const tupled = _.tupled(O.Invariant)
       U.deepStrictEqual(pipe(O.none(), tupled), O.none())

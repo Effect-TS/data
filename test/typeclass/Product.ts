@@ -7,8 +7,8 @@ import * as _ from "@effect/data/typeclass/Product"
 import * as semigroup from "@effect/data/typeclass/Semigroup"
 import * as U from "../util"
 
-describe("Product", () => {
-  describe("tuple", () => {
+describe.concurrent("Product", () => {
+  describe.concurrent("tuple", () => {
     it("Covariant (Option)", () => {
       const tuple = _.tuple(O.Product)
       U.deepStrictEqual(tuple(), O.some([]))
@@ -36,7 +36,7 @@ describe("Product", () => {
     })
   })
 
-  describe("struct", () => {
+  describe.concurrent("struct", () => {
     it("Covariant (Option)", () => {
       const struct = _.struct(O.Product)
       U.deepStrictEqual(struct({}), O.some({}))

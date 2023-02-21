@@ -2,7 +2,7 @@ import * as Number from "@effect/data/Number"
 import * as _ from "@effect/data/typeclass/Bounded"
 import * as U from "../util"
 
-describe("Bounded", () => {
+describe.concurrent("Bounded", () => {
   it("clamp", () => {
     const clamp = _.clamp({ ...Number.Order, minBound: 1, maxBound: 10 })
     U.deepStrictEqual(clamp(2), 2)

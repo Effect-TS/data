@@ -1,7 +1,7 @@
 import * as _ from "@effect/data/Ordering"
 import { deepStrictEqual } from "./util"
 
-describe("Ordering", () => {
+describe.concurrent("Ordering", () => {
   it("match", () => {
     const f = _.match(
       () => "lt",

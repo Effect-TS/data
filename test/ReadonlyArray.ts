@@ -86,7 +86,7 @@ describe.concurrent("ReadonlyArray", () => {
     expect(RA.fromIterable(new Set([1, 2, 3]))).toEqual([1, 2, 3])
   })
 
-  describe("iterable inputs", () => {
+  describe.concurrent("iterable inputs", () => {
     it("prepend", () => {
       deepStrictEqual(pipe([1, 2, 3], RA.prepend(0)), [0, 1, 2, 3])
       deepStrictEqual(pipe([[2]], RA.prepend([1])), [[1], [2]])
@@ -615,7 +615,7 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(RA.sortNonEmpty(Number.Order)([1, 3, 2]), [1, 2, 3])
   })
 
-  describe("unsafeGet", () => {
+  describe.concurrent("unsafeGet", () => {
     it("should throw on index out of bound", () => {
       expect(() => pipe([], RA.unsafeGet(100))).toThrowError(new Error("Index 100 out of bounds"))
     })
