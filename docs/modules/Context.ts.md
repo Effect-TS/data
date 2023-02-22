@@ -59,7 +59,7 @@ desireable to preserve the instance across reloads.
 **Signature**
 
 ```ts
-export declare const Tag: <Service>(key?: string | undefined) => Tag<Service>
+export declare const Tag: <Service>(key?: unknown) => Tag<Service>
 ```
 
 **Example**
@@ -67,8 +67,8 @@ export declare const Tag: <Service>(key?: string | undefined) => Tag<Service>
 ```ts
 import * as Context from '@effect/data/Context'
 
-assert.strictEqual(Context.Tag() === Context.Tag(), false)
-assert.strictEqual(Context.Tag('PORT') === Context.Tag('PORT'), true)
+assert.strictEqual(Context.Tag().key === Context.Tag().key, false)
+assert.strictEqual(Context.Tag('PORT').key === Context.Tag('PORT').key, true)
 ```
 
 Added in v1.0.0
@@ -232,7 +232,7 @@ export interface Context<Services> extends Equal {
   readonly _id: TypeId
   readonly _S: (_: Services) => unknown
   /** @internal */
-  readonly unsafeMap: Map<Tag<any>, any>
+  readonly unsafeMap: Map<unknown, unknown>
 }
 ```
 
@@ -243,9 +243,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Tag<Service> {
+export interface Tag<Service> extends Equal {
   readonly _id: TagTypeId
   readonly _S: (_: Service) => Service
+  readonly key: unknown
 }
 ```
 
