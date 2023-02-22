@@ -12,17 +12,9 @@ export const TagTypeId: C.TagTypeId = Symbol.for("@effect/data/Context/Tag") as 
 export class TagImpl<Service> implements C.Tag<Service> {
   readonly _id: typeof TagTypeId = TagTypeId
   readonly _S: (_: Service) => Service = (_) => _
-
-  constructor(readonly key?: string) {
-    if (key) {
-      if (!(TagTypeId in globalThis)) {
-        globalThis[TagTypeId] = {}
-      }
-      if (!(key in globalThis[TagTypeId])) {
-        globalThis[TagTypeId][key] = this
-      }
-      return globalThis[TagTypeId][key]
-    }
+  readonly key: unknown
+  constructor(key?: unknown) {
+    this.key = key ?? Symbol()
   }
 }
 
@@ -38,9 +30,7 @@ export class ContextImpl<Services> implements C.Context<Services> {
     if (isContext(that)) {
       if (this.unsafeMap.size === that.unsafeMap.size) {
         for (const k of this.unsafeMap.keys()) {
-          if (
-            !that.unsafeMap.has(k) || !Equal.equals(this.unsafeMap.get(k), that.unsafeMap.get(k))
-          ) {
+          if (!that.unsafeMap.has(k) || !Equal.equals(this.unsafeMap.get(k), that.unsafeMap.get(k))) {
             return false
           }
         }
@@ -54,7 +44,7 @@ export class ContextImpl<Services> implements C.Context<Services> {
     return Hash.number(this.unsafeMap.size)
   }
 
-  constructor(readonly unsafeMap: Map<C.Tag<any>, any>) {}
+  constructor(readonly unsafeMap: Map<unknown, any>) {}
 }
 
 /** @internal */
@@ -72,7 +62,7 @@ export const empty = (): C.Context<never> => new ContextImpl<never>(new Map())
 export const make = <T extends C.Tag<any>>(
   tag: T,
   service: C.Tag.Service<T>
-): C.Context<C.Tag.Service<T>> => new ContextImpl(new Map([[tag, service]]))
+): C.Context<C.Tag.Service<T>> => new ContextImpl(new Map([[tag.key, service]]))
 
 /** @internal */
 export const add = Dual.dual<
@@ -89,7 +79,7 @@ export const add = Dual.dual<
   ) => C.Context<Services | C.Tag.Service<T>>
 >(3, (self, tag, service) => {
   const map = new Map(self.unsafeMap)
-  map.set(tag, service)
+  map.set(tag.key, service)
   return new ContextImpl(map)
 })
 
@@ -105,10 +95,10 @@ export const get = Dual.dual<
     tag: T
   ) => T extends C.Tag<infer S> ? S : never
 >(2, (self, tag) => {
-  if (!self.unsafeMap.has(tag)) {
+  if (!self.unsafeMap.has(tag.key)) {
     throw new Error("Service not found")
   }
-  return self.unsafeMap.get(tag)!
+  return self.unsafeMap.get(tag.key)! as any
 })
 
 /** @internal */
@@ -116,10 +106,10 @@ export const unsafeGet = Dual.dual<
   <S>(tag: C.Tag<S>) => <Services>(self: C.Context<Services>) => S,
   <Services, S>(self: C.Context<Services>, tag: C.Tag<S>) => S
 >(2, (self, tag) => {
-  if (!self.unsafeMap.has(tag)) {
+  if (!self.unsafeMap.has(tag.key)) {
     throw new Error("Service not found")
   }
-  return self.unsafeMap.get(tag)!
+  return self.unsafeMap.get(tag.key)! as any
 })
 
 /** @internal */
@@ -127,10 +117,10 @@ export const getOption = Dual.dual<
   <S>(tag: C.Tag<S>) => <Services>(self: C.Context<Services>) => O.Option<S>,
   <Services, S>(self: C.Context<Services>, tag: C.Tag<S>) => O.Option<S>
 >(2, (self, tag) => {
-  if (!self.unsafeMap.has(tag)) {
+  if (!self.unsafeMap.has(tag.key)) {
     return option.none()
   }
-  return option.some(self.unsafeMap.get(tag)!)
+  return option.some(self.unsafeMap.get(tag.key)! as any)
 })
 
 /** @internal */
@@ -150,7 +140,7 @@ export const prune = <Services, S extends Array<C.Tags<Services>>>(...tags: S) =
   (self: C.Context<Services>): C.Context<
     { [k in keyof S]: C.Tag.Service<S[k]> }[number]
   > => {
-    const tagSet = new Set<C.Tag<any>>(tags)
+    const tagSet = new Set<unknown>(tags.map((t) => t.key))
     const newEnv = new Map()
     for (const [tag, s] of self.unsafeMap.entries()) {
       if (tagSet.has(tag)) {
