@@ -33,11 +33,14 @@ Added in v1.0.0
   - [isEmpty](#isempty)
   - [isNonEmpty](#isnonempty)
   - [length](#length)
+  - [linesWithSeparators](#lineswithseparators)
   - [replace](#replace)
   - [slice](#slice)
   - [split](#split)
   - [startsWith](#startswith)
   - [startsWithPosition](#startswithposition)
+  - [stripMargin](#stripmargin)
+  - [stripMarginWith](#stripmarginwith)
   - [takeLeft](#takeleft)
   - [takeRight](#takeright)
   - [toLowerCase](#tolowercase)
@@ -290,6 +293,19 @@ assert.deepStrictEqual(S.length('abc'), 3)
 
 Added in v1.0.0
 
+## linesWithSeparators
+
+Returns an `IterableIterator` which yields each line contained within the
+string as well as the trailing newline character.
+
+**Signature**
+
+```ts
+export declare const linesWithSeparators: (s: string) => LinesIterator
+```
+
+Added in v1.0.0
+
 ## replace
 
 **Signature**
@@ -401,6 +417,34 @@ import * as S from '@effect/data/String'
 
 assert.deepStrictEqual(S.startsWithPosition('abc', 'b', 1), true)
 assert.deepStrictEqual(S.startsWithPosition('bc', 'a', 1), false)
+```
+
+Added in v1.0.0
+
+## stripMargin
+
+For every line in this string, strip a leading prefix consisting of blanks
+or control characters followed by the `"|"` character from the line.
+
+**Signature**
+
+```ts
+export declare const stripMargin: (self: string) => string
+```
+
+Added in v1.0.0
+
+## stripMarginWith
+
+For every line in this string, strip a leading prefix consisting of blanks
+or control characters followed by the character specified by `marginChar`
+from the line.
+
+**Signature**
+
+```ts
+export declare const stripMarginWith: ((marginChar: string) => (self: string) => string) &
+  ((self: string, marginChar: string) => string)
 ```
 
 Added in v1.0.0
