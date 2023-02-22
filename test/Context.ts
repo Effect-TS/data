@@ -22,7 +22,7 @@ describe.concurrent("Context", () => {
   it("global tag", () => {
     const a = Context.Tag<number>("@effect/data/test/Context/Tag")
     const b = Context.Tag<number>("@effect/data/test/Context/Tag")
-    expect(a).toBe(b)
+    expect(a.key).toBe(b.key)
   })
 
   it("adds and retrieve services", () => {
@@ -134,8 +134,8 @@ describe.concurrent("Context", () => {
     assert.deepNestedPropertyVal(result, "first._tag", "AndThen")
     assert.deepNestedPropertyVal(result, "first.first._tag", "Empty")
     assert.deepNestedPropertyVal(result, "first.second._tag", "UpdateService")
-    assert.deepNestedPropertyVal(result, "first.second.tag", B)
+    assert.deepNestedPropertyVal(result, "first.second.key", B.key)
     assert.deepNestedPropertyVal(result, "second._tag", "RemoveService")
-    assert.deepNestedPropertyVal(result, "second.tag", C)
+    assert.deepNestedPropertyVal(result, "second.key", C.key)
   })
 })

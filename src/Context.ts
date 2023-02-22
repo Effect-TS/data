@@ -20,6 +20,7 @@ export type TagTypeId = typeof TagTypeId
 export interface Tag<Service> {
   readonly _id: TagTypeId
   readonly _S: (_: Service) => Service
+  readonly key: unknown
 }
 
 /**
@@ -39,7 +40,7 @@ export declare namespace Tag {
  * @since 1.0.0
  * @category constructors
  */
-export const Tag = <Service>(key?: string): Tag<Service> => new C.TagImpl(key)
+export const Tag = <Service>(key?: unknown): Tag<Service> => new C.TagImpl(key)
 
 const TypeId: unique symbol = C.ContextTypeId as TypeId
 
@@ -63,7 +64,7 @@ export interface Context<Services> extends Equal {
   readonly _id: TypeId
   readonly _S: (_: Services) => unknown
   /** @internal */
-  readonly unsafeMap: Map<Tag<any>, any>
+  readonly unsafeMap: Map<unknown, unknown>
 }
 
 /**
