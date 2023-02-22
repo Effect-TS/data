@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.2.0
+
+### Minor Changes
+
+- [#232](https://github.com/Effect-TS/data/pull/232) [`791f368`](https://github.com/Effect-TS/data/commit/791f368d58949731742a647f15237e67a95d4b6d) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Support key in Tag, implement Equals
+
 ## 0.1.3
 
 ### Patch Changes
