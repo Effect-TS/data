@@ -15,6 +15,13 @@ export class TagImpl<Service> implements C.Tag<Service> {
   readonly key: unknown
   constructor(key?: unknown) {
     this.key = key ?? Symbol()
+    if (!(TagTypeId in globalThis)) {
+      globalThis[TagTypeId] = new Map()
+    }
+    if (!(globalThis[TagTypeId].has(this.key))) {
+      globalThis[TagTypeId].set(this.key, this)
+    }
+    return globalThis[TagTypeId].get(this.key)
   }
 }
 
