@@ -6,6 +6,12 @@ parent: Modules
 
 ## Context overview
 
+This module provides a data structure called `Context` that can be used for dependency injection in effectful
+programs. It is essentially a table mapping `Tag`s to their implementations (called `Service`s), and can be used to
+manage dependencies in a type-safe way. The `Context` data structure is essentially a way of providing access to a set
+of related services that can be passed around as a single unit. This module provides functions to create, modify, and
+query the contents of a `Context`, as well as a number of utility types for working with tags and services.
+
 Added in v1.0.0
 
 ---
@@ -42,7 +48,9 @@ Added in v1.0.0
 
 ## Tag
 
-Specifying the key will make the Tag global, meaning two tags with the same
+Creates a new `Tag` instance with an optional key parameter.
+
+Specifying the `key` will make the `Tag` global, meaning two tags with the same
 key will map to the same instance.
 
 Note: this is useful for cases where live reload can happen and it is
@@ -54,9 +62,20 @@ desireable to preserve the instance across reloads.
 export declare const Tag: <Service>(key?: string | undefined) => Tag<Service>
 ```
 
+**Example**
+
+```ts
+import * as Context from '@effect/data/Context'
+
+assert.strictEqual(Context.Tag() === Context.Tag(), false)
+assert.strictEqual(Context.Tag('PORT') === Context.Tag('PORT'), true)
+```
+
 Added in v1.0.0
 
 ## empty
+
+Returns an empty `Context`.
 
 **Signature**
 
@@ -64,9 +83,19 @@ Added in v1.0.0
 export declare const empty: () => Context<never>
 ```
 
+**Example**
+
+```ts
+import * as Context from '@effect/data/Context'
+
+assert.strictEqual(Context.isContext(Context.empty()), true)
+```
+
 Added in v1.0.0
 
 ## make
+
+Creates a new `Context` with a single service associated to the tag.
 
 **Signature**
 
@@ -74,11 +103,25 @@ Added in v1.0.0
 export declare const make: <T extends Tag<any>>(tag: T, service: Tag.Service<T>) => Context<Tag.Service<T>>
 ```
 
+**Example**
+
+```ts
+import * as Context from '@effect/data/Context'
+
+const Port = Context.Tag<{ PORT: number }>()
+
+const Services = Context.make(Port, { PORT: 8080 })
+
+assert.deepStrictEqual(Context.get(Services, Port), { PORT: 8080 })
+```
+
 Added in v1.0.0
 
 # getters
 
 ## get
+
+Get a service from the context that corresponds to the given tag.
 
 **Signature**
 
@@ -89,9 +132,26 @@ export declare const get: {
 }
 ```
 
+**Example**
+
+```ts
+import * as Context from '@effect/data/Context'
+import { pipe } from '@effect/data/Function'
+
+const Port = Context.Tag<{ PORT: number }>()
+const Timeout = Context.Tag<{ TIMEOUT: number }>()
+
+const Services = pipe(Context.make(Port, { PORT: 8080 }), Context.add(Timeout, { TIMEOUT: 5000 }))
+
+assert.deepStrictEqual(Context.get(Services, Timeout), { TIMEOUT: 5000 })
+```
+
 Added in v1.0.0
 
 ## getOption
+
+Get the value associated with the specified tag from the context wrapped in an `Option` object. If the tag is not
+found, the `Option` object will be `None`.
 
 **Signature**
 
@@ -102,26 +162,61 @@ export declare const getOption: {
 }
 ```
 
+**Example**
+
+```ts
+import * as Context from '@effect/data/Context'
+import * as O from '@effect/data/Option'
+
+const Port = Context.Tag<{ PORT: number }>()
+const Timeout = Context.Tag<{ TIMEOUT: number }>()
+
+const Services = Context.make(Port, { PORT: 8080 })
+
+assert.deepStrictEqual(Context.getOption(Services, Port), O.some({ PORT: 8080 }))
+assert.deepStrictEqual(Context.getOption(Services, Timeout), O.none())
+```
+
 Added in v1.0.0
 
 # guards
 
 ## isContext
 
+Checks if the provided argument is a `Context`.
+
 **Signature**
 
 ```ts
-export declare const isContext: (u: unknown) => u is Context<never>
+export declare const isContext: (input: unknown) => input is Context<never>
+```
+
+**Example**
+
+```ts
+import * as Context from '@effect/data/Context'
+
+assert.strictEqual(Context.isContext(Context.empty()), true)
 ```
 
 Added in v1.0.0
 
 ## isTag
 
+Checks if the provided argument is a `Tag`.
+
 **Signature**
 
 ```ts
-export declare const isTag: (u: unknown) => u is Tag<never>
+export declare const isTag: (input: unknown) => input is Tag<never>
+```
+
+**Example**
+
+```ts
+import * as Context from '@effect/data/Context'
+
+assert.strictEqual(Context.isTag(Context.Tag()), true)
 ```
 
 Added in v1.0.0
@@ -170,6 +265,8 @@ Added in v1.0.0
 
 ## add
 
+Adds a service to a given `Context`.
+
 **Signature**
 
 ```ts
@@ -183,9 +280,28 @@ export declare const add: {
 }
 ```
 
+**Example**
+
+```ts
+import * as Context from '@effect/data/Context'
+import { pipe } from '@effect/data/Function'
+
+const Port = Context.Tag<{ PORT: number }>()
+const Timeout = Context.Tag<{ TIMEOUT: number }>()
+
+const someContext = Context.make(Port, { PORT: 8080 })
+
+const Services = pipe(someContext, Context.add(Timeout, { TIMEOUT: 5000 }))
+
+assert.deepStrictEqual(Context.get(Services, Port), { PORT: 8080 })
+assert.deepStrictEqual(Context.get(Services, Timeout), { TIMEOUT: 5000 })
+```
+
 Added in v1.0.0
 
 ## merge
+
+Merges two `Context`s, returning a new `Context` containing the services of both.
 
 **Signature**
 
@@ -196,9 +312,28 @@ export declare const merge: {
 }
 ```
 
+**Example**
+
+```ts
+import * as Context from '@effect/data/Context'
+
+const Port = Context.Tag<{ PORT: number }>()
+const Timeout = Context.Tag<{ TIMEOUT: number }>()
+
+const firstContext = Context.make(Port, { PORT: 8080 })
+const secondContext = Context.make(Timeout, { TIMEOUT: 5000 })
+
+const Services = Context.merge(firstContext, secondContext)
+
+assert.deepStrictEqual(Context.get(Services, Port), { PORT: 8080 })
+assert.deepStrictEqual(Context.get(Services, Timeout), { TIMEOUT: 5000 })
+```
+
 Added in v1.0.0
 
 ## prune
+
+Returns a new `Context` that contains only the specified services.
 
 **Signature**
 
@@ -206,6 +341,24 @@ Added in v1.0.0
 export declare const prune: <Services, S extends Tags<Services>[]>(
   ...tags: S
 ) => (self: Context<Services>) => Context<{ [k in keyof S]: Tag.Service<S[k]> }[number]>
+```
+
+**Example**
+
+```ts
+import * as Context from '@effect/data/Context'
+import { pipe } from '@effect/data/Function'
+import * as O from '@effect/data/Option'
+
+const Port = Context.Tag<{ PORT: number }>()
+const Timeout = Context.Tag<{ TIMEOUT: number }>()
+
+const someContext = pipe(Context.make(Port, { PORT: 8080 }), Context.add(Timeout, { TIMEOUT: 5000 }))
+
+const Services = pipe(someContext, Context.prune(Port))
+
+assert.deepStrictEqual(Context.getOption(Services, Port), O.some({ PORT: 8080 }))
+assert.deepStrictEqual(Context.getOption(Services, Timeout), O.none())
 ```
 
 Added in v1.0.0
@@ -236,6 +389,11 @@ Added in v1.0.0
 
 ## unsafeGet
 
+Get a service from the context that corresponds to the given tag.
+This function is unsafe because if the tag is not present in the context, a runtime error will be thrown.
+
+For a safer version see {@link getOption}.
+
 **Signature**
 
 ```ts
@@ -243,6 +401,20 @@ export declare const unsafeGet: {
   <S>(tag: Tag<S>): <Services>(self: Context<Services>) => S
   <Services, S>(self: Context<Services>, tag: Tag<S>): S
 }
+```
+
+**Example**
+
+```ts
+import * as Context from '@effect/data/Context'
+
+const Port = Context.Tag<{ PORT: number }>()
+const Timeout = Context.Tag<{ TIMEOUT: number }>()
+
+const Services = Context.make(Port, { PORT: 8080 })
+
+assert.deepStrictEqual(Context.unsafeGet(Services, Port), { PORT: 8080 })
+assert.throws(() => Context.unsafeGet(Services, Timeout))
 ```
 
 Added in v1.0.0
