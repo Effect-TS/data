@@ -9,19 +9,18 @@ import * as option from "@effect/data/Option"
 export const TagTypeId: C.TagTypeId = Symbol.for("@effect/data/Context/Tag") as C.TagTypeId
 
 /** @internal */
-export class TagImpl<Service> implements C.Tag<Service> {
+export class TagImpl<Service> implements C.Tag<Service>, Equal.Equal {
   readonly _id: typeof TagTypeId = TagTypeId
   readonly _S: (_: Service) => Service = (_) => _
   readonly key: unknown
   constructor(key?: unknown) {
     this.key = key ?? Symbol()
-    if (!(TagTypeId in globalThis)) {
-      globalThis[TagTypeId] = new Map()
-    }
-    if (!(globalThis[TagTypeId].has(this.key))) {
-      globalThis[TagTypeId].set(this.key, this)
-    }
-    return globalThis[TagTypeId].get(this.key)
+  }
+  [Equal.symbol](that: Equal.Equal): boolean {
+    return isTag(that) && Equal.equals(that.key)(this.key)
+  }
+  [Hash.symbol](): number {
+    return Hash.hash(this.key)
   }
 }
 
