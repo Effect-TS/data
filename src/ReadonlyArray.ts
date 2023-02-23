@@ -857,12 +857,14 @@ export const lefts: <E, A>(self: Iterable<Either<E, A>>) => Array<E> = E.lefts
  * @category sorting
  * @since 1.0.0
  */
-export const sort = <B>(O: Order<B>) =>
-  <A extends B>(self: Iterable<A>): Array<A> => {
-    const out = Array.from(self)
-    out.sort(O.compare)
-    return out
-  }
+export const sort: {
+  <B>(O: Order<B>): <A extends B>(self: Iterable<A>) => Array<A>
+  <A extends B, B>(self: Iterable<A>, O: Order<B>): Array<A>
+} = dual(2, <A extends B, B>(self: Iterable<A>, O: Order<B>): Array<A> => {
+  const out = Array.from(self)
+  out.sort(O.compare)
+  return out
+})
 
 /**
  * Sort the elements of a `NonEmptyReadonlyArray` in increasing order, creating a new `NonEmptyArray`.
@@ -870,8 +872,10 @@ export const sort = <B>(O: Order<B>) =>
  * @category sorting
  * @since 1.0.0
  */
-export const sortNonEmpty = <B>(O: Order<B>) =>
-  <A extends B>(self: NonEmptyReadonlyArray<A>): NonEmptyArray<A> => sort(O)(self) as any
+export const sortNonEmpty: {
+  <B>(O: Order<B>): <A extends B>(self: NonEmptyReadonlyArray<A>) => NonEmptyArray<A>
+  <A extends B, B>(self: NonEmptyReadonlyArray<A>, O: Order<B>): NonEmptyArray<A>
+} = dual(2, <A extends B, B>(self: NonEmptyReadonlyArray<A>, O: Order<B>): NonEmptyArray<A> => sort(O)(self) as any)
 
 /**
  * Sort the elements of an `Iterable` in increasing order, where elements are compared
@@ -1136,28 +1140,35 @@ export const contains = <A>(isEquivalent: (self: A, that: A) => boolean): {
  *
  * @since 1.0.0
  */
-export const uniq = <A>(isEquivalent: (self: A, that: A) => boolean) =>
-  (self: Iterable<A>): Array<A> => {
+export const uniq: {
+  <A>(isEquivalent: (self: A, that: A) => boolean): (self: Iterable<A>) => Array<A>
+  <A>(self: Iterable<A>, isEquivalent: (self: A, that: A) => boolean): Array<A>
+} = dual(
+  2,
+  <A>(self: Iterable<A>, isEquivalent: (self: A, that: A) => boolean): Array<A> => {
     const input = fromIterable(self)
     return isNonEmptyReadonlyArray(input) ? uniqNonEmpty(isEquivalent)(input) : []
   }
+)
 
 /**
  * Remove duplicates from a `NonEmptyReadonlyArray`, keeping the first occurrence of an element.
  *
  * @since 1.0.0
  */
-export const uniqNonEmpty = <A>(isEquivalent: (self: A, that: A) => boolean) =>
-  (self: NonEmptyReadonlyArray<A>): NonEmptyArray<A> => {
-    const out: NonEmptyArray<A> = [headNonEmpty(self)]
-    const rest = tailNonEmpty(self)
-    for (const a of rest) {
-      if (out.every((o) => !isEquivalent(a, o))) {
-        out.push(a)
-      }
+export const uniqNonEmpty: {
+  <A>(isEquivalent: (self: A, that: A) => boolean): (self: NonEmptyReadonlyArray<A>) => NonEmptyArray<A>
+  <A>(self: NonEmptyReadonlyArray<A>, isEquivalent: (self: A, that: A) => boolean): NonEmptyArray<A>
+} = dual(2, <A>(self: NonEmptyReadonlyArray<A>, isEquivalent: (self: A, that: A) => boolean): NonEmptyArray<A> => {
+  const out: NonEmptyArray<A> = [headNonEmpty(self)]
+  const rest = tailNonEmpty(self)
+  for (const a of rest) {
+    if (out.every((o) => !isEquivalent(a, o))) {
+      out.push(a)
     }
-    return out
   }
+  return out
+})
 
 /**
  * A useful recursion pattern for processing an `Iterable` to produce a new `Array`, often used for "chopping" up the input
@@ -1298,8 +1309,12 @@ export const chunksOfNonEmpty: {
  * @category grouping
  * @since 1.0.0
  */
-export const group = <A>(isEquivalent: (self: A, that: A) => boolean) =>
-  (self: NonEmptyReadonlyArray<A>): NonEmptyArray<NonEmptyArray<A>> =>
+export const group: {
+  <A>(isEquivalent: (self: A, that: A) => boolean): (self: NonEmptyReadonlyArray<A>) => NonEmptyArray<NonEmptyArray<A>>
+  <A>(self: NonEmptyReadonlyArray<A>, isEquivalent: (self: A, that: A) => boolean): NonEmptyArray<NonEmptyArray<A>>
+} = dual(
+  2,
+  <A>(self: NonEmptyReadonlyArray<A>, isEquivalent: (self: A, that: A) => boolean): NonEmptyArray<NonEmptyArray<A>> =>
     chopNonEmpty(self, (as) => {
       const h = headNonEmpty(as)
       const out: NonEmptyArray<A> = [h]
@@ -1314,6 +1329,7 @@ export const group = <A>(isEquivalent: (self: A, that: A) => boolean) =>
       }
       return [out, as.slice(i)]
     })
+)
 
 /**
  * Splits an `Iterable` into sub-non-empty-arrays stored in an object, based on the result of calling a `string`-returning
@@ -2214,18 +2230,24 @@ export const extend: {
 /**
  * @since 1.0.0
  */
-export const min = <A>(O: Order<A>): ((self: NonEmptyReadonlyArray<A>) => A) => {
+export const min: {
+  <A>(O: Order<A>): (self: NonEmptyReadonlyArray<A>) => A
+  <A>(self: NonEmptyReadonlyArray<A>, O: Order<A>): A
+} = dual(2, <A>(self: NonEmptyReadonlyArray<A>, O: Order<A>): A => {
   const S = semigroup.min(O)
-  return (self) => self.reduce(S.combine)
-}
+  return self.reduce(S.combine)
+})
 
 /**
  * @since 1.0.0
  */
-export const max = <A>(O: Order<A>): ((self: NonEmptyReadonlyArray<A>) => A) => {
+export const max: {
+  <A>(O: Order<A>): (self: NonEmptyReadonlyArray<A>) => A
+  <A>(self: NonEmptyReadonlyArray<A>, O: Order<A>): A
+} = dual(2, <A>(self: NonEmptyReadonlyArray<A>, O: Order<A>): A => {
   const S = semigroup.max(O)
-  return (self) => self.reduce(S.combine)
-}
+  return self.reduce(S.combine)
+})
 
 /**
  * @category constructors
