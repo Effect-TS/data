@@ -4,6 +4,7 @@
  * @since 1.0.0
  */
 
+import type { Brand } from "@effect/data/Brand"
 import type { Either } from "@effect/data/Either"
 import * as E from "@effect/data/Either"
 import { dual, identity } from "@effect/data/Function"
@@ -119,7 +120,7 @@ export const isEmpty = <A>(self: ReadonlyRecord<A>): self is Record<string, neve
  * @param f - The custom mapping function to apply to each key/value of the `ReadonlyRecord`.
  *
  * @example
- * import { collect } from '@effect/data/ReadonlyRecord'
+ * import { collect } from "@effect/data/ReadonlyRecord"
  *
  * const x = { a: 1, b: 2, c: 3 }
  * assert.deepStrictEqual(collect(x, (key, n) => [key, n]), [["a", 1], ["b", 2], ["c", 3]])
@@ -140,6 +141,25 @@ export const collect: {
     return out
   }
 )
+
+/**
+ * Takes a record and returns an array of tuples containing its keys and values.
+ *
+ * @param self - The record to transform.
+ *
+ * @example
+ * import { toEntries } from "@effect/data/ReadonlyRecord"
+ *
+ * const x = { a: 1, b: 2, c: 3 }
+ * assert.deepStrictEqual(toEntries(x), [["a", 1], ["b", 2], ["c", 3]])
+ *
+ * @category conversions
+ * @since 1.0.0
+ */
+export const toEntries: {
+  <K extends string & Brand<any>, A>(self: Readonly<Record<K, A>>): Array<[K, A]>
+  <A>(self: Readonly<Record<string, A>>): Array<[string, A]>
+} = collect((key, value) => [key, value])
 
 /**
  * Converts a `ReadonlyRecord` to an `Array` of key-value pairs.

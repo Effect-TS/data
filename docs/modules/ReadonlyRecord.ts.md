@@ -20,6 +20,7 @@ Added in v1.0.0
 - [conversions](#conversions)
   - [collect](#collect)
   - [toArray](#toarray)
+  - [toEntries](#toentries)
 - [filtering](#filtering)
   - [compact](#compact)
   - [filter](#filter)
@@ -159,6 +160,34 @@ const x = { a: 1, b: 2 }
 assert.deepStrictEqual(toArray(x), [
   ['a', 1],
   ['b', 2],
+])
+```
+
+Added in v1.0.0
+
+## toEntries
+
+Takes a record and returns an array of tuples containing its keys and values.
+
+**Signature**
+
+```ts
+export declare const toEntries: {
+  <K extends unknown, A>(self: Readonly<Record<K, A>>): [K, A][]
+  <A>(self: Readonly<Record<string, A>>): [string, A][]
+}
+```
+
+**Example**
+
+```ts
+import { toEntries } from '@effect/data/ReadonlyRecord'
+
+const x = { a: 1, b: 2, c: 3 }
+assert.deepStrictEqual(toEntries(x), [
+  ['a', 1],
+  ['b', 2],
+  ['c', 3],
 ])
 ```
 

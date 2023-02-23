@@ -1,5 +1,6 @@
 import { pipe } from '@effect/data/Function'
 import * as RR from '@effect/data/ReadonlyRecord'
+import * as Brand from '@effect/data/Brand'
 
 declare const r: Record<string, number>
 declare const struct: Record<'a' | 'b', number>
@@ -67,3 +68,17 @@ pipe(r, RR.modifyOption('a', () => 2))
 
 // $ExpectType Option<Record<string, number | boolean>>
 pipe(r, RR.modifyOption('a', () => true))
+
+// -------------------------------------------------------------------------------------
+// toEntries
+// -------------------------------------------------------------------------------------
+
+// baseline
+// $ExpectType [string, number][]
+RR.toEntries({ a: 1, b: 2, c: 3 })
+
+declare const brandedRecord: Record<string & Brand.Brand<"brandedString">, number>
+
+// should support brands
+// $ExpectType [string & Brand<"brandedString">, number][]
+RR.toEntries(brandedRecord)
