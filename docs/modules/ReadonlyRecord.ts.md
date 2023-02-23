@@ -30,7 +30,8 @@ Added in v1.0.0
   - [traverseFilterMap](#traversefiltermap)
   - [traversePartitionMap](#traversepartitionmap)
 - [guards](#guards)
-  - [isEmpty](#isempty)
+  - [isEmptyReadonlyRecord](#isemptyreadonlyrecord)
+  - [isEmptyRecord](#isemptyrecord)
 - [instances](#instances)
   - [Covariant](#covariant)
   - [Filterable](#filterable)
@@ -62,6 +63,7 @@ Added in v1.0.0
   - [size](#size)
   - [traverseFilter](#traversefilter)
   - [traversePartition](#traversepartition)
+  - [~~isEmpty~~](#isempty)
 
 ---
 
@@ -384,23 +386,44 @@ Added in v1.0.0
 
 # guards
 
-## isEmpty
+## isEmptyReadonlyRecord
 
 Determine if a `ReadonlyRecord` is empty.
 
 **Signature**
 
 ```ts
-export declare const isEmpty: <A>(self: ReadonlyRecord<A>) => self is Record<string, never>
+export declare const isEmptyReadonlyRecord: <A>(self: ReadonlyRecord<A>) => self is ReadonlyRecord<never>
 ```
 
 **Example**
 
 ```ts
-import { isEmpty } from '@effect/data/ReadonlyRecord'
+import { isEmptyReadonlyRecord } from '@effect/data/ReadonlyRecord'
 
-assert.deepStrictEqual(isEmpty({}), true)
-assert.deepStrictEqual(isEmpty({ a: 3 }), false)
+assert.deepStrictEqual(isEmptyReadonlyRecord({}), true)
+assert.deepStrictEqual(isEmptyReadonlyRecord({ a: 3 }), false)
+```
+
+Added in v1.0.0
+
+## isEmptyRecord
+
+Determine if a `Record` is empty.
+
+**Signature**
+
+```ts
+export declare const isEmptyRecord: <A>(self: Record<string, A>) => self is Record<string, never>
+```
+
+**Example**
+
+```ts
+import { isEmptyRecord } from '@effect/data/ReadonlyRecord'
+
+assert.deepStrictEqual(isEmptyRecord({}), true)
+assert.deepStrictEqual(isEmptyRecord({ a: 3 }), false)
 ```
 
 Added in v1.0.0
@@ -887,6 +910,18 @@ export declare const traversePartition: <F extends TypeLambda>(
     [Record<string, B>, Record<string, B>]
   >
 }
+```
+
+Added in v1.0.0
+
+## ~~isEmpty~~
+
+Use `isEmptyRecord` or `isEmptyReadonlyRecord`.
+
+**Signature**
+
+```ts
+export declare const isEmpty: <A>(self: ReadonlyRecord<A>) => self is Record<string, never>
 ```
 
 Added in v1.0.0

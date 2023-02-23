@@ -16,6 +16,11 @@ describe.concurrent("ReadonlyRecord", () => {
     expect(RR.TraversableFilterable).exist
     expect(RR.traverseFilter).exist
     expect(RR.traversePartition).exist
+
+    expect(RR.isEmptyRecord).exist
+
+    // deprecated
+    expect(RR.isEmpty).exist
   })
 
   it("get", () => {
@@ -160,9 +165,9 @@ describe.concurrent("ReadonlyRecord", () => {
     expect(RR.empty()).toEqual({})
   })
 
-  it("isEmpty", () => {
-    assert.deepStrictEqual(RR.isEmpty({}), true)
-    assert.deepStrictEqual(RR.isEmpty({ a: 3 }), false)
+  it("isEmptyReadonlyRecord", () => {
+    assert.deepStrictEqual(RR.isEmptyReadonlyRecord({}), true)
+    assert.deepStrictEqual(RR.isEmptyReadonlyRecord({ a: 3 }), false)
   })
 
   it("size", () => {
