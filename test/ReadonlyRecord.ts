@@ -60,6 +60,11 @@ describe.concurrent("ReadonlyRecord", () => {
     assert.deepStrictEqual(RR.collect(x, (key, n) => [key, n]), [["a", 1], ["b", 2], ["c", 3]])
   })
 
+  it("toEntries", () => {
+    const x = { a: 1, b: 2, c: 3 }
+    assert.deepStrictEqual(RR.toEntries(x), [["a", 1], ["b", 2], ["c", 3]])
+  })
+
   it("toArray", () => {
     const x = { a: 1, b: 2 }
     assert.deepStrictEqual(RR.toArray(x), [["a", 1], ["b", 2]])
