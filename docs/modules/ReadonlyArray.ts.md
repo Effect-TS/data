@@ -1160,6 +1160,8 @@ function on each element, and grouping the results according to values returned
 
 ```ts
 export declare const groupBy: {
+  <K extends unknown, A>(f: (a: A) => K): (self: Iterable<A>) => Record<K, [A, ...A[]]>
+  <K extends unknown, A>(self: Iterable<A>, f: (a: A) => K): Record<K, [A, ...A[]]>
   <A>(f: (a: A) => string): (self: Iterable<A>) => Record<string, [A, ...A[]]>
   <A>(self: Iterable<A>, f: (a: A) => string): Record<string, [A, ...A[]]>
 }
