@@ -4,6 +4,7 @@
  * @since 1.0.0
  */
 
+import type { Brand } from "@effect/data/Brand"
 import type { Either } from "@effect/data/Either"
 import * as E from "@effect/data/Either"
 import { dual, identity } from "@effect/data/Function"
@@ -1322,6 +1323,8 @@ export const group = <A>(isEquivalent: (self: A, that: A) => boolean) =>
  * @since 1.0.0
  */
 export const groupBy: {
+  <K extends string & Brand<any>, A>(f: (a: A) => K): (self: Iterable<A>) => Record<K, NonEmptyArray<A>>
+  <K extends string & Brand<any>, A>(self: Iterable<A>, f: (a: A) => K): Record<K, NonEmptyArray<A>>
   <A>(f: (a: A) => string): (self: Iterable<A>) => Record<string, NonEmptyArray<A>>
   <A>(self: Iterable<A>, f: (a: A) => string): Record<string, NonEmptyArray<A>>
 } = dual(2, <A>(self: Iterable<A>, f: (a: A) => string): Record<string, NonEmptyArray<A>> => {
