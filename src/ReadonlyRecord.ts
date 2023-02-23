@@ -87,20 +87,20 @@ export const fromIterable: {
 // -------------------------------------------------------------------------------------
 
 /**
- * Determine if a `ReadonlyRecord` is empty.
+ * Determine if a `Record` is empty.
  *
- * @param self - `ReadonlyRecord` to test for emptiness.
+ * @param self - `Record` to test for emptiness.
  *
  * @example
- * import { isEmpty } from "@effect/data/ReadonlyRecord"
+ * import { isEmptyRecord } from "@effect/data/ReadonlyRecord"
  *
- * assert.deepStrictEqual(isEmpty({}), true);
- * assert.deepStrictEqual(isEmpty({ a: 3 }), false);
+ * assert.deepStrictEqual(isEmptyRecord({}), true);
+ * assert.deepStrictEqual(isEmptyRecord({ a: 3 }), false);
  *
  * @category guards
  * @since 1.0.0
  */
-export const isEmpty = <A>(self: ReadonlyRecord<A>): self is Record<string, never> => {
+export const isEmptyRecord = <A>(self: Record<string, A>): self is Record<string, never> => {
   for (const k in self) {
     if (has(self, k)) {
       return false
@@ -108,6 +108,22 @@ export const isEmpty = <A>(self: ReadonlyRecord<A>): self is Record<string, neve
   }
   return true
 }
+
+/**
+ * Determine if a `ReadonlyRecord` is empty.
+ *
+ * @param self - `ReadonlyRecord` to test for emptiness.
+ *
+ * @example
+ * import { isEmptyReadonlyRecord } from "@effect/data/ReadonlyRecord"
+ *
+ * assert.deepStrictEqual(isEmptyReadonlyRecord({}), true);
+ * assert.deepStrictEqual(isEmptyReadonlyRecord({ a: 3 }), false);
+ *
+ * @category guards
+ * @since 1.0.0
+ */
+export const isEmptyReadonlyRecord: <A>(self: ReadonlyRecord<A>) => self is ReadonlyRecord<never> = isEmptyRecord
 
 // -------------------------------------------------------------------------------------
 // conversions
@@ -849,3 +865,15 @@ export const traversePartition: <F extends TypeLambda>(
     predicate: (a: A) => Kind<F, R, O, E, boolean>
   ): Kind<F, R, O, E, [Record<string, B>, Record<string, B>]>
 } = traversableFilterable.traversePartition(TraversableFilterable)
+
+// -------------------------------------------------------------------------------------
+// deprecated
+// -------------------------------------------------------------------------------------
+
+/**
+ * Use `isEmptyRecord` or `isEmptyReadonlyRecord`.
+ *
+ * @since 1.0.0
+ * @deprecated
+ */
+export const isEmpty: <A>(self: ReadonlyRecord<A>) => self is Record<string, never> = isEmptyRecord
