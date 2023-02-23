@@ -1144,9 +1144,10 @@ Group equal, consecutive elements of a `NonEmptyReadonlyArray` into `NonEmptyArr
 **Signature**
 
 ```ts
-export declare const group: <A>(
-  isEquivalent: (self: A, that: A) => boolean
-) => (self: readonly [A, ...A[]]) => [[A, ...A[]], ...[A, ...A[]][]]
+export declare const group: {
+  <A>(isEquivalent: (self: A, that: A) => boolean): (self: readonly [A, ...A[]]) => [[A, ...A[]], ...[A, ...A[]][]]
+  <A>(self: readonly [A, ...A[]], isEquivalent: (self: A, that: A) => boolean): [[A, ...A[]], ...[A, ...A[]][]]
+}
 ```
 
 Added in v1.0.0
@@ -1710,7 +1711,10 @@ Sort the elements of an `Iterable` in increasing order, creating a new `Array`.
 **Signature**
 
 ```ts
-export declare const sort: <B>(O: order.Order<B>) => <A extends B>(self: Iterable<A>) => A[]
+export declare const sort: {
+  <B>(O: order.Order<B>): <A extends B>(self: Iterable<A>) => A[]
+  <A extends B, B>(self: Iterable<A>, O: order.Order<B>): A[]
+}
 ```
 
 Added in v1.0.0
@@ -1747,7 +1751,10 @@ Sort the elements of a `NonEmptyReadonlyArray` in increasing order, creating a n
 **Signature**
 
 ```ts
-export declare const sortNonEmpty: <B>(O: order.Order<B>) => <A extends B>(self: readonly [A, ...A[]]) => [A, ...A[]]
+export declare const sortNonEmpty: {
+  <B>(O: order.Order<B>): <A extends B>(self: readonly [A, ...A[]]) => [A, ...A[]]
+  <A extends B, B>(self: readonly [A, ...A[]], O: order.Order<B>): [A, ...A[]]
+}
 ```
 
 Added in v1.0.0
@@ -2117,7 +2124,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const max: <A>(O: order.Order<A>) => (self: readonly [A, ...A[]]) => A
+export declare const max: {
+  <A>(O: order.Order<A>): (self: readonly [A, ...A[]]) => A
+  <A>(self: readonly [A, ...A[]], O: order.Order<A>): A
+}
 ```
 
 Added in v1.0.0
@@ -2127,7 +2137,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const min: <A>(O: order.Order<A>) => (self: readonly [A, ...A[]]) => A
+export declare const min: {
+  <A>(O: order.Order<A>): (self: readonly [A, ...A[]]) => A
+  <A>(self: readonly [A, ...A[]], O: order.Order<A>): A
+}
 ```
 
 Added in v1.0.0
@@ -2441,7 +2454,10 @@ Remove duplicates from am `Iterable`, keeping the first occurrence of an element
 **Signature**
 
 ```ts
-export declare const uniq: <A>(isEquivalent: (self: A, that: A) => boolean) => (self: Iterable<A>) => A[]
+export declare const uniq: {
+  <A>(isEquivalent: (self: A, that: A) => boolean): (self: Iterable<A>) => A[]
+  <A>(self: Iterable<A>, isEquivalent: (self: A, that: A) => boolean): A[]
+}
 ```
 
 Added in v1.0.0
@@ -2453,9 +2469,10 @@ Remove duplicates from a `NonEmptyReadonlyArray`, keeping the first occurrence o
 **Signature**
 
 ```ts
-export declare const uniqNonEmpty: <A>(
-  isEquivalent: (self: A, that: A) => boolean
-) => (self: readonly [A, ...A[]]) => [A, ...A[]]
+export declare const uniqNonEmpty: {
+  <A>(isEquivalent: (self: A, that: A) => boolean): (self: readonly [A, ...A[]]) => [A, ...A[]]
+  <A>(self: readonly [A, ...A[]], isEquivalent: (self: A, that: A) => boolean): [A, ...A[]]
+}
 ```
 
 Added in v1.0.0
