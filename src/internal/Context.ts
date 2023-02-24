@@ -142,7 +142,7 @@ export const merge = Dual.dual<
 })
 
 /** @internal */
-export const prune = <Services, S extends Array<C.Tags<Services>>>(...tags: S) =>
+export const pick = <Services, S extends Array<C.Tags<Services>>>(...tags: S) =>
   (self: C.Context<Services>): C.Context<
     { [k in keyof S]: C.Tag.Service<S[k]> }[number]
   > => {

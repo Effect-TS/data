@@ -35,7 +35,7 @@ Added in v1.0.0
 - [mutations](#mutations)
   - [add](#add)
   - [merge](#merge)
-  - [prune](#prune)
+  - [pick](#pick)
 - [symbol](#symbol)
   - [TagTypeId (type alias)](#tagtypeid-type-alias)
   - [TypeId (type alias)](#typeid-type-alias)
@@ -332,14 +332,14 @@ assert.deepStrictEqual(Context.get(Services, Timeout), { TIMEOUT: 5000 })
 
 Added in v1.0.0
 
-## prune
+## pick
 
 Returns a new `Context` that contains only the specified services.
 
 **Signature**
 
 ```ts
-export declare const prune: <Services, S extends Tags<Services>[]>(
+export declare const pick: <Services, S extends Tags<Services>[]>(
   ...tags: S
 ) => (self: Context<Services>) => Context<{ [k in keyof S]: Tag.Service<S[k]> }[number]>
 ```
@@ -356,7 +356,7 @@ const Timeout = Context.Tag<{ TIMEOUT: number }>()
 
 const someContext = pipe(Context.make(Port, { PORT: 8080 }), Context.add(Timeout, { TIMEOUT: 5000 }))
 
-const Services = pipe(someContext, Context.prune(Port))
+const Services = pipe(someContext, Context.pick(Port))
 
 assert.deepStrictEqual(Context.getOption(Services, Port), O.some({ PORT: 8080 }))
 assert.deepStrictEqual(Context.getOption(Services, Timeout), O.none())

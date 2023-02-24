@@ -311,7 +311,7 @@ export const merge: {
  *   Context.add(Timeout, { TIMEOUT: 5000 })
  * )
  *
- * const Services = pipe(someContext, Context.prune(Port))
+ * const Services = pipe(someContext, Context.pick(Port))
  *
  * assert.deepStrictEqual(Context.getOption(Services, Port), O.some({ PORT: 8080 }))
  * assert.deepStrictEqual(Context.getOption(Services, Timeout), O.none())
@@ -319,6 +319,6 @@ export const merge: {
  * @since 1.0.0
  * @category mutations
  */
-export const prune: <Services, S extends Array<Tags<Services>>>(
+export const pick: <Services, S extends Array<Tags<Services>>>(
   ...tags: S
-) => (self: Context<Services>) => Context<{ [k in keyof S]: Tag.Service<S[k]> }[number]> = C.prune
+) => (self: Context<Services>) => Context<{ [k in keyof S]: Tag.Service<S[k]> }[number]> = C.pick

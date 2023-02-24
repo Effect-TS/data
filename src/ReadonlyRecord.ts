@@ -865,15 +865,3 @@ export const traversePartition: <F extends TypeLambda>(
     predicate: (a: A) => Kind<F, R, O, E, boolean>
   ): Kind<F, R, O, E, [Record<string, B>, Record<string, B>]>
 } = traversableFilterable.traversePartition(TraversableFilterable)
-
-// -------------------------------------------------------------------------------------
-// deprecated
-// -------------------------------------------------------------------------------------
-
-/**
- * Use `isEmptyRecord` or `isEmptyReadonlyRecord`.
- *
- * @since 1.0.0
- * @deprecated
- */
-export const isEmpty: <A>(self: ReadonlyRecord<A>) => self is Record<string, never> = isEmptyRecord
