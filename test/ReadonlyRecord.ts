@@ -18,9 +18,6 @@ describe.concurrent("ReadonlyRecord", () => {
     expect(RR.traversePartition).exist
 
     expect(RR.isEmptyRecord).exist
-
-    // deprecated
-    expect(RR.isEmpty).exist
   })
 
   it("get", () => {

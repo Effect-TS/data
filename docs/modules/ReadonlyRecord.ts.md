@@ -63,7 +63,6 @@ Added in v1.0.0
   - [size](#size)
   - [traverseFilter](#traversefilter)
   - [traversePartition](#traversepartition)
-  - [~~isEmpty~~](#isempty)
 
 ---
 
@@ -910,18 +909,6 @@ export declare const traversePartition: <F extends TypeLambda>(
     [Record<string, B>, Record<string, B>]
   >
 }
-```
-
-Added in v1.0.0
-
-## ~~isEmpty~~
-
-Use `isEmptyRecord` or `isEmptyReadonlyRecord`.
-
-**Signature**
-
-```ts
-export declare const isEmpty: <A>(self: ReadonlyRecord<A>) => self is Record<string, never>
 ```
 
 Added in v1.0.0

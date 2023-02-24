@@ -51,7 +51,7 @@ describe.concurrent("Context", () => {
     })
   })
 
-  it("prunes services in env and merges", () => {
+  it("picks services in env and merges", () => {
     const env = pipe(
       Context.empty(),
       Context.add(A, { a: 0 }),
@@ -64,7 +64,7 @@ describe.concurrent("Context", () => {
 
     const pruned = pipe(
       env,
-      Context.prune(A, B)
+      Context.pick(A, B)
     )
 
     expect(pipe(
