@@ -613,6 +613,84 @@ export const and: {
 } = dual(2, <A>(self: Predicate<A>, that: Predicate<A>): Predicate<A> => (a) => self(a) && that(a))
 
 /**
+ * @category combinators
+ * @since 1.0.0
+ */
+export const xor: {
+  <A>(that: Predicate<A>): (self: Predicate<A>) => Predicate<A>
+  <A>(self: Predicate<A>, that: Predicate<A>): Predicate<A>
+} = dual(2, <A>(self: Predicate<A>, that: Predicate<A>): Predicate<A> => (a) => self(a) !== that(a))
+
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+export const eqv: {
+  <A>(that: Predicate<A>): (self: Predicate<A>) => Predicate<A>
+  <A>(self: Predicate<A>, that: Predicate<A>): Predicate<A>
+} = dual(2, <A>(self: Predicate<A>, that: Predicate<A>): Predicate<A> => (a) => self(a) === that(a))
+
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+export const implies: {
+  <A>(that: Predicate<A>): (self: Predicate<A>) => Predicate<A>
+  <A>(self: Predicate<A>, that: Predicate<A>): Predicate<A>
+} = dual(
+  2,
+  <A>(self: Predicate<A>, that: Predicate<A>): Predicate<A> => (a) => self(a) ? that(a) : true
+)
+
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+export const nor: {
+  <A>(that: Predicate<A>): (self: Predicate<A>) => Predicate<A>
+  <A>(self: Predicate<A>, that: Predicate<A>): Predicate<A>
+} = dual(
+  2,
+  <A>(self: Predicate<A>, that: Predicate<A>): Predicate<A> => (a) => !(self(a) || that(a))
+)
+
+/**
+ * @category combinators
+ * @since 1.0.0
+ */
+export const nand: {
+  <A>(that: Predicate<A>): (self: Predicate<A>) => Predicate<A>
+  <A>(self: Predicate<A>, that: Predicate<A>): Predicate<A>
+} = dual(
+  2,
+  <A>(self: Predicate<A>, that: Predicate<A>): Predicate<A> => (a) => !(self(a) && that(a))
+)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const getSemigroupEqv = <A>(): Semigroup<Predicate<A>> => semigroup.make<Predicate<A>>(eqv)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const getMonoidEqv = <A>(): monoid.Monoid<Predicate<A>> => monoid.fromSemigroup(getSemigroupEqv<A>(), constTrue)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const getSemigroupXor = <A>(): Semigroup<Predicate<A>> => semigroup.make<Predicate<A>>(xor)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const getMonoidXor = <A>(): monoid.Monoid<Predicate<A>> => monoid.fromSemigroup(getSemigroupXor<A>(), constFalse)
+
+/**
  * @category instances
  * @since 1.0.0
  */
