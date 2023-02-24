@@ -1,4 +1,4 @@
-import { pipe } from "@effect/data/Function"
+import { constFalse, constTrue, pipe } from "@effect/data/Function"
 import * as _ from "@effect/data/Predicate"
 import { deepStrictEqual } from "@effect/data/test/util"
 
@@ -103,6 +103,41 @@ describe.concurrent("Predicate", () => {
     deepStrictEqual(p(3), false)
   })
 
+  it("xor", () => {
+    expect(pipe(constTrue, _.xor(constTrue))(null)).toBeFalsy() // true xor true = false
+    expect(pipe(constTrue, _.xor(constFalse))(null)).toBeTruthy() // true xor false = true
+    expect(pipe(constFalse, _.xor(constTrue))(null)).toBeTruthy() // false xor true = true
+    expect(pipe(constFalse, _.xor(constFalse))(null)).toBeFalsy() // false xor false = false
+  })
+
+  it("eqv", () => {
+    expect(pipe(constTrue, _.eqv(constTrue))(null)).toBeTruthy() // true eqv true = true
+    expect(pipe(constTrue, _.eqv(constFalse))(null)).toBeFalsy() // true eqv false = false
+    expect(pipe(constFalse, _.eqv(constTrue))(null)).toBeFalsy() // false eqv true = false
+    expect(pipe(constFalse, _.eqv(constFalse))(null)).toBeTruthy() // false eqv false = true
+  })
+
+  it("implies", () => {
+    expect(pipe(constTrue, _.implies(constTrue))(null)).toBeTruthy() // true implies true = true
+    expect(pipe(constTrue, _.implies(constFalse))(null)).toBeFalsy() // true implies false = false
+    expect(pipe(constFalse, _.implies(constTrue))(null)).toBeTruthy() // false implies true = true
+    expect(pipe(constFalse, _.implies(constFalse))(null)).toBeTruthy() // false implies false = true
+  })
+
+  it("nor", () => {
+    expect(pipe(constTrue, _.nor(constTrue))(null)).toBeFalsy() // true nor true = false
+    expect(pipe(constTrue, _.nor(constFalse))(null)).toBeFalsy() // true nor false = false
+    expect(pipe(constFalse, _.nor(constTrue))(null)).toBeFalsy() // false nor true = false
+    expect(pipe(constFalse, _.nor(constFalse))(null)).toBeTruthy() // false nor false = true
+  })
+
+  it("nand", () => {
+    expect(pipe(constTrue, _.nand(constTrue))(null)).toBeFalsy() // true nand true = false
+    expect(pipe(constTrue, _.nand(constFalse))(null)).toBeTruthy() // true nand false = true
+    expect(pipe(constFalse, _.nand(constTrue))(null)).toBeTruthy() // false nand true = true
+    expect(pipe(constFalse, _.nand(constFalse))(null)).toBeTruthy() // false nand false = true
+  })
+
   it("getSemigroupSome", () => {
     const S = _.getSemigroupSome<number>()
     const p1 = S.combine(isPositive, isNegative)
@@ -141,6 +176,38 @@ describe.concurrent("Predicate", () => {
     deepStrictEqual(predicate(0), isPositive(0))
     deepStrictEqual(predicate(-1), isPositive(-1))
     deepStrictEqual(predicate(1), isPositive(1))
+  })
+
+  it("getSemigroupXor", () => {
+    const S = _.getSemigroupXor<null>()
+    expect(S.combine(constTrue, constTrue)(null)).toBeFalsy() // true xor true = false
+    expect(S.combine(constTrue, constFalse)(null)).toBeTruthy() // true xor false = true
+    expect(S.combine(constFalse, constTrue)(null)).toBeTruthy() // true xor true = true
+    expect(S.combine(constFalse, constFalse)(null)).toBeFalsy() // true xor false = false
+  })
+
+  it("getMonoidXor", () => {
+    const M = _.getMonoidXor<null>()
+    expect(M.combine(constTrue, constTrue)(null)).toBeFalsy() // true xor true = false
+    expect(M.combine(constTrue, constFalse)(null)).toBeTruthy() // true xor false = true
+    expect(M.combine(constFalse, constTrue)(null)).toBeTruthy() // true xor true = true
+    expect(M.combine(constFalse, constFalse)(null)).toBeFalsy() // true xor false = false
+  })
+
+  it("getSemigroupEqv", () => {
+    const S = _.getSemigroupEqv<null>()
+    expect(S.combine(constTrue, constTrue)(null)).toBeTruthy() // true eqv true = true
+    expect(S.combine(constTrue, constFalse)(null)).toBeFalsy() // true eqv false = false
+    expect(S.combine(constFalse, constTrue)(null)).toBeFalsy() // true eqv true = true
+    expect(S.combine(constFalse, constFalse)(null)).toBeTruthy() // true eqv false = false
+  })
+
+  it("getMonoidEqv", () => {
+    const M = _.getMonoidEqv<null>()
+    expect(M.combine(constTrue, constTrue)(null)).toBeTruthy() // true eqv true = true
+    expect(M.combine(constTrue, constFalse)(null)).toBeFalsy() // true eqv false = false
+    expect(M.combine(constFalse, constTrue)(null)).toBeFalsy() // true eqv true = true
+    expect(M.combine(constFalse, constFalse)(null)).toBeTruthy() // true eqv false = false
   })
 
   it("some", () => {

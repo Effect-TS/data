@@ -14,8 +14,13 @@ Added in v1.0.0
 
 - [combinators](#combinators)
   - [and](#and)
+  - [eqv](#eqv)
+  - [implies](#implies)
+  - [nand](#nand)
+  - [nor](#nor)
   - [not](#not)
   - [or](#or)
+  - [xor](#xor)
 - [constructors](#constructors)
   - [contramap](#contramap)
 - [do notation](#do-notation)
@@ -47,10 +52,14 @@ Added in v1.0.0
   - [Invariant](#invariant)
   - [Product](#product)
   - [SemiProduct](#semiproduct)
+  - [getMonoidEqv](#getmonoideqv)
   - [getMonoidEvery](#getmonoidevery)
   - [getMonoidSome](#getmonoidsome)
+  - [getMonoidXor](#getmonoidxor)
+  - [getSemigroupEqv](#getsemigroupeqv)
   - [getSemigroupEvery](#getsemigroupevery)
   - [getSemigroupSome](#getsemigroupsome)
+  - [getSemigroupXor](#getsemigroupxor)
 - [models](#models)
   - [Predicate (interface)](#predicate-interface)
   - [Refinement (interface)](#refinement-interface)
@@ -95,6 +104,58 @@ const length = (n: number) => P.and(minLength(n), maxLength(n))
 assert.deepStrictEqual(length(2)('aa'), true)
 assert.deepStrictEqual(length(2)('a'), false)
 assert.deepStrictEqual(length(2)('aaa'), false)
+```
+
+Added in v1.0.0
+
+## eqv
+
+**Signature**
+
+```ts
+export declare const eqv: {
+  <A>(that: Predicate<A>): (self: Predicate<A>) => Predicate<A>
+  <A>(self: Predicate<A>, that: Predicate<A>): Predicate<A>
+}
+```
+
+Added in v1.0.0
+
+## implies
+
+**Signature**
+
+```ts
+export declare const implies: {
+  <A>(that: Predicate<A>): (self: Predicate<A>) => Predicate<A>
+  <A>(self: Predicate<A>, that: Predicate<A>): Predicate<A>
+}
+```
+
+Added in v1.0.0
+
+## nand
+
+**Signature**
+
+```ts
+export declare const nand: {
+  <A>(that: Predicate<A>): (self: Predicate<A>) => Predicate<A>
+  <A>(self: Predicate<A>, that: Predicate<A>): Predicate<A>
+}
+```
+
+Added in v1.0.0
+
+## nor
+
+**Signature**
+
+```ts
+export declare const nor: {
+  <A>(that: Predicate<A>): (self: Predicate<A>) => Predicate<A>
+  <A>(self: Predicate<A>, that: Predicate<A>): Predicate<A>
+}
 ```
 
 Added in v1.0.0
@@ -148,6 +209,19 @@ const nonZero = P.or(N.lessThan(0), N.greaterThan(0))
 assert.deepStrictEqual(nonZero(-1), true)
 assert.deepStrictEqual(nonZero(0), false)
 assert.deepStrictEqual(nonZero(1), true)
+```
+
+Added in v1.0.0
+
+## xor
+
+**Signature**
+
+```ts
+export declare const xor: {
+  <A>(that: Predicate<A>): (self: Predicate<A>) => Predicate<A>
+  <A>(self: Predicate<A>, that: Predicate<A>): Predicate<A>
+}
 ```
 
 Added in v1.0.0
@@ -714,6 +788,16 @@ export declare const SemiProduct: semiProduct.SemiProduct<PredicateTypeLambda>
 
 Added in v1.0.0
 
+## getMonoidEqv
+
+**Signature**
+
+```ts
+export declare const getMonoidEqv: <A>() => monoid.Monoid<Predicate<A>>
+```
+
+Added in v1.0.0
+
 ## getMonoidEvery
 
 **Signature**
@@ -734,6 +818,26 @@ export declare const getMonoidSome: <A>() => monoid.Monoid<Predicate<A>>
 
 Added in v1.0.0
 
+## getMonoidXor
+
+**Signature**
+
+```ts
+export declare const getMonoidXor: <A>() => monoid.Monoid<Predicate<A>>
+```
+
+Added in v1.0.0
+
+## getSemigroupEqv
+
+**Signature**
+
+```ts
+export declare const getSemigroupEqv: <A>() => semigroup.Semigroup<Predicate<A>>
+```
+
+Added in v1.0.0
+
 ## getSemigroupEvery
 
 **Signature**
@@ -750,6 +854,16 @@ Added in v1.0.0
 
 ```ts
 export declare const getSemigroupSome: <A>() => semigroup.Semigroup<Predicate<A>>
+```
+
+Added in v1.0.0
+
+## getSemigroupXor
+
+**Signature**
+
+```ts
+export declare const getSemigroupXor: <A>() => semigroup.Semigroup<Predicate<A>>
 ```
 
 Added in v1.0.0
