@@ -4,7 +4,6 @@
  * @since 1.0.0
  */
 
-import type { Brand } from "@effect/data/Brand"
 import type { Either } from "@effect/data/Either"
 import * as E from "@effect/data/Either"
 import { dual, identity } from "@effect/data/Function"
@@ -14,6 +13,7 @@ import * as readonlyArray from "@effect/data/internal/ReadonlyArray"
 import type { Option } from "@effect/data/Option"
 import * as O from "@effect/data/Option"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
+import * as RR from "@effect/data/ReadonlyRecord"
 import * as string from "@effect/data/String"
 import * as applicative from "@effect/data/typeclass/Applicative"
 import * as chainable from "@effect/data/typeclass/Chainable"
@@ -127,6 +127,22 @@ export const replicate: {
  * @since 1.0.0
  */
 export const fromIterable: <A>(collection: Iterable<A>) => Array<A> = readonlyArray.fromIterable
+
+/**
+ * Takes a record and returns an array of tuples containing its keys and values.
+ *
+ * @param self - The record to transform.
+ *
+ * @example
+ * import { fromRecord } from "@effect/data/ReadonlyArray"
+ *
+ * const x = { a: 1, b: 2, c: 3 }
+ * assert.deepStrictEqual(fromRecord(x), [["a", 1], ["b", 2], ["c", 3]])
+ *
+ * @category conversions
+ * @since 1.0.0
+ */
+export const fromRecord: <K extends string, A>(self: Readonly<Record<K, A>>) => Array<[K, A]> = RR.toEntries
 
 /**
  * @category conversions
@@ -1339,8 +1355,6 @@ export const group: {
  * @since 1.0.0
  */
 export const groupBy: {
-  <K extends string & Brand<any>, A>(f: (a: A) => K): (self: Iterable<A>) => Record<K, NonEmptyArray<A>>
-  <K extends string & Brand<any>, A>(self: Iterable<A>, f: (a: A) => K): Record<K, NonEmptyArray<A>>
   <A>(f: (a: A) => string): (self: Iterable<A>) => Record<string, NonEmptyArray<A>>
   <A>(self: Iterable<A>, f: (a: A) => string): Record<string, NonEmptyArray<A>>
 } = dual(2, <A>(self: Iterable<A>, f: (a: A) => string): Record<string, NonEmptyArray<A>> => {

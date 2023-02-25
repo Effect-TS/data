@@ -4,7 +4,6 @@
  * @since 1.0.0
  */
 
-import type { Brand } from "@effect/data/Brand"
 import type { Either } from "@effect/data/Either"
 import * as E from "@effect/data/Either"
 import { dual, identity } from "@effect/data/Function"
@@ -49,38 +48,6 @@ export interface ReadonlyRecordTypeLambda extends TypeLambda {
  * @since 1.0.0
  */
 export const empty = <A>(): Record<string, A> => ({})
-
-/**
- * Takes an iterable and a projection function and returns a record.
- * The projection function maps each value of the iterable to a tuple of a key and a value, which is then added to the resulting record.
- *
- * @param self - An iterable of values to be mapped to a record.
- * @param f - A projection function that maps values of the iterable to a tuple of a key and a value.
- *
- * @example
- * import { fromIterable } from '@effect/data/ReadonlyRecord'
- *
- * const input = [1, 2, 3, 4]
- *
- * assert.deepStrictEqual(
- *   fromIterable(input, a => [String(a), a * 2]),
- *   { '1': 2, '2': 4, '3': 6, '4': 8 }
- * )
- *
- * @category constructors
- * @since 1.0.0
- */
-export const fromIterable: {
-  <A, B>(f: (a: A) => readonly [string, B]): (self: Iterable<A>) => Record<string, B>
-  <A, B>(self: Iterable<A>, f: (a: A) => readonly [string, B]): Record<string, B>
-} = dual(2, <A, B>(self: Iterable<A>, f: (a: A) => readonly [string, B]): Record<string, B> => {
-  const out: Record<string, B> = {}
-  for (const a of self) {
-    const [k, b] = f(a)
-    out[k] = b
-  }
-  return out
-})
 
 // -------------------------------------------------------------------------------------
 // guards
@@ -130,6 +97,58 @@ export const isEmptyReadonlyRecord: <A>(self: ReadonlyRecord<A>) => self is Read
 // -------------------------------------------------------------------------------------
 
 /**
+ * Takes an iterable and a projection function and returns a record.
+ * The projection function maps each value of the iterable to a tuple of a key and a value, which is then added to the resulting record.
+ *
+ * @param self - An iterable of values to be mapped to a record.
+ * @param f - A projection function that maps values of the iterable to a tuple of a key and a value.
+ *
+ * @example
+ * import { fromIterable } from '@effect/data/ReadonlyRecord'
+ *
+ * const input = [1, 2, 3, 4]
+ *
+ * assert.deepStrictEqual(
+ *   fromIterable(input, a => [String(a), a * 2]),
+ *   { '1': 2, '2': 4, '3': 6, '4': 8 }
+ * )
+ *
+ * @category conversions
+ * @since 1.0.0
+ */
+export const fromIterable: {
+  <A, B>(f: (a: A) => readonly [string, B]): (self: Iterable<A>) => Record<string, B>
+  <A, B>(self: Iterable<A>, f: (a: A) => readonly [string, B]): Record<string, B>
+} = dual(2, <A, B>(self: Iterable<A>, f: (a: A) => readonly [string, B]): Record<string, B> => {
+  const out: Record<string, B> = {}
+  for (const a of self) {
+    const [k, b] = f(a)
+    out[k] = b
+  }
+  return out
+})
+
+/**
+ * Builds a record from an iterable of key-value pairs.
+ *
+ * If there are conflicting keys when using `fromEntries`, the last occurrence of the key/value pair will overwrite the
+ * previous ones. So the resulting record will only have the value of the last occurrence of each key.
+ *
+ * @param self - The iterable of key-value pairs.
+ *
+ * @example
+ * import { fromEntries } from '@effect/data/ReadonlyRecord'
+ *
+ * const input: Array<[string, number]> = [["a", 1], ["b", 2]]
+ *
+ * assert.deepStrictEqual(fromEntries(input), { a: 1, b: 2 })
+ *
+ * @category conversions
+ * @since 1.0.0
+ */
+export const fromEntries: <A>(self: Iterable<[string, A]>) => Record<string, A> = fromIterable(identity)
+
+/**
  * Transforms the values of a `ReadonlyRecord` into an `Array` with a custom mapping function.
  *
  * @param self - The `ReadonlyRecord` to transform.
@@ -145,8 +164,8 @@ export const isEmptyReadonlyRecord: <A>(self: ReadonlyRecord<A>) => self is Read
  * @since 1.0.0
  */
 export const collect: {
-  <A, B>(f: (key: string, a: A) => B): (self: ReadonlyRecord<A>) => Array<B>
-  <A, B>(self: ReadonlyRecord<A>, f: (key: string, a: A) => B): Array<B>
+  <K extends string, A, B>(f: (key: K, a: A) => B): (self: Readonly<Record<K, A>>) => Array<B>
+  <K extends string, A, B>(self: Readonly<Record<K, A>>, f: (key: string, a: A) => B): Array<B>
 } = dual(
   2,
   <A, B>(self: ReadonlyRecord<A>, f: (key: string, a: A) => B): Array<B> => {
@@ -172,29 +191,28 @@ export const collect: {
  * @category conversions
  * @since 1.0.0
  */
-export const toEntries: {
-  <K extends string & Brand<any>, A>(self: Readonly<Record<K, A>>): Array<[K, A]>
-  <A>(self: Readonly<Record<string, A>>): Array<[string, A]>
-} = collect((key, value) => [key, value])
+export const toEntries: <K extends string, A>(self: Readonly<Record<K, A>>) => Array<[K, A]> = collect((
+  key,
+  value
+) => [key, value])
 
 /**
- * Converts a `ReadonlyRecord` to an `Array` of key-value pairs.
+ * Takes a record and returns an array of tuples containing its keys and values.
  *
- * @param self - A `ReadonlyRecord` to convert to an `Array`.
+ * Alias of {@link toEntries}.
+ *
+ * @param self - The record to transform.
  *
  * @example
- * import { toArray } from '@effect/data/ReadonlyRecord'
+ * import { toArray } from "@effect/data/ReadonlyRecord"
  *
- * const x = { a: 1, b: 2 }
- * assert.deepStrictEqual(toArray(x), [["a", 1], ["b", 2]])
+ * const x = { a: 1, b: 2, c: 3 }
+ * assert.deepStrictEqual(toArray(x), [["a", 1], ["b", 2], ["c", 3]])
  *
  * @category conversions
  * @since 1.0.0
  */
-export const toArray: <A>(self: ReadonlyRecord<A>) => Array<[string, A]> = collect((
-  key,
-  a
-) => [key, a])
+export const toArray: <K extends string, A>(self: Readonly<Record<K, A>>) => Array<[K, A]> = toEntries
 
 // -------------------------------------------------------------------------------------
 // utils

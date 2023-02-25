@@ -75,7 +75,11 @@ pipe(r, RR.modifyOption('a', () => true))
 
 // baseline
 // $ExpectType [string, number][]
-RR.toEntries({ a: 1, b: 2, c: 3 })
+RR.toEntries(r)
+// $ExpectType ["a" | "b", number][]
+RR.toEntries(struct)
+// $ExpectType ["a" | "b" | "c", string | number | boolean][]
+RR.toEntries({ a: 'a', b: 2, c: true })
 
 declare const brandedRecord: Record<string & Brand.Brand<"brandedString">, number>
 

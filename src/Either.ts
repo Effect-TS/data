@@ -3,6 +3,7 @@
  */
 
 import type * as Data from "@effect/data/Data"
+import * as Equal from "@effect/data/Equal"
 import type { LazyArg } from "@effect/data/Function"
 import { constNull, constUndefined, dual, identity } from "@effect/data/Function"
 import * as Gen from "@effect/data/Gen"
@@ -10,7 +11,6 @@ import type { Kind, TypeLambda } from "@effect/data/HKT"
 import * as either from "@effect/data/internal/Either"
 import * as option from "@effect/data/internal/Option"
 import * as N from "@effect/data/Number"
-import * as Equal from "@effect/data/Equal"
 import type { Option } from "@effect/data/Option"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as applicative from "@effect/data/typeclass/Applicative"

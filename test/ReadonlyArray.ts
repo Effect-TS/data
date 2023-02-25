@@ -75,6 +75,8 @@ describe.concurrent("ReadonlyArray", () => {
     expect(RA.liftOption).exist
     expect(RA.liftNullable).exist
     expect(RA.flatMapNullable).exist
+
+    expect(RA.fromRecord).exist
   })
 
   it("fromIterable/Array should return the same reference if the iterable is an Array", () => {
