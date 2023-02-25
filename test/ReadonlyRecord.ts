@@ -57,6 +57,11 @@ describe.concurrent("ReadonlyRecord", () => {
     })
   })
 
+  it("fromEntries", () => {
+    const input: Array<[string, number]> = [["a", 1], ["b", 2]]
+    expect(RR.fromEntries(input)).toEqual({ a: 1, b: 2 })
+  })
+
   it("collect", () => {
     const x = { a: 1, b: 2, c: 3 }
     assert.deepStrictEqual(RR.collect(x, (key, n) => [key, n]), [["a", 1], ["b", 2], ["c", 3]])

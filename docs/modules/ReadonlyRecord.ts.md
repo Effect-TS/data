@@ -16,9 +16,10 @@ Added in v1.0.0
 
 - [constructors](#constructors)
   - [empty](#empty)
-  - [fromIterable](#fromiterable)
 - [conversions](#conversions)
   - [collect](#collect)
+  - [fromEntries](#fromentries)
+  - [fromIterable](#fromiterable)
   - [toArray](#toarray)
   - [toEntries](#toentries)
 - [filtering](#filtering)
@@ -80,6 +81,67 @@ export declare const empty: <A>() => Record<string, A>
 
 Added in v1.0.0
 
+# conversions
+
+## collect
+
+Transforms the values of a `ReadonlyRecord` into an `Array` with a custom mapping function.
+
+**Signature**
+
+```ts
+export declare const collect: {
+  <K extends string, A, B>(f: (key: K, a: A) => B): (self: Readonly<Record<K, A>>) => B[]
+  <K extends string, A, B>(self: Readonly<Record<K, A>>, f: (key: string, a: A) => B): B[]
+}
+```
+
+**Example**
+
+```ts
+import { collect } from '@effect/data/ReadonlyRecord'
+
+const x = { a: 1, b: 2, c: 3 }
+assert.deepStrictEqual(
+  collect(x, (key, n) => [key, n]),
+  [
+    ['a', 1],
+    ['b', 2],
+    ['c', 3],
+  ]
+)
+```
+
+Added in v1.0.0
+
+## fromEntries
+
+Builds a record from an iterable of key-value pairs.
+
+If there are conflicting keys when using `fromEntries`, the last occurrence of the key/value pair will overwrite the
+previous ones. So the resulting record will only have the value of the last occurrence of each key.
+
+**Signature**
+
+```ts
+export declare const fromEntries: <A>(self: Iterable<[string, A]>) => Record<string, A>
+```
+
+**Example**
+
+```ts
+import { fromEntries } from '@effect/data/ReadonlyRecord'
+
+const input: Array<[string, number]> = [
+  ['a', 1],
+  ['b', 2],
+]
+
+assert.deepStrictEqual(fromEntries(input), { a: 1, b: 2 })
+```
+
+Added in v1.0.0
+
 ## fromIterable
 
 Takes an iterable and a projection function and returns a record.
@@ -109,47 +171,16 @@ assert.deepStrictEqual(
 
 Added in v1.0.0
 
-# conversions
-
-## collect
-
-Transforms the values of a `ReadonlyRecord` into an `Array` with a custom mapping function.
-
-**Signature**
-
-```ts
-export declare const collect: {
-  <A, B>(f: (key: string, a: A) => B): (self: ReadonlyRecord<A>) => B[]
-  <A, B>(self: ReadonlyRecord<A>, f: (key: string, a: A) => B): B[]
-}
-```
-
-**Example**
-
-```ts
-import { collect } from '@effect/data/ReadonlyRecord'
-
-const x = { a: 1, b: 2, c: 3 }
-assert.deepStrictEqual(
-  collect(x, (key, n) => [key, n]),
-  [
-    ['a', 1],
-    ['b', 2],
-    ['c', 3],
-  ]
-)
-```
-
-Added in v1.0.0
-
 ## toArray
 
-Converts a `ReadonlyRecord` to an `Array` of key-value pairs.
+Takes a record and returns an array of tuples containing its keys and values.
+
+Alias of {@link toEntries}.
 
 **Signature**
 
 ```ts
-export declare const toArray: <A>(self: ReadonlyRecord<A>) => [string, A][]
+export declare const toArray: <K extends string, A>(self: Readonly<Record<K, A>>) => [K, A][]
 ```
 
 **Example**
@@ -157,10 +188,11 @@ export declare const toArray: <A>(self: ReadonlyRecord<A>) => [string, A][]
 ```ts
 import { toArray } from '@effect/data/ReadonlyRecord'
 
-const x = { a: 1, b: 2 }
+const x = { a: 1, b: 2, c: 3 }
 assert.deepStrictEqual(toArray(x), [
   ['a', 1],
   ['b', 2],
+  ['c', 3],
 ])
 ```
 
@@ -173,10 +205,7 @@ Takes a record and returns an array of tuples containing its keys and values.
 **Signature**
 
 ```ts
-export declare const toEntries: {
-  <K extends unknown, A>(self: Readonly<Record<K, A>>): [K, A][]
-  <A>(self: Readonly<Record<string, A>>): [string, A][]
-}
+export declare const toEntries: <K extends string, A>(self: Readonly<Record<K, A>>) => [K, A][]
 ```
 
 **Example**

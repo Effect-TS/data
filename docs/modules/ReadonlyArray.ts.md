@@ -33,6 +33,7 @@ Added in v1.0.0
   - [fromIterable](#fromiterable)
   - [fromNullable](#fromnullable)
   - [fromOption](#fromoption)
+  - [fromRecord](#fromrecord)
 - [do notation](#do-notation)
   - [Do](#do)
   - [andThenBind](#andthenbind)
@@ -421,6 +422,31 @@ Added in v1.0.0
 
 ```ts
 export declare const fromOption: <A>(self: Option<A>) => A[]
+```
+
+Added in v1.0.0
+
+## fromRecord
+
+Takes a record and returns an array of tuples containing its keys and values.
+
+**Signature**
+
+```ts
+export declare const fromRecord: <K extends string, A>(self: Readonly<Record<K, A>>) => [K, A][]
+```
+
+**Example**
+
+```ts
+import { fromRecord } from '@effect/data/ReadonlyArray'
+
+const x = { a: 1, b: 2, c: 3 }
+assert.deepStrictEqual(fromRecord(x), [
+  ['a', 1],
+  ['b', 2],
+  ['c', 3],
+])
 ```
 
 Added in v1.0.0
@@ -1161,8 +1187,6 @@ function on each element, and grouping the results according to values returned
 
 ```ts
 export declare const groupBy: {
-  <K extends unknown, A>(f: (a: A) => K): (self: Iterable<A>) => Record<K, [A, ...A[]]>
-  <K extends unknown, A>(self: Iterable<A>, f: (a: A) => K): Record<K, [A, ...A[]]>
   <A>(f: (a: A) => string): (self: Iterable<A>) => Record<string, [A, ...A[]]>
   <A>(self: Iterable<A>, f: (a: A) => string): Record<string, [A, ...A[]]>
 }
