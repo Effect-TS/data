@@ -1715,7 +1715,7 @@ export declare const tap: {
 **Example**
 
 ```ts
-import * as O from "@fp-ts/core/Option"
+import * as O from "@effect/data/Option"
 
 const getInteger = (n: number) => n === n.toFixed(0) ? O.some(n) : O.none()
 
