@@ -35,7 +35,7 @@ export interface OrPatch<Value, Value2, Patch, Patch2> extends Equal {
  * @since 1.0.0
  * @category constructors
  */
-export const empty: <Value, Value2, Patch, Patch2>() => OrPatch<
+export const empty: <Value, Value2, Patch, Patch2>(_: void) => OrPatch<
   Value,
   Value2,
   Patch,

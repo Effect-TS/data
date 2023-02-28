@@ -6,7 +6,7 @@
  * @since 1.0.0
  */
 
-import { dual } from "@effect/data/Function"
+import { dual, zeroArgsDual } from "@effect/data/Function"
 import type { Ordering } from "@effect/data/Ordering"
 import * as predicate from "@effect/data/Predicate"
 import * as equivalence from "@effect/data/typeclass/Equivalence"
@@ -28,7 +28,10 @@ import * as semigroup from "@effect/data/typeclass/Semigroup"
  * @category guards
  * @since 1.0.0
  */
-export const isBigint: (u: unknown) => u is bigint = predicate.isBigint
+export const isBigint: {
+  (input: unknown): input is bigint
+  (): (input: unknown) => input is bigint
+} = zeroArgsDual(predicate.isBigint)
 
 /**
  * Provides an addition operation on `bigint`s.
@@ -124,7 +127,10 @@ export const divide: {
  * @category math
  * @since 1.0.0
  */
-export const increment = (n: bigint): bigint => n + 1n
+export const increment: {
+  (n: bigint): bigint
+  (): (n: bigint) => bigint
+} = zeroArgsDual((n) => n + 1n)
 
 /**
  * Decrements a number by `1n`.
@@ -139,7 +145,10 @@ export const increment = (n: bigint): bigint => n + 1n
  * @category math
  * @since 1.0.0
  */
-export const decrement = (n: bigint): bigint => n - 1n
+export const decrement: {
+  (n: bigint): bigint
+  (): (n: bigint) => bigint
+} = zeroArgsDual((n) => n - 1n)
 
 /**
  * @category instances
@@ -414,7 +423,10 @@ export const MonoidMultiply: monoid.Monoid<bigint> = monoid.bigintMultiply
  * @category math
  * @since 1.0.0
  */
-export const sign = (n: bigint): Ordering => Order.compare(n, 0n)
+export const sign: {
+  (n: bigint): Ordering
+  (): (n: bigint) => Ordering
+} = zeroArgsDual((n) => Order.compare(n, 0n))
 
 /**
  * Takes an `Iterable` of `bigint`s and returns their sum as a single `bigint
@@ -429,7 +441,10 @@ export const sign = (n: bigint): Ordering => Order.compare(n, 0n)
  * @category math
  * @since 1.0.0
  */
-export const sumAll: (collection: Iterable<bigint>) => bigint = MonoidSum.combineAll
+export const sumAll: {
+  (collection: Iterable<bigint>): bigint
+  (): (collection: Iterable<bigint>) => bigint
+} = zeroArgsDual(MonoidSum.combineAll)
 
 /**
  * Takes an `Iterable` of `bigint`s and returns their multiplication as a single `number`.
@@ -444,4 +459,7 @@ export const sumAll: (collection: Iterable<bigint>) => bigint = MonoidSum.combin
  * @category math
  * @since 1.0.0
  */
-export const multiplyAll: (collection: Iterable<bigint>) => bigint = MonoidMultiply.combineAll
+export const multiplyAll: {
+  (collection: Iterable<bigint>): bigint
+  (): (collection: Iterable<bigint>) => bigint
+} = zeroArgsDual(MonoidMultiply.combineAll)

@@ -33,7 +33,7 @@ export interface ChunkPatch<Value, Patch> extends Equal {
  * @since 1.0.0
  * @category constructors
  */
-export const empty: <Value, Patch>() => ChunkPatch<Value, Patch> = CP.empty
+export const empty: <Value, Patch>(_: void) => ChunkPatch<Value, Patch> = CP.empty
 
 /**
  * Constructs a chunk patch from a new and old chunk of values and a differ

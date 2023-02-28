@@ -31,7 +31,7 @@ export interface HashSetPatch<Value> extends Equal {
  * @since 1.0.0
  * @category constructors
  */
-export const empty: <Value>() => HashSetPatch<Value> = HSP.empty
+export const empty: <Value>(_: void) => HashSetPatch<Value> = HSP.empty
 
 /**
  * Constructs a set patch from a new set of values.

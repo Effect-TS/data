@@ -34,7 +34,7 @@ export interface ContextPatch<Input, Output> extends Equal {
  * @since 1.0.0
  * @category constructors
  */
-export const empty: <Input = never, Output = never>() => ContextPatch<Input, Output> = CP.empty
+export const empty: <Input = never, Output = never>(_: void) => ContextPatch<Input, Output> = CP.empty
 
 /**
  * @since 1.0.0

@@ -34,7 +34,7 @@ export interface HashMapPatch<Key, Value, Patch> extends Equal {
  * @since 1.0.0
  * @category constructors
  */
-export const empty: <Key, Value, Patch>() => HashMapPatch<Key, Value, Patch> = HMP.empty
+export const empty: <Key, Value, Patch>(_: void) => HashMapPatch<Key, Value, Patch> = HMP.empty
 
 /**
  * Constructs a map patch from a new and old map of keys and values and a

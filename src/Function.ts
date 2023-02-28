@@ -28,14 +28,27 @@ export interface FunctionTypeLambda extends TypeLambda {
 export const isFunction = (input: unknown): input is Function => typeof input === "function"
 
 /**
- * Creates a function that can be used in a data-last (aka `pipe`able) or data-first style.
+ * Creates a function that can be used in a data-last (aka `pipe`able) or
+ * data-first style.
  *
- * @param arity - The arity of the uncurried function.
+ * The first parameter to `dual` is either the arity of the uncurried function
+ * or a predicate that determines if the function is being used in a data-first
+ * or data-last style.
+ *
+ * Using the arity is the most common use case, but there are some cases where
+ * you may want to use a predicate. For example, if you have a function that
+ * takes an optional argument, you can use a predicate to determine if the
+ * function is being used in a data-first or data-last style.
+ *
+ * @param arity - Either the arity of the uncurried function or a predicate
+ *                which determines if the function is being used in a data-first
+ *                or data-last style.
  * @param body - The definition of the uncurried function.
  *
  * @example
  * import { dual, pipe } from "@effect/data/Function"
  *
+ * // Exampe using arity to determine data-first or data-last style
  * export const sum: {
  *   (that: number): (self: number) => number
  *   (self: number, that: number): number
@@ -44,24 +57,64 @@ export const isFunction = (input: unknown): input is Function => typeof input ==
  * assert.deepStrictEqual(sum(2, 3), 5)
  * assert.deepStrictEqual(pipe(2, sum(3)), 5)
  *
+ * // Example using a predicate to determine data-first or data-last style
+ * export const sum2: {
+ *   (that: number): (self: number) => number
+ *   (self: number, that: number): number
+ * } = dual((args) => args.length === 1, (self: number, that: number): number => self + that)
+ *
+ * assert.deepStrictEqual(sum(2, 3), 5)
+ * assert.deepStrictEqual(pipe(2, sum(3)), 5)
+ *
  * @since 1.0.0
  */
-export const dual = <
-  DataLast extends (...args: Array<any>) => any,
-  DataFirst extends (...args: Array<any>) => any
->(
-  arity: Parameters<DataFirst>["length"],
-  body: DataFirst
-): DataLast & DataFirst => {
-  // @ts-expect-error
+export const dual: {
+  <DataLast extends (...args: Array<any>) => any, DataFirst extends (...args: Array<any>) => any>(
+    arity: Parameters<DataFirst>["length"],
+    body: DataFirst
+  ): DataLast & DataFirst
+  <DataLast extends (...args: Array<any>) => any, DataFirst extends (...args: Array<any>) => any>(
+    isDataFirst: (args: IArguments) => boolean,
+    body: DataFirst
+  ): DataLast & DataFirst
+} = (arity, body) => {
+  const isDataFirst: (args: IArguments) => boolean = typeof arity === "number" ?
+    ((args) => args.length >= arity) :
+    arity
   return function() {
-    if (arguments.length >= arity) {
+    if (isDataFirst(arguments)) {
       // @ts-expect-error
       return body.apply(this, arguments)
     }
     return ((self: any) => body(self, ...arguments)) as any
   }
 }
+
+/**
+ * Creates a zero-argument dual function that can be used in a data-last (aka
+ * `pipe`able) or data-first style.
+ *
+ * This function is particularly useful when you would like to prevent tacit
+ * usage of a function in a `pipe`.
+ *
+ * @param body - The definition of the uncurried function.
+ *
+ * @example
+ * import { zeroArgsDual, pipe } from "@effect/data/Function"
+ *
+ * export const length: {
+ *   <A>(self: Array<A>): number
+ *   (): <A>(self: Array<A>) => number
+ * } = zeroArgsDual(<A>(self: Array<A>): number => self.length)
+ *
+ * assert.deepStrictEqual(length([1, 2, 3]), 3)
+ * assert.deepStrictEqual(pipe([1, 2, 3], length()), 3)
+ *
+ * @since 1.0.0
+ */
+export const zeroArgsDual = <DataFirst extends (...args: Array<any>) => any>(
+  body: DataFirst
+): DataFirst & { (): DataFirst } => dual(1, body)
 
 /**
  * Apply a function to a given value.
