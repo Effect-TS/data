@@ -4,6 +4,11 @@
 import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
+import type * as bounded from "@effect/data/typeclass/Bounded"
+import type * as equivalence from "@effect/data/typeclass/Equivalence"
+import * as monoid from "@effect/data/typeclass/Monoid"
+import * as order from "@effect/data/typeclass/Order"
+import * as semigroup from "@effect/data/typeclass/Semigroup"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/Duration")
 
@@ -90,8 +95,70 @@ export const days = (days: number): Duration => new DurationImpl(days * 86_400_0
 export const weeks = (weeks: number): Duration => new DurationImpl(weeks * 604_800_000)
 
 /**
+ * @category instances
  * @since 1.0.0
- * @category mutations
+ */
+export const Order: order.Order<Duration> = {
+  compare: (self, that) => (self.millis < that.millis ? -1 : self.millis > that.millis ? 1 : 0)
+}
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const Bounded: bounded.Bounded<Duration> = {
+  compare: Order.compare,
+  maxBound: infinity,
+  minBound: zero
+}
+
+/**
+ * Checks if a `Duration` is between a `minimum` and `maximum` value.
+ *
+ * @category predicates
+ * @since 1.0.0
+ */
+export const between: {
+  (minimum: Duration, maximum: Duration): (self: Duration) => boolean
+  (self: Duration, minimum: Duration, maximum: Duration): boolean
+} = order.between(Order)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const Equivalence: equivalence.Equivalence<Duration> = (self, that) => self.millis === that.millis
+
+/**
+ * @category utils
+ * @since 1.0.0
+ */
+export const min: {
+  (that: Duration): (self: Duration) => Duration
+  (self: Duration, that: Duration): Duration
+} = order.min(Order)
+
+/**
+ * @category utils
+ * @since 1.0.0
+ */
+export const max: {
+  (that: Duration): (self: Duration) => Duration
+  (self: Duration, that: Duration): Duration
+} = order.max(Order)
+
+/**
+ * @category utils
+ * @since 1.0.0
+ */
+export const clamp: {
+  (minimum: Duration, maximum: Duration): (self: Duration) => Duration
+  (self: Duration, minimum: Duration, maximum: Duration): Duration
+} = order.clamp(Order)
+
+/**
+ * @since 1.0.0
+ * @category math
  */
 export const times: {
   (times: number): (self: Duration) => Duration
@@ -103,9 +170,9 @@ export const times: {
 
 /**
  * @since 1.0.0
- * @category mutations
+ * @category math
  */
-export const add: {
+export const sum: {
   (that: Duration): (self: Duration) => Duration
   (self: Duration, that: Duration): Duration
 } = Dual.dual<
@@ -114,8 +181,50 @@ export const add: {
 >(2, (self, that) => new DurationImpl(self.millis + that.millis))
 
 /**
+ * @category instances
  * @since 1.0.0
- * @category mutations
+ */
+export const SemigroupSum: semigroup.Semigroup<Duration> = semigroup.make(sum)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const MonoidSum: monoid.Monoid<Duration> = monoid.fromSemigroup(SemigroupSum, zero)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const SemigroupMax: semigroup.Semigroup<Duration> = semigroup.make(max)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const MonoidMax: monoid.Monoid<Duration> = monoid.fromSemigroup(SemigroupMax, zero)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const SemigroupMin: semigroup.Semigroup<Duration> = semigroup.make(min)
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const MonoidMin: monoid.Monoid<Duration> = monoid.fromSemigroup(SemigroupMin, infinity)
+
+/**
+ * @category math
+ * @since 1.0.15
+ */
+export const sumAll: (collection: Iterable<Duration>) => Duration = MonoidSum.combineAll
+
+/**
+ * @since 1.0.0
+ * @category math
  */
 export const subtract: {
   (that: Duration): (self: Duration) => Duration
@@ -127,7 +236,7 @@ export const subtract: {
 
 /**
  * @since 1.0.0
- * @category comparisons
+ * @category predicates
  */
 export const lessThan: {
   (that: Duration): (self: Duration) => boolean
@@ -139,7 +248,7 @@ export const lessThan: {
 
 /**
  * @since 1.0.0
- * @category comparisons
+ * @category predicates
  */
 export const lessThanOrEqualTo: {
   (self: Duration, that: Duration): boolean
@@ -151,7 +260,7 @@ export const lessThanOrEqualTo: {
 
 /**
  * @since 1.0.0
- * @category comparisons
+ * @category predicates
  */
 export const greaterThan: {
   (that: Duration): (self: Duration) => boolean
@@ -163,7 +272,7 @@ export const greaterThan: {
 
 /**
  * @since 1.0.0
- * @category comparisons
+ * @category predicates
  */
 export const greaterThanOrEqualTo: {
   (self: Duration, that: Duration): boolean
@@ -175,7 +284,7 @@ export const greaterThanOrEqualTo: {
 
 /**
  * @since 1.0.0
- * @category comparisons
+ * @category predicates
  */
 export const equals: {
   (that: Duration): (self: Duration) => boolean

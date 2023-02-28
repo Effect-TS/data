@@ -29,14 +29,25 @@ Added in v1.0.0
   - [zero](#zero)
 - [guards](#guards)
   - [isDuration](#isduration)
+- [instances](#instances)
+  - [Equivalence](#equivalence)
+  - [MonoidSum](#monoidsum)
+  - [Order](#order)
+  - [SemigroupMax](#semigroupmax)
+  - [SemigroupMin](#semigroupmin)
+  - [SemigroupSum](#semigroupsum)
 - [models](#models)
   - [Duration (interface)](#duration-interface)
 - [mutations](#mutations)
-  - [add](#add)
   - [subtract](#subtract)
+  - [sum](#sum)
+  - [sumAll](#sumall)
   - [times](#times)
 - [symbol](#symbol)
   - [TypeId (type alias)](#typeid-type-alias)
+- [utils](#utils)
+  - [max](#max)
+  - [min](#min)
 
 ---
 
@@ -201,6 +212,68 @@ export declare const isDuration: (u: unknown) => u is Duration
 
 Added in v1.0.0
 
+# instances
+
+## Equivalence
+
+**Signature**
+
+```ts
+export declare const Equivalence: equivalence.Equivalence<Duration>
+```
+
+Added in v1.0.0
+
+## MonoidSum
+
+**Signature**
+
+```ts
+export declare const MonoidSum: monoid.Monoid<Duration>
+```
+
+Added in v1.0.0
+
+## Order
+
+**Signature**
+
+```ts
+export declare const Order: order.Order<Duration>
+```
+
+Added in v1.0.0
+
+## SemigroupMax
+
+**Signature**
+
+```ts
+export declare const SemigroupMax: semigroup.Semigroup<Duration>
+```
+
+Added in v1.0.0
+
+## SemigroupMin
+
+**Signature**
+
+```ts
+export declare const SemigroupMin: semigroup.Semigroup<Duration>
+```
+
+Added in v1.0.0
+
+## SemigroupSum
+
+**Signature**
+
+```ts
+export declare const SemigroupSum: semigroup.Semigroup<Duration>
+```
+
+Added in v1.0.0
+
 # models
 
 ## Duration (interface)
@@ -218,16 +291,6 @@ Added in v1.0.0
 
 # mutations
 
-## add
-
-**Signature**
-
-```ts
-export declare const add: { (that: Duration): (self: Duration) => Duration; (self: Duration, that: Duration): Duration }
-```
-
-Added in v1.0.0
-
 ## subtract
 
 **Signature**
@@ -240,6 +303,26 @@ export declare const subtract: {
 ```
 
 Added in v1.0.0
+
+## sum
+
+**Signature**
+
+```ts
+export declare const sum: { (that: Duration): (self: Duration) => Duration; (self: Duration, that: Duration): Duration }
+```
+
+Added in v1.0.0
+
+## sumAll
+
+**Signature**
+
+```ts
+export declare const sumAll: (collection: Iterable<Duration>) => Duration
+```
+
+Added in v1.0.15
 
 ## times
 
@@ -259,6 +342,28 @@ Added in v1.0.0
 
 ```ts
 export type TypeId = typeof TypeId
+```
+
+Added in v1.0.0
+
+# utils
+
+## max
+
+**Signature**
+
+```ts
+export declare const max: { (that: Duration): (self: Duration) => Duration; (self: Duration, that: Duration): Duration }
+```
+
+Added in v1.0.0
+
+## min
+
+**Signature**
+
+```ts
+export declare const min: { (that: Duration): (self: Duration) => Duration; (self: Duration, that: Duration): Duration }
 ```
 
 Added in v1.0.0
