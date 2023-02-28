@@ -177,7 +177,7 @@ describe.concurrent("SemiProduct", () => {
 
     it("Contravariant (Predicate)", () => {
       const nonEmptyTuple = _.nonEmptyTuple(P.SemiProduct)
-      const p = nonEmptyTuple(String.isString, Number.isNumber, Boolean.isBoolean)
+      const p = nonEmptyTuple(String.isString, Number.isNumber, Boolean.isBoolean())
       U.deepStrictEqual(p(["a", 1, true]), true)
       U.deepStrictEqual(p(["a", 1, "b"]), false)
     })
@@ -205,7 +205,7 @@ describe.concurrent("SemiProduct", () => {
 
     it("Contravariant (Predicate)", () => {
       const nonEmptyStruct = _.nonEmptyStruct(P.Product)
-      const p = nonEmptyStruct({ x: String.isString, y: Number.isNumber, z: Boolean.isBoolean })
+      const p = nonEmptyStruct({ x: String.isString, y: Number.isNumber, z: Boolean.isBoolean() })
       U.deepStrictEqual(p({ x: "a", y: 1, z: true }), true)
       U.deepStrictEqual(p({ x: "a", y: 1, z: "b" }), false)
     })

@@ -259,7 +259,9 @@ export const refined: <A extends Brand<any>>(
  * @since 1.0.0
  * @category constructors
  */
-export const nominal: <A extends Brand<any>>() => Brand.Constructor<A> = <A extends Brand<any>>(): Brand.Constructor<
+export const nominal: <A extends Brand<any>>(_: void) => Brand.Constructor<A> = <A extends Brand<any>>(
+  _: void
+): Brand.Constructor<
   A
 > => {
   // @ts-expect-error

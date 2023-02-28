@@ -9,7 +9,7 @@ import type { HashMapPatch } from "@effect/data/Differ/HashMapPatch"
 import type { HashSetPatch } from "@effect/data/Differ/HashSetPatch"
 import type { OrPatch } from "@effect/data/Differ/OrPatch"
 import type { Either } from "@effect/data/Either"
-import * as Dual from "@effect/data/Function"
+import { dual, zeroArgsDual } from "@effect/data/Function"
 import type { HashMap } from "@effect/data/HashMap"
 import type { HashSet } from "@effect/data/HashSet"
 import * as D from "@effect/data/internal/Differ"
@@ -83,7 +83,10 @@ export declare namespace Differ {
  * @since 1.0.0
  * @category patch
  */
-export const empty: <Value, Patch>(self: Differ<Value, Patch>) => Patch = (self) => self.empty
+export const empty: {
+  <Value, Patch>(self: Differ<Value, Patch>): Patch
+  (_?: never): <Value, Patch>(self: Differ<Value, Patch>) => Patch
+} = zeroArgsDual((self) => self.empty)
 
 /**
  * An empty patch that describes no changes.
@@ -94,7 +97,7 @@ export const empty: <Value, Patch>(self: Differ<Value, Patch>) => Patch = (self)
 export const diff: {
   <Value>(oldValue: Value, newValue: Value): <Patch>(differ: Differ<Value, Patch>) => Patch
   <Value, Patch>(differ: Differ<Value, Patch>, oldValue: Value, newValue: Value): Patch
-} = Dual.dual<
+} = dual<
   <Value>(oldValue: Value, newValue: Value) => <Patch>(differ: Differ<Value, Patch>) => Patch,
   <Value, Patch>(differ: Differ<Value, Patch>, oldValue: Value, newValue: Value) => Patch
 >(3, (self, oldValue, newValue) => self.diff(oldValue, newValue))
@@ -112,7 +115,7 @@ export const diff: {
 export const combine: {
   <Patch>(first: Patch, second: Patch): <Value>(self: Differ<Value, Patch>) => Patch
   <Value, Patch>(self: Differ<Value, Patch>, first: Patch, second: Patch): Patch
-} = Dual.dual<
+} = dual<
   <Patch>(first: Patch, second: Patch) => <Value>(self: Differ<Value, Patch>) => Patch,
   <Value, Patch>(self: Differ<Value, Patch>, first: Patch, second: Patch) => Patch
 >(3, (self, first, second) => self.combine(first, second))
@@ -127,7 +130,7 @@ export const combine: {
 export const patch: {
   <Patch, Value>(patch: Patch, oldValue: Value): (self: Differ<Value, Patch>) => Value
   <Patch, Value>(self: Differ<Value, Patch>, patch: Patch, oldValue: Value): Value
-} = Dual.dual<
+} = dual<
   <Patch, Value>(patch: Patch, oldValue: Value) => (self: Differ<Value, Patch>) => Value,
   <Patch, Value>(self: Differ<Value, Patch>, patch: Patch, oldValue: Value) => Value
 >(3, (self, patch, oldValue) => self.patch(patch, oldValue))
@@ -138,14 +141,24 @@ export const patch: {
  * @since 1.0.0
  * @category constructors
  */
-export const make: <Value, Patch>(
-  params: {
-    readonly empty: Patch
-    readonly diff: (oldValue: Value, newValue: Value) => Patch
-    readonly combine: (first: Patch, second: Patch) => Patch
-    readonly patch: (patch: Patch, oldValue: Value) => Value
-  }
-) => Differ<Value, Patch> = D.make
+export const make: {
+  <Value, Patch>(
+    params: {
+      readonly empty: Patch
+      readonly diff: (oldValue: Value, newValue: Value) => Patch
+      readonly combine: (first: Patch, second: Patch) => Patch
+      readonly patch: (patch: Patch, oldValue: Value) => Value
+    }
+  ): Differ<Value, Patch>
+  (): <Value, Patch>(
+    params: {
+      readonly empty: Patch
+      readonly diff: (oldValue: Value, newValue: Value) => Patch
+      readonly combine: (first: Patch, second: Patch) => Patch
+      readonly patch: (patch: Patch, oldValue: Value) => Value
+    }
+  ) => Differ<Value, Patch>
+} = D.make
 
 /**
  * Constructs a differ that knows how to diff `Env` values.
@@ -153,7 +166,7 @@ export const make: <Value, Patch>(
  * @since 1.0.0
  * @category constructors
  */
-export const environment: <A>() => Differ<Context<A>, ContextPatch<A, A>> = D.environment
+export const environment: <A>(_: void) => Differ<Context<A>, ContextPatch<A, A>> = D.environment
 
 /**
  * Constructs a differ that knows how to diff a `Chunk` of values given a
@@ -162,9 +175,10 @@ export const environment: <A>() => Differ<Context<A>, ContextPatch<A, A>> = D.en
  * @since 1.0.0
  * @category constructors
  */
-export const chunk: <Value, Patch>(
-  differ: Differ<Value, Patch>
-) => Differ<Chunk<Value>, ChunkPatch<Value, Patch>> = D.chunk
+export const chunk: {
+  <Value, Patch>(differ: Differ<Value, Patch>): Differ<Chunk<Value>, ChunkPatch<Value, Patch>>
+  (): <Value, Patch>(differ: Differ<Value, Patch>) => Differ<Chunk<Value>, ChunkPatch<Value, Patch>>
+} = D.chunk
 
 /**
  * Constructs a differ that knows how to diff a `HashMap` of keys and values given
@@ -173,9 +187,10 @@ export const chunk: <Value, Patch>(
  * @since 1.0.0
  * @category constructors
  */
-export const hashMap: <Key, Value, Patch>(
-  differ: Differ<Value, Patch>
-) => Differ<HashMap<Key, Value>, HashMapPatch<Key, Value, Patch>> = D.hashMap
+export const hashMap: {
+  <Key, Value, Patch>(differ: Differ<Value, Patch>): Differ<HashMap<Key, Value>, HashMapPatch<Key, Value, Patch>>
+  (): <Key, Value, Patch>(differ: Differ<Value, Patch>) => Differ<HashMap<Key, Value>, HashMapPatch<Key, Value, Patch>>
+} = D.hashMap
 
 /**
  * Constructs a differ that knows how to diff a `HashSet` of values.
@@ -183,7 +198,7 @@ export const hashMap: <Key, Value, Patch>(
  * @since 1.0.0
  * @category constructors
  */
-export const hashSet: <Value>() => Differ<HashSet<Value>, HashSetPatch<Value>> = D.hashSet
+export const hashSet: <Value>(_: void) => Differ<HashSet<Value>, HashSetPatch<Value>> = D.hashSet
 
 /**
  * Combines this differ and the specified differ to produce a differ that
@@ -230,7 +245,7 @@ export const transform: {
  * @since 1.0.0
  * @category mutations
  */
-export const update: <A>() => Differ<A, (a: A) => A> = D.update
+export const update: <A>(_: void) => Differ<A, (a: A) => A> = D.update
 
 /**
  * A variant of `update` that allows specifying the function that will be used
@@ -239,7 +254,10 @@ export const update: <A>() => Differ<A, (a: A) => A> = D.update
  * @since 1.0.0
  * @category mutations
  */
-export const updateWith: <A>(f: (x: A, y: A) => A) => Differ<A, (a: A) => A> = D.updateWith
+export const updateWith: {
+  <A>(f: (x: A, y: A) => A): Differ<A, (a: A) => A>
+  (): <A>(f: (x: A, y: A) => A) => Differ<A, (a: A) => A>
+} = D.updateWith
 
 /**
  * Combines this differ and the specified differ to produce a new differ that

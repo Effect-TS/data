@@ -30,7 +30,7 @@ describe.concurrent("Product", () => {
     it("Contravariant (Predicate)", () => {
       const tuple = _.tuple(P.Product)
       U.deepStrictEqual(tuple()([]), true)
-      const p = tuple(String.isString, Number.isNumber, Boolean.isBoolean)
+      const p = tuple(String.isString, Number.isNumber, Boolean.isBoolean())
       U.deepStrictEqual(p(["a", 1, true]), true)
       U.deepStrictEqual(p(["a", 1, "b"]), false)
     })
@@ -61,7 +61,7 @@ describe.concurrent("Product", () => {
     it("Contravariant (Predicate)", () => {
       const struct = _.struct(P.Product)
       U.deepStrictEqual(struct({})({}), true)
-      const p = struct({ x: String.isString, y: Number.isNumber, z: Boolean.isBoolean })
+      const p = struct({ x: String.isString, y: Number.isNumber, z: Boolean.isBoolean() })
       U.deepStrictEqual(p({ x: "a", y: 1, z: true }), true)
       U.deepStrictEqual(p({ x: "a", y: 1, z: "b" }), false)
     })

@@ -385,7 +385,7 @@ export const orElseEither: {
 } = dual(
   2,
   <A, B>(self: Option<A>, that: LazyArg<Option<B>>): Option<Either<A, B>> =>
-    isNone(self) ? map(that(), either.right) : map(self, either.left)
+    isNone(self) ? map(that(), either.right()) : map(self, either.left())
 )
 
 /**

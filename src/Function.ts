@@ -114,7 +114,7 @@ export const dual: {
  */
 export const zeroArgsDual = <DataFirst extends (...args: Array<any>) => any>(
   body: DataFirst
-): DataFirst & { (): DataFirst } => dual(1, body)
+): DataFirst & { (_?: never): DataFirst } => dual(1, body)
 
 /**
  * Apply a function to a given value.

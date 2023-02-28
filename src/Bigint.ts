@@ -30,7 +30,7 @@ import * as semigroup from "@effect/data/typeclass/Semigroup"
  */
 export const isBigint: {
   (input: unknown): input is bigint
-  (): (input: unknown) => input is bigint
+  (_?: never): (input: unknown) => input is bigint
 } = zeroArgsDual(predicate.isBigint)
 
 /**
@@ -129,7 +129,7 @@ export const divide: {
  */
 export const increment: {
   (n: bigint): bigint
-  (): (n: bigint) => bigint
+  (_?: never): (n: bigint) => bigint
 } = zeroArgsDual((n) => n + 1n)
 
 /**
@@ -147,7 +147,7 @@ export const increment: {
  */
 export const decrement: {
   (n: bigint): bigint
-  (): (n: bigint) => bigint
+  (_?: never): (n: bigint) => bigint
 } = zeroArgsDual((n) => n - 1n)
 
 /**
@@ -425,7 +425,7 @@ export const MonoidMultiply: monoid.Monoid<bigint> = monoid.bigintMultiply
  */
 export const sign: {
   (n: bigint): Ordering
-  (): (n: bigint) => Ordering
+  (_?: never): (n: bigint) => Ordering
 } = zeroArgsDual((n) => Order.compare(n, 0n))
 
 /**
@@ -443,7 +443,7 @@ export const sign: {
  */
 export const sumAll: {
   (collection: Iterable<bigint>): bigint
-  (): (collection: Iterable<bigint>) => bigint
+  (_?: never): (collection: Iterable<bigint>) => bigint
 } = zeroArgsDual(MonoidSum.combineAll)
 
 /**
@@ -461,5 +461,5 @@ export const sumAll: {
  */
 export const multiplyAll: {
   (collection: Iterable<bigint>): bigint
-  (): (collection: Iterable<bigint>) => bigint
+  (_?: never): (collection: Iterable<bigint>) => bigint
 } = zeroArgsDual(MonoidMultiply.combineAll)

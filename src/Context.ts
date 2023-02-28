@@ -95,7 +95,10 @@ export interface Context<Services> extends Equal {
  * @since 1.0.0
  * @category guards
  */
-export const isContext: (input: unknown) => input is Context<never> = C.isContext
+export const isContext: {
+  (u: unknown): u is Context<never>
+  (): (u: unknown) => u is Context<never>
+} = C.isContext
 
 /**
  * Checks if the provided argument is a `Tag`.
@@ -110,7 +113,10 @@ export const isContext: (input: unknown) => input is Context<never> = C.isContex
  * @since 1.0.0
  * @category guards
  */
-export const isTag: (input: unknown) => input is Tag<never> = C.isTag
+export const isTag: {
+  (u: unknown): u is Tag<never>
+  (): (u: unknown) => u is Tag<never>
+} = C.isTag
 
 /**
  * Returns an empty `Context`.
@@ -123,7 +129,7 @@ export const isTag: (input: unknown) => input is Tag<never> = C.isTag
  * @since 1.0.0
  * @category constructors
  */
-export const empty: () => Context<never> = C.empty
+export const empty: (_: void) => Context<never> = C.empty
 
 /**
  * Creates a new `Context` with a single service associated to the tag.

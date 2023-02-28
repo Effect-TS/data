@@ -8,8 +8,7 @@ import * as HashSetPatch from "@effect/data/Differ/HashSetPatch"
 import * as OrPatch from "@effect/data/Differ/OrPatch"
 import type { Either } from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
-import * as Dual from "@effect/data/Function"
-import { constant, identity } from "@effect/data/Function"
+import { constant, dual, identity, zeroArgsDual } from "@effect/data/Function"
 import type { HashMap } from "@effect/data/HashMap"
 import type { HashSet } from "@effect/data/HashSet"
 
@@ -39,12 +38,12 @@ class DifferImpl<Value, Patch> implements D.Differ<Value, Patch> {
 }
 
 /** @internal */
-export const make = <Value, Patch>(params: {
+export const make = zeroArgsDual(<Value, Patch>(params: {
   readonly empty: Patch
   readonly diff: (oldValue: Value, newValue: Value) => Patch
   readonly combine: (first: Patch, second: Patch) => Patch
   readonly patch: (patch: Patch, oldValue: Value) => Value
-}): D.Differ<Value, Patch> => new DifferImpl(params)
+}): D.Differ<Value, Patch> => new DifferImpl(params))
 
 /** @internal */
 export const environment = <A>(): D.Differ<Context<A>, ContextPatch.ContextPatch<A, A>> =>
@@ -56,7 +55,10 @@ export const environment = <A>(): D.Differ<Context<A>, ContextPatch.ContextPatch
   })
 
 /** @internal */
-export const chunk = <Value, Patch>(
+export const chunk: {
+  <Value, Patch>(differ: D.Differ<Value, Patch>): D.Differ<Chunk<Value>, ChunkPatch.ChunkPatch<Value, Patch>>
+  (): <Value, Patch>(differ: D.Differ<Value, Patch>) => D.Differ<Chunk<Value>, ChunkPatch.ChunkPatch<Value, Patch>>
+} = zeroArgsDual(<Value, Patch>(
   differ: D.Differ<Value, Patch>
 ): D.Differ<Chunk<Value>, ChunkPatch.ChunkPatch<Value, Patch>> =>
   make({
@@ -65,9 +67,17 @@ export const chunk = <Value, Patch>(
     diff: (oldValue, newValue) => ChunkPatch.diff(oldValue, newValue, differ),
     patch: (patch, oldValue) => ChunkPatch.patch(oldValue, differ)(patch)
   })
+)
 
 /** @internal */
-export const hashMap = <Key, Value, Patch>(
+export const hashMap: {
+  <Key, Value, Patch>(
+    differ: D.Differ<Value, Patch>
+  ): D.Differ<HashMap<Key, Value>, HashMapPatch.HashMapPatch<Key, Value, Patch>>
+  (): <Key, Value, Patch>(
+    differ: D.Differ<Value, Patch>
+  ) => D.Differ<HashMap<Key, Value>, HashMapPatch.HashMapPatch<Key, Value, Patch>>
+} = zeroArgsDual(<Key, Value, Patch>(
   differ: D.Differ<Value, Patch>
 ): D.Differ<HashMap<Key, Value>, HashMapPatch.HashMapPatch<Key, Value, Patch>> =>
   make({
@@ -76,9 +86,10 @@ export const hashMap = <Key, Value, Patch>(
     diff: (oldValue, newValue) => HashMapPatch.diff(oldValue, newValue, differ),
     patch: (patch, oldValue) => HashMapPatch.patch(oldValue, differ)(patch)
   })
+)
 
 /** @internal */
-export const hashSet = <Value>(): D.Differ<HashSet<Value>, HashSetPatch.HashSetPatch<Value>> =>
+export const hashSet = <Value>(_: void): D.Differ<HashSet<Value>, HashSetPatch.HashSetPatch<Value>> =>
   make({
     empty: HashSetPatch.empty(),
     combine: (first, second) => HashSetPatch.combine(second)(first),
@@ -87,7 +98,7 @@ export const hashSet = <Value>(): D.Differ<HashSet<Value>, HashSetPatch.HashSetP
   })
 
 /** @internal */
-export const orElseResult = Dual.dual<
+export const orElseResult = dual<
   <Value2, Patch2>(that: D.Differ<Value2, Patch2>) => <Value, Patch>(
     self: D.Differ<Value, Patch>
   ) => D.Differ<Either<Value, Value2>, OrPatch.OrPatch<Value, Value2, Patch, Patch2>>,
@@ -104,7 +115,7 @@ export const orElseResult = Dual.dual<
   }))
 
 /** @internal */
-export const transform = Dual.dual<
+export const transform = dual<
   <Value, Value2>(
     f: (value: Value) => Value2,
     g: (value: Value2) => Value
@@ -123,10 +134,10 @@ export const transform = Dual.dual<
   }))
 
 /** @internal */
-export const update = <A>(): D.Differ<A, (a: A) => A> => updateWith((_, a) => a)
+export const update = <A>(_: void): D.Differ<A, (a: A) => A> => updateWith((_, a) => a)
 
 /** @internal */
-export const updateWith = <A>(f: (x: A, y: A) => A): D.Differ<A, (a: A) => A> =>
+export const updateWith = zeroArgsDual(<A>(f: (x: A, y: A) => A): D.Differ<A, (a: A) => A> =>
   make({
     empty: identity,
     combine: (first, second) => {
@@ -146,9 +157,10 @@ export const updateWith = <A>(f: (x: A, y: A) => A): D.Differ<A, (a: A) => A> =>
     },
     patch: (patch, oldValue) => f(oldValue, patch(oldValue))
   })
+)
 
 /** @internal */
-export const zip = Dual.dual<
+export const zip = dual<
   <Value2, Patch2>(that: D.Differ<Value2, Patch2>) => <Value, Patch>(
     self: D.Differ<Value, Patch>
   ) => D.Differ<readonly [Value, Value2], readonly [Patch, Patch2]>,

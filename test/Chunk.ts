@@ -366,7 +366,7 @@ describe.concurrent("Chunk", () => {
       const amount = 2
 
       it("should return the available subset", () => {
-        expect(pipe(chunk, C.take(amount), C.toReadonlyArray)).toEqual([1, 2])
+        expect(C.toReadonlyArray(C.take(chunk, amount))).toEqual([1, 2])
       })
     })
   })
@@ -397,7 +397,7 @@ describe.concurrent("Chunk", () => {
     })
     it("should handle concatenated chunks", () => {
       const self = pipe(C.make(1), C.concat(C.make(2, 3, 4)))
-      expect(pipe(self, C.drop(2), C.toReadonlyArray)).toEqual([3, 4])
+      expect(C.toReadonlyArray(C.drop(self, 2))).toEqual([3, 4])
     })
   })
 
@@ -548,16 +548,11 @@ describe.concurrent("Chunk", () => {
       assert.isTrue
     )
     pipe(
-      C.of(1),
-      C.zip(C.empty()),
+      C.zip(C.of(1), C.empty()),
       equals(C.unsafeFromArray([])),
       assert.isTrue
     )
-    expect(pipe(
-      C.of(1),
-      C.zip(C.of(2)),
-      C.toReadonlyArray
-    )).toEqual([[1, 2]])
+    expect(C.toReadonlyArray(C.zip(C.of(1), C.of(2)))).toEqual([[1, 2]])
   })
 
   it("zipAllWith", () => {
@@ -584,14 +579,14 @@ describe.concurrent("Chunk", () => {
   it("zipWithIndex", () => {
     pipe(
       C.empty(),
-      C.zipWithIndex,
+      C.zipWithIndex(),
       equals(C.unsafeFromArray([])),
       assert.isTrue
     )
     expect(pipe(
       C.unsafeFromArray([1, 2, 3, 4]),
-      C.zipWithIndex,
-      C.toReadonlyArray
+      C.zipWithIndex(),
+      C.toReadonlyArray()
     )).toEqual([[1, 0], [2, 1], [3, 2], [4, 3]])
   })
 
@@ -604,7 +599,7 @@ describe.concurrent("Chunk", () => {
     expect(pipe(
       C.unsafeFromArray([1, 2, 3, 4]),
       C.zipWithIndexOffset(5),
-      C.toReadonlyArray
+      C.toReadonlyArray()
     )).toEqual([[1, 5], [2, 6], [3, 7], [4, 8]])
   })
 

@@ -50,15 +50,17 @@ export class ContextImpl<Services> implements C.Context<Services> {
 }
 
 /** @internal */
-export const isContext = (u: unknown): u is C.Context<never> =>
+export const isContext = Dual.zeroArgsDual((u: unknown): u is C.Context<never> =>
   typeof u === "object" && u !== null && "_id" in u && u["_id"] === ContextTypeId
+)
 
 /** @internal */
-export const isTag = (u: unknown): u is C.Tag<never> =>
+export const isTag = Dual.zeroArgsDual((u: unknown): u is C.Tag<never> =>
   typeof u === "object" && u !== null && "_id" in u && u["_id"] === TagTypeId
+)
 
 /** @internal */
-export const empty = (): C.Context<never> => new ContextImpl<never>(new Map())
+export const empty = (_: void): C.Context<never> => new ContextImpl<never>(new Map())
 
 /** @internal */
 export const make = <T extends C.Tag<any>>(

@@ -6,7 +6,7 @@
  * @since 1.0.0
  */
 import type { LazyArg } from "@effect/data/Function"
-import { dual, flow } from "@effect/data/Function"
+import { dual, flow, zeroArgsDual } from "@effect/data/Function"
 import * as predicate from "@effect/data/Predicate"
 import * as equivalence from "@effect/data/typeclass/Equivalence"
 import * as monoid from "@effect/data/typeclass/Monoid"
@@ -27,7 +27,10 @@ import * as semigroup from "@effect/data/typeclass/Semigroup"
  * @category guards
  * @since 1.0.0
  */
-export const isBoolean: (input: unknown) => input is boolean = predicate.isBoolean
+export const isBoolean: {
+  (input: unknown): input is boolean
+  (_?: never): (input: unknown) => input is boolean
+} = zeroArgsDual(predicate.isBoolean)
 
 /**
  * This function returns the result of either of the given functions depending on the value of the boolean parameter.
@@ -184,7 +187,10 @@ export const MonoidEqv: monoid.Monoid<boolean> = monoid.booleanEqv
  * @category combinators
  * @since 1.0.0
  */
-export const not = (self: boolean): boolean => !self
+export const not: {
+  (self: boolean): boolean
+  (_?: never): (self: boolean) => boolean
+} = zeroArgsDual((self) => !self)
 
 /**
  * Combines two boolean using AND: `self && that`.
@@ -222,7 +228,7 @@ export const and: {
 export const nand: {
   (that: boolean): (self: boolean) => boolean
   (self: boolean, that: boolean): boolean
-} = dual(2, flow(semigroup.booleanEvery.combine, not))
+} = dual(2, flow(semigroup.booleanEvery.combine, not()))
 
 /**
  * Combines two boolean using OR: `self || that`.
@@ -260,7 +266,7 @@ export const or: {
 export const nor: {
   (that: boolean): (self: boolean) => boolean
   (self: boolean, that: boolean): boolean
-} = dual(2, flow(semigroup.booleanSome.combine, not))
+} = dual(2, flow(semigroup.booleanSome.combine, not()))
 
 /**
  * Combines two booleans using XOR: `(!self && that) || (self && !that)`.
@@ -332,7 +338,10 @@ export const implies: {
  *
  * @since 1.0.0
  */
-export const every: (collection: Iterable<boolean>) => boolean = MonoidEvery.combineAll
+export const every: {
+  (collection: Iterable<boolean>): boolean
+  (_?: never): (collection: Iterable<boolean>) => boolean
+} = zeroArgsDual(MonoidEvery.combineAll)
 
 /**
  * This utility function is used to check if at least one of the elements in a collection of boolean values is `true`.
@@ -347,4 +356,7 @@ export const every: (collection: Iterable<boolean>) => boolean = MonoidEvery.com
  *
  * @since 1.0.0
  */
-export const some: (collection: Iterable<boolean>) => boolean = MonoidSome.combineAll
+export const some: {
+  (collection: Iterable<boolean>): boolean
+  (_?: never): (collection: Iterable<boolean>) => boolean
+} = zeroArgsDual(MonoidSome.combineAll)

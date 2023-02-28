@@ -2,6 +2,7 @@
  * @since 1.0.0
  */
 import * as Equal from "@effect/data/Equal"
+import { zeroArgsDual } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 
 /**
@@ -74,15 +75,19 @@ const protoStruct: Equal.Equal = (() => {
  * @category constructors
  * @since 1.0.0
  */
-export const struct = <As extends Readonly<Record<string, any>>>(as: As): Data<As> =>
-  unsafeStruct(Object.assign({}, as))
+export const struct: {
+  <As extends Readonly<Record<string, any>>>(as: As): Data<As>
+  (_?: never): <As extends Readonly<Record<string, any>>>(as: As) => Data<As>
+} = zeroArgsDual((as) => unsafeStruct(Object.assign({}, as)))
 
 /**
  * @category constructors
  * @since 1.0.0
  */
-export const unsafeStruct = <As extends Readonly<Record<string, any>>>(as: As): Data<As> =>
-  Object.setPrototypeOf(as, protoStruct)
+export const unsafeStruct: {
+  <As extends Readonly<Record<string, any>>>(as: As): Data<As>
+  (_?: never): <As extends Readonly<Record<string, any>>>(as: As) => Data<As>
+} = zeroArgsDual((as) => Object.setPrototypeOf(as, protoStruct))
 
 /**
  * @category constructors
@@ -94,15 +99,21 @@ export const tuple = <As extends ReadonlyArray<any>>(...as: As): Data<As> => uns
  * @category constructors
  * @since 1.0.0
  */
-export const array = <As extends ReadonlyArray<any>>(as: As): Data<As> => unsafeArray(as.slice(0) as unknown as As)
+export const array: {
+  <As extends ReadonlyArray<any>>(as: As): Data<As>
+  (_?: never): <As extends ReadonlyArray<any>>(as: As) => Data<As>
+} = zeroArgsDual(<As extends ReadonlyArray<any>>(as: As): Data<As> => unsafeArray(as.slice(0) as unknown as As))
 
 /**
  * @category constructors
  * @since 1.0.0
  */
-export const unsafeArray = <As extends ReadonlyArray<any>>(as: As): Data<As> => Object.setPrototypeOf(as, protoArr)
+export const unsafeArray: {
+  <As extends ReadonlyArray<any>>(as: As): Data<As>
+  (_?: never): <As extends ReadonlyArray<any>>(as: As) => Data<As>
+} = zeroArgsDual((as) => Object.setPrototypeOf(as, protoArr))
 
-const _case = <A extends Case>(): Case.Constructor<A> =>
+const _case = <A extends Case>(_: void): Case.Constructor<A> =>
   (args) => (args === undefined ? struct({}) : struct(args)) as any
 
 export {
@@ -121,11 +132,15 @@ export {
  * @since 1.0.0
  * @category constructors
  */
-export const tagged = <A extends Case & { _tag: string }>(
+export const tagged: {
+  <A extends Case & { _tag: string }>(tag: A["_tag"]): Case.Constructor<A, "_tag">
+  (_?: never): <A extends Case & { _tag: string }>(tag: A["_tag"]) => Case.Constructor<A, "_tag">
+} = zeroArgsDual(<A extends Case & { _tag: string }>(
   tag: A["_tag"]
 ): Case.Constructor<A, "_tag"> =>
   // @ts-expect-error
   (args) => args === undefined ? struct({}) : struct({ _tag: tag, ...args })
+)
 
 /**
  * Provides a Tagged constructor for a Case Class.
@@ -133,7 +148,18 @@ export const tagged = <A extends Case & { _tag: string }>(
  * @since 1.0.0
  * @category constructors
  */
-export const TaggedClass = <Key extends string>(
+export const TaggedClass: {
+  <Key extends string>(
+    tag: Key
+  ): <A extends Record<string, any>>() => new(
+    args: Omit<A, keyof Equal.Equal | "_tag">
+  ) => Readonly<A> & Equal.Equal & { readonly _tag: Key }
+  (_?: never): <Key extends string>(
+    tag: Key
+  ) => <A extends Record<string, any>>() => new(
+    args: Omit<A, keyof Equal.Equal | "_tag">
+  ) => Readonly<A> & Equal.Equal & { readonly _tag: Key }
+} = zeroArgsDual(<Key extends string>(
   tag: Key
 ) =>
   <A extends Record<string, any>>() => {
@@ -146,6 +172,7 @@ export const TaggedClass = <Key extends string>(
     }
     return Base as unknown as { new(args: Omit<A, "_tag" | keyof Equal.Equal>): Data<A> & { readonly _tag: Key } }
   }
+)
 
 /**
  * Provides a constructor for a Case Class.
@@ -153,7 +180,7 @@ export const TaggedClass = <Key extends string>(
  * @since 1.0.0
  * @category constructors
  */
-export const Class = <A extends Record<string, any>>() => {
+export const Class = <A extends Record<string, any>>(_: void) => {
   class Base {
     constructor(args: Omit<A, keyof Equal.Equal>) {
       Object.assign(this, args)

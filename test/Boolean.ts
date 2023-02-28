@@ -78,8 +78,8 @@ describe.concurrent("Boolean", () => {
   })
 
   it("not", () => {
-    deepStrictEqual(pipe(true, Boolean.not), false)
-    deepStrictEqual(pipe(false, Boolean.not), true)
+    deepStrictEqual(Boolean.not(true), false)
+    deepStrictEqual(Boolean.not(false), true)
   })
 
   describe.concurrent("MonoidXor", () => {

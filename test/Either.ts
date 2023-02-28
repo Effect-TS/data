@@ -91,9 +91,9 @@ describe.concurrent("Either", () => {
   })
 
   it("isEither", () => {
-    Util.deepStrictEqual(pipe(E.right(1), E.isEither), true)
-    Util.deepStrictEqual(pipe(E.left("e"), E.isEither), true)
-    Util.deepStrictEqual(pipe(O.some(1), E.isEither), false)
+    Util.deepStrictEqual(E.isEither(E.right(1)), true)
+    Util.deepStrictEqual(E.isEither(E.left("e")), true)
+    Util.deepStrictEqual(E.isEither(O.some(1)), false)
   })
 
   it("orElseFail", () => {
@@ -107,23 +107,23 @@ describe.concurrent("Either", () => {
   })
 
   it("getRight", () => {
-    Util.deepStrictEqual(pipe(E.right(1), E.getRight), O.some(1))
-    Util.deepStrictEqual(pipe(E.left("a"), E.getRight), O.none())
+    Util.deepStrictEqual(E.getRight(E.right(1)), O.some(1))
+    Util.deepStrictEqual(E.getRight(E.left("a")), O.none())
   })
 
   it("getLeft", () => {
-    Util.deepStrictEqual(pipe(E.right(1), E.getLeft), O.none())
-    Util.deepStrictEqual(pipe(E.left("e"), E.getLeft), O.some("e"))
+    Util.deepStrictEqual(E.getLeft(E.right(1)), O.none())
+    Util.deepStrictEqual(E.getLeft(E.left("e")), O.some("e"))
   })
 
   it("getOrNull", () => {
-    Util.deepStrictEqual(pipe(E.right(1), E.getOrNull), 1)
-    Util.deepStrictEqual(pipe(E.left("a"), E.getOrNull), null)
+    Util.deepStrictEqual(E.getOrNull(E.right(1)), 1)
+    Util.deepStrictEqual(E.getOrNull(E.left("a")), null)
   })
 
   it("getOrUndefined", () => {
-    Util.deepStrictEqual(pipe(E.right(1), E.getOrUndefined), 1)
-    Util.deepStrictEqual(pipe(E.left("a"), E.getOrUndefined), undefined)
+    Util.deepStrictEqual(E.getOrUndefined(E.right(1)), 1)
+    Util.deepStrictEqual(E.getOrUndefined(E.left("a")), undefined)
   })
 
   it("compact", () => {
@@ -153,8 +153,8 @@ describe.concurrent("Either", () => {
   })
 
   it("getOrThrow", () => {
-    expect(pipe(E.right(1), E.getOrThrow)).toEqual(1)
-    expect(() => pipe(E.left("e"), E.getOrThrow)).toThrowError(
+    expect(E.getOrThrow(E.right(1))).toEqual(1)
+    expect(() => E.getOrThrow(E.left("e"))).toThrowError(
       new Error("getOrThrow called on a Left")
     )
   })
@@ -202,7 +202,7 @@ describe.concurrent("Either", () => {
   })
 
   it("flatMap", () => {
-    const f = E.flatMap<string, string, number>(flow(S.length, E.right))
+    const f = E.flatMap<string, string, number>(flow(S.length, E.right()))
     Util.deepStrictEqual(pipe(E.right("abc"), f), E.right(3))
     Util.deepStrictEqual(pipe(E.left("maError"), f), E.left("maError"))
   })
@@ -419,7 +419,7 @@ describe.concurrent("Either", () => {
   })
 
   it("element", () => {
-    expect(pipe(E.right(1), E.tupled, E.appendElement(E.right("b")))).toEqual(
+    expect(pipe(E.tupled(E.right(1)), E.appendElement(E.right("b")))).toEqual(
       E.right([1, "b"])
     )
   })
