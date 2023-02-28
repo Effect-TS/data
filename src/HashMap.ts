@@ -41,7 +41,7 @@ export const isHashMap: {
  * @since 1.0.0
  * @category constructors
  */
-export const empty: <K = never, V = never>() => HashMap<K, V> = HM.empty
+export const empty: <K = never, V = never>(_: void) => HashMap<K, V> = HM.empty
 
 /**
  * Constructs a new `HashMap` from an array of key/value pairs.
@@ -62,7 +62,10 @@ export const make: <Entries extends ReadonlyArray<readonly [any, any]>>(
  * @since 1.0.0
  * @category constructors
  */
-export const fromIterable: <K, V>(entries: Iterable<readonly [K, V]>) => HashMap<K, V> = HM.fromIterable
+export const fromIterable: {
+  <K, V>(entries: Iterable<readonly [K, V]>): HashMap<K, V>
+  (_?: never): <K, V>(entries: Iterable<readonly [K, V]>) => HashMap<K, V>
+} = HM.fromIterable
 
 /**
  * Checks if the `HashMap` contains any entries.
@@ -70,7 +73,10 @@ export const fromIterable: <K, V>(entries: Iterable<readonly [K, V]>) => HashMap
  * @since 1.0.0
  * @category elements
  */
-export const isEmpty: <K, V>(self: HashMap<K, V>) => boolean = HM.isEmpty
+export const isEmpty: {
+  <K, V>(self: HashMap<K, V>): boolean
+  (_?: never): <K, V>(self: HashMap<K, V>) => boolean
+} = HM.isEmpty
 
 /**
  * Safely lookup the value for the specified key in the `HashMap` using the
@@ -148,7 +154,10 @@ export const set: {
  * @since 1.0.0
  * @category getters
  */
-export const keys: <K, V>(self: HashMap<K, V>) => IterableIterator<K> = HM.keys
+export const keys: {
+  <K, V>(self: HashMap<K, V>): IterableIterator<K>
+  (_?: never): <K, V>(self: HashMap<K, V>) => IterableIterator<K>
+} = HM.keys
 
 /**
  * Returns a `HashSet` of keys within the `HashMap`.
@@ -156,7 +165,10 @@ export const keys: <K, V>(self: HashMap<K, V>) => IterableIterator<K> = HM.keys
  * @since 1.0.0
  * @category getter
  */
-export const keySet: <K, V>(self: HashMap<K, V>) => HashSet<K> = _keySet.keySet
+export const keySet: {
+  <K, V>(self: HashMap<K, V>): HashSet<K>
+  (_?: never): <K, V>(self: HashMap<K, V>) => HashSet<K>
+} = _keySet.keySet
 
 /**
  * Returns an `IterableIterator` of the values within the `HashMap`.
@@ -164,7 +176,10 @@ export const keySet: <K, V>(self: HashMap<K, V>) => HashSet<K> = _keySet.keySet
  * @since 1.0.0
  * @category getters
  */
-export const values: <K, V>(self: HashMap<K, V>) => IterableIterator<V> = HM.values
+export const values: {
+  <K, V>(self: HashMap<K, V>): IterableIterator<V>
+  (_?: never): <K, V>(self: HashMap<K, V>) => IterableIterator<V>
+} = HM.values
 
 /**
  * Returns the number of entries within the `HashMap`.
@@ -172,7 +187,10 @@ export const values: <K, V>(self: HashMap<K, V>) => IterableIterator<V> = HM.val
  * @since 1.0.0
  * @category getters
  */
-export const size: <K, V>(self: HashMap<K, V>) => number = HM.size
+export const size: {
+  <K, V>(self: HashMap<K, V>): number
+  (_?: never): <K, V>(self: HashMap<K, V>) => number
+} = HM.size
 
 /**
  * Marks the `HashMap` as mutable.
@@ -180,7 +198,10 @@ export const size: <K, V>(self: HashMap<K, V>) => number = HM.size
  * @since 1.0.0
  * @category mutations
  */
-export const beginMutation: <K, V>(self: HashMap<K, V>) => HashMap<K, V> = HM.beginMutation
+export const beginMutation: {
+  <K, V>(self: HashMap<K, V>): HashMap<K, V>
+  (_?: never): <K, V>(self: HashMap<K, V>) => HashMap<K, V>
+} = HM.beginMutation
 
 /**
  * Marks the `HashMap` as immutable.
@@ -188,7 +209,10 @@ export const beginMutation: <K, V>(self: HashMap<K, V>) => HashMap<K, V> = HM.be
  * @since 1.0.0
  * @category mutations
  */
-export const endMutation: <K, V>(self: HashMap<K, V>) => HashMap<K, V> = HM.endMutation
+export const endMutation: {
+  <K, V>(self: HashMap<K, V>): HashMap<K, V>
+  (_?: never): <K, V>(self: HashMap<K, V>) => HashMap<K, V>
+} = HM.endMutation
 
 /**
  * Mutates the `HashMap` within the context of the provided function.
@@ -404,7 +428,10 @@ export const filterWithIndex: {
  * @since 1.0.0
  * @category filtering
  */
-export const compact: <K, A>(self: HashMap<K, Option<A>>) => HashMap<K, A> = HM.compact
+export const compact: {
+  <K, A>(self: HashMap<K, Option<A>>): HashMap<K, A>
+  (_?: never): <K, A>(self: HashMap<K, Option<A>>) => HashMap<K, A>
+} = HM.compact
 
 /**
  * Maps over the values of the `HashMap` using the specified partial function

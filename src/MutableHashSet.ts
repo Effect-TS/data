@@ -59,14 +59,18 @@ class MutableHashSetImpl<V> implements MutableHashSet<V> {
  * @since 1.0.0
  * @category constructors
  */
-export const empty = <K = never>(): MutableHashSet<K> => new MutableHashSetImpl(MutableHashMap.empty())
+export const empty = <K = never>(_: void): MutableHashSet<K> => new MutableHashSetImpl(MutableHashMap.empty())
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const fromIterable = <K = never>(keys: Iterable<K>): MutableHashSet<K> =>
+export const fromIterable: {
+  <K = never>(keys: Iterable<K>): MutableHashSet<K>
+  (_?: never): <K = never>(keys: Iterable<K>) => MutableHashSet<K>
+} = Dual.zeroArgsDual(<K = never>(keys: Iterable<K>): MutableHashSet<K> =>
   new MutableHashSetImpl(MutableHashMap.fromIterable(Array.from(keys).map((k) => [k, true])))
+)
 
 /**
  * @since 1.0.0
@@ -116,4 +120,7 @@ export const remove: {
  * @since 1.0.0
  * @category elements
  */
-export const size = <V>(self: MutableHashSet<V>): number => MutableHashMap.size(self.keyMap)
+export const size: {
+  <V>(self: MutableHashSet<V>): number
+  (_?: never): <V>(self: MutableHashSet<V>) => number
+} = Dual.zeroArgsDual(<V>(self: MutableHashSet<V>): number => MutableHashMap.size(self.keyMap))

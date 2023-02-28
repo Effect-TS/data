@@ -5,7 +5,7 @@
  *
  * @since 1.0.0
  */
-import { dual } from "@effect/data/Function"
+import { dual, zeroArgsDual } from "@effect/data/Function"
 import type { Ordering } from "@effect/data/Ordering"
 import * as predicate from "@effect/data/Predicate"
 import * as bounded from "@effect/data/typeclass/Bounded"
@@ -28,7 +28,10 @@ import * as semigroup from "@effect/data/typeclass/Semigroup"
  * @category guards
  * @since 1.0.0
  */
-export const isNumber: (input: unknown) => input is number = predicate.isNumber
+export const isNumber: {
+  (input: unknown): input is number
+  (_?: never): (input: unknown) => input is number
+} = zeroArgsDual(predicate.isNumber)
 
 /**
  * Provides an addition operation on `number`s.
@@ -119,7 +122,10 @@ export const divide: {
  * @category math
  * @since 1.0.0
  */
-export const increment = (n: number): number => n + 1
+export const increment: {
+  (n: number): number
+  (_?: never): (n: number) => number
+} = zeroArgsDual((n: number): number => n + 1)
 
 /**
  * Decrements a number by `1`.
@@ -134,7 +140,10 @@ export const increment = (n: number): number => n + 1
  * @category math
  * @since 1.0.0
  */
-export const decrement = (n: number): number => n - 1
+export const decrement: {
+  (n: number): number
+  (_?: never): (n: number) => number
+} = zeroArgsDual((n: number): number => n - 1)
 
 /**
  * @category instances
@@ -452,7 +461,10 @@ export const MonoidMax: monoid.Monoid<number> = bounded.max(Bounded)
  * @category math
  * @since 1.0.0
  */
-export const sign = (n: number): Ordering => Order.compare(n, 0)
+export const sign: {
+  (n: number): Ordering
+  (_?: never): (n: number) => Ordering
+} = zeroArgsDual((n: number): Ordering => Order.compare(n, 0))
 
 /**
  * Takes an `Iterable` of `number`s and returns their sum as a single `number`.
@@ -467,7 +479,10 @@ export const sign = (n: number): Ordering => Order.compare(n, 0)
  * @category math
  * @since 1.0.0
  */
-export const sumAll: (collection: Iterable<number>) => number = MonoidSum.combineAll
+export const sumAll: {
+  (collection: Iterable<number>): number
+  (_?: never): (collection: Iterable<number>) => number
+} = zeroArgsDual(MonoidSum.combineAll)
 
 /**
  * Takes an `Iterable` of `number`s and returns their multiplication as a single `number`.
@@ -482,7 +497,10 @@ export const sumAll: (collection: Iterable<number>) => number = MonoidSum.combin
  * @category math
  * @since 1.0.0
  */
-export const multiplyAll: (collection: Iterable<number>) => number = MonoidMultiply.combineAll
+export const multiplyAll: {
+  (collection: Iterable<number>): number
+  (_?: never): (collection: Iterable<number>) => number
+} = zeroArgsDual(MonoidMultiply.combineAll)
 
 /**
  * Returns the remainder left over when one operand is divided by a second operand.

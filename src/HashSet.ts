@@ -37,7 +37,7 @@ export const isHashSet: {
  * @since 1.0.0
  * @category constructors
  */
-export const empty: <A = never>() => HashSet<A> = HS.empty
+export const empty: <A = never>(_: void) => HashSet<A> = HS.empty
 
 /**
  * Construct a new `HashSet` from a `Collection` of values
@@ -45,7 +45,10 @@ export const empty: <A = never>() => HashSet<A> = HS.empty
  * @since 1.0.0
  * @category constructors
  */
-export const fromIterable: <A>(elements: Iterable<A>) => HashSet<A> = HS.fromIterable
+export const fromIterable: {
+  <A>(elements: Iterable<A>): HashSet<A>
+  (_?: never): <A>(elements: Iterable<A>) => HashSet<A>
+} = HS.fromIterable
 
 /**
  * Construct a new `HashSet` from a variable number of values.
@@ -109,7 +112,10 @@ export const isSubset: {
  * @since 1.0.0
  * @category getters
  */
-export const values: <A>(self: HashSet<A>) => IterableIterator<A> = HS.values
+export const values: {
+  <A>(self: HashSet<A>): IterableIterator<A>
+  (_?: never): <A>(self: HashSet<A>) => IterableIterator<A>
+} = HS.values
 
 /**
  * Calculates the number of values in the `HashSet`.
@@ -117,7 +123,10 @@ export const values: <A>(self: HashSet<A>) => IterableIterator<A> = HS.values
  * @since 1.0.0
  * @category getters
  */
-export const size: <A>(self: HashSet<A>) => number = HS.size
+export const size: {
+  <A>(self: HashSet<A>): number
+  (_?: never): <A>(self: HashSet<A>) => number
+} = HS.size
 
 /**
  * Marks the `HashSet` as mutable.
@@ -125,7 +134,10 @@ export const size: <A>(self: HashSet<A>) => number = HS.size
  * @since 1.0.0
  * @category mutations
  */
-export const beginMutation: <A>(self: HashSet<A>) => HashSet<A> = HS.beginMutation
+export const beginMutation: {
+  <A>(self: HashSet<A>): HashSet<A>
+  (_?: never): <A>(self: HashSet<A>) => HashSet<A>
+} = HS.beginMutation
 
 /**
  * Marks the `HashSet` as immutable.
@@ -133,7 +145,10 @@ export const beginMutation: <A>(self: HashSet<A>) => HashSet<A> = HS.beginMutati
  * @since 1.0.0
  * @category mutations
  */
-export const endMutation: <A>(self: HashSet<A>) => HashSet<A> = HS.endMutation
+export const endMutation: {
+  <A>(self: HashSet<A>): HashSet<A>
+  (_?: never): <A>(self: HashSet<A>) => HashSet<A>
+} = HS.endMutation
 
 /**
  * Mutates the `HashSet` within the context of the provided function.

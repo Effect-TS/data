@@ -50,7 +50,10 @@ export const getRight: {
 ): Option<A> => (isLeft(self) ? option.none : option.some(self.right)))
 
 /** @internal */
-export const fromOption = dual(
-  2,
-  <A, E>(self: Option<A>, onNone: LazyArg<E>): Either<E, A> => option.isNone(self) ? left(onNone()) : right(self.value)
-)
+export const fromOption: {
+  <E>(onNone: LazyArg<E>): <A>(self: Option<A>) => Either<E, A>
+  <A, E>(self: Option<A>, onNone: LazyArg<E>): Either<E, A>
+} = dual(2, <A, E>(self: Option<A>, onNone: LazyArg<E>): Either<E, A> =>
+  option.isNone(self)
+    ? left(onNone())
+    : right(self.value))

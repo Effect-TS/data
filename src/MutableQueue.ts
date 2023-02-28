@@ -2,7 +2,7 @@
  * @since 1.0.0
  */
 import * as Chunk from "@effect/data/Chunk"
-import * as Dual from "@effect/data/Function"
+import { dual, zeroArgsDual } from "@effect/data/Function"
 import * as MutableList from "@effect/data/MutableList"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/MutableQueue") as TypeId
@@ -74,7 +74,10 @@ class MutableQueueImpl<A> implements MutableQueue<A> {
  * @since 1.0.0
  * @category constructors
  */
-export const bounded = <A>(capacity: number): MutableQueue<A> => new MutableQueueImpl(capacity)
+export const bounded: {
+  <A>(capacity: number): MutableQueue<A>
+  (_?: never): <A>(capacity: number) => MutableQueue<A>
+} = zeroArgsDual(<A>(capacity: number): MutableQueue<A> => new MutableQueueImpl(capacity))
 
 /**
  * Creates a new unbounded `MutableQueue`.
@@ -82,7 +85,7 @@ export const bounded = <A>(capacity: number): MutableQueue<A> => new MutableQueu
  * @since 1.0.0
  * @category constructors
  */
-export const unbounded = <A>(): MutableQueue<A> => new MutableQueueImpl()
+export const unbounded = <A>(_: void): MutableQueue<A> => new MutableQueueImpl()
 
 /**
  * Returns the current number of elements in the queue.
@@ -90,7 +93,10 @@ export const unbounded = <A>(): MutableQueue<A> => new MutableQueueImpl()
  * @since 1.0.0
  * @category getters
  */
-export const length = <A>(self: MutableQueue<A>): number => MutableList.length(self.queue)
+export const length: {
+  <A>(self: MutableQueue<A>): number
+  (_?: never): <A>(self: MutableQueue<A>) => number
+} = zeroArgsDual(<A>(self: MutableQueue<A>): number => MutableList.length(self.queue))
 
 /**
  * Returns `true` if the queue is empty, `false` otherwise.
@@ -98,7 +104,10 @@ export const length = <A>(self: MutableQueue<A>): number => MutableList.length(s
  * @since 1.0.0
  * @category getters
  */
-export const isEmpty = <A>(self: MutableQueue<A>): boolean => MutableList.isEmpty(self.queue)
+export const isEmpty: {
+  <A>(self: MutableQueue<A>): boolean
+  (_?: never): <A>(self: MutableQueue<A>) => boolean
+} = zeroArgsDual(<A>(self: MutableQueue<A>): boolean => MutableList.isEmpty(self.queue))
 
 /**
  * Returns `true` if the queue is full, `false` otherwise.
@@ -106,8 +115,14 @@ export const isEmpty = <A>(self: MutableQueue<A>): boolean => MutableList.isEmpt
  * @since 1.0.0
  * @category getters
  */
-export const isFull = <A>(self: MutableQueue<A>): boolean =>
-  self.capacity === undefined ? false : MutableList.length(self.queue) === self.capacity
+export const isFull: {
+  <A>(self: MutableQueue<A>): boolean
+  (_?: never): <A>(self: MutableQueue<A>) => boolean
+} = zeroArgsDual(<A>(self: MutableQueue<A>): boolean =>
+  self.capacity === undefined
+    ? false
+    : MutableList.length(self.queue) === self.capacity
+)
 
 /**
  * The **maximum** number of elements that a queue can hold.
@@ -118,7 +133,14 @@ export const isFull = <A>(self: MutableQueue<A>): boolean =>
  * @since 1.0.0
  * @category getters
  */
-export const capacity = <A>(self: MutableQueue<A>): number => self.capacity === undefined ? Infinity : self.capacity
+export const capacity: {
+  <A>(self: MutableQueue<A>): number
+  (_?: never): <A>(self: MutableQueue<A>) => number
+} = zeroArgsDual(<A>(self: MutableQueue<A>): number =>
+  self.capacity === undefined
+    ? Infinity
+    : self.capacity
+)
 
 /**
  * Offers an element to the queue.
@@ -131,7 +153,7 @@ export const capacity = <A>(self: MutableQueue<A>): number => self.capacity === 
 export const offer: {
   <A>(self: MutableQueue<A>, value: A): boolean
   <A>(value: A): (self: MutableQueue<A>) => boolean
-} = Dual.dual<
+} = dual<
   <A>(value: A) => (self: MutableQueue<A>) => boolean,
   <A>(self: MutableQueue<A>, value: A) => boolean
 >(2, <A>(self: MutableQueue<A>, value: A) => {
@@ -154,7 +176,7 @@ export const offer: {
 export const offerAll: {
   <A>(values: Iterable<A>): (self: MutableQueue<A>) => Chunk.Chunk<A>
   <A>(self: MutableQueue<A>, values: Iterable<A>): Chunk.Chunk<A>
-} = Dual.dual<
+} = dual<
   <A>(values: Iterable<A>) => (self: MutableQueue<A>) => Chunk.Chunk<A>,
   <A>(self: MutableQueue<A>, values: Iterable<A>) => Chunk.Chunk<A>
 >(2, <A>(self: MutableQueue<A>, values: Iterable<A>) => {
@@ -186,7 +208,7 @@ export const offerAll: {
 export const poll: {
   <D>(def: D): <A>(self: MutableQueue<A>) => D | A
   <A, D>(self: MutableQueue<A>, def: D): A | D
-} = Dual.dual<
+} = dual<
   <D>(def: D) => <A>(self: MutableQueue<A>) => A | D,
   <A, D>(self: MutableQueue<A>, def: D) => A | D
 >(2, (self, def) => {
@@ -207,7 +229,7 @@ export const poll: {
 export const pollUpTo: {
   (n: number): <A>(self: MutableQueue<A>) => Chunk.Chunk<A>
   <A>(self: MutableQueue<A>, n: number): Chunk.Chunk<A>
-} = Dual.dual<
+} = dual<
   (n: number) => <A>(self: MutableQueue<A>) => Chunk.Chunk<A>,
   <A>(self: MutableQueue<A>, n: number) => Chunk.Chunk<A>
 >(2, <A>(self: MutableQueue<A>, n: number) => {

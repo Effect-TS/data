@@ -2,7 +2,7 @@
  * @since 1.0.0
  */
 import * as Equal from "@effect/data/Equal"
-import * as Dual from "@effect/data/Function"
+import { dual, zeroArgsDual } from "@effect/data/Function"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/MutableRef") as TypeId
 
@@ -148,7 +148,10 @@ class MutableRefImpl<T> implements MutableRef<T> {
  * @since 1.0.0
  * @category constructors
  */
-export const make = <T>(value: T): MutableRef<T> => new MutableRefImpl(value)
+export const make: {
+  <T>(value: T): MutableRef<T>
+  (_?: never): <T>(value: T) => MutableRef<T>
+} = zeroArgsDual(<T>(value: T): MutableRef<T> => new MutableRefImpl(value))
 
 /**
  * @since 1.0.0
@@ -157,7 +160,7 @@ export const make = <T>(value: T): MutableRef<T> => new MutableRefImpl(value)
 export const compareAndSet: {
   <T>(oldValue: T, newValue: T): (self: MutableRef<T>) => boolean
   <T>(self: MutableRef<T>, oldValue: T, newValue: T): boolean
-} = Dual.dual<
+} = dual<
   <T>(oldValue: T, newValue: T) => (self: MutableRef<T>) => boolean,
   <T>(self: MutableRef<T>, oldValue: T, newValue: T) => boolean
 >(3, (self, oldValue, newValue) => self.compareAndSet(oldValue, newValue))
@@ -166,31 +169,46 @@ export const compareAndSet: {
  * @since 1.0.0
  * @category numeric
  */
-export const decrement = (self: MutableRef<number>): MutableRef<number> => self.update((n) => n - 1)
+export const decrement: {
+  (self: MutableRef<number>): MutableRef<number>
+  (_?: never): (self: MutableRef<number>) => MutableRef<number>
+} = zeroArgsDual((self: MutableRef<number>): MutableRef<number> => self.update((n) => n - 1))
 
 /**
  * @since 1.0.0
  * @category numeric
  */
-export const decrementAndGet = (self: MutableRef<number>): number => self.updateAndGet((n) => n - 1)
+export const decrementAndGet: {
+  (self: MutableRef<number>): number
+  (_?: never): (self: MutableRef<number>) => number
+} = zeroArgsDual((self: MutableRef<number>): number => self.updateAndGet((n) => n - 1))
 
 /**
  * @since 1.0.0
  * @category general
  */
-export const get = <T>(self: MutableRef<T>): T => self.current
+export const get: {
+  <T>(self: MutableRef<T>): T
+  (_?: never): <T>(self: MutableRef<T>) => T
+} = zeroArgsDual(<T>(self: MutableRef<T>): T => self.current)
 
 /**
  * @since 1.0.0
  * @category numeric
  */
-export const getAndDecrement = (self: MutableRef<number>): number => self.getAndUpdate((n) => n - 1)
+export const getAndDecrement: {
+  (self: MutableRef<number>): number
+  (_?: never): (self: MutableRef<number>) => number
+} = zeroArgsDual((self: MutableRef<number>): number => self.getAndUpdate((n) => n - 1))
 
 /**
  * @since 1.0.0
  * @category numeric
  */
-export const getAndIncrement = (self: MutableRef<number>): number => self.getAndUpdate((n) => n + 1)
+export const getAndIncrement: {
+  (self: MutableRef<number>): number
+  (_?: never): (self: MutableRef<number>) => number
+} = zeroArgsDual((self: MutableRef<number>): number => self.getAndUpdate((n) => n + 1))
 
 /**
  * @since 1.0.0
@@ -199,7 +217,7 @@ export const getAndIncrement = (self: MutableRef<number>): number => self.getAnd
 export const getAndSet: {
   <T>(value: T): (self: MutableRef<T>) => T
   <T>(self: MutableRef<T>, value: T): T
-} = Dual.dual<
+} = dual<
   <T>(value: T) => (self: MutableRef<T>) => T,
   <T>(self: MutableRef<T>, value: T) => T
 >(2, (self, value) => self.getAndSet(value))
@@ -211,7 +229,7 @@ export const getAndSet: {
 export const getAndUpdate: {
   <T>(f: (value: T) => T): (self: MutableRef<T>) => T
   <T>(self: MutableRef<T>, f: (value: T) => T): T
-} = Dual.dual<
+} = dual<
   <T>(f: (value: T) => T) => (self: MutableRef<T>) => T,
   <T>(self: MutableRef<T>, f: (value: T) => T) => T
 >(2, (self, f) => self.getAndUpdate(f))
@@ -220,13 +238,19 @@ export const getAndUpdate: {
  * @since 1.0.0
  * @category numeric
  */
-export const increment = (self: MutableRef<number>): MutableRef<number> => self.update((n) => n + 1)
+export const increment: {
+  (self: MutableRef<number>): MutableRef<number>
+  (_?: never): (self: MutableRef<number>) => MutableRef<number>
+} = zeroArgsDual((self: MutableRef<number>): MutableRef<number> => self.update((n) => n + 1))
 
 /**
  * @since 1.0.0
  * @category numeric
  */
-export const incrementAndGet = (self: MutableRef<number>): number => self.updateAndGet((n) => n + 1)
+export const incrementAndGet: {
+  (self: MutableRef<number>): number
+  (_?: never): (self: MutableRef<number>) => number
+} = zeroArgsDual((self: MutableRef<number>): number => self.updateAndGet((n) => n + 1))
 
 /**
  * @since 1.0.0
@@ -235,7 +259,7 @@ export const incrementAndGet = (self: MutableRef<number>): number => self.update
 export const set: {
   <T>(value: T): (self: MutableRef<T>) => MutableRef<T>
   <T>(self: MutableRef<T>, value: T): MutableRef<T>
-} = Dual.dual<
+} = dual<
   <T>(value: T) => (self: MutableRef<T>) => MutableRef<T>,
   <T>(self: MutableRef<T>, value: T) => MutableRef<T>
 >(2, (self, value) => self.set(value))
@@ -247,7 +271,7 @@ export const set: {
 export const setAndGet: {
   <T>(value: T): (self: MutableRef<T>) => T
   <T>(self: MutableRef<T>, value: T): T
-} = Dual.dual<
+} = dual<
   <T>(value: T) => (self: MutableRef<T>) => T,
   <T>(self: MutableRef<T>, value: T) => T
 >(2, (self, value) => self.setAndGet(value))
@@ -259,7 +283,7 @@ export const setAndGet: {
 export const update: {
   <T>(f: (value: T) => T): (self: MutableRef<T>) => MutableRef<T>
   <T>(self: MutableRef<T>, f: (value: T) => T): MutableRef<T>
-} = Dual.dual<
+} = dual<
   <T>(f: (value: T) => T) => (self: MutableRef<T>) => MutableRef<T>,
   <T>(self: MutableRef<T>, f: (value: T) => T) => MutableRef<T>
 >(2, (self, f) => self.update(f))
@@ -271,7 +295,7 @@ export const update: {
 export const updateAndGet: {
   <T>(f: (value: T) => T): (self: MutableRef<T>) => T
   <T>(self: MutableRef<T>, f: (value: T) => T): T
-} = Dual.dual<
+} = dual<
   <T>(f: (value: T) => T) => (self: MutableRef<T>) => T,
   <T>(self: MutableRef<T>, f: (value: T) => T) => T
 >(2, (self, f) => self.updateAndGet(f))
@@ -280,4 +304,7 @@ export const updateAndGet: {
  * @since 1.0.0
  * @category boolean
  */
-export const toggle = (self: MutableRef<boolean>): MutableRef<boolean> => self.update((_) => !_)
+export const toggle: {
+  (self: MutableRef<boolean>): MutableRef<boolean>
+  (_?: never): (self: MutableRef<boolean>) => MutableRef<boolean>
+} = zeroArgsDual((self: MutableRef<boolean>): MutableRef<boolean> => self.update((_) => !_))

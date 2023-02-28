@@ -99,9 +99,9 @@ describe.concurrent("Option", () => {
   })
 
   it("isOption", () => {
-    Util.deepStrictEqual(pipe(_.some(1), _.isOption), true)
-    Util.deepStrictEqual(pipe(_.none(), _.isOption), true)
-    Util.deepStrictEqual(pipe(E.right(1), _.isOption), false)
+    Util.deepStrictEqual(_.isOption(_.some(1)), true)
+    Util.deepStrictEqual(_.isOption(_.none()), true)
+    Util.deepStrictEqual(_.isOption(E.right(1)), false)
   })
 
   it("coproductMany", () => {
@@ -172,8 +172,8 @@ describe.concurrent("Option", () => {
   })
 
   it("getOrThrow", () => {
-    expect(pipe(_.some(1), _.getOrThrow)).toEqual(1)
-    expect(() => pipe(_.none(), _.getOrThrow)).toThrowError(
+    expect(_.getOrThrow(_.some(1))).toEqual(1)
+    expect(() => _.getOrThrow(_.none())).toThrowError(
       new Error("getOrThrow called on a None")
     )
   })
@@ -481,7 +481,7 @@ describe.concurrent("Option", () => {
   })
 
   it("element", () => {
-    expect(pipe(_.some(1), _.tupled, _.appendElement(_.some("b")))).toEqual(
+    expect(pipe(_.tupled(_.some(1)), _.appendElement(_.some("b")))).toEqual(
       _.some([1, "b"])
     )
   })

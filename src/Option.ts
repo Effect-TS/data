@@ -5,7 +5,7 @@ import type * as Data from "@effect/data/Data"
 import type { Either } from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
 import type { LazyArg } from "@effect/data/Function"
-import { constNull, constUndefined, dual } from "@effect/data/Function"
+import { constNull, constUndefined, dual, zeroArgsDual } from "@effect/data/Function"
 import * as Gen from "@effect/data/Gen"
 import type { Kind, TypeLambda } from "@effect/data/HKT"
 import * as either from "@effect/data/internal/Either"
@@ -76,7 +76,7 @@ export interface OptionTypeLambda extends TypeLambda {
  * @category constructors
  * @since 1.0.0
  */
-export const none = <A = never>(): Option<A> => option.none
+export const none = <A = never>(_: void): Option<A> => option.none
 
 /**
  * Creates a new `Option` that wraps the given value.
@@ -86,7 +86,10 @@ export const none = <A = never>(): Option<A> => option.none
  * @category constructors
  * @since 1.0.0
  */
-export const some: <A>(value: A) => Option<A> = option.some
+export const some: {
+  <A>(a: A): Option<A>
+  (_?: never): <A>(a: A) => Option<A>
+} = option.some
 
 /**
  * Tests if a value is a `Option`.
@@ -103,9 +106,13 @@ export const some: <A>(value: A) => Option<A> = option.some
  * @category guards
  * @since 1.0.0
  */
-export const isOption = (input: unknown): input is Option<unknown> =>
+export const isOption: {
+  (input: unknown): input is Option<unknown>
+  (_?: never): (input: unknown) => input is Option<unknown>
+} = zeroArgsDual((input: unknown): input is Option<unknown> =>
   typeof input === "object" && input != null && "_tag" in input &&
   (input["_tag"] === "None" || input["_tag"] === "Some") && Equal.isEqual(input)
+)
 
 /**
  * Determine if a `Option` is a `None`.
@@ -121,7 +128,10 @@ export const isOption = (input: unknown): input is Option<unknown> =>
  * @category guards
  * @since 1.0.0
  */
-export const isNone: <A>(self: Option<A>) => self is None = option.isNone
+export const isNone: {
+  <A>(fa: Option<A>): fa is None
+  (_?: never): <A>(fa: Option<A>) => fa is None
+} = option.isNone
 
 /**
  * Determine if a `Option` is a `Some`.
@@ -137,7 +147,10 @@ export const isNone: <A>(self: Option<A>) => self is None = option.isNone
  * @category guards
  * @since 1.0.0
  */
-export const isSome: <A>(self: Option<A>) => self is Some<A> = option.isSome
+export const isSome: {
+  <A>(fa: Option<A>): fa is Some<A>
+  (_?: never): <A>(fa: Option<A>) => fa is Some<A>
+} = option.isSome
 
 /**
  * Matches the given `Option` and returns either the provided `onNone` value or the result of the provided `onSome`
@@ -214,12 +227,15 @@ export const toRefinement = <A, B extends A>(f: (a: A) => Option<B>): (a: A) => 
  * @category conversions
  * @since 1.0.0
  */
-export const fromIterable = <A>(collection: Iterable<A>): Option<A> => {
+export const fromIterable: {
+  <A>(collection: Iterable<A>): Option<A>
+  (_?: never): <A>(collection: Iterable<A>) => Option<A>
+} = zeroArgsDual(<A>(collection: Iterable<A>): Option<A> => {
   for (const a of collection) {
     return some(a)
   }
   return none()
-}
+})
 
 /**
  * Converts a `Either` to an `Option` discarding the error.
@@ -236,7 +252,10 @@ export const fromIterable = <A>(collection: Iterable<A>): Option<A> => {
  * @category conversions
  * @since 1.0.0
  */
-export const fromEither: <E, A>(self: Either<E, A>) => Option<A> = either.getRight
+export const fromEither: {
+  <E, A>(self: Either<E, A>): Option<A>
+  (_?: never): <E, A>(self: Either<E, A>) => Option<A>
+} = either.getRight
 
 /**
  * Converts a `Either` to an `Option` discarding the error.
@@ -253,7 +272,10 @@ export const fromEither: <E, A>(self: Either<E, A>) => Option<A> = either.getRig
  * @category conversions
  * @since 1.0.0
  */
-export const getRight: <E, A>(self: Either<E, A>) => Option<A> = fromEither
+export const getRight: {
+  <E, A>(self: Either<E, A>): Option<A>
+  (_?: never): <E, A>(self: Either<E, A>) => Option<A>
+} = fromEither
 
 /**
  * Converts a `Either` to an `Option` discarding the value.
@@ -268,7 +290,10 @@ export const getRight: <E, A>(self: Either<E, A>) => Option<A> = fromEither
  * @category conversions
  * @since 1.0.0
  */
-export const getLeft: <E, A>(self: Either<E, A>) => Option<E> = either.getLeft
+export const getLeft: {
+  <E, A>(self: Either<E, A>): Option<E>
+  (_?: never): <E, A>(self: Either<E, A>) => Option<E>
+} = either.getLeft
 
 /**
  * Converts an `Option` to an `Either`, allowing you to provide a value to be used in the case of a `None`.
@@ -289,8 +314,8 @@ export const getLeft: <E, A>(self: Either<E, A>) => Option<E> = either.getLeft
  * @since 1.0.0
  */
 export const toEither: {
-  <A, E>(self: Option<A>, onNone: () => E): Either<E, A>
-  <E>(onNone: () => E): <A>(self: Option<A>) => Either<E, A>
+  <A, E>(self: Option<A>, onNone: LazyArg<E>): Either<E, A>
+  <E>(onNone: LazyArg<E>): <A>(self: Option<A>) => Either<E, A>
 } = either.fromOption
 
 /**
@@ -401,7 +426,10 @@ export const orElseEither: {
  * @category error handling
  * @since 1.0.0
  */
-export const firstSomeOf = <A>(collection: Iterable<Option<A>>): Option<A> => {
+export const firstSomeOf: {
+  <A>(collection: Iterable<Option<A>>): Option<A>
+  (_?: never): <A>(collection: Iterable<Option<A>>) => Option<A>
+} = zeroArgsDual(<A>(collection: Iterable<Option<A>>): Option<A> => {
   let out: Option<A> = none()
   for (out of collection) {
     if (isSome(out)) {
@@ -409,7 +437,7 @@ export const firstSomeOf = <A>(collection: Iterable<Option<A>>): Option<A> => {
     }
   }
   return out
-}
+})
 
 /**
  * Similar to `Promise.all` but operates on `Option`s.
@@ -432,7 +460,10 @@ export const firstSomeOf = <A>(collection: Iterable<Option<A>>): Option<A> => {
  * @category combining
  * @since 1.0.0
  */
-export const all = <A>(collection: Iterable<Option<A>>): Option<Array<A>> => {
+export const all: {
+  <A>(collection: Iterable<Option<A>>): Option<Array<A>>
+  (_?: never): <A>(collection: Iterable<Option<A>>) => Option<Array<A>>
+} = zeroArgsDual(<A>(collection: Iterable<Option<A>>): Option<Array<A>> => {
   const out: Array<A> = []
   for (const o of collection) {
     if (isNone(o)) {
@@ -441,7 +472,7 @@ export const all = <A>(collection: Iterable<Option<A>>): Option<Array<A>> => {
     out.push(o.value)
   }
   return some(out)
-}
+})
 
 /**
  * Constructs a new `Option` from a nullable type. If the value is `null` or `undefined`, returns `None`, otherwise
@@ -459,11 +490,14 @@ export const all = <A>(collection: Iterable<Option<A>>): Option<Array<A>> => {
  * @category conversions
  * @since 1.0.0
  */
-export const fromNullable = <A>(
-  nullableValue: A
-): Option<
-  NonNullable<A>
-> => (nullableValue == null ? none() : some(nullableValue as NonNullable<A>))
+export const fromNullable: {
+  <A>(nullableValue: A): Option<NonNullable<A>>
+  (_?: never): <A>(nullableValue: A) => Option<NonNullable<A>>
+} = zeroArgsDual(<A>(nullableValue: A): Option<NonNullable<A>> =>
+  nullableValue == null
+    ? none()
+    : some(nullableValue as NonNullable<A>)
+)
 
 /**
  * This API is useful for lifting a function that returns `null` or `undefined` into the `Option` context.
@@ -502,7 +536,10 @@ export const liftNullable = <A extends ReadonlyArray<unknown>, B>(
  * @category getters
  * @since 1.0.0
  */
-export const getOrNull: <A>(self: Option<A>) => A | null = getOrElse(constNull)
+export const getOrNull: {
+  <A>(self: Option<A>): A | null
+  (_?: never): <A>(self: Option<A>) => A | null
+} = zeroArgsDual(<A>(self: Option<A>): A | null => getOrElse(self, constNull))
 
 /**
  * Returns the value of the `Option` if it is a `Some`, otherwise returns `undefined`.
@@ -518,7 +555,10 @@ export const getOrNull: <A>(self: Option<A>) => A | null = getOrElse(constNull)
  * @category getters
  * @since 1.0.0
  */
-export const getOrUndefined: <A>(self: Option<A>) => A | undefined = getOrElse(constUndefined)
+export const getOrUndefined: {
+  <A>(self: Option<A>): A | undefined
+  (_?: never): <A>(self: Option<A>) => A | undefined
+} = zeroArgsDual(<A>(self: Option<A>): A | undefined => getOrElse(self, constUndefined))
 
 /**
  * A utility function that lifts a function that throws exceptions into a function that returns an `Option`.
@@ -597,7 +637,10 @@ export const getOrThrowWith: {
  * @category conversions
  * @since 1.0.0
  */
-export const getOrThrow: <A>(self: Option<A>) => A = getOrThrowWith(() => new Error("getOrThrow called on a None"))
+export const getOrThrow: {
+  <A>(self: Option<A>): A
+  (_?: never): <A>(self: Option<A>) => A
+} = zeroArgsDual(<A>(self: Option<A>): A => getOrThrowWith(self, () => new Error("getOrThrow called on a None")))
 
 /**
  * Maps the `Some` side of an `Option` value to a new `Option` value.
@@ -661,7 +704,7 @@ export const as: {
  * @category transforming
  * @since 1.0.0
  */
-export const asUnit: <_>(self: Option<_>) => Option<void> = covariant.asUnit(Covariant)
+export const asUnit = zeroArgsDual(<_>(self: Option<_>): Option<void> => covariant.asUnit(Covariant)(self))
 
 const of: <A>(value: A) => Option<A> = some
 
@@ -784,7 +827,10 @@ export const FlatMap: flatMap_.FlatMap<OptionTypeLambda> = {
  * @category transforming
  * @since 1.0.0
  */
-export const flatten: <A>(self: Option<Option<A>>) => Option<A> = flatMap_.flatten(FlatMap)
+export const flatten: {
+  <A>(self: Option<Option<A>>): Option<A>
+  (_?: never): <A>(self: Option<Option<A>>) => Option<A>
+} = zeroArgsDual(<A>(self: Option<Option<A>>): Option<A> => flatMap_.flatten(FlatMap)(self))
 
 /**
  * @category transforming
@@ -1310,7 +1356,7 @@ export const traverse = <F extends TypeLambda>(
     <A, R, O, E, B>(
       self: Option<A>,
       f: (a: A) => Kind<F, R, O, E, B>
-    ): Kind<F, R, O, E, Option<B>> => isNone(self) ? F.of(none()) : F.map(f(self.value), some)
+    ): Kind<F, R, O, E, Option<B>> => isNone(self) ? F.of(none()) : F.map(f(self.value), some())
   )
 
 /**
@@ -1565,7 +1611,10 @@ export const divide: {
  * @category math
  * @since 1.0.0
  */
-export const sumCompact = (self: Iterable<Option<number>>): number => {
+export const sumCompact: {
+  (self: Iterable<Option<number>>): number
+  (_?: never): (self: Iterable<Option<number>>) => number
+} = zeroArgsDual((self: Iterable<Option<number>>): number => {
   let out = 0
   for (const oa of self) {
     if (isSome(oa)) {
@@ -1573,7 +1622,7 @@ export const sumCompact = (self: Iterable<Option<number>>): number => {
     }
   }
   return out
-}
+})
 
 /**
  * Multiply all numbers in an iterable of `Option<number>` ignoring the `None` values.
@@ -1589,7 +1638,10 @@ export const sumCompact = (self: Iterable<Option<number>>): number => {
  * @category math
  * @since 1.0.0
  */
-export const multiplyCompact = (self: Iterable<Option<number>>): number => {
+export const multiplyCompact: {
+  (self: Iterable<Option<number>>): number
+  (_?: never): (self: Iterable<Option<number>>) => number
+} = zeroArgsDual((self: Iterable<Option<number>>): number => {
   let out = 1
   for (const oa of self) {
     if (isSome(oa)) {
@@ -1601,7 +1653,7 @@ export const multiplyCompact = (self: Iterable<Option<number>>): number => {
     }
   }
   return out
-}
+})
 
 // -------------------------------------------------------------------------------------
 // do notation
@@ -1611,7 +1663,10 @@ export const multiplyCompact = (self: Iterable<Option<number>>): number => {
  * @category do notation
  * @since 1.0.0
  */
-export const tupled: <A>(self: Option<A>) => Option<[A]> = invariant.tupled(Invariant)
+export const tupled: {
+  <A>(self: Option<A>): Option<[A]>
+  (_?: never): <A>(self: Option<A>) => Option<[A]>
+} = zeroArgsDual(<A>(self: Option<A>): Option<[A]> => invariant.tupled(Invariant)(self))
 
 /**
  * Appends an element to the end of a tuple wrapped in an `Option` type.

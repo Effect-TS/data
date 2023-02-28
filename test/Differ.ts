@@ -64,21 +64,16 @@ function diffLaws<Value, Patch>(
 const min = 1
 const max = 100
 
-function smallInt(): number {
-  return Math.floor(Math.random() * (max - min + 1) + min)
-}
+const smallInt = (): number => Math.floor(Math.random() * (max - min + 1) + min)
 
-function randomChunk(): Chunk.Chunk<number> {
-  return Chunk.fromIterable(Array.from({ length: 20 }, smallInt))
-}
+const randomChunk = (): Chunk.Chunk<number> => Chunk.fromIterable(Array.from({ length: 20 }, smallInt))
 
-function randomHashMap(): HashMap.HashMap<number, number> {
-  return pipe(
+const randomHashMap = (): HashMap.HashMap<number, number> =>
+  pipe(
     Chunk.fromIterable(Array.from({ length: 2 }, smallInt)),
     Chunk.cross(Chunk.fromIterable(Array.from({ length: 2 }, smallInt))),
-    HashMap.fromIterable
+    HashMap.fromIterable()
   )
-}
 
 function randomHashSet(): HashSet.HashSet<number> {
   return HashSet.fromIterable(Array.from({ length: 20 }, smallInt))

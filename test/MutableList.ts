@@ -25,8 +25,8 @@ describe.concurrent("MutableList", () => {
   })
 
   it("from", () => {
-    deepStrictEqual(Array.from(MutableList.from([])), [])
-    deepStrictEqual(Array.from(MutableList.from([1, 2, 3])), [1, 2, 3])
+    deepStrictEqual(Array.from(MutableList.fromIterable([])), [])
+    deepStrictEqual(Array.from(MutableList.fromIterable([1, 2, 3])), [1, 2, 3])
   })
 
   it("make", () => {

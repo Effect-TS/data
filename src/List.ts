@@ -15,8 +15,7 @@
 import * as Chunk from "@effect/data/Chunk"
 import * as Either from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
-import * as Dual from "@effect/data/Function"
-import { identity, unsafeCoerce } from "@effect/data/Function"
+import { dual, identity, unsafeCoerce, zeroArgsDual } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import * as Option from "@effect/data/Option"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
@@ -196,7 +195,10 @@ export const isList: {
  * @since 1.0.0
  * @category refinements
  */
-export const isNil = <A>(self: List<A>): self is Nil<A> => self._tag === "Nil"
+export const isNil: {
+  <A>(self: List<A>): self is Nil<A>
+  (_?: never): <A>(self: List<A>) => self is Nil<A>
+} = zeroArgsDual(<A>(self: List<A>): self is Nil<A> => self._tag === "Nil")
 
 /**
  * Returns `true` if the specified value is a `List.Cons<A>`, `false` otherwise.
@@ -204,7 +206,10 @@ export const isNil = <A>(self: List<A>): self is Nil<A> => self._tag === "Nil"
  * @since 1.0.0
  * @category refinements
  */
-export const isCons = <A>(self: List<A>): self is Cons<A> => self._tag === "Cons"
+export const isCons: {
+  <A>(self: List<A>): self is Cons<A>
+  (_?: never): <A>(self: List<A>) => self is Cons<A>
+} = zeroArgsDual(<A>(self: List<A>): self is Cons<A> => self._tag === "Cons")
 
 /**
  * Returns the number of elements contained in the specified `List`
@@ -212,7 +217,10 @@ export const isCons = <A>(self: List<A>): self is Cons<A> => self._tag === "Cons
  * @since 1.0.0
  * @category getters
  */
-export const length = <A>(self: List<A>): number => {
+export const length: {
+  <A>(self: List<A>): number
+  (_?: never): <A>(self: List<A>) => number
+} = zeroArgsDual(<A>(self: List<A>): number => {
   let these = self
   let len = 0
   while (!isNil(these)) {
@@ -220,7 +228,7 @@ export const length = <A>(self: List<A>): number => {
     these = these.tail
   }
   return len
-}
+})
 
 /**
  * Returns `true` if the two lists are equal according to the provided function,
@@ -232,7 +240,7 @@ export const length = <A>(self: List<A>): number => {
 export const equalsWith: {
   <A, B>(that: List<B>, f: (a: A, b: B) => boolean): (self: List<A>) => boolean
   <A, B>(self: List<A>, that: List<B>, f: (a: A, b: B) => boolean): boolean
-} = Dual.dual<
+} = dual<
   <A, B>(that: List<B>, f: (a: A, b: B) => boolean) => (self: List<A>) => boolean,
   <A, B>(self: List<A>, that: List<B>, f: (a: A, b: B) => boolean) => boolean
 >(3, <A, B>(self: List<A>, that: List<B>, f: (a: A, b: B) => boolean) => {
@@ -265,7 +273,7 @@ const _Nil = new NilImpl<never>()
  * @since 1.0.0
  * @category constructors
  */
-export const nil = <A = never>(): List.Nil<A> => _Nil
+export const nil = <A = never>(_: void): List.Nil<A> => _Nil
 
 /**
  * Constructs a new `List.Cons<A>` from the specified `head` and `tail` values.
@@ -281,7 +289,7 @@ export const cons = <A>(head: A, tail: List<A>): List.Cons<A> => new ConsImpl(he
  * @since 1.0.0
  * @category constructors
  */
-export const empty = <A = never>(): List<A> => _Nil
+export const empty = <A = never>(_: void): List<A> => _Nil
 
 /**
  * Constructs a new `List<A>` from the specified value.
@@ -289,7 +297,10 @@ export const empty = <A = never>(): List<A> => _Nil
  * @since 1.0.0
  * @category constructors
  */
-export const of = <A>(value: A): List<A> => new ConsImpl(value, _Nil)
+export const of: {
+  <A>(value: A): List<A>
+  (_?: never): <A>(value: A) => List<A>
+} = zeroArgsDual(<A>(value: A): List<A> => new ConsImpl(value, _Nil))
 
 /**
  * Constructs a new `List<A>` from the specified `Iterable<A>`.
@@ -297,7 +308,10 @@ export const of = <A>(value: A): List<A> => new ConsImpl(value, _Nil)
  * @since 1.0.0
  * @category constructors
  */
-export const fromIterable = <A>(prefix: Iterable<A>): List<A> => {
+export const fromIterable: {
+  <A>(prefix: Iterable<A>): List<A>
+  (_?: never): <A>(prefix: Iterable<A>) => List<A>
+} = zeroArgsDual(<A>(prefix: Iterable<A>): List<A> => {
   const iterator = prefix[Symbol.iterator]()
   let next: IteratorResult<A>
   if ((next = iterator.next()) && !next.done) {
@@ -312,7 +326,7 @@ export const fromIterable = <A>(prefix: Iterable<A>): List<A> => {
   } else {
     return _Nil
   }
-}
+})
 
 /**
  * Constructs a new `List<A>` from the specified values.
@@ -330,7 +344,10 @@ export const make = <Elements extends readonly [any, ...Array<any>]>(
  * @since 1.0.0
  * @category combinators
  */
-export const compact = <A>(self: Iterable<Option.Option<A>>): List<A> => filterMap(self, identity)
+export const compact: {
+  <A>(self: Iterable<Option.Option<A>>): List<A>
+  (_?: never): <A>(self: Iterable<Option.Option<A>>) => List<A>
+} = zeroArgsDual(<A>(self: Iterable<Option.Option<A>>): List<A> => filterMap(self, identity))
 
 /**
  * Concatentates the specified lists together.
@@ -341,7 +358,7 @@ export const compact = <A>(self: Iterable<Option.Option<A>>): List<A> => filterM
 export const concat: {
   <B>(that: List<B>): <A>(self: List<A>) => List<A | B>
   <A, B>(self: List<A>, that: List<B>): List<A | B>
-} = Dual.dual<
+} = dual<
   <B>(that: List<B>) => <A>(self: List<A>) => List<A | B>,
   <A, B>(self: List<A>, that: List<B>) => List<A | B>
 >(2, (self, that) => prependAll(that, self))
@@ -355,7 +372,7 @@ export const concat: {
 export const drop: {
   (n: number): <A>(self: List<A>) => List<A>
   <A>(self: List<A>, n: number): List<A>
-} = Dual.dual<
+} = dual<
   (n: number) => <A>(self: List<A>) => List<A>,
   <A>(self: List<A>, n: number) => List<A>
 >(2, (self, n) => {
@@ -384,7 +401,7 @@ export const drop: {
 export const every: {
   <A>(predicate: Predicate<A>): (self: List<A>) => boolean
   <A>(self: List<A>, predicate: Predicate<A>): boolean
-} = Dual.dual<
+} = dual<
   <A>(predicate: Predicate<A>) => (self: List<A>) => boolean,
   <A>(self: List<A>, predicate: Predicate<A>) => boolean
 >(2, (self, predicate) => {
@@ -407,7 +424,7 @@ export const filter: {
   <A>(predicate: Predicate<A>): (self: List<A>) => List<A>
   <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): List<B>
   <A>(self: List<A>, predicate: Predicate<A>): List<A>
-} = Dual.dual<{
+} = dual<{
   <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => List<B>
   <A>(predicate: Predicate<A>): (self: List<A>) => List<A>
 }, {
@@ -426,7 +443,7 @@ export const filter: {
 export const filterMap: {
   <A, B>(pf: (a: A) => Option.Option<B>): (self: Iterable<A>) => List<B>
   <A, B>(self: Iterable<A>, pf: (a: A) => Option.Option<B>): List<B>
-} = Dual.dual<
+} = dual<
   <A, B>(pf: (a: A) => Option.Option<B>) => (self: Iterable<A>) => List<B>,
   <A, B>(self: Iterable<A>, pf: (a: A) => Option.Option<B>) => List<B>
 >(2, <A, B>(self: Iterable<A>, pf: (a: A) => Option.Option<B>) => {
@@ -452,7 +469,7 @@ export const findFirst: {
   <A>(predicate: Predicate<A>): (self: List<A>) => Option.Option<A>
   <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): Option.Option<B>
   <A>(self: List<A>, predicate: Predicate<A>): Option.Option<A>
-} = Dual.dual<
+} = dual<
   {
     <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => Option.Option<B>
     <A>(predicate: Predicate<A>): (self: List<A>) => Option.Option<A>
@@ -481,7 +498,7 @@ export const findFirst: {
 export const flatMap: {
   <A, B>(f: (a: A) => List<B>): (self: List<A>) => List<B>
   <A, B>(self: List<A>, f: (a: A) => List<B>): List<B>
-} = Dual.dual<
+} = dual<
   <A, B>(f: (a: A) => List<B>) => (self: List<A>) => List<B>,
   <A, B>(self: List<A>, f: (a: A) => List<B>) => List<B>
 >(2, <A, B>(self: List<A>, f: (a: A) => List<B>) => {
@@ -517,7 +534,7 @@ export const flatMap: {
 export const forEach: {
   <A, B>(f: (a: A) => B): (self: List<A>) => void
   <A, B>(self: List<A>, f: (a: A) => B): void
-} = Dual.dual<
+} = dual<
   <A, B>(f: (a: A) => B) => (self: List<A>) => void,
   <A, B>(self: List<A>, f: (a: A) => B) => void
 >(2, (self, f) => {
@@ -535,7 +552,14 @@ export const forEach: {
  * @since 1.0.0
  * @category getters
  */
-export const head = <A>(self: List<A>): Option.Option<A> => isNil(self) ? Option.none() : Option.some(self.head)
+export const head: {
+  <A>(self: List<A>): Option.Option<A>
+  (_?: never): <A>(self: List<A>) => Option.Option<A>
+} = zeroArgsDual(<A>(self: List<A>): Option.Option<A> =>
+  isNil(self)
+    ? Option.none()
+    : Option.some(self.head)
+)
 
 /**
  * Returns the last element of the specified list, or `None` if the list is
@@ -544,7 +568,14 @@ export const head = <A>(self: List<A>): Option.Option<A> => isNil(self) ? Option
  * @since 1.0.0
  * @category getters
  */
-export const last = <A>(self: List<A>): Option.Option<A> => isNil(self) ? Option.none() : Option.some(unsafeLast(self)!)
+export const last: {
+  <A>(self: List<A>): Option.Option<A>
+  (_?: never): <A>(self: List<A>) => Option.Option<A>
+} = zeroArgsDual(<A>(self: List<A>): Option.Option<A> =>
+  isNil(self)
+    ? Option.none()
+    : Option.some(unsafeLast(self)!)
+)
 
 /**
  * Applies the specified mapping function to each element of the list.
@@ -555,7 +586,7 @@ export const last = <A>(self: List<A>): Option.Option<A> => isNil(self) ? Option
 export const map: {
   <A, B>(f: (a: A) => B): (self: List<A>) => List<B>
   <A, B>(self: List<A>, f: (a: A) => B): List<B>
-} = Dual.dual<
+} = dual<
   <A, B>(f: (a: A) => B) => (self: List<A>) => List<B>,
   <A, B>(self: List<A>, f: (a: A) => B) => List<B>
 >(2, <A, B>(self: List<A>, f: (a: A) => B) => {
@@ -586,7 +617,7 @@ export const map: {
 export const partition: {
   <A>(predicate: Predicate<A>): (self: List<A>) => readonly [List<A>, List<A>]
   <A>(self: List<A>, predicate: Predicate<A>): readonly [List<A>, List<A>]
-} = Dual.dual<
+} = dual<
   <A>(predicate: Predicate<A>) => (self: List<A>) => readonly [List<A>, List<A>],
   <A>(self: List<A>, predicate: Predicate<A>) => readonly [List<A>, List<A>]
 >(2, <A>(self: List<A>, predicate: Predicate<A>) => {
@@ -613,7 +644,7 @@ export const partition: {
 export const partitionMap: {
   <A, B, C>(f: (a: A) => Either.Either<B, C>): (self: List<A>) => readonly [List<B>, List<C>]
   <A, B, C>(self: List<A>, f: (a: A) => Either.Either<B, C>): readonly [List<B>, List<C>]
-} = Dual.dual<
+} = dual<
   <A, B, C>(f: (a: A) => Either.Either<B, C>) => (self: List<A>) => readonly [List<B>, List<C>],
   <A, B, C>(self: List<A>, f: (a: A) => Either.Either<B, C>) => readonly [List<B>, List<C>]
 >(2, <A, B, C>(self: List<A>, f: (a: A) => Either.Either<B, C>) => {
@@ -639,7 +670,7 @@ export const partitionMap: {
 export const prepend: {
   <B>(element: B): <A>(self: List<A>) => Cons<A | B>
   <A, B>(self: List<A>, element: B): Cons<A | B>
-} = Dual.dual<
+} = dual<
   <B>(element: B) => <A>(self: List<A>) => Cons<A | B>,
   <A, B>(self: List<A>, element: B) => Cons<A | B>
 >(2, <A, B>(self: List<A>, element: B) => cons<A | B>(element, self))
@@ -653,7 +684,7 @@ export const prepend: {
 export const prependAll: {
   <B>(prefix: List<B>): <A>(self: List<A>) => List<A | B>
   <A, B>(self: List<A>, prefix: List<B>): List<A | B>
-} = Dual.dual<
+} = dual<
   <B>(prefix: List<B>) => <A>(self: List<A>) => List<A | B>,
   <A, B>(self: List<A>, prefix: List<B>) => List<A | B>
 >(2, <A, B>(self: List<A>, prefix: List<B>) => {
@@ -685,7 +716,7 @@ export const prependAll: {
 export const prependAllReversed: {
   <B>(prefix: List<B>): <A>(self: List<A>) => List<A | B>
   <A, B>(self: List<A>, prefix: List<B>): List<A | B>
-} = Dual.dual<
+} = dual<
   <B>(prefix: List<B>) => <A>(self: List<A>) => List<A | B>,
   <A, B>(self: List<A>, prefix: List<B>) => List<A | B>
 >(2, <A, B>(self: List<A>, prefix: List<B>) => {
@@ -708,7 +739,7 @@ export const prependAllReversed: {
 export const reduce: {
   <Z, A>(zero: Z, f: (b: Z, a: A) => Z): (self: List<A>) => Z
   <A, Z>(self: List<A>, zero: Z, f: (b: Z, a: A) => Z): Z
-} = Dual.dual<
+} = dual<
   <Z, A>(zero: Z, f: (b: Z, a: A) => Z) => (self: List<A>) => Z,
   <A, Z>(self: List<A>, zero: Z, f: (b: Z, a: A) => Z) => Z
 >(3, (self, zero, f) => {
@@ -731,7 +762,7 @@ export const reduce: {
 export const reduceRight: {
   <Z, A>(zero: Z, f: (accumulator: Z, value: A) => Z): (self: List<A>) => Z
   <Z, A>(self: List<A>, zero: Z, f: (accumulator: Z, value: A) => Z): Z
-} = Dual.dual<
+} = dual<
   <Z, A>(zero: Z, f: (accumulator: Z, value: A) => Z) => (self: List<A>) => Z,
   <Z, A>(self: List<A>, zero: Z, f: (accumulator: Z, value: A) => Z) => Z
 >(3, (self, zero, f) => {
@@ -750,7 +781,10 @@ export const reduceRight: {
  * @since 1.0.0
  * @category combinators
  */
-export const reverse = <A>(self: List<A>): List<A> => {
+export const reverse: {
+  <A>(self: List<A>): List<A>
+  (_?: never): <A>(self: List<A>) => List<A>
+} = zeroArgsDual(<A>(self: List<A>): List<A> => {
   let result = empty<A>()
   let these = self
   while (!isNil(these)) {
@@ -758,7 +792,7 @@ export const reverse = <A>(self: List<A>): List<A> => {
     these = these.tail
   }
   return result
-}
+})
 
 /**
  * Returns `true` if any element of the specified list satisfies the specified
@@ -770,7 +804,7 @@ export const reverse = <A>(self: List<A>): List<A> => {
 export const some: {
   <A>(predicate: Predicate<A>): (self: List<A>) => boolean
   <A>(self: List<A>, predicate: Predicate<A>): boolean
-} = Dual.dual<
+} = dual<
   <A>(predicate: Predicate<A>) => (self: List<A>) => boolean,
   <A>(self: List<A>, predicate: Predicate<A>) => boolean
 >(2, (self, predicate) => {
@@ -793,7 +827,7 @@ export const some: {
 export const splitAt: {
   (n: number): <A>(self: List<A>) => readonly [List<A>, List<A>]
   <A>(self: List<A>, n: number): readonly [List<A>, List<A>]
-} = Dual.dual<
+} = dual<
   (n: number) => <A>(self: List<A>) => readonly [List<A>, List<A>],
   <A>(self: List<A>, n: number) => readonly [List<A>, List<A>]
 >(2, (self, n) => [take(self, n), drop(self, n)])
@@ -804,7 +838,14 @@ export const splitAt: {
  * @since 1.0.0
  * @category getters
  */
-export const tail = <A>(self: List<A>): Option.Option<List<A>> => isNil(self) ? Option.none() : Option.some(self.tail)
+export const tail: {
+  <A>(self: List<A>): Option.Option<List<A>>
+  (_?: never): <A>(self: List<A>) => Option.Option<List<A>>
+} = zeroArgsDual(<A>(self: List<A>): Option.Option<List<A>> =>
+  isNil(self)
+    ? Option.none()
+    : Option.some(self.tail)
+)
 
 /**
  * Takes the specified number of elements from the beginning of the specified
@@ -816,7 +857,7 @@ export const tail = <A>(self: List<A>): Option.Option<List<A>> => isNil(self) ? 
 export const take: {
   (n: number): <A>(self: List<A>) => List<A>
   <A>(self: List<A>, n: number): List<A>
-} = Dual.dual<
+} = dual<
   (n: number) => <A>(self: List<A>) => List<A>,
   <A>(self: List<A>, n: number) => List<A>
 >(2, (self, n) => {
@@ -841,7 +882,10 @@ export const take: {
  * @since 1.0.0
  * @category conversions
  */
-export const toChunk = <A>(self: List<A>): Chunk.Chunk<A> => Chunk.fromIterable(self)
+export const toChunk: {
+  <A>(self: List<A>): Chunk.Chunk<A>
+  (_?: never): <A>(self: List<A>) => Chunk.Chunk<A>
+} = zeroArgsDual(<A>(self: List<A>): Chunk.Chunk<A> => Chunk.fromIterable(self))
 
 /**
  * Converts the specified list to a `ReadonlyArray`.
@@ -849,7 +893,10 @@ export const toChunk = <A>(self: List<A>): Chunk.Chunk<A> => Chunk.fromIterable(
  * @since 1.0.0
  * @category conversions
  */
-export const toReadonlyArray = <A>(self: List<A>): ReadonlyArray<A> => Array.from(self)
+export const toReadonlyArray: {
+  <A>(self: List<A>): ReadonlyArray<A>
+  (_?: never): <A>(self: List<A>) => ReadonlyArray<A>
+} = zeroArgsDual(<A>(self: List<A>): ReadonlyArray<A> => Array.from(self))
 
 /**
  * Unsafely returns the first element of the specified `List`.
@@ -857,12 +904,15 @@ export const toReadonlyArray = <A>(self: List<A>): ReadonlyArray<A> => Array.fro
  * @since 1.0.0
  * @category unsafe
  */
-export const unsafeHead = <A>(self: List<A>): A => {
+export const unsafeHead: {
+  <A>(self: List<A>): A
+  (_?: never): <A>(self: List<A>) => A
+} = zeroArgsDual(<A>(self: List<A>): A => {
   if (isNil(self)) {
     throw new Error("Error: Expected List to be non-empty")
   }
   return self.head
-}
+})
 
 /**
  * Unsafely returns the last element of the specified `List`.
@@ -870,7 +920,10 @@ export const unsafeHead = <A>(self: List<A>): A => {
  * @since 1.0.0
  * @category unsafe
  */
-export const unsafeLast = <A>(self: List<A>): A => {
+export const unsafeLast: {
+  <A>(self: List<A>): A
+  (_?: never): <A>(self: List<A>) => A
+} = zeroArgsDual(<A>(self: List<A>): A => {
   if (isNil(self)) {
     throw new Error("Error: Expected List to be non-empty")
   }
@@ -881,7 +934,7 @@ export const unsafeLast = <A>(self: List<A>): A => {
     scout = scout.tail
   }
   return these.head
-}
+})
 
 /**
  * Unsafely returns the tail of the specified `List`.
@@ -889,12 +942,15 @@ export const unsafeLast = <A>(self: List<A>): A => {
  * @since 1.0.0
  * @category unsafe
  */
-export const unsafeTail = <A>(self: List<A>): List<A> => {
+export const unsafeTail: {
+  <A>(self: List<A>): List<A>
+  (_?: never): <A>(self: List<A>) => List<A>
+} = zeroArgsDual(<A>(self: List<A>): List<A> => {
   if (isNil(self)) {
     throw new Error("Error: Expected List to be non-empty")
   }
   return self.tail
-}
+})
 
 const noneIn = <A>(
   self: List<A>,

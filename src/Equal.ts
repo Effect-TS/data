@@ -1,6 +1,7 @@
 /**
  * @since 1.0.0
  */
+import { dual, zeroArgsDual } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import type { Equivalence } from "@effect/data/typeclass/Equivalence"
 
@@ -22,20 +23,12 @@ export interface Equal extends Hash.Hash {
  * @since 1.0.0
  * @category equality
  */
-export function equals<B>(that: B): <A>(self: A) => boolean
-/**
- * @since 1.0.0
- * @category equality
- */
-export function equals<A, B>(self: A, that: B): boolean
-export function equals(): any {
-  if (arguments.length === 1) {
-    return (self: unknown) => compareBoth(self, arguments[0])
-  }
-  return compareBoth(arguments[0], arguments[1])
-}
+export const equals = dual<
+  <B>(that: B) => <A>(self: A) => boolean,
+  <A, B>(self: A, that: B) => boolean
+>(2, (self, that) => compareBoth(self, that))
 
-function compareBoth(self: unknown, that: unknown) {
+const compareBoth = (self: unknown, that: unknown) => {
   if (self === that) {
     return true
   }
@@ -59,11 +52,14 @@ function compareBoth(self: unknown, that: unknown) {
  * @since 1.0.0
  * @category guards
  */
-export const isEqual = (u: unknown): u is Equal => typeof u === "object" && u !== null && symbol in u
+export const isEqual: {
+  (u: unknown): u is Equal
+  (_?: never): (u: unknown) => u is Equal
+} = zeroArgsDual((u: unknown): u is Equal => typeof u === "object" && u !== null && symbol in u)
 
 /**
  * @since 1.0.0
  * @category instances
  */
-export const equivalence: <A>() => Equivalence<A> = () =>
+export const equivalence: <A>(_: void) => Equivalence<A> = (_: void) =>
   (self, that) => Hash.hash(self) === Hash.hash(that) && equals(self, that)

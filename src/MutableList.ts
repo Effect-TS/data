@@ -1,7 +1,7 @@
 /**
  * @since 1.0.0
  */
-import * as Dual from "@effect/data/Function"
+import { dual, zeroArgsDual } from "@effect/data/Function"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/MutableList") as TypeId
 
@@ -87,7 +87,7 @@ class LinkedListNode<T> {
  * @since 1.0.0
  * @category constructors
  */
-export const empty = <A>(): MutableList<A> => new MutableListImpl()
+export const empty = <A>(_: void): MutableList<A> => new MutableListImpl()
 
 /**
  * Creates a new `MutableList` from an `Iterable`.
@@ -95,13 +95,16 @@ export const empty = <A>(): MutableList<A> => new MutableListImpl()
  * @since 1.0.0
  * @category constructors
  */
-export const from = <A>(iterable: Iterable<A>): MutableList<A> => {
+export const fromIterable: {
+  <A>(iterable: Iterable<A>): MutableList<A>
+  (_?: never): <A>(iterable: Iterable<A>) => MutableList<A>
+} = zeroArgsDual(<A>(iterable: Iterable<A>): MutableList<A> => {
   const list: MutableList<A> = new MutableListImpl()
   for (const element of iterable) {
     append(list, element)
   }
   return list
-}
+})
 
 /**
  * Creates a new `MutableList` from the specified elements.
@@ -109,7 +112,7 @@ export const from = <A>(iterable: Iterable<A>): MutableList<A> => {
  * @since 1.0.0
  * @category constructors
  */
-export const make = <A>(...elements: ReadonlyArray<A>): MutableList<A> => from(elements)
+export const make = <A>(...elements: ReadonlyArray<A>): MutableList<A> => fromIterable(elements)
 
 /**
  * Returns `true` if the list contains zero elements, `false`, otherwise.
@@ -117,7 +120,10 @@ export const make = <A>(...elements: ReadonlyArray<A>): MutableList<A> => from(e
  * @since 1.0.0
  * @category getters
  */
-export const isEmpty = <A>(self: MutableList<A>): boolean => length(self) === 0
+export const isEmpty: {
+  <A>(self: MutableList<A>): boolean
+  (_?: never): <A>(self: MutableList<A>) => boolean
+} = zeroArgsDual(<A>(self: MutableList<A>): boolean => length(self) === 0)
 
 /**
  * Returns the length of the list.
@@ -125,7 +131,10 @@ export const isEmpty = <A>(self: MutableList<A>): boolean => length(self) === 0
  * @since 1.0.0
  * @category getters
  */
-export const length = <A>(self: MutableList<A>): number => (self as MutableListImpl<A>)._length
+export const length: {
+  <A>(self: MutableList<A>): number
+  (_?: never): <A>(self: MutableList<A>) => number
+} = zeroArgsDual(<A>(self: MutableList<A>): number => (self as MutableListImpl<A>)._length)
 
 /**
  * Returns the last element of the list, if it exists.
@@ -133,7 +142,14 @@ export const length = <A>(self: MutableList<A>): number => (self as MutableListI
  * @since 1.0.0
  * @category getters
  */
-export const tail = <A>(self: MutableList<A>): A | undefined => self.tail === undefined ? undefined : self.tail.value
+export const tail: {
+  <A>(self: MutableList<A>): A | undefined
+  (_?: never): <A>(self: MutableList<A>) => A | undefined
+} = zeroArgsDual(<A>(self: MutableList<A>): A | undefined =>
+  self.tail === undefined
+    ? undefined
+    : self.tail.value
+)
 
 /**
  * Returns the first element of the list, if it exists.
@@ -141,7 +157,14 @@ export const tail = <A>(self: MutableList<A>): A | undefined => self.tail === un
  * @since 1.0.0
  * @category getters
  */
-export const head = <A>(self: MutableList<A>): A | undefined => self.head === undefined ? undefined : self.head.value
+export const head: {
+  <A>(self: MutableList<A>): A | undefined
+  (_?: never): <A>(self: MutableList<A>) => A | undefined
+} = zeroArgsDual(<A>(self: MutableList<A>): A | undefined =>
+  self.head === undefined
+    ? undefined
+    : self.head.value
+)
 
 /**
  * Executes the specified function `f` for each element in the list.
@@ -152,7 +175,7 @@ export const head = <A>(self: MutableList<A>): A | undefined => self.head === un
 export const forEach: {
   <A>(f: (element: A) => void): (self: MutableList<A>) => void
   <A>(self: MutableList<A>, f: (element: A) => void): void
-} = Dual.dual<
+} = dual<
   <A>(f: (element: A) => void) => (self: MutableList<A>) => void,
   <A>(self: MutableList<A>, f: (element: A) => void) => void
 >(2, (self, f) => {
@@ -169,12 +192,15 @@ export const forEach: {
  * @since 1.0.0
  * @category mutations
  */
-export const reset = <A>(self: MutableList<A>): MutableList<A> => {
+export const reset: {
+  <A>(self: MutableList<A>): MutableList<A>
+  (_?: never): <A>(self: MutableList<A>) => MutableList<A>
+} = zeroArgsDual(<A>(self: MutableList<A>): MutableList<A> => {
   ;(self as MutableListImpl<A>)._length = 0
   self.head = undefined
   self.tail = undefined
   return self
-}
+})
 
 /**
  * Appends the specified value to the end of the list.
@@ -185,7 +211,7 @@ export const reset = <A>(self: MutableList<A>): MutableList<A> => {
 export const append: {
   <A>(value: A): (self: MutableList<A>) => MutableList<A>
   <A>(self: MutableList<A>, value: A): MutableList<A>
-} = Dual.dual<
+} = dual<
   <A>(value: A) => (self: MutableList<A>) => MutableList<A>,
   <A>(self: MutableList<A>, value: A) => MutableList<A>
 >(2, <A>(self: MutableList<A>, value: A) => {
@@ -210,14 +236,17 @@ export const append: {
  * @since 0.0.1
  * @category mutations
  */
-export const shift = <A>(self: MutableList<A>): A | undefined => {
+export const shift: {
+  <A>(self: MutableList<A>): A | undefined
+  (_?: never): <A>(self: MutableList<A>) => A | undefined
+} = zeroArgsDual(<A>(self: MutableList<A>): A | undefined => {
   const head = self.head
   if (head !== undefined) {
     remove(self, head)
     return head.value
   }
   return undefined
-}
+})
 
 /**
  * Removes the last value from the list and returns it, if it exists.
@@ -225,14 +254,17 @@ export const shift = <A>(self: MutableList<A>): A | undefined => {
  * @since 0.0.1
  * @category mutations
  */
-export const pop = <A>(self: MutableList<A>): A | undefined => {
+export const pop: {
+  <A>(self: MutableList<A>): A | undefined
+  (_?: never): <A>(self: MutableList<A>) => A | undefined
+} = zeroArgsDual(<A>(self: MutableList<A>): A | undefined => {
   const tail = self.tail
   if (tail !== undefined) {
     remove(self, tail)
     return tail.value
   }
   return undefined
-}
+})
 
 /**
  * Prepends the specified value to the beginning of the list.
@@ -243,7 +275,7 @@ export const pop = <A>(self: MutableList<A>): A | undefined => {
 export const prepend: {
   <A>(value: A): (self: MutableList<A>) => MutableList<A>
   <A>(self: MutableList<A>, value: A): MutableList<A>
-} = Dual.dual<
+} = dual<
   <A>(value: A) => (self: MutableList<A>) => MutableList<A>,
   <A>(self: MutableList<A>, value: A) => MutableList<A>
 >(2, <A>(self: MutableList<A>, value: A) => {

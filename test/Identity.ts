@@ -72,7 +72,7 @@ describe.concurrent("Identity", () => {
   })
 
   it("Traversable", () => {
-    U.deepStrictEqual(pipe(1, _.Traversable.traverse(O.Applicative)(O.some)), O.some(1))
+    U.deepStrictEqual(pipe(1, _.Traversable.traverse(O.Applicative)(O.some())), O.some(1))
     U.deepStrictEqual(pipe(1, _.Traversable.traverse(O.Applicative)(() => O.none())), O.none())
   })
 })

@@ -1,5 +1,5 @@
 import * as Equal from "@effect/data/Equal"
-import * as Dual from "@effect/data/Function"
+import { dual, zeroArgsDual } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import type { HashMap } from "@effect/data/HashMap"
 import type * as HS from "@effect/data/HashSet"
@@ -60,13 +60,13 @@ export const isHashSet: {
 export const empty = <A = never>(): HS.HashSet<A> => new HashSetImpl(HM.empty<A, unknown>())
 
 /** @internal */
-export const fromIterable = <A>(elements: Iterable<A>): HS.HashSet<A> => {
+export const fromIterable = zeroArgsDual(<A>(elements: Iterable<A>): HS.HashSet<A> => {
   const set = beginMutation(empty<A>())
   for (const value of elements) {
     add(set, value)
   }
   return endMutation(set)
-}
+})
 
 /** @internal */
 export const make = <As extends ReadonlyArray<any>>(...elements: As): HS.HashSet<As[number]> => {
@@ -78,13 +78,13 @@ export const make = <As extends ReadonlyArray<any>>(...elements: As): HS.HashSet
 }
 
 /** @internal */
-export const has = Dual.dual<
+export const has = dual<
   <A>(value: A) => (self: HS.HashSet<A>) => boolean,
   <A>(self: HS.HashSet<A>, value: A) => boolean
 >(2, <A>(self: HS.HashSet<A>, value: A) => HM.has((self as HashSetImpl<A>)._keyMap, value))
 
 /** @internal */
-export const some = Dual.dual<
+export const some = dual<
   <A>(f: Predicate<A>) => (self: HS.HashSet<A>) => boolean,
   <A>(self: HS.HashSet<A>, f: Predicate<A>) => boolean
 >(2, (self, f) => {
@@ -99,35 +99,38 @@ export const some = Dual.dual<
 })
 
 /** @internal */
-export const every = Dual.dual<
+export const every = dual<
   <A>(f: Predicate<A>) => (self: HS.HashSet<A>) => boolean,
   <A>(self: HS.HashSet<A>, f: Predicate<A>) => boolean
 >(2, (self, f) => !some(self, (a) => !f(a)))
 
 /** @internal */
-export const isSubset = Dual.dual<
+export const isSubset = dual<
   <A>(that: HS.HashSet<A>) => (self: HS.HashSet<A>) => boolean,
   <A>(self: HS.HashSet<A>, that: HS.HashSet<A>) => boolean
 >(2, (self, that) => every(self, (value) => has(that, value)))
 
 /** @internal */
-export const values = <A>(self: HS.HashSet<A>): IterableIterator<A> => HM.keys((self as HashSetImpl<A>)._keyMap)
+export const values = zeroArgsDual(<A>(self: HS.HashSet<A>): IterableIterator<A> =>
+  HM.keys((self as HashSetImpl<A>)._keyMap)
+)
 
 /** @internal */
-export const size = <A>(self: HS.HashSet<A>): number => HM.size((self as HashSetImpl<A>)._keyMap)
+export const size = zeroArgsDual(<A>(self: HS.HashSet<A>): number => HM.size((self as HashSetImpl<A>)._keyMap))
 
 /** @internal */
-export const beginMutation = <A>(self: HS.HashSet<A>): HS.HashSet<A> =>
+export const beginMutation = zeroArgsDual(<A>(self: HS.HashSet<A>): HS.HashSet<A> =>
   new HashSetImpl(HM.beginMutation((self as HashSetImpl<A>)._keyMap))
+)
 
 /** @internal */
-export const endMutation = <A>(self: HS.HashSet<A>): HS.HashSet<A> => {
+export const endMutation = zeroArgsDual(<A>(self: HS.HashSet<A>): HS.HashSet<A> => {
   ;((self as HashSetImpl<A>)._keyMap as HM.HashMapImpl<A, unknown>)._editable = false
   return self
-}
+})
 
 /** @internal */
-export const mutate = Dual.dual<
+export const mutate = dual<
   <A>(f: (set: HS.HashSet<A>) => void) => (self: HS.HashSet<A>) => HS.HashSet<A>,
   <A>(self: HS.HashSet<A>, f: (set: HS.HashSet<A>) => void) => HS.HashSet<A>
 >(2, (self, f) => {
@@ -137,7 +140,7 @@ export const mutate = Dual.dual<
 })
 
 /** @internal */
-export const add = Dual.dual<
+export const add = dual<
   <A>(value: A) => (self: HS.HashSet<A>) => HS.HashSet<A>,
   <A>(self: HS.HashSet<A>, value: A) => HS.HashSet<A>
 >(
@@ -149,7 +152,7 @@ export const add = Dual.dual<
 )
 
 /** @internal */
-export const remove = Dual.dual<
+export const remove = dual<
   <A>(value: A) => (self: HS.HashSet<A>) => HS.HashSet<A>,
   <A>(self: HS.HashSet<A>, value: A) => HS.HashSet<A>
 >(
@@ -161,7 +164,7 @@ export const remove = Dual.dual<
 )
 
 /** @internal */
-export const difference = Dual.dual<
+export const difference = dual<
   <A>(that: Iterable<A>) => (self: HS.HashSet<A>) => HS.HashSet<A>,
   <A>(self: HS.HashSet<A>, that: Iterable<A>) => HS.HashSet<A>
 >(2, (self, that) =>
@@ -172,7 +175,7 @@ export const difference = Dual.dual<
   }))
 
 /** @internal */
-export const intersection = Dual.dual<
+export const intersection = dual<
   <A>(that: Iterable<A>) => (self: HS.HashSet<A>) => HS.HashSet<A>,
   <A>(self: HS.HashSet<A>, that: Iterable<A>) => HS.HashSet<A>
 >(2, (self, that) =>
@@ -185,7 +188,7 @@ export const intersection = Dual.dual<
   }))
 
 /** @internal */
-export const union = Dual.dual<
+export const union = dual<
   <A>(that: Iterable<A>) => (self: HS.HashSet<A>) => HS.HashSet<A>,
   <A>(self: HS.HashSet<A>, that: Iterable<A>) => HS.HashSet<A>
 >(2, (self, that) =>
@@ -197,13 +200,13 @@ export const union = Dual.dual<
   }))
 
 /** @internal */
-export const toggle = Dual.dual<
+export const toggle = dual<
   <A>(value: A) => (self: HS.HashSet<A>) => HS.HashSet<A>,
   <A>(self: HS.HashSet<A>, value: A) => HS.HashSet<A>
 >(2, (self, value) => has(self, value) ? remove(self, value) : add(self, value))
 
 /** @internal */
-export const map = Dual.dual<
+export const map = dual<
   <A, B>(f: (a: A) => B) => (self: HS.HashSet<A>) => HS.HashSet<B>,
   <A, B>(self: HS.HashSet<A>, f: (a: A) => B) => HS.HashSet<B>
 >(2, (self, f) =>
@@ -217,7 +220,7 @@ export const map = Dual.dual<
   }))
 
 /** @internal */
-export const flatMap = Dual.dual<
+export const flatMap = dual<
   <A, B>(f: (a: A) => Iterable<B>) => (self: HS.HashSet<A>) => HS.HashSet<B>,
   <A, B>(self: HS.HashSet<A>, f: (a: A) => Iterable<B>) => HS.HashSet<B>
 >(2, (self, f) =>
@@ -232,7 +235,7 @@ export const flatMap = Dual.dual<
   }))
 
 /** @internal */
-export const forEach = Dual.dual<
+export const forEach = dual<
   <A>(f: (value: A) => void) => (self: HS.HashSet<A>) => void,
   <A>(self: HS.HashSet<A>, f: (value: A) => void) => void
 >(2, <A>(self: HS.HashSet<A>, f: (value: A) => void) =>
@@ -242,7 +245,7 @@ export const forEach = Dual.dual<
   ))
 
 /** @internal */
-export const reduce = Dual.dual<
+export const reduce = dual<
   <A, Z>(zero: Z, f: (accumulator: Z, value: A) => Z) => (self: HS.HashSet<A>) => Z,
   <A, Z>(self: HS.HashSet<A>, zero: Z, f: (accumulator: Z, value: A) => Z) => Z
 >(3, <A, Z>(self: HS.HashSet<A>, zero: Z, f: (accumulator: Z, value: A) => Z) =>
@@ -253,7 +256,7 @@ export const reduce = Dual.dual<
   ))
 
 /** @internal */
-export const filter = Dual.dual<
+export const filter = dual<
   {
     <A, B extends A>(f: Refinement<A, B>): (self: HS.HashSet<A>) => HS.HashSet<B>
     <A>(f: Predicate<A>): (self: HS.HashSet<A>) => HS.HashSet<A>
@@ -276,7 +279,7 @@ export const filter = Dual.dual<
 })
 
 /** @internal */
-export const partition = Dual.dual<
+export const partition = dual<
   {
     <A, B extends A>(
       f: Refinement<A, B>

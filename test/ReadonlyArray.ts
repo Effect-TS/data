@@ -815,7 +815,7 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("extend", () => {
-    deepStrictEqual(pipe([1, 2, 3, 4], RA.extend(Number.sumAll)), [10, 9, 7, 4])
+    deepStrictEqual(pipe([1, 2, 3, 4], RA.extend(Number.sumAll())), [10, 9, 7, 4])
     deepStrictEqual(pipe([1, 2, 3, 4], RA.extend(identity)), [
       [1, 2, 3, 4],
       [2, 3, 4],
@@ -855,12 +855,12 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(pipe([1, 2, 3], RA.filter(g)), [1, 3])
     const x = pipe(
       [O.some(3), O.some(2), O.some(1)],
-      RA.filter(O.isSome)
+      RA.filter(O.isSome())
     )
     assert.deepStrictEqual(x, [O.some(3), O.some(2), O.some(1)])
     const y = pipe(
       [O.some(3), O.none(), O.some(1)],
-      RA.filter(O.isSome)
+      RA.filter(O.isSome())
     )
     assert.deepStrictEqual(y, [O.some(3), O.some(1)])
 
