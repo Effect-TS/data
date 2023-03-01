@@ -78,15 +78,15 @@ describe.concurrent("String", () => {
   })
 
   it("trim", () => {
-    expect(pipe(" a ", S.trim)).toBe("a")
+    expect(S.trim(" a ")).toBe("a")
   })
 
   it("trimStart", () => {
-    expect(pipe(" a ", S.trimStart)).toBe("a ")
+    expect(S.trimStart(" a ")).toBe("a ")
   })
 
   it("trimEnd", () => {
-    expect(pipe(" a ", S.trimEnd)).toBe(" a")
+    expect(S.trimEnd(" a ")).toBe(" a")
   })
 
   it("includes", () => {

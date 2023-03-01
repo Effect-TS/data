@@ -135,7 +135,10 @@ export const findFirst: {
  * @since 1.0.0
  * @category getters
  */
-export const first: <K, V>(self: RedBlackTree<K, V>) => Option<readonly [K, V]> = RBT.first
+export const first: {
+  <K, V>(self: RedBlackTree<K, V>): Option<readonly [K, V]>
+  (_?: never): <K, V>(self: RedBlackTree<K, V>) => Option<readonly [K, V]>
+} = RBT.first
 
 /**
  * Returns the element at the specified index within the tree or `None` if the
@@ -155,7 +158,10 @@ export const getAt: {
  * @since 1.0.0
  * @category getters
  */
-export const getOrder: <K, V>(self: RedBlackTree<K, V>) => Order<K> = RBT.getOrder
+export const getOrder: {
+  <K, V>(tree: RedBlackTree<K, V>): Order<K>
+  (_?: never): <K, V>(tree: RedBlackTree<K, V>) => Order<K>
+} = RBT.getOrder
 
 /**
  * Returns an iterator that traverse entries in order with keys greater than the
@@ -233,7 +239,10 @@ export const insert: {
  * @since 1.0.0
  * @category getters
  */
-export const keys: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<K> = RBT.keysForward
+export const keys: {
+  <K, V>(self: RedBlackTree<K, V>): IterableIterator<K>
+  (_?: never): <K, V>(self: RedBlackTree<K, V>) => IterableIterator<K>
+} = RBT.keysForward
 
 /**
  * Get all the keys present in the tree in reverse order.
@@ -241,7 +250,10 @@ export const keys: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<K> = RBT
  * @since 1.0.0
  * @category getters
  */
-export const keysReversed: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<K> = RBT.keysBackward
+export const keysReversed: {
+  <K, V>(self: RedBlackTree<K, V>): IterableIterator<K>
+  (_?: never): <K, V>(self: RedBlackTree<K, V>) => IterableIterator<K>
+} = RBT.keysBackward
 
 /**
  * Returns the last entry in the tree, if it exists.
@@ -249,7 +261,10 @@ export const keysReversed: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<
  * @since 1.0.0
  * @category getters
  */
-export const last: <K, V>(self: RedBlackTree<K, V>) => Option<readonly [K, V]> = RBT.last
+export const last: {
+  <K, V>(self: RedBlackTree<K, V>): Option<readonly [K, V]>
+  (_?: never): <K, V>(self: RedBlackTree<K, V>) => Option<readonly [K, V]>
+} = RBT.last
 
 /**
  * Returns an iterator that traverse entries in order with keys less than the
@@ -383,7 +398,10 @@ export const removeFirst: {
  * @since 1.0.0
  * @category traversing
  */
-export const reversed: <K, V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]> = RBT.reversed
+export const reversed: {
+  <K, V>(self: RedBlackTree<K, V>): Iterable<readonly [K, V]>
+  (_?: never): <K, V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+} = RBT.reversed
 
 /**
  * Returns the size of the tree.
@@ -391,7 +409,10 @@ export const reversed: <K, V>(self: RedBlackTree<K, V>) => Iterable<readonly [K,
  * @since 1.0.0
  * @category getters
  */
-export const size: <K, V>(self: RedBlackTree<K, V>) => number = RBT.size
+export const size: {
+  <K, V>(self: RedBlackTree<K, V>): number
+  (_?: never): <K, V>(self: RedBlackTree<K, V>) => number
+} = RBT.size
 
 /**
  * Get all values present in the tree in order.
@@ -399,7 +420,10 @@ export const size: <K, V>(self: RedBlackTree<K, V>) => number = RBT.size
  * @since 1.0.0
  * @category getters
  */
-export const values: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<V> = RBT.valuesForward
+export const values: {
+  <K, V>(self: RedBlackTree<K, V>): IterableIterator<V>
+  (_?: never): <K, V>(self: RedBlackTree<K, V>) => IterableIterator<V>
+} = RBT.valuesForward
 
 /**
  * Get all values present in the tree in reverse order.
@@ -407,4 +431,7 @@ export const values: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<V> = R
  * @since 1.0.0
  * @category getters
  */
-export const valuesReversed: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<V> = RBT.valuesBackward
+export const valuesReversed: {
+  <K, V>(self: RedBlackTree<K, V>): IterableIterator<V>
+  (_?: never): <K, V>(self: RedBlackTree<K, V>) => IterableIterator<V>
+} = RBT.valuesBackward

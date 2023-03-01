@@ -3,7 +3,7 @@
  *
  * @since 1.0.0
  */
-import { dual } from "@effect/data/Function"
+import { dual, zeroArgsDual } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
 import * as bicovariant from "@effect/data/typeclass/Bicovariant"
 import * as equivalence from "@effect/data/typeclass/Equivalence"
@@ -47,7 +47,10 @@ export const tuple = <A extends ReadonlyArray<any>>(...elements: A): A => elemen
  * @category getters
  * @since 1.0.0
  */
-export const getFirst = <L, R>(self: readonly [L, R]): L => self[0]
+export const getFirst: {
+  <L, R>(self: readonly [L, R]): L
+  (_?: never): <L, R>(self: readonly [L, R]) => L
+} = zeroArgsDual(<L, R>(self: readonly [L, R]): L => self[0])
 
 /**
  * Return the second element of a tuple.
@@ -62,7 +65,10 @@ export const getFirst = <L, R>(self: readonly [L, R]): L => self[0]
  * @category getters
  * @since 1.0.0
  */
-export const getSecond = <L, R>(self: readonly [L, R]): R => self[1]
+export const getSecond: {
+  <L, R>(self: readonly [L, R]): R
+  (_?: never): <L, R>(self: readonly [L, R]) => R
+} = zeroArgsDual(<L, R>(self: readonly [L, R]): R => self[1])
 
 /**
  * Transforms both elements of a tuple using the given functions.
@@ -158,7 +164,10 @@ export const mapSecond: {
  *
  * @since 1.0.0
  */
-export const swap = <L, R>(self: readonly [L, R]): [R, L] => [self[1], self[0]]
+export const swap: {
+  <L, R>(self: readonly [L, R]): [R, L]
+  (_?: never): <L, R>(self: readonly [L, R]) => [R, L]
+} = zeroArgsDual(<L, R>(self: readonly [L, R]): [R, L] => [self[1], self[0]])
 
 /**
  * Given a tuple of `Equivalence`s returns a new `Equivalence` that compares values of a tuple

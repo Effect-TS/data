@@ -19,7 +19,10 @@ import * as equivalence from "@effect/data/typeclass/Equivalence"
  * @category guards
  * @since 1.0.0
  */
-export const isSymbol: (u: unknown) => u is symbol = predicate.isSymbol
+export const isSymbol: {
+  (input: unknown): input is symbol
+  (_?: never): (input: unknown) => input is symbol
+} = predicate.isSymbol
 
 /**
  * @category instances

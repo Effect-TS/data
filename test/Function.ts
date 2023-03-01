@@ -8,12 +8,12 @@ const g = double
 
 describe.concurrent("Function", () => {
   it("apply", () => {
-    deepStrictEqual(_.pipe(String.length, _.apply("a")), 1)
+    deepStrictEqual(_.pipe(String.length(), _.apply("a")), 1)
   })
 
   it("compose", () => {
-    deepStrictEqual(_.pipe(String.length, _.compose(double))("aaa"), 6)
-    deepStrictEqual(_.compose(String.length, double)("aaa"), 6)
+    deepStrictEqual(_.pipe(String.length(), _.compose(double))("aaa"), 6)
+    deepStrictEqual(_.compose(String.length(), double)("aaa"), 6)
   })
 
   it("flip", () => {

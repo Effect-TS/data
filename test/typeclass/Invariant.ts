@@ -28,7 +28,7 @@ describe.concurrent("Invariant", () => {
 
     it("Contravariant (Predicate)", () => {
       const bindTo = _.bindTo(P.Invariant)
-      const p = pipe(String.isString, bindTo("a"))
+      const p = pipe(String.isString(), bindTo("a"))
       U.deepStrictEqual(p({ a: "a" }), true)
       U.deepStrictEqual(p({ a: 1 }), false)
     })
@@ -43,7 +43,7 @@ describe.concurrent("Invariant", () => {
 
     it("Contravariant (Predicate)", () => {
       const tupled = _.tupled(P.Invariant)
-      const p = pipe(String.isString, tupled)
+      const p = pipe(String.isString(), tupled)
       U.deepStrictEqual(p(["a"]), true)
       U.deepStrictEqual(p([1]), false)
     })

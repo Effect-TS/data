@@ -133,7 +133,7 @@ describe.concurrent("SemiProduct", () => {
     it("Contravariant (Predicate)", () => {
       const p = pipe(
         P.Do,
-        P.andThenBind("x", String.isString),
+        P.andThenBind("x", String.isString()),
         P.andThenBind("y", Number.isNumber())
       )
       U.deepStrictEqual(p({ x: "a", y: 1 }), true)
@@ -150,7 +150,7 @@ describe.concurrent("SemiProduct", () => {
 
     it("Contravariant (Predicate)", () => {
       const appendElement = _.appendElement(P.SemiProduct)
-      const p = pipe(P.tuple(String.isString, String.isString), appendElement(Number.isNumber()))
+      const p = pipe(P.tuple(String.isString(), String.isString()), appendElement(Number.isNumber()))
       U.deepStrictEqual(p(["a", "b", 3]), true)
       U.deepStrictEqual(p(["a", "b", "c"]), false)
       U.deepStrictEqual(p([1, "b", 1]), false)
@@ -177,7 +177,7 @@ describe.concurrent("SemiProduct", () => {
 
     it("Contravariant (Predicate)", () => {
       const nonEmptyTuple = _.nonEmptyTuple(P.SemiProduct)
-      const p = nonEmptyTuple(String.isString, Number.isNumber(), Boolean.isBoolean())
+      const p = nonEmptyTuple(String.isString(), Number.isNumber(), Boolean.isBoolean())
       U.deepStrictEqual(p(["a", 1, true]), true)
       U.deepStrictEqual(p(["a", 1, "b"]), false)
     })
@@ -205,7 +205,7 @@ describe.concurrent("SemiProduct", () => {
 
     it("Contravariant (Predicate)", () => {
       const nonEmptyStruct = _.nonEmptyStruct(P.Product)
-      const p = nonEmptyStruct({ x: String.isString, y: Number.isNumber(), z: Boolean.isBoolean() })
+      const p = nonEmptyStruct({ x: String.isString(), y: Number.isNumber(), z: Boolean.isBoolean() })
       U.deepStrictEqual(p({ x: "a", y: 1, z: true }), true)
       U.deepStrictEqual(p({ x: "a", y: 1, z: "b" }), false)
     })

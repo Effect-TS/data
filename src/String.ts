@@ -6,9 +6,8 @@
  * @since 1.0.0
  */
 
-import { dual } from "@effect/data/Function"
+import { dual, zeroArgsDual } from "@effect/data/Function"
 import * as readonlyArray from "@effect/data/internal/ReadonlyArray"
-import type { Refinement } from "@effect/data/Predicate"
 import * as predicate from "@effect/data/Predicate"
 import type { NonEmptyArray } from "@effect/data/ReadonlyArray"
 import * as equivalence from "@effect/data/typeclass/Equivalence"
@@ -30,7 +29,10 @@ import * as semigroup from "@effect/data/typeclass/Semigroup"
  * @category guards
  * @since 1.0.0
  */
-export const isString: Refinement<unknown, string> = predicate.isString
+export const isString: {
+  (input: unknown): input is string
+  (_?: never): (input: unknown) => input is string
+} = predicate.isString
 
 /**
  * @category instances
@@ -82,22 +84,28 @@ export const concat: {
  * import * as S from '@effect/data/String'
  * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(pipe('a', S.toUpperCase), 'A')
+ * assert.deepStrictEqual(S.toUpperCase("a"), "A")
  *
  * @since 1.0.0
  */
-export const toUpperCase = (self: string): string => self.toUpperCase()
+export const toUpperCase: {
+  (self: string): string
+  (_?: never): (self: string) => string
+} = zeroArgsDual((self: string): string => self.toUpperCase())
 
 /**
  * @example
  * import * as S from '@effect/data/String'
  * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(pipe('A', S.toLowerCase), 'a')
+ * assert.deepStrictEqual(S.toLowerCase("A"), "a")
  *
  * @since 1.0.0
  */
-export const toLowerCase = (self: string): string => self.toLowerCase()
+export const toLowerCase: {
+  (self: string): string
+  (_?: never): (self: string) => string
+} = zeroArgsDual((self: string): string => self.toLowerCase())
 
 /**
  * @example
@@ -124,7 +132,10 @@ export const replace: {
  *
  * @since 1.0.0
  */
-export const trim = (self: string): string => self.trim()
+export const trim: {
+  (self: string): string
+  (_?: never): (self: string) => string
+} = zeroArgsDual((self: string): string => self.trim())
 
 /**
  * @example
@@ -134,7 +145,10 @@ export const trim = (self: string): string => self.trim()
  *
  * @since 1.0.0
  */
-export const trimStart = (self: string): string => self.trimStart()
+export const trimStart: {
+  (self: string): string
+  (_?: never): (self: string) => string
+} = zeroArgsDual((self: string): string => self.trimStart())
 
 /**
  * @example
@@ -144,7 +158,10 @@ export const trimStart = (self: string): string => self.trimStart()
  *
  * @since 1.0.0
  */
-export const trimEnd = (self: string): string => self.trimEnd()
+export const trimEnd: {
+  (self: string): string
+  (_?: never): (self: string) => string
+} = zeroArgsDual((self: string): string => self.trimEnd())
 
 /**
  * @example
@@ -171,14 +188,20 @@ export const slice: {
  *
  * @since 1.0.0
  */
-export const isEmpty = (self: string): self is "" => self.length === 0
+export const isEmpty: {
+  (self: string): self is ""
+  (_?: never): (self: string) => self is ""
+} = zeroArgsDual((self: string): self is "" => self.length === 0)
 
 /**
  * Test whether a `string` is non empty.
  *
  * @since 1.0.0
  */
-export const isNonEmpty = (self: string): boolean => self.length > 0
+export const isNonEmpty: {
+  (self: string): boolean
+  (_?: never): (self: string) => boolean
+} = zeroArgsDual((self: string): boolean => self.length > 0)
 
 /**
  * Calculate the number of characters in a `string`.
@@ -190,7 +213,10 @@ export const isNonEmpty = (self: string): boolean => self.length > 0
  *
  * @since 1.0.0
  */
-export const length = (self: string): number => self.length
+export const length: {
+  (self: string): number
+  (_?: never): (self: string) => number
+} = zeroArgsDual((self: string): number => self.length)
 
 /**
  * @example
@@ -404,7 +430,10 @@ const LF = 0x0a
  *
  * @since 1.0.0
  */
-export const linesWithSeparators = (s: string): LinesIterator => linesSeparated(s, false)
+export const linesWithSeparators: {
+  (s: string): LinesIterator
+  (_?: never): (s: string) => LinesIterator
+} = zeroArgsDual((s: string): LinesIterator => linesSeparated(s, false))
 
 /**
  * For every line in this string, strip a leading prefix consisting of blanks
@@ -442,7 +471,10 @@ export const stripMarginWith = dual<
  *
  * @since 1.0.0
  */
-export const stripMargin = (self: string): string => stripMarginWith("|")(self)
+export const stripMargin: {
+  (self: string): string
+  (_?: never): (self: string) => string
+} = zeroArgsDual((self: string): string => stripMarginWith("|")(self))
 
 class LinesIterator implements IterableIterator<string> {
   private index: number

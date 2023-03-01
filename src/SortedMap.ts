@@ -2,8 +2,7 @@
  * @since 1.0.0
  */
 import * as Equal from "@effect/data/Equal"
-import * as Dual from "@effect/data/Function"
-import { pipe } from "@effect/data/Function"
+import { dual, pipe, zeroArgsDual } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import * as Option from "@effect/data/Option"
 import * as RBT from "@effect/data/RedBlackTree"
@@ -98,19 +97,28 @@ export const make = <K>(ord: Order<K>) =>
  * @since 1.0.0
  * @category predicates
  */
-export const isEmpty = <K, V>(self: SortedMap<K, V>): boolean => size(self) === 0
+export const isEmpty: {
+  <K, V>(self: SortedMap<K, V>): boolean
+  (_?: never): <K, V>(self: SortedMap<K, V>) => boolean
+} = zeroArgsDual(<K, V>(self: SortedMap<K, V>): boolean => size(self) === 0)
 
 /**
  * @since 1.0.0
  * @category predicates
  */
-export const isNonEmpty = <K, V>(self: SortedMap<K, V>): boolean => size(self) > 0
+export const isNonEmpty: {
+  <K, V>(self: SortedMap<K, V>): boolean
+  (_?: never): <K, V>(self: SortedMap<K, V>) => boolean
+} = zeroArgsDual(<K, V>(self: SortedMap<K, V>): boolean => size(self) > 0)
 
 /**
  * @since 1.0.0
  * @category getters
  */
-export const entries = <K, V>(self: SortedMap<K, V>): Iterator<readonly [K, V]> => self[Symbol.iterator]()
+export const entries: {
+  <K, V>(self: SortedMap<K, V>): Iterator<readonly [K, V], any, undefined>
+  (_?: never): <K, V>(self: SortedMap<K, V>) => Iterator<readonly [K, V], any, undefined>
+} = zeroArgsDual(<K, V>(self: SortedMap<K, V>): Iterator<readonly [K, V]> => self[Symbol.iterator]())
 
 /**
  * @since 1.0.0
@@ -119,7 +127,7 @@ export const entries = <K, V>(self: SortedMap<K, V>): Iterator<readonly [K, V]> 
 export const get: {
   <K>(key: K): <V>(self: SortedMap<K, V>) => Option.Option<V>
   <K, V>(self: SortedMap<K, V>, key: K): Option.Option<V>
-} = Dual.dual<
+} = dual<
   <K>(key: K) => <V>(self: SortedMap<K, V>) => Option.Option<V>,
   <K, V>(self: SortedMap<K, V>, key: K) => Option.Option<V>
 >(2, (self, key) => RBT.findFirst(self.tree, key))
@@ -130,7 +138,10 @@ export const get: {
  * @since 1.0.0
  * @category getters
  */
-export const getOrder = <K, V>(self: SortedMap<K, V>): Order<K> => RBT.getOrder(self.tree)
+export const getOrder: {
+  <K, V>(self: SortedMap<K, V>): Order<K>
+  (_?: never): <K, V>(self: SortedMap<K, V>) => Order<K>
+} = zeroArgsDual(<K, V>(self: SortedMap<K, V>): Order<K> => RBT.getOrder(self.tree))
 
 /**
  * @since 1.0.0
@@ -139,7 +150,7 @@ export const getOrder = <K, V>(self: SortedMap<K, V>): Order<K> => RBT.getOrder(
 export const has: {
   <K>(key: K): <V>(self: SortedMap<K, V>) => boolean
   <K, V>(self: SortedMap<K, V>, key: K): boolean
-} = Dual.dual<
+} = dual<
   <K>(key: K) => <V>(self: SortedMap<K, V>) => boolean,
   <K, V>(self: SortedMap<K, V>, key: K) => boolean
 >(2, (self, key) => Option.isSome(get(self, key)))
@@ -148,7 +159,10 @@ export const has: {
  * @since 1.0.0
  * @category elements
  */
-export const headOption = <K, V>(self: SortedMap<K, V>): Option.Option<readonly [K, V]> => RBT.first(self.tree)
+export const headOption: {
+  <K, V>(self: SortedMap<K, V>): Option.Option<readonly [K, V]>
+  (_?: never): <K, V>(self: SortedMap<K, V>) => Option.Option<readonly [K, V]>
+} = zeroArgsDual(<K, V>(self: SortedMap<K, V>): Option.Option<readonly [K, V]> => RBT.first(self.tree))
 
 /**
  * @since 1.0.0
@@ -157,7 +171,7 @@ export const headOption = <K, V>(self: SortedMap<K, V>): Option.Option<readonly 
 export const map: {
   <A, B>(f: (a: A) => B): <K>(self: SortedMap<K, A>) => SortedMap<K, B>
   <K, A, B>(self: SortedMap<K, A>, f: (a: A) => B): SortedMap<K, B>
-} = Dual.dual<
+} = dual<
   <A, B>(f: (a: A) => B) => <K>(self: SortedMap<K, A>) => SortedMap<K, B>,
   <K, A, B>(self: SortedMap<K, A>, f: (a: A) => B) => SortedMap<K, B>
 >(2, (self, f) => mapWithIndex(self, (a) => f(a)))
@@ -169,7 +183,7 @@ export const map: {
 export const mapWithIndex: {
   <A, K, B>(f: (a: A, k: K) => B): (self: SortedMap<K, A>) => SortedMap<K, B>
   <K, A, B>(self: SortedMap<K, A>, f: (a: A, k: K) => B): SortedMap<K, B>
-} = Dual.dual<
+} = dual<
   <A, K, B>(f: (a: A, k: K) => B) => (self: SortedMap<K, A>) => SortedMap<K, B>,
   <K, A, B>(self: SortedMap<K, A>, f: (a: A, k: K) => B) => SortedMap<K, B>
 >(2, <K, A, B>(self: SortedMap<K, A>, f: (a: A, k: K) => B) =>
@@ -183,7 +197,10 @@ export const mapWithIndex: {
  * @since 1.0.0
  * @category getters
  */
-export const keys = <K, V>(self: SortedMap<K, V>): IterableIterator<K> => RBT.keys(self.tree)
+export const keys: {
+  <K, V>(self: SortedMap<K, V>): IterableIterator<K>
+  (_?: never): <K, V>(self: SortedMap<K, V>) => IterableIterator<K>
+} = zeroArgsDual(<K, V>(self: SortedMap<K, V>): IterableIterator<K> => RBT.keys(self.tree))
 
 /**
  * @since 1.0.0
@@ -192,7 +209,7 @@ export const keys = <K, V>(self: SortedMap<K, V>): IterableIterator<K> => RBT.ke
 export const reduce: {
   <V, B>(zero: B, f: (accumulator: B, value: V) => B): <K>(self: SortedMap<K, V>) => B
   <K, V, B>(self: SortedMap<K, V>, zero: B, f: (accumulator: B, value: V) => B): B
-} = Dual.dual<
+} = dual<
   <V, B>(zero: B, f: (accumulator: B, value: V) => B) => <K>(self: SortedMap<K, V>) => B,
   <K, V, B>(self: SortedMap<K, V>, zero: B, f: (accumulator: B, value: V) => B) => B
 >(3, (self, zero, f) => RBT.reduce(self.tree, zero, f))
@@ -204,7 +221,7 @@ export const reduce: {
 export const reduceWithIndex: {
   <B, A, K>(zero: B, f: (acc: B, value: A, key: K) => B): (self: SortedMap<K, A>) => B
   <K, A, B>(self: SortedMap<K, A>, zero: B, f: (acc: B, value: A, key: K) => B): B
-} = Dual.dual<
+} = dual<
   <B, A, K>(zero: B, f: (acc: B, value: A, key: K) => B) => (self: SortedMap<K, A>) => B,
   <K, A, B>(self: SortedMap<K, A>, zero: B, f: (acc: B, value: A, key: K) => B) => B
 >(3, (self, zero, f) => RBT.reduceWithIndex(self.tree, zero, f))
@@ -216,7 +233,7 @@ export const reduceWithIndex: {
 export const remove: {
   <K>(key: K): <V>(self: SortedMap<K, V>) => SortedMap<K, V>
   <K, V>(self: SortedMap<K, V>, key: K): SortedMap<K, V>
-} = Dual.dual<
+} = dual<
   <K>(key: K) => <V>(self: SortedMap<K, V>) => SortedMap<K, V>,
   <K, V>(self: SortedMap<K, V>, key: K) => SortedMap<K, V>
 >(2, (self, key) => new SortedMapImpl(RBT.removeFirst(self.tree, key)))
@@ -228,7 +245,7 @@ export const remove: {
 export const set: {
   <K, V>(key: K, value: V): (self: SortedMap<K, V>) => SortedMap<K, V>
   <K, V>(self: SortedMap<K, V>, key: K, value: V): SortedMap<K, V>
-} = Dual.dual<
+} = dual<
   <K, V>(key: K, value: V) => (self: SortedMap<K, V>) => SortedMap<K, V>,
   <K, V>(self: SortedMap<K, V>, key: K, value: V) => SortedMap<K, V>
 >(3, (self, key, value) =>
@@ -240,10 +257,16 @@ export const set: {
  * @since 1.0.0
  * @category getters
  */
-export const size = <K, V>(self: SortedMap<K, V>): number => RBT.size(self.tree)
+export const size: {
+  <K, V>(self: SortedMap<K, V>): number
+  (_?: never): <K, V>(self: SortedMap<K, V>) => number
+} = zeroArgsDual(<K, V>(self: SortedMap<K, V>): number => RBT.size(self.tree))
 
 /**
  * @since 1.0.0
  * @category getters
  */
-export const values = <K, V>(self: SortedMap<K, V>): IterableIterator<V> => RBT.values(self.tree)
+export const values: {
+  <K, V>(self: SortedMap<K, V>): IterableIterator<V>
+  (_?: never): <K, V>(self: SortedMap<K, V>) => IterableIterator<V>
+} = zeroArgsDual(<K, V>(self: SortedMap<K, V>): IterableIterator<V> => RBT.values(self.tree))
