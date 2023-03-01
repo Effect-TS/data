@@ -12,22 +12,6 @@ export interface FunctionTypeLambda extends TypeLambda {
 }
 
 /**
- * Tests if a value is a `function`.
- *
- * @param input - The value to test.
- *
- * @example
- * import { isFunction } from '@effect/data/Predicate'
- *
- * assert.deepStrictEqual(isFunction(isFunction), true)
- * assert.deepStrictEqual(isFunction("function"), false)
- *
- * @category guards
- * @since 1.0.0
- */
-export const isFunction = (input: unknown): input is Function => typeof input === "function"
-
-/**
  * Creates a function that can be used in a data-last (aka `pipe`able) or
  * data-first style.
  *
@@ -115,6 +99,25 @@ export const dual: {
 export const zeroArgsDual = <DataFirst extends (...args: Array<any>) => any>(
   body: DataFirst
 ): DataFirst & { (_?: never): DataFirst } => dual(1, body)
+
+/**
+ * Tests if a value is a `function`.
+ *
+ * @param input - The value to test.
+ *
+ * @example
+ * import { isFunction } from '@effect/data/Predicate'
+ *
+ * assert.deepStrictEqual(isFunction(isFunction), true)
+ * assert.deepStrictEqual(isFunction("function"), false)
+ *
+ * @category guards
+ * @since 1.0.0
+ */
+export const isFunction: {
+  (input: unknown): input is Function
+  (_?: never): (input: unknown) => input is Function
+} = zeroArgsDual((input: unknown): input is Function => typeof input === "function")
 
 /**
  * Apply a function to a given value.

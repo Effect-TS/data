@@ -1,7 +1,7 @@
 /**
  * @since 1.0.0
  */
-import { constFalse, constTrue, dual, isFunction as isFunction_ } from "@effect/data/Function"
+import { constFalse, constTrue, dual, isFunction as isFunction_, zeroArgsDual } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
 import * as readonlyArray from "@effect/data/internal/ReadonlyArray"
 import * as contravariant from "@effect/data/typeclass/Contravariant"
@@ -77,7 +77,10 @@ export const contramap: {
  * @category guards
  * @since 1.0.0
  */
-export const isString = (input: unknown): input is string => typeof input === "string"
+export const isString: {
+  (input: unknown): input is string
+  (_?: never): (input: unknown) => input is string
+} = zeroArgsDual((input: unknown): input is string => typeof input === "string")
 
 /**
  * Tests if a value is a `number`.
@@ -94,7 +97,10 @@ export const isString = (input: unknown): input is string => typeof input === "s
  * @category guards
  * @since 1.0.0
  */
-export const isNumber = (input: unknown): input is number => typeof input === "number"
+export const isNumber: {
+  (input: unknown): input is number
+  (_?: never): (input: unknown) => input is number
+} = zeroArgsDual((input: unknown): input is number => typeof input === "number")
 
 /**
  * Tests if a value is a `boolean`.
@@ -111,7 +117,10 @@ export const isNumber = (input: unknown): input is number => typeof input === "n
  * @category guards
  * @since 1.0.0
  */
-export const isBoolean = (input: unknown): input is boolean => typeof input === "boolean"
+export const isBoolean: {
+  (input: unknown): input is boolean
+  (_?: never): (input: unknown) => input is boolean
+} = zeroArgsDual((input: unknown): input is boolean => typeof input === "boolean")
 
 /**
  * Tests if a value is a `bigint`.
@@ -128,7 +137,10 @@ export const isBoolean = (input: unknown): input is boolean => typeof input === 
  * @category guards
  * @since 1.0.0
  */
-export const isBigint = (input: unknown): input is bigint => typeof input === "bigint"
+export const isBigint: {
+  (input: unknown): input is bigint
+  (_?: never): (input: unknown) => input is bigint
+} = zeroArgsDual((input: unknown): input is bigint => typeof input === "bigint")
 
 /**
  * Tests if a value is a `symbol`.
@@ -145,7 +157,10 @@ export const isBigint = (input: unknown): input is bigint => typeof input === "b
  * @category guards
  * @since 1.0.0
  */
-export const isSymbol = (input: unknown): input is symbol => typeof input === "symbol"
+export const isSymbol: {
+  (input: unknown): input is symbol
+  (_?: never): (input: unknown) => input is symbol
+} = zeroArgsDual((input: unknown): input is symbol => typeof input === "symbol")
 
 /**
  * Tests if a value is a `function`.
@@ -162,7 +177,10 @@ export const isSymbol = (input: unknown): input is symbol => typeof input === "s
  * @category guards
  * @since 1.0.0
  */
-export const isFunction: (input: unknown) => input is Function = isFunction_
+export const isFunction: {
+  (input: unknown): input is Function
+  (_?: never): (input: unknown) => input is Function
+} = isFunction_
 
 /**
  * Tests if a value is `undefined`.
@@ -180,7 +198,10 @@ export const isFunction: (input: unknown) => input is Function = isFunction_
  * @category guards
  * @since 1.0.0
  */
-export const isUndefined = (input: unknown): input is undefined => input === undefined
+export const isUndefined: {
+  (input: unknown): input is undefined
+  (_?: never): (input: unknown) => input is undefined
+} = zeroArgsDual((input: unknown): input is undefined => input === undefined)
 
 /**
  * Tests if a value is not `undefined`.
@@ -198,7 +219,10 @@ export const isUndefined = (input: unknown): input is undefined => input === und
  * @category guards
  * @since 1.0.0
  */
-export const isNotUndefined = <A>(input: A): input is Exclude<A, undefined> => input !== undefined
+export const isNotUndefined: {
+  <A>(input: A): input is Exclude<A, undefined>
+  (_?: never): <A>(input: A) => input is Exclude<A, undefined>
+} = zeroArgsDual(<A>(input: A): input is Exclude<A, undefined> => input !== undefined)
 
 /**
  * Tests if a value is `undefined`.
@@ -216,7 +240,10 @@ export const isNotUndefined = <A>(input: A): input is Exclude<A, undefined> => i
  * @category guards
  * @since 1.0.0
  */
-export const isNull = (input: unknown): input is null => input === null
+export const isNull: {
+  (input: unknown): input is null
+  (_?: never): (input: unknown) => input is null
+} = zeroArgsDual((input: unknown): input is null => input === null)
 
 /**
  * Tests if a value is not `undefined`.
@@ -234,7 +261,10 @@ export const isNull = (input: unknown): input is null => input === null
  * @category guards
  * @since 1.0.0
  */
-export const isNotNull = <A>(input: A): input is Exclude<A, null> => input !== null
+export const isNotNull: {
+  <A>(input: A): input is Exclude<A, null>
+  (_?: never): <A>(input: A) => input is Exclude<A, null>
+} = zeroArgsDual(<A>(input: A): input is Exclude<A, null> => input !== null)
 
 /**
  * A guard that always fails.
@@ -252,7 +282,10 @@ export const isNotNull = <A>(input: A): input is Exclude<A, null> => input !== n
  * @category guards
  * @since 1.0.0
  */
-export const isNever: (input: unknown) => input is never = (_: unknown): _ is never => false
+export const isNever: {
+  (input: unknown): input is never
+  (_?: never): (input: unknown) => input is never
+} = zeroArgsDual((input: unknown): input is never => false)
 
 /**
  * A guard that always succeeds.
@@ -271,7 +304,10 @@ export const isNever: (input: unknown) => input is never = (_: unknown): _ is ne
  * @category guards
  * @since 1.0.0
  */
-export const isUnknown: (input: unknown) => input is unknown = (_): _ is unknown => true
+export const isUnknown: {
+  (input: unknown): input is unknown
+  (_?: never): (input: unknown) => input is unknown
+} = zeroArgsDual((input: unknown): input is unknown => true)
 
 /**
  * Tests if a value is an `object`.
@@ -290,7 +326,10 @@ export const isUnknown: (input: unknown) => input is unknown = (_): _ is unknown
  * @category guards
  * @since 1.0.0
  */
-export const isObject = (input: unknown): input is object => typeof input === "object" && input != null
+export const isObject: {
+  (input: unknown): input is object
+  (_?: never): (input: unknown) => input is object
+} = zeroArgsDual((input: unknown): input is object => typeof input === "object" && input != null)
 
 /**
  * A guard that succeeds when the input is `null` or `undefined`.
@@ -309,7 +348,10 @@ export const isObject = (input: unknown): input is object => typeof input === "o
  * @category guards
  * @since 1.0.0
  */
-export const isNullable = <A>(input: A): input is Extract<A, null | undefined> => input === null || input === undefined
+export const isNullable: {
+  <A>(input: A): input is Extract<A, null | undefined>
+  (_?: never): <A>(input: A) => input is Extract<A, null | undefined>
+} = zeroArgsDual(<A>(input: A): input is Extract<A, null | undefined> => input === null || input === undefined)
 
 /**
  * A guard that succeeds when the input is not `null` or `undefined`.
@@ -328,7 +370,10 @@ export const isNullable = <A>(input: A): input is Extract<A, null | undefined> =
  * @category guards
  * @since 1.0.0
  */
-export const isNotNullable = <A>(input: A): input is NonNullable<A> => input !== null && input !== undefined
+export const isNotNullable: {
+  <A>(input: A): input is NonNullable<A>
+  (_?: never): <A>(input: A) => input is NonNullable<A>
+} = zeroArgsDual(<A>(input: A): input is NonNullable<A> => input !== null && input !== undefined)
 
 /**
  * A guard that succeeds when the input is an `Error`.
@@ -346,7 +391,10 @@ export const isNotNullable = <A>(input: A): input is NonNullable<A> => input !==
  * @category guards
  * @since 1.0.0
  */
-export const isError = (input: unknown): input is Error => input instanceof Error
+export const isError: {
+  (input: unknown): input is Error
+  (_?: never): (input: unknown) => input is Error
+} = zeroArgsDual((input: unknown): input is Error => input instanceof Error)
 
 /**
  * A guard that succeeds when the input is a `Date`.
@@ -364,7 +412,10 @@ export const isError = (input: unknown): input is Error => input instanceof Erro
  * @category guards
  * @since 1.0.0
  */
-export const isDate = (input: unknown): input is Date => input instanceof Date
+export const isDate: {
+  (input: unknown): input is Date
+  (_?: never): (input: unknown) => input is Date
+} = zeroArgsDual((input: unknown): input is Date => input instanceof Date)
 
 /**
  * A guard that succeeds when the input is a record.
@@ -385,8 +436,12 @@ export const isDate = (input: unknown): input is Date => input instanceof Date
  * @category guards
  * @since 1.0.0
  */
-export const isRecord = (input: unknown): input is { [x: string | symbol]: unknown } =>
+export const isRecord: {
+  (input: unknown): input is { [x: string | symbol]: unknown }
+  (_?: never): (input: unknown) => input is { [x: string | symbol]: unknown }
+} = zeroArgsDual((input: unknown): input is { [x: string | symbol]: unknown } =>
   isObject(input) && !Array.isArray(input)
+)
 
 /**
  * A guard that succeeds when the input is a readonly record.
@@ -407,9 +462,10 @@ export const isRecord = (input: unknown): input is { [x: string | symbol]: unkno
  * @category guards
  * @since 1.0.0
  */
-export const isReadonlyRecord: (
-  input: unknown
-) => input is { readonly [x: string | symbol]: unknown } = isRecord
+export const isReadonlyRecord: {
+  (input: unknown): input is { [x: string | symbol]: unknown }
+  (_?: never): (input: unknown) => input is { [x: string | symbol]: unknown }
+} = isRecord
 
 /**
  * @since 1.0.0
@@ -670,31 +726,33 @@ export const nand: {
  * @category instances
  * @since 1.0.0
  */
-export const getSemigroupEqv = <A>(): Semigroup<Predicate<A>> => semigroup.make<Predicate<A>>(eqv)
+export const getSemigroupEqv = <A>(_: void): Semigroup<Predicate<A>> => semigroup.make<Predicate<A>>(eqv)
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const getMonoidEqv = <A>(): monoid.Monoid<Predicate<A>> => monoid.fromSemigroup(getSemigroupEqv<A>(), constTrue)
+export const getMonoidEqv = <A>(_: void): monoid.Monoid<Predicate<A>> =>
+  monoid.fromSemigroup(getSemigroupEqv<A>(), constTrue)
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const getSemigroupXor = <A>(): Semigroup<Predicate<A>> => semigroup.make<Predicate<A>>(xor)
+export const getSemigroupXor = <A>(_: void): Semigroup<Predicate<A>> => semigroup.make<Predicate<A>>(xor)
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const getMonoidXor = <A>(): monoid.Monoid<Predicate<A>> => monoid.fromSemigroup(getSemigroupXor<A>(), constFalse)
+export const getMonoidXor = <A>(_: void): monoid.Monoid<Predicate<A>> =>
+  monoid.fromSemigroup(getSemigroupXor<A>(), constFalse)
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const getSemigroupSome = <A>(): Semigroup<Predicate<A>> =>
+export const getSemigroupSome = <A>(_: void): Semigroup<Predicate<A>> =>
   semigroup.make<Predicate<A>>(
     or,
     (self, collection) =>
@@ -715,14 +773,14 @@ export const getSemigroupSome = <A>(): Semigroup<Predicate<A>> =>
  * @category instances
  * @since 1.0.0
  */
-export const getMonoidSome = <A>(): monoid.Monoid<Predicate<A>> =>
+export const getMonoidSome = <A>(_: void): monoid.Monoid<Predicate<A>> =>
   monoid.fromSemigroup(getSemigroupSome<A>(), constFalse)
 
 /**
  * @category instances
  * @since 1.0.0
  */
-export const getSemigroupEvery = <A>(): Semigroup<Predicate<A>> =>
+export const getSemigroupEvery = <A>(_: void): Semigroup<Predicate<A>> =>
   semigroup.make<Predicate<A>>(
     and,
     (self, collection) =>
@@ -743,7 +801,7 @@ export const getSemigroupEvery = <A>(): Semigroup<Predicate<A>> =>
  * @category instances
  * @since 1.0.0
  */
-export const getMonoidEvery = <A>(): monoid.Monoid<Predicate<A>> =>
+export const getMonoidEvery = <A>(_: void): monoid.Monoid<Predicate<A>> =>
   monoid.fromSemigroup(getSemigroupEvery<A>(), constTrue)
 
 /**

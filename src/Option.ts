@@ -1257,7 +1257,10 @@ export const Foldable: foldable.Foldable<OptionTypeLambda> = {
  * @category conversions
  * @since 1.0.0
  */
-export const toArray: <A>(self: Option<A>) => Array<A> = foldable.toArray(Foldable)
+export const toArray: {
+  <A>(self: Option<A>): Array<A>
+  (_?: never): <A>(self: Option<A>) => Array<A>
+} = zeroArgsDual(<A>(self: Option<A>): Array<A> => foldable.toArray(Foldable)(self))
 
 /**
  * @category filtering

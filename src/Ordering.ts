@@ -2,7 +2,7 @@
  * @since 1.0.0
  */
 import type { LazyArg } from "@effect/data/Function"
-import { dual } from "@effect/data/Function"
+import { dual, zeroArgsDual } from "@effect/data/Function"
 import * as monoid from "@effect/data/typeclass/Monoid"
 import * as semigroup from "@effect/data/typeclass/Semigroup"
 
@@ -26,7 +26,10 @@ export type Ordering = -1 | 0 | 1
  *
  * @since 1.0.0
  */
-export const reverse = (o: Ordering): Ordering => (o === -1 ? 1 : o === 1 ? -1 : 0)
+export const reverse: {
+  (o: Ordering): Ordering
+  (_?: never): (o: Ordering) => Ordering
+} = zeroArgsDual((o: Ordering): Ordering => (o === -1 ? 1 : o === 1 ? -1 : 0))
 
 /**
  * Depending on the `Ordering` parameter given to it, returns a value produced by one of the 3 functions provided as parameters.

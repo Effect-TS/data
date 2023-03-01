@@ -12,9 +12,7 @@
  */
 
 /** @internal */
-export function isNothing<T>(value: T | null | undefined) {
-  return value === void 0 || value === null
-}
+export const isNothing = <T>(value: T | null | undefined) => value === void 0 || value === null
 
 const defaultIncHi = 0x14057b7e
 const defaultIncLo = 0xf767814f
