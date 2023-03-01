@@ -135,7 +135,7 @@ describe.concurrent("ReadonlyRecord", () => {
     )
     // should ignore non own properties
     const o: RR.ReadonlyRecord<E.Either<string, number>> = Object.create({ a: 1 })
-    assert.deepStrictEqual(pipe(o, RR.separate), [{}, {}])
+    assert.deepStrictEqual(RR.separate(o), [{}, {}])
   })
 
   it("traverse", () => {

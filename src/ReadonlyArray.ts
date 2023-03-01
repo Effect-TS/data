@@ -6,7 +6,7 @@
 
 import type { Either } from "@effect/data/Either"
 import * as E from "@effect/data/Either"
-import { dual, identity } from "@effect/data/Function"
+import { dual, identity, zeroArgsDual } from "@effect/data/Function"
 import type { LazyArg } from "@effect/data/Function"
 import type { Kind, TypeLambda } from "@effect/data/HKT"
 import * as readonlyArray from "@effect/data/internal/ReadonlyArray"
@@ -126,7 +126,10 @@ export const replicate: {
  * @category conversions
  * @since 1.0.0
  */
-export const fromIterable: <A>(collection: Iterable<A>) => Array<A> = readonlyArray.fromIterable
+export const fromIterable: {
+  <A>(collection: Iterable<A>): Array<A>
+  (_?: never): <A>(collection: Iterable<A>) => Array<A>
+} = readonlyArray.fromIterable
 
 /**
  * Takes a record and returns an array of tuples containing its keys and values.
@@ -142,19 +145,28 @@ export const fromIterable: <A>(collection: Iterable<A>) => Array<A> = readonlyAr
  * @category conversions
  * @since 1.0.0
  */
-export const fromRecord: <K extends string, A>(self: Readonly<Record<K, A>>) => Array<[K, A]> = RR.toEntries
+export const fromRecord: {
+  <K extends string, A>(self: Readonly<Record<K, A>>): Array<[K, A]>
+  (_?: never): <K extends string, A>(self: Readonly<Record<K, A>>) => Array<[K, A]>
+} = RR.toEntries
 
 /**
  * @category conversions
  * @since 1.0.0
  */
-export const fromOption: <A>(self: Option<A>) => Array<A> = O.toArray
+export const fromOption: {
+  <A>(self: Option<A>): Array<A>
+  (_?: never): <A>(self: Option<A>) => Array<A>
+} = O.toArray
 
 /**
  * @category conversions
  * @since 1.0.0
  */
-export const fromEither: <E, A>(self: Either<E, A>) => Array<A> = E.toArray
+export const fromEither: {
+  <E, A>(self: Either<E, A>): Array<A>
+  (_?: never): <E, A>(self: Either<E, A>) => Array<A>
+} = E.toArray
 
 /**
  * @category pattern matching
@@ -339,7 +351,10 @@ export const scanRight: {
  * @category guards
  * @since 1.0.0
  */
-export const isEmptyArray = <A>(self: Array<A>): self is [] => self.length === 0
+export const isEmptyArray: {
+  <A>(self: Array<A>): self is []
+  (_?: never): <A>(self: Array<A>) => self is []
+} = zeroArgsDual(<A>(self: Array<A>): self is [] => self.length === 0)
 
 /**
  * Determine if a `ReadonlyArray` is empty narrowing down the type to `readonly []`.
@@ -355,7 +370,10 @@ export const isEmptyArray = <A>(self: Array<A>): self is [] => self.length === 0
  * @category guards
  * @since 1.0.0
  */
-export const isEmptyReadonlyArray: <A>(self: ReadonlyArray<A>) => self is readonly [] = isEmptyArray as any
+export const isEmptyReadonlyArray: {
+  <A>(self: ReadonlyArray<A>): self is readonly []
+  (_?: never): <A>(self: ReadonlyArray<A>) => self is readonly []
+} = isEmptyArray as any
 
 /**
  * Determine if an `Array` is non empty narrowing down the type to `NonEmptyArray`.
@@ -373,7 +391,10 @@ export const isEmptyReadonlyArray: <A>(self: ReadonlyArray<A>) => self is readon
  * @category guards
  * @since 1.0.0
  */
-export const isNonEmptyArray: <A>(self: Array<A>) => self is NonEmptyArray<A> = readonlyArray.isNonEmptyArray
+export const isNonEmptyArray: {
+  <A>(self: ReadonlyArray<A>): self is NonEmptyReadonlyArray<A>
+  (_?: never): <A>(self: ReadonlyArray<A>) => self is NonEmptyReadonlyArray<A>
+} = readonlyArray.isNonEmptyArray
 
 /**
  * Determine if a `ReadonlyArray` is non empty narrowing down the type to `NonEmptyReadonlyArray`.
@@ -391,8 +412,10 @@ export const isNonEmptyArray: <A>(self: Array<A>) => self is NonEmptyArray<A> = 
  * @category guards
  * @since 1.0.0
  */
-export const isNonEmptyReadonlyArray: <A>(self: ReadonlyArray<A>) => self is NonEmptyReadonlyArray<A> =
-  readonlyArray.isNonEmptyArray
+export const isNonEmptyReadonlyArray: {
+  <A>(self: ReadonlyArray<A>): self is [A, ...Array<A>]
+  (_?: never): <A>(self: ReadonlyArray<A>) => self is [A, ...Array<A>]
+} = readonlyArray.isNonEmptyArray
 
 /**
  * Return the number of elements in a `ReadonlyArray`.
@@ -400,9 +423,15 @@ export const isNonEmptyReadonlyArray: <A>(self: ReadonlyArray<A>) => self is Non
  * @category getters
  * @since 1.0.0
  */
-export const length = <A>(self: ReadonlyArray<A>): number => self.length
+export const length: {
+  <A>(self: ReadonlyArray<A>): number
+  (_?: never): <A>(self: ReadonlyArray<A>) => number
+} = zeroArgsDual(<A>(self: ReadonlyArray<A>): number => self.length)
 
-const isOutOfBound = <A>(i: number, as: ReadonlyArray<A>): boolean => i < 0 || i >= as.length
+const isOutOfBound: {
+  <A>(i: number, as: ReadonlyArray<A>): boolean
+  (_?: never): <A>(i: number, as: ReadonlyArray<A>) => boolean
+} = zeroArgsDual(<A>(i: number, as: ReadonlyArray<A>): boolean => i < 0 || i >= as.length)
 
 const clamp = <A>(i: number, as: ReadonlyArray<A>): number => Math.floor(Math.min(Math.max(0, i), as.length))
 
@@ -463,13 +492,19 @@ export const unappend = <A>(
  * @category getters
  * @since 1.0.0
  */
-export const head: <A>(self: ReadonlyArray<A>) => Option<A> = get(0)
+export const head: {
+  <A>(self: ReadonlyArray<A>): Option<A>
+  (_?: undefined): <A>(self: ReadonlyArray<A>) => Option<A>
+} = zeroArgsDual(<A>(self: ReadonlyArray<A>): Option<A> => get(self, 0))
 
 /**
  * @category getters
  * @since 1.0.0
  */
-export const headNonEmpty: <A>(self: NonEmptyReadonlyArray<A>) => A = unsafeGet(0)
+export const headNonEmpty: {
+  <A>(self: NonEmptyReadonlyArray<A>): A
+  (_?: never): <A>(self: NonEmptyReadonlyArray<A>) => A
+} = zeroArgsDual(<A>(self: NonEmptyReadonlyArray<A>): A => unsafeGet(self, 0))
 
 /**
  * Get the last element in a `ReadonlyArray`, or `None` if the `ReadonlyArray` is empty.
@@ -477,14 +512,21 @@ export const headNonEmpty: <A>(self: NonEmptyReadonlyArray<A>) => A = unsafeGet(
  * @category getters
  * @since 1.0.0
  */
-export const last = <A>(self: ReadonlyArray<A>): Option<A> =>
+export const last: {
+  <A>(self: ReadonlyArray<A>): Option<A>
+  (_?: never): <A>(self: ReadonlyArray<A>) => Option<A>
+} = zeroArgsDual(<A>(self: ReadonlyArray<A>): Option<A> =>
   isNonEmptyReadonlyArray(self) ? O.some(lastNonEmpty(self)) : O.none()
+)
 
 /**
  * @category getters
  * @since 1.0.0
  */
-export const lastNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): A => self[self.length - 1]
+export const lastNonEmpty: {
+  <A>(self: NonEmptyReadonlyArray<A>): A
+  (_?: never): <A>(self: NonEmptyReadonlyArray<A>) => A
+} = zeroArgsDual(<A>(self: NonEmptyReadonlyArray<A>): A => self[self.length - 1])
 
 /**
  * Get all but the first element of an `Iterable`, creating a new `Array`, or `None` if the `Iterable` is empty.
@@ -492,16 +534,22 @@ export const lastNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): A => self[self.
  * @category getters
  * @since 1.0.0
  */
-export const tail = <A>(self: Iterable<A>): Option<Array<A>> => {
+export const tail: {
+  <A>(self: Iterable<A>): Option<Array<A>>
+  (_?: never): <A>(self: Iterable<A>) => Option<Array<A>>
+} = zeroArgsDual(<A>(self: Iterable<A>): Option<Array<A>> => {
   const input = fromIterable(self)
   return isNonEmptyReadonlyArray(input) ? O.some(tailNonEmpty(input)) : O.none()
-}
+})
 
 /**
  * @category getters
  * @since 1.0.0
  */
-export const tailNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): Array<A> => self.slice(1)
+export const tailNonEmpty: {
+  <A>(self: NonEmptyReadonlyArray<A>): Array<A>
+  (_?: never): <A>(self: NonEmptyReadonlyArray<A>) => Array<A>
+} = zeroArgsDual(<A>(self: NonEmptyReadonlyArray<A>): Array<A> => self.slice(1))
 
 /**
  * Get all but the last element of an `Iterable`, creating a new `Array`, or `None` if the `Iterable` is empty.
@@ -509,10 +557,13 @@ export const tailNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): Array<A> => sel
  * @category getters
  * @since 1.0.0
  */
-export const init = <A>(self: Iterable<A>): Option<Array<A>> => {
+export const init: {
+  <A>(self: Iterable<A>): Option<Array<A>>
+  (_?: never): <A>(self: Iterable<A>) => Option<Array<A>>
+} = zeroArgsDual(<A>(self: Iterable<A>): Option<Array<A>> => {
   const input = fromIterable(self)
   return isNonEmptyReadonlyArray(input) ? O.some(initNonEmpty(input)) : O.none()
-}
+})
 
 /**
  * Get all but the last element of a non empty array, creating a new array.
@@ -520,7 +571,10 @@ export const init = <A>(self: Iterable<A>): Option<Array<A>> => {
  * @category getters
  * @since 1.0.0
  */
-export const initNonEmpty = <A>(self: NonEmptyReadonlyArray<A>): Array<A> => self.slice(0, -1)
+export const initNonEmpty: {
+  <A>(self: NonEmptyReadonlyArray<A>): Array<A>
+  (_?: never): <A>(self: NonEmptyReadonlyArray<A>) => Array<A>
+} = zeroArgsDual(<A>(self: NonEmptyReadonlyArray<A>): Array<A> => self.slice(0, -1))
 
 /**
  * Keep only a max number of elements from the start of an `Iterable`, creating a new `Array`.
@@ -842,14 +896,20 @@ export const remove: {
  *
  * @since 1.0.0
  */
-export const reverse = <A>(self: Iterable<A>): Array<A> => Array.from(self).reverse()
+export const reverse: {
+  <A>(self: Iterable<A>): Array<A>
+  (_?: never): <A>(self: Iterable<A>) => Array<A>
+} = zeroArgsDual(<A>(self: Iterable<A>): Array<A> => Array.from(self).reverse())
 
 /**
  * @since 1.0.0
  */
-export const reverseNonEmpty = <A>(
+export const reverseNonEmpty: {
+  <A>(self: NonEmptyReadonlyArray<A>): NonEmptyReadonlyArray<A>
+  (_?: never): <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyReadonlyArray<A>
+} = zeroArgsDual(<A>(
   self: NonEmptyReadonlyArray<A>
-): NonEmptyArray<A> => [lastNonEmpty(self), ...self.slice(0, -1).reverse()]
+): NonEmptyArray<A> => [lastNonEmpty(self), ...self.slice(0, -1).reverse()])
 
 /**
  * Return all the `Right` elements from an `Interable` of `Either`s.
@@ -857,7 +917,10 @@ export const reverseNonEmpty = <A>(
  * @category getters
  * @since 1.0.0
  */
-export const rights: <E, A>(self: Iterable<Either<E, A>>) => Array<A> = E.rights
+export const rights: {
+  <E, A>(self: Iterable<Either<E, A>>): Array<A>
+  (_?: never): <E, A>(self: Iterable<Either<E, A>>) => Array<A>
+} = E.rights
 
 /**
  * Return all the `Left` elements from an `Interable` of `Either`s.
@@ -865,7 +928,10 @@ export const rights: <E, A>(self: Iterable<Either<E, A>>) => Array<A> = E.rights
  * @category getters
  * @since 1.0.0
  */
-export const lefts: <E, A>(self: Iterable<Either<E, A>>) => Array<E> = E.lefts
+export const lefts: {
+  <E, A>(self: Iterable<Either<E, A>>): Array<E>
+  (_?: never): <E, A>(self: Iterable<Either<E, A>>) => Array<E>
+} = E.lefts
 
 /**
  * Sort the elements of an `Iterable` in increasing order, creating a new `Array`.
@@ -988,15 +1054,21 @@ export const zipNonEmptyWith: {
  *
  * @since 1.0.0
  */
-export const unzip = <A, B>(self: Iterable<[A, B]>): [Array<A>, Array<B>] => {
+export const unzip: {
+  <A, B>(self: Iterable<[A, B]>): [Array<A>, Array<B>]
+  (_?: never): <A, B>(self: Iterable<[A, B]>) => [Array<A>, Array<B>]
+} = zeroArgsDual(<A, B>(self: Iterable<[A, B]>): [Array<A>, Array<B>] => {
   const input = fromIterable(self)
   return isNonEmptyReadonlyArray(input) ? unzipNonEmpty(input) : [[], []]
-}
+})
 
 /**
  * @since 1.0.0
  */
-export const unzipNonEmpty = <A, B>(
+export const unzipNonEmpty: {
+  <A, B>(self: NonEmptyReadonlyArray<[A, B]>): [NonEmptyArray<A>, NonEmptyArray<B>]
+  (_?: never): <A, B>(self: NonEmptyReadonlyArray<[A, B]>) => [NonEmptyArray<A>, NonEmptyArray<B>]
+} = zeroArgsDual(<A, B>(
   self: NonEmptyReadonlyArray<[A, B]>
 ): [NonEmptyArray<A>, NonEmptyArray<B>] => {
   const fa: NonEmptyArray<A> = [self[0][0]]
@@ -1006,7 +1078,7 @@ export const unzipNonEmpty = <A, B>(
     fb[i] = self[i][1]
   }
   return [fa, fb]
-}
+})
 
 /**
  * Places an element in between members of an `Iterable`
@@ -1440,7 +1512,7 @@ export const difference = <A>(isEquivalent: (self: A, that: A) => boolean): {
  * @category constructors
  * @since 1.0.0
  */
-export const empty: <A = never>() => Array<A> = () => []
+export const empty: <A = never>(_: void) => Array<A> = () => []
 
 /**
  * Constructs a new `NonEmptyArray<A>` from the specified value.
@@ -1448,7 +1520,10 @@ export const empty: <A = never>() => Array<A> = () => []
  * @category constructors
  * @since 1.0.0
  */
-export const of = <A>(a: A): NonEmptyArray<A> => [a]
+export const of: {
+  <A>(a: A): NonEmptyArray<A>
+  (_?: undefined): <A>(a: A) => NonEmptyArray<A>
+} = zeroArgsDual(<A>(a: A): NonEmptyArray<A> => [a])
 
 const Of: of_.Of<ReadonlyArrayTypeLambda> = {
   of
@@ -1564,16 +1639,21 @@ export const FlatMap: flatMap_.FlatMap<ReadonlyArrayTypeLambda> = {
  * @category combining
  * @since 1.0.0
  */
-export const flatten: <A>(self: ReadonlyArray<ReadonlyArray<A>>) => Array<A> = flatMap_
-  .flatten(FlatMap) as any
+export const flatten: {
+  <A>(self: ReadonlyArray<ReadonlyArray<A>>): Array<A>
+  (_?: never): <A>(self: ReadonlyArray<ReadonlyArray<A>>) => Array<A>
+} = zeroArgsDual(<A>(self: ReadonlyArray<ReadonlyArray<A>>): Array<A> => flatMap_.flatten(FlatMap)(self) as any)
 
 /**
  * @category combining
  * @since 1.0.0
  */
-export const flattenNonEmpty: <A>(
+export const flattenNonEmpty: {
+  <A>(self: NonEmptyReadonlyArray<NonEmptyReadonlyArray<A>>): NonEmptyArray<A>
+  (_?: never): <A>(self: NonEmptyReadonlyArray<NonEmptyReadonlyArray<A>>) => NonEmptyArray<A>
+} = zeroArgsDual(<A>(
   self: NonEmptyReadonlyArray<NonEmptyReadonlyArray<A>>
-) => NonEmptyArray<A> = flatMapNonEmpty(identity)
+): NonEmptyArray<A> => flatMapNonEmpty(self, identity))
 
 /**
  * @since 1.0.0

@@ -1376,7 +1376,10 @@ export const divide: {
  * @category getters
  * @since 1.0.0
  */
-export const rights = <E, A>(self: Iterable<Either<E, A>>): Array<A> => {
+export const rights: {
+  <E, A>(self: Iterable<Either<E, A>>): Array<A>
+  (_?: never): <E, A>(self: Iterable<Either<E, A>>) => Array<A>
+} = zeroArgsDual(<E, A>(self: Iterable<Either<E, A>>): Array<A> => {
   const out: Array<A> = []
   for (const a of self) {
     if (isRight(a)) {
@@ -1384,7 +1387,7 @@ export const rights = <E, A>(self: Iterable<Either<E, A>>): Array<A> => {
     }
   }
   return out
-}
+})
 
 /**
  * Return all the `Left` elements from an `Interable` of `Either`s.

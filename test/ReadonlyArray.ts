@@ -1122,7 +1122,7 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(
       pipe(
         RA.make(RA.make(1, 2), RA.make(3, 4)),
-        RA.flattenNonEmpty
+        RA.flattenNonEmpty()
       ),
       [1, 2, 3, 4]
     )

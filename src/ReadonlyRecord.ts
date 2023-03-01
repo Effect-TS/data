@@ -6,7 +6,7 @@
 
 import type { Either } from "@effect/data/Either"
 import * as E from "@effect/data/Either"
-import { dual, identity } from "@effect/data/Function"
+import { dual, identity, zeroArgsDual } from "@effect/data/Function"
 import type { Kind, TypeLambda } from "@effect/data/HKT"
 import type { Option } from "@effect/data/Option"
 import * as O from "@effect/data/Option"
@@ -47,7 +47,7 @@ export interface ReadonlyRecordTypeLambda extends TypeLambda {
  * @category constructors
  * @since 1.0.0
  */
-export const empty = <A>(): Record<string, A> => ({})
+export const empty = <A>(_: void): Record<string, A> => ({})
 
 // -------------------------------------------------------------------------------------
 // guards
@@ -67,14 +67,17 @@ export const empty = <A>(): Record<string, A> => ({})
  * @category guards
  * @since 1.0.0
  */
-export const isEmptyRecord = <A>(self: Record<string, A>): self is Record<string, never> => {
+export const isEmptyRecord: {
+  <A>(self: Record<string, A>): self is Record<string, never>
+  (_?: never): <A>(self: Record<string, A>) => self is Record<string, never>
+} = zeroArgsDual(<A>(self: Record<string, A>): self is Record<string, never> => {
   for (const k in self) {
     if (has(self, k)) {
       return false
     }
   }
   return true
-}
+})
 
 /**
  * Determine if a `ReadonlyRecord` is empty.
@@ -90,7 +93,10 @@ export const isEmptyRecord = <A>(self: Record<string, A>): self is Record<string
  * @category guards
  * @since 1.0.0
  */
-export const isEmptyReadonlyRecord: <A>(self: ReadonlyRecord<A>) => self is ReadonlyRecord<never> = isEmptyRecord
+export const isEmptyReadonlyRecord: {
+  <A>(self: ReadonlyRecord<A>): self is ReadonlyRecord<never>
+  (_?: never): <A>(self: ReadonlyRecord<A>) => self is ReadonlyRecord<never>
+} = isEmptyRecord
 
 // -------------------------------------------------------------------------------------
 // conversions
@@ -146,7 +152,10 @@ export const fromIterable: {
  * @category conversions
  * @since 1.0.0
  */
-export const fromEntries: <A>(self: Iterable<[string, A]>) => Record<string, A> = fromIterable(identity)
+export const fromEntries: {
+  <A>(self: Iterable<[string, A]>): Record<string, A>
+  (_?: never): <A>(self: Iterable<[string, A]>) => Record<string, A>
+} = zeroArgsDual(<A>(self: Iterable<[string, A]>): Record<string, A> => fromIterable(self, identity))
 
 /**
  * Transforms the values of a `ReadonlyRecord` into an `Array` with a custom mapping function.
@@ -191,10 +200,12 @@ export const collect: {
  * @category conversions
  * @since 1.0.0
  */
-export const toEntries: <K extends string, A>(self: Readonly<Record<K, A>>) => Array<[K, A]> = collect((
-  key,
-  value
-) => [key, value])
+export const toEntries: {
+  <K extends string, A>(self: Readonly<Record<K, A>>): Array<[K, A]>
+  (_?: never): <K extends string, A>(self: Readonly<Record<K, A>>) => Array<[K, A]>
+} = zeroArgsDual(<K extends string, A>(self: Readonly<Record<K, A>>): Array<[K, A]> =>
+  collect(self, (key, value) => [key as K, value])
+)
 
 /**
  * Takes a record and returns an array of tuples containing its keys and values.
@@ -212,7 +223,10 @@ export const toEntries: <K extends string, A>(self: Readonly<Record<K, A>>) => A
  * @category conversions
  * @since 1.0.0
  */
-export const toArray: <K extends string, A>(self: Readonly<Record<K, A>>) => Array<[K, A]> = toEntries
+export const toArray: {
+  <K extends string, A>(self: Readonly<Record<K, A>>): Array<[K, A]>
+  (_?: never): <K extends string, A>(self: Readonly<Record<K, A>>) => Array<[K, A]>
+} = toEntries
 
 // -------------------------------------------------------------------------------------
 // utils
@@ -230,7 +244,10 @@ export const toArray: <K extends string, A>(self: Readonly<Record<K, A>>) => Arr
  *
  * @since 1.0.0
  */
-export const size = <A>(self: ReadonlyRecord<A>): number => Object.keys(self).length
+export const size: {
+  <A>(self: ReadonlyRecord<A>): number
+  (_?: never): <A>(self: ReadonlyRecord<A>) => number
+} = zeroArgsDual(<A>(self: ReadonlyRecord<A>): number => Object.keys(self).length)
 
 /**
  * Check if a given `key` exists in a `ReadonlyRecord`.
@@ -524,9 +541,10 @@ export const filter: {
  * @category filtering
  * @since 1.0.0
  */
-export const compact: <A>(self: ReadonlyRecord<Option<A>>) => Record<string, A> = filterMap(
-  identity
-)
+export const compact: {
+  <A>(self: ReadonlyRecord<Option<A>>): Record<string, A>
+  (_?: never): <A>(self: ReadonlyRecord<Option<A>>) => Record<string, A>
+} = zeroArgsDual(<A>(self: ReadonlyRecord<Option<A>>): Record<string, A> => filterMap(self, identity))
 
 /**
  * Partitions the elements of a `ReadonlyRecord` into two groups: those that match a predicate, and those that don't.
@@ -591,9 +609,12 @@ export const partitionMap: {
  * @category filtering
  * @since 1.0.0
  */
-export const separate: <A, B>(
+export const separate: {
+  <A, B>(self: ReadonlyRecord<Either<A, B>>): [Record<string, A>, Record<string, B>]
+  (_?: never): <A, B>(self: ReadonlyRecord<Either<A, B>>) => [Record<string, A>, Record<string, B>]
+} = zeroArgsDual(<A, B>(
   self: ReadonlyRecord<Either<A, B>>
-) => [Record<string, A>, Record<string, B>] = partitionMap(identity)
+): [Record<string, A>, Record<string, B>] => partitionMap(self, identity))
 
 /**
  * Partitions a `ReadonlyRecord` into two separate `Record`s based on the result of a predicate function.
@@ -814,7 +835,7 @@ export const traversePartitionMap = <F extends TypeLambda>(
     self: ReadonlyRecord<A>,
     f: (a: A) => Kind<F, R, O, E, Either<B, C>>
   ): Kind<F, R, O, E, [Record<string, B>, Record<string, C>]> => {
-    return F.map(traverse(F)(self, f), separate)
+    return F.map(traverse(F)(self, f), separate())
   })
 
 /**
@@ -836,7 +857,7 @@ export const traverseFilterMap = <F extends TypeLambda>(
     self: ReadonlyRecord<A>,
     f: (a: A) => Kind<F, R, O, E, Option<B>>
   ): Kind<F, R, O, E, Record<string, B>> => {
-    return F.map(traverse(F)(self, f), compact)
+    return F.map(traverse(F)(self, f), compact())
   })
 
 /**
