@@ -381,20 +381,25 @@ class ChunkImpl<A> implements Chunk<A> {
 }
 
 /** @internal */
-const copyToArray = <A>(self: Chunk<A>, array: Array<any>, n: number) => {
-  switch (self.backing._tag) {
-    case "IArray": {
-      copy(self.backing.array, 0, array, n, self.length)
-      break
-    }
-    case "IConcat": {
-      copyToArray(self.left, array, n)
-      copyToArray(self.right, array, n + self.left.length)
-      break
-    }
-    case "ISingleton": {
-      array[n] = self.backing.a
-      break
+const copyToArray = <A>(self: Chunk<A>, array: Array<any>, initial: number): void => {
+  const toProcess: Array<[Chunk<any>, number]> = [[self, initial]]
+
+  while (toProcess.length > 0) {
+    const [chunk, n] = toProcess.shift()!
+
+    switch (chunk.backing._tag) {
+      case "IArray": {
+        copy(chunk.backing.array, 0, array, n, chunk.length)
+        continue
+      }
+      case "IConcat": {
+        toProcess.push([chunk.left, n])
+        toProcess.push([chunk.right, n + chunk.left.length])
+        continue
+      }
+      case "ISingleton": {
+        array[n] = chunk.backing.a
+      }
     }
   }
 }
