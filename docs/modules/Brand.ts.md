@@ -78,7 +78,7 @@ If you also want to perform some validation, see {@link refined}.
 **Signature**
 
 ```ts
-export declare const nominal: <A extends any>() => any
+export declare const nominal: <A extends any>(_: void) => any
 ```
 
 **Example**

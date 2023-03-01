@@ -26,7 +26,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unprepend: <A>(self: NonEmptyIterable<A>) => readonly [A, Iterator<A, any, undefined>]
+export declare const unprepend: {
+  <A>(self: NonEmptyIterable<A>): readonly [A, Iterator<A, any, undefined>]
+  (_?: undefined): <A>(self: NonEmptyIterable<A>) => readonly [A, Iterator<A, any, undefined>]
+}
 ```
 
 Added in v1.0.0

@@ -37,9 +37,9 @@ Provides a constructor for a Case Class.
 **Signature**
 
 ```ts
-export declare const Class: <A extends Record<string, any>>() => new (
-  args: Pick<A, Exclude<keyof A, typeof Equal.symbol | typeof Hash.symbol>>
-) => Data<A>
+export declare const Class: <A extends Record<string, any>>(
+  _: void
+) => new (args: Pick<A, Exclude<keyof A, typeof Equal.symbol | typeof Hash.symbol>>) => Data<A>
 ```
 
 Added in v1.0.0
@@ -51,11 +51,16 @@ Provides a Tagged constructor for a Case Class.
 **Signature**
 
 ```ts
-export declare const TaggedClass: <Key extends string>(
-  tag: Key
-) => <A extends Record<string, any>>() => new (
-  args: Pick<A, Exclude<keyof A, typeof Equal.symbol | typeof Hash.symbol | '_tag'>>
-) => Readonly<A> & Equal.Equal & { readonly _tag: Key }
+export declare const TaggedClass: {
+  <Key extends string>(tag: Key): <A extends Record<string, any>>() => new (
+    args: Pick<A, Exclude<keyof A, typeof Equal.symbol | typeof Hash.symbol | '_tag'>>
+  ) => Readonly<A> & Equal.Equal & { readonly _tag: Key }
+  (_?: undefined): <Key extends string>(
+    tag: Key
+  ) => <A extends Record<string, any>>() => new (
+    args: Pick<A, Exclude<keyof A, typeof Equal.symbol | typeof Hash.symbol | '_tag'>>
+  ) => Readonly<A> & Equal.Equal & { readonly _tag: Key }
+}
 ```
 
 Added in v1.0.0
@@ -65,7 +70,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const array: <As extends readonly any[]>(as: As) => Data<As>
+export declare const array: {
+  <As extends readonly any[]>(as: As): Data<As>
+  (_?: undefined): <As extends readonly any[]>(as: As) => Data<As>
+}
 ```
 
 Added in v1.0.0
@@ -77,7 +85,7 @@ Provides a constructor for the specified `Case`.
 **Signature**
 
 ```ts
-export declare const case: <A extends Case>() => Case.Constructor<A, never>
+export declare const case: <A extends Case>(_: void) => Case.Constructor<A, never>
 ```
 
 Added in v1.0.0
@@ -87,7 +95,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const struct: <As extends Readonly<Record<string, any>>>(as: As) => Data<As>
+export declare const struct: {
+  <As extends Readonly<Record<string, any>>>(as: As): Data<As>
+  (_?: undefined): <As extends Readonly<Record<string, any>>>(as: As) => Data<As>
+}
 ```
 
 Added in v1.0.0
@@ -99,7 +110,10 @@ Provides a tagged constructor for the specified `Case`.
 **Signature**
 
 ```ts
-export declare const tagged: <A extends Case & { _tag: string }>(tag: A['_tag']) => Case.Constructor<A, '_tag'>
+export declare const tagged: {
+  <A extends Case & { _tag: string }>(tag: A['_tag']): Case.Constructor<A, '_tag'>
+  (_?: undefined): <A extends Case & { _tag: string }>(tag: A['_tag']) => Case.Constructor<A, '_tag'>
+}
 ```
 
 Added in v1.0.0
@@ -119,7 +133,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unsafeArray: <As extends readonly any[]>(as: As) => Data<As>
+export declare const unsafeArray: {
+  <As extends readonly any[]>(as: As): Data<As>
+  (_?: undefined): <As extends readonly any[]>(as: As) => Data<As>
+}
 ```
 
 Added in v1.0.0
@@ -129,7 +146,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unsafeStruct: <As extends Readonly<Record<string, any>>>(as: As) => Data<As>
+export declare const unsafeStruct: {
+  <As extends Readonly<Record<string, any>>>(as: As): Data<As>
+  (_?: undefined): <As extends Readonly<Record<string, any>>>(as: As) => Data<As>
+}
 ```
 
 Added in v1.0.0

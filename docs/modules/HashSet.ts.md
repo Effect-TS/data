@@ -64,7 +64,7 @@ Creates an empty `HashSet`.
 **Signature**
 
 ```ts
-export declare const empty: <A = never>() => HashSet<A>
+export declare const empty: <A = never>(_: void) => HashSet<A>
 ```
 
 Added in v1.0.0
@@ -76,7 +76,10 @@ Construct a new `HashSet` from a `Collection` of values
 **Signature**
 
 ```ts
-export declare const fromIterable: <A>(elements: Iterable<A>) => HashSet<A>
+export declare const fromIterable: {
+  <A>(elements: Iterable<A>): HashSet<A>
+  (_?: undefined): <A>(elements: Iterable<A>) => HashSet<A>
+}
 ```
 
 Added in v1.0.0
@@ -201,7 +204,7 @@ Calculates the number of values in the `HashSet`.
 **Signature**
 
 ```ts
-export declare const size: <A>(self: HashSet<A>) => number
+export declare const size: { <A>(self: HashSet<A>): number; (_?: undefined): <A>(self: HashSet<A>) => number }
 ```
 
 Added in v1.0.0
@@ -213,7 +216,10 @@ Returns an `IterableIterator` of the values in the `HashSet`.
 **Signature**
 
 ```ts
-export declare const values: <A>(self: HashSet<A>) => IterableIterator<A>
+export declare const values: {
+  <A>(self: HashSet<A>): IterableIterator<A>
+  (_?: undefined): <A>(self: HashSet<A>) => IterableIterator<A>
+}
 ```
 
 Added in v1.0.0
@@ -273,7 +279,10 @@ Marks the `HashSet` as mutable.
 **Signature**
 
 ```ts
-export declare const beginMutation: <A>(self: HashSet<A>) => HashSet<A>
+export declare const beginMutation: {
+  <A>(self: HashSet<A>): HashSet<A>
+  (_?: undefined): <A>(self: HashSet<A>) => HashSet<A>
+}
 ```
 
 Added in v1.0.0
@@ -304,7 +313,10 @@ Marks the `HashSet` as immutable.
 **Signature**
 
 ```ts
-export declare const endMutation: <A>(self: HashSet<A>) => HashSet<A>
+export declare const endMutation: {
+  <A>(self: HashSet<A>): HashSet<A>
+  (_?: undefined): <A>(self: HashSet<A>) => HashSet<A>
+}
 ```
 
 Added in v1.0.0

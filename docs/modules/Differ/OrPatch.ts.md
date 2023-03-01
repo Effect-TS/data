@@ -53,7 +53,7 @@ Constructs an empty `OrPatch`.
 **Signature**
 
 ```ts
-export declare const empty: <Value, Value2, Patch, Patch2>() => OrPatch<Value, Value2, Patch, Patch2>
+export declare const empty: <Value, Value2, Patch, Patch2>(_: void) => OrPatch<Value, Value2, Patch, Patch2>
 ```
 
 Added in v1.0.0

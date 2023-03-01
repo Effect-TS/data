@@ -77,7 +77,10 @@ Removes all `None` values from the specified list.
 **Signature**
 
 ```ts
-export declare const compact: <A>(self: Iterable<Option.Option<A>>) => List<A>
+export declare const compact: {
+  <A>(self: Iterable<Option.Option<A>>): List<A>
+  (_?: undefined): <A>(self: Iterable<Option.Option<A>>) => List<A>
+}
 ```
 
 Added in v1.0.0
@@ -357,7 +360,7 @@ Returns a new list with the elements of the specified list in reverse order.
 **Signature**
 
 ```ts
-export declare const reverse: <A>(self: List<A>) => List<A>
+export declare const reverse: { <A>(self: List<A>): List<A>; (_?: undefined): <A>(self: List<A>) => List<A> }
 ```
 
 Added in v1.0.0
@@ -427,7 +430,7 @@ Constructs a new empty `List<A>`.
 **Signature**
 
 ```ts
-export declare const empty: <A = never>() => List<A>
+export declare const empty: <A = never>(_: void) => List<A>
 ```
 
 Added in v1.0.0
@@ -439,7 +442,10 @@ Constructs a new `List<A>` from the specified `Iterable<A>`.
 **Signature**
 
 ```ts
-export declare const fromIterable: <A>(prefix: Iterable<A>) => List<A>
+export declare const fromIterable: {
+  <A>(prefix: Iterable<A>): List<A>
+  (_?: undefined): <A>(prefix: Iterable<A>) => List<A>
+}
 ```
 
 Added in v1.0.0
@@ -463,7 +469,7 @@ Constructs a new `List.Nil<A>`.
 **Signature**
 
 ```ts
-export declare const nil: <A = never>() => NilNS<A>
+export declare const nil: <A = never>(_: void) => NilNS<A>
 ```
 
 Added in v1.0.0
@@ -475,7 +481,7 @@ Constructs a new `List<A>` from the specified value.
 **Signature**
 
 ```ts
-export declare const of: <A>(value: A) => List<A>
+export declare const of: { <A>(value: A): List<A>; (_?: undefined): <A>(value: A) => List<A> }
 ```
 
 Added in v1.0.0
@@ -489,7 +495,10 @@ Converts the specified list to a `Chunk`.
 **Signature**
 
 ```ts
-export declare const toChunk: <A>(self: List<A>) => Chunk.Chunk<A>
+export declare const toChunk: {
+  <A>(self: List<A>): Chunk.Chunk<A>
+  (_?: undefined): <A>(self: List<A>) => Chunk.Chunk<A>
+}
 ```
 
 Added in v1.0.0
@@ -501,7 +510,10 @@ Converts the specified list to a `ReadonlyArray`.
 **Signature**
 
 ```ts
-export declare const toReadonlyArray: <A>(self: List<A>) => readonly A[]
+export declare const toReadonlyArray: {
+  <A>(self: List<A>): readonly A[]
+  (_?: undefined): <A>(self: List<A>) => readonly A[]
+}
 ```
 
 Added in v1.0.0
@@ -516,7 +528,10 @@ empty.
 **Signature**
 
 ```ts
-export declare const head: <A>(self: List<A>) => Option.Option<A>
+export declare const head: {
+  <A>(self: List<A>): Option.Option<A>
+  (_?: undefined): <A>(self: List<A>) => Option.Option<A>
+}
 ```
 
 Added in v1.0.0
@@ -529,7 +544,10 @@ empty.
 **Signature**
 
 ```ts
-export declare const last: <A>(self: List<A>) => Option.Option<A>
+export declare const last: {
+  <A>(self: List<A>): Option.Option<A>
+  (_?: undefined): <A>(self: List<A>) => Option.Option<A>
+}
 ```
 
 Added in v1.0.0
@@ -541,7 +559,7 @@ Returns the number of elements contained in the specified `List`
 **Signature**
 
 ```ts
-export declare const length: <A>(self: List<A>) => number
+export declare const length: { <A>(self: List<A>): number; (_?: undefined): <A>(self: List<A>) => number }
 ```
 
 Added in v1.0.0
@@ -553,7 +571,10 @@ Returns the tail of the specified list, or `None` if the list is empty.
 **Signature**
 
 ```ts
-export declare const tail: <A>(self: List<A>) => Option.Option<List<A>>
+export declare const tail: {
+  <A>(self: List<A>): Option.Option<List<A>>
+  (_?: undefined): <A>(self: List<A>) => Option.Option<List<A>>
+}
 ```
 
 Added in v1.0.0
@@ -611,7 +632,10 @@ Returns `true` if the specified value is a `List.Cons<A>`, `false` otherwise.
 **Signature**
 
 ```ts
-export declare const isCons: <A>(self: List<A>) => self is Cons<A>
+export declare const isCons: {
+  <A>(self: List<A>): self is Cons<A>
+  (_?: undefined): <A>(self: List<A>) => self is Cons<A>
+}
 ```
 
 Added in v1.0.0
@@ -635,7 +659,10 @@ Returns `true` if the specified value is a `List.Nil<A>`, `false` otherwise.
 **Signature**
 
 ```ts
-export declare const isNil: <A>(self: List<A>) => self is Nil<A>
+export declare const isNil: {
+  <A>(self: List<A>): self is Nil<A>
+  (_?: undefined): <A>(self: List<A>) => self is Nil<A>
+}
 ```
 
 Added in v1.0.0
@@ -671,7 +698,7 @@ Unsafely returns the first element of the specified `List`.
 **Signature**
 
 ```ts
-export declare const unsafeHead: <A>(self: List<A>) => A
+export declare const unsafeHead: { <A>(self: List<A>): A; (_?: undefined): <A>(self: List<A>) => A }
 ```
 
 Added in v1.0.0
@@ -683,7 +710,7 @@ Unsafely returns the last element of the specified `List`.
 **Signature**
 
 ```ts
-export declare const unsafeLast: <A>(self: List<A>) => A
+export declare const unsafeLast: { <A>(self: List<A>): A; (_?: undefined): <A>(self: List<A>) => A }
 ```
 
 Added in v1.0.0
@@ -695,7 +722,7 @@ Unsafely returns the tail of the specified `List`.
 **Signature**
 
 ```ts
-export declare const unsafeTail: <A>(self: List<A>) => List<A>
+export declare const unsafeTail: { <A>(self: List<A>): List<A>; (_?: undefined): <A>(self: List<A>) => List<A> }
 ```
 
 Added in v1.0.0

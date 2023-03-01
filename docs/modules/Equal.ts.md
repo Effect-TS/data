@@ -32,8 +32,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare function equals<B>(that: B): <A>(self: A) => boolean
-export declare function equals<A, B>(self: A, that: B): boolean
+export declare const equals: (<B>(that: B) => <A>(self: A) => boolean) & (<A, B>(self: A, that: B) => boolean)
 ```
 
 Added in v1.0.0
@@ -45,7 +44,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const isEqual: (u: unknown) => u is Equal
+export declare const isEqual: { (u: unknown): u is Equal; (_?: undefined): (u: unknown) => u is Equal }
 ```
 
 Added in v1.0.0
@@ -57,7 +56,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const equivalence: <A>() => Equivalence<A>
+export declare const equivalence: <A>(_: void) => Equivalence<A>
 ```
 
 Added in v1.0.0

@@ -115,7 +115,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const headOption: <K, V>(self: SortedMap<K, V>) => Option.Option<readonly [K, V]>
+export declare const headOption: {
+  <K, V>(self: SortedMap<K, V>): Option.Option<readonly [K, V]>
+  (_?: undefined): <K, V>(self: SortedMap<K, V>) => Option.Option<readonly [K, V]>
+}
 ```
 
 Added in v1.0.0
@@ -181,7 +184,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const entries: <K, V>(self: SortedMap<K, V>) => Iterator<readonly [K, V], any, undefined>
+export declare const entries: {
+  <K, V>(self: SortedMap<K, V>): Iterator<readonly [K, V], any, undefined>
+  (_?: undefined): <K, V>(self: SortedMap<K, V>) => Iterator<readonly [K, V], any, undefined>
+}
 ```
 
 Added in v1.0.0
@@ -193,7 +199,10 @@ Gets the `Order<K>` that the `SortedMap<K, V>` is using.
 **Signature**
 
 ```ts
-export declare const getOrder: <K, V>(self: SortedMap<K, V>) => Order<K>
+export declare const getOrder: {
+  <K, V>(self: SortedMap<K, V>): Order<K>
+  (_?: undefined): <K, V>(self: SortedMap<K, V>) => Order<K>
+}
 ```
 
 Added in v1.0.0
@@ -203,7 +212,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const keys: <K, V>(self: SortedMap<K, V>) => IterableIterator<K>
+export declare const keys: {
+  <K, V>(self: SortedMap<K, V>): IterableIterator<K>
+  (_?: undefined): <K, V>(self: SortedMap<K, V>) => IterableIterator<K>
+}
 ```
 
 Added in v1.0.0
@@ -213,7 +225,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const size: <K, V>(self: SortedMap<K, V>) => number
+export declare const size: {
+  <K, V>(self: SortedMap<K, V>): number
+  (_?: undefined): <K, V>(self: SortedMap<K, V>) => number
+}
 ```
 
 Added in v1.0.0
@@ -223,7 +238,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const values: <K, V>(self: SortedMap<K, V>) => IterableIterator<V>
+export declare const values: {
+  <K, V>(self: SortedMap<K, V>): IterableIterator<V>
+  (_?: undefined): <K, V>(self: SortedMap<K, V>) => IterableIterator<V>
+}
 ```
 
 Added in v1.0.0
@@ -279,7 +297,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const isEmpty: <K, V>(self: SortedMap<K, V>) => boolean
+export declare const isEmpty: {
+  <K, V>(self: SortedMap<K, V>): boolean
+  (_?: undefined): <K, V>(self: SortedMap<K, V>) => boolean
+}
 ```
 
 Added in v1.0.0
@@ -289,7 +310,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const isNonEmpty: <K, V>(self: SortedMap<K, V>) => boolean
+export declare const isNonEmpty: {
+  <K, V>(self: SortedMap<K, V>): boolean
+  (_?: undefined): <K, V>(self: SortedMap<K, V>) => boolean
+}
 ```
 
 Added in v1.0.0

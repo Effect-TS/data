@@ -18,7 +18,7 @@ if (RA.isEmptyReadonlyArray(ras)) {
 }
 
 // $ExpectType <A>(c: readonly A[]) => Option<readonly []>
-O.liftPredicate(RA.isEmptyReadonlyArray)
+O.liftPredicate(RA.isEmptyReadonlyArray())
 
 // -------------------------------------------------------------------------------------
 // isEmptyArray
@@ -30,7 +30,7 @@ if (RA.isEmptyArray(as)) {
 }
 
 // $ExpectType <A>(c: A[]) => Option<[]>
-O.liftPredicate(RA.isEmptyArray)
+O.liftPredicate(RA.isEmptyArray())
 
 // -------------------------------------------------------------------------------------
 // isNonEmptyReadonlyArray
@@ -42,7 +42,7 @@ if (RA.isNonEmptyReadonlyArray(ras)) {
 }
 
 // $ExpectType <A>(c: readonly A[]) => Option<readonly [A, ...A[]]>
-O.liftPredicate(RA.isNonEmptyReadonlyArray)
+O.liftPredicate(RA.isNonEmptyReadonlyArray())
 
 // -------------------------------------------------------------------------------------
 // isNonEmptyArray
@@ -54,7 +54,7 @@ if (RA.isNonEmptyArray(as)) {
 }
 
 // $ExpectType <A>(c: A[]) => Option<[A, ...A[]]>
-O.liftPredicate(RA.isNonEmptyArray)
+O.liftPredicate(RA.isNonEmptyArray())
 
 // -------------------------------------------------------------------------------------
 // map

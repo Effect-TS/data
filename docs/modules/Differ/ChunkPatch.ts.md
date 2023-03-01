@@ -52,7 +52,7 @@ Constructs an empty chunk patch.
 **Signature**
 
 ```ts
-export declare const empty: <Value, Patch>() => ChunkPatch<Value, Patch>
+export declare const empty: <Value, Patch>(_: void) => ChunkPatch<Value, Patch>
 ```
 
 Added in v1.0.0

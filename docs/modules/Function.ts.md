@@ -38,6 +38,7 @@ Added in v1.0.0
   - [tupled](#tupled)
   - [unsafeCoerce](#unsafecoerce)
   - [untupled](#untupled)
+  - [zeroArgsDual](#zeroargsdual)
 
 ---
 
@@ -50,7 +51,10 @@ Tests if a value is a `function`.
 **Signature**
 
 ```ts
-export declare const isFunction: (input: unknown) => input is Function
+export declare const isFunction: {
+  (input: unknown): input is Function
+  (_?: undefined): (input: unknown) => input is Function
+}
 ```
 
 **Example**
@@ -176,7 +180,7 @@ export declare const apply: <A>(a: A) => <B>(self: (a: A) => B) => B
 import { pipe, apply } from '@effect/data/Function'
 import { length } from '@effect/data/String'
 
-assert.deepStrictEqual(pipe(length, apply('hello')), 5)
+assert.deepStrictEqual(pipe(length(), apply('hello')), 5)
 ```
 
 Added in v1.0.0
@@ -336,18 +340,31 @@ Added in v1.0.0
 
 ## dual
 
-Creates a function that can be used in a data-last (aka `pipe`able) or data-first style.
+Creates a function that can be used in a data-last (aka `pipe`able) or
+data-first style.
+
+The first parameter to `dual` is either the arity of the uncurried function
+or a predicate that determines if the function is being used in a data-first
+or data-last style.
+
+Using the arity is the most common use case, but there are some cases where
+you may want to use a predicate. For example, if you have a function that
+takes an optional argument, you can use a predicate to determine if the
+function is being used in a data-first or data-last style.
 
 **Signature**
 
 ```ts
-export declare const dual: <
-  DataLast extends (...args: Array<any>) => any,
-  DataFirst extends (...args: Array<any>) => any
->(
-  arity: Parameters<DataFirst>['length'],
-  body: DataFirst
-) => DataLast & DataFirst
+export declare const dual: {
+  <DataLast extends (...args: Array<any>) => any, DataFirst extends (...args: Array<any>) => any>(
+    arity: Parameters<DataFirst>['length'],
+    body: DataFirst
+  ): DataLast & DataFirst
+  <DataLast extends (...args: Array<any>) => any, DataFirst extends (...args: Array<any>) => any>(
+    isDataFirst: (args: IArguments) => boolean,
+    body: DataFirst
+  ): DataLast & DataFirst
+}
 ```
 
 **Example**
@@ -355,10 +372,23 @@ export declare const dual: <
 ```ts
 import { dual, pipe } from '@effect/data/Function'
 
+// Exampe using arity to determine data-first or data-last style
 export const sum: {
   (that: number): (self: number) => number
   (self: number, that: number): number
 } = dual(2, (self: number, that: number): number => self + that)
+
+assert.deepStrictEqual(sum(2, 3), 5)
+assert.deepStrictEqual(pipe(2, sum(3)), 5)
+
+// Example using a predicate to determine data-first or data-last style
+export const sum2: {
+  (that: number): (self: number) => number
+  (self: number, that: number): number
+} = dual(
+  (args) => args.length === 1,
+  (self: number, that: number): number => self + that
+)
 
 assert.deepStrictEqual(sum(2, 3), 5)
 assert.deepStrictEqual(pipe(2, sum(3)), 5)
@@ -830,6 +860,38 @@ import { untupled } from '@effect/data/Function'
 const getFirst = untupled(<A, B>(tuple: [A, B]): A => tuple[0])
 
 assert.deepStrictEqual(getFirst(1, 2), 1)
+```
+
+Added in v1.0.0
+
+## zeroArgsDual
+
+Creates a zero-argument dual function that can be used in a data-last (aka
+`pipe`able) or data-first style.
+
+This function is particularly useful when you would like to prevent tacit
+usage of a function in a `pipe`.
+
+**Signature**
+
+```ts
+export declare const zeroArgsDual: <DataFirst extends (...args: Array<any>) => any>(
+  body: DataFirst
+) => DataFirst & ((_?: undefined) => DataFirst)
+```
+
+**Example**
+
+```ts
+import { zeroArgsDual, pipe } from '@effect/data/Function'
+
+export const length: {
+  <A>(self: Array<A>): number
+  (): <A>(self: Array<A>) => number
+} = zeroArgsDual(<A>(self: Array<A>): number => self.length)
+
+assert.deepStrictEqual(length([1, 2, 3]), 3)
+assert.deepStrictEqual(pipe([1, 2, 3], length()), 3)
 ```
 
 Added in v1.0.0

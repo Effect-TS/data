@@ -252,7 +252,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const flatten: <A>(self: readonly (readonly A[])[]) => A[]
+export declare const flatten: {
+  <A>(self: readonly (readonly A[])[]): A[]
+  (_?: undefined): <A>(self: readonly (readonly A[])[]) => A[]
+}
 ```
 
 Added in v1.0.0
@@ -262,9 +265,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const flattenNonEmpty: <A>(
-  self: readonly [readonly [A, ...A[]], ...(readonly [A, ...A[]])[]]
-) => [A, ...A[]]
+export declare const flattenNonEmpty: {
+  <A>(self: readonly [readonly [A, ...A[]], ...(readonly [A, ...A[]])[]]): [A, ...A[]]
+  (_?: undefined): <A>(self: readonly [readonly [A, ...A[]], ...(readonly [A, ...A[]])[]]) => [A, ...A[]]
+}
 ```
 
 Added in v1.0.0
@@ -276,7 +280,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const empty: <A = never>() => A[]
+export declare const empty: <A = never>(_: void) => A[]
 ```
 
 Added in v1.0.0
@@ -327,7 +331,7 @@ Constructs a new `NonEmptyArray<A>` from the specified value.
 **Signature**
 
 ```ts
-export declare const of: <A>(a: A) => [A, ...A[]]
+export declare const of: { <A>(a: A): [A, ...A[]]; (_?: undefined): <A>(a: A) => [A, ...A[]] }
 ```
 
 Added in v1.0.0
@@ -391,7 +395,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const fromEither: <E, A>(self: Either<E, A>) => A[]
+export declare const fromEither: { <E, A>(self: Either<E, A>): A[]; (_?: undefined): <E, A>(self: Either<E, A>) => A[] }
 ```
 
 Added in v1.0.0
@@ -401,7 +405,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const fromIterable: <A>(collection: Iterable<A>) => A[]
+export declare const fromIterable: {
+  <A>(collection: Iterable<A>): A[]
+  (_?: undefined): <A>(collection: Iterable<A>) => A[]
+}
 ```
 
 Added in v1.0.0
@@ -421,7 +428,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const fromOption: <A>(self: Option<A>) => A[]
+export declare const fromOption: { <A>(self: Option<A>): A[]; (_?: undefined): <A>(self: Option<A>) => A[] }
 ```
 
 Added in v1.0.0
@@ -433,7 +440,10 @@ Takes a record and returns an array of tuples containing its keys and values.
 **Signature**
 
 ```ts
-export declare const fromRecord: <K extends string, A>(self: Readonly<Record<K, A>>) => [K, A][]
+export declare const fromRecord: {
+  <K extends string, A>(self: Readonly<Record<K, A>>): [K, A][]
+  (_?: undefined): <K extends string, A>(self: Readonly<Record<K, A>>) => [K, A][]
+}
 ```
 
 **Example**
@@ -943,7 +953,7 @@ Get the first element of a `ReadonlyArray`, or `None` if the `ReadonlyArray` is 
 **Signature**
 
 ```ts
-export declare const head: <A>(self: readonly A[]) => Option<A>
+export declare const head: { <A>(self: readonly A[]): Option<A>; (_?: undefined): <A>(self: readonly A[]) => Option<A> }
 ```
 
 Added in v1.0.0
@@ -953,7 +963,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const headNonEmpty: <A>(self: readonly [A, ...A[]]) => A
+export declare const headNonEmpty: {
+  <A>(self: readonly [A, ...A[]]): A
+  (_?: undefined): <A>(self: readonly [A, ...A[]]) => A
+}
 ```
 
 Added in v1.0.0
@@ -965,7 +978,10 @@ Get all but the last element of an `Iterable`, creating a new `Array`, or `None`
 **Signature**
 
 ```ts
-export declare const init: <A>(self: Iterable<A>) => Option<A[]>
+export declare const init: {
+  <A>(self: Iterable<A>): Option<A[]>
+  (_?: undefined): <A>(self: Iterable<A>) => Option<A[]>
+}
 ```
 
 Added in v1.0.0
@@ -977,7 +993,10 @@ Get all but the last element of a non empty array, creating a new array.
 **Signature**
 
 ```ts
-export declare const initNonEmpty: <A>(self: readonly [A, ...A[]]) => A[]
+export declare const initNonEmpty: {
+  <A>(self: readonly [A, ...A[]]): A[]
+  (_?: undefined): <A>(self: readonly [A, ...A[]]) => A[]
+}
 ```
 
 Added in v1.0.0
@@ -989,7 +1008,7 @@ Get the last element in a `ReadonlyArray`, or `None` if the `ReadonlyArray` is e
 **Signature**
 
 ```ts
-export declare const last: <A>(self: readonly A[]) => Option<A>
+export declare const last: { <A>(self: readonly A[]): Option<A>; (_?: undefined): <A>(self: readonly A[]) => Option<A> }
 ```
 
 Added in v1.0.0
@@ -999,7 +1018,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const lastNonEmpty: <A>(self: readonly [A, ...A[]]) => A
+export declare const lastNonEmpty: {
+  <A>(self: readonly [A, ...A[]]): A
+  (_?: undefined): <A>(self: readonly [A, ...A[]]) => A
+}
 ```
 
 Added in v1.0.0
@@ -1011,7 +1033,10 @@ Return all the `Left` elements from an `Interable` of `Either`s.
 **Signature**
 
 ```ts
-export declare const lefts: <E, A>(self: Iterable<Either<E, A>>) => E[]
+export declare const lefts: {
+  <E, A>(self: Iterable<Either<E, A>>): E[]
+  (_?: undefined): <E, A>(self: Iterable<Either<E, A>>) => E[]
+}
 ```
 
 Added in v1.0.0
@@ -1023,7 +1048,7 @@ Return the number of elements in a `ReadonlyArray`.
 **Signature**
 
 ```ts
-export declare const length: <A>(self: readonly A[]) => number
+export declare const length: { <A>(self: readonly A[]): number; (_?: undefined): <A>(self: readonly A[]) => number }
 ```
 
 Added in v1.0.0
@@ -1035,7 +1060,10 @@ Return all the `Right` elements from an `Interable` of `Either`s.
 **Signature**
 
 ```ts
-export declare const rights: <E, A>(self: Iterable<Either<E, A>>) => A[]
+export declare const rights: {
+  <E, A>(self: Iterable<Either<E, A>>): A[]
+  (_?: undefined): <E, A>(self: Iterable<Either<E, A>>) => A[]
+}
 ```
 
 Added in v1.0.0
@@ -1077,7 +1105,10 @@ Get all but the first element of an `Iterable`, creating a new `Array`, or `None
 **Signature**
 
 ```ts
-export declare const tail: <A>(self: Iterable<A>) => Option<A[]>
+export declare const tail: {
+  <A>(self: Iterable<A>): Option<A[]>
+  (_?: undefined): <A>(self: Iterable<A>) => Option<A[]>
+}
 ```
 
 Added in v1.0.0
@@ -1087,7 +1118,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const tailNonEmpty: <A>(self: readonly [A, ...A[]]) => A[]
+export declare const tailNonEmpty: {
+  <A>(self: readonly [A, ...A[]]): A[]
+  (_?: undefined): <A>(self: readonly [A, ...A[]]) => A[]
+}
 ```
 
 Added in v1.0.0
@@ -1203,7 +1237,7 @@ Determine if an `Array` is empty narrowing down the type to `[]`.
 **Signature**
 
 ```ts
-export declare const isEmptyArray: <A>(self: A[]) => self is []
+export declare const isEmptyArray: { <A>(self: A[]): self is []; (_?: undefined): <A>(self: A[]) => self is [] }
 ```
 
 **Example**
@@ -1224,7 +1258,10 @@ Determine if a `ReadonlyArray` is empty narrowing down the type to `readonly []`
 **Signature**
 
 ```ts
-export declare const isEmptyReadonlyArray: <A>(self: readonly A[]) => self is readonly []
+export declare const isEmptyReadonlyArray: {
+  <A>(self: readonly A[]): self is readonly []
+  (_?: undefined): <A>(self: readonly A[]) => self is readonly []
+}
 ```
 
 **Example**
@@ -1247,7 +1284,10 @@ An `Array` is considered to be a `NonEmptyArray` if it contains at least one ele
 **Signature**
 
 ```ts
-export declare const isNonEmptyArray: <A>(self: A[]) => self is [A, ...A[]]
+export declare const isNonEmptyArray: {
+  <A>(self: readonly A[]): self is readonly [A, ...A[]]
+  (_?: undefined): <A>(self: readonly A[]) => self is readonly [A, ...A[]]
+}
 ```
 
 **Example**
@@ -1270,7 +1310,10 @@ A `ReadonlyArray` is considered to be a `NonEmptyReadonlyArray` if it contains a
 **Signature**
 
 ```ts
-export declare const isNonEmptyReadonlyArray: <A>(self: readonly A[]) => self is readonly [A, ...A[]]
+export declare const isNonEmptyReadonlyArray: {
+  <A>(self: readonly A[]): self is [A, ...A[]]
+  (_?: undefined): <A>(self: readonly A[]) => self is [A, ...A[]]
+}
 ```
 
 **Example**
@@ -2323,7 +2366,7 @@ Reverse an `Iterable`, creating a new `Array`.
 **Signature**
 
 ```ts
-export declare const reverse: <A>(self: Iterable<A>) => A[]
+export declare const reverse: { <A>(self: Iterable<A>): A[]; (_?: undefined): <A>(self: Iterable<A>) => A[] }
 ```
 
 Added in v1.0.0
@@ -2333,7 +2376,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const reverseNonEmpty: <A>(self: readonly [A, ...A[]]) => [A, ...A[]]
+export declare const reverseNonEmpty: {
+  <A>(self: readonly [A, ...A[]]): readonly [A, ...A[]]
+  (_?: undefined): <A>(self: readonly [A, ...A[]]) => readonly [A, ...A[]]
+}
 ```
 
 Added in v1.0.0
@@ -2508,7 +2554,10 @@ This function is the inverse of `zip`. Takes an `Iterable` of pairs and return t
 **Signature**
 
 ```ts
-export declare const unzip: <A, B>(self: Iterable<[A, B]>) => [A[], B[]]
+export declare const unzip: {
+  <A, B>(self: Iterable<[A, B]>): [A[], B[]]
+  (_?: undefined): <A, B>(self: Iterable<[A, B]>) => [A[], B[]]
+}
 ```
 
 Added in v1.0.0
@@ -2518,7 +2567,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unzipNonEmpty: <A, B>(self: readonly [[A, B], ...[A, B][]]) => [[A, ...A[]], [B, ...B[]]]
+export declare const unzipNonEmpty: {
+  <A, B>(self: readonly [[A, B], ...[A, B][]]): [[A, ...A[]], [B, ...B[]]]
+  (_?: undefined): <A, B>(self: readonly [[A, B], ...[A, B][]]) => [[A, ...A[]], [B, ...B[]]]
+}
 ```
 
 Added in v1.0.0

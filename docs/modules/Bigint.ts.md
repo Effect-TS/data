@@ -59,7 +59,10 @@ Tests if a value is a `bigint`.
 **Signature**
 
 ```ts
-export declare const isBigint: (u: unknown) => u is bigint
+export declare const isBigint: {
+  (input: unknown): input is bigint
+  (_?: undefined): (input: unknown) => input is bigint
+}
 ```
 
 **Example**
@@ -222,7 +225,7 @@ Decrements a number by `1n`.
 **Signature**
 
 ```ts
-export declare const decrement: (n: bigint) => bigint
+export declare const decrement: { (n: bigint): bigint; (_?: undefined): (n: bigint) => bigint }
 ```
 
 **Example**
@@ -266,7 +269,7 @@ Returns the result of adding `1n` to a given number.
 **Signature**
 
 ```ts
-export declare const increment: (n: bigint) => bigint
+export declare const increment: { (n: bigint): bigint; (_?: undefined): (n: bigint) => bigint }
 ```
 
 **Example**
@@ -306,7 +309,10 @@ Takes an `Iterable` of `bigint`s and returns their multiplication as a single `n
 **Signature**
 
 ```ts
-export declare const multiplyAll: (collection: Iterable<bigint>) => bigint
+export declare const multiplyAll: {
+  (collection: Iterable<bigint>): bigint
+  (_?: undefined): (collection: Iterable<bigint>) => bigint
+}
 ```
 
 **Example**
@@ -326,7 +332,7 @@ Determines the sign of a given `bigint`.
 **Signature**
 
 ```ts
-export declare const sign: (n: bigint) => Ordering
+export declare const sign: { (n: bigint): Ordering; (_?: undefined): (n: bigint) => Ordering }
 ```
 
 **Example**
@@ -388,7 +394,10 @@ Takes an `Iterable` of `bigint`s and returns their sum as a single `bigint
 **Signature**
 
 ```ts
-export declare const sumAll: (collection: Iterable<bigint>) => bigint
+export declare const sumAll: {
+  (collection: Iterable<bigint>): bigint
+  (_?: undefined): (collection: Iterable<bigint>) => bigint
+}
 ```
 
 **Example**

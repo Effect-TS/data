@@ -123,7 +123,7 @@ Inverts the ordering of the input `Ordering`.
 **Signature**
 
 ```ts
-export declare const reverse: (o: Ordering) => Ordering
+export declare const reverse: { (o: Ordering): Ordering; (_?: undefined): (o: Ordering) => Ordering }
 ```
 
 **Example**

@@ -325,7 +325,7 @@ structure.
 **Signature**
 
 ```ts
-export declare const left: <E>(e: E) => Either<E, never>
+export declare const left: { <E>(e: E): Either<E, never>; (): <E>(e: E) => Either<E, never> }
 ```
 
 Added in v1.0.0
@@ -338,7 +338,7 @@ of this structure.
 **Signature**
 
 ```ts
-export declare const right: <A>(a: A) => Either<never, A>
+export declare const right: { <A>(a: A): Either<never, A>; (): <A>(a: A) => Either<never, A> }
 ```
 
 Added in v1.0.0
@@ -394,7 +394,7 @@ Converts a `Either` to an `Option` discarding the value.
 **Signature**
 
 ```ts
-export declare const getLeft: <E, A>(self: Either<E, A>) => Option<E>
+export declare const getLeft: { <E, A>(self: Either<E, A>): Option<E>; (): <E, A>(self: Either<E, A>) => Option<E> }
 ```
 
 **Example**
@@ -418,7 +418,7 @@ Alias of {@link toOption}.
 **Signature**
 
 ```ts
-export declare const getRight: <E, A>(self: Either<E, A>) => Option<A>
+export declare const getRight: { <E, A>(self: Either<E, A>): Option<A>; (): <E, A>(self: Either<E, A>) => Option<A> }
 ```
 
 **Example**
@@ -442,7 +442,7 @@ If the input is `Right`, the value is wrapped in an array.
 **Signature**
 
 ```ts
-export declare const toArray: <E, A>(self: Either<E, A>) => A[]
+export declare const toArray: { <E, A>(self: Either<E, A>): A[]; (_?: undefined): <E, A>(self: Either<E, A>) => A[] }
 ```
 
 **Example**
@@ -463,7 +463,7 @@ Converts a `Either` to an `Option` discarding the error.
 **Signature**
 
 ```ts
-export declare const toOption: <E, A>(self: Either<E, A>) => Option<A>
+export declare const toOption: { <E, A>(self: Either<E, A>): Option<A>; (): <E, A>(self: Either<E, A>) => Option<A> }
 ```
 
 **Example**
@@ -639,7 +639,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const tupled: <E, A>(self: Either<E, A>) => Either<E, [A]>
+export declare const tupled: {
+  <E, A>(self: Either<E, A>): Either<E, [A]>
+  (_?: undefined): <E, A>(self: Either<E, A>) => Either<E, [A]>
+}
 ```
 
 Added in v1.0.0
@@ -868,7 +871,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getOrNull: <E, A>(self: Either<E, A>) => A | null
+export declare const getOrNull: {
+  <E, A>(self: Either<E, A>): A | null
+  (_?: undefined): <E, A>(self: Either<E, A>) => A | null
+}
 ```
 
 Added in v1.0.0
@@ -878,7 +884,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getOrUndefined: <E, A>(self: Either<E, A>) => A | undefined
+export declare const getOrUndefined: {
+  <E, A>(self: Either<E, A>): A | undefined
+  (_?: undefined): <E, A>(self: Either<E, A>) => A | undefined
+}
 ```
 
 Added in v1.0.0
@@ -890,7 +899,10 @@ Return all the `Left` elements from an `Interable` of `Either`s.
 **Signature**
 
 ```ts
-export declare const lefts: <E, A>(self: Iterable<Either<E, A>>) => E[]
+export declare const lefts: {
+  <E, A>(self: Iterable<Either<E, A>>): E[]
+  (_?: undefined): <E, A>(self: Iterable<Either<E, A>>) => E[]
+}
 ```
 
 Added in v1.0.0
@@ -902,7 +914,10 @@ Return all the `Right` elements from an `Interable` of `Either`s.
 **Signature**
 
 ```ts
-export declare const rights: <E, A>(self: Iterable<Either<E, A>>) => A[]
+export declare const rights: {
+  <E, A>(self: Iterable<Either<E, A>>): A[]
+  (_?: undefined): <E, A>(self: Iterable<Either<E, A>>) => A[]
+}
 ```
 
 Added in v1.0.0
@@ -916,7 +931,10 @@ Tests if a value is a `Either`.
 **Signature**
 
 ```ts
-export declare const isEither: (input: unknown) => input is Either<unknown, unknown>
+export declare const isEither: {
+  (input: unknown): input is Either<unknown, unknown>
+  (_?: undefined): (input: unknown) => input is Either<unknown, unknown>
+}
 ```
 
 **Example**
@@ -938,7 +956,7 @@ Determine if a `Either` is a `Left`.
 **Signature**
 
 ```ts
-export declare const isLeft: <E, A>(self: Either<E, A>) => self is Left<E>
+export declare const isLeft: { <E, A>(ma: Either<E, A>): ma is Left<E>; (): <E, A>(ma: Either<E, A>) => ma is Left<E> }
 ```
 
 **Example**
@@ -959,7 +977,10 @@ Determine if a `Either` is a `Right`.
 **Signature**
 
 ```ts
-export declare const isRight: <E, A>(self: Either<E, A>) => self is Right<A>
+export declare const isRight: {
+  <E, A>(ma: Either<E, A>): ma is Right<A>
+  (): <E, A>(ma: Either<E, A>) => ma is Right<A>
+}
 ```
 
 **Example**
@@ -1176,7 +1197,7 @@ The thrown error is a default error. To configure the error thrown, see {@link g
 **Signature**
 
 ```ts
-export declare const getOrThrow: <E, A>(self: Either<E, A>) => A
+export declare const getOrThrow: { <E, A>(self: Either<E, A>): A; (_?: undefined): <E, A>(self: Either<E, A>) => A }
 ```
 
 **Example**
@@ -1252,7 +1273,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const merge: <E, A>(self: Either<E, A>) => E | A
+export declare const merge: { <E, A>(self: Either<E, A>): E | A; (_?: undefined): <E, A>(self: Either<E, A>) => E | A }
 ```
 
 Added in v1.0.0
@@ -1354,7 +1375,10 @@ Maps the `Right` value of this `Either` to the `void` constant value.
 **Signature**
 
 ```ts
-export declare const asUnit: <E, _>(self: Either<E, _>) => Either<E, void>
+export declare const asUnit: {
+  <E, _>(self: Either<E, _>): Either<E, void>
+  (_?: undefined): <E, _>(self: Either<E, _>) => Either<E, void>
+}
 ```
 
 Added in v1.0.0
@@ -1670,7 +1694,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const flatten: <E1, E2, A>(self: Either<E1, Either<E2, A>>) => Either<E1 | E2, A>
+export declare const flatten: {
+  <E1, E2, A>(self: Either<E1, Either<E2, A>>): Either<E1 | E2, A>
+  (_?: undefined): <E1, E2, A>(self: Either<E1, Either<E2, A>>) => Either<E1 | E2, A>
+}
 ```
 
 Added in v1.0.0
@@ -1680,7 +1707,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const reverse: <E, A>(self: Either<E, A>) => Either<A, E>
+export declare const reverse: {
+  <E, A>(self: Either<E, A>): Either<A, E>
+  (_?: undefined): <E, A>(self: Either<E, A>) => Either<A, E>
+}
 ```
 
 Added in v1.0.0

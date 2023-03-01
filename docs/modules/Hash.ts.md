@@ -37,7 +37,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const isHash: (u: unknown) => u is Hash
+export declare const isHash: { (u: unknown): u is Hash; (_?: undefined): (u: unknown) => u is Hash }
 ```
 
 Added in v1.0.0
@@ -49,7 +49,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const array: <A>(arr: readonly A[]) => number
+export declare const array: { <A>(arr: readonly A[]): number; (_?: undefined): <A>(arr: readonly A[]) => number }
 ```
 
 Added in v1.0.0
@@ -59,7 +59,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const combine: (b: number) => (self: number) => number
+export declare const combine: { (that: number): (self: number) => number; (self: number, that: number): number }
 ```
 
 Added in v1.0.0
@@ -69,7 +69,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const hash: <A>(self: A) => number
+export declare const hash: { <A>(self: A): number; (_?: undefined): <A>(self: A) => number }
 ```
 
 Added in v1.0.0
@@ -79,7 +79,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const number: (n: number) => number
+export declare const number: { (n: number): number; (_?: undefined): (n: number) => number }
 ```
 
 Added in v1.0.0
@@ -89,7 +89,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const optimize: (n: number) => number
+export declare const optimize: { (n: number): number; (_?: undefined): (n: number) => number }
 ```
 
 Added in v1.0.0
@@ -99,7 +99,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const random: <A extends object>(self: A) => number
+export declare const random: {
+  <A extends object>(self: A): number
+  (_?: undefined): <A extends object>(self: A) => number
+}
 ```
 
 Added in v1.0.0
@@ -109,7 +112,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const string: (str: string) => number
+export declare const string: { (str: string): number; (_?: undefined): (str: string) => number }
 ```
 
 Added in v1.0.0
@@ -119,7 +122,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const structure: <A extends object>(o: A) => number
+export declare const structure: {
+  <A extends object>(o: A): number
+  (_?: undefined): <A extends object>(o: A) => number
+}
 ```
 
 Added in v1.0.0

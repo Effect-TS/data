@@ -40,7 +40,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const empty: <K = never, V = never>() => MutableHashMap<K, V>
+export declare const empty: <K = never, V = never>(_: void) => MutableHashMap<K, V>
 ```
 
 Added in v1.0.0
@@ -67,7 +67,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const fromIterable: <K, V>(entries: Iterable<readonly [K, V]>) => MutableHashMap<K, V>
+export declare const fromIterable: {
+  <K, V>(entries: Iterable<readonly [K, V]>): MutableHashMap<K, V>
+  (_?: undefined): <K, V>(entries: Iterable<readonly [K, V]>) => MutableHashMap<K, V>
+}
 ```
 
 Added in v1.0.0
@@ -105,7 +108,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const size: <K, V>(self: MutableHashMap<K, V>) => number
+export declare const size: {
+  <K, V>(self: MutableHashMap<K, V>): number
+  (_?: undefined): <K, V>(self: MutableHashMap<K, V>) => number
+}
 ```
 
 Added in v1.0.0

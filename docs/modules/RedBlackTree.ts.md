@@ -221,7 +221,10 @@ Returns the first entry in the tree, if it exists.
 **Signature**
 
 ```ts
-export declare const first: <K, V>(self: RedBlackTree<K, V>) => Option<readonly [K, V]>
+export declare const first: {
+  <K, V>(self: RedBlackTree<K, V>): Option<readonly [K, V]>
+  (_?: undefined): <K, V>(self: RedBlackTree<K, V>) => Option<readonly [K, V]>
+}
 ```
 
 Added in v1.0.0
@@ -233,7 +236,10 @@ Gets the `Order<K>` that the `RedBlackTree<K, V>` is using.
 **Signature**
 
 ```ts
-export declare const getOrder: <K, V>(self: RedBlackTree<K, V>) => Order<K>
+export declare const getOrder: {
+  <K, V>(tree: RedBlackTree<K, V>): Order<K>
+  (_?: undefined): <K, V>(tree: RedBlackTree<K, V>) => Order<K>
+}
 ```
 
 Added in v1.0.0
@@ -245,7 +251,10 @@ Get all the keys present in the tree in order.
 **Signature**
 
 ```ts
-export declare const keys: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<K>
+export declare const keys: {
+  <K, V>(self: RedBlackTree<K, V>): IterableIterator<K>
+  (_?: undefined): <K, V>(self: RedBlackTree<K, V>) => IterableIterator<K>
+}
 ```
 
 Added in v1.0.0
@@ -257,7 +266,10 @@ Get all the keys present in the tree in reverse order.
 **Signature**
 
 ```ts
-export declare const keysReversed: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<K>
+export declare const keysReversed: {
+  <K, V>(self: RedBlackTree<K, V>): IterableIterator<K>
+  (_?: undefined): <K, V>(self: RedBlackTree<K, V>) => IterableIterator<K>
+}
 ```
 
 Added in v1.0.0
@@ -269,7 +281,10 @@ Returns the last entry in the tree, if it exists.
 **Signature**
 
 ```ts
-export declare const last: <K, V>(self: RedBlackTree<K, V>) => Option<readonly [K, V]>
+export declare const last: {
+  <K, V>(self: RedBlackTree<K, V>): Option<readonly [K, V]>
+  (_?: undefined): <K, V>(self: RedBlackTree<K, V>) => Option<readonly [K, V]>
+}
 ```
 
 Added in v1.0.0
@@ -281,7 +296,10 @@ Returns the size of the tree.
 **Signature**
 
 ```ts
-export declare const size: <K, V>(self: RedBlackTree<K, V>) => number
+export declare const size: {
+  <K, V>(self: RedBlackTree<K, V>): number
+  (_?: undefined): <K, V>(self: RedBlackTree<K, V>) => number
+}
 ```
 
 Added in v1.0.0
@@ -293,7 +311,10 @@ Get all values present in the tree in order.
 **Signature**
 
 ```ts
-export declare const values: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<V>
+export declare const values: {
+  <K, V>(self: RedBlackTree<K, V>): IterableIterator<V>
+  (_?: undefined): <K, V>(self: RedBlackTree<K, V>) => IterableIterator<V>
+}
 ```
 
 Added in v1.0.0
@@ -305,7 +326,10 @@ Get all values present in the tree in reverse order.
 **Signature**
 
 ```ts
-export declare const valuesReversed: <K, V>(self: RedBlackTree<K, V>) => IterableIterator<V>
+export declare const valuesReversed: {
+  <K, V>(self: RedBlackTree<K, V>): IterableIterator<V>
+  (_?: undefined): <K, V>(self: RedBlackTree<K, V>) => IterableIterator<V>
+}
 ```
 
 Added in v1.0.0
@@ -619,7 +643,10 @@ Traverse the tree in reverse order.
 **Signature**
 
 ```ts
-export declare const reversed: <K, V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+export declare const reversed: {
+  <K, V>(self: RedBlackTree<K, V>): Iterable<readonly [K, V]>
+  (_?: undefined): <K, V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+}
 ```
 
 Added in v1.0.0

@@ -463,8 +463,8 @@ export const isRecord: {
  * @since 1.0.0
  */
 export const isReadonlyRecord: {
-  (input: unknown): input is { [x: string | symbol]: unknown }
-  (_?: never): (input: unknown) => input is { [x: string | symbol]: unknown }
+  (input: unknown): input is { readonly [x: string | symbol]: unknown }
+  (_?: never): (input: unknown) => input is { readonly [x: string | symbol]: unknown }
 } = isRecord
 
 /**

@@ -46,7 +46,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const toggle: (self: MutableRef<boolean>) => MutableRef<boolean>
+export declare const toggle: {
+  (self: MutableRef<boolean>): MutableRef<boolean>
+  (_?: undefined): (self: MutableRef<boolean>) => MutableRef<boolean>
+}
 ```
 
 Added in v1.0.0
@@ -58,7 +61,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const make: <T>(value: T) => MutableRef<T>
+export declare const make: { <T>(value: T): MutableRef<T>; (_?: undefined): <T>(value: T) => MutableRef<T> }
 ```
 
 Added in v1.0.0
@@ -83,7 +86,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const get: <T>(self: MutableRef<T>) => T
+export declare const get: { <T>(self: MutableRef<T>): T; (_?: undefined): <T>(self: MutableRef<T>) => T }
 ```
 
 Added in v1.0.0
@@ -239,7 +242,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const decrement: (self: MutableRef<number>) => MutableRef<number>
+export declare const decrement: {
+  (self: MutableRef<number>): MutableRef<number>
+  (_?: undefined): (self: MutableRef<number>) => MutableRef<number>
+}
 ```
 
 Added in v1.0.0
@@ -249,7 +255,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const decrementAndGet: (self: MutableRef<number>) => number
+export declare const decrementAndGet: {
+  (self: MutableRef<number>): number
+  (_?: undefined): (self: MutableRef<number>) => number
+}
 ```
 
 Added in v1.0.0
@@ -259,7 +268,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getAndDecrement: (self: MutableRef<number>) => number
+export declare const getAndDecrement: {
+  (self: MutableRef<number>): number
+  (_?: undefined): (self: MutableRef<number>) => number
+}
 ```
 
 Added in v1.0.0
@@ -269,7 +281,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getAndIncrement: (self: MutableRef<number>) => number
+export declare const getAndIncrement: {
+  (self: MutableRef<number>): number
+  (_?: undefined): (self: MutableRef<number>) => number
+}
 ```
 
 Added in v1.0.0
@@ -279,7 +294,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const increment: (self: MutableRef<number>) => MutableRef<number>
+export declare const increment: {
+  (self: MutableRef<number>): MutableRef<number>
+  (_?: undefined): (self: MutableRef<number>) => MutableRef<number>
+}
 ```
 
 Added in v1.0.0
@@ -289,7 +307,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const incrementAndGet: (self: MutableRef<number>) => number
+export declare const incrementAndGet: {
+  (self: MutableRef<number>): number
+  (_?: undefined): (self: MutableRef<number>) => number
+}
 ```
 
 Added in v1.0.0

@@ -63,7 +63,10 @@ Tests if a value is a `number`.
 **Signature**
 
 ```ts
-export declare const isNumber: (input: unknown) => input is number
+export declare const isNumber: {
+  (input: unknown): input is number
+  (_?: undefined): (input: unknown) => input is number
+}
 ```
 
 **Example**
@@ -290,7 +293,7 @@ Decrements a number by `1`.
 **Signature**
 
 ```ts
-export declare const decrement: (n: number) => number
+export declare const decrement: { (n: number): number; (_?: undefined): (n: number) => number }
 ```
 
 **Example**
@@ -330,7 +333,7 @@ Returns the result of adding `1` to a given number.
 **Signature**
 
 ```ts
-export declare const increment: (n: number) => number
+export declare const increment: { (n: number): number; (_?: undefined): (n: number) => number }
 ```
 
 **Example**
@@ -370,7 +373,10 @@ Takes an `Iterable` of `number`s and returns their multiplication as a single `n
 **Signature**
 
 ```ts
-export declare const multiplyAll: (collection: Iterable<number>) => number
+export declare const multiplyAll: {
+  (collection: Iterable<number>): number
+  (_?: undefined): (collection: Iterable<number>) => number
+}
 ```
 
 **Example**
@@ -414,7 +420,7 @@ Determines the sign of a given `number`.
 **Signature**
 
 ```ts
-export declare const sign: (n: number) => Ordering
+export declare const sign: { (n: number): Ordering; (_?: undefined): (n: number) => Ordering }
 ```
 
 **Example**
@@ -476,7 +482,10 @@ Takes an `Iterable` of `number`s and returns their sum as a single `number`.
 **Signature**
 
 ```ts
-export declare const sumAll: (collection: Iterable<number>) => number
+export declare const sumAll: {
+  (collection: Iterable<number>): number
+  (_?: undefined): (collection: Iterable<number>) => number
+}
 ```
 
 **Example**

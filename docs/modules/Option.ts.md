@@ -148,7 +148,10 @@ If there is a `None` value in the collection, it returns `None` as the result.
 **Signature**
 
 ```ts
-export declare const all: <A>(collection: Iterable<Option<A>>) => Option<A[]>
+export declare const all: {
+  <A>(collection: Iterable<Option<A>>): Option<A[]>
+  (_?: undefined): <A>(collection: Iterable<Option<A>>) => Option<A[]>
+}
 ```
 
 **Example**
@@ -370,7 +373,7 @@ Creates a new `Option` that represents the absence of a value.
 **Signature**
 
 ```ts
-export declare const none: <A = never>() => Option<A>
+export declare const none: <A = never>(_: void) => Option<A>
 ```
 
 Added in v1.0.0
@@ -382,7 +385,7 @@ Creates a new `Option` that wraps the given value.
 **Signature**
 
 ```ts
-export declare const some: <A>(value: A) => Option<A>
+export declare const some: { <A>(a: A): Option<A>; (_?: undefined): <A>(a: A) => Option<A> }
 ```
 
 Added in v1.0.0
@@ -396,7 +399,10 @@ Converts a `Either` to an `Option` discarding the error.
 **Signature**
 
 ```ts
-export declare const fromEither: <E, A>(self: Either<E, A>) => Option<A>
+export declare const fromEither: {
+  <E, A>(self: Either<E, A>): Option<A>
+  (_?: undefined): <E, A>(self: Either<E, A>) => Option<A>
+}
 ```
 
 **Example**
@@ -419,7 +425,10 @@ if the `Iterable` is not empty, otherwise returns `None`.
 **Signature**
 
 ```ts
-export declare const fromIterable: <A>(collection: Iterable<A>) => Option<A>
+export declare const fromIterable: {
+  <A>(collection: Iterable<A>): Option<A>
+  (_?: undefined): <A>(collection: Iterable<A>) => Option<A>
+}
 ```
 
 **Example**
@@ -441,7 +450,10 @@ returns the value wrapped in a `Some`.
 **Signature**
 
 ```ts
-export declare const fromNullable: <A>(nullableValue: A) => Option<NonNullable<A>>
+export declare const fromNullable: {
+  <A>(nullableValue: A): Option<NonNullable<A>>
+  (_?: undefined): <A>(nullableValue: A) => Option<NonNullable<A>>
+}
 ```
 
 **Example**
@@ -463,7 +475,10 @@ Converts a `Either` to an `Option` discarding the value.
 **Signature**
 
 ```ts
-export declare const getLeft: <E, A>(self: Either<E, A>) => Option<E>
+export declare const getLeft: {
+  <E, A>(self: Either<E, A>): Option<E>
+  (_?: undefined): <E, A>(self: Either<E, A>) => Option<E>
+}
 ```
 
 **Example**
@@ -487,7 +502,7 @@ The thrown error is a default error. To configure the error thrown, see {@link g
 **Signature**
 
 ```ts
-export declare const getOrThrow: <A>(self: Option<A>) => A
+export declare const getOrThrow: { <A>(self: Option<A>): A; (_?: undefined): <A>(self: Option<A>) => A }
 ```
 
 **Example**
@@ -539,7 +554,10 @@ Alias of {@link fromEither}.
 **Signature**
 
 ```ts
-export declare const getRight: <E, A>(self: Either<E, A>) => Option<A>
+export declare const getRight: {
+  <E, A>(self: Either<E, A>): Option<A>
+  (_?: undefined): <E, A>(self: Either<E, A>) => Option<A>
+}
 ```
 
 **Example**
@@ -619,7 +637,7 @@ If the input is `Some`, the value is wrapped in an array.
 **Signature**
 
 ```ts
-export declare const toArray: <A>(self: Option<A>) => A[]
+export declare const toArray: { <A>(self: Option<A>): A[]; (_?: undefined): <A>(self: Option<A>) => A[] }
 ```
 
 **Example**
@@ -641,8 +659,8 @@ Converts an `Option` to an `Either`, allowing you to provide a value to be used 
 
 ```ts
 export declare const toEither: {
-  <A, E>(self: Option<A>, onNone: () => E): Either<E, A>
-  <E>(onNone: () => E): <A>(self: Option<A>) => Either<E, A>
+  <A, E>(self: Option<A>, onNone: LazyArg<E>): Either<E, A>
+  <E>(onNone: LazyArg<E>): <A>(self: Option<A>) => Either<E, A>
 }
 ```
 
@@ -825,7 +843,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const tupled: <A>(self: Option<A>) => Option<[A]>
+export declare const tupled: { <A>(self: Option<A>): Option<[A]>; (_?: undefined): <A>(self: Option<A>) => Option<[A]> }
 ```
 
 Added in v1.0.0
@@ -865,7 +883,10 @@ Given an `Iterable` collection of `Option`s, returns the first `Some` found in t
 **Signature**
 
 ```ts
-export declare const firstSomeOf: <A>(collection: Iterable<Option<A>>) => Option<A>
+export declare const firstSomeOf: {
+  <A>(collection: Iterable<Option<A>>): Option<A>
+  (_?: undefined): <A>(collection: Iterable<Option<A>>) => Option<A>
+}
 ```
 
 **Example**
@@ -1107,7 +1128,7 @@ Returns the value of the `Option` if it is a `Some`, otherwise returns `null`.
 **Signature**
 
 ```ts
-export declare const getOrNull: <A>(self: Option<A>) => A | null
+export declare const getOrNull: { <A>(self: Option<A>): A | null; (_?: undefined): <A>(self: Option<A>) => A | null }
 ```
 
 **Example**
@@ -1128,7 +1149,10 @@ Returns the value of the `Option` if it is a `Some`, otherwise returns `undefine
 **Signature**
 
 ```ts
-export declare const getOrUndefined: <A>(self: Option<A>) => A | undefined
+export declare const getOrUndefined: {
+  <A>(self: Option<A>): A | undefined
+  (_?: undefined): <A>(self: Option<A>) => A | undefined
+}
 ```
 
 **Example**
@@ -1151,7 +1175,7 @@ Determine if a `Option` is a `None`.
 **Signature**
 
 ```ts
-export declare const isNone: <A>(self: Option<A>) => self is None
+export declare const isNone: { <A>(fa: Option<A>): fa is None; (_?: undefined): <A>(fa: Option<A>) => fa is None }
 ```
 
 **Example**
@@ -1172,7 +1196,10 @@ Tests if a value is a `Option`.
 **Signature**
 
 ```ts
-export declare const isOption: (input: unknown) => input is Option<unknown>
+export declare const isOption: {
+  (input: unknown): input is Option<unknown>
+  (_?: undefined): (input: unknown) => input is Option<unknown>
+}
 ```
 
 **Example**
@@ -1194,7 +1221,7 @@ Determine if a `Option` is a `Some`.
 **Signature**
 
 ```ts
-export declare const isSome: <A>(self: Option<A>) => self is Some<A>
+export declare const isSome: { <A>(fa: Option<A>): fa is Some<A>; (_?: undefined): <A>(fa: Option<A>) => fa is Some<A> }
 ```
 
 **Example**
@@ -1314,7 +1341,10 @@ Multiply all numbers in an iterable of `Option<number>` ignoring the `None` valu
 **Signature**
 
 ```ts
-export declare const multiplyCompact: (self: Iterable<Option<number>>) => number
+export declare const multiplyCompact: {
+  (self: Iterable<Option<number>>): number
+  (_?: undefined): (self: Iterable<Option<number>>) => number
+}
 ```
 
 **Example**
@@ -1361,7 +1391,10 @@ Sum all numbers in an iterable of `Option<number>` ignoring the `None` values.
 **Signature**
 
 ```ts
-export declare const sumCompact: (self: Iterable<Option<number>>) => number
+export declare const sumCompact: {
+  (self: Iterable<Option<number>>): number
+  (_?: undefined): (self: Iterable<Option<number>>) => number
+}
 ```
 
 **Example**
@@ -1545,7 +1578,8 @@ This is useful when the value of the `Option` is not needed, but the presence or
 **Signature**
 
 ```ts
-export declare const asUnit: <_>(self: Option<_>) => Option<void>
+export declare const asUnit: (<_>(self: Option<_>) => Option<void>) &
+  ((_?: undefined) => <_>(self: Option<_>) => Option<void>)
 ```
 
 Added in v1.0.0
@@ -1676,7 +1710,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const flatten: <A>(self: Option<Option<A>>) => Option<A>
+export declare const flatten: {
+  <A>(self: Option<Option<A>>): Option<A>
+  (_?: undefined): <A>(self: Option<Option<A>>) => Option<A>
+}
 ```
 
 Added in v1.0.0

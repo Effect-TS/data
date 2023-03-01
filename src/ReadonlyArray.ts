@@ -392,8 +392,8 @@ export const isEmptyReadonlyArray: {
  * @since 1.0.0
  */
 export const isNonEmptyArray: {
-  <A>(self: ReadonlyArray<A>): self is NonEmptyReadonlyArray<A>
-  (_?: never): <A>(self: ReadonlyArray<A>) => self is NonEmptyReadonlyArray<A>
+  <A>(self: Array<A>): self is NonEmptyArray<A>
+  (_?: never): <A>(self: Array<A>) => self is NonEmptyArray<A>
 } = readonlyArray.isNonEmptyArray
 
 /**
@@ -413,8 +413,8 @@ export const isNonEmptyArray: {
  * @since 1.0.0
  */
 export const isNonEmptyReadonlyArray: {
-  <A>(self: ReadonlyArray<A>): self is [A, ...Array<A>]
-  (_?: never): <A>(self: ReadonlyArray<A>) => self is [A, ...Array<A>]
+  <A>(self: ReadonlyArray<A>): self is NonEmptyReadonlyArray<A>
+  (_?: never): <A>(self: ReadonlyArray<A>) => self is NonEmptyReadonlyArray<A>
 } = readonlyArray.isNonEmptyArray
 
 /**

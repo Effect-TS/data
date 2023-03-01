@@ -56,7 +56,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const empty: <A>(O: Order<A>) => SortedSet<A>
+export declare const empty: { <A>(O: Order<A>): SortedSet<A>; (_?: undefined): <A>(O: Order<A>) => SortedSet<A> }
 ```
 
 Added in v1.0.0
@@ -212,7 +212,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const size: <A>(self: SortedSet<A>) => number
+export declare const size: { <A>(self: SortedSet<A>): number; (_?: undefined): <A>(self: SortedSet<A>) => number }
 ```
 
 Added in v1.0.0
@@ -222,7 +222,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const values: <A>(self: SortedSet<A>) => IterableIterator<A>
+export declare const values: {
+  <A>(self: SortedSet<A>): IterableIterator<A>
+  (_?: undefined): <A>(self: SortedSet<A>) => IterableIterator<A>
+}
 ```
 
 Added in v1.0.0

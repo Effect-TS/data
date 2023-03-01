@@ -60,7 +60,10 @@ Tests if a value is a `string`.
 **Signature**
 
 ```ts
-export declare const isString: Refinement<unknown, string>
+export declare const isString: {
+  (input: unknown): input is string
+  (_?: undefined): (input: unknown) => input is string
+}
 ```
 
 **Example**
@@ -247,7 +250,7 @@ Test whether a `string` is empty.
 **Signature**
 
 ```ts
-export declare const isEmpty: (self: string) => self is ''
+export declare const isEmpty: { (self: string): self is ''; (_?: undefined): (self: string) => self is '' }
 ```
 
 **Example**
@@ -268,7 +271,7 @@ Test whether a `string` is non empty.
 **Signature**
 
 ```ts
-export declare const isNonEmpty: (self: string) => boolean
+export declare const isNonEmpty: { (self: string): boolean; (_?: undefined): (self: string) => boolean }
 ```
 
 Added in v1.0.0
@@ -280,7 +283,7 @@ Calculate the number of characters in a `string`.
 **Signature**
 
 ```ts
-export declare const length: (self: string) => number
+export declare const length: { (self: string): number; (_?: undefined): (self: string) => number }
 ```
 
 **Example**
@@ -301,7 +304,7 @@ string as well as the trailing newline character.
 **Signature**
 
 ```ts
-export declare const linesWithSeparators: (s: string) => LinesIterator
+export declare const linesWithSeparators: { (s: string): LinesIterator; (_?: undefined): (s: string) => LinesIterator }
 ```
 
 Added in v1.0.0
@@ -429,7 +432,7 @@ or control characters followed by the `"|"` character from the line.
 **Signature**
 
 ```ts
-export declare const stripMargin: (self: string) => string
+export declare const stripMargin: { (self: string): string; (_?: undefined): (self: string) => string }
 ```
 
 Added in v1.0.0
@@ -508,7 +511,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const toLowerCase: (self: string) => string
+export declare const toLowerCase: { (self: string): string; (_?: undefined): (self: string) => string }
 ```
 
 **Example**
@@ -517,7 +520,7 @@ export declare const toLowerCase: (self: string) => string
 import * as S from '@effect/data/String'
 import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(pipe('A', S.toLowerCase), 'a')
+assert.deepStrictEqual(S.toLowerCase('A'), 'a')
 ```
 
 Added in v1.0.0
@@ -527,7 +530,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const toUpperCase: (self: string) => string
+export declare const toUpperCase: { (self: string): string; (_?: undefined): (self: string) => string }
 ```
 
 **Example**
@@ -536,7 +539,7 @@ export declare const toUpperCase: (self: string) => string
 import * as S from '@effect/data/String'
 import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(pipe('a', S.toUpperCase), 'A')
+assert.deepStrictEqual(S.toUpperCase('a'), 'A')
 ```
 
 Added in v1.0.0
@@ -546,7 +549,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const trim: (self: string) => string
+export declare const trim: { (self: string): string; (_?: undefined): (self: string) => string }
 ```
 
 **Example**
@@ -564,7 +567,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const trimEnd: (self: string) => string
+export declare const trimEnd: { (self: string): string; (_?: undefined): (self: string) => string }
 ```
 
 **Example**
@@ -582,7 +585,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const trimStart: (self: string) => string
+export declare const trimStart: { (self: string): string; (_?: undefined): (self: string) => string }
 ```
 
 **Example**

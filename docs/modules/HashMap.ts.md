@@ -77,7 +77,7 @@ Creates a new `HashMap`.
 **Signature**
 
 ```ts
-export declare const empty: <K = never, V = never>() => HashMap<K, V>
+export declare const empty: <K = never, V = never>(_: void) => HashMap<K, V>
 ```
 
 Added in v1.0.0
@@ -89,7 +89,10 @@ Constructs a new `HashMap` from an iterable of key/value pairs.
 **Signature**
 
 ```ts
-export declare const fromIterable: <K, V>(entries: Iterable<readonly [K, V]>) => HashMap<K, V>
+export declare const fromIterable: {
+  <K, V>(entries: Iterable<readonly [K, V]>): HashMap<K, V>
+  (_?: undefined): <K, V>(entries: Iterable<readonly [K, V]>) => HashMap<K, V>
+}
 ```
 
 Added in v1.0.0
@@ -182,7 +185,10 @@ Checks if the `HashMap` contains any entries.
 **Signature**
 
 ```ts
-export declare const isEmpty: <K, V>(self: HashMap<K, V>) => boolean
+export declare const isEmpty: {
+  <K, V>(self: HashMap<K, V>): boolean
+  (_?: undefined): <K, V>(self: HashMap<K, V>) => boolean
+}
 ```
 
 Added in v1.0.0
@@ -196,7 +202,10 @@ Filters out `None` values from a `HashMap` of `Options`s.
 **Signature**
 
 ```ts
-export declare const compact: <K, A>(self: HashMap<K, Option<A>>) => HashMap<K, A>
+export declare const compact: {
+  <K, A>(self: HashMap<K, Option<A>>): HashMap<K, A>
+  (_?: undefined): <K, A>(self: HashMap<K, Option<A>>) => HashMap<K, A>
+}
 ```
 
 Added in v1.0.0
@@ -308,7 +317,10 @@ Returns a `HashSet` of keys within the `HashMap`.
 **Signature**
 
 ```ts
-export declare const keySet: <K, V>(self: HashMap<K, V>) => HashSet<K>
+export declare const keySet: {
+  <K, V>(self: HashMap<K, V>): HashSet<K>
+  (_?: undefined): <K, V>(self: HashMap<K, V>) => HashSet<K>
+}
 ```
 
 Added in v1.0.0
@@ -322,7 +334,10 @@ Returns an `IterableIterator` of the keys within the `HashMap`.
 **Signature**
 
 ```ts
-export declare const keys: <K, V>(self: HashMap<K, V>) => IterableIterator<K>
+export declare const keys: {
+  <K, V>(self: HashMap<K, V>): IterableIterator<K>
+  (_?: undefined): <K, V>(self: HashMap<K, V>) => IterableIterator<K>
+}
 ```
 
 Added in v1.0.0
@@ -334,7 +349,10 @@ Returns the number of entries within the `HashMap`.
 **Signature**
 
 ```ts
-export declare const size: <K, V>(self: HashMap<K, V>) => number
+export declare const size: {
+  <K, V>(self: HashMap<K, V>): number
+  (_?: undefined): <K, V>(self: HashMap<K, V>) => number
+}
 ```
 
 Added in v1.0.0
@@ -346,7 +364,10 @@ Returns an `IterableIterator` of the values within the `HashMap`.
 **Signature**
 
 ```ts
-export declare const values: <K, V>(self: HashMap<K, V>) => IterableIterator<V>
+export declare const values: {
+  <K, V>(self: HashMap<K, V>): IterableIterator<V>
+  (_?: undefined): <K, V>(self: HashMap<K, V>) => IterableIterator<V>
+}
 ```
 
 Added in v1.0.0
@@ -406,7 +427,10 @@ Marks the `HashMap` as mutable.
 **Signature**
 
 ```ts
-export declare const beginMutation: <K, V>(self: HashMap<K, V>) => HashMap<K, V>
+export declare const beginMutation: {
+  <K, V>(self: HashMap<K, V>): HashMap<K, V>
+  (_?: undefined): <K, V>(self: HashMap<K, V>) => HashMap<K, V>
+}
 ```
 
 Added in v1.0.0
@@ -418,7 +442,10 @@ Marks the `HashMap` as immutable.
 **Signature**
 
 ```ts
-export declare const endMutation: <K, V>(self: HashMap<K, V>) => HashMap<K, V>
+export declare const endMutation: {
+  <K, V>(self: HashMap<K, V>): HashMap<K, V>
+  (_?: undefined): <K, V>(self: HashMap<K, V>) => HashMap<K, V>
+}
 ```
 
 Added in v1.0.0

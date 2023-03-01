@@ -170,7 +170,7 @@ Negates the given boolean: `!self`
 **Signature**
 
 ```ts
-export declare const not: (self: boolean) => boolean
+export declare const not: { (self: boolean): boolean; (_?: undefined): (self: boolean) => boolean }
 ```
 
 **Example**
@@ -239,7 +239,10 @@ Tests if a value is a `boolean`.
 **Signature**
 
 ```ts
-export declare const isBoolean: (input: unknown) => input is boolean
+export declare const isBoolean: {
+  (input: unknown): input is boolean
+  (_?: undefined): (input: unknown) => input is boolean
+}
 ```
 
 **Example**
@@ -465,7 +468,10 @@ This utility function is used to check if all the elements in a collection of bo
 **Signature**
 
 ```ts
-export declare const every: (collection: Iterable<boolean>) => boolean
+export declare const every: {
+  (collection: Iterable<boolean>): boolean
+  (_?: undefined): (collection: Iterable<boolean>) => boolean
+}
 ```
 
 **Example**
@@ -486,7 +492,10 @@ This utility function is used to check if at least one of the elements in a coll
 **Signature**
 
 ```ts
-export declare const some: (collection: Iterable<boolean>) => boolean
+export declare const some: {
+  (collection: Iterable<boolean>): boolean
+  (_?: undefined): (collection: Iterable<boolean>) => boolean
+}
 ```
 
 **Example**

@@ -28,7 +28,10 @@ Tests if a value is a `symbol`.
 **Signature**
 
 ```ts
-export declare const isSymbol: (u: unknown) => u is symbol
+export declare const isSymbol: {
+  (input: unknown): input is symbol
+  (_?: undefined): (input: unknown) => input is symbol
+}
 ```
 
 **Example**

@@ -14,7 +14,7 @@ Added in v1.0.0
 
 - [constructors](#constructors)
   - [empty](#empty)
-  - [from](#from)
+  - [fromIterable](#fromiterable)
   - [make](#make)
 - [getters](#getters)
   - [head](#head)
@@ -45,19 +45,22 @@ Creates an empty `MutableList`.
 **Signature**
 
 ```ts
-export declare const empty: <A>() => MutableList<A>
+export declare const empty: <A>(_: void) => MutableList<A>
 ```
 
 Added in v1.0.0
 
-## from
+## fromIterable
 
 Creates a new `MutableList` from an `Iterable`.
 
 **Signature**
 
 ```ts
-export declare const from: <A>(iterable: Iterable<A>) => MutableList<A>
+export declare const fromIterable: {
+  <A>(iterable: Iterable<A>): MutableList<A>
+  (_?: undefined): <A>(iterable: Iterable<A>) => MutableList<A>
+}
 ```
 
 Added in v1.0.0
@@ -83,7 +86,10 @@ Returns the first element of the list, if it exists.
 **Signature**
 
 ```ts
-export declare const head: <A>(self: MutableList<A>) => A | undefined
+export declare const head: {
+  <A>(self: MutableList<A>): A | undefined
+  (_?: undefined): <A>(self: MutableList<A>) => A | undefined
+}
 ```
 
 Added in v1.0.0
@@ -95,7 +101,10 @@ Returns `true` if the list contains zero elements, `false`, otherwise.
 **Signature**
 
 ```ts
-export declare const isEmpty: <A>(self: MutableList<A>) => boolean
+export declare const isEmpty: {
+  <A>(self: MutableList<A>): boolean
+  (_?: undefined): <A>(self: MutableList<A>) => boolean
+}
 ```
 
 Added in v1.0.0
@@ -107,7 +116,7 @@ Returns the length of the list.
 **Signature**
 
 ```ts
-export declare const length: <A>(self: MutableList<A>) => number
+export declare const length: { <A>(self: MutableList<A>): number; (_?: undefined): <A>(self: MutableList<A>) => number }
 ```
 
 Added in v1.0.0
@@ -119,7 +128,10 @@ Returns the last element of the list, if it exists.
 **Signature**
 
 ```ts
-export declare const tail: <A>(self: MutableList<A>) => A | undefined
+export declare const tail: {
+  <A>(self: MutableList<A>): A | undefined
+  (_?: undefined): <A>(self: MutableList<A>) => A | undefined
+}
 ```
 
 Added in v1.0.0
@@ -167,7 +179,10 @@ Removes the last value from the list and returns it, if it exists.
 **Signature**
 
 ```ts
-export declare const pop: <A>(self: MutableList<A>) => A | undefined
+export declare const pop: {
+  <A>(self: MutableList<A>): A | undefined
+  (_?: undefined): <A>(self: MutableList<A>) => A | undefined
+}
 ```
 
 Added in v0.0.1
@@ -194,7 +209,10 @@ Removes all elements from the doubly-linked list.
 **Signature**
 
 ```ts
-export declare const reset: <A>(self: MutableList<A>) => MutableList<A>
+export declare const reset: {
+  <A>(self: MutableList<A>): MutableList<A>
+  (_?: undefined): <A>(self: MutableList<A>) => MutableList<A>
+}
 ```
 
 Added in v1.0.0
@@ -206,7 +224,10 @@ Removes the first value from the list and returns it, if it exists.
 **Signature**
 
 ```ts
-export declare const shift: <A>(self: MutableList<A>) => A | undefined
+export declare const shift: {
+  <A>(self: MutableList<A>): A | undefined
+  (_?: undefined): <A>(self: MutableList<A>) => A | undefined
+}
 ```
 
 Added in v0.0.1

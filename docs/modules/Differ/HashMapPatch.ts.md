@@ -52,7 +52,7 @@ Constructs an empty map patch.
 **Signature**
 
 ```ts
-export declare const empty: <Key, Value, Patch>() => HashMapPatch<Key, Value, Patch>
+export declare const empty: <Key, Value, Patch>(_: void) => HashMapPatch<Key, Value, Patch>
 ```
 
 Added in v1.0.0

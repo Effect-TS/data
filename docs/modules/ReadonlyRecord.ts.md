@@ -76,7 +76,7 @@ Creates a new, empty record.
 **Signature**
 
 ```ts
-export declare const empty: <A>() => Record<string, A>
+export declare const empty: <A>(_: void) => Record<string, A>
 ```
 
 Added in v1.0.0
@@ -124,7 +124,10 @@ previous ones. So the resulting record will only have the value of the last occu
 **Signature**
 
 ```ts
-export declare const fromEntries: <A>(self: Iterable<[string, A]>) => Record<string, A>
+export declare const fromEntries: {
+  <A>(self: Iterable<[string, A]>): Record<string, A>
+  (_?: undefined): <A>(self: Iterable<[string, A]>) => Record<string, A>
+}
 ```
 
 **Example**
@@ -180,7 +183,10 @@ Alias of {@link toEntries}.
 **Signature**
 
 ```ts
-export declare const toArray: <K extends string, A>(self: Readonly<Record<K, A>>) => [K, A][]
+export declare const toArray: {
+  <K extends string, A>(self: Readonly<Record<K, A>>): [K, A][]
+  (_?: undefined): <K extends string, A>(self: Readonly<Record<K, A>>) => [K, A][]
+}
 ```
 
 **Example**
@@ -205,7 +211,10 @@ Takes a record and returns an array of tuples containing its keys and values.
 **Signature**
 
 ```ts
-export declare const toEntries: <K extends string, A>(self: Readonly<Record<K, A>>) => [K, A][]
+export declare const toEntries: {
+  <K extends string, A>(self: Readonly<Record<K, A>>): [K, A][]
+  (_?: undefined): <K extends string, A>(self: Readonly<Record<K, A>>) => [K, A][]
+}
 ```
 
 **Example**
@@ -232,7 +241,10 @@ Given a `ReadonlyRecord` with `Option` values, returns a `Record` with only the 
 **Signature**
 
 ```ts
-export declare const compact: <A>(self: ReadonlyRecord<Option<A>>) => Record<string, A>
+export declare const compact: {
+  <A>(self: ReadonlyRecord<Option<A>>): Record<string, A>
+  (_?: undefined): <A>(self: ReadonlyRecord<Option<A>>) => Record<string, A>
+}
 ```
 
 **Example**
@@ -352,7 +364,10 @@ one with the `Left` values and one with the `Right` values.
 **Signature**
 
 ```ts
-export declare const separate: <A, B>(self: ReadonlyRecord<Either<A, B>>) => [Record<string, A>, Record<string, B>]
+export declare const separate: {
+  <A, B>(self: ReadonlyRecord<Either<A, B>>): [Record<string, A>, Record<string, B>]
+  (_?: undefined): <A, B>(self: ReadonlyRecord<Either<A, B>>) => [Record<string, A>, Record<string, B>]
+}
 ```
 
 **Example**
@@ -421,7 +436,10 @@ Determine if a `ReadonlyRecord` is empty.
 **Signature**
 
 ```ts
-export declare const isEmptyReadonlyRecord: <A>(self: ReadonlyRecord<A>) => self is ReadonlyRecord<never>
+export declare const isEmptyReadonlyRecord: {
+  <A>(self: ReadonlyRecord<A>): self is ReadonlyRecord<never>
+  (_?: undefined): <A>(self: ReadonlyRecord<A>) => self is ReadonlyRecord<never>
+}
 ```
 
 **Example**
@@ -442,7 +460,10 @@ Determine if a `Record` is empty.
 **Signature**
 
 ```ts
-export declare const isEmptyRecord: <A>(self: Record<string, A>) => self is Record<string, never>
+export declare const isEmptyRecord: {
+  <A>(self: Record<string, A>): self is Record<string, never>
+  (_?: undefined): <A>(self: Record<string, A>) => self is Record<string, never>
+}
 ```
 
 **Example**
@@ -881,7 +902,10 @@ Returns the number of key/value pairs in a `ReadonlyRecord`.
 **Signature**
 
 ```ts
-export declare const size: <A>(self: ReadonlyRecord<A>) => number
+export declare const size: {
+  <A>(self: ReadonlyRecord<A>): number
+  (_?: undefined): <A>(self: ReadonlyRecord<A>) => number
+}
 ```
 
 **Example**

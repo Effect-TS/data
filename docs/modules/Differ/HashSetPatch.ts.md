@@ -47,7 +47,7 @@ Constructs an empty set patch.
 **Signature**
 
 ```ts
-export declare const empty: <Value>() => HashSetPatch<Value>
+export declare const empty: <Value>(_: void) => HashSetPatch<Value>
 ```
 
 Added in v1.0.0

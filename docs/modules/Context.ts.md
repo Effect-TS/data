@@ -80,7 +80,7 @@ Returns an empty `Context`.
 **Signature**
 
 ```ts
-export declare const empty: () => Context<never>
+export declare const empty: (_: void) => Context<never>
 ```
 
 **Example**
@@ -188,7 +188,7 @@ Checks if the provided argument is a `Context`.
 **Signature**
 
 ```ts
-export declare const isContext: (input: unknown) => input is Context<never>
+export declare const isContext: { (u: unknown): u is Context<never>; (): (u: unknown) => u is Context<never> }
 ```
 
 **Example**
@@ -208,7 +208,7 @@ Checks if the provided argument is a `Tag`.
 **Signature**
 
 ```ts
-export declare const isTag: (input: unknown) => input is Tag<never>
+export declare const isTag: { (u: unknown): u is Tag<never>; (): (u: unknown) => u is Tag<never> }
 ```
 
 **Example**

@@ -129,7 +129,7 @@ export const isFunction: {
  * import { pipe, apply } from "@effect/data/Function"
  * import { length } from '@effect/data/String'
  *
- * assert.deepStrictEqual(pipe(length, apply("hello")), 5)
+ * assert.deepStrictEqual(pipe(length(), apply("hello")), 5)
  *
  * @since 1.0.0
  */

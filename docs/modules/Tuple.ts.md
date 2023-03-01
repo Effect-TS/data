@@ -141,7 +141,7 @@ Return the first element of a tuple.
 **Signature**
 
 ```ts
-export declare const getFirst: <L, R>(self: readonly [L, R]) => L
+export declare const getFirst: { <L, R>(self: readonly [L, R]): L; (_?: undefined): <L, R>(self: readonly [L, R]) => L }
 ```
 
 **Example**
@@ -161,7 +161,10 @@ Return the second element of a tuple.
 **Signature**
 
 ```ts
-export declare const getSecond: <L, R>(self: readonly [L, R]) => R
+export declare const getSecond: {
+  <L, R>(self: readonly [L, R]): R
+  (_?: undefined): <L, R>(self: readonly [L, R]) => R
+}
 ```
 
 **Example**
@@ -308,7 +311,10 @@ Swaps the two elements of a tuple.
 **Signature**
 
 ```ts
-export declare const swap: <L, R>(self: readonly [L, R]) => [R, L]
+export declare const swap: {
+  <L, R>(self: readonly [L, R]): [R, L]
+  (_?: undefined): <L, R>(self: readonly [L, R]) => [R, L]
+}
 ```
 
 **Example**

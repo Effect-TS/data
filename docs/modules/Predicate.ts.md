@@ -312,7 +312,10 @@ Tests if a value is a `bigint`.
 **Signature**
 
 ```ts
-export declare const isBigint: (input: unknown) => input is bigint
+export declare const isBigint: {
+  (input: unknown): input is bigint
+  (_?: undefined): (input: unknown) => input is bigint
+}
 ```
 
 **Example**
@@ -334,7 +337,10 @@ Tests if a value is a `boolean`.
 **Signature**
 
 ```ts
-export declare const isBoolean: (input: unknown) => input is boolean
+export declare const isBoolean: {
+  (input: unknown): input is boolean
+  (_?: undefined): (input: unknown) => input is boolean
+}
 ```
 
 **Example**
@@ -356,7 +362,7 @@ A guard that succeeds when the input is a `Date`.
 **Signature**
 
 ```ts
-export declare const isDate: (input: unknown) => input is Date
+export declare const isDate: { (input: unknown): input is Date; (_?: undefined): (input: unknown) => input is Date }
 ```
 
 **Example**
@@ -379,7 +385,7 @@ A guard that succeeds when the input is an `Error`.
 **Signature**
 
 ```ts
-export declare const isError: (input: unknown) => input is Error
+export declare const isError: { (input: unknown): input is Error; (_?: undefined): (input: unknown) => input is Error }
 ```
 
 **Example**
@@ -402,7 +408,10 @@ Tests if a value is a `function`.
 **Signature**
 
 ```ts
-export declare const isFunction: (input: unknown) => input is Function
+export declare const isFunction: {
+  (input: unknown): input is Function
+  (_?: undefined): (input: unknown) => input is Function
+}
 ```
 
 **Example**
@@ -424,7 +433,7 @@ A guard that always fails.
 **Signature**
 
 ```ts
-export declare const isNever: (input: unknown) => input is never
+export declare const isNever: { (input: unknown): input is never; (_?: undefined): (input: unknown) => input is never }
 ```
 
 **Example**
@@ -447,7 +456,10 @@ Tests if a value is not `undefined`.
 **Signature**
 
 ```ts
-export declare const isNotNull: <A>(input: A) => input is Exclude<A, null>
+export declare const isNotNull: {
+  <A>(input: A): input is Exclude<A, null>
+  (_?: undefined): <A>(input: A) => input is Exclude<A, null>
+}
 ```
 
 **Example**
@@ -470,7 +482,10 @@ A guard that succeeds when the input is not `null` or `undefined`.
 **Signature**
 
 ```ts
-export declare const isNotNullable: <A>(input: A) => input is NonNullable<A>
+export declare const isNotNullable: {
+  <A>(input: A): input is NonNullable<A>
+  (_?: undefined): <A>(input: A) => input is NonNullable<A>
+}
 ```
 
 **Example**
@@ -494,7 +509,10 @@ Tests if a value is not `undefined`.
 **Signature**
 
 ```ts
-export declare const isNotUndefined: <A>(input: A) => input is Exclude<A, undefined>
+export declare const isNotUndefined: {
+  <A>(input: A): input is Exclude<A, undefined>
+  (_?: undefined): <A>(input: A) => input is Exclude<A, undefined>
+}
 ```
 
 **Example**
@@ -517,7 +535,7 @@ Tests if a value is `undefined`.
 **Signature**
 
 ```ts
-export declare const isNull: (input: unknown) => input is null
+export declare const isNull: { (input: unknown): input is null; (_?: undefined): (input: unknown) => input is null }
 ```
 
 **Example**
@@ -540,7 +558,10 @@ A guard that succeeds when the input is `null` or `undefined`.
 **Signature**
 
 ```ts
-export declare const isNullable: <A>(input: A) => input is Extract<A, null | undefined>
+export declare const isNullable: {
+  <A>(input: A): input is Extract<A, null | undefined>
+  (_?: undefined): <A>(input: A) => input is Extract<A, null | undefined>
+}
 ```
 
 **Example**
@@ -564,7 +585,10 @@ Tests if a value is a `number`.
 **Signature**
 
 ```ts
-export declare const isNumber: (input: unknown) => input is number
+export declare const isNumber: {
+  (input: unknown): input is number
+  (_?: undefined): (input: unknown) => input is number
+}
 ```
 
 **Example**
@@ -586,7 +610,10 @@ Tests if a value is an `object`.
 **Signature**
 
 ```ts
-export declare const isObject: (input: unknown) => input is object
+export declare const isObject: {
+  (input: unknown): input is object
+  (_?: undefined): (input: unknown) => input is object
+}
 ```
 
 **Example**
@@ -610,7 +637,10 @@ A guard that succeeds when the input is a readonly record.
 **Signature**
 
 ```ts
-export declare const isReadonlyRecord: (input: unknown) => input is {}
+export declare const isReadonlyRecord: {
+  (input: unknown): input is {}
+  (_?: undefined): (input: unknown) => input is {}
+}
 ```
 
 **Example**
@@ -636,7 +666,7 @@ A guard that succeeds when the input is a record.
 **Signature**
 
 ```ts
-export declare const isRecord: (input: unknown) => input is {}
+export declare const isRecord: { (input: unknown): input is {}; (_?: undefined): (input: unknown) => input is {} }
 ```
 
 **Example**
@@ -662,7 +692,10 @@ Tests if a value is a `string`.
 **Signature**
 
 ```ts
-export declare const isString: (input: unknown) => input is string
+export declare const isString: {
+  (input: unknown): input is string
+  (_?: undefined): (input: unknown) => input is string
+}
 ```
 
 **Example**
@@ -684,7 +717,10 @@ Tests if a value is a `symbol`.
 **Signature**
 
 ```ts
-export declare const isSymbol: (input: unknown) => input is symbol
+export declare const isSymbol: {
+  (input: unknown): input is symbol
+  (_?: undefined): (input: unknown) => input is symbol
+}
 ```
 
 **Example**
@@ -706,7 +742,10 @@ Tests if a value is `undefined`.
 **Signature**
 
 ```ts
-export declare const isUndefined: (input: unknown) => input is undefined
+export declare const isUndefined: {
+  (input: unknown): input is undefined
+  (_?: undefined): (input: unknown) => input is undefined
+}
 ```
 
 **Example**
@@ -729,7 +768,10 @@ A guard that always succeeds.
 **Signature**
 
 ```ts
-export declare const isUnknown: (input: unknown) => input is unknown
+export declare const isUnknown: {
+  (input: unknown): input is unknown
+  (_?: undefined): (input: unknown) => input is unknown
+}
 ```
 
 **Example**
@@ -793,7 +835,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getMonoidEqv: <A>() => monoid.Monoid<Predicate<A>>
+export declare const getMonoidEqv: <A>(_: void) => monoid.Monoid<Predicate<A>>
 ```
 
 Added in v1.0.0
@@ -803,7 +845,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getMonoidEvery: <A>() => monoid.Monoid<Predicate<A>>
+export declare const getMonoidEvery: <A>(_: void) => monoid.Monoid<Predicate<A>>
 ```
 
 Added in v1.0.0
@@ -813,7 +855,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getMonoidSome: <A>() => monoid.Monoid<Predicate<A>>
+export declare const getMonoidSome: <A>(_: void) => monoid.Monoid<Predicate<A>>
 ```
 
 Added in v1.0.0
@@ -823,7 +865,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getMonoidXor: <A>() => monoid.Monoid<Predicate<A>>
+export declare const getMonoidXor: <A>(_: void) => monoid.Monoid<Predicate<A>>
 ```
 
 Added in v1.0.0
@@ -833,7 +875,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getSemigroupEqv: <A>() => semigroup.Semigroup<Predicate<A>>
+export declare const getSemigroupEqv: <A>(_: void) => semigroup.Semigroup<Predicate<A>>
 ```
 
 Added in v1.0.0
@@ -843,7 +885,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getSemigroupEvery: <A>() => semigroup.Semigroup<Predicate<A>>
+export declare const getSemigroupEvery: <A>(_: void) => semigroup.Semigroup<Predicate<A>>
 ```
 
 Added in v1.0.0
@@ -853,7 +895,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getSemigroupSome: <A>() => semigroup.Semigroup<Predicate<A>>
+export declare const getSemigroupSome: <A>(_: void) => semigroup.Semigroup<Predicate<A>>
 ```
 
 Added in v1.0.0
@@ -863,7 +905,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getSemigroupXor: <A>() => semigroup.Semigroup<Predicate<A>>
+export declare const getSemigroupXor: <A>(_: void) => semigroup.Semigroup<Predicate<A>>
 ```
 
 Added in v1.0.0

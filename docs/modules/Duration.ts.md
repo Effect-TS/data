@@ -63,7 +63,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const days: (days: number) => Duration
+export declare const days: { (days: number): Duration; (_?: undefined): (days: number) => Duration }
 ```
 
 Added in v1.0.0
@@ -73,7 +73,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const hours: (hours: number) => Duration
+export declare const hours: { (hours: number): Duration; (_?: undefined): (hours: number) => Duration }
 ```
 
 Added in v1.0.0
@@ -93,7 +93,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const millis: (millis: number) => Duration
+export declare const millis: { (millis: number): Duration; (_?: undefined): (millis: number) => Duration }
 ```
 
 Added in v1.0.0
@@ -103,7 +103,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const minutes: (minutes: number) => Duration
+export declare const minutes: { (minutes: number): Duration; (_?: undefined): (minutes: number) => Duration }
 ```
 
 Added in v1.0.0
@@ -113,7 +113,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const seconds: (seconds: number) => Duration
+export declare const seconds: { (seconds: number): Duration; (_?: undefined): (seconds: number) => Duration }
 ```
 
 Added in v1.0.0
@@ -123,7 +123,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const weeks: (weeks: number) => Duration
+export declare const weeks: { (weeks: number): Duration; (_?: undefined): (weeks: number) => Duration }
 ```
 
 Added in v1.0.0
@@ -145,7 +145,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const isDuration: (u: unknown) => u is Duration
+export declare const isDuration: { (u: unknown): u is Duration; (_?: undefined): (u: unknown) => u is Duration }
 ```
 
 Added in v1.0.0

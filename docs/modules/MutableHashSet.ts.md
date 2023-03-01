@@ -35,7 +35,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const empty: <K = never>() => MutableHashSet<K>
+export declare const empty: <K = never>(_: void) => MutableHashSet<K>
 ```
 
 Added in v1.0.0
@@ -45,7 +45,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const fromIterable: <K = never>(keys: Iterable<K>) => MutableHashSet<K>
+export declare const fromIterable: {
+  <K = never>(keys: Iterable<K>): MutableHashSet<K>
+  (_?: undefined): <K = never>(keys: Iterable<K>) => MutableHashSet<K>
+}
 ```
 
 Added in v1.0.0
@@ -106,7 +109,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const size: <V>(self: MutableHashSet<V>) => number
+export declare const size: {
+  <V>(self: MutableHashSet<V>): number
+  (_?: undefined): <V>(self: MutableHashSet<V>) => number
+}
 ```
 
 Added in v1.0.0

@@ -12,103 +12,103 @@ declare const numberOrNullOrUndefined: Array<number | null | undefined>
 // -------------------------------------------------------------------------------------
 
 // $ExpectType string[]
-unknowns.filter(_.isString)
+unknowns.filter(_.isString())
 
 // -------------------------------------------------------------------------------------
 // isNumber
 // -------------------------------------------------------------------------------------
 
 // $ExpectType number[]
-unknowns.filter(_.isNumber)
+unknowns.filter(_.isNumber())
 
 // -------------------------------------------------------------------------------------
 // isBoolean
 // -------------------------------------------------------------------------------------
 
 // $ExpectType boolean[]
-unknowns.filter(_.isBoolean)
+unknowns.filter(_.isBoolean())
 
 // -------------------------------------------------------------------------------------
 // isBigint
 // -------------------------------------------------------------------------------------
 
 // $ExpectType bigint[]
-unknowns.filter(_.isBigint)
+unknowns.filter(_.isBigint())
 
 // -------------------------------------------------------------------------------------
 // isSymbol
 // -------------------------------------------------------------------------------------
 
 // $ExpectType symbol[]
-unknowns.filter(_.isSymbol)
+unknowns.filter(_.isSymbol())
 
 // -------------------------------------------------------------------------------------
 // isUndefined
 // -------------------------------------------------------------------------------------
 
 // $ExpectType undefined[]
-unknowns.filter(_.isUndefined)
+unknowns.filter(_.isUndefined())
 
 // -------------------------------------------------------------------------------------
 // isNotUndefined
 // -------------------------------------------------------------------------------------
 
 // $ExpectType number[]
-numberOrUndefined.filter(_.isNotUndefined)
+numberOrUndefined.filter(_.isNotUndefined())
 
 // $ExpectType (number | null)[]
-numberOrNullOrUndefined.filter(_.isNotUndefined)
+numberOrNullOrUndefined.filter(_.isNotUndefined())
 
 // -------------------------------------------------------------------------------------
 // isUndefined
 // -------------------------------------------------------------------------------------
 
 // $ExpectType null[]
-unknowns.filter(_.isNull)
+unknowns.filter(_.isNull())
 
 // -------------------------------------------------------------------------------------
 // isNotUndefined
 // -------------------------------------------------------------------------------------
 
 // $ExpectType number[]
-numberOrNull.filter(_.isNotNull)
+numberOrNull.filter(_.isNotNull())
 
 // $ExpectType (number | undefined)[]
-numberOrNullOrUndefined.filter(_.isNotNull)
+numberOrNullOrUndefined.filter(_.isNotNull())
 
 // -------------------------------------------------------------------------------------
 // isNever
 // -------------------------------------------------------------------------------------
 
 // $ExpectType never[]
-unknowns.filter(_.isNever)
+unknowns.filter(_.isNever())
 
 // -------------------------------------------------------------------------------------
 // isUnknown
 // -------------------------------------------------------------------------------------
 
 // $ExpectType unknown[]
-anys.filter(_.isUnknown)
+anys.filter(_.isUnknown())
 
 // -------------------------------------------------------------------------------------
 // isObject
 // -------------------------------------------------------------------------------------
 
 // $ExpectType object[]
-anys.filter(_.isObject)
+anys.filter(_.isObject())
 
 // -------------------------------------------------------------------------------------
 // isNullable
 // -------------------------------------------------------------------------------------
 
 // $ExpectType null[]
-numberOrNull.filter(_.isNullable)
+numberOrNull.filter(_.isNullable())
 
 // $ExpectType undefined[]
-numberOrUndefined.filter(_.isNullable)
+numberOrUndefined.filter(_.isNullable())
 
 // $ExpectType (null | undefined)[]
-numberOrNullOrUndefined.filter(_.isNullable)
+numberOrNullOrUndefined.filter(_.isNullable())
 
 if (_.isNullable(u)) {
   // $ExpectType never
@@ -120,13 +120,13 @@ if (_.isNullable(u)) {
 // -------------------------------------------------------------------------------------
 
 // $ExpectType number[]
-numberOrNull.filter(_.isNotNullable)
+numberOrNull.filter(_.isNotNullable())
 
 // $ExpectType number[]
-numberOrUndefined.filter(_.isNotNullable)
+numberOrUndefined.filter(_.isNotNullable())
 
 // $ExpectType number[]
-numberOrNullOrUndefined.filter(_.isNotNullable)
+numberOrNullOrUndefined.filter(_.isNotNullable())
 
 if (_.isNotNullable(u)) {
   // $ExpectType {}
@@ -138,25 +138,25 @@ if (_.isNotNullable(u)) {
 // -------------------------------------------------------------------------------------
 
 // $ExpectType Error[]
-unknowns.filter(_.isError)
+unknowns.filter(_.isError())
 
 // -------------------------------------------------------------------------------------
 // isDate
 // -------------------------------------------------------------------------------------
 
 // $ExpectType Date[]
-unknowns.filter(_.isDate)
+unknowns.filter(_.isDate())
 
 // -------------------------------------------------------------------------------------
 // isRecord
 // -------------------------------------------------------------------------------------
 
 // $ExpectType { [x: string]: unknown; [x: symbol]: unknown; }[]
-unknowns.filter(_.isRecord)
+unknowns.filter(_.isRecord())
 
 // -------------------------------------------------------------------------------------
 // isReadonlyRecord
 // -------------------------------------------------------------------------------------
 
 // $ExpectType { readonly [x: string]: unknown; readonly [x: symbol]: unknown; }[]
-unknowns.filter(_.isReadonlyRecord)
+unknowns.filter(_.isReadonlyRecord())

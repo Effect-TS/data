@@ -46,9 +46,10 @@ differ that knows how to diff the values.
 **Signature**
 
 ```ts
-export declare const chunk: <Value, Patch>(
-  differ: Differ<Value, Patch>
-) => Differ<Chunk<Value>, ChunkPatch<Value, Patch>>
+export declare const chunk: {
+  <Value, Patch>(differ: Differ<Value, Patch>): Differ<Chunk<Value>, ChunkPatch<Value, Patch>>
+  (): <Value, Patch>(differ: Differ<Value, Patch>) => Differ<Chunk<Value>, ChunkPatch<Value, Patch>>
+}
 ```
 
 Added in v1.0.0
@@ -60,7 +61,7 @@ Constructs a differ that knows how to diff `Env` values.
 **Signature**
 
 ```ts
-export declare const environment: <A>() => Differ<Context<A>, ContextPatch<A, A>>
+export declare const environment: <A>(_: void) => Differ<Context<A>, ContextPatch<A, A>>
 ```
 
 Added in v1.0.0
@@ -73,9 +74,10 @@ a differ that knows how to diff the values.
 **Signature**
 
 ```ts
-export declare const hashMap: <Key, Value, Patch>(
-  differ: Differ<Value, Patch>
-) => Differ<HashMap<Key, Value>, HashMapPatch<Key, Value, Patch>>
+export declare const hashMap: {
+  <Key, Value, Patch>(differ: Differ<Value, Patch>): Differ<HashMap<Key, Value>, HashMapPatch<Key, Value, Patch>>
+  (): <Key, Value, Patch>(differ: Differ<Value, Patch>) => Differ<HashMap<Key, Value>, HashMapPatch<Key, Value, Patch>>
+}
 ```
 
 Added in v1.0.0
@@ -87,7 +89,7 @@ Constructs a differ that knows how to diff a `HashSet` of values.
 **Signature**
 
 ```ts
-export declare const hashSet: <Value>() => Differ<HashSet<Value>, HashSetPatch<Value>>
+export declare const hashSet: <Value>(_: void) => Differ<HashSet<Value>, HashSetPatch<Value>>
 ```
 
 Added in v1.0.0
@@ -99,12 +101,20 @@ Constructs a new `Differ`.
 **Signature**
 
 ```ts
-export declare const make: <Value, Patch>(params: {
-  readonly empty: Patch
-  readonly diff: (oldValue: Value, newValue: Value) => Patch
-  readonly combine: (first: Patch, second: Patch) => Patch
-  readonly patch: (patch: Patch, oldValue: Value) => Value
-}) => Differ<Value, Patch>
+export declare const make: {
+  <Value, Patch>(params: {
+    readonly empty: Patch
+    readonly diff: (oldValue: Value, newValue: Value) => Patch
+    readonly combine: (first: Patch, second: Patch) => Patch
+    readonly patch: (patch: Patch, oldValue: Value) => Value
+  }): Differ<Value, Patch>
+  (): <Value, Patch>(params: {
+    readonly empty: Patch
+    readonly diff: (oldValue: Value, newValue: Value) => Patch
+    readonly combine: (first: Patch, second: Patch) => Patch
+    readonly patch: (patch: Patch, oldValue: Value) => Value
+  }) => Differ<Value, Patch>
+}
 ```
 
 Added in v1.0.0
@@ -202,7 +212,7 @@ there is no compositional way to update them.
 **Signature**
 
 ```ts
-export declare const update: <A>() => Differ<A, (a: A) => A>
+export declare const update: <A>(_: void) => Differ<A, (a: A) => A>
 ```
 
 Added in v1.0.0
@@ -215,7 +225,10 @@ to combine old values with new values.
 **Signature**
 
 ```ts
-export declare const updateWith: <A>(f: (x: A, y: A) => A) => Differ<A, (a: A) => A>
+export declare const updateWith: {
+  <A>(f: (x: A, y: A) => A): Differ<A, (a: A) => A>
+  (): <A>(f: (x: A, y: A) => A) => Differ<A, (a: A) => A>
+}
 ```
 
 Added in v1.0.0
@@ -284,7 +297,10 @@ An empty patch that describes no changes.
 **Signature**
 
 ```ts
-export declare const empty: <Value, Patch>(self: Differ<Value, Patch>) => Patch
+export declare const empty: {
+  <Value, Patch>(self: Differ<Value, Patch>): Patch
+  (_?: undefined): <Value, Patch>(self: Differ<Value, Patch>) => Patch
+}
 ```
 
 Added in v1.0.0

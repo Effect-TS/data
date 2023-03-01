@@ -48,7 +48,7 @@ An empty patch which returns the environment unchanged.
 **Signature**
 
 ```ts
-export declare const empty: <Input = never, Output = never>() => ContextPatch<Input, Output>
+export declare const empty: <Input = never, Output = never>(_: void) => ContextPatch<Input, Output>
 ```
 
 Added in v1.0.0

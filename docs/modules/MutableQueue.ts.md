@@ -42,7 +42,10 @@ Creates a new bounded `MutableQueue`.
 **Signature**
 
 ```ts
-export declare const bounded: <A>(capacity: number) => MutableQueue<A>
+export declare const bounded: {
+  <A>(capacity: number): MutableQueue<A>
+  (_?: undefined): <A>(capacity: number) => MutableQueue<A>
+}
 ```
 
 Added in v1.0.0
@@ -54,7 +57,7 @@ Creates a new unbounded `MutableQueue`.
 **Signature**
 
 ```ts
-export declare const unbounded: <A>() => MutableQueue<A>
+export declare const unbounded: <A>(_: void) => MutableQueue<A>
 ```
 
 Added in v1.0.0
@@ -71,7 +74,10 @@ The **maximum** number of elements that a queue can hold.
 **Signature**
 
 ```ts
-export declare const capacity: <A>(self: MutableQueue<A>) => number
+export declare const capacity: {
+  <A>(self: MutableQueue<A>): number
+  (_?: undefined): <A>(self: MutableQueue<A>) => number
+}
 ```
 
 Added in v1.0.0
@@ -83,7 +89,10 @@ Returns `true` if the queue is empty, `false` otherwise.
 **Signature**
 
 ```ts
-export declare const isEmpty: <A>(self: MutableQueue<A>) => boolean
+export declare const isEmpty: {
+  <A>(self: MutableQueue<A>): boolean
+  (_?: undefined): <A>(self: MutableQueue<A>) => boolean
+}
 ```
 
 Added in v1.0.0
@@ -95,7 +104,10 @@ Returns `true` if the queue is full, `false` otherwise.
 **Signature**
 
 ```ts
-export declare const isFull: <A>(self: MutableQueue<A>) => boolean
+export declare const isFull: {
+  <A>(self: MutableQueue<A>): boolean
+  (_?: undefined): <A>(self: MutableQueue<A>) => boolean
+}
 ```
 
 Added in v1.0.0
@@ -107,7 +119,10 @@ Returns the current number of elements in the queue.
 **Signature**
 
 ```ts
-export declare const length: <A>(self: MutableQueue<A>) => number
+export declare const length: {
+  <A>(self: MutableQueue<A>): number
+  (_?: undefined): <A>(self: MutableQueue<A>) => number
+}
 ```
 
 Added in v1.0.0

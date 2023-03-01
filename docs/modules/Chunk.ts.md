@@ -123,7 +123,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const empty: <A = never>() => Chunk<A>
+export declare const empty: <A = never>(_: void) => Chunk<A>
 ```
 
 Added in v1.0.0
@@ -176,7 +176,7 @@ Builds a `NonEmptyChunk` from a single element.
 **Signature**
 
 ```ts
-export declare const of: <A>(a: A) => NonEmptyChunk<A>
+export declare const of: { <A>(a: A): NonEmptyChunk<A>; (_?: undefined): <A>(a: A) => NonEmptyChunk<A> }
 ```
 
 Added in v1.0.0
@@ -202,7 +202,10 @@ Converts from an `Iterable<A>`
 **Signature**
 
 ```ts
-export declare const fromIterable: <A>(self: Iterable<A>) => Chunk<A>
+export declare const fromIterable: {
+  <A>(self: Iterable<A>): Chunk<A>
+  (_?: undefined): <A>(self: Iterable<A>) => Chunk<A>
+}
 ```
 
 Added in v1.0.0
@@ -214,7 +217,10 @@ Converts to a `ReadonlyArray<A>`
 **Signature**
 
 ```ts
-export declare const toReadonlyArray: <A>(self: Chunk<A>) => readonly A[]
+export declare const toReadonlyArray: {
+  <A>(self: Chunk<A>): readonly A[]
+  (_?: undefined): <A>(self: Chunk<A>) => readonly A[]
+}
 ```
 
 Added in v1.0.0
@@ -288,7 +294,7 @@ Remove duplicates from an array, keeping the first occurrence of an element.
 **Signature**
 
 ```ts
-export declare const dedupe: <A>(self: Chunk<A>) => Chunk<A>
+export declare const dedupe: { <A>(self: Chunk<A>): Chunk<A>; (_?: undefined): <A>(self: Chunk<A>) => Chunk<A> }
 ```
 
 Added in v1.0.0
@@ -421,7 +427,7 @@ Returns the first element of this chunk if it exists.
 **Signature**
 
 ```ts
-export declare const head: <A>(self: Chunk<A>) => Option<A>
+export declare const head: { <A>(self: Chunk<A>): Option<A>; (_?: undefined): <A>(self: Chunk<A>) => Option<A> }
 ```
 
 Added in v1.0.0
@@ -433,7 +439,7 @@ Returns the first element of this non empty chunk.
 **Signature**
 
 ```ts
-export declare const headNonEmpty: <A>(self: NonEmptyChunk<A>) => A
+export declare const headNonEmpty: { <A>(self: NonEmptyChunk<A>): A; (_?: undefined): <A>(self: NonEmptyChunk<A>) => A }
 ```
 
 Added in v1.0.0
@@ -462,7 +468,7 @@ Determines if the chunk is empty.
 **Signature**
 
 ```ts
-export declare const isEmpty: <A>(self: Chunk<A>) => boolean
+export declare const isEmpty: { <A>(self: Chunk<A>): boolean; (_?: undefined): <A>(self: Chunk<A>) => boolean }
 ```
 
 Added in v1.0.0
@@ -474,7 +480,10 @@ Determines if the chunk is not empty.
 **Signature**
 
 ```ts
-export declare const isNonEmpty: <A>(self: Chunk<A>) => self is NonEmptyChunk<A>
+export declare const isNonEmpty: {
+  <A>(self: Chunk<A>): self is NonEmptyChunk<A>
+  (_?: undefined): <A>(self: Chunk<A>) => self is NonEmptyChunk<A>
+}
 ```
 
 Added in v1.0.0
@@ -486,7 +495,7 @@ Returns the last element of this chunk if it exists.
 **Signature**
 
 ```ts
-export declare const last: <A>(self: Chunk<A>) => Option<A>
+export declare const last: { <A>(self: Chunk<A>): Option<A>; (_?: undefined): <A>(self: Chunk<A>) => Option<A> }
 ```
 
 Added in v1.0.0
@@ -498,7 +507,7 @@ Reverse a Chunk, creating a new Chunk.
 **Signature**
 
 ```ts
-export declare const reverse: <A>(self: Chunk<A>) => Chunk<A>
+export declare const reverse: { <A>(self: Chunk<A>): Chunk<A>; (_?: undefined): <A>(self: Chunk<A>) => Chunk<A> }
 ```
 
 Added in v1.0.0
@@ -510,7 +519,7 @@ Retireves the size of the chunk
 **Signature**
 
 ```ts
-export declare const size: <A>(self: Chunk<A>) => number
+export declare const size: { <A>(self: Chunk<A>): number; (_?: undefined): <A>(self: Chunk<A>) => number }
 ```
 
 Added in v1.0.0
@@ -597,7 +606,10 @@ Returns every elements after the first.
 **Signature**
 
 ```ts
-export declare const tail: <A>(self: Chunk<A>) => Option<Chunk<A>>
+export declare const tail: {
+  <A>(self: Chunk<A>): Option<Chunk<A>>
+  (_?: undefined): <A>(self: Chunk<A>) => Option<Chunk<A>>
+}
 ```
 
 Added in v1.0.0
@@ -609,7 +621,10 @@ Returns every elements after the first.
 **Signature**
 
 ```ts
-export declare const tailNonEmpty: <A>(self: NonEmptyChunk<A>) => Chunk<A>
+export declare const tailNonEmpty: {
+  <A>(self: NonEmptyChunk<A>): Chunk<A>
+  (_?: undefined): <A>(self: NonEmptyChunk<A>) => Chunk<A>
+}
 ```
 
 Added in v1.0.0
@@ -680,7 +695,10 @@ Note: The function is reverse of `zip`.
 **Signature**
 
 ```ts
-export declare const unzip: <A, B>(as: Chunk<readonly [A, B]>) => readonly [Chunk<A>, Chunk<B>]
+export declare const unzip: {
+  <A, B>(as: Chunk<readonly [A, B]>): readonly [Chunk<A>, Chunk<B>]
+  (_?: undefined): <A, B>(as: Chunk<readonly [A, B]>) => readonly [Chunk<A>, Chunk<B>]
+}
 ```
 
 Added in v1.0.0
@@ -764,7 +782,10 @@ index value.
 **Signature**
 
 ```ts
-export declare const zipWithIndex: <A>(self: Chunk<A>) => Chunk<readonly [A, number]>
+export declare const zipWithIndex: {
+  <A>(self: Chunk<A>): Chunk<readonly [A, number]>
+  (_?: undefined): <A>(self: Chunk<A>) => Chunk<readonly [A, number]>
+}
 ```
 
 Added in v1.0.0
@@ -794,7 +815,10 @@ Filter out optional values
 **Signature**
 
 ```ts
-export declare const compact: <A>(self: Iterable<Option<A>>) => Chunk<A>
+export declare const compact: {
+  <A>(self: Iterable<Option<A>>): Chunk<A>
+  (_?: undefined): <A>(self: Iterable<Option<A>>) => Chunk<A>
+}
 ```
 
 Added in v1.0.0
@@ -806,7 +830,7 @@ Deduplicates adjacent elements that are identical.
 **Signature**
 
 ```ts
-export declare const dedupeAdjacent: <A>(self: Chunk<A>) => Chunk<A>
+export declare const dedupeAdjacent: { <A>(self: Chunk<A>): Chunk<A>; (_?: undefined): <A>(self: Chunk<A>) => Chunk<A> }
 ```
 
 Added in v1.0.0
@@ -934,7 +958,10 @@ Partitions the elements of this chunk into two chunks.
 **Signature**
 
 ```ts
-export declare const separate: <A, B>(self: Chunk<Either<A, B>>) => readonly [Chunk<A>, Chunk<B>]
+export declare const separate: {
+  <A, B>(self: Chunk<Either<A, B>>): readonly [Chunk<A>, Chunk<B>]
+  (_?: undefined): <A, B>(self: Chunk<Either<A, B>>) => readonly [Chunk<A>, Chunk<B>]
+}
 ```
 
 Added in v1.0.0
@@ -1310,7 +1337,10 @@ Flattens a chunk of chunks into a single chunk by concatenating all chunks.
 **Signature**
 
 ```ts
-export declare const flatten: <A>(self: Chunk<Chunk<A>>) => Chunk<A>
+export declare const flatten: {
+  <A>(self: Chunk<Chunk<A>>): Chunk<A>
+  (_?: undefined): <A>(self: Chunk<Chunk<A>>) => Chunk<A>
+}
 ```
 
 Added in v1.0.0
@@ -1350,7 +1380,10 @@ Wraps an array into a chunk without copying, unsafe on mutable arrays
 **Signature**
 
 ```ts
-export declare const unsafeFromArray: <A>(self: readonly A[]) => Chunk<A>
+export declare const unsafeFromArray: {
+  <A>(self: readonly A[]): Chunk<A>
+  (_?: undefined): <A>(self: readonly A[]) => Chunk<A>
+}
 ```
 
 Added in v1.0.0
@@ -1374,7 +1407,7 @@ Returns the first element of this chunk.
 **Signature**
 
 ```ts
-export declare const unsafeHead: <A>(self: Chunk<A>) => A
+export declare const unsafeHead: { <A>(self: Chunk<A>): A; (_?: undefined): <A>(self: Chunk<A>) => A }
 ```
 
 Added in v1.0.0
@@ -1386,7 +1419,7 @@ Returns the last element of this chunk.
 **Signature**
 
 ```ts
-export declare const unsafeLast: <A>(self: Chunk<A>) => A
+export declare const unsafeLast: { <A>(self: Chunk<A>): A; (_?: undefined): <A>(self: Chunk<A>) => A }
 ```
 
 Added in v1.0.0
