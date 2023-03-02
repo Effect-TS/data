@@ -192,7 +192,6 @@ class ChunkImpl<A> implements Chunk<A> {
         this.right = _empty
         break
       }
-
       case "ISingleton": {
         this.length = 1
         this.depth = 0
@@ -200,6 +199,9 @@ class ChunkImpl<A> implements Chunk<A> {
         this.right = _empty
         break
       }
+    }
+    if (this.depth >= 1024) {
+      toReadonlyArray(this)
     }
   }
 
@@ -382,25 +384,19 @@ class ChunkImpl<A> implements Chunk<A> {
 
 /** @internal */
 const copyToArray = <A>(self: Chunk<A>, array: Array<any>, initial: number): void => {
-  const toProcess: Array<[Chunk<any>, number]> = [[self, initial]]
-
-  while (toProcess.length > 0) {
-    const [chunk, n] = toProcess.pop()!
-
-    switch (chunk.backing._tag) {
-      case "IArray": {
-        copy(chunk.backing.array, 0, array, n, chunk.length)
-        break
-      }
-      case "IConcat": {
-        toProcess.push([chunk.right, n + chunk.left.length])
-        toProcess.push([chunk.left, n])
-        break
-      }
-      case "ISingleton": {
-        array[n] = chunk.backing.a
-        break
-      }
+  switch (self.backing._tag) {
+    case "IArray": {
+      copy(self.backing.array, 0, array, initial, self.length)
+      break
+    }
+    case "IConcat": {
+      copyToArray(self.left, array, initial)
+      copyToArray(self.right, array, initial + self.left.length)
+      break
+    }
+    case "ISingleton": {
+      array[initial] = self.backing.a
+      break
     }
   }
 }
