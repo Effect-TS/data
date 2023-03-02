@@ -4,15 +4,17 @@
     {
       "label": "clean",
       "type": "shell",
-      "command": "pnpm run clean",
+      "command": "direnv exec . pnpm run clean",
       "isBackground": false,
       "problemMatcher": []
     },
     {
       "label": "build-watch",
       "type": "shell",
-      "command": "pnpm run build-watch",
-      "problemMatcher": ["$tsc-watch"],
+      "command": "direnv exec . pnpm run build-watch",
+      "problemMatcher": [
+        "$tsc-watch"
+      ],
       "isBackground": true,
       "presentation": {
         "focus": false,
@@ -25,15 +27,17 @@
     {
       "label": "build",
       "type": "shell",
-      "command": "pnpm run build",
+      "command": "direnv exec . pnpm run build",
       "problemMatcher": [],
       "isBackground": false
     },
     {
       "label": "test-watch",
-      "dependsOn": ["build-watch"],
+      "dependsOn": [
+        "build-watch"
+      ],
       "type": "shell",
-      "command": "pnpm run test",
+      "command": "direnv exec . pnpm run test",
       "problemMatcher": []
     }
   ]
