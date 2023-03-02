@@ -1715,9 +1715,9 @@ export declare const tap: {
 **Example**
 
 ```ts
-import * as O from "@effect/data/Option"
+import * as O from '@effect/data/Option'
 
-const getInteger = (n: number) => n === n.toFixed(0) ? O.some(n) : O.none()
+const getInteger = (n: number) => (Number.isInteger(n) ? O.some(n) : O.none())
 
 assert.deepStrictEqual(O.tap(O.none(), getInteger), O.none())
 assert.deepStrictEqual(O.tap(O.some(1), getInteger), O.some(1))
