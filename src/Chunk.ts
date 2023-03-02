@@ -200,6 +200,9 @@ class ChunkImpl<A> implements Chunk<A> {
         break
       }
     }
+    if (this.depth >= 1024) {
+      toReadonlyArray(this)
+    }
   }
 
   get array(): ReadonlyArray<A> {
