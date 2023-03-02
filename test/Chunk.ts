@@ -523,6 +523,16 @@ describe.concurrent("Chunk", () => {
           .toEqual(C.unsafeFromArray([1, 2, 3, 4, 5, 6]))
       })
     })
+
+    describe.concurrent("Given large left-appended chunk and large right-appended chunk", () => {
+      it("has the same depth", () => {
+        const size = 100_000
+        const left = upTo(size, "left")
+        const right = upTo(size, "right")
+
+        expect(left.depth).toEqual(right.depth)
+      })
+    })
     // TODO add tests for 100% coverage: left & right diff depths & depth > 0
   })
 
@@ -618,3 +628,17 @@ describe.concurrent("Chunk", () => {
     })
   })
 })
+
+function upTo(size: number, append: "left" | "right") {
+  let chunk = C.empty<number>()
+
+  for (let i = 0; i < size; i++) {
+    if (append === "left") {
+      chunk = chunk.append(i)
+    } else {
+      chunk = chunk.prepend(size - i)
+    }
+  }
+
+  return chunk
+}

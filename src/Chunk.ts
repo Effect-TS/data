@@ -311,7 +311,7 @@ class ChunkImpl<A> implements Chunk<A> {
         }
       }
     } else {
-      if (this.right.depth >= that.left.depth) {
+      if (that.right.depth >= that.left.depth) {
         const nl = concat(that.left)(this)
         return new ChunkImpl({ _tag: "IConcat", left: nl, right: that.right })
       } else {
