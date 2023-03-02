@@ -31,10 +31,6 @@
           nodejs-16_x
           nodePackages.pnpm
         ];
-        shellHook = ''
-          pnpm install;
-          pnpm run build;
-        '';
       };
     });
   };
