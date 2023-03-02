@@ -2,6 +2,7 @@ import * as C from "@effect/data/Chunk"
 import { equals } from "@effect/data/Equal"
 import { pipe } from "@effect/data/Function"
 import * as O from "@effect/data/Option"
+import * as RA from "@effect/data/ReadonlyArray"
 import * as fc from "fast-check"
 import { inspect } from "node:util"
 
@@ -78,6 +79,17 @@ describe.concurrent("Chunk", () => {
       const chunk = C.empty()
       it("should give back an empty readonly array", () => {
         expect(C.toReadonlyArray(chunk)).toEqual([])
+      })
+    })
+
+    describe.concurrent("Given a large Chunk", () => {
+      const len = 100_000
+      let chunk = C.empty<number>()
+      for (let i = 0; i < len; i++) chunk = C.of(i).concat(chunk)
+
+      it("gives back a readonly array", () => {
+        expect(() => C.toReadonlyArray(chunk)).not.toThrow()
+        expect(C.toReadonlyArray(chunk)).toEqual(RA.reverse(RA.range(0, len - 1)))
       })
     })
   })
