@@ -385,20 +385,21 @@ const copyToArray = <A>(self: Chunk<A>, array: Array<any>, initial: number): voi
   const toProcess: Array<[Chunk<any>, number]> = [[self, initial]]
 
   while (toProcess.length > 0) {
-    const [chunk, n] = toProcess.shift()!
+    const [chunk, n] = toProcess.pop()!
 
     switch (chunk.backing._tag) {
       case "IArray": {
         copy(chunk.backing.array, 0, array, n, chunk.length)
-        continue
+        break
       }
       case "IConcat": {
-        toProcess.push([chunk.left, n])
         toProcess.push([chunk.right, n + chunk.left.length])
-        continue
+        toProcess.push([chunk.left, n])
+        break
       }
       case "ISingleton": {
         array[n] = chunk.backing.a
+        break
       }
     }
   }
