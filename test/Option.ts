@@ -1,4 +1,3 @@
-import { equivalence } from "@effect/data"
 import * as E from "@effect/data/Either"
 import { pipe } from "@effect/data/Function"
 import * as N from "@effect/data/Number"
@@ -6,6 +5,7 @@ import * as _ from "@effect/data/Option"
 import * as ReadonlyArray from "@effect/data/ReadonlyArray"
 import * as S from "@effect/data/String"
 import * as Util from "@effect/data/test/util"
+import * as Equivalence from "@effect/data/typeclass/Equivalence"
 
 const p = (n: number): boolean => n > 2
 
@@ -434,7 +434,7 @@ describe.concurrent("Option", () => {
   })
 
   it("contains", () => {
-    const contains = _.contains(equivalence.number)
+    const contains = _.contains(Equivalence.number)
     Util.deepStrictEqual(pipe(_.none(), contains(2)), false)
     Util.deepStrictEqual(pipe(_.some(2), contains(2)), true)
     Util.deepStrictEqual(pipe(_.some(2), contains(1)), false)
