@@ -92,6 +92,22 @@ describe.concurrent("Chunk", () => {
         expect(C.toReadonlyArray(chunk)).toEqual(RA.reverse(RA.range(0, len - 1)))
       })
     })
+
+    describe(`Given an imbalanced left and right chunk`, () => {
+      const len = 1_000
+      let rchunk = C.empty<number>()
+      let lchunk = C.empty<number>()
+      for (let i = 0; i < len; i++) {
+        rchunk = C.of(i).concat(rchunk)
+        lchunk = lchunk.concat(C.of(i))
+      }
+      it("should have depth of +/- 3", () => {
+        expect(rchunk.depth)
+          .toBeGreaterThanOrEqual(lchunk.depth - 3)
+        expect(rchunk.depth)
+          .toBeLessThanOrEqual(lchunk.depth + 3)
+      })
+    })
   })
 
   describe.concurrent("is", () => {
