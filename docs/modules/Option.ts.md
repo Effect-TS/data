@@ -1712,6 +1712,18 @@ export declare const tap: {
 }
 ```
 
+**Example**
+
+```ts
+import * as O from '@effect/data/Option'
+
+const getInteger = (n: number) => (Number.isInteger(n) ? O.some(n) : O.none())
+
+assert.deepStrictEqual(O.tap(O.none(), getInteger), O.none())
+assert.deepStrictEqual(O.tap(O.some(1), getInteger), O.some(1))
+assert.deepStrictEqual(O.tap(O.some(1.14), getInteger), O.none())
+```
+
 Added in v1.0.0
 
 # type lambdas

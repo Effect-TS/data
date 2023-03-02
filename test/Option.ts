@@ -511,6 +511,13 @@ describe.concurrent("Option", () => {
     Util.deepStrictEqual(pipe(_.some(1), f), _.some(1))
   })
 
+  it("tap", () => {
+    Util.deepStrictEqual(_.tap(_.none(), () => _.none()), _.none())
+    Util.deepStrictEqual(_.tap(_.some(1), () => _.none()), _.none())
+    Util.deepStrictEqual(_.tap(_.none(), (n) => _.some(n * 2)), _.none())
+    Util.deepStrictEqual(_.tap(_.some(1), (n) => _.some(n * 2)), _.some(1))
+  })
+
   it("guard", () => {
     Util.deepStrictEqual(
       pipe(
