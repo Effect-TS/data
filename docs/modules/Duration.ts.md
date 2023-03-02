@@ -12,12 +12,6 @@ Added in v1.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [comparisons](#comparisons)
-  - [equals](#equals)
-  - [greaterThan](#greaterthan)
-  - [greaterThanOrEqualTo](#greaterthanorequalto)
-  - [lessThan](#lessthan)
-  - [lessThanOrEqualTo](#lessthanorequalto)
 - [constructors](#constructors)
   - [days](#days)
   - [hours](#hours)
@@ -30,93 +24,37 @@ Added in v1.0.0
 - [guards](#guards)
   - [isDuration](#isduration)
 - [instances](#instances)
+  - [Bounded](#bounded)
   - [Equivalence](#equivalence)
+  - [MonoidMax](#monoidmax)
+  - [MonoidMin](#monoidmin)
   - [MonoidSum](#monoidsum)
   - [Order](#order)
   - [SemigroupMax](#semigroupmax)
   - [SemigroupMin](#semigroupmin)
   - [SemigroupSum](#semigroupsum)
-- [models](#models)
-  - [Duration (interface)](#duration-interface)
-- [mutations](#mutations)
+- [math](#math)
   - [subtract](#subtract)
   - [sum](#sum)
   - [sumAll](#sumall)
   - [times](#times)
+- [models](#models)
+  - [Duration (interface)](#duration-interface)
+- [predicates](#predicates)
+  - [between](#between)
+  - [equals](#equals)
+  - [greaterThan](#greaterthan)
+  - [greaterThanOrEqualTo](#greaterthanorequalto)
+  - [lessThan](#lessthan)
+  - [lessThanOrEqualTo](#lessthanorequalto)
 - [symbol](#symbol)
   - [TypeId (type alias)](#typeid-type-alias)
 - [utils](#utils)
+  - [clamp](#clamp)
   - [max](#max)
   - [min](#min)
 
 ---
-
-# comparisons
-
-## equals
-
-**Signature**
-
-```ts
-export declare const equals: {
-  (that: Duration): (self: Duration) => boolean
-  (self: Duration, that: Duration): boolean
-}
-```
-
-Added in v1.0.0
-
-## greaterThan
-
-**Signature**
-
-```ts
-export declare const greaterThan: {
-  (that: Duration): (self: Duration) => boolean
-  (self: Duration, that: Duration): boolean
-}
-```
-
-Added in v1.0.0
-
-## greaterThanOrEqualTo
-
-**Signature**
-
-```ts
-export declare const greaterThanOrEqualTo: {
-  (self: Duration, that: Duration): boolean
-  (that: Duration): (self: Duration) => boolean
-}
-```
-
-Added in v1.0.0
-
-## lessThan
-
-**Signature**
-
-```ts
-export declare const lessThan: {
-  (that: Duration): (self: Duration) => boolean
-  (self: Duration, that: Duration): boolean
-}
-```
-
-Added in v1.0.0
-
-## lessThanOrEqualTo
-
-**Signature**
-
-```ts
-export declare const lessThanOrEqualTo: {
-  (self: Duration, that: Duration): boolean
-  (that: Duration): (self: Duration) => boolean
-}
-```
-
-Added in v1.0.0
 
 # constructors
 
@@ -214,12 +152,42 @@ Added in v1.0.0
 
 # instances
 
+## Bounded
+
+**Signature**
+
+```ts
+export declare const Bounded: bounded.Bounded<Duration>
+```
+
+Added in v1.0.0
+
 ## Equivalence
 
 **Signature**
 
 ```ts
 export declare const Equivalence: equivalence.Equivalence<Duration>
+```
+
+Added in v1.0.0
+
+## MonoidMax
+
+**Signature**
+
+```ts
+export declare const MonoidMax: monoid.Monoid<Duration>
+```
+
+Added in v1.0.0
+
+## MonoidMin
+
+**Signature**
+
+```ts
+export declare const MonoidMin: monoid.Monoid<Duration>
 ```
 
 Added in v1.0.0
@@ -274,22 +242,7 @@ export declare const SemigroupSum: semigroup.Semigroup<Duration>
 
 Added in v1.0.0
 
-# models
-
-## Duration (interface)
-
-**Signature**
-
-```ts
-export interface Duration {
-  readonly _id: TypeId
-  readonly millis: number
-}
-```
-
-Added in v1.0.0
-
-# mutations
+# math
 
 ## subtract
 
@@ -334,6 +287,103 @@ export declare const times: { (times: number): (self: Duration) => Duration; (se
 
 Added in v1.0.0
 
+# models
+
+## Duration (interface)
+
+**Signature**
+
+```ts
+export interface Duration {
+  readonly _id: TypeId
+  readonly millis: number
+}
+```
+
+Added in v1.0.0
+
+# predicates
+
+## between
+
+Checks if a `Duration` is between a `minimum` and `maximum` value.
+
+**Signature**
+
+```ts
+export declare const between: {
+  (minimum: Duration, maximum: Duration): (self: Duration) => boolean
+  (self: Duration, minimum: Duration, maximum: Duration): boolean
+}
+```
+
+Added in v1.0.0
+
+## equals
+
+**Signature**
+
+```ts
+export declare const equals: {
+  (that: Duration): (self: Duration) => boolean
+  (self: Duration, that: Duration): boolean
+}
+```
+
+Added in v1.0.0
+
+## greaterThan
+
+**Signature**
+
+```ts
+export declare const greaterThan: {
+  (that: Duration): (self: Duration) => boolean
+  (self: Duration, that: Duration): boolean
+}
+```
+
+Added in v1.0.0
+
+## greaterThanOrEqualTo
+
+**Signature**
+
+```ts
+export declare const greaterThanOrEqualTo: {
+  (self: Duration, that: Duration): boolean
+  (that: Duration): (self: Duration) => boolean
+}
+```
+
+Added in v1.0.0
+
+## lessThan
+
+**Signature**
+
+```ts
+export declare const lessThan: {
+  (that: Duration): (self: Duration) => boolean
+  (self: Duration, that: Duration): boolean
+}
+```
+
+Added in v1.0.0
+
+## lessThanOrEqualTo
+
+**Signature**
+
+```ts
+export declare const lessThanOrEqualTo: {
+  (self: Duration, that: Duration): boolean
+  (that: Duration): (self: Duration) => boolean
+}
+```
+
+Added in v1.0.0
+
 # symbol
 
 ## TypeId (type alias)
@@ -347,6 +397,19 @@ export type TypeId = typeof TypeId
 Added in v1.0.0
 
 # utils
+
+## clamp
+
+**Signature**
+
+```ts
+export declare const clamp: {
+  (minimum: Duration, maximum: Duration): (self: Duration) => Duration
+  (self: Duration, minimum: Duration, maximum: Duration): Duration
+}
+```
+
+Added in v1.0.0
 
 ## max
 

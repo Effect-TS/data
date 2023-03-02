@@ -1,5 +1,5 @@
 import * as Chunk from "@effect/data/Chunk"
-import type { Context } from "@effect/data/Context"
+import type { Context, Tag } from "@effect/data/Context"
 import type * as CP from "@effect/data/Differ/ContextPatch"
 import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
@@ -61,7 +61,7 @@ export class AddService<Env, T> implements CP.ContextPatch<Env, Env | T> {
   readonly _id: CP.TypeId = ContextPatchTypeId
   readonly _Input: (_: Env) => void = variance
   readonly _Output: (_: never) => Env | T = variance
-  constructor(readonly key: unknown, readonly service: T) {}
+  constructor(readonly tag: Tag<T>, readonly service: T) {}
 
   [Hash.symbol]() {
     return Hash.string(`ContextPatch(AddService)`)
@@ -70,7 +70,7 @@ export class AddService<Env, T> implements CP.ContextPatch<Env, Env | T> {
   [Equal.symbol](that: unknown) {
     return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
       "_tag" in that && that["_tag"] === this._id &&
-      Equal.equals(this.key, (that as this).key) &&
+      Equal.equals(this.tag, (that as this).tag) &&
       Equal.equals(this.service, (that as this).service)
   }
 }
@@ -81,7 +81,7 @@ export class RemoveService<Env, T> implements CP.ContextPatch<Env | T, Env> {
   readonly _id: CP.TypeId = ContextPatchTypeId
   readonly _Input: (_: Env | T) => void = variance
   readonly _Output: (_: never) => Env = variance
-  constructor(readonly key: unknown) {}
+  constructor(readonly tag: Tag<T>) {}
 
   [Hash.symbol]() {
     return Hash.string(`ContextPatch(RemoveService)`)
@@ -90,7 +90,7 @@ export class RemoveService<Env, T> implements CP.ContextPatch<Env | T, Env> {
   [Equal.symbol](that: unknown) {
     return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
       "_tag" in that && that["_tag"] === this._id &&
-      Equal.equals(this.key, (that as this).key)
+      Equal.equals(this.tag, (that as this).tag)
   }
 }
 
@@ -101,7 +101,7 @@ export class UpdateService<Env, T> implements CP.ContextPatch<Env | T, Env | T> 
   readonly _Input: (_: Env | T) => void = variance
   readonly _Output: (_: never) => Env | T = variance
   constructor(
-    readonly key: unknown,
+    readonly tag: Tag<T>,
     readonly update: (service: T) => T
   ) {
   }
@@ -113,7 +113,7 @@ export class UpdateService<Env, T> implements CP.ContextPatch<Env | T, Env | T> 
   [Equal.symbol](that: unknown) {
     return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
       "_tag" in that && that["_tag"] === this._id &&
-      Equal.equals(this.key, (that as this).key) &&
+      Equal.equals(this.tag, (that as this).tag) &&
       Equal.equals(this.update, (that as this).update)
   }
 }
@@ -182,7 +182,7 @@ export const patch = Dual.dual<
   let patches: Chunk.Chunk<CP.ContextPatch<unknown, unknown>> = Chunk.of(
     self as CP.ContextPatch<unknown, unknown>
   )
-  const updatedContext: Map<unknown, unknown> = new Map(context.unsafeMap)
+  const updatedContext: Map<Tag<any>, unknown> = new Map(context.unsafeMap)
   while (Chunk.isNonEmpty(patches)) {
     const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
     const tail = Chunk.tailNonEmpty(patches)
@@ -192,7 +192,7 @@ export const patch = Dual.dual<
         break
       }
       case "AddService": {
-        updatedContext.set(head.key, head.service)
+        updatedContext.set(head.tag, head.service)
         patches = tail
         break
       }
@@ -201,12 +201,12 @@ export const patch = Dual.dual<
         break
       }
       case "RemoveService": {
-        updatedContext.delete(head.key)
+        updatedContext.delete(head.tag)
         patches = tail
         break
       }
       case "UpdateService": {
-        updatedContext.set(head.key, head.update(updatedContext.get(head.key)))
+        updatedContext.set(head.tag, head.update(updatedContext.get(head.tag)))
         wasServiceUpdated = true
         patches = tail
         break

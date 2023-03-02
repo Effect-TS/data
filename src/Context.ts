@@ -23,10 +23,9 @@ export type TagTypeId = typeof TagTypeId
  * @since 1.0.0
  * @category models
  */
-export interface Tag<Service> extends Equal {
+export interface Tag<Service> {
   readonly _id: TagTypeId
   readonly _S: (_: Service) => Service
-  readonly key: unknown
 }
 
 /**
@@ -50,8 +49,8 @@ export declare namespace Tag {
  * @example
  * import * as Context from "@effect/data/Context"
  *
- * assert.strictEqual(Context.Tag().key === Context.Tag().key, false)
- * assert.strictEqual(Context.Tag("PORT").key === Context.Tag("PORT").key, true)
+ * assert.strictEqual(Context.Tag() === Context.Tag(), false)
+ * assert.strictEqual(Context.Tag("PORT") === Context.Tag("PORT"), true)
  *
  * @since 1.0.0
  * @category constructors
@@ -80,7 +79,7 @@ export interface Context<Services> extends Equal {
   readonly _id: TypeId
   readonly _S: (_: Services) => unknown
   /** @internal */
-  readonly unsafeMap: Map<unknown, unknown>
+  readonly unsafeMap: Map<Tag<any>, any>
 }
 
 /**
