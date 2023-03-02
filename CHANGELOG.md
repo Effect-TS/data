@@ -1,5 +1,13 @@
 # @effect/data
 
+## 0.3.1
+
+### Patch Changes
+
+- [#248](https://github.com/Effect-TS/data/pull/248) [`d5a00df`](https://github.com/Effect-TS/data/commit/d5a00df278226520f54c70f002b9ea5672ee638d) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Compact chunk based on depth
+
+- [#250](https://github.com/Effect-TS/data/pull/250) [`d077142`](https://github.com/Effect-TS/data/commit/d07714244df3ac716e0ef0e3ef74041ddc2201c2) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Fix balancing of Chunk
+
 ## 0.3.0
 
 ### Minor Changes
