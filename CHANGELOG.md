@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.3.2
+
+### Patch Changes
+
+- [#256](https://github.com/Effect-TS/data/pull/256) [`1958bd1`](https://github.com/Effect-TS/data/commit/1958bd12ee313a8a91fbf08719b31916f10b79bf) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Preserve global state across module reloads
+
 ## 0.3.1
 
 ### Patch Changes
