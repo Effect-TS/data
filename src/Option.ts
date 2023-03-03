@@ -1239,6 +1239,15 @@ export const partitionMap: {
  * @param self - The `Option` to map over.
  * @param f - A function to apply to the value of the `Option`.
  *
+ * @example
+ * import * as O from "@effect/data/Option"
+ *
+ * const evenNumber = (n: number) => n % 2 === 0 ? O.some(n) : O.none()
+ *
+ * assert.deepStrictEqual(O.filterMap(O.none(), evenNumber), O.none())
+ * assert.deepStrictEqual(O.filterMap(O.some(3), evenNumber), O.none())
+ * assert.deepStrictEqual(O.filterMap(O.some(2), evenNumber), O.some(2))
+ *
  * @category filtering
  * @since 1.0.0
  */

@@ -983,6 +983,18 @@ export declare const filterMap: {
 }
 ```
 
+**Example**
+
+```ts
+import * as O from "@effect/data/Option"
+
+const evenNumber = (n: number) => n % 2 === 0 ? O.some(n) : O.none()
+
+assert.deepStrictEqual(O.filterMap(O.none(), evenNumber), O.none())
+assert.deepStrictEqual(O.filterMap(O.some(3), evenNumber), O.none())
+assert.deepStrictEqual(O.filterMap(O.some(2), evenNumber), O.some(2))
+```
+
 Added in v1.0.0
 
 ## partitionMap
