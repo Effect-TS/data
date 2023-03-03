@@ -52,8 +52,17 @@ export const number: Bounded<number> = {
 }
 
 /**
+ * Checks if a value is between the lower and upper limit of a bound.
+ *
+ * @category predicates
+ * @since 1.0.0
+ */
+export const between = <A>(B: Bounded<A>): (a: A) => boolean => order.between(B)(B.minBound, B.maxBound)
+
+/**
  * Clamp a value between `minBound` and `maxBound` values.
  *
+ * @category utils
  * @since 1.0.0
  */
 export const clamp = <A>(B: Bounded<A>): (a: A) => A => order.clamp(B)(B.minBound, B.maxBound)
@@ -61,6 +70,7 @@ export const clamp = <A>(B: Bounded<A>): (a: A) => A => order.clamp(B)(B.minBoun
 /**
  * Reverses the `Order` of a `Bounded` and flips `maxBound` and `minBound` values.
  *
+ * @category utils
  * @since 1.0.0
  */
 export const reverse = <A>(B: Bounded<A>): Bounded<A> => ({
