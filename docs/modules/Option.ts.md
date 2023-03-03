@@ -966,6 +966,24 @@ export declare const filter: {
 }
 ```
 
+```ts
+import * as O from "@effect/core/Option/Option"
+
+// predicate
+const isEven = (n: number) => n % 2 === 0
+
+assert.deepStrictEqual(filter(O.none(), isEven), O.none())
+assert.deepStrictEqual(filter(O.some(3), isEven), O.none())
+assert.deepStrictEqual(filter(O.some(2), isEven), O.some(2))
+ 
+// refinement
+const isNumber = (v: unknown): v is number => typeof v === "number"
+
+assert.deepStrictEqual(filter(O.none(), isNumber), O.none())
+assert.deepStrictEqual(filter(O.some('hello'), isNumber), O.none())
+assert.deepStrictEqual(filter(O.some(2), isNumber), O.some(2))
+```
+
 Added in v1.0.0
 
 ## filterMap
