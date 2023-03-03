@@ -1037,6 +1037,20 @@ export const getOptionalMonoid = <A>(
  * @param that - The right-hand side of the zip operation
  * @param f - The function used to combine the values of the two `Option`s
  *
+ * @example
+ * import * as O from "@effect/data/Option"
+ *
+ * type Complex = [number, number]
+ *
+ * const complex = (real: number, imaginary: number): Complex => [real, imaginary]
+ *
+ * assert.deepStrictEqual(O.zipWith(O.none(), O.none(), complex), O.none())
+ * assert.deepStrictEqual(O.zipWith(O.some(1), O.none(), complex), O.none())
+ * assert.deepStrictEqual(O.zipWith(O.none(), O.some(1), complex), O.none())
+ * assert.deepStrictEqual(O.zipWith(O.some(1), O.some(2), complex), O.some([1, 2]))
+ *
+ * assert.deepStrictEqual(O.zipWith(O.some(1), complex)(O.some(2)), O.some([2, 1]))
+ *
  * @category combining
  * @since 1.0.0
  */
