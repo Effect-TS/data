@@ -12,7 +12,7 @@ const globalStore = globalThis[globalStoreId] as Map<unknown, any>
 /**
  * @since 1.0.0
  */
-export const value = <A>(id: unknown, compute: () => A): A => {
+export const globalValue = <A>(id: unknown, compute: () => A): A => {
   if (!globalStore.has(id)) {
     globalStore.set(id, compute())
   }

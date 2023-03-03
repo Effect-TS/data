@@ -15,7 +15,7 @@ export class TagImpl<Service> implements C.Tag<Service> {
   readonly _S: (_: Service) => Service = (_) => _
   constructor(id?: unknown) {
     if (typeof id !== "undefined") {
-      return G.value(id, () => this)
+      return G.globalValue(id, () => this)
     }
   }
 }
