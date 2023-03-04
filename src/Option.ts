@@ -1290,7 +1290,7 @@ export const Filterable: filterable.Filterable<OptionTypeLambda> = {
  * @param fb - The `Option` to filter.
  *
  * @example
- * import * as O from "@effect/core/Option/Option"
+ * import * as O from "@effect/data/Option"
  *
  * // predicate
  * const isEven = (n: number) => n % 2 === 0

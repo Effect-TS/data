@@ -984,7 +984,7 @@ export declare const filter: {
 ```
 
 ```ts
-import * as O from "@effect/core/Option/Option"
+import * as O from "@effect/data/Option"
 
 // predicate
 const isEven = (n: number) => n % 2 === 0
