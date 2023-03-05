@@ -1037,6 +1037,20 @@ export const getOptionalMonoid = <A>(
  * @param that - The right-hand side of the zip operation
  * @param f - The function used to combine the values of the two `Option`s
  *
+ * @example
+ * import * as O from "@effect/data/Option"
+ *
+ * type Complex = [number, number]
+ *
+ * const complex = (real: number, imaginary: number): Complex => [real, imaginary]
+ *
+ * assert.deepStrictEqual(O.zipWith(O.none(), O.none(), complex), O.none())
+ * assert.deepStrictEqual(O.zipWith(O.some(1), O.none(), complex), O.none())
+ * assert.deepStrictEqual(O.zipWith(O.none(), O.some(1), complex), O.none())
+ * assert.deepStrictEqual(O.zipWith(O.some(1), O.some(2), complex), O.some([1, 2]))
+ *
+ * assert.deepStrictEqual(O.zipWith(O.some(1), complex)(O.some(2)), O.some([2, 1]))
+ *
  * @category combining
  * @since 1.0.0
  */
@@ -1239,6 +1253,15 @@ export const partitionMap: {
  * @param self - The `Option` to map over.
  * @param f - A function to apply to the value of the `Option`.
  *
+ * @example
+ * import * as O from "@effect/data/Option"
+ *
+ * const evenNumber = (n: number) => n % 2 === 0 ? O.some(n) : O.none()
+ *
+ * assert.deepStrictEqual(O.filterMap(O.none(), evenNumber), O.none())
+ * assert.deepStrictEqual(O.filterMap(O.some(3), evenNumber), O.none())
+ * assert.deepStrictEqual(O.filterMap(O.some(2), evenNumber), O.some(2))
+ *
  * @category filtering
  * @since 1.0.0
  */
@@ -1265,6 +1288,23 @@ export const Filterable: filterable.Filterable<OptionTypeLambda> = {
  *
  * @param predicate - A predicate function to apply to the `Option` value.
  * @param fb - The `Option` to filter.
+ *
+ * @example
+ * import * as O from "@effect/data/Option"
+ *
+ * // predicate
+ * const isEven = (n: number) => n % 2 === 0
+ *
+ * assert.deepStrictEqual(O.filter(O.none(), isEven), O.none())
+ * assert.deepStrictEqual(O.filter(O.some(3), isEven), O.none())
+ * assert.deepStrictEqual(O.filter(O.some(2), isEven), O.some(2))
+ *
+ * // refinement
+ * const isNumber = (v: unknown): v is number => typeof v === "number"
+ *
+ * assert.deepStrictEqual(O.filter(O.none(), isNumber), O.none())
+ * assert.deepStrictEqual(O.filter(O.some('hello'), isNumber), O.none())
+ * assert.deepStrictEqual(O.filter(O.some(2), isNumber), O.some(2))
  *
  * @category filtering
  * @since 1.0.0

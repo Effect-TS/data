@@ -359,6 +359,23 @@ export declare const zipWith: {
 }
 ```
 
+**Example**
+
+```ts
+import * as O from "@effect/data/Option"
+
+type Complex = [number, number]
+
+const complex = (real: number, imaginary: number): Complex => [real, imaginary]
+
+assert.deepStrictEqual(O.zipWith(O.none(), O.none(), complex), O.none())
+assert.deepStrictEqual(O.zipWith(O.some(1), O.none(), complex), O.none())
+assert.deepStrictEqual(O.zipWith(O.none(), O.some(1), complex), O.none())
+assert.deepStrictEqual(O.zipWith(O.some(1), O.some(2), complex), O.some([1, 2]))
+
+assert.deepStrictEqual(O.zipWith(O.some(1), complex)(O.some(2)), O.some([2, 1]))
+```
+
 Added in v1.0.0
 
 # constructors
@@ -966,6 +983,24 @@ export declare const filter: {
 }
 ```
 
+```ts
+import * as O from "@effect/data/Option"
+
+// predicate
+const isEven = (n: number) => n % 2 === 0
+
+assert.deepStrictEqual(O.filter(O.none(), isEven), O.none())
+assert.deepStrictEqual(O.filter(O.some(3), isEven), O.none())
+assert.deepStrictEqual(O.filter(O.some(2), isEven), O.some(2))
+ 
+// refinement
+const isNumber = (v: unknown): v is number => typeof v === "number"
+
+assert.deepStrictEqual(O.filter(O.none(), isNumber), O.none())
+assert.deepStrictEqual(O.filter(O.some('hello'), isNumber), O.none())
+assert.deepStrictEqual(O.filter(O.some(2), isNumber), O.some(2))
+```
+
 Added in v1.0.0
 
 ## filterMap
@@ -981,6 +1016,18 @@ export declare const filterMap: {
   <A, B>(f: (a: A) => Option<B>): (self: Option<A>) => Option<B>
   <A, B>(self: Option<A>, f: (a: A) => Option<B>): Option<B>
 }
+```
+
+**Example**
+
+```ts
+import * as O from "@effect/data/Option"
+
+const evenNumber = (n: number) => n % 2 === 0 ? O.some(n) : O.none()
+
+assert.deepStrictEqual(O.filterMap(O.none(), evenNumber), O.none())
+assert.deepStrictEqual(O.filterMap(O.some(3), evenNumber), O.none())
+assert.deepStrictEqual(O.filterMap(O.some(2), evenNumber), O.some(2))
 ```
 
 Added in v1.0.0
