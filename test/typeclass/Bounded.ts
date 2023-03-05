@@ -17,4 +17,13 @@ describe.concurrent("Bounded", () => {
     U.deepStrictEqual(B.maxBound, 10)
     U.deepStrictEqual(B.minBound, 1)
   })
+
+  it("between", () => {
+    const between = _.between({ ...Number.Order, minBound: 0, maxBound: 5 })
+    U.deepStrictEqual(between(-1), false)
+    U.deepStrictEqual(between(0), true)
+    U.deepStrictEqual(between(2), true)
+    U.deepStrictEqual(between(5), true)
+    U.deepStrictEqual(between(6), false)
+  })
 })

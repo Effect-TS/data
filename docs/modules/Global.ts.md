@@ -13,18 +13,18 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [utils](#utils)
-  - [value](#value)
+  - [globalValue](#globalvalue)
 
 ---
 
 # utils
 
-## value
+## globalValue
 
 **Signature**
 
 ```ts
-export declare const value: <A>(id: unknown, compute: () => A) => A
+export declare const globalValue: <A>(id: unknown, compute: () => A) => A
 ```
 
 Added in v1.0.0

@@ -2,12 +2,19 @@
  * @since 1.0.0
  */
 import { pipe } from "@effect/data/Function"
+import { globalValue } from "@effect/data/Global"
 import { PCGRandom } from "@effect/data/Random"
 
 /** @internal */
-const randomHashCache = new WeakMap<object, number>()
+const randomHashCache = globalValue(
+  Symbol.for("@effect/data/Hash/randomHashCache"),
+  () => new WeakMap<object, number>()
+)
 /** @internal */
-const pcgr = new PCGRandom()
+const pcgr = globalValue(
+  Symbol.for("@effect/data/Hash/pcgr"),
+  () => new PCGRandom()
+)
 
 /**
  * @since 1.0.0
