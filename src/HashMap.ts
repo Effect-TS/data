@@ -6,7 +6,6 @@ import type { Equal } from "@effect/data/Equal"
 import type { HashSet } from "@effect/data/HashSet"
 import * as HM from "@effect/data/internal/HashMap"
 import * as _keySet from "@effect/data/internal/HashMap/keySet"
-import type { UpdateFn } from "@effect/data/internal/HashMap/node"
 import type { Option } from "@effect/data/Option"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 
@@ -24,6 +23,17 @@ export type TypeId = typeof TypeId
  */
 export interface HashMap<Key, Value> extends Iterable<readonly [Key, Value]>, Equal {
   readonly _id: TypeId
+}
+
+/**
+ * @since 1.0.0
+ */
+export declare namespace HashMap {
+  /**
+   * @since 1.0.0
+   * @category models
+   */
+  export type UpdateFn<V> = (option: Option<V>) => Option<V>
 }
 
 /**
@@ -213,8 +223,8 @@ export const mutate: {
  * @category mutations
  */
 export const modifyAt: {
-  <K, V>(key: K, f: UpdateFn<V>): (self: HashMap<K, V>) => HashMap<K, V>
-  <K, V>(self: HashMap<K, V>, key: K, f: UpdateFn<V>): HashMap<K, V>
+  <K, V>(key: K, f: HashMap.UpdateFn<V>): (self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, key: K, f: HashMap.UpdateFn<V>): HashMap<K, V>
 } = HM.modifyAt
 
 /**
@@ -231,8 +241,8 @@ export const modifyAt: {
  * @category mutations
  */
 export const modifyHash: {
-  <K, V>(key: K, hash: number, f: UpdateFn<V>): (self: HashMap<K, V>) => HashMap<K, V>
-  <K, V>(self: HashMap<K, V>, key: K, hash: number, f: UpdateFn<V>): HashMap<K, V>
+  <K, V>(key: K, hash: number, f: HashMap.UpdateFn<V>): (self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, key: K, hash: number, f: HashMap.UpdateFn<V>): HashMap<K, V>
 } = HM.modifyHash
 
 /**
