@@ -1,5 +1,15 @@
 # @effect/data
 
+## 0.3.3
+
+### Patch Changes
+
+- [#260](https://github.com/Effect-TS/data/pull/260) [`08892ac`](https://github.com/Effect-TS/data/commit/08892acf39aeb3e663e694aa7e9ccfd9a9aaaca5) Thanks [@jessekelly881](https://github.com/jessekelly881)! - Bounded: added between
+
+- [#263](https://github.com/Effect-TS/data/pull/263) [`7121c64`](https://github.com/Effect-TS/data/commit/7121c64daa2e91f81393b18f758bd29aba1255fb) Thanks [@IMax153](https://github.com/IMax153)! - fix un-exported HashMap.UpdateFn type
+
+- [#262](https://github.com/Effect-TS/data/pull/262) [`dd3b814`](https://github.com/Effect-TS/data/commit/dd3b814c8fe7b41f8b501ef334b278722460e12d) Thanks [@IMax153](https://github.com/IMax153)! - allow dual to support optional args
+
 ## 0.3.2
 
 ### Patch Changes
