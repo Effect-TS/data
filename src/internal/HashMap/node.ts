@@ -1,4 +1,5 @@
 import { equals } from "@effect/data/Equal"
+import type { HashMap } from "@effect/data/HashMap"
 import { arraySpliceIn, arraySpliceOut, arrayUpdate } from "@effect/data/internal/HashMap/array"
 import { fromBitmap, hashFragment, toBitmap } from "@effect/data/internal/HashMap/bitwise"
 import { MAX_INDEX_NODE, MIN_ARRAY_NODE, SIZE } from "@effect/data/internal/HashMap/config"
@@ -25,7 +26,7 @@ export class EmptyNode<K, V> {
   modify(
     edit: number,
     _shift: number,
-    f: UpdateFn<V>,
+    f: HashMap.UpdateFn<V>,
     hash: number,
     key: K,
     size: SizeRef
@@ -55,9 +56,6 @@ export function canEditNode<K, V>(node: Node<K, V>, edit: number): boolean {
 }
 
 /** @internal */
-export type UpdateFn<V> = (v: O.Option<V>) => O.Option<V>
-
-/** @internal */
 export class LeafNode<K, V> {
   readonly _tag = "LeafNode"
 
@@ -71,7 +69,7 @@ export class LeafNode<K, V> {
   modify(
     edit: number,
     shift: number,
-    f: UpdateFn<V>,
+    f: HashMap.UpdateFn<V>,
     hash: number,
     key: K,
     size: SizeRef
@@ -116,7 +114,7 @@ export class CollisionNode<K, V> {
   modify(
     edit: number,
     shift: number,
-    f: UpdateFn<V>,
+    f: HashMap.UpdateFn<V>,
     hash: number,
     key: K,
     size: SizeRef
@@ -154,7 +152,7 @@ export class CollisionNode<K, V> {
     edit: number,
     hash: number,
     list: Array<Node<K, V>>,
-    f: UpdateFn<V>,
+    f: HashMap.UpdateFn<V>,
     key: K,
     size: SizeRef
   ) {
@@ -193,7 +191,7 @@ export class IndexedNode<K, V> {
   modify(
     edit: number,
     shift: number,
-    f: UpdateFn<V>,
+    f: HashMap.UpdateFn<V>,
     hash: number,
     key: K,
     size: SizeRef
@@ -257,7 +255,7 @@ export class ArrayNode<K, V> {
   modify(
     edit: number,
     shift: number,
-    f: UpdateFn<V>,
+    f: HashMap.UpdateFn<V>,
     hash: number,
     key: K,
     size: SizeRef

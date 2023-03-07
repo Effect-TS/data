@@ -334,15 +334,15 @@ export const mutate = Dual.dual<
 
 /** @internal */
 export const modifyAt = Dual.dual<
-  <K, V>(key: K, f: Node.UpdateFn<V>) => (self: HM.HashMap<K, V>) => HM.HashMap<K, V>,
-  <K, V>(self: HM.HashMap<K, V>, key: K, f: Node.UpdateFn<V>) => HM.HashMap<K, V>
+  <K, V>(key: K, f: HM.HashMap.UpdateFn<V>) => (self: HM.HashMap<K, V>) => HM.HashMap<K, V>,
+  <K, V>(self: HM.HashMap<K, V>, key: K, f: HM.HashMap.UpdateFn<V>) => HM.HashMap<K, V>
 >(3, (self, key, f) => modifyHash(self, key, Hash.hash(key), f))
 
 /** @internal */
 export const modifyHash = Dual.dual<
-  <K, V>(key: K, hash: number, f: Node.UpdateFn<V>) => (self: HM.HashMap<K, V>) => HM.HashMap<K, V>,
-  <K, V>(self: HM.HashMap<K, V>, key: K, hash: number, f: Node.UpdateFn<V>) => HM.HashMap<K, V>
->(4, <K, V>(self: HM.HashMap<K, V>, key: K, hash: number, f: Node.UpdateFn<V>) => {
+  <K, V>(key: K, hash: number, f: HM.HashMap.UpdateFn<V>) => (self: HM.HashMap<K, V>) => HM.HashMap<K, V>,
+  <K, V>(self: HM.HashMap<K, V>, key: K, hash: number, f: HM.HashMap.UpdateFn<V>) => HM.HashMap<K, V>
+>(4, <K, V>(self: HM.HashMap<K, V>, key: K, hash: number, f: HM.HashMap.UpdateFn<V>) => {
   const size = { value: (self as HashMapImpl<K, V>)._size }
   const newRoot = (self as HashMapImpl<K, V>)._root.modify(
     (self as HashMapImpl<K, V>)._editable ?
