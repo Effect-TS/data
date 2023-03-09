@@ -173,60 +173,6 @@ export interface MutableRef<T> {
 
   /** @internal */
   current: T
-
-  /**
-   * @since 1.0.0
-   * @category general
-   */
-  get<T>(this: MutableRef<T>): T
-
-  /**
-   * @since 1.0.0
-   * @category general
-   */
-  set<T>(this: MutableRef<T>, value: T): MutableRef<T>
-
-  /**
-   * @since 1.0.0
-   * @category general
-   */
-  update<T>(this: MutableRef<T>, f: (value: T) => T): MutableRef<T>
-
-  /**
-   * @since 1.0.0
-   * @category general
-   */
-  updateAndGet<T>(this: MutableRef<T>, f: (value: T) => T): T
-
-  /**
-   * @since 1.0.0
-   * @category general
-   */
-  getAndUpdate<T>(this: MutableRef<T>, f: (value: T) => T): T
-
-  /**
-   * @since 1.0.0
-   * @category general
-   */
-  setAndGet<T>(this: MutableRef<T>, value: T): T
-
-  /**
-   * @since 1.0.0
-   * @category general
-   */
-  getAndSet<T>(this: MutableRef<T>, value: T): T
-
-  /**
-   * @since 1.0.0
-   * @category general
-   */
-  compareAndSet<T>(this: MutableRef<T>, oldValue: T, newValue: T): boolean
-
-  /**
-   * @since 1.0.0
-   * @category general
-   */
-  pipe<T, B>(this: MutableRef<T>, f: (_: MutableRef<T>) => B): B
 }
 ```
 
