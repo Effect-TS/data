@@ -31,10 +31,6 @@ class MutableHashSetImpl<V> implements MutableHashSet<V> {
 
   constructor(readonly keyMap: MutableHashMap.MutableHashMap<V, boolean>) {}
 
-  get length() {
-    return this.keyMap.length
-  }
-
   [Symbol.iterator](): Iterator<V> {
     return Array.from(this.keyMap).map(([_]) => _)[Symbol.iterator]()
   }

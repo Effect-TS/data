@@ -17,6 +17,8 @@ Added in v1.0.0
   - [min](#min)
 - [instances](#instances)
   - [number](#number)
+- [predicates](#predicates)
+  - [between](#between)
 - [type class](#type-class)
   - [Bounded (interface)](#bounded-interface)
 - [type lambdas](#type-lambdas)
@@ -61,6 +63,20 @@ Added in v1.0.0
 
 ```ts
 export declare const number: Bounded<number>
+```
+
+Added in v1.0.0
+
+# predicates
+
+## between
+
+Checks if a value is between the lower and upper limit of a bound.
+
+**Signature**
+
+```ts
+export declare const between: <A>(B: Bounded<A>) => (a: A) => boolean
 ```
 
 Added in v1.0.0
