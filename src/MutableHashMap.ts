@@ -1,9 +1,9 @@
 /**
  * @since 1.0.0
  */
-import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
-import * as Hash from "@effect/data/Hash"
+import * as HashMap from "@effect/data/HashMap"
+import * as MutableRef from "@effect/data/MutableRef"
 import * as Option from "@effect/data/Option"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/MutableHashMap") as TypeId
@@ -14,35 +14,6 @@ const TypeId: unique symbol = Symbol.for("@effect/data/MutableHashMap") as TypeI
  */
 export type TypeId = typeof TypeId
 
-/** @internal */
-class Node<K, V> implements Iterable<readonly [K, V]> {
-  constructor(readonly k: K, public v: V, public next?: Node<K, V>) {}
-
-  [Symbol.iterator](): Iterator<readonly [K, V]> {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    let c: Node<K, V> | undefined = this
-    let n = 0
-    return {
-      next: () => {
-        if (c) {
-          const kv = [c.k, c.v] as const
-          c = c.next
-          n++
-          return {
-            value: kv,
-            done: false
-          }
-        } else {
-          return {
-            value: n,
-            done: true
-          }
-        }
-      }
-    }
-  }
-}
-
 /**
  * @since 1.0.0
  * @category models
@@ -51,30 +22,17 @@ export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]> {
   readonly _id: TypeId
 
   /** @internal */
-  readonly backingMap: Map<number, Node<K, V>>
-  /** @internal */
-  length: number
+  readonly backingMap: MutableRef.MutableRef<HashMap.HashMap<K, V>>
 }
 
 /** @internal */
 class MutableHashMapImpl<K, V> implements MutableHashMap<K, V> {
   readonly _id: TypeId = TypeId
 
-  readonly backingMap = new Map<number, Node<K, V>>()
-
-  length = 0;
+  readonly backingMap = MutableRef.make(HashMap.empty());
 
   [Symbol.iterator](): Iterator<readonly [K, V]> {
-    return Array.from(this.backingMap.values())
-      .flatMap((node) => {
-        const arr = [[node.k, node.v] as const]
-        let next = node.next
-        while (next) {
-          arr.push([next.k, next.v])
-          next = next.next
-        }
-        return arr
-      })[Symbol.iterator]()
+    return this.backingMap.current[Symbol.iterator]()
   }
 
   toString() {
@@ -132,21 +90,7 @@ export const get: {
 } = Dual.dual<
   <K>(key: K) => <V>(self: MutableHashMap<K, V>) => Option.Option<V>,
   <K, V>(self: MutableHashMap<K, V>, key: K) => Option.Option<V>
->(2, <K, V>(self: MutableHashMap<K, V>, key: K) => {
-  const hash = Hash.hash(key)
-  const arr = self.backingMap.get(hash)
-  if (arr === undefined) {
-    return Option.none()
-  }
-  let c: Node<K, V> | undefined = arr
-  while (c !== undefined) {
-    if (Equal.equals(key, c.k)) {
-      return Option.some(c.v)
-    }
-    c = c.next
-  }
-  return Option.none()
-})
+>(2, <K, V>(self: MutableHashMap<K, V>, key: K) => HashMap.get(self.backingMap.current, key))
 
 /**
  * @since 1.0.0
@@ -172,22 +116,13 @@ export const modify: {
 } = Dual.dual<
   <K, V>(key: K, f: (v: V) => V) => (self: MutableHashMap<K, V>) => MutableHashMap<K, V>,
   <K, V>(self: MutableHashMap<K, V>, key: K, f: (v: V) => V) => MutableHashMap<K, V>
->(3, <K, V>(self: MutableHashMap<K, V>, key: K, f: (v: V) => V) => {
-  const hash = Hash.hash(key)
-  const arr = self.backingMap.get(hash)
-  if (arr === undefined) {
+>(
+  3,
+  <K, V>(self: MutableHashMap<K, V>, key: K, f: (v: V) => V) => {
+    MutableRef.update(self.backingMap, HashMap.modify(key, f))
     return self
   }
-  let c: Node<K, V> | undefined = arr
-  while (c !== undefined) {
-    if (Equal.equals(key, c.k)) {
-      c.v = f(c.v)
-      return self
-    }
-    c = c.next
-  }
-  return self
-})
+)
 
 /**
  * Set or remove the specified key in the `MutableHashMap` using the specified
@@ -230,31 +165,7 @@ export const remove: {
   <K>(key: K) => <V>(self: MutableHashMap<K, V>) => MutableHashMap<K, V>,
   <K, V>(self: MutableHashMap<K, V>, key: K) => MutableHashMap<K, V>
 >(2, <K, V>(self: MutableHashMap<K, V>, key: K) => {
-  const hash = Hash.hash(key)
-  const arr = self.backingMap.get(hash)
-  if (arr === undefined) {
-    return self
-  }
-  if (Equal.equals(key, arr.k)) {
-    if (arr.next !== undefined) {
-      self.backingMap.set(hash, arr.next)
-    } else {
-      self.backingMap.delete(hash)
-    }
-    self.length = self.length - 1
-    return self
-  }
-  let next: Node<K, V> | undefined = arr.next
-  let curr = arr
-  while (next !== undefined) {
-    if (Equal.equals(key, next.k)) {
-      curr.next = next.next
-      self.length = self.length - 1
-      return self
-    }
-    curr = next
-    next = next.next
-  }
+  MutableRef.update(self.backingMap, HashMap.remove(key))
   return self
 })
 
@@ -269,25 +180,7 @@ export const set: {
   <K, V>(key: K, value: V) => (self: MutableHashMap<K, V>) => MutableHashMap<K, V>,
   <K, V>(self: MutableHashMap<K, V>, key: K, value: V) => MutableHashMap<K, V>
 >(3, <K, V>(self: MutableHashMap<K, V>, key: K, value: V) => {
-  const hash = Hash.hash(key)
-  const arr = self.backingMap.get(hash)
-  if (arr === undefined) {
-    self.backingMap.set(hash, new Node(key, value))
-    self.length = self.length + 1
-    return self
-  }
-  let c: Node<K, V> | undefined = arr
-  let l = arr
-  while (c !== undefined) {
-    if (Equal.equals(key, c.k)) {
-      c.v = value
-      return self
-    }
-    l = c
-    c = c.next
-  }
-  self.length = self.length + 1
-  l.next = new Node(key, value)
+  MutableRef.update(self.backingMap, HashMap.set(key, value))
   return self
 })
 
@@ -295,4 +188,4 @@ export const set: {
  * @since 1.0.0
  * @category elements
  */
-export const size = <K, V>(self: MutableHashMap<K, V>): number => self.length
+export const size = <K, V>(self: MutableHashMap<K, V>): number => HashMap.size(MutableRef.get(self.backingMap))

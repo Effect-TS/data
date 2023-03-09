@@ -451,8 +451,8 @@ exists, or `None` if no such value exists.
 
 ```ts
 export declare const modifyAt: {
-  <K, V>(key: K, f: UpdateFn<V>): (self: HashMap<K, V>) => HashMap<K, V>
-  <K, V>(self: HashMap<K, V>, key: K, f: UpdateFn<V>): HashMap<K, V>
+  <K, V>(key: K, f: HashMap.UpdateFn<V>): (self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, key: K, f: HashMap.UpdateFn<V>): HashMap<K, V>
 }
 ```
 
@@ -473,8 +473,8 @@ This function will always either update or insert a value into the `HashMap`.
 
 ```ts
 export declare const modifyHash: {
-  <K, V>(key: K, hash: number, f: UpdateFn<V>): (self: HashMap<K, V>) => HashMap<K, V>
-  <K, V>(self: HashMap<K, V>, key: K, hash: number, f: UpdateFn<V>): HashMap<K, V>
+  <K, V>(key: K, hash: number, f: HashMap.UpdateFn<V>): (self: HashMap<K, V>) => HashMap<K, V>
+  <K, V>(self: HashMap<K, V>, key: K, hash: number, f: HashMap.UpdateFn<V>): HashMap<K, V>
 }
 ```
 
