@@ -125,7 +125,7 @@ export const tagged = <A extends Case & { _tag: string }>(
   tag: A["_tag"]
 ): Case.Constructor<A, "_tag"> =>
   // @ts-expect-error
-  (args) => args === undefined ? struct({}) : struct({ _tag: tag, ...args })
+  (args) => args === undefined ? struct({ _tag: tag }) : struct({ _tag: tag, ...args })
 
 /**
  * Provides a Tagged constructor for a Case Class.
