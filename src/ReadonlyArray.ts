@@ -2184,8 +2184,13 @@ export function every<A>(predicate: Predicate<A>): Predicate<ReadonlyArray<A>> {
  * @category predicates
  * @since 1.0.0
  */
-export const some = <A>(predicate: Predicate<A>) =>
-  (self: ReadonlyArray<A>): self is NonEmptyReadonlyArray<A> => self.some(predicate)
+export function some<A, B extends A>(
+  refinement: Refinement<A, B>
+): Refinement<ReadonlyArray<A>, NonEmptyReadonlyArray<A | B>>
+export function some<A>(predicate: Predicate<A>): Refinement<ReadonlyArray<A>, NonEmptyReadonlyArray<A>>
+export function some<A>(predicate: Predicate<A>): Refinement<ReadonlyArray<A>, NonEmptyReadonlyArray<A>> {
+  return (self: ReadonlyArray<A>): self is NonEmptyReadonlyArray<A> => self.some(predicate)
+}
 
 /**
  * Fold an `Iterable`, accumulating values in some `Monoid`, combining adjacent elements
