@@ -85,7 +85,7 @@ describe.concurrent("Chunk", () => {
     describe.concurrent("Given a large Chunk", () => {
       const len = 100_000
       let chunk = C.empty<number>()
-      for (let i = 0; i < len; i++) chunk = C.of(i).concat(chunk)
+      for (let i = 0; i < len; i++) chunk = C.concat(C.of(i), chunk)
 
       it("gives back a readonly array", () => {
         expect(() => C.toReadonlyArray(chunk)).not.toThrow()
@@ -98,8 +98,8 @@ describe.concurrent("Chunk", () => {
       let rchunk = C.empty<number>()
       let lchunk = C.empty<number>()
       for (let i = 0; i < len; i++) {
-        rchunk = C.of(i).concat(rchunk)
-        lchunk = lchunk.concat(C.of(i))
+        rchunk = C.concat(C.of(i), rchunk)
+        lchunk = C.concat(lchunk, C.of(i))
       }
       it("should have depth of +/- 3", () => {
         expect(rchunk.depth)
