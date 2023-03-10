@@ -113,4 +113,22 @@ describe.concurrent("Data", () => {
 
     expect(Equal.equals(a, b)).toBe(true)
   })
+
+  it("tagged - don't override tag", () => {
+    interface Foo extends Data.Case {
+      readonly _tag: "Foo"
+      readonly value: string
+    }
+    const Foo = Data.tagged<Foo>("Foo")
+    interface Bar extends Data.Case {
+      readonly _tag: "Bar"
+      readonly value: number
+    }
+    const Bar = Data.tagged<Bar>("Bar")
+
+    const foo = Foo({ value: "test" })
+    const bar = Bar({ ...foo, value: 10 })
+
+    expect(bar._tag).toStrictEqual("Bar")
+  })
 })
