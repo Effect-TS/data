@@ -1,5 +1,21 @@
 # @effect/data
 
+## 0.4.0
+
+### Minor Changes
+
+- [#267](https://github.com/Effect-TS/data/pull/267) [`242542d`](https://github.com/Effect-TS/data/commit/242542dc06b30b9811915f635a05672aa08e25b8) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Remove methods from Chunk
+
+- [#267](https://github.com/Effect-TS/data/pull/267) [`242542d`](https://github.com/Effect-TS/data/commit/242542dc06b30b9811915f635a05672aa08e25b8) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Remove methods from MutableRef
+
+### Patch Changes
+
+- [#268](https://github.com/Effect-TS/data/pull/268) [`132ecf9`](https://github.com/Effect-TS/data/commit/132ecf977427522983534b77ed1ee1e139813651) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Fix order of tag set in Data.tagged
+
+- [#266](https://github.com/Effect-TS/data/pull/266) [`49e8499`](https://github.com/Effect-TS/data/commit/49e8499624c302a86e024f5febdb0f1a03eeb895) Thanks [@IMax153](https://github.com/IMax153)! - ensure \_tag is present when Data.tagged is invoked with no args
+
+- [#264](https://github.com/Effect-TS/data/pull/264) [`438be19`](https://github.com/Effect-TS/data/commit/438be195d5ab4b12028521dc6decfe7a9ffc0418) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Swap implementation of MutableHashMap using a mutabe ref to a HashMap
+
 ## 0.3.3
 
 ### Patch Changes
