@@ -313,6 +313,18 @@ export declare const zipWith: {
 }
 ```
 
+**Example**
+
+```ts
+import * as E from '@effect/data/Either'
+
+const toPair = (a: number, b: number): [number, number] => [a, b]
+
+assert.deepStrictEqual(E.zipWith(E.right(1), E.right(2), toPair), E.right([1, 2]))
+assert.deepStrictEqual(E.zipWith(E.left('some error'), E.right(2), toPair), E.left('some error'))
+assert.deepStrictEqual(E.zipWith(E.right(1), E.left('some error'), toPair), E.left('some error'))
+```
+
 Added in v1.0.0
 
 # constructors
