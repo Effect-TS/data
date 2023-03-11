@@ -797,6 +797,25 @@ export declare const filter: {
 }
 ```
 
+**Example**
+
+```ts
+import * as E from '@effect/data/Either'
+// predicate
+const isInteger = (n: number): boolean => n === n.toFixed(0)
+
+assert.deepStrictEqual(E.filter(E.right(1), isInteger, () => 'Value is not a Integer'), E.right(1))
+assert.deepStrictEqual(E.filter(E.right(1.11), isInteger, () => 'Value is not a Integer'), E.right('Value is not a Integer'))
+assert.deepStrictEqual(E.filter(E.left('some error'), isInteger, () => 'Value is not a Integer'), E.left('some error'))
+
+// refinement
+const isNumber = (n: unknown): n is number => typeof n === 'number'
+
+assert.deepStrictEqual(E.filter(E.right(1), isNumber, () => 'Value is not a number'), E.right(1))
+assert.deepStrictEqual(E.filter(E.right('hello'), isNumber, () => 'Value is not a number'), E.left('Value is not a number'))
+assert.deepStrictEqual(E.filter(E.left('some error'), isNumber, () => 'Value is not a number'), E.left('some error'))
+```
+
 Added in v1.0.0
 
 ## filterMap
