@@ -136,15 +136,11 @@ export const tagged = <A extends Case & { _tag: string }>(
 export const TaggedClass = <Key extends string>(
   tag: Key
 ) =>
-  <A extends Record<string, any>>() => {
-    class Base {
+  <A extends Record<string, any>>(): new(args: Omit<A, keyof Equal.Equal>) => Data<A & { _tag: Key }> => {
+    class Base extends (Class<A>() as any) {
       readonly _tag = tag
-      constructor(args: Omit<A, "_tag" | keyof Equal.Equal>) {
-        Object.assign(this, args)
-        unsafeStruct(this)
-      }
     }
-    return Base as unknown as { new(args: Omit<A, "_tag" | keyof Equal.Equal>): Data<A> & { readonly _tag: Key } }
+    return Base as any
   }
 
 /**
@@ -153,12 +149,28 @@ export const TaggedClass = <Key extends string>(
  * @since 1.0.0
  * @category constructors
  */
-export const Class = <A extends Record<string, any>>() => {
+export const Class = <A extends Record<string, any>>(): new(args: Omit<A, keyof Equal.Equal>) => Data<A> => {
   class Base {
     constructor(args: Omit<A, keyof Equal.Equal>) {
       Object.assign(this, args)
-      unsafeStruct(this)
+    }
+
+    [Hash.symbol](this: Equal.Equal) {
+      return Hash.structure(this)
+    }
+    [Equal.symbol](this: Equal.Equal, that: Equal.Equal) {
+      const selfKeys = Object.keys(this)
+      const thatKeys = Object.keys(that as object)
+      if (selfKeys.length !== thatKeys.length) {
+        return false
+      }
+      for (const key of selfKeys) {
+        if (!(key in (that as object) && Equal.equals(this[key], (that as object)[key]))) {
+          return false
+        }
+      }
+      return true
     }
   }
-  return Base as unknown as { new(args: Omit<A, keyof Equal.Equal>): Data<A> }
+  return Base as any
 }
