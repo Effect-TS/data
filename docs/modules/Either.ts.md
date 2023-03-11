@@ -1383,6 +1383,17 @@ export declare const flap: {
 }
 ```
 
+**Example**
+
+```ts
+import * as E from '@effect/data/Either'
+
+const toInteger = (n: number): number => n.toFixed(0)
+
+assert.deepStrictEqual(E.flap(1.11, E.right(toInteger)), E.right(1))
+assert.deepStrictEqual(E.flap(1.11, E.left('some error')), E.left('some error'))
+```
+
 Added in v1.0.0
 
 ## map
