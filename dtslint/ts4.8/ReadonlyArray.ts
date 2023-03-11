@@ -1,7 +1,6 @@
 import { pipe } from '@effect/data/Function'
 import * as RA from '@effect/data/ReadonlyArray'
 import * as O from '@effect/data/Option'
-import * as Brand from '@effect/data/Brand'
 
 declare const neras: RA.NonEmptyReadonlyArray<number>
 declare const neas: RA.NonEmptyArray<number>
@@ -99,3 +98,27 @@ RA.groupBy([1, 2, 3], String)
 // should not return a struct (Record<'positive' | 'negative', ...>) when using string type literals
 // $ExpectType Record<string, [number, ...number[]]>
 RA.groupBy([1, 2, 3], n => n > 0 ? 'positive' as const : 'negative' as const)
+
+// -------------------------------------------------------------------------------------
+// some
+// -------------------------------------------------------------------------------------
+
+interface Super {
+  readonly super: string
+}
+
+const Super = (x: string): Super => ({ super: x })
+
+interface Sub extends Super {
+  readonly sub: number
+}
+
+const Sub = (x: string, y: number): Sub => ({ super: x, sub: y })
+
+const superValues: readonly Super[] = [Super('1'), Super('2'), Sub('3', 1)]
+const containsSubtype = RA.some((x: Super): x is Sub => 'sub' in x)
+
+if (containsSubtype(superValues)) {
+  // $ExpectType readonly [Super | Sub, ...(Super | Sub)[]]
+  superValues
+}
