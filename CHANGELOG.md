@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.4.1
+
+### Patch Changes
+
+- [#272](https://github.com/Effect-TS/data/pull/272) [`2674187`](https://github.com/Effect-TS/data/commit/26741875374b1b39de41ee2a3cbfc5122d44929a) Thanks [@patroza](https://github.com/patroza)! - Fix Data TaggedClass and Class constructors
+
 ## 0.4.0
 
 ### Minor Changes
