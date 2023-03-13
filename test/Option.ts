@@ -16,12 +16,12 @@ describe.concurrent("Option", () => {
     expect(_.getLeft).exist
 
     expect(_.Invariant).exist
-    expect(_.tupled).exist
-    expect(_.bindTo).exist
+    expect(_.asTuple).exist
+    expect(_.asProp).exist
 
     expect(_.Covariant).exist
     expect(_.map).exist
-    expect(_.let).exist
+    expect(_.setProp).exist
     expect(_.flap).exist
     expect(_.as).exist
     expect(_.asUnit).exist
@@ -37,7 +37,7 @@ describe.concurrent("Option", () => {
     expect(_.composeK).exist
 
     expect(_.Chainable).exist
-    expect(_.bind).exist
+    expect(_.setPropOption).exist
     expect(_.tap).exist
     expect(_.andThenDiscard).exist
 
@@ -466,22 +466,15 @@ describe.concurrent("Option", () => {
     Util.deepStrictEqual(
       pipe(
         _.some(1),
-        _.bindTo("a"),
-        _.bind("b", () => _.some("b"))
+        _.asProp("a"),
+        _.setPropOption("b", () => _.some("b"))
       ),
       _.some({ a: 1, b: "b" })
     )
   })
 
-  it("andThenBind", () => {
-    Util.deepStrictEqual(
-      pipe(_.some(1), _.bindTo("a"), _.andThenBind("b", _.some("b"))),
-      _.some({ a: 1, b: "b" })
-    )
-  })
-
   it("element", () => {
-    expect(pipe(_.some(1), _.tupled, _.appendElement(_.some("b")))).toEqual(
+    expect(pipe(_.some(1), _.asTuple, _.appendElement(_.some("b")))).toEqual(
       _.some([1, "b"])
     )
   })
@@ -522,8 +515,8 @@ describe.concurrent("Option", () => {
     Util.deepStrictEqual(
       pipe(
         _.Do,
-        _.bind("x", () => _.some("a")),
-        _.bind("y", () => _.some("a")),
+        _.setPropOption("x", () => _.some("a")),
+        _.setPropOption("y", () => _.some("a")),
         _.filter(({ x, y }) => x === y)
       ),
       _.some({ x: "a", y: "a" })
@@ -531,8 +524,8 @@ describe.concurrent("Option", () => {
     Util.deepStrictEqual(
       pipe(
         _.Do,
-        _.bind("x", () => _.some("a")),
-        _.bind("y", () => _.some("b")),
+        _.setPropOption("x", () => _.some("a")),
+        _.setPropOption("y", () => _.some("b")),
         _.filter(({ x, y }) => x === y)
       ),
       _.none()

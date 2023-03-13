@@ -736,7 +736,7 @@ export const Invariant: invariant.Invariant<ReadonlyRecordTypeLambda> = {
  * @category mapping
  * @since 1.0.0
  */
-export const tupled: <A>(self: ReadonlyRecord<A>) => Record<string, [A]> = invariant.tupled(
+export const asTuple: <A>(self: ReadonlyRecord<A>) => Record<string, [A]> = invariant.asTuple(
   Invariant
 )
 

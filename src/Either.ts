@@ -1363,7 +1363,7 @@ export const lefts = <E, A>(self: Iterable<Either<E, A>>): Array<E> => {
  * @category do notation
  * @since 1.0.0
  */
-export const tupled: <E, A>(self: Either<E, A>) => Either<E, [A]> = invariant.tupled(
+export const asTuple: <E, A>(self: Either<E, A>) => Either<E, [A]> = invariant.asTuple(
   Invariant
 )
 
@@ -1387,14 +1387,18 @@ export const appendElement: {
  * @category do notation
  * @since 1.0.0
  */
-export const bindTo: {
+export const asProp: {
   <N extends string>(
     name: N
   ): <E, A>(self: Either<E, A>) => Either<E, { [K in N]: A }>
   <E, A, N extends string>(self: Either<E, A>, name: N): Either<E, { [K in N]: A }>
-} = invariant.bindTo(Invariant)
+} = invariant.asProp(Invariant)
 
-const let_: {
+/**
+ * @category struct
+ * @since 1.0.0
+ */
+export const setProp: {
   <N extends string, A extends object, B>(
     name: Exclude<N, keyof A>,
     f: (a: A) => B
@@ -1406,15 +1410,8 @@ const let_: {
     name: Exclude<N, keyof A>,
     f: (a: A) => B
   ): Either<E, { [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = covariant.let(Covariant)
+} = covariant.setProp(Covariant)
 
-export {
-  /**
-   * @category do notation
-   * @since 1.0.0
-   */
-  let_ as let
-}
 /**
  * @category do notation
  * @since 1.0.0
@@ -1422,10 +1419,10 @@ export {
 export const Do: Either<never, {}> = of_.Do(Of)
 
 /**
- * @category do notation
+ * @category struct
  * @since 1.0.0
  */
-export const bind: {
+export const setPropEither: {
   <N extends string, A extends object, E2, B>(
     name: Exclude<N, keyof A>,
     f: (a: A) => Either<E2, B>
@@ -1437,45 +1434,7 @@ export const bind: {
     name: Exclude<N, keyof A>,
     f: (a: A) => Either<E2, B>
   ): Either<E1 | E2, { [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = chainable.bind(Chainable)
-
-/**
- * Extends the `Either` value with the value of another `Either` type.
- *
- * If both `Either` instances are `Left`, then the result will be the first `Left`.
- *
- * @param self - The original `Either` value.
- * @param name - The name of the property that will be added to the original `Either` type.
- * @param that - The `Either` value that will be added to the original `Either` type.
- *
- * @example
- * import * as E from '@effect/data/Either'
- * import { pipe } from '@effect/data/Function'
- *
- * const result = pipe(
- *   E.Do,
- *   E.bind("a", () => E.left("e1")),
- *   E.andThenBind("b", E.left("e2"))
- * )
- *
- * assert.deepStrictEqual(result, E.left("e1"))
- *
- * @category do notation
- * @since 1.0.0
- */
-export const andThenBind: {
-  <N extends string, A extends object, E2, B>(
-    name: Exclude<N, keyof A>,
-    that: Either<E2, B>
-  ): <E1>(
-    self: Either<E1, A>
-  ) => Either<E2 | E1, { [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-  <E1, A extends object, N extends string, E2, B>(
-    self: Either<E1, A>,
-    name: Exclude<N, keyof A>,
-    that: Either<E2, B>
-  ): Either<E1 | E2, { [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = semiProduct.andThenBind(SemiProduct)
+} = chainable.setPropFlat(Chainable)
 
 /**
  * The `gen` API is a helper function that provides a generator interface for the `Either` monad instance.

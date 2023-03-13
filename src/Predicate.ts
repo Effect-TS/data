@@ -445,7 +445,7 @@ export const Invariant: invariant.Invariant<PredicateTypeLambda> = {
 /**
  * @since 1.0.0
  */
-export const tupled: <A>(self: Predicate<A>) => Predicate<readonly [A]> = invariant.tupled(
+export const asTuple: <A>(self: Predicate<A>) => Predicate<readonly [A]> = invariant.asTuple(
   Invariant
 ) as any
 
@@ -764,33 +764,13 @@ export const some = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => get
  * @category do notation
  * @since 1.0.0
  */
-export const bindTo: {
+export const asProp: {
   <N extends string>(name: N): <A>(self: Predicate<A>) => Predicate<{ readonly [K in N]: A }>
   <A, N extends string>(self: Predicate<A>, name: N): Predicate<{ readonly [K in N]: A }>
-} = invariant.bindTo(Invariant)
+} = invariant.asProp(Invariant)
 
 /**
  * @category do notation
  * @since 1.0.0
  */
 export const Do: Predicate<{}> = of_.Do(Of)
-
-/**
- * A variant of `bind` that sequentially ignores the scope.
- *
- * @category do notation
- * @since 1.0.0
- */
-export const andThenBind: {
-  <N extends string, A extends object, B>(
-    name: Exclude<N, keyof A>,
-    that: Predicate<B>
-  ): (
-    self: Predicate<A>
-  ) => Predicate<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-  <A extends object, N extends string, B>(
-    self: Predicate<A>,
-    name: Exclude<N, keyof A>,
-    that: Predicate<B>
-  ): Predicate<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = semiProduct.andThenBind(SemiProduct)

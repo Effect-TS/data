@@ -12,12 +12,12 @@ describe.concurrent("Either", () => {
     expect(E.getLeft).exist
 
     expect(E.Invariant).exist
-    expect(E.tupled).exist
-    expect(E.bindTo).exist
+    expect(E.asTuple).exist
+    expect(E.asProp).exist
 
     expect(E.Covariant).exist
     expect(E.map).exist
-    expect(E.let).exist
+    expect(E.setProp).exist
     expect(E.flap).exist
     expect(E.as).exist
     expect(E.asUnit).exist
@@ -38,7 +38,7 @@ describe.concurrent("Either", () => {
     expect(E.composeK).exist
 
     expect(E.Chainable).exist
-    expect(E.bind).exist
+    expect(E.setPropEither).exist
     expect(E.tap).exist
     expect(E.andThenDiscard).exist
 
@@ -343,18 +343,11 @@ describe.concurrent("Either", () => {
     Util.deepStrictEqual(
       pipe(
         E.right(1),
-        E.bindTo("a"),
-        E.bind("b", () => E.right("b")),
-        E.let("c", ({ a, b }) => [a, b])
+        E.asProp("a"),
+        E.setPropEither("b", () => E.right("b")),
+        E.setProp("c", ({ a, b }) => [a, b])
       ),
       E.right({ a: 1, b: "b", c: [1, "b"] })
-    )
-  })
-
-  it("andThenBind", () => {
-    Util.deepStrictEqual(
-      pipe(E.right(1), E.bindTo("a"), E.andThenBind("b", E.right("b"))),
-      E.right({ a: 1, b: "b" })
     )
   })
 
@@ -419,7 +412,7 @@ describe.concurrent("Either", () => {
   })
 
   it("element", () => {
-    expect(pipe(E.right(1), E.tupled, E.appendElement(E.right("b")))).toEqual(
+    expect(pipe(E.right(1), E.asTuple, E.appendElement(E.right("b")))).toEqual(
       E.right([1, "b"])
     )
   })

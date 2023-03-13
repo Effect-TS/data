@@ -38,7 +38,7 @@ describe.concurrent("Covariant", () => {
   })
 
   it("let", () => {
-    const letOption = _.let(O.Covariant)
+    const letOption = _.setProp(O.Covariant)
     U.deepStrictEqual(
       pipe(O.some({ a: 1, b: 2 }), letOption("c", ({ a, b }) => a + b)),
       O.some({ a: 1, b: 2, c: 3 })

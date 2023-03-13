@@ -1495,8 +1495,8 @@ export const Invariant: invariant.Invariant<ReadonlyArrayTypeLambda> = {
  * @category mapping
  * @since 1.0.0
  */
-export const tupled: <A>(self: ReadonlyArray<A>) => Array<[A]> = invariant
-  .tupled(Invariant) as any
+export const asTuple: <A>(self: ReadonlyArray<A>) => Array<[A]> = invariant
+  .asTuple(Invariant) as any
 
 /**
  * @category mapping
@@ -2346,12 +2346,16 @@ export const getOrder: <A>(O: Order<A>) => Order<ReadonlyArray<A>> = order.array
  * @category do notation
  * @since 1.0.0
  */
-export const bindTo: {
+export const asProp: {
   <N extends string>(name: N): <A>(self: ReadonlyArray<A>) => Array<{ [K in N]: A }>
   <A, N extends string>(self: ReadonlyArray<A>, name: N): Array<{ [K in N]: A }>
-} = invariant.bindTo(Invariant) as any
+} = invariant.asProp(Invariant) as any
 
-const let_: {
+/**
+ * @category struct
+ * @since 1.0.0
+ */
+export const setProp: {
   <N extends string, A extends object, B>(
     name: Exclude<N, keyof A>,
     f: (a: A) => B
@@ -2361,15 +2365,7 @@ const let_: {
     name: Exclude<N, keyof A>,
     f: (a: A) => B
   ): Array<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = covariant.let(Covariant) as any
-
-export {
-  /**
-   * @category do notation
-   * @since 1.0.0
-   */
-  let_ as let
-}
+} = covariant.setProp(Covariant) as any
 
 /**
  * @category do notation
@@ -2378,10 +2374,10 @@ export {
 export const Do: ReadonlyArray<{}> = of_.Do(Of)
 
 /**
- * @category do notation
+ * @category struct
  * @since 1.0.0
  */
-export const bind: {
+export const setPropReadonlyArray: {
   <N extends string, A extends object, B>(
     name: Exclude<N, keyof A>,
     f: (a: A) => ReadonlyArray<B>
@@ -2391,22 +2387,4 @@ export const bind: {
     name: Exclude<N, keyof A>,
     f: (a: A) => ReadonlyArray<B>
   ): Array<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = chainable.bind(Chainable) as any
-
-/**
- * A variant of `bind` that sequentially ignores the scope.
- *
- * @category do notation
- * @since 1.0.0
- */
-export const andThenBind: {
-  <N extends string, A extends object, B>(
-    name: Exclude<N, keyof A>,
-    that: ReadonlyArray<B>
-  ): (self: ReadonlyArray<A>) => Array<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-  <A extends object, N extends string, B>(
-    self: ReadonlyArray<A>,
-    name: Exclude<N, keyof A>,
-    that: ReadonlyArray<B>
-  ): Array<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = semiProduct.andThenBind(SemiProduct) as any
+} = chainable.setPropFlat(Chainable) as any

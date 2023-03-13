@@ -123,21 +123,11 @@ describe.concurrent("SemiProduct", () => {
     })
   })
 
-  describe.concurrent("andThenBind", () => {
+  describe.concurrent("asProp", () => {
     it("Covariant (Option)", () => {
-      const andThenBind = _.andThenBind(O.Applicative)
-      U.deepStrictEqual(pipe(O.some({ a: 1 }), andThenBind("b", O.none())), O.none())
-      U.deepStrictEqual(pipe(O.some({ a: 1 }), andThenBind("b", O.some(2))), O.some({ a: 1, b: 2 }))
-    })
-
-    it("Contravariant (Predicate)", () => {
-      const p = pipe(
-        P.Do,
-        P.andThenBind("x", String.isString),
-        P.andThenBind("y", Number.isNumber)
-      )
-      U.deepStrictEqual(p({ x: "a", y: 1 }), true)
-      U.deepStrictEqual(p({ x: "a", y: "x" }), false)
+      const asProp = _.asProp(O.Applicative)
+      U.deepStrictEqual(pipe(O.some({ a: 1 }), asProp("b", O.none())), O.none())
+      U.deepStrictEqual(pipe(O.some({ a: 1 }), asProp("b", O.some(2))), O.some({ a: 1, b: 2 }))
     })
   })
 

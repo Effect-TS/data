@@ -18,7 +18,7 @@ import type * as semiAlternative from "@effect/data/typeclass/SemiAlternative"
 import type * as semiApplicative from "@effect/data/typeclass/SemiApplicative"
 import type * as semiCoproduct from "@effect/data/typeclass/SemiCoproduct"
 import type { Semigroup } from "@effect/data/typeclass/Semigroup"
-import * as semiProduct from "@effect/data/typeclass/SemiProduct"
+import type * as semiProduct from "@effect/data/typeclass/SemiProduct"
 import type * as traversable from "@effect/data/typeclass/Traversable"
 
 /**
@@ -232,12 +232,16 @@ export const Traversable: traversable.Traversable<IdentityTypeLambda> = {
  * @category do notation
  * @since 1.0.0
  */
-export const bindTo: {
+export const asProp: {
   <N extends string>(name: N): <A>(self: Identity<A>) => Identity<{ [K in N]: A }>
   <A, N extends string>(self: Identity<A>, name: N): Identity<{ [K in N]: A }>
-} = invariant.bindTo(Invariant)
+} = invariant.asProp(Invariant)
 
-const let_: {
+/**
+ * @category struct
+ * @since 1.0.0
+ */
+export const setProp: {
   <N extends string, A extends object, B>(
     name: Exclude<N, keyof A>,
     f: (a: A) => B
@@ -247,15 +251,7 @@ const let_: {
     name: Exclude<N, keyof A>,
     f: (a: A) => B
   ): Identity<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = covariant.let(Covariant)
-
-export {
-  /**
-   * @category do notation
-   * @since 1.0.0
-   */
-  let_ as let
-}
+} = covariant.setProp(Covariant)
 
 /**
  * @category do notation
@@ -264,10 +260,10 @@ export {
 export const Do: Identity<{}> = of_.Do(Of)
 
 /**
- * @category do notation
+ * @category struct
  * @since 1.0.0
  */
-export const bind: {
+export const setPropIdentity: {
   <N extends string, A extends object, B>(
     name: Exclude<N, keyof A>,
     f: (a: A) => Identity<B>
@@ -277,22 +273,4 @@ export const bind: {
     name: Exclude<N, keyof A>,
     f: (a: A) => Identity<B>
   ): Identity<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = chainable.bind(Chainable)
-
-/**
- * A variant of `bind` that sequentially ignores the scope.
- *
- * @category do notation
- * @since 1.0.0
- */
-export const andThenBind: {
-  <N extends string, A extends object, B>(
-    name: Exclude<N, keyof A>,
-    that: Identity<B>
-  ): (self: Identity<A>) => Identity<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-  <A extends object, N extends string, B>(
-    self: Identity<A>,
-    name: Exclude<N, keyof A>,
-    that: Identity<B>
-  ): Identity<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = semiProduct.andThenBind(SemiProduct)
+} = chainable.setPropFlat(Chainable)

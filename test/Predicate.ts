@@ -18,8 +18,8 @@ const NonEmptyString: _.Refinement<string, NonEmptyString> = (s): s is NonEmptyS
 describe.concurrent("Predicate", () => {
   it("instances and derived exports", () => {
     expect(_.Invariant).exist
-    expect(_.tupled).exist
-    expect(_.bindTo).exist
+    expect(_.asTuple).exist
+    expect(_.asProp).exist
 
     expect(_.Contravariant).exist
     expect(_.contramap).exist
@@ -27,7 +27,6 @@ describe.concurrent("Predicate", () => {
     expect(_.Do).exist
 
     expect(_.SemiProduct).exist
-    expect(_.andThenBind).exist
     expect(_.appendElement).exist
 
     expect(_.Product).exist

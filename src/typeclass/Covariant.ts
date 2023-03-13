@@ -72,7 +72,7 @@ export const asUnit = <F extends TypeLambda>(
   F: Covariant<F>
 ): (<R, O, E, _>(self: Kind<F, R, O, E, _>) => Kind<F, R, O, E, void>) => as(F)<void>(undefined)
 
-const let_ = <F extends TypeLambda>(
+export const setProp = <F extends TypeLambda>(
   F: Covariant<F>
 ): {
   <N extends string, A extends object, B>(
@@ -93,11 +93,3 @@ const let_ = <F extends TypeLambda>(
     f: (a: A) => B
   ): Kind<F, R, O, E, { [K in keyof A | N]: K extends keyof A ? A[K] : B }> =>
     F.map(self, (a) => Object.assign({}, a, { [name]: f(a) }) as any))
-
-export {
-  /**
-   * @category do notation
-   * @since 1.0.0
-   */
-  let_ as let
-}

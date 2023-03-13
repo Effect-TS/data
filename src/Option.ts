@@ -1651,7 +1651,7 @@ export const multiplyCompact = (self: Iterable<Option<number>>): number => {
  * @category do notation
  * @since 1.0.0
  */
-export const tupled: <A>(self: Option<A>) => Option<[A]> = invariant.tupled(Invariant)
+export const asTuple: <A>(self: Option<A>) => Option<[A]> = invariant.asTuple(Invariant)
 
 /**
  * Appends an element to the end of a tuple wrapped in an `Option` type.
@@ -1677,36 +1677,32 @@ export const appendElement: {
  * @category do notation
  * @since 1.0.0
  */
-export const bindTo: {
+export const asProp: {
   <N extends string>(name: N): <A>(self: Option<A>) => Option<{ [K in N]: A }>
   <A, N extends string>(self: Option<A>, name: N): Option<{ [K in N]: A }>
-} = invariant.bindTo(Invariant)
-
-const let_: {
-  <N extends string, A extends object, B>(
-    name: Exclude<N, keyof A>,
-    f: (a: A) => B
-  ): (self: Option<A>) => Option<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-  <A extends object, N extends string, B>(
-    self: Option<A>,
-    name: Exclude<N, keyof A>,
-    f: (a: A) => B
-  ): Option<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = covariant.let(Covariant)
-
-export {
-  /**
-   * @category do notation
-   * @since 1.0.0
-   */
-  let_ as let
-}
+} = invariant.asProp(Invariant)
 
 /**
- * @category do notation
+ * @category struct
  * @since 1.0.0
  */
-export const bind: {
+export const setProp: {
+  <N extends string, A extends object, B>(
+    name: Exclude<N, keyof A>,
+    f: (a: A) => B
+  ): (self: Option<A>) => Option<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+  <A extends object, N extends string, B>(
+    self: Option<A>,
+    name: Exclude<N, keyof A>,
+    f: (a: A) => B
+  ): Option<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+} = covariant.setProp(Covariant)
+
+/**
+ * @category struct
+ * @since 1.0.0
+ */
+export const setPropOption: {
   <N extends string, A extends object, B>(
     name: Exclude<N, keyof A>,
     f: (a: A) => Option<B>
@@ -1716,31 +1712,13 @@ export const bind: {
     name: Exclude<N, keyof A>,
     f: (a: A) => Option<B>
   ): Option<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = chainable.bind(Chainable)
+} = chainable.setPropFlat(Chainable)
 
 /**
  * @category do notation
  * @since 1.0.0
  */
 export const Do: Option<{}> = of_.Do(Of)
-
-/**
- * A variant of `bind` that sequentially ignores the scope.
- *
- * @category do notation
- * @since 1.0.0
- */
-export const andThenBind: {
-  <N extends string, A extends object, B>(
-    name: Exclude<N, keyof A>,
-    that: Option<B>
-  ): (self: Option<A>) => Option<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-  <A extends object, N extends string, B>(
-    self: Option<A>,
-    name: Exclude<N, keyof A>,
-    that: Option<B>
-  ): Option<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = semiProduct.andThenBind(SemiProduct)
 
 /**
  * The `gen` API is a helper function that provides a generator interface for the `Option` monad instance.

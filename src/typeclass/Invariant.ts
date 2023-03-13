@@ -43,10 +43,10 @@ export const imapComposition = <F extends TypeLambda, G extends TypeLambda>(
   ): Kind<F, FR, FO, FE, Kind<G, GR, GO, GE, B>> => F.imap(self, G.imap(to, from), G.imap(from, to))
 
 /**
- * @category do notation
+ * @category struct
  * @since 1.0.0
  */
-export const bindTo = <F extends TypeLambda>(F: Invariant<F>): {
+export const asProp = <F extends TypeLambda>(F: Invariant<F>): {
   <N extends string>(
     name: N
   ): <R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, { [K in N]: A }>
@@ -61,10 +61,11 @@ export const bindTo = <F extends TypeLambda>(F: Invariant<F>): {
   ): Kind<F, R, O, E, { [K in N]: A }> => F.imap(self, (a) => ({ [name]: a } as any), ({ [name]: a }) => a))
 
 /**
- * Convert a value in a singleton array in a given effect.
+ * Convert a wrapped value to a wrapped tuple
  *
+ * @category tuple
  * @since 1.0.0
  */
-export const tupled = <F extends TypeLambda>(
+export const asTuple = <F extends TypeLambda>(
   F: Invariant<F>
 ): (<R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, [A]>) => F.imap((a) => [a], ([a]) => a)

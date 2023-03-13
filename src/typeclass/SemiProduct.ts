@@ -83,10 +83,10 @@ export const productManyComposition = <F extends TypeLambda, G extends TypeLambd
     F.map(F.productMany(self, collection), ([ga, ...gas]) => G.productMany(ga, gas))
 
 /**
- * @category do notation
+ * @category struct
  * @since 1.0.0
  */
-export const andThenBind = <F extends TypeLambda>(F: SemiProduct<F>): {
+export const asProp = <F extends TypeLambda>(F: SemiProduct<F>): {
   <N extends string, A extends object, R2, O2, E2, B>(
     name: Exclude<N, keyof A>,
     that: Kind<F, R2, O2, E2, B>

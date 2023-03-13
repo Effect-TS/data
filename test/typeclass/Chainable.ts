@@ -12,10 +12,10 @@ describe.concurrent("Chainable", () => {
     U.deepStrictEqual(pipe(O.some(1), andThenDiscard(O.some(2))), O.some(1))
   })
 
-  it("bind", () => {
-    const bind = _.bind(O.Chainable)
-    U.deepStrictEqual(pipe(O.Do, bind("a", () => O.none())), O.none())
-    U.deepStrictEqual(pipe(O.Do, bind("a", () => O.some(1))), O.some({ a: 1 }))
+  it("setProp", () => {
+    const setProp = _.setPropFlat(O.Chainable)
+    U.deepStrictEqual(pipe(O.Do, setProp("a", () => O.none())), O.none())
+    U.deepStrictEqual(pipe(O.Do, setProp("a", () => O.some(1))), O.some({ a: 1 }))
   })
 
   it("tap", () => {

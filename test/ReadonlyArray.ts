@@ -13,12 +13,12 @@ import * as fc from "fast-check"
 describe.concurrent("ReadonlyArray", () => {
   it("exports", () => {
     expect(RA.Invariant).exist
-    expect(RA.tupled).exist
-    expect(RA.bindTo).exist
+    expect(RA.asTuple).exist
+    expect(RA.asProp).exist
 
     expect(RA.Covariant).exist
     expect(RA.map).exist
-    expect(RA.let).exist
+    expect(RA.setProp).exist
     expect(RA.flap).exist
 
     expect(RA.of).exist
@@ -32,12 +32,11 @@ describe.concurrent("ReadonlyArray", () => {
     expect(RA.composeK).exist
 
     expect(RA.Chainable).exist
-    expect(RA.bind).exist
+    expect(RA.setPropReadonlyArray).exist
 
     expect(RA.Monad).exist
 
     expect(RA.SemiProduct).exist
-    expect(RA.andThenBind).exist
 
     expect(RA.Product).exist
 
@@ -1460,7 +1459,7 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(
       pipe(
         RA.Do,
-        RA.bind("a", () => [1, 2, 3]),
+        RA.setPropReadonlyArray("a", () => [1, 2, 3]),
         RA.map(({ a }) => a * 2)
       ),
       [2, 4, 6]
@@ -1469,8 +1468,8 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(
       pipe(
         RA.Do,
-        RA.bind("a", () => [1, 2, 3]),
-        RA.bind("b", () => ["a", "b"]),
+        RA.setPropReadonlyArray("a", () => [1, 2, 3]),
+        RA.setPropReadonlyArray("b", () => ["a", "b"]),
         RA.map(({ a, b }) => [a, b] as const)
       ),
       [
@@ -1486,8 +1485,8 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(
       pipe(
         RA.Do,
-        RA.bind("a", () => [1, 2, 3]),
-        RA.bind("b", () => ["a", "b"]),
+        RA.setPropReadonlyArray("a", () => [1, 2, 3]),
+        RA.setPropReadonlyArray("b", () => ["a", "b"]),
         RA.map(({ a, b }) => [a, b] as const),
         RA.filter(([a, b]) => (a + b.length) % 2 === 0)
       ),

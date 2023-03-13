@@ -56,10 +56,10 @@ export const tap = <F extends TypeLambda>(F: Chainable<F>): {
   )
 
 /**
- * @category do notation
+ * @category struct
  * @since 1.0.0
  */
-export const bind = <F extends TypeLambda>(F: Chainable<F>): {
+export const setPropFlat = <F extends TypeLambda>(F: Chainable<F>): {
   <N extends string, A extends object, R2, O2, E2, B>(
     name: Exclude<N, keyof A>,
     f: (a: A) => Kind<F, R2, O2, E2, B>
