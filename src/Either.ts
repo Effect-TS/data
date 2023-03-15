@@ -1009,9 +1009,9 @@ export const reverse = <E, A>(self: Either<E, A>): Either<A, E> => isLeft(self) 
  * // predicate
  * const isInteger = (n: number): boolean => n === n.toFixed(0)
  *
- * assert.deepStrictEqual(E.filter(E.right(1), isInteger, () => 'Value is not a Integer'), E.right(1))
- * assert.deepStrictEqual(E.filter(E.right(1.11), isInteger, () => 'Value is not a Integer'), E.right('Value is not a Integer'))
- * assert.deepStrictEqual(E.filter(E.left('some error'), isInteger, () => 'Value is not a Integer'), E.left('some error'))
+ * assert.deepStrictEqual(E.filter(E.right(1), isInteger, () => 'Value is not an Integer'), E.right(1))
+ * assert.deepStrictEqual(E.filter(E.right(1.11), isInteger, () => 'Value is not an Integer'), E.right('Value is not a Integer'))
+ * assert.deepStrictEqual(E.filter(E.left('some error'), isInteger, () => 'Value is not an Integer'), E.left('some error'))
  *
  * // refinement
  * const isNumber = (n: unknown): n is number => typeof n === 'number'
@@ -1048,6 +1048,16 @@ export const filter: {
 ): Either<E1 | E2, B> => isLeft(self) ? self : predicate(self.right) ? self : left(onFalse()))
 
 /**
+ * @example
+ * import * as E from '@effect/data/Either'
+ * import * as O from '@effect/data/Option'
+ *
+ * const integer = (n: number) => n === n.toFixed(0) ? O.some(n) : O.none()
+ *
+ * assert.deepStrictEqual(E.filterMap(E.right(1), integer, () => 'Value is not an Integer'), E.right(1))
+ * assert.deepStrictEqual(E.filterMap(E.right(1.1), integer, () => 'Value is not an Integer'), E.left('Value is not an Integer'))
+ * assert.deepStrictEqual(E.filterMap(E.left('some error'), integer, () => 'Value is not an Integer'), E.left('some error'))
+ *
  * @category filtering
  * @since 1.0.0
  */

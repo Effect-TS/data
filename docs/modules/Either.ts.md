@@ -804,9 +804,9 @@ import * as E from '@effect/data/Either'
 // predicate
 const isInteger = (n: number): boolean => n === n.toFixed(0)
 
-assert.deepStrictEqual(E.filter(E.right(1), isInteger, () => 'Value is not a Integer'), E.right(1))
-assert.deepStrictEqual(E.filter(E.right(1.11), isInteger, () => 'Value is not a Integer'), E.right('Value is not a Integer'))
-assert.deepStrictEqual(E.filter(E.left('some error'), isInteger, () => 'Value is not a Integer'), E.left('some error'))
+assert.deepStrictEqual(E.filter(E.right(1), isInteger, () => 'Value is not an Integer'), E.right(1))
+assert.deepStrictEqual(E.filter(E.right(1.11), isInteger, () => 'Value is not an Integer'), E.right('Value is not a Integer'))
+assert.deepStrictEqual(E.filter(E.left('some error'), isInteger, () => 'Value is not an Integer'), E.left('some error'))
 
 // refinement
 const isNumber = (n: unknown): n is number => typeof n === 'number'
@@ -827,6 +827,20 @@ export declare const filterMap: {
   <A, B, E2>(f: (a: A) => Option<B>, onNone: LazyArg<E2>): <E1>(self: Either<E1, A>) => Either<E2 | E1, B>
   <E1, A, B, E2>(self: Either<E1, A>, f: (a: A) => Option<B>, onNone: LazyArg<E2>): Either<E1 | E2, B>
 }
+```
+
+**Example**
+
+
+```ts
+import * as E from '@effect/data/Either'
+import * as O from '@effect/data/Option'
+
+const integer = (n: number) => n === n.toFixed(0) ? O.some(n) : O.none()
+
+assert.deepStrictEqual(E.filterMap(E.right(1), integer, () => 'Value is not an Integer'), E.right(1))
+assert.deepStrictEqual(E.filterMap(E.right(1.1), integer, () => 'Value is not an Integer'), E.left('Value is not an Integer'))
+assert.deepStrictEqual(E.filterMap(E.left('some error'), integer, () => 'Value is not an Integer'), E.left('some error'))
 ```
 
 Added in v1.0.0
