@@ -25,6 +25,7 @@ Added in v1.0.0
 - [models](#models)
   - [Case (interface)](#case-interface)
   - [Data (type alias)](#data-type-alias)
+  - [IsEqualTo (type alias)](#isequalto-type-alias)
 
 ---
 
@@ -37,7 +38,7 @@ Provides a constructor for a Case Class.
 **Signature**
 
 ```ts
-export declare const Class: <A extends Record<string, any>>() => new (
+export declare const Class: new <A extends Record<string, any>>(
   args: Pick<A, Exclude<keyof A, typeof Equal.symbol | typeof Hash.symbol>>
 ) => Data<A>
 ```
@@ -53,9 +54,9 @@ Provides a Tagged constructor for a Case Class.
 ```ts
 export declare const TaggedClass: <Key extends string>(
   tag: Key
-) => <A extends Record<string, any>>() => new (
-  args: Pick<A, Exclude<keyof A, typeof Equal.symbol | typeof Hash.symbol | '_tag'>>
-) => Readonly<A> & Equal.Equal & { readonly _tag: Key }
+) => new <A extends Record<string, any>>(
+  args: Pick<A, Exclude<keyof A, typeof Equal.symbol | typeof Hash.symbol>>
+) => Data<A & { _tag: Key }>
 ```
 
 Added in v1.0.0
@@ -156,6 +157,16 @@ Added in v1.0.0
 
 ```ts
 export type Data<A extends Readonly<Record<string, any>> | ReadonlyArray<any>> = Readonly<A> & Equal.Equal
+```
+
+Added in v1.0.0
+
+## IsEqualTo (type alias)
+
+**Signature**
+
+```ts
+export type IsEqualTo<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? true : false
 ```
 
 Added in v1.0.0

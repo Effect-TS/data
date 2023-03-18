@@ -128,6 +128,15 @@ export const tagged = <A extends Case & { _tag: string }>(
   (args) => args === undefined ? struct({ _tag: tag }) : struct({ ...args, _tag: tag })
 
 /**
+ * @since 1.0.0
+ * @category models
+ */
+export type IsEqualTo<X, Y> = (<T>() => T extends X ? 1 : 2) extends <
+  T
+>() => T extends Y ? 1 : 2 ? true
+  : false
+
+/**
  * Provides a Tagged constructor for a Case Class.
  *
  * @since 1.0.0
@@ -135,13 +144,14 @@ export const tagged = <A extends Case & { _tag: string }>(
  */
 export const TaggedClass = <Key extends string>(
   tag: Key
-) =>
-  <A extends Record<string, any>>(): new(args: Omit<A, keyof Equal.Equal>) => Data<A & { _tag: Key }> => {
-    class Base extends (Class<A>() as any) {
-      readonly _tag = tag
-    }
-    return Base as any
+): new<A extends Record<string, any>>(
+  args: IsEqualTo<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
+) => Data<A & { _tag: Key }> => {
+  class Base extends (Class as any) {
+    readonly _tag = tag
   }
+  return Base as any
+}
 
 /**
  * Provides a constructor for a Case Class.
@@ -149,8 +159,10 @@ export const TaggedClass = <Key extends string>(
  * @since 1.0.0
  * @category constructors
  */
-export const Class = <A extends Record<string, any>>(): new(args: Omit<A, keyof Equal.Equal>) => Data<A> => {
-  class Base {
+export const Class: new<A extends Record<string, any>>(
+  args: IsEqualTo<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
+) => Data<A> = (() => {
+  class Base<A> {
     constructor(args: Omit<A, keyof Equal.Equal>) {
       Object.assign(this, args)
     }
@@ -173,4 +185,4 @@ export const Class = <A extends Record<string, any>>(): new(args: Omit<A, keyof 
     }
   }
   return Base as any
-}
+})()
