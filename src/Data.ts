@@ -164,9 +164,10 @@ export const Class: new<A extends Record<string, any>>(
 ) => Data<A> = (() => {
   class Base<A> {
     constructor(args: Omit<A, keyof Equal.Equal>) {
-      Object.assign(this, args)
+      if (args) {
+        Object.assign(this, args)
+      }
     }
-
     [Hash.symbol](this: Equal.Equal) {
       return Hash.structure(this)
     }
