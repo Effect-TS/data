@@ -1095,6 +1095,7 @@ export interface Chunk<A> extends Iterable<A>, Equal.Equal {
   backing: Backing<A>
   /** @internal */
   depth: number
+}
 ```
 
 Added in v1.0.0

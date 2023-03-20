@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.5.0
+
+### Minor Changes
+
+- [#274](https://github.com/Effect-TS/data/pull/274) [`40bc12f`](https://github.com/Effect-TS/data/commit/40bc12fd69496ad4cb57077653728362a1e71292) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Improve Data.Class and Data.TaggedClass
+
 ## 0.4.1
 
 ### Patch Changes

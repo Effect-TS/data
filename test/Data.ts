@@ -75,7 +75,7 @@ describe.concurrent("Data", () => {
   })
 
   it("case class", () => {
-    class Person extends Data.Class<{ name: string }>() {}
+    class Person extends Data.Class<{ name: string }> {}
     const a = new Person({ name: "Mike" })
     const b = new Person({ name: "Mike" })
     const c = new Person({ name: "Foo" })
@@ -88,7 +88,7 @@ describe.concurrent("Data", () => {
   })
 
   it("tagged class", () => {
-    class Person extends Data.TaggedClass("Person")<{ name: string }>() {}
+    class Person extends Data.TaggedClass("Person")<{ name: string }> {}
     const a = new Person({ name: "Mike" })
     const b = new Person({ name: "Mike" })
     const c = new Person({ name: "Foo" })
@@ -110,6 +110,15 @@ describe.concurrent("Data", () => {
 
     const a = Person()
     const b = Person()
+
+    expect(Equal.equals(a, b)).toBe(true)
+  })
+
+  it("TaggedClass - empty", () => {
+    class Person extends Data.TaggedClass("Person")<{}> {}
+
+    const a = new Person()
+    const b = new Person()
 
     expect(Equal.equals(a, b)).toBe(true)
   })
