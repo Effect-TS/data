@@ -1010,7 +1010,7 @@ export const reverse = <E, A>(self: Either<E, A>): Either<A, E> => isLeft(self) 
  * const isInteger = (n: number): boolean => Number.isInteger(n)
  *
  * assert.deepStrictEqual(E.filter(E.right(1), isInteger, () => 'Value is not an Integer'), E.right(1))
- * assert.deepStrictEqual(E.filter(E.right(1.11), isInteger, () => 'Value is not an Integer'), E.right('Value is not a Integer'))
+ * assert.deepStrictEqual(E.filter(E.right(1.11), isInteger, () => 'Value is not an Integer'), E.left('Value is not an Integer'))
  * assert.deepStrictEqual(E.filter(E.left('some error'), isInteger, () => 'Value is not an Integer'), E.left('some error'))
  *
  * // refinement
