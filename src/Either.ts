@@ -315,7 +315,7 @@ export const Invariant: invariant.Invariant<EitherTypeLambda> = {
  * @example
  * import * as E from '@effect/data/Either'
  *
- * const toInteger = (n: number): number => parseInt(n)
+ * const toInteger = (n: number): number => parseInt(n.toString())
  *
  * assert.deepStrictEqual(E.flap(1.11, E.right(toInteger)), E.right(1))
  * assert.deepStrictEqual(E.flap(1.11, E.left('some error')), E.left('some error'))
