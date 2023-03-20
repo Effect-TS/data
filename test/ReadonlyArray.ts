@@ -41,6 +41,8 @@ describe.concurrent("ReadonlyArray", () => {
 
     expect(RA.Product).exist
 
+    expect(RA.getEquivalence).exist
+
     expect(RA.SemiApplicative).exist
     expect(RA.lift2).exist
     expect(RA.ap).exist

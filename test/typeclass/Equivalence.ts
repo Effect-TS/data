@@ -7,8 +7,18 @@ describe.concurrent("Equivalence", () => {
     expect(_.Contravariant).exist
     expect(_.SemiProduct).exist
     expect(_.Product).exist
+    expect(_.array).exist
     expect(_.tuple).exist
     expect(_.struct).exist
+  })
+
+  it("array", () => {
+    const eq = _.array(_.number)
+
+    expect(eq([], [])).toEqual(true)
+    expect(eq([1, 2, 3], [1, 2, 3])).toEqual(true)
+    expect(eq([1, 2, 3], [1, 2, 4])).toEqual(false)
+    expect(eq([1, 2, 3], [1, 2])).toEqual(false)
   })
 
   test("strict returns an Equivalence that uses strict equality (===) to compare values", () => {
