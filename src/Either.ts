@@ -315,7 +315,7 @@ export const Invariant: invariant.Invariant<EitherTypeLambda> = {
  * @example
  * import * as E from '@effect/data/Either'
  *
- * const toInteger = (n: number): number => n.toFixed(0)
+ * const toInteger = (n: number): number => parseInt(n)
  *
  * assert.deepStrictEqual(E.flap(1.11, E.right(toInteger)), E.right(1))
  * assert.deepStrictEqual(E.flap(1.11, E.left('some error')), E.left('some error'))
@@ -1007,7 +1007,7 @@ export const reverse = <E, A>(self: Either<E, A>): Either<A, E> => isLeft(self) 
  * import * as E from '@effect/data/Either'
  *
  * // predicate
- * const isInteger = (n: number): boolean => n === n.toFixed(0)
+ * const isInteger = (n: number): boolean => Number.isInteger(n)
  *
  * assert.deepStrictEqual(E.filter(E.right(1), isInteger, () => 'Value is not an Integer'), E.right(1))
  * assert.deepStrictEqual(E.filter(E.right(1.11), isInteger, () => 'Value is not an Integer'), E.right('Value is not a Integer'))
@@ -1052,7 +1052,7 @@ export const filter: {
  * import * as E from '@effect/data/Either'
  * import * as O from '@effect/data/Option'
  *
- * const integer = (n: number) => n === n.toFixed(0) ? O.some(n) : O.none()
+ * const integer = (n: number) => Number.isInteger(n) ? O.some(n) : O.none()
  *
  * assert.deepStrictEqual(E.filterMap(E.right(1), integer, () => 'Value is not an Integer'), E.right(1))
  * assert.deepStrictEqual(E.filterMap(E.right(1.1), integer, () => 'Value is not an Integer'), E.left('Value is not an Integer'))
