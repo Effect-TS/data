@@ -116,4 +116,19 @@ describe.concurrent("Semigroup", () => {
     const S = _.Product.productAll([String.Semigroup, String.Semigroup])
     U.deepStrictEqual(S.combine(["a1", "b1"], ["a2", "b2"]), ["a1a2", "b1b2"])
   })
+
+  it("productAll", () => {
+    const S = _.Product.productAll([String.Semigroup, String.Semigroup])
+    U.deepStrictEqual(S.combine(["a1"], ["a2", "b2"]), ["a1a2"])
+  })
+
+  it("productAll", () => {
+    const S = _.Product.productAll([String.Semigroup, String.Semigroup])
+    U.deepStrictEqual(S.combine(["a1", "b1"], ["a2"]), ["a1a2"])
+  })
+
+  it("productAll", () => {
+    const S = _.Product.productAll([String.Semigroup, String.Semigroup])
+    U.deepStrictEqual(S.combine([], []), [])
+  })
 })

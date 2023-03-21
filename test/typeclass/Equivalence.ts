@@ -84,8 +84,13 @@ describe.concurrent("Equivalence", () => {
 
   it("productAll", () => {
     const eq = _.Product.productAll([_.string, _.string])
+    expect(eq([], [])).toEqual(true)
+    expect(eq([], ["a"])).toEqual(true)
+    expect(eq(["a"], [])).toEqual(true)
     expect(eq(["a"], ["a"])).toEqual(true)
     expect(eq(["a"], ["b"])).toEqual(false)
+    expect(eq(["a"], ["a", "b"])).toEqual(true)
+    expect(eq(["a", "b"], ["a"])).toEqual(true)
     expect(eq(["a", "b"], ["a", "b"])).toEqual(true)
     expect(eq(["a", "b"], ["a", "c"])).toEqual(false)
   })
