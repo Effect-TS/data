@@ -3,7 +3,6 @@
  */
 import { constFalse, constTrue, dual, isFunction as isFunction_ } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
-import * as readonlyArray from "@effect/data/internal/ReadonlyArray"
 import * as contravariant from "@effect/data/typeclass/Contravariant"
 import * as invariant from "@effect/data/typeclass/Invariant"
 import * as monoid from "@effect/data/typeclass/Monoid"
@@ -461,13 +460,16 @@ const product = <A, B>(self: Predicate<A>, that: Predicate<B>): Predicate<readon
 const productAll = <A>(
   collection: Iterable<Predicate<A>>
 ): Predicate<ReadonlyArray<A>> => {
-  const predicates = readonlyArray.fromIterable(collection)
   return (as) => {
-    const len = Math.min(as.length, predicates.length)
-    for (let i = 0; i < len; i++) {
-      if (predicates[i](as[i]) === false) {
+    let collectionIndex = 0
+    for (const p of collection) {
+      if (collectionIndex >= as.length) {
+        break
+      }
+      if (p(as[collectionIndex]) === false) {
         return false
       }
+      collectionIndex++
     }
     return true
   }

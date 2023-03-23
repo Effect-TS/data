@@ -3,7 +3,6 @@
  */
 import { dual } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
-import * as readonlyArray from "@effect/data/internal/ReadonlyArray"
 import * as contravariant from "@effect/data/typeclass/Contravariant"
 import type * as invariant from "@effect/data/typeclass/Invariant"
 import type { Monoid } from "@effect/data/typeclass/Monoid"
@@ -144,14 +143,18 @@ const product = <A, B>(self: Order<A>, that: Order<B>): Order<[A, B]> =>
   })
 
 const productAll = <A>(collection: Iterable<Order<A>>): Order<Array<A>> => {
-  const orders = readonlyArray.fromIterable(collection)
   return make((x, y) => {
-    const len = Math.min(x.length, y.length, orders.length)
-    for (let i = 0; i < len; i++) {
-      const o = orders[i].compare(x[i], y[i])
+    const len = Math.min(x.length, y.length)
+    let collectionLength = 0
+    for (const order of collection) {
+      if (collectionLength >= len) {
+        break
+      }
+      const o = order.compare(x[collectionLength], y[collectionLength])
       if (o !== 0) {
         return o
       }
+      collectionLength++
     }
     return 0
   })

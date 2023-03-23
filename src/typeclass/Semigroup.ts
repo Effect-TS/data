@@ -3,8 +3,7 @@
  */
 import { dual } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
-import { fromIterable } from "@effect/data/internal/ReadonlyArray"
-import * as readonlyArray from "@effect/data/internal/ReadonlyArray"
+import { map, reduce } from "@effect/data/internal/Iterable"
 import type * as invariant from "@effect/data/typeclass/Invariant"
 import type { Order } from "@effect/data/typeclass/Order"
 import * as product_ from "@effect/data/typeclass/Product"
@@ -35,7 +34,7 @@ export interface SemigroupTypeLambda extends TypeLambda {
  */
 export const make = <A>(
   combine: Semigroup<A>["combine"],
-  combineMany: Semigroup<A>["combineMany"] = (self, collection) => fromIterable(collection).reduce(combine, self)
+  combineMany: Semigroup<A>["combineMany"] = (self, collection) => reduce(self, combine)(collection)
 ): Semigroup<A> => ({
   combine,
   combineMany
@@ -250,7 +249,7 @@ export const imap: {
 } = dual(3, <A, B>(S: Semigroup<A>, to: (a: A) => B, from: (b: B) => A): Semigroup<B> =>
   make(
     (self, that) => to(S.combine(from(self), from(that))),
-    (self, collection) => to(S.combineMany(from(self), (fromIterable(collection)).map(from)))
+    (self, collection) => to(S.combineMany(from(self), map(from)(collection)))
   ))
 
 /**
@@ -265,12 +264,16 @@ const product = <A, B>(self: Semigroup<A>, that: Semigroup<B>): Semigroup<[A, B]
   make(([xa, xb], [ya, yb]) => [self.combine(xa, ya), that.combine(xb, yb)])
 
 const productAll = <A>(collection: Iterable<Semigroup<A>>): Semigroup<Array<A>> => {
-  const semigroups = readonlyArray.fromIterable(collection)
   return make((x, y) => {
-    const len = Math.min(x.length, y.length, semigroups.length)
+    const len = Math.min(x.length, y.length)
     const out: Array<A> = []
-    for (let i = 0; i < len; i++) {
-      out.push(semigroups[i].combine(x[i], y[i]))
+    let collectionLength = 0
+    for (const s of collection) {
+      if (collectionLength >= len) {
+        break
+      }
+      out.push(s.combine(x[collectionLength], y[collectionLength]))
+      collectionLength++
     }
     return out
   })

@@ -217,6 +217,9 @@ describe.concurrent("Order", () => {
       const O = pipe(
         _.Product.productAll([_.string, _.string, _.string])
       )
+      U.deepStrictEqual(O.compare([], []), 0)
+      U.deepStrictEqual(O.compare(["a", "b"], ["a"]), 0)
+      U.deepStrictEqual(O.compare(["a"], ["a", "c"]), 0)
       U.deepStrictEqual(O.compare(["a", "b"], ["a", "c"]), -1)
       U.deepStrictEqual(O.compare(["a", "b"], ["a", "b"]), 0)
       U.deepStrictEqual(O.compare(["a", "b"], ["a", "a"]), 1)
