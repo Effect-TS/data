@@ -1658,13 +1658,13 @@ export const asTuple: <A>(self: Option<A>) => Option<[A]> = invariant.asTuple(In
  * @example
  * import * as O from "@effect/data/Option"
  *
- * assert.deepStrictEqual(O.appendElement(O.some([1, 2]), O.some(3)), O.some([1, 2, 3]))
- * assert.deepStrictEqual(O.appendElement(O.some([1, 2]), O.none()), O.none())
+ * assert.deepStrictEqual(O.appendElementOption(O.some([1, 2]), O.some(3)), O.some([1, 2, 3]))
+ * assert.deepStrictEqual(O.appendElementOption(O.some([1, 2]), O.none()), O.none())
  *
  * @category tuple
  * @since 1.0.0
  */
-export const appendElement: {
+export const appendElementOption: {
   <A extends ReadonlyArray<any>, B>(self: Option<A>, that: Option<B>): Option<[...A, B]>
   <B>(that: Option<B>): <A extends ReadonlyArray<any>>(self: Option<A>) => Option<[...A, B]>
 } = semiProduct.appendElement(SemiProduct)

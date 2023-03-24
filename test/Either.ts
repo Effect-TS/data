@@ -411,8 +411,8 @@ describe.concurrent("Either", () => {
     Util.deepStrictEqual(coproductMany(E.left("e1"), [E.left("e2")]), E.left("e2"))
   })
 
-  it("element", () => {
-    expect(pipe(E.right(1), E.asTuple, E.appendElement(E.right("b")))).toEqual(
+  it("tuple", () => {
+    expect(pipe(E.right(1), E.asTuple, E.appendElementEither(E.right("b")))).toEqual(
       E.right([1, "b"])
     )
   })

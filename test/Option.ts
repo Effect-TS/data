@@ -474,8 +474,8 @@ describe.concurrent("Option", () => {
     )
   })
 
-  it("element", () => {
-    expect(pipe(_.some(1), _.asTuple, _.appendElement(_.some("b")))).toEqual(
+  it("tuple", () => {
+    expect(pipe(_.some(1), _.asTuple, _.appendElementOption(_.some("b")))).toEqual(
       _.some([1, "b"])
     )
   })

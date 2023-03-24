@@ -513,7 +513,7 @@ export const Product: product_.Product<PredicateTypeLambda> = {
  *
  * @since 1.0.0
  */
-export const appendElement: {
+export const appendElementPredicate: {
   <A extends ReadonlyArray<any>, B>(
     self: Predicate<A>,
     that: Predicate<B>

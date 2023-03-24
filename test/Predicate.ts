@@ -28,7 +28,7 @@ describe.concurrent("Predicate", () => {
     expect(_.ofTuple).exist
 
     expect(_.SemiProduct).exist
-    expect(_.appendElement).exist
+    expect(_.appendElementPredicate).exist
 
     expect(_.Product).exist
     expect(_.tuple).exist

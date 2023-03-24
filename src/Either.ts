@@ -1364,12 +1364,12 @@ export const asTuple: <E, A>(self: Either<E, A>) => Either<E, [A]> = invariant.a
 )
 
 /**
- * Appends an element to the end of a tuple.
+ * Appends a wrapped element to the end of a tuple.
  *
  * @category tuple
  * @since 1.0.0
  */
-export const appendElement: {
+export const appendElementEither: {
   <E1, A extends ReadonlyArray<any>, E2, B>(
     self: Either<E1, A>,
     that: Either<E2, B>
