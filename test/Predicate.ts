@@ -24,7 +24,7 @@ describe.concurrent("Predicate", () => {
     expect(_.Contravariant).exist
     expect(_.contramap).exist
 
-    expect(_.Do).exist
+    expect(_.ofStruct).exist
 
     expect(_.SemiProduct).exist
     expect(_.appendElement).exist

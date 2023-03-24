@@ -14,8 +14,8 @@ describe.concurrent("Chainable", () => {
 
   it("setProp", () => {
     const setProp = _.setPropFlat(O.Chainable)
-    U.deepStrictEqual(pipe(O.Do, setProp("a", () => O.none())), O.none())
-    U.deepStrictEqual(pipe(O.Do, setProp("a", () => O.some(1))), O.some({ a: 1 }))
+    U.deepStrictEqual(pipe(O.ofStruct, setProp("a", () => O.none())), O.none())
+    U.deepStrictEqual(pipe(O.ofStruct, setProp("a", () => O.some(1))), O.some({ a: 1 }))
   })
 
   it("tap", () => {

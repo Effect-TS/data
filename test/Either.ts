@@ -27,7 +27,7 @@ describe.concurrent("Either", () => {
     expect(E.mapLeft).exist
 
     expect(E.unit).exist
-    expect(E.Do).exist
+    expect(E.ofStruct).exist
 
     expect(E.Pointed).exist
 

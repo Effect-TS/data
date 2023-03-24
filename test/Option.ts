@@ -26,7 +26,7 @@ describe.concurrent("Option", () => {
     expect(_.as).exist
     expect(_.asUnit).exist
 
-    expect(_.Do).exist
+    expect(_.ofStruct).exist
 
     expect(_.Pointed).exist
 
@@ -514,7 +514,7 @@ describe.concurrent("Option", () => {
   it("guard", () => {
     Util.deepStrictEqual(
       pipe(
-        _.Do,
+        _.ofStruct,
         _.setPropOption("x", () => _.some("a")),
         _.setPropOption("y", () => _.some("a")),
         _.filter(({ x, y }) => x === y)
@@ -523,7 +523,7 @@ describe.concurrent("Option", () => {
     )
     Util.deepStrictEqual(
       pipe(
-        _.Do,
+        _.ofStruct,
         _.setPropOption("x", () => _.some("a")),
         _.setPropOption("y", () => _.some("b")),
         _.filter(({ x, y }) => x === y)

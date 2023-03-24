@@ -2368,10 +2368,16 @@ export const setProp: {
 } = covariant.setProp(Covariant) as any
 
 /**
- * @category do notation
+ * @category constructors
  * @since 1.0.0
  */
-export const Do: ReadonlyArray<{}> = of_.Do(Of)
+export const ofStruct: ReadonlyArray<{}> = of_.struct(Of)
+
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+export const ofTuple: ReadonlyArray<{}> = of_.tuple(Of)
 
 /**
  * @category struct

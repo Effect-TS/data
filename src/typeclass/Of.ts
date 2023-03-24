@@ -29,9 +29,15 @@ export const unit = <F extends TypeLambda>(
 ): Kind<F, unknown, never, never, void> => F.of<void>(undefined)
 
 /**
- * @category do notation
  * @since 1.0.0
  */
-export const Do = <F extends TypeLambda>(
+export const struct = <F extends TypeLambda>(
   F: Of<F>
 ): Kind<F, unknown, never, never, {}> => F.of({})
+
+/**
+ * @since 1.0.0
+ */
+export const tuple = <F extends TypeLambda>(
+  F: Of<F>
+): Kind<F, unknown, never, never, []> => F.of([])

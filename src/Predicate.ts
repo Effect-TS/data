@@ -761,7 +761,7 @@ export const some = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => get
 // -------------------------------------------------------------------------------------
 
 /**
- * @category do notation
+ * @category constructors
  * @since 1.0.0
  */
 export const asProp: {
@@ -770,7 +770,13 @@ export const asProp: {
 } = invariant.asProp(Invariant)
 
 /**
- * @category do notation
+ * @category constructors
  * @since 1.0.0
  */
-export const Do: Predicate<{}> = of_.Do(Of)
+export const ofStruct: Predicate<{}> = of_.struct(Of)
+
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+export const ofTuple: Predicate<[]> = of_.tuple(Of)

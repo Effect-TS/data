@@ -32,9 +32,6 @@ export const tail = <A>(as: NonEmptyReadonlyArray<A>): ReadonlyArray<A> => as.sl
 // -------------------------------------------------------------------------------------
 
 /** @internal */
-export const Do: Readonly<{}> = {}
-
-/** @internal */
 export const has = Object.prototype.hasOwnProperty
 
 // -------------------------------------------------------------------------------------

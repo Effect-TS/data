@@ -22,7 +22,7 @@ describe.concurrent("Identity", () => {
 
     expect(_.asProp).exist
     expect(_.setProp).exist
-    expect(_.Do).exist
+    expect(_.ofStruct).exist
     expect(_.setPropIdentity).exist
   })
 

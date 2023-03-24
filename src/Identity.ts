@@ -254,10 +254,16 @@ export const setProp: {
 } = covariant.setProp(Covariant)
 
 /**
- * @category do notation
+ * @category constructors
  * @since 1.0.0
  */
-export const Do: Identity<{}> = of_.Do(Of)
+export const ofStruct: Identity<{}> = of_.struct(Of)
+
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+export const ofTuple: Identity<{}> = of_.tuple(Of)
 
 /**
  * @category struct

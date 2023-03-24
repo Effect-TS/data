@@ -1718,7 +1718,7 @@ export const setPropOption: {
  * @category do notation
  * @since 1.0.0
  */
-export const Do: Option<{}> = of_.Do(Of)
+export const ofStruct: Option<{}> = of_.struct(Of)
 
 /**
  * The `gen` API is a helper function that provides a generator interface for the `Option` monad instance.

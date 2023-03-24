@@ -12,4 +12,12 @@ describe.concurrent("Of", () => {
   it("unit", () => {
     U.deepStrictEqual(_.unit(O.Pointed), O.some(undefined))
   })
+
+  it("struct", () => {
+    U.deepStrictEqual(_.struct(O.Pointed), O.some({}))
+  })
+
+  it("tuple", () => {
+    U.deepStrictEqual(_.tuple(O.Pointed), O.some([]))
+  })
 })

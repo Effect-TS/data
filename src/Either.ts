@@ -1413,10 +1413,16 @@ export const setProp: {
 } = covariant.setProp(Covariant)
 
 /**
- * @category do notation
+ * @category constructors
  * @since 1.0.0
  */
-export const Do: Either<never, {}> = of_.Do(Of)
+export const ofStruct: Either<never, {}> = of_.struct(Of)
+
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+export const ofTuple: Either<never, {}> = of_.tuple(Of)
 
 /**
  * @category struct

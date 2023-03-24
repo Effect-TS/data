@@ -50,7 +50,7 @@ pipe(_.some('a'), _.getOrElse(() => null))
 
 // $ExpectType Option<{ a1: number; a2: string; }>
 pipe(
-  _.Do,
+  _.ofStruct,
   _.setPropOption('a1', () => _.some(1)),
   _.setPropOption('a2', () => _.some('b'))
 )

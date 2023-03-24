@@ -22,7 +22,7 @@ describe.concurrent("ReadonlyArray", () => {
     expect(RA.flap).exist
 
     expect(RA.of).exist
-    expect(RA.Do).exist
+    expect(RA.ofStruct).exist
 
     expect(RA.Pointed).exist
 
@@ -1458,7 +1458,7 @@ describe.concurrent("ReadonlyArray", () => {
   it("do notation", () => {
     deepStrictEqual(
       pipe(
-        RA.Do,
+        RA.ofStruct,
         RA.setPropReadonlyArray("a", () => [1, 2, 3]),
         RA.map(({ a }) => a * 2)
       ),
@@ -1467,7 +1467,7 @@ describe.concurrent("ReadonlyArray", () => {
 
     deepStrictEqual(
       pipe(
-        RA.Do,
+        RA.ofStruct,
         RA.setPropReadonlyArray("a", () => [1, 2, 3]),
         RA.setPropReadonlyArray("b", () => ["a", "b"]),
         RA.map(({ a, b }) => [a, b] as const)
@@ -1484,7 +1484,7 @@ describe.concurrent("ReadonlyArray", () => {
 
     deepStrictEqual(
       pipe(
-        RA.Do,
+        RA.ofStruct,
         RA.setPropReadonlyArray("a", () => [1, 2, 3]),
         RA.setPropReadonlyArray("b", () => ["a", "b"]),
         RA.map(({ a, b }) => [a, b] as const),
