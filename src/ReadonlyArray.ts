@@ -2377,7 +2377,7 @@ export const ofStruct: ReadonlyArray<{}> = of_.struct(Of)
  * @category constructors
  * @since 1.0.0
  */
-export const ofTuple: ReadonlyArray<{}> = of_.tuple(Of)
+export const ofTuple: ReadonlyArray<[]> = of_.tuple(Of)
 
 /**
  * @category struct

@@ -27,6 +27,7 @@ describe.concurrent("Option", () => {
     expect(_.asUnit).exist
 
     expect(_.ofStruct).exist
+    expect(_.ofTuple).exist
 
     expect(_.Pointed).exist
 

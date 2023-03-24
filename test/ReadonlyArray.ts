@@ -23,6 +23,7 @@ describe.concurrent("ReadonlyArray", () => {
 
     expect(RA.of).exist
     expect(RA.ofStruct).exist
+    expect(RA.ofTuple).exist
 
     expect(RA.Pointed).exist
 

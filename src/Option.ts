@@ -1715,10 +1715,16 @@ export const setPropOption: {
 } = chainable.setPropFlat(Chainable)
 
 /**
- * @category do notation
+ * @category constructors
  * @since 1.0.0
  */
 export const ofStruct: Option<{}> = of_.struct(Of)
+
+/**
+ * @category constructors
+ * @since 1.0.0
+ */
+export const ofTuple: Option<[]> = of_.tuple(Of)
 
 /**
  * The `gen` API is a helper function that provides a generator interface for the `Option` monad instance.

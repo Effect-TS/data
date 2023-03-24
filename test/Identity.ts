@@ -20,9 +20,11 @@ describe.concurrent("Identity", () => {
     expect(_.Foldable).exist
     expect(_.Traversable).exist
 
+    expect(_.ofStruct).exist
+    expect(_.ofTuple).exist
+
     expect(_.asProp).exist
     expect(_.setProp).exist
-    expect(_.ofStruct).exist
     expect(_.setPropIdentity).exist
   })
 
