@@ -76,7 +76,7 @@ export const add = Dual.dual<
   ) => C.Context<Services | C.Tag.Service<T>>,
   <Services, T extends C.Tag<any>>(
     self: C.Context<Services>,
-    tag: C.Tag<T>,
+    tag: T,
     service: C.Tag.Service<T>
   ) => C.Context<Services | C.Tag.Service<T>>
 >(3, (self, tag, service) => {
