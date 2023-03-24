@@ -463,7 +463,7 @@ describe.concurrent("Option", () => {
     Util.deepStrictEqual(_.fromEither(E.left("e")), _.none())
   })
 
-  it("do notation", () => {
+  it("struct", () => {
     Util.deepStrictEqual(
       pipe(
         _.some(1),

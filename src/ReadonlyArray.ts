@@ -2338,10 +2338,6 @@ export const getMonoid: <A>() => Monoid<ReadonlyArray<A>> = monoid.array
  */
 export const getOrder: <A>(O: Order<A>) => Order<ReadonlyArray<A>> = order.array
 
-// -------------------------------------------------------------------------------------
-// do notation
-// -------------------------------------------------------------------------------------
-
 /**
  * @category mapping
  * @since 1.0.0

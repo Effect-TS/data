@@ -757,10 +757,6 @@ export const every = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => ge
  */
 export const some = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => getMonoidSome<A>().combineAll(collection)
 
-// -------------------------------------------------------------------------------------
-// do notation
-// -------------------------------------------------------------------------------------
-
 /**
  * @category mapping
  * @since 1.0.0

@@ -224,10 +224,6 @@ export const Traversable: traversable.Traversable<IdentityTypeLambda> = {
   traverse
 }
 
-// -------------------------------------------------------------------------------------
-// do notation
-// -------------------------------------------------------------------------------------
-
 /**
  * @category mapping
  * @since 1.0.0

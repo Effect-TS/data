@@ -1456,7 +1456,7 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(RA.empty.length, 0)
   })
 
-  it("do notation", () => {
+  it("struct", () => {
     deepStrictEqual(
       pipe(
         RA.ofStruct,

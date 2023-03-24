@@ -1355,10 +1355,6 @@ export const lefts = <E, A>(self: Iterable<Either<E, A>>): Array<E> => {
   return out
 }
 
-// -------------------------------------------------------------------------------------
-// do notation
-// -------------------------------------------------------------------------------------
-
 /**
  * @category mapping
  * @since 1.0.0
@@ -1370,7 +1366,7 @@ export const asTuple: <E, A>(self: Either<E, A>) => Either<E, [A]> = invariant.a
 /**
  * Appends an element to the end of a tuple.
  *
- * @category do notation
+ * @category tuple
  * @since 1.0.0
  */
 export const appendElement: {

@@ -339,7 +339,7 @@ describe.concurrent("Either", () => {
     Util.deepStrictEqual(gt2(E.right(3)), true)
   })
 
-  it("do notation", () => {
+  it("struct", () => {
     Util.deepStrictEqual(
       pipe(
         E.right(1),

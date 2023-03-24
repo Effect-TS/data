@@ -1643,10 +1643,6 @@ export const multiplyCompact = (self: Iterable<Option<number>>): number => {
   return out
 }
 
-// -------------------------------------------------------------------------------------
-// do notation
-// -------------------------------------------------------------------------------------
-
 /**
  * @category mapping
  * @since 1.0.0
@@ -1665,7 +1661,7 @@ export const asTuple: <A>(self: Option<A>) => Option<[A]> = invariant.asTuple(In
  * assert.deepStrictEqual(O.appendElement(O.some([1, 2]), O.some(3)), O.some([1, 2, 3]))
  * assert.deepStrictEqual(O.appendElement(O.some([1, 2]), O.none()), O.none())
  *
- * @category do notation
+ * @category tuple
  * @since 1.0.0
  */
 export const appendElement: {
