@@ -312,6 +312,14 @@ export const Invariant: invariant.Invariant<EitherTypeLambda> = {
 }
 
 /**
+ * @example
+ * import * as E from '@effect/data/Either'
+ *
+ * const toInteger = (n: number): number => parseInt(n.toString())
+ *
+ * assert.deepStrictEqual(E.flap(1.11, E.right(toInteger)), E.right(1))
+ * assert.deepStrictEqual(E.flap(1.11, E.left('some error')), E.left('some error'))
+ *
  * @category mapping
  * @since 1.0.0
  */
@@ -570,6 +578,15 @@ export const lift2: <A, B, C>(f: (a: A, b: B) => C) => {
 } = semiApplicative.lift2(SemiApplicative)
 
 /**
+ * @example
+ * import * as E from '@effect/data/Either'
+ *
+ * const toPair = (a: number, b: number): [number, number] => [a, b]
+ *
+ * assert.deepStrictEqual(E.zipWith(E.right(1), E.right(2), toPair), E.right([1, 2]))
+ * assert.deepStrictEqual(E.zipWith(E.left('some error'), E.right(2), toPair), E.left('some error'))
+ * assert.deepStrictEqual(E.zipWith(E.right(1), E.left('some error'), toPair), E.left('some error'))
+ *
  * @category combining
  * @since 1.0.0
  */
@@ -986,6 +1003,23 @@ export const liftThrowable = <A extends ReadonlyArray<unknown>, B, E>(
 export const reverse = <E, A>(self: Either<E, A>): Either<A, E> => isLeft(self) ? right(self.left) : left(self.right)
 
 /**
+ * @example
+ * import * as E from '@effect/data/Either'
+ *
+ * // predicate
+ * const isInteger = (n: number): boolean => Number.isInteger(n)
+ *
+ * assert.deepStrictEqual(E.filter(E.right(1), isInteger, () => 'Value is not an Integer'), E.right(1))
+ * assert.deepStrictEqual(E.filter(E.right(1.11), isInteger, () => 'Value is not an Integer'), E.left('Value is not an Integer'))
+ * assert.deepStrictEqual(E.filter(E.left('some error'), isInteger, () => 'Value is not an Integer'), E.left('some error'))
+ *
+ * // refinement
+ * const isNumber = (n: unknown): n is number => typeof n === 'number'
+ *
+ * assert.deepStrictEqual(E.filter(E.right(1), isNumber, () => 'Value is not a number'), E.right(1))
+ * assert.deepStrictEqual(E.filter(E.right('hello'), isNumber, () => 'Value is not a number'), E.left('Value is not a number'))
+ * assert.deepStrictEqual(E.filter(E.left('some error'), isNumber, () => 'Value is not a number'), E.left('some error'))
+ *
  * @category filtering
  * @since 1.0.0
  */
@@ -1014,6 +1048,16 @@ export const filter: {
 ): Either<E1 | E2, B> => isLeft(self) ? self : predicate(self.right) ? self : left(onFalse()))
 
 /**
+ * @example
+ * import * as E from '@effect/data/Either'
+ * import * as O from '@effect/data/Option'
+ *
+ * const integer = (n: number) => Number.isInteger(n) ? O.some(n) : O.none()
+ *
+ * assert.deepStrictEqual(E.filterMap(E.right(1), integer, () => 'Value is not an Integer'), E.right(1))
+ * assert.deepStrictEqual(E.filterMap(E.right(1.1), integer, () => 'Value is not an Integer'), E.left('Value is not an Integer'))
+ * assert.deepStrictEqual(E.filterMap(E.left('some error'), integer, () => 'Value is not an Integer'), E.left('some error'))
+ *
  * @category filtering
  * @since 1.0.0
  */

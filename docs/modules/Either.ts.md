@@ -313,6 +313,18 @@ export declare const zipWith: {
 }
 ```
 
+**Example**
+
+```ts
+import * as E from '@effect/data/Either'
+
+const toPair = (a: number, b: number): [number, number] => [a, b]
+
+assert.deepStrictEqual(E.zipWith(E.right(1), E.right(2), toPair), E.right([1, 2]))
+assert.deepStrictEqual(E.zipWith(E.left('some error'), E.right(2), toPair), E.left('some error'))
+assert.deepStrictEqual(E.zipWith(E.right(1), E.left('some error'), toPair), E.left('some error'))
+```
+
 Added in v1.0.0
 
 # constructors
@@ -785,6 +797,44 @@ export declare const filter: {
 }
 ```
 
+**Example**
+
+```ts
+import * as E from '@effect/data/Either'
+
+// predicate
+const isInteger = (n: number): boolean => Number.isInteger(n)
+
+assert.deepStrictEqual(
+  E.filter(E.right(1), isInteger, () => 'Value is not an Integer'),
+  E.right(1)
+)
+assert.deepStrictEqual(
+  E.filter(E.right(1.11), isInteger, () => 'Value is not an Integer'),
+  E.left('Value is not an Integer')
+)
+assert.deepStrictEqual(
+  E.filter(E.left('some error'), isInteger, () => 'Value is not an Integer'),
+  E.left('some error')
+)
+
+// refinement
+const isNumber = (n: unknown): n is number => typeof n === 'number'
+
+assert.deepStrictEqual(
+  E.filter(E.right(1), isNumber, () => 'Value is not a number'),
+  E.right(1)
+)
+assert.deepStrictEqual(
+  E.filter(E.right('hello'), isNumber, () => 'Value is not a number'),
+  E.left('Value is not a number')
+)
+assert.deepStrictEqual(
+  E.filter(E.left('some error'), isNumber, () => 'Value is not a number'),
+  E.left('some error')
+)
+```
+
 Added in v1.0.0
 
 ## filterMap
@@ -796,6 +846,28 @@ export declare const filterMap: {
   <A, B, E2>(f: (a: A) => Option<B>, onNone: LazyArg<E2>): <E1>(self: Either<E1, A>) => Either<E2 | E1, B>
   <E1, A, B, E2>(self: Either<E1, A>, f: (a: A) => Option<B>, onNone: LazyArg<E2>): Either<E1 | E2, B>
 }
+```
+
+**Example**
+
+```ts
+import * as E from '@effect/data/Either'
+import * as O from '@effect/data/Option'
+
+const integer = (n: number) => (Number.isInteger(n) ? O.some(n) : O.none())
+
+assert.deepStrictEqual(
+  E.filterMap(E.right(1), integer, () => 'Value is not an Integer'),
+  E.right(1)
+)
+assert.deepStrictEqual(
+  E.filterMap(E.right(1.1), integer, () => 'Value is not an Integer'),
+  E.left('Value is not an Integer')
+)
+assert.deepStrictEqual(
+  E.filterMap(E.left('some error'), integer, () => 'Value is not an Integer'),
+  E.left('some error')
+)
 ```
 
 Added in v1.0.0
@@ -1381,6 +1453,17 @@ export declare const flap: {
   <A, E, B>(a: A, self: Either<E, (a: A) => B>): Either<E, B>
   <E, A, B>(self: Either<E, (a: A) => B>): (a: A) => Either<E, B>
 }
+```
+
+**Example**
+
+```ts
+import * as E from '@effect/data/Either'
+
+const toInteger = (n: number): number => parseInt(n.toString())
+
+assert.deepStrictEqual(E.flap(1.11, E.right(toInteger)), E.right(1))
+assert.deepStrictEqual(E.flap(1.11, E.left('some error')), E.left('some error'))
 ```
 
 Added in v1.0.0
