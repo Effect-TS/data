@@ -1360,7 +1360,7 @@ export const lefts = <E, A>(self: Iterable<Either<E, A>>): Array<E> => {
 // -------------------------------------------------------------------------------------
 
 /**
- * @category do notation
+ * @category mapping
  * @since 1.0.0
  */
 export const asTuple: <E, A>(self: Either<E, A>) => Either<E, [A]> = invariant.asTuple(
@@ -1384,7 +1384,7 @@ export const appendElement: {
 } = semiProduct.appendElement(SemiProduct)
 
 /**
- * @category do notation
+ * @category mapping
  * @since 1.0.0
  */
 export const asProp: {

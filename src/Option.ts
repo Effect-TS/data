@@ -1648,7 +1648,7 @@ export const multiplyCompact = (self: Iterable<Option<number>>): number => {
 // -------------------------------------------------------------------------------------
 
 /**
- * @category do notation
+ * @category mapping
  * @since 1.0.0
  */
 export const asTuple: <A>(self: Option<A>) => Option<[A]> = invariant.asTuple(Invariant)
@@ -1674,7 +1674,7 @@ export const appendElement: {
 } = semiProduct.appendElement(SemiProduct)
 
 /**
- * @category do notation
+ * @category mapping
  * @since 1.0.0
  */
 export const asProp: {

@@ -2343,7 +2343,7 @@ export const getOrder: <A>(O: Order<A>) => Order<ReadonlyArray<A>> = order.array
 // -------------------------------------------------------------------------------------
 
 /**
- * @category do notation
+ * @category mapping
  * @since 1.0.0
  */
 export const asProp: {

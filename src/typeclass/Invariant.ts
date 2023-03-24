@@ -43,7 +43,6 @@ export const imapComposition = <F extends TypeLambda, G extends TypeLambda>(
   ): Kind<F, FR, FO, FE, Kind<G, GR, GO, GE, B>> => F.imap(self, G.imap(to, from), G.imap(from, to))
 
 /**
- * @category struct
  * @since 1.0.0
  */
 export const asProp = <F extends TypeLambda>(F: Invariant<F>): {
@@ -63,7 +62,6 @@ export const asProp = <F extends TypeLambda>(F: Invariant<F>): {
 /**
  * Convert a wrapped value to a wrapped tuple
  *
- * @category tuple
  * @since 1.0.0
  */
 export const asTuple = <F extends TypeLambda>(

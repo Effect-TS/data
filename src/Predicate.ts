@@ -443,6 +443,7 @@ export const Invariant: invariant.Invariant<PredicateTypeLambda> = {
 }
 
 /**
+ * @category mapping
  * @since 1.0.0
  */
 export const asTuple: <A>(self: Predicate<A>) => Predicate<readonly [A]> = invariant.asTuple(
@@ -761,7 +762,7 @@ export const some = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => get
 // -------------------------------------------------------------------------------------
 
 /**
- * @category constructors
+ * @category mapping
  * @since 1.0.0
  */
 export const asProp: {

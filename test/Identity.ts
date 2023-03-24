@@ -24,6 +24,8 @@ describe.concurrent("Identity", () => {
     expect(_.ofTuple).exist
 
     expect(_.asProp).exist
+    expect(_.asTuple).exist
+
     expect(_.setProp).exist
     expect(_.setPropIdentity).exist
   })
