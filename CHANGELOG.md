@@ -1,5 +1,13 @@
 # @effect/data
 
+## 0.5.1
+
+### Patch Changes
+
+- [#278](https://github.com/Effect-TS/data/pull/278) [`15644cf`](https://github.com/Effect-TS/data/commit/15644cf80c8d183c8a4bcfb8f7820f9209c1b26b) Thanks [@jessekelly881](https://github.com/jessekelly881)! - Array: added getEquivalence
+
+- [#280](https://github.com/Effect-TS/data/pull/280) [`1a2021f`](https://github.com/Effect-TS/data/commit/1a2021f9cae92223f31eef0a4e768991f636a879) Thanks [@patroza](https://github.com/patroza)! - fix(Context): add Tag<Tag<T>> issue
+
 ## 0.5.0
 
 ### Minor Changes
