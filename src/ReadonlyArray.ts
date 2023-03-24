@@ -19,6 +19,8 @@ import * as applicative from "@effect/data/typeclass/Applicative"
 import * as chainable from "@effect/data/typeclass/Chainable"
 import type { Coproduct } from "@effect/data/typeclass/Coproduct"
 import * as covariant from "@effect/data/typeclass/Covariant"
+import * as equivalence from "@effect/data/typeclass/Equivalence"
+import type { Equivalence } from "@effect/data/typeclass/Equivalence"
 import type * as filterable from "@effect/data/typeclass/Filterable"
 import * as flatMap_ from "@effect/data/typeclass/FlatMap"
 import * as foldable from "@effect/data/typeclass/Foldable"
@@ -2333,10 +2335,16 @@ export const getMonoid: <A>() => Monoid<ReadonlyArray<A>> = monoid.array
  * If all elements are equal, the arrays are then compared based on their length.
  * It is useful when you need to compare two arrays of the same type and you have a specific way of comparing each element of the array.
  *
- * @category lifting
+ * @category instances
  * @since 1.0.0
  */
 export const getOrder: <A>(O: Order<A>) => Order<ReadonlyArray<A>> = order.array
+
+/**
+ * @category instances
+ * @since 1.0.0
+ */
+export const getEquivalence: <A>(O: Equivalence<A>) => Equivalence<ReadonlyArray<A>> = equivalence.array
 
 // -------------------------------------------------------------------------------------
 // do notation

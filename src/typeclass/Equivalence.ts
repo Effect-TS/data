@@ -212,6 +212,28 @@ export const tuple: <T extends ReadonlyArray<Equivalence<any>>>(
 )
 
 /**
+ * Creates a new `Equivalence` for an array of values based on a given `Equivalence` for the elements of the array.
+ *
+ * @category combinators
+ * @since 1.0.0
+ */
+export const array = <A>(predicate: Equivalence<A>): Equivalence<ReadonlyArray<A>> =>
+  make((self, that) => {
+    if (self.length !== that.length) {
+      return false
+    }
+
+    for (let i = 0; i < self.length; i++) {
+      const isEq = predicate(self[i], that[i])
+      if (!isEq) {
+        return false
+      }
+    }
+
+    return true
+  })
+
+/**
  * Given a struct of `Equivalence`s returns a new `Equivalence` that compares values of a struct
  * by applying each `Equivalence` to the corresponding property of the struct.
  *
