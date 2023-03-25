@@ -17,6 +17,7 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [combinators](#combinators)
+  - [array](#array)
   - [contramap](#contramap)
   - [struct](#struct)
   - [tuple](#tuple)
@@ -43,6 +44,18 @@ Added in v1.0.0
 ---
 
 # combinators
+
+## array
+
+Creates a new `Equivalence` for an array of values based on a given `Equivalence` for the elements of the array.
+
+**Signature**
+
+```ts
+export declare const array: <A>(predicate: Equivalence<A>) => Equivalence<readonly A[]>
+```
+
+Added in v1.0.0
 
 ## contramap
 

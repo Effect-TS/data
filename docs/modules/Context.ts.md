@@ -274,7 +274,7 @@ export declare const add: {
   <T extends Tag<any>>(tag: T, service: Tag.Service<T>): <Services>(
     self: Context<Services>
   ) => Context<Tag.Service<T> | Services>
-  <Services, T extends Tag<any>>(self: Context<Services>, tag: Tag<T>, service: Tag.Service<T>): Context<
+  <Services, T extends Tag<any>>(self: Context<Services>, tag: T, service: Tag.Service<T>): Context<
     Services | Tag.Service<T>
   >
 }

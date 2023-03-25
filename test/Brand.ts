@@ -2,7 +2,8 @@ import * as Brand from "@effect/data/Brand"
 import * as Either from "@effect/data/Either"
 import * as Option from "@effect/data/Option"
 
-type Int = number & Brand.Brand<"Int">
+declare const IntTypeId: unique symbol
+type Int = number & Brand.Brand<typeof IntTypeId>
 const Int = Brand.refined<Int>(
   (n) => Number.isInteger(n),
   (n) => Brand.error(`Expected ${n} to be an integer`)
