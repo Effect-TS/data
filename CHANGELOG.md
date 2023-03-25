@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.6.0
+
+### Minor Changes
+
+- [#282](https://github.com/Effect-TS/data/pull/282) [`df8271a`](https://github.com/Effect-TS/data/commit/df8271a5508001343e4eb61ed110666e4fbb54c9) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Allow symbols in Brand
+
 ## 0.5.1
 
 ### Patch Changes
