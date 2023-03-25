@@ -47,13 +47,12 @@ export const RefinedConstructorsTypeId: unique symbol = Symbol.for("@effect/data
 export type RefinedConstructorsTypeId = typeof RefinedConstructorsTypeId
 
 /**
- * A generic interface that defines a branded type. It contains a `unique symbol` property `[BrandTypeId]` with a `string` property,
- * which represents the brand.
+ * A generic interface that defines a branded type.
  *
  * @since 1.0.0
  * @category models
  */
-export interface Brand<in out K extends string> {
+export interface Brand<in out K extends string | symbol> {
   readonly [BrandTypeId]: {
     readonly [k in K]: K
   }
@@ -134,7 +133,7 @@ export declare namespace Brand {
    */
   export type Brands<P> = P extends Brand<any> ? Brand.UnionToIntersection<
     {
-      [k in keyof P[BrandTypeId]]: k extends string ? Brand<k>
+      [k in keyof P[BrandTypeId]]: k extends string | symbol ? Brand<k>
         : never
     }[keyof P[BrandTypeId]]
   >

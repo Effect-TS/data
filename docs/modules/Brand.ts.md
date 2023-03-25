@@ -134,8 +134,7 @@ Added in v1.0.0
 
 ## Brand (interface)
 
-A generic interface that defines a branded type. It contains a `unique symbol` property `[BrandTypeId]` with a `string` property,
-which represents the brand.
+A generic interface that defines a branded type.
 
 **Signature**
 
