@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.7.1
+
+### Patch Changes
+
+- [#286](https://github.com/Effect-TS/data/pull/286) [`e573887`](https://github.com/Effect-TS/data/commit/e573887d73f1ef30c421c4a7d35da686b4aa9673) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Fix Context types
+
 ## 0.7.0
 
 ### Minor Changes
