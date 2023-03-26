@@ -23,16 +23,20 @@ export type TagTypeId = typeof TagTypeId
  * @since 1.0.0
  * @category models
  */
-export interface Tag<Service> {
-  readonly _id: TagTypeId
-  readonly _S: (_: Service) => Service
+export interface Tag<Identifier, Service> {
+  readonly _tag: "Tag"
+  readonly [TagTypeId]: {
+    readonly _S: (_: Service) => Service
+    readonly _I: (_: Identifier) => Identifier
+  }
 }
 
 /**
  * @since 1.0.0
  */
 export declare namespace Tag {
-  type Service<T extends Tag<any>> = T extends Tag<infer A> ? A : never
+  type Service<T extends Tag<any, any>> = T extends Tag<any, infer A> ? A : never
+  type Identifier<T extends Tag<any, any>> = T extends Tag<infer A, any> ? A : never
 }
 
 /**
@@ -55,7 +59,7 @@ export declare namespace Tag {
  * @since 1.0.0
  * @category constructors
  */
-export const Tag = <Service>(key?: unknown): Tag<Service> => new C.TagImpl(key)
+export const Tag = <Service, Identifier = Service>(key?: unknown): Tag<Service, Identifier> => new C.TagImpl(key)
 
 const TypeId: unique symbol = C.ContextTypeId as TypeId
 
@@ -69,7 +73,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export type Tags<R> = R extends infer S ? Tag<S> : never
+export type ValidTagsById<R> = R extends infer S ? Tag<S, any> : never
 
 /**
  * @since 1.0.0
@@ -79,7 +83,7 @@ export interface Context<Services> extends Equal {
   readonly _id: TypeId
   readonly _S: (_: Services) => unknown
   /** @internal */
-  readonly unsafeMap: Map<Tag<any>, any>
+  readonly unsafeMap: Map<Tag<any, any>, any>
 }
 
 /**
@@ -110,7 +114,7 @@ export const isContext: (input: unknown) => input is Context<never> = C.isContex
  * @since 1.0.0
  * @category guards
  */
-export const isTag: (input: unknown) => input is Tag<never> = C.isTag
+export const isTag: (input: unknown) => input is Tag<any, any> = C.isTag
 
 /**
  * Returns an empty `Context`.
@@ -140,10 +144,7 @@ export const empty: () => Context<never> = C.empty
  * @since 1.0.0
  * @category constructors
  */
-export const make: <T extends Tag<any>>(
-  tag: T,
-  service: Tag.Service<T>
-) => Context<Tag.Service<T>> = C.make
+export const make: <T extends Tag<any, any>>(tag: T, service: Tag.Service<T>) => Context<Tag.Identifier<T>> = C.make
 
 /**
  * Adds a service to a given `Context`.
@@ -169,15 +170,15 @@ export const make: <T extends Tag<any>>(
  * @category mutations
  */
 export const add: {
-  <T extends Tag<any>>(
+  <T extends Tag<any, any>>(
     tag: T,
     service: Tag.Service<T>
-  ): <Services>(self: Context<Services>) => Context<Tag.Service<T> | Services>
-  <Services, T extends Tag<any>>(
+  ): <Services>(self: Context<Services>) => Context<Services | Tag.Identifier<T>>
+  <Services, T extends Tag<any, any>>(
     self: Context<Services>,
     tag: T,
     service: Tag.Service<T>
-  ): Context<Services | Tag.Service<T>>
+  ): Context<Services | Tag.Identifier<T>>
 } = C.add
 
 /**
@@ -204,8 +205,13 @@ export const add: {
  * @category getters
  */
 export const get: {
-  <Services, T extends Tags<Services>>(tag: T): (self: Context<Services>) => T extends Tag<infer S> ? S : never
-  <Services, T extends Tags<Services>>(self: Context<Services>, tag: T): T extends Tag<infer S> ? S : never
+  <Services, T extends ValidTagsById<Services>>(
+    tag: T
+  ): (self: Context<Services>) => T extends Tag<infer S, any> ? S : never
+  <Services, T extends ValidTagsById<Services>>(
+    self: Context<Services>,
+    tag: T
+  ): T extends Tag<infer S, any> ? S : never
 } = C.get
 
 /**
@@ -232,8 +238,8 @@ export const get: {
  * @category unsafe
  */
 export const unsafeGet: {
-  <S>(tag: Tag<S>): <Services>(self: Context<Services>) => S
-  <Services, S>(self: Context<Services>, tag: Tag<S>): S
+  <S, I>(tag: Tag<S, I>): <Services>(self: Context<Services>) => S
+  <Services, S, I>(self: Context<Services>, tag: Tag<S, I>): S
 } = C.unsafeGet
 
 /**
@@ -259,8 +265,8 @@ export const unsafeGet: {
  * @category getters
  */
 export const getOption: {
-  <S>(tag: Tag<S>): <Services>(self: Context<Services>) => Option<S>
-  <Services, S>(self: Context<Services>, tag: Tag<S>): Option<S>
+  <S, I>(tag: Tag<S, I>): <Services>(self: Context<Services>) => Option<S>
+  <Services, S, I>(self: Context<Services>, tag: Tag<S, I>): Option<S>
 } = C.getOption
 
 /**
@@ -318,6 +324,6 @@ export const merge: {
  * @since 1.0.0
  * @category mutations
  */
-export const pick: <Services, S extends Array<Tags<Services>>>(
+export const pick: <Services, S extends Array<ValidTagsById<Services>>>(
   ...tags: S
 ) => (self: Context<Services>) => Context<{ [k in keyof S]: Tag.Service<S[k]> }[number]> = C.pick

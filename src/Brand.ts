@@ -167,6 +167,12 @@ export declare namespace Brand {
 }
 
 /**
+ * @category alias
+ * @since 1.0.0
+ */
+export type Branded<A, K extends string | symbol> = A & Brand<K>
+
+/**
  * Returns a `BrandErrors` that contains a single `RefinementError`.
  *
  * @since 1.0.0

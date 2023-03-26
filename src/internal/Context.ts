@@ -10,9 +10,34 @@ import * as option from "@effect/data/Option"
 export const TagTypeId: C.TagTypeId = Symbol.for("@effect/data/Context/Tag") as C.TagTypeId
 
 /** @internal */
-export class TagImpl<Service> implements C.Tag<Service> {
-  readonly _id: typeof TagTypeId = TagTypeId
-  readonly _S: (_: Service) => Service = (_) => _
+const effectVariance = {
+  _R: (_: never) => _,
+  _E: (_: never) => _,
+  _A: (_: never) => _
+}
+
+const EffectTypeId = Symbol.for("@effect/io/Effect")
+
+/** @internal */
+export class TagImpl<Identifier, Service> implements C.Tag<Identifier, Service> {
+  readonly _tag = "Tag"
+  public i0 = undefined
+  public i1 = undefined
+  public i2 = undefined
+  public trace = undefined;
+  [EffectTypeId] = effectVariance;
+  [Equal.symbol](this: {}, that: unknown) {
+    return this === that
+  }
+  [Hash.symbol](this: {}) {
+    return Hash.random(this)
+  }
+  get [TagTypeId]() {
+    return {
+      _S: (_: Service) => _,
+      _I: (_: Identifier) => _
+    }
+  }
   constructor(id?: unknown) {
     if (typeof id !== "undefined") {
       return G.globalValue(id, () => this)
@@ -46,7 +71,7 @@ export class ContextImpl<Services> implements C.Context<Services> {
     return Hash.number(this.unsafeMap.size)
   }
 
-  constructor(readonly unsafeMap: Map<C.Tag<unknown>, any>) {}
+  constructor(readonly unsafeMap: Map<C.Tag<unknown, unknown>, any>) {}
 }
 
 /** @internal */
@@ -54,48 +79,47 @@ export const isContext = (u: unknown): u is C.Context<never> =>
   typeof u === "object" && u !== null && "_id" in u && u["_id"] === ContextTypeId
 
 /** @internal */
-export const isTag = (u: unknown): u is C.Tag<never> =>
-  typeof u === "object" && u !== null && "_id" in u && u["_id"] === TagTypeId
+export const isTag = (u: unknown): u is C.Tag<any, any> => typeof u === "object" && u !== null && TagTypeId in u
 
 /** @internal */
 export const empty = (): C.Context<never> => new ContextImpl<never>(new Map())
 
 /** @internal */
-export const make = <T extends C.Tag<any>>(
+export const make = <T extends C.Tag<any, any>>(
   tag: T,
   service: C.Tag.Service<T>
-): C.Context<C.Tag.Service<T>> => new ContextImpl(new Map([[tag, service]]))
+): C.Context<C.Tag.Identifier<T>> => new ContextImpl(new Map([[tag, service]]))
 
 /** @internal */
 export const add = Dual.dual<
-  <T extends C.Tag<any>>(
+  <T extends C.Tag<any, any>>(
     tag: T,
     service: C.Tag.Service<T>
   ) => <Services>(
     self: C.Context<Services>
-  ) => C.Context<Services | C.Tag.Service<T>>,
-  <Services, T extends C.Tag<any>>(
+  ) => C.Context<Services | C.Tag.Identifier<T>>,
+  <Services, T extends C.Tag<any, any>>(
     self: C.Context<Services>,
     tag: T,
     service: C.Tag.Service<T>
-  ) => C.Context<Services | C.Tag.Service<T>>
+  ) => C.Context<Services | C.Tag.Identifier<T>>
 >(3, (self, tag, service) => {
   const map = new Map(self.unsafeMap)
-  map.set(tag as C.Tag<unknown>, service)
+  map.set(tag as C.Tag<unknown, unknown>, service)
   return new ContextImpl(map)
 })
 
 /** @internal */
 export const get = Dual.dual<
-  <Services, T extends C.Tags<Services>>(
+  <Services, T extends C.ValidTagsById<Services>>(
     tag: T
   ) => (
     self: C.Context<Services>
-  ) => T extends C.Tag<infer S> ? S : never,
-  <Services, T extends C.Tags<Services>>(
+  ) => T extends C.Tag<infer S, any> ? S : never,
+  <Services, T extends C.ValidTagsById<Services>>(
     self: C.Context<Services>,
     tag: T
-  ) => T extends C.Tag<infer S> ? S : never
+  ) => T extends C.Tag<infer S, any> ? S : never
 >(2, (self, tag) => {
   if (!self.unsafeMap.has(tag)) {
     throw new Error("Service not found")
@@ -105,8 +129,8 @@ export const get = Dual.dual<
 
 /** @internal */
 export const unsafeGet = Dual.dual<
-  <S>(tag: C.Tag<S>) => <Services>(self: C.Context<Services>) => S,
-  <Services, S>(self: C.Context<Services>, tag: C.Tag<S>) => S
+  <S, I>(tag: C.Tag<S, I>) => <Services>(self: C.Context<Services>) => S,
+  <Services, S, I>(self: C.Context<Services>, tag: C.Tag<S, I>) => S
 >(2, (self, tag) => {
   if (!self.unsafeMap.has(tag)) {
     throw new Error("Service not found")
@@ -116,8 +140,8 @@ export const unsafeGet = Dual.dual<
 
 /** @internal */
 export const getOption = Dual.dual<
-  <S>(tag: C.Tag<S>) => <Services>(self: C.Context<Services>) => O.Option<S>,
-  <Services, S>(self: C.Context<Services>, tag: C.Tag<S>) => O.Option<S>
+  <S, I>(tag: C.Tag<S, I>) => <Services>(self: C.Context<Services>) => O.Option<S>,
+  <Services, S, I>(self: C.Context<Services>, tag: C.Tag<S, I>) => O.Option<S>
 >(2, (self, tag) => {
   if (!self.unsafeMap.has(tag)) {
     return option.none()
@@ -138,7 +162,7 @@ export const merge = Dual.dual<
 })
 
 /** @internal */
-export const pick = <Services, S extends Array<C.Tags<Services>>>(...tags: S) =>
+export const pick = <Services, S extends Array<C.ValidTagsById<Services>>>(...tags: S) =>
   (self: C.Context<Services>): C.Context<
     { [k in keyof S]: C.Tag.Service<S[k]> }[number]
   > => {

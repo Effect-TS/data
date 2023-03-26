@@ -60,7 +60,7 @@ const protoStruct: Equal.Equal = (() => {
         return false
       }
       for (const key of selfKeys) {
-        if (!(key in (that as object) && Equal.equals(this[key], (that as object)[key]))) {
+        if (!(key in (that as object) && Equal.equals((this as any)[key], (that as any)[key]))) {
           return false
         }
       }
@@ -178,7 +178,7 @@ export const Class: new<A extends Record<string, any>>(
         return false
       }
       for (const key of selfKeys) {
-        if (!(key in (that as object) && Equal.equals(this[key], (that as object)[key]))) {
+        if (!(key in (that as object) && Equal.equals((this as any)[key], (that as any)[key]))) {
           return false
         }
       }
