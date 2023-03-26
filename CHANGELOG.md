@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.7.0
+
+### Minor Changes
+
+- [#284](https://github.com/Effect-TS/data/pull/284) [`0da437b`](https://github.com/Effect-TS/data/commit/0da437b330b2e4f99ef3f4b292058bc26a247379) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Separate Identifier and Type in Tag and prepare for Effect integration as primitive
+
 ## 0.6.0
 
 ### Minor Changes
