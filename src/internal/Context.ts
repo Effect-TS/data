@@ -129,8 +129,8 @@ export const get = Dual.dual<
 
 /** @internal */
 export const unsafeGet = Dual.dual<
-  <S, I>(tag: C.Tag<S, I>) => <Services>(self: C.Context<Services>) => S,
-  <Services, S, I>(self: C.Context<Services>, tag: C.Tag<S, I>) => S
+  <S, I>(tag: C.Tag<I, S>) => <Services>(self: C.Context<Services>) => S,
+  <Services, S, I>(self: C.Context<Services>, tag: C.Tag<I, S>) => S
 >(2, (self, tag) => {
   if (!self.unsafeMap.has(tag)) {
     throw new Error("Service not found")
@@ -140,8 +140,8 @@ export const unsafeGet = Dual.dual<
 
 /** @internal */
 export const getOption = Dual.dual<
-  <S, I>(tag: C.Tag<S, I>) => <Services>(self: C.Context<Services>) => O.Option<S>,
-  <Services, S, I>(self: C.Context<Services>, tag: C.Tag<S, I>) => O.Option<S>
+  <S, I>(tag: C.Tag<I, S>) => <Services>(self: C.Context<Services>) => O.Option<S>,
+  <Services, S, I>(self: C.Context<Services>, tag: C.Tag<I, S>) => O.Option<S>
 >(2, (self, tag) => {
   if (!self.unsafeMap.has(tag)) {
     return option.none()
@@ -164,7 +164,7 @@ export const merge = Dual.dual<
 /** @internal */
 export const pick = <Services, S extends Array<C.ValidTagsById<Services>>>(...tags: S) =>
   (self: C.Context<Services>): C.Context<
-    { [k in keyof S]: C.Tag.Service<S[k]> }[number]
+    { [k in keyof S]: C.Tag.Identifier<S[k]> }[number]
   > => {
     const tagSet = new Set<unknown>(tags)
     const newEnv = new Map()
@@ -173,5 +173,5 @@ export const pick = <Services, S extends Array<C.ValidTagsById<Services>>>(...ta
         newEnv.set(tag, s)
       }
     }
-    return new ContextImpl<{ [k in keyof S]: C.Tag.Service<S[k]> }[number]>(newEnv)
+    return new ContextImpl<{ [k in keyof S]: C.Tag.Identifier<S[k]> }[number]>(newEnv)
   }
