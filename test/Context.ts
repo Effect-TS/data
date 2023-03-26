@@ -25,6 +25,21 @@ describe.concurrent("Context", () => {
     expect(a).toBe(b)
   })
 
+  it("aliased tags", () => {
+    interface Foo {
+      readonly _tag: "Foo"
+    }
+    interface Bar {
+      readonly _tag: "Bar"
+    }
+    interface FooBar {
+      readonly FooBar: unique symbol
+    }
+    const Service = Context.Tag<FooBar, Foo | Bar>()
+    const context = Context.make(Service, { _tag: "Foo" })
+    expect(Context.get(context, Service)).toStrictEqual({ _tag: "Foo" })
+  })
+
   it("adds and retrieve services", () => {
     const Services = pipe(
       Context.make(A, { a: 0 }),

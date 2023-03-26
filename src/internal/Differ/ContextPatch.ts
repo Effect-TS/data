@@ -56,12 +56,12 @@ export class AndThen<Input, Output, Output2> implements CP.ContextPatch<Input, O
 }
 
 /** @internal */
-export class AddService<Env, T> implements CP.ContextPatch<Env, Env | T> {
+export class AddService<Env, T, I> implements CP.ContextPatch<Env, Env | I> {
   readonly _tag = "AddService"
   readonly _id: CP.TypeId = ContextPatchTypeId
   readonly _Input: (_: Env) => void = variance
-  readonly _Output: (_: never) => Env | T = variance
-  constructor(readonly tag: Tag<T>, readonly service: T) {}
+  readonly _Output: (_: never) => Env | I = variance
+  constructor(readonly tag: Tag<T, I>, readonly service: T) {}
 
   [Hash.symbol]() {
     return Hash.string(`ContextPatch(AddService)`)
@@ -76,12 +76,12 @@ export class AddService<Env, T> implements CP.ContextPatch<Env, Env | T> {
 }
 
 /** @internal */
-export class RemoveService<Env, T> implements CP.ContextPatch<Env | T, Env> {
+export class RemoveService<Env, T, I> implements CP.ContextPatch<Env | I, Env> {
   readonly _tag = "RemoveService"
   readonly _id: CP.TypeId = ContextPatchTypeId
-  readonly _Input: (_: Env | T) => void = variance
+  readonly _Input: (_: Env | I) => void = variance
   readonly _Output: (_: never) => Env = variance
-  constructor(readonly tag: Tag<T>) {}
+  constructor(readonly tag: Tag<T, I>) {}
 
   [Hash.symbol]() {
     return Hash.string(`ContextPatch(RemoveService)`)
@@ -95,13 +95,13 @@ export class RemoveService<Env, T> implements CP.ContextPatch<Env | T, Env> {
 }
 
 /** @internal */
-export class UpdateService<Env, T> implements CP.ContextPatch<Env | T, Env | T> {
+export class UpdateService<Env, T, I> implements CP.ContextPatch<Env | I, Env | I> {
   readonly _tag = "UpdateService"
   readonly _id: CP.TypeId = ContextPatchTypeId
-  readonly _Input: (_: Env | T) => void = variance
-  readonly _Output: (_: never) => Env | T = variance
+  readonly _Input: (_: Env | I) => void = variance
+  readonly _Output: (_: never) => Env | I = variance
   constructor(
-    readonly tag: Tag<T>,
+    readonly tag: Tag<T, I>,
     readonly update: (service: T) => T
   ) {
   }
@@ -121,9 +121,9 @@ export class UpdateService<Env, T> implements CP.ContextPatch<Env | T, Env | T> 
 type Instruction =
   | Empty<any, any>
   | AndThen<any, any, any>
-  | AddService<any, any>
-  | RemoveService<any, any>
-  | UpdateService<any, any>
+  | AddService<any, any, any>
+  | RemoveService<any, any, any>
+  | UpdateService<any, any, any>
 
 /** @internal */
 export const empty = <Input = never, Output = never>(): CP.ContextPatch<Input, Output> => new Empty()
@@ -182,7 +182,7 @@ export const patch = Dual.dual<
   let patches: Chunk.Chunk<CP.ContextPatch<unknown, unknown>> = Chunk.of(
     self as CP.ContextPatch<unknown, unknown>
   )
-  const updatedContext: Map<Tag<any>, unknown> = new Map(context.unsafeMap)
+  const updatedContext: Map<Tag<any, any>, unknown> = new Map(context.unsafeMap)
   while (Chunk.isNonEmpty(patches)) {
     const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
     const tail = Chunk.tailNonEmpty(patches)

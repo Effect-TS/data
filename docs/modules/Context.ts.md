@@ -31,7 +31,7 @@ Added in v1.0.0
 - [models](#models)
   - [Context (interface)](#context-interface)
   - [Tag (interface)](#tag-interface)
-  - [Tags (type alias)](#tags-type-alias)
+  - [ValidTagsById (type alias)](#validtagsbyid-type-alias)
 - [mutations](#mutations)
   - [add](#add)
   - [merge](#merge)
@@ -59,7 +59,7 @@ desireable to preserve the instance across reloads.
 **Signature**
 
 ```ts
-export declare const Tag: <Service>(key?: unknown) => Tag<Service>
+export declare const Tag: <Service, Identifier = Service>(key?: unknown) => Tag<Service, Identifier>
 ```
 
 **Example**
@@ -100,7 +100,7 @@ Creates a new `Context` with a single service associated to the tag.
 **Signature**
 
 ```ts
-export declare const make: <T extends Tag<any>>(tag: T, service: Tag.Service<T>) => Context<Tag.Service<T>>
+export declare const make: <T extends Tag<any, any>>(tag: T, service: Tag.Service<T>) => Context<Tag.Identifier<T>>
 ```
 
 **Example**
@@ -127,8 +127,12 @@ Get a service from the context that corresponds to the given tag.
 
 ```ts
 export declare const get: {
-  <Services, T extends Tags<Services>>(tag: T): (self: Context<Services>) => T extends Tag<infer S> ? S : never
-  <Services, T extends Tags<Services>>(self: Context<Services>, tag: T): T extends Tag<infer S> ? S : never
+  <Services, T extends ValidTagsById<Services>>(tag: T): (
+    self: Context<Services>
+  ) => T extends Tag<infer S, any> ? S : never
+  <Services, T extends ValidTagsById<Services>>(self: Context<Services>, tag: T): T extends Tag<infer S, any>
+    ? S
+    : never
 }
 ```
 
@@ -157,8 +161,8 @@ found, the `Option` object will be `None`.
 
 ```ts
 export declare const getOption: {
-  <S>(tag: Tag<S>): <Services>(self: Context<Services>) => Option<S>
-  <Services, S>(self: Context<Services>, tag: Tag<S>): Option<S>
+  <S, I>(tag: Tag<S, I>): <Services>(self: Context<Services>) => Option<S>
+  <Services, S, I>(self: Context<Services>, tag: Tag<S, I>): Option<S>
 }
 ```
 
@@ -208,7 +212,7 @@ Checks if the provided argument is a `Tag`.
 **Signature**
 
 ```ts
-export declare const isTag: (input: unknown) => input is Tag<never>
+export declare const isTag: (input: unknown) => input is Tag<any, any>
 ```
 
 **Example**
@@ -232,7 +236,7 @@ export interface Context<Services> extends Equal {
   readonly _id: TypeId
   readonly _S: (_: Services) => unknown
   /** @internal */
-  readonly unsafeMap: Map<Tag<any>, any>
+  readonly unsafeMap: Map<Tag<any, any>, any>
 }
 ```
 
@@ -243,20 +247,22 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Tag<Service> {
-  readonly _id: TagTypeId
-  readonly _S: (_: Service) => Service
+export interface Tag<Identifier, Service> {
+  readonly [TagTypeId]: {
+    readonly _S: (_: Service) => Service
+    readonly _I: (_: Identifier) => Identifier
+  }
 }
 ```
 
 Added in v1.0.0
 
-## Tags (type alias)
+## ValidTagsById (type alias)
 
 **Signature**
 
 ```ts
-export type Tags<R> = R extends infer S ? Tag<S> : never
+export type ValidTagsById<R> = R extends infer S ? Tag<S, any> : never
 ```
 
 Added in v1.0.0
@@ -271,11 +277,11 @@ Adds a service to a given `Context`.
 
 ```ts
 export declare const add: {
-  <T extends Tag<any>>(tag: T, service: Tag.Service<T>): <Services>(
+  <T extends Tag<any, any>>(tag: T, service: Tag.Service<T>): <Services>(
     self: Context<Services>
-  ) => Context<Tag.Service<T> | Services>
-  <Services, T extends Tag<any>>(self: Context<Services>, tag: T, service: Tag.Service<T>): Context<
-    Services | Tag.Service<T>
+  ) => Context<Services | Tag.Identifier<T>>
+  <Services, T extends Tag<any, any>>(self: Context<Services>, tag: T, service: Tag.Service<T>): Context<
+    Services | Tag.Identifier<T>
   >
 }
 ```
@@ -338,7 +344,7 @@ Returns a new `Context` that contains only the specified services.
 **Signature**
 
 ```ts
-export declare const pick: <Services, S extends Tags<Services>[]>(
+export declare const pick: <Services, S extends ValidTagsById<Services>[]>(
   ...tags: S
 ) => (self: Context<Services>) => Context<{ [k in keyof S]: Tag.Service<S[k]> }[number]>
 ```
@@ -398,8 +404,8 @@ For a safer version see {@link getOption}.
 
 ```ts
 export declare const unsafeGet: {
-  <S>(tag: Tag<S>): <Services>(self: Context<Services>) => S
-  <Services, S>(self: Context<Services>, tag: Tag<S>): S
+  <S, I>(tag: Tag<S, I>): <Services>(self: Context<Services>) => S
+  <Services, S, I>(self: Context<Services>, tag: Tag<S, I>): S
 }
 ```
 

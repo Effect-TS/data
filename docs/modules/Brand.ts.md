@@ -27,6 +27,8 @@ Added in v1.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
+- [alias](#alias)
+  - [Branded (type alias)](#branded-type-alias)
 - [constructors](#constructors)
   - [error](#error)
   - [errors](#errors)
@@ -41,6 +43,18 @@ Added in v1.0.0
   - [RefinedConstructorsTypeId (type alias)](#refinedconstructorstypeid-type-alias)
 
 ---
+
+# alias
+
+## Branded (type alias)
+
+**Signature**
+
+```ts
+export type Branded<A, K extends string | symbol> = A & Brand<K>
+```
+
+Added in v1.0.0
 
 # constructors
 
