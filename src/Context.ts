@@ -238,8 +238,8 @@ export const get: {
  * @category unsafe
  */
 export const unsafeGet: {
-  <S, I>(tag: Tag<S, I>): <Services>(self: Context<Services>) => S
-  <Services, S, I>(self: Context<Services>, tag: Tag<S, I>): S
+  <S, I>(tag: Tag<I, S>): <Services>(self: Context<Services>) => S
+  <Services, S, I>(self: Context<Services>, tag: Tag<I, S>): S
 } = C.unsafeGet
 
 /**
@@ -265,8 +265,8 @@ export const unsafeGet: {
  * @category getters
  */
 export const getOption: {
-  <S, I>(tag: Tag<S, I>): <Services>(self: Context<Services>) => Option<S>
-  <Services, S, I>(self: Context<Services>, tag: Tag<S, I>): Option<S>
+  <S, I>(tag: Tag<I, S>): <Services>(self: Context<Services>) => Option<S>
+  <Services, S, I>(self: Context<Services>, tag: Tag<I, S>): Option<S>
 } = C.getOption
 
 /**
@@ -326,4 +326,4 @@ export const merge: {
  */
 export const pick: <Services, S extends Array<ValidTagsById<Services>>>(
   ...tags: S
-) => (self: Context<Services>) => Context<{ [k in keyof S]: Tag.Service<S[k]> }[number]> = C.pick
+) => (self: Context<Services>) => Context<{ [k in keyof S]: Tag.Identifier<S[k]> }[number]> = C.pick

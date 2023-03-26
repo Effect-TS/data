@@ -161,8 +161,8 @@ found, the `Option` object will be `None`.
 
 ```ts
 export declare const getOption: {
-  <S, I>(tag: Tag<S, I>): <Services>(self: Context<Services>) => Option<S>
-  <Services, S, I>(self: Context<Services>, tag: Tag<S, I>): Option<S>
+  <S, I>(tag: Tag<I, S>): <Services>(self: Context<Services>) => Option<S>
+  <Services, S, I>(self: Context<Services>, tag: Tag<I, S>): Option<S>
 }
 ```
 
@@ -248,6 +248,7 @@ Added in v1.0.0
 
 ```ts
 export interface Tag<Identifier, Service> {
+  readonly _tag: 'Tag'
   readonly [TagTypeId]: {
     readonly _S: (_: Service) => Service
     readonly _I: (_: Identifier) => Identifier
@@ -346,7 +347,7 @@ Returns a new `Context` that contains only the specified services.
 ```ts
 export declare const pick: <Services, S extends ValidTagsById<Services>[]>(
   ...tags: S
-) => (self: Context<Services>) => Context<{ [k in keyof S]: Tag.Service<S[k]> }[number]>
+) => (self: Context<Services>) => Context<{ [k in keyof S]: Tag.Identifier<S[k]> }[number]>
 ```
 
 **Example**
@@ -404,8 +405,8 @@ For a safer version see {@link getOption}.
 
 ```ts
 export declare const unsafeGet: {
-  <S, I>(tag: Tag<S, I>): <Services>(self: Context<Services>) => S
-  <Services, S, I>(self: Context<Services>, tag: Tag<S, I>): S
+  <S, I>(tag: Tag<I, S>): <Services>(self: Context<Services>) => S
+  <Services, S, I>(self: Context<Services>, tag: Tag<I, S>): S
 }
 ```
 
