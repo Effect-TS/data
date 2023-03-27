@@ -59,7 +59,7 @@ desireable to preserve the instance across reloads.
 **Signature**
 
 ```ts
-export declare const Tag: <Service, Identifier = Service>(key?: unknown) => Tag<Service, Identifier>
+export declare const Tag: <Identifier, Service = Identifier>(key?: unknown) => Tag<Identifier, Service>
 ```
 
 **Example**
