@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.7.3
+
+### Patch Changes
+
+- [#291](https://github.com/Effect-TS/data/pull/291) [`9de1111`](https://github.com/Effect-TS/data/commit/9de111137e670847e5072e2548035562dde21d9b) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Fix leftover references
+
 ## 0.7.2
 
 ### Patch Changes
