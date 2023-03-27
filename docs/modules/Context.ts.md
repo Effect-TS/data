@@ -31,6 +31,7 @@ Added in v1.0.0
 - [models](#models)
   - [Context (interface)](#context-interface)
   - [Tag (interface)](#tag-interface)
+  - [TracedTag (interface)](#tracedtag-interface)
   - [ValidTagsById (type alias)](#validtagsbyid-type-alias)
 - [mutations](#mutations)
   - [add](#add)
@@ -253,6 +254,22 @@ export interface Tag<Identifier, Service> {
     readonly _S: (_: Service) => Service
     readonly _I: (_: Identifier) => Identifier
   }
+  traced(this: Tag<Identifier, Service>, trace: Trace): TracedTag<Identifier, Service> | Tag<Identifier, Service>
+}
+```
+
+Added in v1.0.0
+
+## TracedTag (interface)
+
+**Signature**
+
+```ts
+export interface TracedTag<Identifier, Service> {
+  readonly _tag: 'Traced'
+  readonly i0: Tag<Identifier, Service> | TracedTag<Identifier, Service>
+  readonly trace: SourceLocation
+  traced(this: TracedTag<Identifier, Service>, trace: Trace): TracedTag<Identifier, Service>
 }
 ```
 

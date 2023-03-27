@@ -7,6 +7,7 @@
  *
  * @since 1.0.0
  */
+import type { SourceLocation, Trace } from "@effect/data/Debug"
 import type { Equal } from "@effect/data/Equal"
 import * as C from "@effect/data/internal/Context"
 import type { Option } from "@effect/data/Option"
@@ -29,6 +30,24 @@ export interface Tag<Identifier, Service> {
     readonly _S: (_: Service) => Service
     readonly _I: (_: Identifier) => Identifier
   }
+  traced(
+    this: Tag<Identifier, Service>,
+    trace: Trace
+  ): TracedTag<Identifier, Service> | Tag<Identifier, Service>
+}
+
+/**
+ * @since 1.0.0
+ * @category models
+ */
+export interface TracedTag<Identifier, Service> {
+  readonly _tag: "Traced"
+  readonly i0: Tag<Identifier, Service> | TracedTag<Identifier, Service>
+  readonly trace: SourceLocation
+  traced(
+    this: TracedTag<Identifier, Service>,
+    trace: Trace
+  ): TracedTag<Identifier, Service>
 }
 
 /**
