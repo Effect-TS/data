@@ -1,5 +1,13 @@
 # @effect/data
 
+## 0.7.2
+
+### Patch Changes
+
+- [#289](https://github.com/Effect-TS/data/pull/289) [`a58bf74`](https://github.com/Effect-TS/data/commit/a58bf746dfb5043ecf4023bd10f279bee7edc631) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Support tracing in data
+
+- [#288](https://github.com/Effect-TS/data/pull/288) [`5359d05`](https://github.com/Effect-TS/data/commit/5359d052a61bcb5cd09d9af9b34d2484a502e561) Thanks [@TylorS](https://github.com/TylorS)! - Correct type-param order of Tag constructor
+
 ## 0.7.1
 
 ### Patch Changes
