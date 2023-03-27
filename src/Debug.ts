@@ -184,7 +184,7 @@ export const methodWithTrace = <A extends (...args: Array<any>) => any>(
   return function() {
     if (!runtimeDebug.tracingEnabled) {
       // @ts-expect-error
-      return body(void 0, debug.restoreOff).apply(this, arguments)
+      return body(void 0, restoreOff).apply(this, arguments)
     }
     runtimeDebug.tracingEnabled = false
     try {
@@ -193,7 +193,7 @@ export const methodWithTrace = <A extends (...args: Array<any>) => any>(
       const error = sourceLocation(new Error())
       Error.stackTraceLimit = limit
       // @ts-expect-error
-      return body(error, debug.restoreOn).apply(this, arguments)
+      return body(error, restoreOn).apply(this, arguments)
     } finally {
       runtimeDebug.tracingEnabled = true
     }
@@ -337,12 +337,12 @@ export const untracedMethod = <A extends (...args: Array<any>) => any>(
   return function() {
     if (!runtimeDebug.tracingEnabled) {
       // @ts-expect-error
-      return untraced(() => body(debug.restoreOff).apply(this, arguments))
+      return untraced(() => body(restoreOff).apply(this, arguments))
     }
     runtimeDebug.tracingEnabled = false
     try {
       // @ts-expect-error
-      return untraced(() => body(debug.restoreOn).apply(this, arguments))
+      return untraced(() => body(restoreOn).apply(this, arguments))
     } finally {
       runtimeDebug.tracingEnabled = true
     }
