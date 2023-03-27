@@ -59,7 +59,7 @@ export declare namespace Tag {
  * @since 1.0.0
  * @category constructors
  */
-export const Tag = <Service, Identifier = Service>(key?: unknown): Tag<Service, Identifier> => new C.TagImpl(key)
+export const Tag = <Identifier, Service = Identifier>(key?: unknown): Tag<Identifier, Service> => new C.TagImpl(key)
 
 const TypeId: unique symbol = C.ContextTypeId as TypeId
 
