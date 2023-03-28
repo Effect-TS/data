@@ -87,7 +87,19 @@ Added in v1.0.0
   - [NonEmptyChunk (interface)](#nonemptychunk-interface)
 - [models](#models)
   - [Chunk (interface)](#chunk-interface)
-- [mutations](#mutations)
+- [sequencing](#sequencing)
+  - [flatMap](#flatmap)
+  - [flatten](#flatten)
+- [symbol](#symbol)
+  - [TypeId (type alias)](#typeid-type-alias)
+- [type lambdas](#type-lambdas)
+  - [ChunkTypeLambda (interface)](#chunktypelambda-interface)
+- [unsafe](#unsafe)
+  - [unsafeFromArray](#unsafefromarray)
+  - [unsafeGet](#unsafeget)
+  - [unsafeHead](#unsafehead)
+  - [unsafeLast](#unsafelast)
+- [utils](#utils)
   - [append](#append)
   - [concat](#concat)
   - [drop](#drop)
@@ -101,18 +113,6 @@ Added in v1.0.0
   - [replace](#replace)
   - [replaceOption](#replaceoption)
   - [take](#take)
-- [sequencing](#sequencing)
-  - [flatMap](#flatmap)
-  - [flatten](#flatten)
-- [symbol](#symbol)
-  - [TypeId (type alias)](#typeid-type-alias)
-- [type lambdas](#type-lambdas)
-  - [ChunkTypeLambda (interface)](#chunktypelambda-interface)
-- [unsafe](#unsafe)
-  - [unsafeFromArray](#unsafefromarray)
-  - [unsafeGet](#unsafeget)
-  - [unsafeHead](#unsafehead)
-  - [unsafeLast](#unsafelast)
 
 ---
 
@@ -1100,7 +1100,112 @@ export interface Chunk<A> extends Iterable<A>, Equal.Equal {
 
 Added in v1.0.0
 
-# mutations
+# sequencing
+
+## flatMap
+
+Returns a chunk with the elements mapped by the specified function.
+
+**Signature**
+
+```ts
+export declare const flatMap: {
+  <A, B>(f: (a: A) => Chunk<B>): (self: Chunk<A>) => Chunk<B>
+  <A, B>(self: Chunk<A>, f: (a: A) => Chunk<B>): Chunk<B>
+}
+```
+
+Added in v1.0.0
+
+## flatten
+
+Flattens a chunk of chunks into a single chunk by concatenating all chunks.
+
+**Signature**
+
+```ts
+export declare const flatten: <A>(self: Chunk<Chunk<A>>) => Chunk<A>
+```
+
+Added in v1.0.0
+
+# symbol
+
+## TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof TypeId
+```
+
+Added in v1.0.0
+
+# type lambdas
+
+## ChunkTypeLambda (interface)
+
+**Signature**
+
+```ts
+export interface ChunkTypeLambda extends TypeLambda {
+  readonly type: Chunk<this['Target']>
+}
+```
+
+Added in v1.0.0
+
+# unsafe
+
+## unsafeFromArray
+
+Wraps an array into a chunk without copying, unsafe on mutable arrays
+
+**Signature**
+
+```ts
+export declare const unsafeFromArray: <A>(self: readonly A[]) => Chunk<A>
+```
+
+Added in v1.0.0
+
+## unsafeGet
+
+Gets an element unsafely, will throw on out of bounds
+
+**Signature**
+
+```ts
+export declare const unsafeGet: { (index: number): <A>(self: Chunk<A>) => A; <A>(self: Chunk<A>, index: number): A }
+```
+
+Added in v1.0.0
+
+## unsafeHead
+
+Returns the first element of this chunk.
+
+**Signature**
+
+```ts
+export declare const unsafeHead: <A>(self: Chunk<A>) => A
+```
+
+Added in v1.0.0
+
+## unsafeLast
+
+Returns the last element of this chunk.
+
+**Signature**
+
+```ts
+export declare const unsafeLast: <A>(self: Chunk<A>) => A
+```
+
+Added in v1.0.0
+
+# utils
 
 ## append
 
@@ -1283,111 +1388,6 @@ Takes the first up to `n` elements from the chunk
 
 ```ts
 export declare const take: { (n: number): <A>(self: Chunk<A>) => Chunk<A>; <A>(self: Chunk<A>, n: number): Chunk<A> }
-```
-
-Added in v1.0.0
-
-# sequencing
-
-## flatMap
-
-Returns a chunk with the elements mapped by the specified function.
-
-**Signature**
-
-```ts
-export declare const flatMap: {
-  <A, B>(f: (a: A) => Chunk<B>): (self: Chunk<A>) => Chunk<B>
-  <A, B>(self: Chunk<A>, f: (a: A) => Chunk<B>): Chunk<B>
-}
-```
-
-Added in v1.0.0
-
-## flatten
-
-Flattens a chunk of chunks into a single chunk by concatenating all chunks.
-
-**Signature**
-
-```ts
-export declare const flatten: <A>(self: Chunk<Chunk<A>>) => Chunk<A>
-```
-
-Added in v1.0.0
-
-# symbol
-
-## TypeId (type alias)
-
-**Signature**
-
-```ts
-export type TypeId = typeof TypeId
-```
-
-Added in v1.0.0
-
-# type lambdas
-
-## ChunkTypeLambda (interface)
-
-**Signature**
-
-```ts
-export interface ChunkTypeLambda extends TypeLambda {
-  readonly type: Chunk<this['Target']>
-}
-```
-
-Added in v1.0.0
-
-# unsafe
-
-## unsafeFromArray
-
-Wraps an array into a chunk without copying, unsafe on mutable arrays
-
-**Signature**
-
-```ts
-export declare const unsafeFromArray: <A>(self: readonly A[]) => Chunk<A>
-```
-
-Added in v1.0.0
-
-## unsafeGet
-
-Gets an element unsafely, will throw on out of bounds
-
-**Signature**
-
-```ts
-export declare const unsafeGet: { (index: number): <A>(self: Chunk<A>) => A; <A>(self: Chunk<A>, index: number): A }
-```
-
-Added in v1.0.0
-
-## unsafeHead
-
-Returns the first element of this chunk.
-
-**Signature**
-
-```ts
-export declare const unsafeHead: <A>(self: Chunk<A>) => A
-```
-
-Added in v1.0.0
-
-## unsafeLast
-
-Returns the last element of this chunk.
-
-**Signature**
-
-```ts
-export declare const unsafeLast: <A>(self: Chunk<A>) => A
 ```
 
 Added in v1.0.0

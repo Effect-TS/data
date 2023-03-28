@@ -186,7 +186,7 @@ export const make: <T extends Tag<any, any>>(tag: T, service: Tag.Service<T>) =>
  * assert.deepStrictEqual(Context.get(Services, Timeout), { TIMEOUT: 5000 })
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const add: {
   <T extends Tag<any, any>>(
@@ -309,7 +309,7 @@ export const getOption: {
  * assert.deepStrictEqual(Context.get(Services, Timeout), { TIMEOUT: 5000 })
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const merge: {
   <R1>(that: Context<R1>): <Services>(self: Context<Services>) => Context<R1 | Services>
@@ -341,8 +341,32 @@ export const merge: {
  * assert.deepStrictEqual(Context.getOption(Services, Timeout), O.none())
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const pick: <Services, S extends Array<ValidTagsById<Services>>>(
   ...tags: S
 ) => (self: Context<Services>) => Context<{ [k in keyof S]: Tag.Identifier<S[k]> }[number]> = C.pick
+
+/**
+ * @since 1.0.0
+ * @category models
+ */
+export type GenericTag = TracedTag<any, any> | Tag<any, any>
+
+const EffectTypeId = Symbol.for("@effect/io/Effect")
+
+/**
+ * @since 1.0.0
+ * @category guards
+ */
+export const isGenericTag = (u: unknown): u is GenericTag => {
+  if (isTag(u)) {
+    return true
+  }
+  // @ts-expect-error
+  if (typeof u === "object" && u !== null && EffectTypeId in u && u["_tag"] === "Traced") {
+    // @ts-expect-error
+    return isGenericTag(u["i0"])
+  }
+  return false
+}

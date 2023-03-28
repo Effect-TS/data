@@ -19,10 +19,10 @@ Added in v1.0.0
   - [patch](#patch)
 - [models](#models)
   - [ChunkPatch (interface)](#chunkpatch-interface)
-- [mutations](#mutations)
-  - [combine](#combine)
 - [symbol](#symbol)
   - [TypeId (type alias)](#typeid-type-alias)
+- [utils](#utils)
+  - [combine](#combine)
 
 ---
 
@@ -94,7 +94,19 @@ export interface ChunkPatch<Value, Patch> extends Equal {
 
 Added in v1.0.0
 
-# mutations
+# symbol
+
+## TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof TypeId
+```
+
+Added in v1.0.0
+
+# utils
 
 ## combine
 
@@ -108,18 +120,6 @@ export declare const combine: {
   <Value, Patch>(that: ChunkPatch<Value, Patch>): (self: ChunkPatch<Value, Patch>) => ChunkPatch<Value, Patch>
   <Value, Patch>(self: ChunkPatch<Value, Patch>, that: ChunkPatch<Value, Patch>): ChunkPatch<Value, Patch>
 }
-```
-
-Added in v1.0.0
-
-# symbol
-
-## TypeId (type alias)
-
-**Signature**
-
-```ts
-export type TypeId = typeof TypeId
 ```
 
 Added in v1.0.0

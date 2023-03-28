@@ -23,13 +23,13 @@ Added in v1.0.0
   - [size](#size)
 - [models](#models)
   - [MutableHashMap (interface)](#mutablehashmap-interface)
-- [mutations](#mutations)
+- [symbol](#symbol)
+  - [TypeId (type alias)](#typeid-type-alias)
+- [utils](#utils)
   - [modify](#modify)
   - [modifyAt](#modifyat)
   - [remove](#remove)
   - [set](#set)
-- [symbol](#symbol)
-  - [TypeId (type alias)](#typeid-type-alias)
 
 ---
 
@@ -127,7 +127,19 @@ export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]> {
 
 Added in v1.0.0
 
-# mutations
+# symbol
+
+## TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof TypeId
+```
+
+Added in v1.0.0
+
+# utils
 
 ## modify
 
@@ -182,18 +194,6 @@ export declare const set: {
   <K, V>(key: K, value: V): (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
   <K, V>(self: MutableHashMap<K, V>, key: K, value: V): MutableHashMap<K, V>
 }
-```
-
-Added in v1.0.0
-
-# symbol
-
-## TypeId (type alias)
-
-**Signature**
-
-```ts
-export type TypeId = typeof TypeId
 ```
 
 Added in v1.0.0

@@ -34,10 +34,6 @@ Added in v1.0.0
   - [map](#map)
 - [models](#models)
   - [SortedSet (interface)](#sortedset-interface)
-- [mutations](#mutations)
-  - [difference](#difference)
-  - [intersection](#intersection)
-  - [union](#union)
 - [refinements](#refinements)
   - [isSortedSet](#issortedset)
 - [sequencing](#sequencing)
@@ -46,6 +42,10 @@ Added in v1.0.0
   - [TypeId (type alias)](#typeid-type-alias)
 - [traversing](#traversing)
   - [forEach](#foreach)
+- [utils](#utils)
+  - [difference](#difference)
+  - [intersection](#intersection)
+  - [union](#union)
 
 ---
 
@@ -258,47 +258,6 @@ export interface SortedSet<A> extends Iterable<A>, Equal.Equal {
 
 Added in v1.0.0
 
-# mutations
-
-## difference
-
-**Signature**
-
-```ts
-export declare const difference: {
-  <A, B extends A>(that: Iterable<B>): (self: SortedSet<A>) => SortedSet<A>
-  <A, B extends A>(self: SortedSet<A>, that: Iterable<B>): SortedSet<A>
-}
-```
-
-Added in v1.0.0
-
-## intersection
-
-**Signature**
-
-```ts
-export declare const intersection: {
-  <A>(that: Iterable<A>): (self: SortedSet<A>) => SortedSet<A>
-  <A>(self: SortedSet<A>, that: Iterable<A>): SortedSet<A>
-}
-```
-
-Added in v1.0.0
-
-## union
-
-**Signature**
-
-```ts
-export declare const union: {
-  <A>(that: Iterable<A>): (self: SortedSet<A>) => SortedSet<A>
-  <A>(self: SortedSet<A>, that: Iterable<A>): SortedSet<A>
-}
-```
-
-Added in v1.0.0
-
 # refinements
 
 ## isSortedSet
@@ -348,6 +307,47 @@ Added in v1.0.0
 export declare const forEach: {
   <A>(f: (a: A) => void): (self: SortedSet<A>) => void
   <A>(self: SortedSet<A>, f: (a: A) => void): void
+}
+```
+
+Added in v1.0.0
+
+# utils
+
+## difference
+
+**Signature**
+
+```ts
+export declare const difference: {
+  <A, B extends A>(that: Iterable<B>): (self: SortedSet<A>) => SortedSet<A>
+  <A, B extends A>(self: SortedSet<A>, that: Iterable<B>): SortedSet<A>
+}
+```
+
+Added in v1.0.0
+
+## intersection
+
+**Signature**
+
+```ts
+export declare const intersection: {
+  <A>(that: Iterable<A>): (self: SortedSet<A>) => SortedSet<A>
+  <A>(self: SortedSet<A>, that: Iterable<A>): SortedSet<A>
+}
+```
+
+Added in v1.0.0
+
+## union
+
+**Signature**
+
+```ts
+export declare const union: {
+  <A>(that: Iterable<A>): (self: SortedSet<A>) => SortedSet<A>
+  <A>(self: SortedSet<A>, that: Iterable<A>): SortedSet<A>
 }
 ```
 

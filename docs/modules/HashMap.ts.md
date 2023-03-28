@@ -42,17 +42,6 @@ Added in v1.0.0
   - [mapWithIndex](#mapwithindex)
 - [models](#models)
   - [HashMap (interface)](#hashmap-interface)
-- [mutations](#mutations)
-  - [beginMutation](#beginmutation)
-  - [endMutation](#endmutation)
-  - [modify](#modify)
-  - [modifyAt](#modifyat)
-  - [modifyHash](#modifyhash)
-  - [mutate](#mutate)
-  - [remove](#remove)
-  - [removeMany](#removemany)
-  - [set](#set)
-  - [union](#union)
 - [refinements](#refinements)
   - [isHashMap](#ishashmap)
 - [sequencing](#sequencing)
@@ -65,6 +54,17 @@ Added in v1.0.0
   - [forEachWithIndex](#foreachwithindex)
 - [unsafe](#unsafe)
   - [unsafeGet](#unsafeget)
+- [utils](#utils)
+  - [beginMutation](#beginmutation)
+  - [endMutation](#endmutation)
+  - [modify](#modify)
+  - [modifyAt](#modifyat)
+  - [modifyHash](#modifyhash)
+  - [mutate](#mutate)
+  - [remove](#remove)
+  - [removeMany](#removemany)
+  - [set](#set)
+  - [union](#union)
 
 ---
 
@@ -397,7 +397,120 @@ export interface HashMap<Key, Value> extends Iterable<readonly [Key, Value]>, Eq
 
 Added in v1.0.0
 
-# mutations
+# refinements
+
+## isHashMap
+
+**Signature**
+
+```ts
+export declare const isHashMap: {
+  <K, V>(u: Iterable<readonly [K, V]>): u is HashMap<K, V>
+  (u: unknown): u is HashMap<unknown, unknown>
+}
+```
+
+Added in v1.0.0
+
+# sequencing
+
+## flatMap
+
+Chains over the values of the `HashMap` using the specified function.
+
+**NOTE**: the hash and equal of both maps have to be the same.
+
+**Signature**
+
+```ts
+export declare const flatMap: {
+  <K, A, B>(f: (value: A) => HashMap<K, B>): (self: HashMap<K, A>) => HashMap<K, B>
+  <K, A, B>(self: HashMap<K, A>, f: (value: A) => HashMap<K, B>): HashMap<K, B>
+}
+```
+
+Added in v1.0.0
+
+## flatMapWithIndex
+
+Chains over the entries of the `HashMap` using the specified function.
+
+**NOTE**: the hash and equal of both maps have to be the same.
+
+**Signature**
+
+```ts
+export declare const flatMapWithIndex: {
+  <A, K, B>(f: (value: A, key: K) => HashMap<K, B>): (self: HashMap<K, A>) => HashMap<K, B>
+  <K, A, B>(self: HashMap<K, A>, f: (value: A, key: K) => HashMap<K, B>): HashMap<K, B>
+}
+```
+
+Added in v1.0.0
+
+# symbol
+
+## TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof TypeId
+```
+
+Added in v1.0.0
+
+# traversing
+
+## forEach
+
+Applies the specified function to the values of the `HashMap`.
+
+**Signature**
+
+```ts
+export declare const forEach: {
+  <V>(f: (value: V) => void): <K>(self: HashMap<K, V>) => void
+  <K, V>(self: HashMap<K, V>, f: (value: V) => void): void
+}
+```
+
+Added in v1.0.0
+
+## forEachWithIndex
+
+Applies the specified function to the entries of the `HashMap`.
+
+**Signature**
+
+```ts
+export declare const forEachWithIndex: {
+  <V, K>(f: (value: V, key: K) => void): (self: HashMap<K, V>) => void
+  <V, K>(self: HashMap<K, V>, f: (value: V, key: K) => void): void
+}
+```
+
+Added in v1.0.0
+
+# unsafe
+
+## unsafeGet
+
+Unsafely lookup the value for the specified key in the `HashMap` using the
+internal hashing function.
+
+**Signature**
+
+```ts
+export declare const unsafeGet: {
+  <K1>(key: K1): <K, V>(self: HashMap<K, V>) => V
+  <K, V, K1>(self: HashMap<K, V>, key: K1): V
+}
+```
+
+Added in v1.0.0
+
+# utils
 
 ## beginMutation
 
@@ -552,119 +665,6 @@ Performs a union of this `HashMap` and that `HashMap`.
 export declare const union: {
   <K1, V1>(that: HashMap<K1, V1>): <K0, V0>(self: HashMap<K0, V0>) => HashMap<K1 | K0, V1 | V0>
   <K0, V0, K1, V1>(self: HashMap<K0, V0>, that: HashMap<K1, V1>): HashMap<K0 | K1, V0 | V1>
-}
-```
-
-Added in v1.0.0
-
-# refinements
-
-## isHashMap
-
-**Signature**
-
-```ts
-export declare const isHashMap: {
-  <K, V>(u: Iterable<readonly [K, V]>): u is HashMap<K, V>
-  (u: unknown): u is HashMap<unknown, unknown>
-}
-```
-
-Added in v1.0.0
-
-# sequencing
-
-## flatMap
-
-Chains over the values of the `HashMap` using the specified function.
-
-**NOTE**: the hash and equal of both maps have to be the same.
-
-**Signature**
-
-```ts
-export declare const flatMap: {
-  <K, A, B>(f: (value: A) => HashMap<K, B>): (self: HashMap<K, A>) => HashMap<K, B>
-  <K, A, B>(self: HashMap<K, A>, f: (value: A) => HashMap<K, B>): HashMap<K, B>
-}
-```
-
-Added in v1.0.0
-
-## flatMapWithIndex
-
-Chains over the entries of the `HashMap` using the specified function.
-
-**NOTE**: the hash and equal of both maps have to be the same.
-
-**Signature**
-
-```ts
-export declare const flatMapWithIndex: {
-  <A, K, B>(f: (value: A, key: K) => HashMap<K, B>): (self: HashMap<K, A>) => HashMap<K, B>
-  <K, A, B>(self: HashMap<K, A>, f: (value: A, key: K) => HashMap<K, B>): HashMap<K, B>
-}
-```
-
-Added in v1.0.0
-
-# symbol
-
-## TypeId (type alias)
-
-**Signature**
-
-```ts
-export type TypeId = typeof TypeId
-```
-
-Added in v1.0.0
-
-# traversing
-
-## forEach
-
-Applies the specified function to the values of the `HashMap`.
-
-**Signature**
-
-```ts
-export declare const forEach: {
-  <V>(f: (value: V) => void): <K>(self: HashMap<K, V>) => void
-  <K, V>(self: HashMap<K, V>, f: (value: V) => void): void
-}
-```
-
-Added in v1.0.0
-
-## forEachWithIndex
-
-Applies the specified function to the entries of the `HashMap`.
-
-**Signature**
-
-```ts
-export declare const forEachWithIndex: {
-  <V, K>(f: (value: V, key: K) => void): (self: HashMap<K, V>) => void
-  <V, K>(self: HashMap<K, V>, f: (value: V, key: K) => void): void
-}
-```
-
-Added in v1.0.0
-
-# unsafe
-
-## unsafeGet
-
-Unsafely lookup the value for the specified key in the `HashMap` using the
-internal hashing function.
-
-**Signature**
-
-```ts
-export declare const unsafeGet: {
-  <K1>(key: K1): <K, V>(self: HashMap<K, V>) => V
-  <K, V, K1>(self: HashMap<K, V>, key: K1): V
 }
 ```
 

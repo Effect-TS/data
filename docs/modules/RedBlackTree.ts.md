@@ -37,9 +37,6 @@ Added in v1.0.0
   - [valuesReversed](#valuesreversed)
 - [models](#models)
   - [RedBlackTree (interface)](#redblacktree-interface)
-- [mutations](#mutations)
-  - [insert](#insert)
-  - [removeFirst](#removefirst)
 - [refinements](#refinements)
   - [isRedBlackTree](#isredblacktree)
 - [symbol](#symbol)
@@ -60,6 +57,9 @@ Added in v1.0.0
   - [lessThanEqualReversed](#lessthanequalreversed)
   - [lessThanReversed](#lessthanreversed)
   - [reversed](#reversed)
+- [utils](#utils)
+  - [insert](#insert)
+  - [removeFirst](#removefirst)
 
 ---
 
@@ -321,38 +321,6 @@ A Red-Black Tree.
 ```ts
 export interface RedBlackTree<Key, Value> extends Iterable<readonly [Key, Value]>, Equal {
   readonly _id: TypeId
-}
-```
-
-Added in v1.0.0
-
-# mutations
-
-## insert
-
-Insert a new item into the tree.
-
-**Signature**
-
-```ts
-export declare const insert: {
-  <K, V>(key: K, value: V): (self: RedBlackTree<K, V>) => RedBlackTree<K, V>
-  <K, V>(self: RedBlackTree<K, V>, key: K, value: V): RedBlackTree<K, V>
-}
-```
-
-Added in v1.0.0
-
-## removeFirst
-
-Removes the entry with the specified key, if it exists.
-
-**Signature**
-
-```ts
-export declare const removeFirst: {
-  <K>(key: K): <V>(self: RedBlackTree<K, V>) => RedBlackTree<K, V>
-  <K, V>(self: RedBlackTree<K, V>, key: K): RedBlackTree<K, V>
 }
 ```
 
@@ -620,6 +588,38 @@ Traverse the tree in reverse order.
 
 ```ts
 export declare const reversed: <K, V>(self: RedBlackTree<K, V>) => Iterable<readonly [K, V]>
+```
+
+Added in v1.0.0
+
+# utils
+
+## insert
+
+Insert a new item into the tree.
+
+**Signature**
+
+```ts
+export declare const insert: {
+  <K, V>(key: K, value: V): (self: RedBlackTree<K, V>) => RedBlackTree<K, V>
+  <K, V>(self: RedBlackTree<K, V>, key: K, value: V): RedBlackTree<K, V>
+}
+```
+
+Added in v1.0.0
+
+## removeFirst
+
+Removes the entry with the specified key, if it exists.
+
+**Signature**
+
+```ts
+export declare const removeFirst: {
+  <K>(key: K): <V>(self: RedBlackTree<K, V>) => RedBlackTree<K, V>
+  <K, V>(self: RedBlackTree<K, V>, key: K): RedBlackTree<K, V>
+}
 ```
 
 Added in v1.0.0

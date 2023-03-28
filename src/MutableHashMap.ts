@@ -108,7 +108,7 @@ export const has: {
  * Updates the value of the specified key within the `MutableHashMap` if it exists.
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const modify: {
   <K, V>(key: K, f: (v: V) => V): (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
@@ -129,7 +129,7 @@ export const modify: {
  * update function.
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const modifyAt: {
   <K, V>(key: K, f: (value: Option.Option<V>) => Option.Option<V>): (self: MutableHashMap<K, V>) => MutableHashMap<K, V>
@@ -156,7 +156,7 @@ export const modifyAt: {
 
 /**
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const remove: {
   <K>(key: K): <V>(self: MutableHashMap<K, V>) => MutableHashMap<K, V>
@@ -171,7 +171,7 @@ export const remove: {
 
 /**
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const set: {
   <K, V>(key: K, value: V): (self: MutableHashMap<K, V>) => MutableHashMap<K, V>

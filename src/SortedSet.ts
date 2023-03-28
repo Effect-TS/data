@@ -109,7 +109,7 @@ export const add: {
 
 /**
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const difference: {
   <A, B extends A>(that: Iterable<B>): (self: SortedSet<A>) => SortedSet<A>
@@ -219,7 +219,7 @@ export const has: {
 
 /**
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const intersection: {
   <A>(that: Iterable<A>): (self: SortedSet<A>) => SortedSet<A>
@@ -359,7 +359,7 @@ export const toggle: {
 
 /**
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const union: {
   <A>(that: Iterable<A>): (self: SortedSet<A>) => SortedSet<A>

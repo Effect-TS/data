@@ -22,14 +22,14 @@ Added in v1.0.0
   - [length](#length)
 - [model](#model)
   - [MutableQueue (interface)](#mutablequeue-interface)
-- [mutations](#mutations)
+- [symbol](#symbol)
+  - [EmptyMutableQueue](#emptymutablequeue)
+  - [TypeId (type alias)](#typeid-type-alias)
+- [utils](#utils)
   - [offer](#offer)
   - [offerAll](#offerall)
   - [poll](#poll)
   - [pollUpTo](#pollupto)
-- [symbol](#symbol)
-  - [EmptyMutableQueue](#emptymutablequeue)
-  - [TypeId (type alias)](#typeid-type-alias)
 
 ---
 
@@ -131,7 +131,29 @@ export interface MutableQueue<A> extends Iterable<A> {
 
 Added in v1.0.0
 
-# mutations
+# symbol
+
+## EmptyMutableQueue
+
+**Signature**
+
+```ts
+export declare const EmptyMutableQueue: typeof EmptyMutableQueue
+```
+
+Added in v1.0.0
+
+## TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof TypeId
+```
+
+Added in v1.0.0
+
+# utils
 
 ## offer
 
@@ -200,28 +222,6 @@ export declare const pollUpTo: {
   (n: number): <A>(self: MutableQueue<A>) => Chunk.Chunk<A>
   <A>(self: MutableQueue<A>, n: number): Chunk.Chunk<A>
 }
-```
-
-Added in v1.0.0
-
-# symbol
-
-## EmptyMutableQueue
-
-**Signature**
-
-```ts
-export declare const EmptyMutableQueue: typeof EmptyMutableQueue
-```
-
-Added in v1.0.0
-
-## TypeId (type alias)
-
-**Signature**
-
-```ts
-export type TypeId = typeof TypeId
 ```
 
 Added in v1.0.0

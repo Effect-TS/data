@@ -145,7 +145,7 @@ export const hasHash: {
  * function.
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const set: {
   <K, V>(key: K, value: V): (self: HashMap<K, V>) => HashMap<K, V>
@@ -188,7 +188,7 @@ export const size: <K, V>(self: HashMap<K, V>) => number = HM.size
  * Marks the `HashMap` as mutable.
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const beginMutation: <K, V>(self: HashMap<K, V>) => HashMap<K, V> = HM.beginMutation
 
@@ -196,7 +196,7 @@ export const beginMutation: <K, V>(self: HashMap<K, V>) => HashMap<K, V> = HM.be
  * Marks the `HashMap` as immutable.
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const endMutation: <K, V>(self: HashMap<K, V>) => HashMap<K, V> = HM.endMutation
 
@@ -204,7 +204,7 @@ export const endMutation: <K, V>(self: HashMap<K, V>) => HashMap<K, V> = HM.endM
  * Mutates the `HashMap` within the context of the provided function.
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const mutate: {
   <K, V>(f: (self: HashMap<K, V>) => void): (self: HashMap<K, V>) => HashMap<K, V>
@@ -220,7 +220,7 @@ export const mutate: {
  * exists, or `None` if no such value exists.
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const modifyAt: {
   <K, V>(key: K, f: HashMap.UpdateFn<V>): (self: HashMap<K, V>) => HashMap<K, V>
@@ -238,7 +238,7 @@ export const modifyAt: {
  * This function will always either update or insert a value into the `HashMap`.
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const modifyHash: {
   <K, V>(key: K, hash: number, f: HashMap.UpdateFn<V>): (self: HashMap<K, V>) => HashMap<K, V>
@@ -249,7 +249,7 @@ export const modifyHash: {
  * Updates the value of the specified key within the `HashMap` if it exists.
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const modify: {
   <K, V>(key: K, f: (v: V) => V): (self: HashMap<K, V>) => HashMap<K, V>
@@ -260,7 +260,7 @@ export const modify: {
  * Performs a union of this `HashMap` and that `HashMap`.
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const union: {
   <K1, V1>(that: HashMap<K1, V1>): <K0, V0>(self: HashMap<K0, V0>) => HashMap<K1 | K0, V1 | V0>
@@ -272,7 +272,7 @@ export const union: {
  * hashing function.
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const remove: {
   <K>(key: K): <V>(self: HashMap<K, V>) => HashMap<K, V>
@@ -283,7 +283,7 @@ export const remove: {
  * Removes all entries in the `HashMap` which have the specified keys.
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const removeMany: {
   <K>(keys: Iterable<K>): <V>(self: HashMap<K, V>) => HashMap<K, V>
