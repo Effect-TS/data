@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.7.4
+
+### Patch Changes
+
+- [#293](https://github.com/Effect-TS/data/pull/293) [`9e9caaa`](https://github.com/Effect-TS/data/commit/9e9caaa43406427f7c71ea47ee4b29cb1e487174) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Add missing functions, fix categories
+
 ## 0.7.3
 
 ### Patch Changes
