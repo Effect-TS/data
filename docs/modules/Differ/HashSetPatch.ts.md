@@ -19,10 +19,10 @@ Added in v1.0.0
   - [patch](#patch)
 - [models](#models)
   - [HashSetPatch (interface)](#hashsetpatch-interface)
-- [mutations](#mutations)
-  - [combine](#combine)
 - [symbol](#symbol)
   - [TypeId (type alias)](#typeid-type-alias)
+- [utils](#utils)
+  - [combine](#combine)
 
 ---
 
@@ -88,7 +88,19 @@ export interface HashSetPatch<Value> extends Equal {
 
 Added in v1.0.0
 
-# mutations
+# symbol
+
+## TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof TypeId
+```
+
+Added in v1.0.0
+
+# utils
 
 ## combine
 
@@ -102,18 +114,6 @@ export declare const combine: {
   <Value>(that: HashSetPatch<Value>): (self: HashSetPatch<Value>) => HashSetPatch<Value>
   <Value>(self: HashSetPatch<Value>, that: HashSetPatch<Value>): HashSetPatch<Value>
 }
-```
-
-Added in v1.0.0
-
-# symbol
-
-## TypeId (type alias)
-
-**Signature**
-
-```ts
-export type TypeId = typeof TypeId
 ```
 
 Added in v1.0.0

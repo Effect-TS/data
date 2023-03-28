@@ -61,7 +61,7 @@ export const diff: <Value, Value2, Patch, Patch2>(
  * their changes sequentially.
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const combine: {
   <Value, Value2, Patch, Patch2>(

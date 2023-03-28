@@ -20,12 +20,6 @@ Added in v1.0.0
   - [make](#make)
 - [models](#models)
   - [Differ (interface)](#differ-interface)
-- [mutations](#mutations)
-  - [orElseResult](#orelseresult)
-  - [transform](#transform)
-  - [update](#update)
-  - [updateWith](#updatewith)
-  - [zip](#zip)
 - [patch](#patch)
   - [combine](#combine)
   - [diff](#diff)
@@ -33,6 +27,12 @@ Added in v1.0.0
   - [patch](#patch-1)
 - [symbol](#symbol)
   - [TypeId (type alias)](#typeid-type-alias)
+- [utils](#utils)
+  - [orElseResult](#orelseresult)
+  - [transform](#transform)
+  - [update](#update)
+  - [updateWith](#updatewith)
+  - [zip](#zip)
 
 ---
 
@@ -148,7 +148,83 @@ export interface Differ<Value, Patch> {
 
 Added in v1.0.0
 
-# mutations
+# patch
+
+## combine
+
+Combines two patches to produce a new patch that describes the updates of
+the first patch and then the updates of the second patch. The combine
+operation should be associative. In addition, if the combine operation is
+commutative then joining multiple fibers concurrently will result in
+deterministic `FiberRef` values.
+
+**Signature**
+
+```ts
+export declare const combine: {
+  <Patch>(first: Patch, second: Patch): <Value>(self: Differ<Value, Patch>) => Patch
+  <Value, Patch>(self: Differ<Value, Patch>, first: Patch, second: Patch): Patch
+}
+```
+
+Added in v1.0.0
+
+## diff
+
+An empty patch that describes no changes.
+
+**Signature**
+
+```ts
+export declare const diff: {
+  <Value>(oldValue: Value, newValue: Value): <Patch>(differ: Differ<Value, Patch>) => Patch
+  <Value, Patch>(differ: Differ<Value, Patch>, oldValue: Value, newValue: Value): Patch
+}
+```
+
+Added in v1.0.0
+
+## empty
+
+An empty patch that describes no changes.
+
+**Signature**
+
+```ts
+export declare const empty: <Value, Patch>(self: Differ<Value, Patch>) => Patch
+```
+
+Added in v1.0.0
+
+## patch
+
+Applies a patch to an old value to produce a new value that is equal to the
+old value with the updates described by the patch.
+
+**Signature**
+
+```ts
+export declare const patch: {
+  <Patch, Value>(patch: Patch, oldValue: Value): (self: Differ<Value, Patch>) => Value
+  <Patch, Value>(self: Differ<Value, Patch>, patch: Patch, oldValue: Value): Value
+}
+```
+
+Added in v1.0.0
+
+# symbol
+
+## TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof TypeId
+```
+
+Added in v1.0.0
+
+# utils
 
 ## orElseResult
 
@@ -237,82 +313,6 @@ export declare const zip: {
     readonly [Patch, Patch2]
   >
 }
-```
-
-Added in v1.0.0
-
-# patch
-
-## combine
-
-Combines two patches to produce a new patch that describes the updates of
-the first patch and then the updates of the second patch. The combine
-operation should be associative. In addition, if the combine operation is
-commutative then joining multiple fibers concurrently will result in
-deterministic `FiberRef` values.
-
-**Signature**
-
-```ts
-export declare const combine: {
-  <Patch>(first: Patch, second: Patch): <Value>(self: Differ<Value, Patch>) => Patch
-  <Value, Patch>(self: Differ<Value, Patch>, first: Patch, second: Patch): Patch
-}
-```
-
-Added in v1.0.0
-
-## diff
-
-An empty patch that describes no changes.
-
-**Signature**
-
-```ts
-export declare const diff: {
-  <Value>(oldValue: Value, newValue: Value): <Patch>(differ: Differ<Value, Patch>) => Patch
-  <Value, Patch>(differ: Differ<Value, Patch>, oldValue: Value, newValue: Value): Patch
-}
-```
-
-Added in v1.0.0
-
-## empty
-
-An empty patch that describes no changes.
-
-**Signature**
-
-```ts
-export declare const empty: <Value, Patch>(self: Differ<Value, Patch>) => Patch
-```
-
-Added in v1.0.0
-
-## patch
-
-Applies a patch to an old value to produce a new value that is equal to the
-old value with the updates described by the patch.
-
-**Signature**
-
-```ts
-export declare const patch: {
-  <Patch, Value>(patch: Patch, oldValue: Value): (self: Differ<Value, Patch>) => Value
-  <Patch, Value>(self: Differ<Value, Patch>, patch: Patch, oldValue: Value): Value
-}
-```
-
-Added in v1.0.0
-
-# symbol
-
-## TypeId (type alias)
-
-**Signature**
-
-```ts
-export type TypeId = typeof TypeId
 ```
 
 Added in v1.0.0

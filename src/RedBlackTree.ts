@@ -220,7 +220,7 @@ export const has: {
  * Insert a new item into the tree.
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const insert: {
   <K, V>(key: K, value: V): (self: RedBlackTree<K, V>) => RedBlackTree<K, V>
@@ -370,7 +370,7 @@ export const reduceWithIndex: {
  * Removes the entry with the specified key, if it exists.
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const removeFirst: {
   <K>(key: K): <V>(self: RedBlackTree<K, V>) => RedBlackTree<K, V>

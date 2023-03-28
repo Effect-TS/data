@@ -330,7 +330,7 @@ export const unsafeGet: {
  * Appends the value to the chunk
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const append: {
   <A2>(a: A2): <A>(self: Chunk<A>) => Chunk<A2 | A>
@@ -344,7 +344,7 @@ export const append: {
  * Prepends the value to the chunk
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const prepend: {
   <B>(elem: B): <A>(self: Chunk<A>) => Chunk<B | A>
@@ -358,7 +358,7 @@ export const prepend: {
  * Takes the first up to `n` elements from the chunk
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const take: {
   (n: number): <A>(self: Chunk<A>) => Chunk<A>
@@ -380,7 +380,7 @@ export const take: {
  * Drops the first up to `n` elements from the chunk
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const drop: {
   (n: number): <A>(self: Chunk<A>) => Chunk<A>
@@ -402,7 +402,7 @@ export const drop: {
  * Drops the last `n` elements.
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const dropRight: {
   (n: number): <A>(self: Chunk<A>) => Chunk<A>
@@ -416,7 +416,7 @@ export const dropRight: {
  * Drops all elements so long as the predicate returns true.
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const dropWhile: {
   <A>(f: (a: A) => boolean): (self: Chunk<A>) => Chunk<A>
@@ -435,7 +435,7 @@ export const dropWhile: {
 })
 
 /**
- * @category mutations
+ * @category utils
  * @since 1.0.0
  */
 export const prependAllNonEmpty: {
@@ -458,7 +458,7 @@ export const prependAllNonEmpty: {
  * Concatenates the two chunks
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const concat: {
   <B>(that: Chunk<B>): <A>(self: Chunk<A>) => Chunk<B | A>
@@ -1590,7 +1590,7 @@ export const zipWithIndexOffset: {
  * Delete the element at the specified index, creating a new `Chunk`,
  * or returning the input if the index is out of bounds.
  *
- * @category mutations
+ * @category utils
  * @since 1.0.0
  */
 export const remove: {
@@ -1605,7 +1605,7 @@ export const remove: {
  * Change the element at the specified index, creating a new `Chunk`,
  * or returning the input if the index is out of bounds.
  *
- * @category mutations
+ * @category utils
  * @since 1.0.0
  */
 export const replace: {
@@ -1617,7 +1617,7 @@ export const replace: {
 >(3, (self, i, b) => modify(self, i, () => b))
 
 /**
- * @category mutations
+ * @category utils
  * @since 1.0.0
  */
 export const replaceOption: {
@@ -1632,7 +1632,7 @@ export const replaceOption: {
  * Apply a function to the element at the specified index, creating a new `Chunk`,
  * or returning the input if the index is out of bounds.
  *
- * @category mutations
+ * @category utils
  * @since 1.0.0
  */
 export const modify: {
@@ -1644,7 +1644,7 @@ export const modify: {
 >(3, (self, i, f) => pipe(modifyOption(self, i, f), O.getOrElse(() => self)))
 
 /**
- * @category mutations
+ * @category utils
  * @since 1.0.0
  */
 export const modifyOption: {

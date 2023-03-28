@@ -32,16 +32,6 @@ Added in v1.0.0
   - [map](#map)
 - [models](#models)
   - [HashSet (interface)](#hashset-interface)
-- [mutations](#mutations)
-  - [add](#add)
-  - [beginMutation](#beginmutation)
-  - [difference](#difference)
-  - [endMutation](#endmutation)
-  - [intersection](#intersection)
-  - [mutate](#mutate)
-  - [remove](#remove)
-  - [toggle](#toggle)
-  - [union](#union)
 - [partitioning](#partitioning)
   - [partition](#partition)
 - [refinements](#refinements)
@@ -52,6 +42,16 @@ Added in v1.0.0
   - [TypeId (type alias)](#typeid-type-alias)
 - [traversing](#traversing)
   - [forEach](#foreach)
+- [utils](#utils)
+  - [add](#add)
+  - [beginMutation](#beginmutation)
+  - [difference](#difference)
+  - [endMutation](#endmutation)
+  - [intersection](#intersection)
+  - [mutate](#mutate)
+  - [remove](#remove)
+  - [toggle](#toggle)
+  - [union](#union)
 
 ---
 
@@ -249,7 +249,88 @@ export interface HashSet<A> extends Iterable<A>, Equal {
 
 Added in v1.0.0
 
-# mutations
+# partitioning
+
+## partition
+
+Partition the values of a `HashSet` using the specified predicate.
+
+If a value matches the predicate, it will be placed into the `HashSet` on the
+right side of the resulting `Tuple`, otherwise the value will be placed into
+the left side.
+
+**Signature**
+
+```ts
+export declare const partition: {
+  <A, B extends A>(f: Refinement<A, B>): (self: HashSet<A>) => readonly [HashSet<A>, HashSet<B>]
+  <A>(f: Predicate<A>): (self: HashSet<A>) => readonly [HashSet<A>, HashSet<A>]
+  <A, B extends A>(self: HashSet<A>, f: Refinement<A, B>): readonly [HashSet<A>, HashSet<B>]
+  <A>(self: HashSet<A>, f: Predicate<A>): readonly [HashSet<A>, HashSet<A>]
+}
+```
+
+Added in v1.0.0
+
+# refinements
+
+## isHashSet
+
+**Signature**
+
+```ts
+export declare const isHashSet: { <A>(u: Iterable<A>): u is HashSet<A>; (u: unknown): u is HashSet<unknown> }
+```
+
+Added in v1.0.0
+
+# sequencing
+
+## flatMap
+
+Chains over the values of the `HashSet` using the specified function.
+
+**Signature**
+
+```ts
+export declare const flatMap: {
+  <A, B>(f: (a: A) => Iterable<B>): (self: HashSet<A>) => HashSet<B>
+  <A, B>(self: HashSet<A>, f: (a: A) => Iterable<B>): HashSet<B>
+}
+```
+
+Added in v1.0.0
+
+# symbol
+
+## TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof TypeId
+```
+
+Added in v1.0.0
+
+# traversing
+
+## forEach
+
+Applies the specified function to the values of the `HashSet`.
+
+**Signature**
+
+```ts
+export declare const forEach: {
+  <A>(f: (value: A) => void): (self: HashSet<A>) => void
+  <A>(self: HashSet<A>, f: (value: A) => void): void
+}
+```
+
+Added in v1.0.0
+
+# utils
 
 ## add
 
@@ -389,87 +470,6 @@ must be the same.
 export declare const union: {
   <A>(that: Iterable<A>): (self: HashSet<A>) => HashSet<A>
   <A>(self: HashSet<A>, that: Iterable<A>): HashSet<A>
-}
-```
-
-Added in v1.0.0
-
-# partitioning
-
-## partition
-
-Partition the values of a `HashSet` using the specified predicate.
-
-If a value matches the predicate, it will be placed into the `HashSet` on the
-right side of the resulting `Tuple`, otherwise the value will be placed into
-the left side.
-
-**Signature**
-
-```ts
-export declare const partition: {
-  <A, B extends A>(f: Refinement<A, B>): (self: HashSet<A>) => readonly [HashSet<A>, HashSet<B>]
-  <A>(f: Predicate<A>): (self: HashSet<A>) => readonly [HashSet<A>, HashSet<A>]
-  <A, B extends A>(self: HashSet<A>, f: Refinement<A, B>): readonly [HashSet<A>, HashSet<B>]
-  <A>(self: HashSet<A>, f: Predicate<A>): readonly [HashSet<A>, HashSet<A>]
-}
-```
-
-Added in v1.0.0
-
-# refinements
-
-## isHashSet
-
-**Signature**
-
-```ts
-export declare const isHashSet: { <A>(u: Iterable<A>): u is HashSet<A>; (u: unknown): u is HashSet<unknown> }
-```
-
-Added in v1.0.0
-
-# sequencing
-
-## flatMap
-
-Chains over the values of the `HashSet` using the specified function.
-
-**Signature**
-
-```ts
-export declare const flatMap: {
-  <A, B>(f: (a: A) => Iterable<B>): (self: HashSet<A>) => HashSet<B>
-  <A, B>(self: HashSet<A>, f: (a: A) => Iterable<B>): HashSet<B>
-}
-```
-
-Added in v1.0.0
-
-# symbol
-
-## TypeId (type alias)
-
-**Signature**
-
-```ts
-export type TypeId = typeof TypeId
-```
-
-Added in v1.0.0
-
-# traversing
-
-## forEach
-
-Applies the specified function to the values of the `HashSet`.
-
-**Signature**
-
-```ts
-export declare const forEach: {
-  <A>(f: (value: A) => void): (self: HashSet<A>) => void
-  <A>(self: HashSet<A>, f: (value: A) => void): void
 }
 ```
 

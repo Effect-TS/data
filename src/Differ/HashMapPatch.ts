@@ -54,7 +54,7 @@ export const diff: <Key, Value, Patch>(
  * applying their changes sequentially.
  *
  * @since 1.0.0
- * @category mutations
+ * @category utils
  */
 export const combine: {
   <Key, Value, Patch>(

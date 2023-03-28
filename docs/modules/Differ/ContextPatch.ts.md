@@ -19,10 +19,10 @@ Added in v1.0.0
   - [patch](#patch)
 - [models](#models)
   - [ContextPatch (interface)](#contextpatch-interface)
-- [mutations](#mutations)
-  - [combine](#combine)
 - [symbol](#symbol)
   - [TypeId (type alias)](#typeid-type-alias)
+- [utils](#utils)
+  - [combine](#combine)
 
 ---
 
@@ -91,7 +91,19 @@ export interface ContextPatch<Input, Output> extends Equal {
 
 Added in v1.0.0
 
-# mutations
+# symbol
+
+## TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof TypeId
+```
+
+Added in v1.0.0
+
+# utils
 
 ## combine
 
@@ -110,18 +122,6 @@ export declare const combine: {
     Output2
   >
 }
-```
-
-Added in v1.0.0
-
-# symbol
-
-## TypeId (type alias)
-
-**Signature**
-
-```ts
-export type TypeId = typeof TypeId
 ```
 
 Added in v1.0.0

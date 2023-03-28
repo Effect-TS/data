@@ -19,10 +19,10 @@ Added in v1.0.0
   - [patch](#patch)
 - [models](#models)
   - [OrPatch (interface)](#orpatch-interface)
-- [mutations](#mutations)
-  - [combine](#combine)
 - [symbol](#symbol)
   - [TypeId (type alias)](#typeid-type-alias)
+- [utils](#utils)
+  - [combine](#combine)
 
 ---
 
@@ -105,7 +105,19 @@ export interface OrPatch<Value, Value2, Patch, Patch2> extends Equal {
 
 Added in v1.0.0
 
-# mutations
+# symbol
+
+## TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof TypeId
+```
+
+Added in v1.0.0
+
+# utils
 
 ## combine
 
@@ -124,18 +136,6 @@ export declare const combine: {
     that: OrPatch<Value, Value2, Patch, Patch2>
   ): OrPatch<Value, Value2, Patch, Patch2>
 }
-```
-
-Added in v1.0.0
-
-# symbol
-
-## TypeId (type alias)
-
-**Signature**
-
-```ts
-export type TypeId = typeof TypeId
 ```
 
 Added in v1.0.0

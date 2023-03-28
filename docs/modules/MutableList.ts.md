@@ -23,16 +23,16 @@ Added in v1.0.0
   - [tail](#tail)
 - [model](#model)
   - [MutableList (interface)](#mutablelist-interface)
-- [mutations](#mutations)
+- [symbol](#symbol)
+  - [TypeId (type alias)](#typeid-type-alias)
+- [traversing](#traversing)
+  - [forEach](#foreach)
+- [utils](#utils)
   - [append](#append)
   - [pop](#pop)
   - [prepend](#prepend)
   - [reset](#reset)
   - [shift](#shift)
-- [symbol](#symbol)
-  - [TypeId (type alias)](#typeid-type-alias)
-- [traversing](#traversing)
-  - [forEach](#foreach)
 
 ---
 
@@ -143,7 +143,36 @@ export interface MutableList<A> extends Iterable<A> {
 
 Added in v1.0.0
 
-# mutations
+# symbol
+
+## TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof TypeId
+```
+
+Added in v1.0.0
+
+# traversing
+
+## forEach
+
+Executes the specified function `f` for each element in the list.
+
+**Signature**
+
+```ts
+export declare const forEach: {
+  <A>(f: (element: A) => void): (self: MutableList<A>) => void
+  <A>(self: MutableList<A>, f: (element: A) => void): void
+}
+```
+
+Added in v1.0.0
+
+# utils
 
 ## append
 
@@ -210,32 +239,3 @@ export declare const shift: <A>(self: MutableList<A>) => A | undefined
 ```
 
 Added in v0.0.1
-
-# symbol
-
-## TypeId (type alias)
-
-**Signature**
-
-```ts
-export type TypeId = typeof TypeId
-```
-
-Added in v1.0.0
-
-# traversing
-
-## forEach
-
-Executes the specified function `f` for each element in the list.
-
-**Signature**
-
-```ts
-export declare const forEach: {
-  <A>(f: (element: A) => void): (self: MutableList<A>) => void
-  <A>(self: MutableList<A>, f: (element: A) => void): void
-}
-```
-
-Added in v1.0.0

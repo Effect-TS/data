@@ -27,21 +27,23 @@ Added in v1.0.0
   - [getOption](#getoption)
 - [guards](#guards)
   - [isContext](#iscontext)
+  - [isGenericTag](#isgenerictag)
   - [isTag](#istag)
 - [models](#models)
   - [Context (interface)](#context-interface)
+  - [GenericTag (type alias)](#generictag-type-alias)
   - [Tag (interface)](#tag-interface)
   - [TracedTag (interface)](#tracedtag-interface)
   - [ValidTagsById (type alias)](#validtagsbyid-type-alias)
-- [mutations](#mutations)
-  - [add](#add)
-  - [merge](#merge)
-  - [pick](#pick)
 - [symbol](#symbol)
   - [TagTypeId (type alias)](#tagtypeid-type-alias)
   - [TypeId (type alias)](#typeid-type-alias)
 - [unsafe](#unsafe)
   - [unsafeGet](#unsafeget)
+- [utils](#utils)
+  - [add](#add)
+  - [merge](#merge)
+  - [pick](#pick)
 
 ---
 
@@ -206,6 +208,16 @@ assert.strictEqual(Context.isContext(Context.empty()), true)
 
 Added in v1.0.0
 
+## isGenericTag
+
+**Signature**
+
+```ts
+export declare const isGenericTag: (u: unknown) => u is GenericTag
+```
+
+Added in v1.0.0
+
 ## isTag
 
 Checks if the provided argument is a `Tag`.
@@ -239,6 +251,16 @@ export interface Context<Services> extends Equal {
   /** @internal */
   readonly unsafeMap: Map<Tag<any, any>, any>
 }
+```
+
+Added in v1.0.0
+
+## GenericTag (type alias)
+
+**Signature**
+
+```ts
+export type GenericTag = TracedTag<any, any> | Tag<any, any>
 ```
 
 Added in v1.0.0
@@ -285,7 +307,63 @@ export type ValidTagsById<R> = R extends infer S ? Tag<S, any> : never
 
 Added in v1.0.0
 
-# mutations
+# symbol
+
+## TagTypeId (type alias)
+
+**Signature**
+
+```ts
+export type TagTypeId = typeof TagTypeId
+```
+
+Added in v1.0.0
+
+## TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof TypeId
+```
+
+Added in v1.0.0
+
+# unsafe
+
+## unsafeGet
+
+Get a service from the context that corresponds to the given tag.
+This function is unsafe because if the tag is not present in the context, a runtime error will be thrown.
+
+For a safer version see {@link getOption}.
+
+**Signature**
+
+```ts
+export declare const unsafeGet: {
+  <S, I>(tag: Tag<I, S>): <Services>(self: Context<Services>) => S
+  <Services, S, I>(self: Context<Services>, tag: Tag<I, S>): S
+}
+```
+
+**Example**
+
+```ts
+import * as Context from '@effect/data/Context'
+
+const Port = Context.Tag<{ PORT: number }>()
+const Timeout = Context.Tag<{ TIMEOUT: number }>()
+
+const Services = Context.make(Port, { PORT: 8080 })
+
+assert.deepStrictEqual(Context.unsafeGet(Services, Port), { PORT: 8080 })
+assert.throws(() => Context.unsafeGet(Services, Timeout))
+```
+
+Added in v1.0.0
+
+# utils
 
 ## add
 
@@ -383,62 +461,6 @@ const Services = pipe(someContext, Context.pick(Port))
 
 assert.deepStrictEqual(Context.getOption(Services, Port), O.some({ PORT: 8080 }))
 assert.deepStrictEqual(Context.getOption(Services, Timeout), O.none())
-```
-
-Added in v1.0.0
-
-# symbol
-
-## TagTypeId (type alias)
-
-**Signature**
-
-```ts
-export type TagTypeId = typeof TagTypeId
-```
-
-Added in v1.0.0
-
-## TypeId (type alias)
-
-**Signature**
-
-```ts
-export type TypeId = typeof TypeId
-```
-
-Added in v1.0.0
-
-# unsafe
-
-## unsafeGet
-
-Get a service from the context that corresponds to the given tag.
-This function is unsafe because if the tag is not present in the context, a runtime error will be thrown.
-
-For a safer version see {@link getOption}.
-
-**Signature**
-
-```ts
-export declare const unsafeGet: {
-  <S, I>(tag: Tag<I, S>): <Services>(self: Context<Services>) => S
-  <Services, S, I>(self: Context<Services>, tag: Tag<I, S>): S
-}
-```
-
-**Example**
-
-```ts
-import * as Context from '@effect/data/Context'
-
-const Port = Context.Tag<{ PORT: number }>()
-const Timeout = Context.Tag<{ TIMEOUT: number }>()
-
-const Services = Context.make(Port, { PORT: 8080 })
-
-assert.deepStrictEqual(Context.unsafeGet(Services, Port), { PORT: 8080 })
-assert.throws(() => Context.unsafeGet(Services, Timeout))
 ```
 
 Added in v1.0.0
