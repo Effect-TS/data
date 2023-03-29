@@ -78,6 +78,10 @@ export interface Debug {
    * Used to filter a source location when rendering a stack
    */
   filterStackFrame: (frame: Frame) => boolean
+  /**
+   * When disabled tracing regions will not be managed and stack frames will not be filtered
+   */
+  enableSelectiveTracing: boolean
 }
 ```
 

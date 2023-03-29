@@ -31,6 +31,10 @@ export interface Debug {
    * Used to filter a source location when rendering a stack
    */
   filterStackFrame: (frame: Frame) => boolean
+  /**
+   * When disabled tracing regions will not be managed and stack frames will not be filtered
+   */
+  enableSelectiveTracing: boolean
 }
 
 /**
@@ -78,6 +82,7 @@ export const runtimeDebug: Debug = globalValue(
     minumumLogLevel: "Info",
     traceStackLimit: 5,
     tracingEnabled: true,
+    enableSelectiveTracing: true,
     parseStack: (error) => {
       const stack = error.stack
       if (stack) {
@@ -113,7 +118,8 @@ export const runtimeDebug: Debug = globalValue(
       }
       return []
     },
-    filterStackFrame: (_) => _ != null && !_.fileName.match(/\/internal_effect_untraced/)
+    filterStackFrame: (_) =>
+      _ != null && (!_.fileName.match(/\/internal_effect_untraced/) || !runtimeDebug.enableSelectiveTracing)
   })
 )
 
@@ -161,7 +167,9 @@ export const bodyWithTrace = <A>(
   if (!runtimeDebug.tracingEnabled) {
     return body(void 0, restoreOff)
   }
-  runtimeDebug.tracingEnabled = false
+  if (runtimeDebug.enableSelectiveTracing) {
+    runtimeDebug.tracingEnabled = false
+  }
   try {
     const limit = Error.stackTraceLimit
     Error.stackTraceLimit = 3
@@ -169,7 +177,9 @@ export const bodyWithTrace = <A>(
     Error.stackTraceLimit = limit
     return body(source as SourceLocation, restoreOn)
   } finally {
-    runtimeDebug.tracingEnabled = true
+    if (runtimeDebug.enableSelectiveTracing) {
+      runtimeDebug.tracingEnabled = true
+    }
   }
 }
 
@@ -186,7 +196,9 @@ export const methodWithTrace = <A extends (...args: Array<any>) => any>(
       // @ts-expect-error
       return body(void 0, restoreOff).apply(this, arguments)
     }
-    runtimeDebug.tracingEnabled = false
+    if (runtimeDebug.enableSelectiveTracing) {
+      runtimeDebug.tracingEnabled = false
+    }
     try {
       const limit = Error.stackTraceLimit
       Error.stackTraceLimit = 2
@@ -195,7 +207,9 @@ export const methodWithTrace = <A extends (...args: Array<any>) => any>(
       // @ts-expect-error
       return body(error, restoreOn).apply(this, arguments)
     } finally {
-      runtimeDebug.tracingEnabled = true
+      if (runtimeDebug.enableSelectiveTracing) {
+        runtimeDebug.tracingEnabled = true
+      }
     }
   }
 }
@@ -214,7 +228,9 @@ export const pipeableWithTrace = <A extends (...args: Array<any>) => any>(
       // @ts-expect-error
       return ((self: any) => untraced(() => a.apply(this, arguments)(self))) as any
     }
-    runtimeDebug.tracingEnabled = false
+    if (runtimeDebug.enableSelectiveTracing) {
+      runtimeDebug.tracingEnabled = false
+    }
     try {
       const limit = Error.stackTraceLimit
       Error.stackTraceLimit = 2
@@ -224,7 +240,9 @@ export const pipeableWithTrace = <A extends (...args: Array<any>) => any>(
       // @ts-expect-error
       return ((self: any) => untraced(() => f.apply(this, arguments)(self))) as any
     } finally {
-      runtimeDebug.tracingEnabled = true
+      if (runtimeDebug.enableSelectiveTracing) {
+        runtimeDebug.tracingEnabled = true
+      }
     }
   }
 }
@@ -255,7 +273,9 @@ export const dualWithTrace: {
       }
       return ((self: any) => untraced(() => f(self, ...arguments))) as any
     }
-    runtimeDebug.tracingEnabled = false
+    if (runtimeDebug.enableSelectiveTracing) {
+      runtimeDebug.tracingEnabled = false
+    }
     try {
       const limit = Error.stackTraceLimit
       Error.stackTraceLimit = 2
@@ -268,7 +288,9 @@ export const dualWithTrace: {
       }
       return ((self: any) => untraced(() => f(self, ...arguments))) as any
     } finally {
-      runtimeDebug.tracingEnabled = true
+      if (runtimeDebug.enableSelectiveTracing) {
+        runtimeDebug.tracingEnabled = true
+      }
     }
   }
 }
@@ -283,11 +305,15 @@ export const untraced = <A>(
   if (!runtimeDebug.tracingEnabled) {
     return body(restoreOff)
   }
-  runtimeDebug.tracingEnabled = false
+  if (runtimeDebug.enableSelectiveTracing) {
+    runtimeDebug.tracingEnabled = false
+  }
   try {
     return body(restoreOn)
   } finally {
-    runtimeDebug.tracingEnabled = true
+    if (runtimeDebug.enableSelectiveTracing) {
+      runtimeDebug.tracingEnabled = true
+    }
   }
 }
 
@@ -312,7 +338,9 @@ export const untracedDual = <
       }
       return ((self: any) => untraced(() => f(self, ...arguments))) as any
     }
-    runtimeDebug.tracingEnabled = false
+    if (runtimeDebug.enableSelectiveTracing) {
+      runtimeDebug.tracingEnabled = false
+    }
     try {
       const f = body(restoreOn)
       if (arguments.length === dfLen) {
@@ -321,7 +349,9 @@ export const untracedDual = <
       }
       return ((self: any) => untraced(() => f(self, ...arguments))) as any
     } finally {
-      runtimeDebug.tracingEnabled = true
+      if (runtimeDebug.enableSelectiveTracing) {
+        runtimeDebug.tracingEnabled = true
+      }
     }
   }
 }
@@ -339,12 +369,16 @@ export const untracedMethod = <A extends (...args: Array<any>) => any>(
       // @ts-expect-error
       return untraced(() => body(restoreOff).apply(this, arguments))
     }
-    runtimeDebug.tracingEnabled = false
+    if (runtimeDebug.enableSelectiveTracing) {
+      runtimeDebug.tracingEnabled = false
+    }
     try {
       // @ts-expect-error
       return untraced(() => body(restoreOn).apply(this, arguments))
     } finally {
-      runtimeDebug.tracingEnabled = true
+      if (runtimeDebug.enableSelectiveTracing) {
+        runtimeDebug.tracingEnabled = true
+      }
     }
   }
 }
@@ -359,11 +393,15 @@ export const traced = <A>(
   if (runtimeDebug.tracingEnabled) {
     return body(restoreOn)
   }
-  runtimeDebug.tracingEnabled = true
+  if (runtimeDebug.enableSelectiveTracing) {
+    runtimeDebug.tracingEnabled = true
+  }
   try {
     return body(restoreOff)
   } finally {
-    runtimeDebug.tracingEnabled = false
+    if (runtimeDebug.enableSelectiveTracing) {
+      runtimeDebug.tracingEnabled = false
+    }
   }
 }
 
@@ -377,12 +415,16 @@ export const restoreOn: Restore = (body): any =>
       // @ts-expect-error
       return body.apply(this, arguments)
     }
-    runtimeDebug.tracingEnabled = true
+    if (runtimeDebug.enableSelectiveTracing) {
+      runtimeDebug.tracingEnabled = true
+    }
     try {
       // @ts-expect-error
       return body.apply(this, arguments)
     } finally {
-      runtimeDebug.tracingEnabled = false
+      if (runtimeDebug.enableSelectiveTracing) {
+        runtimeDebug.tracingEnabled = false
+      }
     }
   }
 
@@ -396,12 +438,16 @@ export const restoreOff: Restore = (body): any =>
       // @ts-expect-error
       return body.apply(this, arguments)
     }
-    runtimeDebug.tracingEnabled = false
+    if (runtimeDebug.enableSelectiveTracing) {
+      runtimeDebug.tracingEnabled = false
+    }
     try {
       // @ts-expect-error
       return body.apply(this, arguments)
     } finally {
-      runtimeDebug.tracingEnabled = true
+      if (runtimeDebug.enableSelectiveTracing) {
+        runtimeDebug.tracingEnabled = true
+      }
     }
   }
 
