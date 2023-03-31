@@ -1454,6 +1454,10 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(S.combine([1, 2], [1, 2]), [1, 2])
   })
 
+  it("tuple", () => {
+    deepStrictEqual(RA.tuple(0, 1, 2), [0, 1, 2])
+  })
+
   it("empty", () => {
     deepStrictEqual(RA.empty.length, 0)
   })
