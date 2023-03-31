@@ -775,7 +775,7 @@ export const bindTo: {
  * @category do notation
  * @since 1.0.0
  */
-export const Do: Predicate<{}> = of_.Do(Of)
+export const Do: () => Predicate<{}> = of_.Do(Of)
 
 /**
  * A variant of `bind` that sequentially ignores the scope.
@@ -783,7 +783,7 @@ export const Do: Predicate<{}> = of_.Do(Of)
  * @category do notation
  * @since 1.0.0
  */
-export const andThenBind: {
+export const bindDiscard: {
   <N extends string, A extends object, B>(
     name: Exclude<N, keyof A>,
     that: Predicate<B>
@@ -795,4 +795,4 @@ export const andThenBind: {
     name: Exclude<N, keyof A>,
     that: Predicate<B>
   ): Predicate<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = semiProduct.andThenBind(SemiProduct)
+} = semiProduct.bindDiscard(SemiProduct)

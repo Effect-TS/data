@@ -10,6 +10,6 @@ describe.concurrent("Of", () => {
   })
 
   it("unit", () => {
-    U.deepStrictEqual(_.unit(O.Pointed), O.some(undefined))
+    U.deepStrictEqual(_.unit(O.Pointed)(), O.some(undefined))
   })
 })

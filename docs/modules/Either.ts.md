@@ -40,11 +40,12 @@ Added in v1.0.0
   - [inspectRight](#inspectright)
 - [do notation](#do-notation)
   - [Do](#do)
-  - [andThenBind](#andthenbind)
   - [appendElement](#appendelement)
   - [bind](#bind)
+  - [bindDiscard](#binddiscard)
   - [bindTo](#bindto)
   - [let](#let)
+  - [letDiscard](#letdiscard)
   - [tupled](#tupled)
 - [equivalence](#equivalence)
   - [getEquivalence](#getequivalence)
@@ -538,45 +539,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Do: Either<never, {}>
-```
-
-Added in v1.0.0
-
-## andThenBind
-
-Extends the `Either` value with the value of another `Either` type.
-
-If both `Either` instances are `Left`, then the result will be the first `Left`.
-
-**Signature**
-
-```ts
-export declare const andThenBind: {
-  <N extends string, A extends object, E2, B>(name: Exclude<N, keyof A>, that: Either<E2, B>): <E1>(
-    self: Either<E1, A>
-  ) => Either<E2 | E1, { [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-  <E1, A extends object, N extends string, E2, B>(
-    self: Either<E1, A>,
-    name: Exclude<N, keyof A>,
-    that: Either<E2, B>
-  ): Either<E1 | E2, { [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-}
-```
-
-**Example**
-
-```ts
-import * as E from '@effect/data/Either'
-import { pipe } from '@effect/data/Function'
-
-const result = pipe(
-  E.Do,
-  E.bind('a', () => E.left('e1')),
-  E.andThenBind('b', E.left('e2'))
-)
-
-assert.deepStrictEqual(result, E.left('e1'))
+export declare const Do: <E = never>() => Either<E, {}>
 ```
 
 Added in v1.0.0
@@ -615,6 +578,44 @@ export declare const bind: {
 
 Added in v1.0.0
 
+## bindDiscard
+
+Extends the `Either` value with the value of another `Either` type.
+
+If both `Either` instances are `Left`, then the result will be the first `Left`.
+
+**Signature**
+
+```ts
+export declare const bindDiscard: {
+  <N extends string, A extends object, E2, B>(name: Exclude<N, keyof A>, that: Either<E2, B>): <E1>(
+    self: Either<E1, A>
+  ) => Either<E2 | E1, { [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+  <E1, A extends object, N extends string, E2, B>(
+    self: Either<E1, A>,
+    name: Exclude<N, keyof A>,
+    that: Either<E2, B>
+  ): Either<E1 | E2, { [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+}
+```
+
+**Example**
+
+```ts
+import * as E from '@effect/data/Either'
+import { pipe } from '@effect/data/Function'
+
+const result = pipe(
+  E.Do(),
+  E.bind('a', () => E.left('e1')),
+  E.bindDiscard('b', E.left('e2'))
+)
+
+assert.deepStrictEqual(result, E.left('e1'))
+```
+
+Added in v1.0.0
+
 ## bindTo
 
 **Signature**
@@ -638,6 +639,24 @@ export declare const let: {
     self: Either<E, A>
   ) => Either<E, { [K in N | keyof A]: K extends keyof A ? A[K] : B }>
   <E, A extends object, N extends string, B>(self: Either<E, A>, name: Exclude<N, keyof A>, f: (a: A) => B): Either<
+    E,
+    { [K in N | keyof A]: K extends keyof A ? A[K] : B }
+  >
+}
+```
+
+Added in v1.0.0
+
+## letDiscard
+
+**Signature**
+
+```ts
+export declare const letDiscard: {
+  <N extends string, A extends object, B>(name: Exclude<N, keyof A>, b: B): <E>(
+    self: Either<E, A>
+  ) => Either<E, { [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+  <E, A extends object, N extends string, B>(self: Either<E, A>, name: Exclude<N, keyof A>, b: B): Either<
     E,
     { [K in N | keyof A]: K extends keyof A ? A[K] : B }
   >
@@ -1809,7 +1828,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unit: Either<never, void>
+export declare const unit: <E = never>() => Either<E, void>
 ```
 
 Added in v1.0.0

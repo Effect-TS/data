@@ -26,7 +26,7 @@ export const ofComposition = <F extends TypeLambda, G extends TypeLambda>(
  */
 export const unit = <F extends TypeLambda>(
   F: Of<F>
-): Kind<F, unknown, never, never, void> => F.of<void>(undefined)
+): <R = unknown, O = never, E = never>() => Kind<F, R, O, E, void> => () => F.of<void>(undefined)
 
 /**
  * @category do notation
@@ -34,4 +34,4 @@ export const unit = <F extends TypeLambda>(
  */
 export const Do = <F extends TypeLambda>(
   F: Of<F>
-): Kind<F, unknown, never, never, {}> => F.of({})
+): <R = unknown, O = never, E = never>() => Kind<F, R, O, E, {}> => () => F.of({})
