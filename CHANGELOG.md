@@ -1,5 +1,13 @@
 # @effect/data
 
+## 0.9.1
+
+### Patch Changes
+
+- [#301](https://github.com/Effect-TS/data/pull/301) [`440ea09`](https://github.com/Effect-TS/data/commit/440ea0968a38b600b7e72f04f23c3bbe31609a55) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Add Array.tuple
+
+- [#299](https://github.com/Effect-TS/data/pull/299) [`545287e`](https://github.com/Effect-TS/data/commit/545287ed46a2e62157528e8f2cf1bf294ace1095) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Align gen with effect
+
 ## 0.9.0
 
 ### Minor Changes
