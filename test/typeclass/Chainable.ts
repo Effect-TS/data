@@ -5,7 +5,7 @@ import * as U from "../util"
 
 describe.concurrent("Chainable", () => {
   it("andThenDiscard", () => {
-    const andThenDiscard = _.andThenDiscard(O.Chainable)
+    const andThenDiscard = _.zipLeft(O.Chainable)
     U.deepStrictEqual(pipe(O.none(), andThenDiscard(O.none())), O.none())
     U.deepStrictEqual(pipe(O.none(), andThenDiscard(O.some(2))), O.none())
     U.deepStrictEqual(pipe(O.some(1), andThenDiscard(O.none())), O.none())

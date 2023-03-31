@@ -34,13 +34,13 @@ describe.concurrent("Either", () => {
     expect(E.FlatMap).exist
     expect(E.flatMap).exist
     expect(E.flatten).exist
-    expect(E.andThen).exist
+    expect(E.zipRight).exist
     expect(E.composeK).exist
 
     expect(E.Chainable).exist
     expect(E.bind).exist
     expect(E.tap).exist
-    expect(E.andThenDiscard).exist
+    expect(E.zipLeft).exist
 
     expect(E.Monad).exist
 
@@ -55,8 +55,8 @@ describe.concurrent("Either", () => {
     expect(E.getFirstLeftSemigroup).exist // liftSemigroup
     expect(E.lift2).exist
     expect(E.ap).exist
-    expect(E.andThenDiscard).exist
-    expect(E.andThen).exist
+    expect(E.zipLeft).exist
+    expect(E.zipRight).exist
 
     expect(E.Applicative).exist
     expect(E.getFirstLeftMonoid).exist // liftMonoid
@@ -168,17 +168,17 @@ describe.concurrent("Either", () => {
   })
 
   it("andThenDiscard", () => {
-    Util.deepStrictEqual(pipe(E.right(1), E.andThenDiscard(E.right("a"))), E.right(1))
-    Util.deepStrictEqual(pipe(E.right(1), E.andThenDiscard(E.left(true))), E.left(true))
-    Util.deepStrictEqual(pipe(E.left(1), E.andThenDiscard(E.right("a"))), E.left(1))
-    Util.deepStrictEqual(pipe(E.left(1), E.andThenDiscard(E.left(true))), E.left(1))
+    Util.deepStrictEqual(pipe(E.right(1), E.zipLeft(E.right("a"))), E.right(1))
+    Util.deepStrictEqual(pipe(E.right(1), E.zipLeft(E.left(true))), E.left(true))
+    Util.deepStrictEqual(pipe(E.left(1), E.zipLeft(E.right("a"))), E.left(1))
+    Util.deepStrictEqual(pipe(E.left(1), E.zipLeft(E.left(true))), E.left(1))
   })
 
   it("andThen", () => {
-    Util.deepStrictEqual(pipe(E.right(1), E.andThen(E.right("a"))), E.right("a"))
-    Util.deepStrictEqual(pipe(E.right(1), E.andThen(E.left(true))), E.left(true))
-    Util.deepStrictEqual(pipe(E.left(1), E.andThen(E.right("a"))), E.left(1))
-    Util.deepStrictEqual(pipe(E.left(1), E.andThen(E.left(true))), E.left(1))
+    Util.deepStrictEqual(pipe(E.right(1), E.zipRight(E.right("a"))), E.right("a"))
+    Util.deepStrictEqual(pipe(E.right(1), E.zipRight(E.left(true))), E.left(true))
+    Util.deepStrictEqual(pipe(E.left(1), E.zipRight(E.right("a"))), E.left(1))
+    Util.deepStrictEqual(pipe(E.left(1), E.zipRight(E.left(true))), E.left(1))
   })
 
   it("orElse", () => {

@@ -19,7 +19,7 @@ export interface Chainable<F extends TypeLambda> extends FlatMap<F>, Covariant<F
  * @category combining
  * @since 1.0.0
  */
-export const andThenDiscard = <F extends TypeLambda>(F: Chainable<F>): {
+export const zipLeft = <F extends TypeLambda>(F: Chainable<F>): {
   <R2, O2, E2, _>(
     that: Kind<F, R2, O2, E2, _>
   ): <R1, O1, E1, A>(self: Kind<F, R1, O1, E1, A>) => Kind<F, R1 & R2, O2 | O1, E2 | E1, A>

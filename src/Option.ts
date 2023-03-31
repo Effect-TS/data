@@ -790,10 +790,10 @@ export const flatten: <A>(self: Option<Option<A>>) => Option<A> = flatMap_.flatt
  * @category transforming
  * @since 1.0.0
  */
-export const andThen: {
+export const zipRight: {
   <_, B>(self: Option<_>, that: Option<B>): Option<B>
   <B>(that: Option<B>): <_>(self: Option<_>) => Option<B>
-} = flatMap_.andThen(FlatMap)
+} = flatMap_.zipRight(FlatMap)
 
 /**
  * @category transforming
@@ -824,10 +824,10 @@ export const Chainable: chainable.Chainable<OptionTypeLambda> = {
  * @category transforming
  * @since 1.0.0
  */
-export const andThenDiscard: {
+export const zipLeft: {
   <A, _>(self: Option<A>, that: Option<_>): Option<A>
   <_>(that: Option<_>): <A>(self: Option<A>) => Option<A>
-} = chainable.andThenDiscard(Chainable)
+} = chainable.zipLeft(Chainable)
 
 /**
  * Applies the provided function `f` to the value of the `Option` if it is `Some` and returns the original `Option`
