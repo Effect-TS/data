@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.9.0
+
+### Minor Changes
+
+- [#297](https://github.com/Effect-TS/data/pull/297) [`d9c47a7`](https://github.com/Effect-TS/data/commit/d9c47a74379fd0952362f3b092979e94131d535b) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Align zipLeft / zipRight to effect
+
 ## 0.8.0
 
 ### Minor Changes
