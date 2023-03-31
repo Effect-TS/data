@@ -16,13 +16,13 @@ Added in v1.0.0
   - [tap](#tap)
 - [combining](#combining)
   - [all](#all)
-  - [andThenDiscard](#andthendiscard)
   - [flatMap](#flatmap)
   - [flatMapNullable](#flatmapnullable)
   - [flatMapOption](#flatmapoption)
   - [getFirstLeftMonoid](#getfirstleftmonoid)
   - [getFirstLeftSemigroup](#getfirstleftsemigroup)
   - [getFirstRightSemigroup](#getfirstrightsemigroup)
+  - [zipLeft](#zipleft)
   - [zipWith](#zipwith)
 - [constructors](#constructors)
   - [left](#left)
@@ -124,7 +124,6 @@ Added in v1.0.0
 - [type lambdas](#type-lambdas)
   - [EitherTypeLambda (interface)](#eithertypelambda-interface)
 - [utils](#utils)
-  - [andThen](#andthen)
   - [ap](#ap)
   - [composeK](#composek)
   - [contains](#contains)
@@ -134,6 +133,7 @@ Added in v1.0.0
   - [struct](#struct)
   - [tuple](#tuple)
   - [unit](#unit)
+  - [zipRight](#zipright)
 
 ---
 
@@ -180,22 +180,6 @@ import * as E from '@effect/data/Either'
 
 assert.deepStrictEqual(E.all([E.right(1), E.right(2), E.right(3)]), E.right([1, 2, 3]))
 assert.deepStrictEqual(E.all([E.right(1), E.left('error'), E.right(3)]), E.left('error'))
-```
-
-Added in v1.0.0
-
-## andThenDiscard
-
-Sequences the specified effect after this effect, but ignores the value
-produced by the effect.
-
-**Signature**
-
-```ts
-export declare const andThenDiscard: {
-  <E1, A, E2, _>(self: Either<E1, A>, that: Either<E2, _>): Either<E1 | E2, A>
-  <E2, _>(that: Either<E2, _>): <E1, A>(self: Either<E1, A>) => Either<E2 | E1, A>
-}
 ```
 
 Added in v1.0.0
@@ -299,6 +283,22 @@ Semigroup returning the left-most `Right` value.
 
 ```ts
 export declare const getFirstRightSemigroup: <E, A>() => Semigroup<Either<E, A>>
+```
+
+Added in v1.0.0
+
+## zipLeft
+
+Sequences the specified effect after this effect, but ignores the value
+produced by the effect.
+
+**Signature**
+
+```ts
+export declare const zipLeft: {
+  <E1, A, E2, _>(self: Either<E1, A>, that: Either<E2, _>): Either<E1 | E2, A>
+  <E2, _>(that: Either<E2, _>): <E1, A>(self: Either<E1, A>) => Either<E2 | E1, A>
+}
 ```
 
 Added in v1.0.0
@@ -1686,19 +1686,6 @@ Added in v1.0.0
 
 # utils
 
-## andThen
-
-**Signature**
-
-```ts
-export declare const andThen: {
-  <E1, _, E2, B>(self: Either<E1, _>, that: Either<E2, B>): Either<E1 | E2, B>
-  <E2, B>(that: Either<E2, B>): <E1, _>(self: Either<E1, _>) => Either<E2 | E1, B>
-}
-```
-
-Added in v1.0.0
-
 ## ap
 
 **Signature**
@@ -1829,6 +1816,19 @@ Added in v1.0.0
 
 ```ts
 export declare const unit: <E = never>() => Either<E, void>
+```
+
+Added in v1.0.0
+
+## zipRight
+
+**Signature**
+
+```ts
+export declare const zipRight: {
+  <E1, _, E2, B>(self: Either<E1, _>, that: Either<E2, B>): Either<E1 | E2, B>
+  <E2, B>(that: Either<E2, B>): <E1, _>(self: Either<E1, _>) => Either<E2 | E1, B>
+}
 ```
 
 Added in v1.0.0

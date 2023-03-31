@@ -18,9 +18,9 @@ Added in v1.0.0
 - [type class](#type-class)
   - [SemiApplicative (interface)](#semiapplicative-interface)
 - [utils](#utils)
-  - [andThen](#andthen)
-  - [andThenDiscard](#andthendiscard)
   - [ap](#ap)
+  - [zipLeft](#zipleft)
+  - [zipRight](#zipright)
   - [zipWith](#zipwith)
 
 ---
@@ -82,18 +82,18 @@ Added in v1.0.0
 
 # utils
 
-## andThen
+## ap
 
 **Signature**
 
 ```ts
-export declare const andThen: <F extends TypeLambda>(
+export declare const ap: <F extends TypeLambda>(
   F: SemiApplicative<F>
 ) => {
-  <R2, O2, E2, B>(that: Kind<F, R2, O2, E2, B>): <R1, O1, E1, _>(
-    self: Kind<F, R1, O1, E1, _>
+  <R2, O2, E2, A>(that: Kind<F, R2, O2, E2, A>): <R1, O1, E1, B>(
+    self: Kind<F, R1, O1, E1, (a: A) => B>
   ) => Kind<F, R1 & R2, O2 | O1, E2 | E1, B>
-  <R1, O1, E1, _, R2, O2, E2, B>(self: Kind<F, R1, O1, E1, _>, that: Kind<F, R2, O2, E2, B>): Kind<
+  <R1, O1, E1, A, B, R2, O2, E2>(self: Kind<F, R1, O1, E1, (a: A) => B>, that: Kind<F, R2, O2, E2, A>): Kind<
     F,
     R1 & R2,
     O1 | O2,
@@ -105,12 +105,12 @@ export declare const andThen: <F extends TypeLambda>(
 
 Added in v1.0.0
 
-## andThenDiscard
+## zipLeft
 
 **Signature**
 
 ```ts
-export declare const andThenDiscard: <F extends TypeLambda>(
+export declare const zipLeft: <F extends TypeLambda>(
   F: SemiApplicative<F>
 ) => {
   <R2, O2, E2, _>(that: Kind<F, R2, O2, E2, _>): <R1, O1, E1, A>(
@@ -128,18 +128,18 @@ export declare const andThenDiscard: <F extends TypeLambda>(
 
 Added in v1.0.0
 
-## ap
+## zipRight
 
 **Signature**
 
 ```ts
-export declare const ap: <F extends TypeLambda>(
+export declare const zipRight: <F extends TypeLambda>(
   F: SemiApplicative<F>
 ) => {
-  <R2, O2, E2, A>(that: Kind<F, R2, O2, E2, A>): <R1, O1, E1, B>(
-    self: Kind<F, R1, O1, E1, (a: A) => B>
+  <R2, O2, E2, B>(that: Kind<F, R2, O2, E2, B>): <R1, O1, E1, _>(
+    self: Kind<F, R1, O1, E1, _>
   ) => Kind<F, R1 & R2, O2 | O1, E2 | E1, B>
-  <R1, O1, E1, A, B, R2, O2, E2>(self: Kind<F, R1, O1, E1, (a: A) => B>, that: Kind<F, R2, O2, E2, A>): Kind<
+  <R1, O1, E1, _, R2, O2, E2, B>(self: Kind<F, R1, O1, E1, _>, that: Kind<F, R2, O2, E2, B>): Kind<
     F,
     R1 & R2,
     O1 | O2,

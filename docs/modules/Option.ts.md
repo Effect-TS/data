@@ -94,8 +94,6 @@ Added in v1.0.0
 - [sorting](#sorting)
   - [getOrder](#getorder)
 - [transforming](#transforming)
-  - [andThen](#andthen)
-  - [andThenDiscard](#andthendiscard)
   - [as](#as)
   - [asUnit](#asunit)
   - [composeK](#composek)
@@ -106,6 +104,8 @@ Added in v1.0.0
   - [flatten](#flatten)
   - [map](#map)
   - [tap](#tap)
+  - [zipLeft](#zipleft)
+  - [zipRight](#zipright)
 - [type lambdas](#type-lambdas)
   - [OptionTypeLambda (interface)](#optiontypelambda-interface)
 - [utils](#utils)
@@ -1561,36 +1561,6 @@ Added in v1.0.0
 
 # transforming
 
-## andThen
-
-**Signature**
-
-```ts
-export declare const andThen: {
-  <_, B>(self: Option<_>, that: Option<B>): Option<B>
-  <B>(that: Option<B>): <_>(self: Option<_>) => Option<B>
-}
-```
-
-Added in v1.0.0
-
-## andThenDiscard
-
-Sequences the specified `that` `Option` but ignores its value.
-
-It is useful when we want to chain multiple operations, but only care about the result of `self`.
-
-**Signature**
-
-```ts
-export declare const andThenDiscard: {
-  <A, _>(self: Option<A>, that: Option<_>): Option<A>
-  <_>(that: Option<_>): <A>(self: Option<A>) => Option<A>
-}
-```
-
-Added in v1.0.0
-
 ## as
 
 Maps the `Some` value of this `Option` to the specified constant value.
@@ -1789,6 +1759,36 @@ const getInteger = (n: number) => (Number.isInteger(n) ? O.some(n) : O.none())
 assert.deepStrictEqual(O.tap(O.none(), getInteger), O.none())
 assert.deepStrictEqual(O.tap(O.some(1), getInteger), O.some(1))
 assert.deepStrictEqual(O.tap(O.some(1.14), getInteger), O.none())
+```
+
+Added in v1.0.0
+
+## zipLeft
+
+Sequences the specified `that` `Option` but ignores its value.
+
+It is useful when we want to chain multiple operations, but only care about the result of `self`.
+
+**Signature**
+
+```ts
+export declare const zipLeft: {
+  <A, _>(self: Option<A>, that: Option<_>): Option<A>
+  <_>(that: Option<_>): <A>(self: Option<A>) => Option<A>
+}
+```
+
+Added in v1.0.0
+
+## zipRight
+
+**Signature**
+
+```ts
+export declare const zipRight: {
+  <_, B>(self: Option<_>, that: Option<B>): Option<B>
+  <B>(that: Option<B>): <_>(self: Option<_>) => Option<B>
+}
 ```
 
 Added in v1.0.0

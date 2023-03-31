@@ -15,9 +15,9 @@ Added in v1.0.0
 - [type class](#type-class)
   - [FlatMap (interface)](#flatmap-interface)
 - [utils](#utils)
-  - [andThen](#andthen)
   - [composeK](#composek)
   - [flatten](#flatten)
+  - [zipRight](#zipright)
 
 ---
 
@@ -48,31 +48,6 @@ Added in v1.0.0
 
 # utils
 
-## andThen
-
-A variant of `flatMap` that ignores the value produced by this effect.
-
-**Signature**
-
-```ts
-export declare const andThen: <F extends TypeLambda>(
-  F: FlatMap<F>
-) => {
-  <R2, O2, E2, B>(that: Kind<F, R2, O2, E2, B>): <R1, O1, E1, _>(
-    self: Kind<F, R1, O1, E1, _>
-  ) => Kind<F, R1 & R2, O2 | O1, E2 | E1, B>
-  <R1, O1, E1, _, R2, O2, E2, B>(self: Kind<F, R1, O1, E1, _>, that: Kind<F, R2, O2, E2, B>): Kind<
-    F,
-    R1 & R2,
-    O1 | O2,
-    E1 | E2,
-    B
-  >
-}
-```
-
-Added in v1.0.0
-
 ## composeK
 
 **Signature**
@@ -102,6 +77,31 @@ export declare const flatten: <F extends TypeLambda>(
 ) => <R2, O2, E2, R1, O1, E1, A>(
   self: Kind<F, R2, O2, E2, Kind<F, R1, O1, E1, A>>
 ) => Kind<F, R1 & R2, O2 | O1, E2 | E1, A>
+```
+
+Added in v1.0.0
+
+## zipRight
+
+A variant of `flatMap` that ignores the value produced by this effect.
+
+**Signature**
+
+```ts
+export declare const zipRight: <F extends TypeLambda>(
+  F: FlatMap<F>
+) => {
+  <R2, O2, E2, B>(that: Kind<F, R2, O2, E2, B>): <R1, O1, E1, _>(
+    self: Kind<F, R1, O1, E1, _>
+  ) => Kind<F, R1 & R2, O2 | O1, E2 | E1, B>
+  <R1, O1, E1, _, R2, O2, E2, B>(self: Kind<F, R1, O1, E1, _>, that: Kind<F, R2, O2, E2, B>): Kind<
+    F,
+    R1 & R2,
+    O1 | O2,
+    E1 | E2,
+    B
+  >
+}
 ```
 
 Added in v1.0.0

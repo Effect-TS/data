@@ -33,13 +33,13 @@ describe.concurrent("Option", () => {
     expect(_.FlatMap).exist
     expect(_.flatMap).exist
     expect(_.flatten).exist
-    expect(_.andThen).exist
+    expect(_.zipRight).exist
     expect(_.composeK).exist
 
     expect(_.Chainable).exist
     expect(_.bind).exist
     expect(_.tap).exist
-    expect(_.andThenDiscard).exist
+    expect(_.zipLeft).exist
 
     expect(_.Monad).exist
 
@@ -54,8 +54,8 @@ describe.concurrent("Option", () => {
     expect(_.getFailureSemigroup).exist // liftSemigroup
     expect(_.lift2).exist
     expect(_.ap).exist
-    expect(_.andThenDiscard).exist
-    expect(_.andThen).exist
+    expect(_.zipLeft).exist
+    expect(_.zipRight).exist
 
     expect(_.Applicative).exist
     expect(_.getFailureMonoid).exist // liftMonoid

@@ -400,10 +400,10 @@ export const flatten: <E1, E2, A>(self: Either<E1, Either<E2, A>>) => Either<E1 
 /**
  * @since 1.0.0
  */
-export const andThen: {
+export const zipRight: {
   <E1, _, E2, B>(self: Either<E1, _>, that: Either<E2, B>): Either<E1 | E2, B>
   <E2, B>(that: Either<E2, B>): <E1, _>(self: Either<E1, _>) => Either<E2 | E1, B>
-} = flatMap_.andThen(FlatMap)
+} = flatMap_.zipRight(FlatMap)
 
 /**
  * @since 1.0.0
@@ -435,10 +435,10 @@ export const Chainable: chainable.Chainable<EitherTypeLambda> = {
  * @category combining
  * @since 1.0.0
  */
-export const andThenDiscard: {
+export const zipLeft: {
   <E1, A, E2, _>(self: Either<E1, A>, that: Either<E2, _>): Either<E1 | E2, A>
   <E2, _>(that: Either<E2, _>): <E1, A>(self: Either<E1, A>) => Either<E2 | E1, A>
-} = chainable.andThenDiscard(Chainable)
+} = chainable.zipLeft(Chainable)
 
 /**
  * @category instances

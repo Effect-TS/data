@@ -33,7 +33,7 @@ export const flatten = <F extends TypeLambda>(F: FlatMap<F>) =>
  *
  * @since 1.0.0
  */
-export const andThen = <F extends TypeLambda>(F: FlatMap<F>): {
+export const zipRight = <F extends TypeLambda>(F: FlatMap<F>): {
   <R2, O2, E2, B>(
     that: Kind<F, R2, O2, E2, B>
   ): <R1, O1, E1, _>(self: Kind<F, R1, O1, E1, _>) => Kind<F, R1 & R2, O2 | O1, E2 | E1, B>

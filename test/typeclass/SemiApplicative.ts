@@ -15,7 +15,7 @@ describe.concurrent("SemiApplicative", () => {
   })
 
   it("andThenDiscard", () => {
-    const andThenDiscard = _.andThenDiscard(O.SemiApplicative)
+    const andThenDiscard = _.zipLeft(O.SemiApplicative)
     U.deepStrictEqual(pipe(O.none(), andThenDiscard(O.none())), O.none())
     U.deepStrictEqual(pipe(O.none(), andThenDiscard(O.some(2))), O.none())
     U.deepStrictEqual(pipe(O.some(1), andThenDiscard(O.none())), O.none())
@@ -23,7 +23,7 @@ describe.concurrent("SemiApplicative", () => {
   })
 
   it("andThen", () => {
-    const andThen = _.andThen(O.SemiApplicative)
+    const andThen = _.zipRight(O.SemiApplicative)
     U.deepStrictEqual(pipe(O.none(), andThen(O.none())), O.none())
     U.deepStrictEqual(pipe(O.none(), andThen(O.some(2))), O.none())
     U.deepStrictEqual(pipe(O.some(1), andThen(O.none())), O.none())

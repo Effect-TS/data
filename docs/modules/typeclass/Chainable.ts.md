@@ -13,7 +13,7 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [combining](#combining)
-  - [andThenDiscard](#andthendiscard)
+  - [zipLeft](#zipleft)
 - [do notation](#do-notation)
   - [bind](#bind)
 - [type class](#type-class)
@@ -25,7 +25,7 @@ Added in v1.0.0
 
 # combining
 
-## andThenDiscard
+## zipLeft
 
 Sequences the specified effect after this effect, but ignores the value
 produced by the effect.
@@ -33,7 +33,7 @@ produced by the effect.
 **Signature**
 
 ```ts
-export declare const andThenDiscard: <F extends TypeLambda>(
+export declare const zipLeft: <F extends TypeLambda>(
   F: Chainable<F>
 ) => {
   <R2, O2, E2, _>(that: Kind<F, R2, O2, E2, _>): <R1, O1, E1, A>(

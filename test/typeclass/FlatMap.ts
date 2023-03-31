@@ -12,7 +12,7 @@ describe.concurrent("FlatMap", () => {
   })
 
   it("andThen", () => {
-    const andThen = _.andThen(O.FlatMap)
+    const andThen = _.zipRight(O.FlatMap)
     U.deepStrictEqual(pipe(O.none(), andThen(O.none())), O.none())
     U.deepStrictEqual(pipe(O.none(), andThen(O.some(2))), O.none())
     U.deepStrictEqual(pipe(O.some(1), andThen(O.none())), O.none())
