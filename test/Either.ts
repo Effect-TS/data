@@ -353,7 +353,7 @@ describe.concurrent("Either", () => {
 
   it("andThenBind", () => {
     Util.deepStrictEqual(
-      pipe(E.right(1), E.bindTo("a"), E.andThenBind("b", E.right("b"))),
+      pipe(E.right(1), E.bindTo("a"), E.bindDiscard("b", E.right("b"))),
       E.right({ a: 1, b: "b" })
     )
   })

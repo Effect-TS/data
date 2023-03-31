@@ -2383,7 +2383,23 @@ export {
  * @category do notation
  * @since 1.0.0
  */
-export const Do: ReadonlyArray<{}> = of_.Do(Of)
+export const letDiscard: {
+  <N extends string, A extends object, B>(
+    name: Exclude<N, keyof A>,
+    b: B
+  ): (self: ReadonlyArray<A>) => Array<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+  <A extends object, N extends string, B>(
+    self: ReadonlyArray<A>,
+    name: Exclude<N, keyof A>,
+    b: B
+  ): Array<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+} = covariant.letDiscard(Covariant) as any
+
+/**
+ * @category do notation
+ * @since 1.0.0
+ */
+export const Do: () => ReadonlyArray<{}> = of_.Do(Of)
 
 /**
  * @category do notation
@@ -2407,7 +2423,7 @@ export const bind: {
  * @category do notation
  * @since 1.0.0
  */
-export const andThenBind: {
+export const bindDiscard: {
   <N extends string, A extends object, B>(
     name: Exclude<N, keyof A>,
     that: ReadonlyArray<B>
@@ -2417,4 +2433,4 @@ export const andThenBind: {
     name: Exclude<N, keyof A>,
     that: ReadonlyArray<B>
   ): Array<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = semiProduct.andThenBind(SemiProduct) as any
+} = semiProduct.bindDiscard(SemiProduct) as any

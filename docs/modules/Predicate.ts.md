@@ -25,7 +25,7 @@ Added in v1.0.0
   - [contramap](#contramap)
 - [do notation](#do-notation)
   - [Do](#do)
-  - [andThenBind](#andthenbind)
+  - [bindDiscard](#binddiscard)
   - [bindTo](#bindto)
 - [guards](#guards)
   - [isBigint](#isbigint)
@@ -264,19 +264,19 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Do: Predicate<{}>
+export declare const Do: () => Predicate<{}>
 ```
 
 Added in v1.0.0
 
-## andThenBind
+## bindDiscard
 
 A variant of `bind` that sequentially ignores the scope.
 
 **Signature**
 
 ```ts
-export declare const andThenBind: {
+export declare const bindDiscard: {
   <N extends string, A extends object, B>(name: Exclude<N, keyof A>, that: Predicate<B>): (
     self: Predicate<A>
   ) => Predicate<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>

@@ -45,11 +45,12 @@ Added in v1.0.0
   - [inspectSome](#inspectsome)
 - [do notation](#do-notation)
   - [Do](#do)
-  - [andThenBind](#andthenbind)
   - [appendElement](#appendelement)
   - [bind](#bind)
+  - [bindDiscard](#binddiscard)
   - [bindTo](#bindto)
   - [let](#let)
+  - [letDiscard](#letdiscard)
   - [tupled](#tupled)
 - [equivalence](#equivalence)
   - [getEquivalence](#getequivalence)
@@ -742,26 +743,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Do: Option<{}>
-```
-
-Added in v1.0.0
-
-## andThenBind
-
-A variant of `bind` that sequentially ignores the scope.
-
-**Signature**
-
-```ts
-export declare const andThenBind: {
-  <N extends string, A extends object, B>(name: Exclude<N, keyof A>, that: Option<B>): (
-    self: Option<A>
-  ) => Option<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-  <A extends object, N extends string, B>(self: Option<A>, name: Exclude<N, keyof A>, that: Option<B>): Option<{
-    [K in N | keyof A]: K extends keyof A ? A[K] : B
-  }>
-}
+export declare const Do: () => Option<{}>
 ```
 
 Added in v1.0.0
@@ -807,6 +789,25 @@ export declare const bind: {
 
 Added in v1.0.0
 
+## bindDiscard
+
+A variant of `bind` that sequentially ignores the scope.
+
+**Signature**
+
+```ts
+export declare const bindDiscard: {
+  <N extends string, A extends object, B>(name: Exclude<N, keyof A>, that: Option<B>): (
+    self: Option<A>
+  ) => Option<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+  <A extends object, N extends string, B>(self: Option<A>, name: Exclude<N, keyof A>, that: Option<B>): Option<{
+    [K in N | keyof A]: K extends keyof A ? A[K] : B
+  }>
+}
+```
+
+Added in v1.0.0
+
 ## bindTo
 
 **Signature**
@@ -830,6 +831,23 @@ export declare const let: {
     self: Option<A>
   ) => Option<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
   <A extends object, N extends string, B>(self: Option<A>, name: Exclude<N, keyof A>, f: (a: A) => B): Option<{
+    [K in N | keyof A]: K extends keyof A ? A[K] : B
+  }>
+}
+```
+
+Added in v1.0.0
+
+## letDiscard
+
+**Signature**
+
+```ts
+export declare const letDiscard: {
+  <N extends string, A extends object, B>(name: Exclude<N, keyof A>, b: B): (
+    self: Option<A>
+  ) => Option<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+  <A extends object, N extends string, B>(self: Option<A>, name: Exclude<N, keyof A>, b: B): Option<{
     [K in N | keyof A]: K extends keyof A ? A[K] : B
   }>
 }
@@ -2051,7 +2069,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unit: Option<void>
+export declare const unit: () => Option<void>
 ```
 
 Added in v1.0.0

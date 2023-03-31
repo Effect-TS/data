@@ -36,10 +36,11 @@ Added in v1.0.0
   - [fromRecord](#fromrecord)
 - [do notation](#do-notation)
   - [Do](#do)
-  - [andThenBind](#andthenbind)
   - [bind](#bind)
+  - [bindDiscard](#binddiscard)
   - [bindTo](#bindto)
   - [let](#let)
+  - [letDiscard](#letdiscard)
 - [filtering](#filtering)
   - [compact](#compact)
   - [filter](#filter)
@@ -459,26 +460,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Do: readonly {}[]
-```
-
-Added in v1.0.0
-
-## andThenBind
-
-A variant of `bind` that sequentially ignores the scope.
-
-**Signature**
-
-```ts
-export declare const andThenBind: {
-  <N extends string, A extends object, B>(name: Exclude<N, keyof A>, that: readonly B[]): (
-    self: readonly A[]
-  ) => { [K in N | keyof A]: K extends keyof A ? A[K] : B }[]
-  <A extends object, N extends string, B>(self: readonly A[], name: Exclude<N, keyof A>, that: readonly B[]): {
-    [K in N | keyof A]: K extends keyof A ? A[K] : B
-  }[]
-}
+export declare const Do: () => ReadonlyArray<{}>
 ```
 
 Added in v1.0.0
@@ -493,6 +475,25 @@ export declare const bind: {
     self: readonly A[]
   ) => { [K in N | keyof A]: K extends keyof A ? A[K] : B }[]
   <A extends object, N extends string, B>(self: readonly A[], name: Exclude<N, keyof A>, f: (a: A) => readonly B[]): {
+    [K in N | keyof A]: K extends keyof A ? A[K] : B
+  }[]
+}
+```
+
+Added in v1.0.0
+
+## bindDiscard
+
+A variant of `bind` that sequentially ignores the scope.
+
+**Signature**
+
+```ts
+export declare const bindDiscard: {
+  <N extends string, A extends object, B>(name: Exclude<N, keyof A>, that: readonly B[]): (
+    self: readonly A[]
+  ) => { [K in N | keyof A]: K extends keyof A ? A[K] : B }[]
+  <A extends object, N extends string, B>(self: readonly A[], name: Exclude<N, keyof A>, that: readonly B[]): {
     [K in N | keyof A]: K extends keyof A ? A[K] : B
   }[]
 }
@@ -523,6 +524,23 @@ export declare const let: {
     self: readonly A[]
   ) => { [K in N | keyof A]: K extends keyof A ? A[K] : B }[]
   <A extends object, N extends string, B>(self: readonly A[], name: Exclude<N, keyof A>, f: (a: A) => B): {
+    [K in N | keyof A]: K extends keyof A ? A[K] : B
+  }[]
+}
+```
+
+Added in v1.0.0
+
+## letDiscard
+
+**Signature**
+
+```ts
+export declare const letDiscard: {
+  <N extends string, A extends object, B>(name: Exclude<N, keyof A>, b: B): (
+    self: readonly A[]
+  ) => { [K in N | keyof A]: K extends keyof A ? A[K] : B }[]
+  <A extends object, N extends string, B>(self: readonly A[], name: Exclude<N, keyof A>, b: B): {
     [K in N | keyof A]: K extends keyof A ? A[K] : B
   }[]
 }

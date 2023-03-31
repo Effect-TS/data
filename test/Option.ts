@@ -201,7 +201,7 @@ describe.concurrent("Option", () => {
   })
 
   it("unit", () => {
-    Util.deepStrictEqual(_.unit, _.some(undefined))
+    Util.deepStrictEqual(_.unit(), _.some(undefined))
   })
 
   it("product", () => {
@@ -475,7 +475,7 @@ describe.concurrent("Option", () => {
 
   it("andThenBind", () => {
     Util.deepStrictEqual(
-      pipe(_.some(1), _.bindTo("a"), _.andThenBind("b", _.some("b"))),
+      pipe(_.some(1), _.bindTo("a"), _.bindDiscard("b", _.some("b"))),
       _.some({ a: 1, b: "b" })
     )
   })
@@ -521,7 +521,7 @@ describe.concurrent("Option", () => {
   it("guard", () => {
     Util.deepStrictEqual(
       pipe(
-        _.Do,
+        _.Do(),
         _.bind("x", () => _.some("a")),
         _.bind("y", () => _.some("a")),
         _.filter(({ x, y }) => x === y)
@@ -530,7 +530,7 @@ describe.concurrent("Option", () => {
     )
     Util.deepStrictEqual(
       pipe(
-        _.Do,
+        _.Do(),
         _.bind("x", () => _.some("a")),
         _.bind("y", () => _.some("b")),
         _.filter(({ x, y }) => x === y)

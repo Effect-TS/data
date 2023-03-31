@@ -15,7 +15,7 @@ Added in v1.0.0
 - [constructors](#constructors)
   - [productMany](#productmany)
 - [do notation](#do-notation)
-  - [andThenBind](#andthenbind)
+  - [bindDiscard](#binddiscard)
 - [type class](#type-class)
   - [SemiProduct (interface)](#semiproduct-interface)
 - [utils](#utils)
@@ -52,12 +52,12 @@ Added in v1.0.0
 
 # do notation
 
-## andThenBind
+## bindDiscard
 
 **Signature**
 
 ```ts
-export declare const andThenBind: <F extends TypeLambda>(
+export declare const bindDiscard: <F extends TypeLambda>(
   F: SemiProduct<F>
 ) => {
   <N extends string, A extends object, R2, O2, E2, B>(name: Exclude<N, keyof A>, that: Kind<F, R2, O2, E2, B>): <

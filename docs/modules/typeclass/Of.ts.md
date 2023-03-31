@@ -29,7 +29,9 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Do: <F extends TypeLambda>(F: Of<F>) => Kind<F, unknown, never, never, {}>
+export declare const Do: <F extends TypeLambda>(
+  F: Of<F>
+) => <R = unknown, O = never, E = never>() => Kind<F, R, O, E, {}>
 ```
 
 Added in v1.0.0
@@ -70,7 +72,9 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unit: <F extends TypeLambda>(F: Of<F>) => Kind<F, unknown, never, never, void>
+export declare const unit: <F extends TypeLambda>(
+  F: Of<F>
+) => <R = unknown, O = never, E = never>() => Kind<F, R, O, E, void>
 ```
 
 Added in v1.0.0

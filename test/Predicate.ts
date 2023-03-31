@@ -27,7 +27,7 @@ describe.concurrent("Predicate", () => {
     expect(_.Do).exist
 
     expect(_.SemiProduct).exist
-    expect(_.andThenBind).exist
+    expect(_.bindDiscard).exist
     expect(_.appendElement).exist
 
     expect(_.Product).exist

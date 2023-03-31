@@ -14,6 +14,7 @@ Added in v1.0.0
 
 - [do notation](#do-notation)
   - [let](#let)
+  - [letDiscard](#letdiscard)
 - [mapping](#mapping)
   - [as](#as)
   - [asUnit](#asunit)
@@ -44,6 +45,29 @@ export declare const let: <F extends TypeLambda>(
     name: Exclude<N, keyof A>,
     f: (a: A) => B
   ): Kind<F, R, O, E, { [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+}
+```
+
+Added in v1.0.0
+
+## letDiscard
+
+**Signature**
+
+```ts
+export declare const letDiscard: <F extends TypeLambda>(
+  F: Covariant<F>
+) => {
+  <N extends string, A extends object, B>(name: Exclude<N, keyof A>, b: B): <R, O, E>(
+    self: Kind<F, R, O, E, A>
+  ) => Kind<F, R, O, E, { [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+  <R, O, E, A extends object, N extends string, B>(self: Kind<F, R, O, E, A>, name: Exclude<N, keyof A>, b: B): Kind<
+    F,
+    R,
+    O,
+    E,
+    { [K in N | keyof A]: K extends keyof A ? A[K] : B }
+  >
 }
 ```
 

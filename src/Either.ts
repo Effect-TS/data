@@ -358,7 +358,7 @@ const Of: of_.Of<EitherTypeLambda> = {
 /**
  * @since 1.0.0
  */
-export const unit: Either<never, void> = of_.unit(Of)
+export const unit: <E = never>() => Either<E, void> = of_.unit(Of)
 
 /**
  * @category instances
@@ -1459,11 +1459,28 @@ export {
    */
   let_ as let
 }
+
 /**
  * @category do notation
  * @since 1.0.0
  */
-export const Do: Either<never, {}> = of_.Do(Of)
+export const letDiscard: {
+  <N extends string, A extends object, B>(
+    name: Exclude<N, keyof A>,
+    b: B
+  ): <E>(self: Either<E, A>) => Either<E, { [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+  <E, A extends object, N extends string, B>(
+    self: Either<E, A>,
+    name: Exclude<N, keyof A>,
+    b: B
+  ): Either<E, { [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+} = covariant.letDiscard(Covariant)
+
+/**
+ * @category do notation
+ * @since 1.0.0
+ */
+export const Do: <E = never>() => Either<E, {}> = of_.Do(Of)
 
 /**
  * @category do notation
@@ -1497,9 +1514,9 @@ export const bind: {
  * import { pipe } from '@effect/data/Function'
  *
  * const result = pipe(
- *   E.Do,
+ *   E.Do(),
  *   E.bind("a", () => E.left("e1")),
- *   E.andThenBind("b", E.left("e2"))
+ *   E.bindDiscard("b", E.left("e2"))
  * )
  *
  * assert.deepStrictEqual(result, E.left("e1"))
@@ -1507,7 +1524,7 @@ export const bind: {
  * @category do notation
  * @since 1.0.0
  */
-export const andThenBind: {
+export const bindDiscard: {
   <N extends string, A extends object, E2, B>(
     name: Exclude<N, keyof A>,
     that: Either<E2, B>
@@ -1519,7 +1536,7 @@ export const andThenBind: {
     name: Exclude<N, keyof A>,
     that: Either<E2, B>
   ): Either<E1 | E2, { [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = semiProduct.andThenBind(SemiProduct)
+} = semiProduct.bindDiscard(SemiProduct)
 
 /**
  * The `gen` API is a helper function that provides a generator interface for the `Either` monad instance.

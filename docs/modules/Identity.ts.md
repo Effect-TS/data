@@ -14,10 +14,11 @@ Added in v1.0.0
 
 - [do notation](#do-notation)
   - [Do](#do)
-  - [andThenBind](#andthenbind)
   - [bind](#bind)
+  - [bindDiscard](#binddiscard)
   - [bindTo](#bindto)
   - [let](#let)
+  - [letDiscard](#letdiscard)
 - [instances](#instances)
   - [Applicative](#applicative)
   - [Chainable](#chainable)
@@ -54,25 +55,6 @@ export declare const Do: {}
 
 Added in v1.0.0
 
-## andThenBind
-
-A variant of `bind` that sequentially ignores the scope.
-
-**Signature**
-
-```ts
-export declare const andThenBind: {
-  <N extends string, A extends object, B>(name: Exclude<N, keyof A>, that: B): (self: A) => {
-    [K in N | keyof A]: K extends keyof A ? A[K] : B
-  }
-  <A extends object, N extends string, B>(self: A, name: Exclude<N, keyof A>, that: B): {
-    [K in N | keyof A]: K extends keyof A ? A[K] : B
-  }
-}
-```
-
-Added in v1.0.0
-
 ## bind
 
 **Signature**
@@ -83,6 +65,25 @@ export declare const bind: {
     [K in N | keyof A]: K extends keyof A ? A[K] : B
   }
   <A extends object, N extends string, B>(self: A, name: Exclude<N, keyof A>, f: (a: A) => B): {
+    [K in N | keyof A]: K extends keyof A ? A[K] : B
+  }
+}
+```
+
+Added in v1.0.0
+
+## bindDiscard
+
+A variant of `bind` that sequentially ignores the scope.
+
+**Signature**
+
+```ts
+export declare const bindDiscard: {
+  <N extends string, A extends object, B>(name: Exclude<N, keyof A>, that: B): (self: A) => {
+    [K in N | keyof A]: K extends keyof A ? A[K] : B
+  }
+  <A extends object, N extends string, B>(self: A, name: Exclude<N, keyof A>, that: B): {
     [K in N | keyof A]: K extends keyof A ? A[K] : B
   }
 }
@@ -113,6 +114,23 @@ export declare const let: {
     [K in N | keyof A]: K extends keyof A ? A[K] : B
   }
   <A extends object, N extends string, B>(self: A, name: Exclude<N, keyof A>, f: (a: A) => B): {
+    [K in N | keyof A]: K extends keyof A ? A[K] : B
+  }
+}
+```
+
+Added in v1.0.0
+
+## letDiscard
+
+**Signature**
+
+```ts
+export declare const letDiscard: {
+  <N extends string, A extends object, B>(name: Exclude<N, keyof A>, b: B): (self: A) => {
+    [K in N | keyof A]: K extends keyof A ? A[K] : B
+  }
+  <A extends object, N extends string, B>(self: A, name: Exclude<N, keyof A>, b: B): {
     [K in N | keyof A]: K extends keyof A ? A[K] : B
   }
 }

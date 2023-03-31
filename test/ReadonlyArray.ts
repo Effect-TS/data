@@ -37,7 +37,7 @@ describe.concurrent("ReadonlyArray", () => {
     expect(RA.Monad).exist
 
     expect(RA.SemiProduct).exist
-    expect(RA.andThenBind).exist
+    expect(RA.bindDiscard).exist
 
     expect(RA.Product).exist
 
@@ -1461,7 +1461,7 @@ describe.concurrent("ReadonlyArray", () => {
   it("do notation", () => {
     deepStrictEqual(
       pipe(
-        RA.Do,
+        RA.Do(),
         RA.bind("a", () => [1, 2, 3]),
         RA.map(({ a }) => a * 2)
       ),
@@ -1470,7 +1470,7 @@ describe.concurrent("ReadonlyArray", () => {
 
     deepStrictEqual(
       pipe(
-        RA.Do,
+        RA.Do(),
         RA.bind("a", () => [1, 2, 3]),
         RA.bind("b", () => ["a", "b"]),
         RA.map(({ a, b }) => [a, b] as const)
@@ -1487,7 +1487,7 @@ describe.concurrent("ReadonlyArray", () => {
 
     deepStrictEqual(
       pipe(
-        RA.Do,
+        RA.Do(),
         RA.bind("a", () => [1, 2, 3]),
         RA.bind("b", () => ["a", "b"]),
         RA.map(({ a, b }) => [a, b] as const),

@@ -672,7 +672,7 @@ const Of: of_.Of<OptionTypeLambda> = {
 /**
  * @since 1.0.0
  */
-export const unit: Option<void> = of_.unit(Of)
+export const unit: () => Option<void> = of_.unit(Of)
 
 /**
  * @since 1.0.0
@@ -1706,6 +1706,22 @@ export {
  * @category do notation
  * @since 1.0.0
  */
+export const letDiscard: {
+  <N extends string, A extends object, B>(
+    name: Exclude<N, keyof A>,
+    b: B
+  ): (self: Option<A>) => Option<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+  <A extends object, N extends string, B>(
+    self: Option<A>,
+    name: Exclude<N, keyof A>,
+    b: B
+  ): Option<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
+} = covariant.letDiscard(Covariant)
+
+/**
+ * @category do notation
+ * @since 1.0.0
+ */
 export const bind: {
   <N extends string, A extends object, B>(
     name: Exclude<N, keyof A>,
@@ -1722,7 +1738,7 @@ export const bind: {
  * @category do notation
  * @since 1.0.0
  */
-export const Do: Option<{}> = of_.Do(Of)
+export const Do: () => Option<{}> = of_.Do(Of)
 
 /**
  * A variant of `bind` that sequentially ignores the scope.
@@ -1730,7 +1746,7 @@ export const Do: Option<{}> = of_.Do(Of)
  * @category do notation
  * @since 1.0.0
  */
-export const andThenBind: {
+export const bindDiscard: {
   <N extends string, A extends object, B>(
     name: Exclude<N, keyof A>,
     that: Option<B>
@@ -1740,7 +1756,7 @@ export const andThenBind: {
     name: Exclude<N, keyof A>,
     that: Option<B>
   ): Option<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = semiProduct.andThenBind(SemiProduct)
+} = semiProduct.bindDiscard(SemiProduct)
 
 /**
  * The `gen` API is a helper function that provides a generator interface for the `Option` monad instance.
