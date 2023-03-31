@@ -1504,6 +1504,12 @@ export const tupled: <A>(self: ReadonlyArray<A>) => Array<[A]> = invariant
  * @category mapping
  * @since 1.0.0
  */
+export const tuple: <Args extends Array<any>>(...args: Args) => Args = (...args) => args
+
+/**
+ * @category mapping
+ * @since 1.0.0
+ */
 export const flap: {
   <A, B>(a: A, self: ReadonlyArray<(a: A) => B>): Array<B>
   <A, B>(self: ReadonlyArray<(a: A) => B>): (a: A) => Array<B>
