@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.8.0
+
+### Minor Changes
+
+- [#295](https://github.com/Effect-TS/data/pull/295) [`898e02a`](https://github.com/Effect-TS/data/commit/898e02adbea7de33b2ff5b71d924b439c35e9eac) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Align Do, unit, let, bind, letDiscard, bindDiscard
+
 ## 0.7.4
 
 ### Patch Changes
