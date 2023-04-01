@@ -38,7 +38,10 @@ export class Right<A> implements Either.Right<A> {
   }
   constructor(readonly i0: A) {
   }
-  traced<E, A>(this: Either.Either<E, A>, trace: Trace): Either.TracedEither<E, A> | Either.Either<E, A> {
+  traced(
+    this: this,
+    trace: Trace
+  ): this | Either.TracedEither<never, this["right"]> {
     if (trace) {
       return makeTraced(this, trace)
     }
@@ -47,14 +50,14 @@ export class Right<A> implements Either.Right<A> {
 }
 
 /** @internal */
-export class Left<A> implements Either.Left<A> {
+export class Left<E> implements Either.Left<E> {
   readonly _tag = "Left"
   public i1 = undefined
   public i2 = undefined
   public trace = undefined;
   [EffectTypeId] = effectVariance;
   [Equal.symbol](this: this, that: unknown) {
-    return isEither(that) && isLeft(that) && (that as unknown as Left<A>).i0 === this.i0
+    return isEither(that) && isLeft(that) && (that as unknown as Left<E>).i0 === this.i0
   }
   [Hash.symbol](this: this) {
     return Hash.hash(this.i0)
@@ -62,9 +65,12 @@ export class Left<A> implements Either.Left<A> {
   get left() {
     return this.i0
   }
-  constructor(readonly i0: A) {
+  constructor(readonly i0: E) {
   }
-  traced<E, A>(this: Either.Either<E, A>, trace: Trace): Either.TracedEither<E, A> | Either.Either<E, A> {
+  traced(
+    this: this,
+    trace: Trace
+  ): this | Either.TracedEither<this["left"], never> {
     if (trace) {
       return makeTraced(this, trace)
     }

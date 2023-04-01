@@ -1577,7 +1577,7 @@ Added in v1.0.0
 export interface Left<E> extends Data.Case {
   readonly _tag: 'Left'
   readonly left: E
-  traced<E, A>(this: Either<E, A>, trace: Trace): Either<E, A> | TracedEither<E, A>
+  traced(this: this, trace: Trace): this | TracedEither<this['left'], never>
 }
 ```
 
@@ -1591,7 +1591,7 @@ Added in v1.0.0
 export interface Right<A> extends Data.Case {
   readonly _tag: 'Right'
   readonly right: A
-  traced<E, A>(this: Either<E, A>, trace: Trace): Either<E, A> | TracedEither<E, A>
+  traced(this: this, trace: Trace): this | TracedEither<never, this['right']>
 }
 ```
 
