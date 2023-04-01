@@ -3,6 +3,7 @@
  */
 
 import type * as Data from "@effect/data/Data"
+import type { SourceLocation, Trace } from "@effect/data/Debug"
 import * as Equal from "@effect/data/Equal"
 import type { LazyArg } from "@effect/data/Function"
 import { constNull, constUndefined, dual, identity } from "@effect/data/Function"
@@ -48,6 +49,10 @@ export type Either<E, A> = Left<E> | Right<A>
 export interface Left<E> extends Data.Case {
   readonly _tag: "Left"
   readonly left: E
+  traced<E, A>(
+    this: Either<E, A>,
+    trace: Trace
+  ): Either<E, A> | TracedEither<E, A>
 }
 
 /**
@@ -57,6 +62,24 @@ export interface Left<E> extends Data.Case {
 export interface Right<A> extends Data.Case {
   readonly _tag: "Right"
   readonly right: A
+  traced<E, A>(
+    this: Either<E, A>,
+    trace: Trace
+  ): Either<E, A> | TracedEither<E, A>
+}
+
+/**
+ * @since 1.0.0
+ * @category models
+ */
+export interface TracedEither<E, A> {
+  readonly _tag: "Traced"
+  readonly i0: Either<E, A> | TracedEither<E, A>
+  readonly trace: SourceLocation
+  traced(
+    this: TracedEither<E, A>,
+    trace: Trace
+  ): TracedEither<E, A>
 }
 
 /**

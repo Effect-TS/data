@@ -115,6 +115,7 @@ Added in v1.0.0
   - [Either (type alias)](#either-type-alias)
   - [Left (interface)](#left-interface)
   - [Right (interface)](#right-interface)
+  - [TracedEither (interface)](#tracedeither-interface)
 - [pattern matching](#pattern-matching)
   - [match](#match)
 - [traversing](#traversing)
@@ -1576,6 +1577,7 @@ Added in v1.0.0
 export interface Left<E> extends Data.Case {
   readonly _tag: 'Left'
   readonly left: E
+  traced<E, A>(this: Either<E, A>, trace: Trace): Either<E, A> | TracedEither<E, A>
 }
 ```
 
@@ -1589,6 +1591,22 @@ Added in v1.0.0
 export interface Right<A> extends Data.Case {
   readonly _tag: 'Right'
   readonly right: A
+  traced<E, A>(this: Either<E, A>, trace: Trace): Either<E, A> | TracedEither<E, A>
+}
+```
+
+Added in v1.0.0
+
+## TracedEither (interface)
+
+**Signature**
+
+```ts
+export interface TracedEither<E, A> {
+  readonly _tag: 'Traced'
+  readonly i0: Either<E, A> | TracedEither<E, A>
+  readonly trace: SourceLocation
+  traced(this: TracedEither<E, A>, trace: Trace): TracedEither<E, A>
 }
 ```
 
