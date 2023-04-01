@@ -24,7 +24,7 @@ export class Some<A> implements Option.Some<A> {
   public i2 = undefined
   public trace = undefined;
   [EffectTypeId] = effectVariance;
-  [Equal.symbol](this: this, that: unknown) {
+  [Equal.symbol](this: this, that: unknown): boolean {
     return isOption(that) && isSome(that) && (that as Some<A>).i0 === this.i0
   }
   [Hash.symbol](this: this) {
@@ -35,7 +35,7 @@ export class Some<A> implements Option.Some<A> {
   }
   constructor(readonly i0: A) {
   }
-  traced(this: this, trace: Trace): Option.TracedOption<A> | this {
+  traced(this: this, trace: Trace): Option.TracedOption<this["value"]> | this {
     if (trace) {
       return makeTraced(this, trace)
     }
@@ -51,7 +51,7 @@ export class None implements Option.None {
   public i2 = undefined
   public trace = undefined;
   [EffectTypeId] = effectVariance;
-  [Equal.symbol](this: this, that: unknown) {
+  [Equal.symbol](this: this, that: unknown): boolean {
     return isOption(that) && isNone(that)
   }
   [Hash.symbol](this: this) {

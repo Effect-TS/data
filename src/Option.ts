@@ -53,9 +53,9 @@ export type Option<A> = None | Some<A>
 export interface None extends Data.Case {
   readonly _tag: "None"
   traced(
-    this: Option<never>,
+    this: this,
     trace: Trace
-  ): Option<never> | TracedOption<never>
+  ): this | TracedOption<never>
 }
 
 /**
@@ -66,9 +66,9 @@ export interface Some<A> extends Data.Case {
   readonly _tag: "Some"
   readonly value: A
   traced(
-    this: Option<A>,
+    this: this,
     trace: Trace
-  ): Option<A> | TracedOption<A>
+  ): this | TracedOption<this["value"]>
 }
 
 /**

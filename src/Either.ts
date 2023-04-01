@@ -49,10 +49,10 @@ export type Either<E, A> = Left<E> | Right<A>
 export interface Left<E> extends Data.Case {
   readonly _tag: "Left"
   readonly left: E
-  traced<E, A>(
-    this: Either<E, A>,
+  traced(
+    this: this,
     trace: Trace
-  ): Either<E, A> | TracedEither<E, A>
+  ): this | TracedEither<this["left"], never>
 }
 
 /**
@@ -62,10 +62,10 @@ export interface Left<E> extends Data.Case {
 export interface Right<A> extends Data.Case {
   readonly _tag: "Right"
   readonly right: A
-  traced<E, A>(
-    this: Either<E, A>,
+  traced(
+    this: this,
     trace: Trace
-  ): Either<E, A> | TracedEither<E, A>
+  ): this | TracedEither<never, this["right"]>
 }
 
 /**

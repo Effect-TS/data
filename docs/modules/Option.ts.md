@@ -1452,7 +1452,7 @@ Added in v1.0.0
 ```ts
 export interface None extends Data.Case {
   readonly _tag: 'None'
-  traced(this: Option<never>, trace: Trace): Option<never> | TracedOption<never>
+  traced(this: this, trace: Trace): this | TracedOption<never>
 }
 ```
 
@@ -1476,7 +1476,7 @@ Added in v1.0.0
 export interface Some<A> extends Data.Case {
   readonly _tag: 'Some'
   readonly value: A
-  traced(this: Option<A>, trace: Trace): Option<A> | TracedOption<A>
+  traced(this: this, trace: Trace): this | TracedOption<this['value']>
 }
 ```
 
