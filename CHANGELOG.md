@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.10.0
+
+### Minor Changes
+
+- [#302](https://github.com/Effect-TS/data/pull/302) [`5c5e1ba`](https://github.com/Effect-TS/data/commit/5c5e1bafa51429aaaa1dc9e4be64360691f5a4dd) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Prepare Option and Either for Effect integration
+
 ## 0.9.1
 
 ### Patch Changes
