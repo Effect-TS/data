@@ -89,6 +89,7 @@ Added in v1.0.0
   - [None (interface)](#none-interface)
   - [Option (type alias)](#option-type-alias)
   - [Some (interface)](#some-interface)
+  - [TracedOption (interface)](#tracedoption-interface)
 - [pattern matching](#pattern-matching)
   - [match](#match)
 - [sorting](#sorting)
@@ -1451,6 +1452,7 @@ Added in v1.0.0
 ```ts
 export interface None extends Data.Case {
   readonly _tag: 'None'
+  traced(this: Option<never>, trace: Trace): Option<never> | TracedOption<never>
 }
 ```
 
@@ -1474,6 +1476,22 @@ Added in v1.0.0
 export interface Some<A> extends Data.Case {
   readonly _tag: 'Some'
   readonly value: A
+  traced(this: Option<A>, trace: Trace): Option<A> | TracedOption<A>
+}
+```
+
+Added in v1.0.0
+
+## TracedOption (interface)
+
+**Signature**
+
+```ts
+export interface TracedOption<A> {
+  readonly _tag: 'Traced'
+  readonly i0: Option<A> | TracedOption<A>
+  readonly trace: SourceLocation
+  traced(this: TracedOption<A>, trace: Trace): TracedOption<A>
 }
 ```
 

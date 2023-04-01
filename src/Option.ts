@@ -2,6 +2,7 @@
  * @since 1.0.0
  */
 import type * as Data from "@effect/data/Data"
+import type { SourceLocation, Trace } from "@effect/data/Debug"
 import type { Either } from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
 import type { LazyArg } from "@effect/data/Function"
@@ -51,6 +52,10 @@ export type Option<A> = None | Some<A>
  */
 export interface None extends Data.Case {
   readonly _tag: "None"
+  traced(
+    this: Option<never>,
+    trace: Trace
+  ): Option<never> | TracedOption<never>
 }
 
 /**
@@ -60,6 +65,24 @@ export interface None extends Data.Case {
 export interface Some<A> extends Data.Case {
   readonly _tag: "Some"
   readonly value: A
+  traced(
+    this: Option<A>,
+    trace: Trace
+  ): Option<A> | TracedOption<A>
+}
+
+/**
+ * @since 1.0.0
+ * @category models
+ */
+export interface TracedOption<A> {
+  readonly _tag: "Traced"
+  readonly i0: Option<A> | TracedOption<A>
+  readonly trace: SourceLocation
+  traced(
+    this: TracedOption<A>,
+    trace: Trace
+  ): TracedOption<A>
 }
 
 /**
