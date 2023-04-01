@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.10.1
+
+### Patch Changes
+
+- [#304](https://github.com/Effect-TS/data/pull/304) [`049e9b8`](https://github.com/Effect-TS/data/commit/049e9b8137b09e09c66bea5759db6309b06936cd) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Fix Option/Either traced type
+
 ## 0.10.0
 
 ### Minor Changes
