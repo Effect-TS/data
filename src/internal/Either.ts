@@ -28,7 +28,7 @@ export class Right<A> implements Either.Right<A> {
   public trace = undefined;
   [EffectTypeId] = effectVariance;
   [Equal.symbol](this: this, that: unknown) {
-    return isEither(that) && isRight(that) && (that as unknown as Right<A>).i0 === this.i0
+    return isEither(that) && isRight(that) && Equal.equals((that as unknown as Right<A>).i0, this.i0)
   }
   [Hash.symbol](this: this) {
     return Hash.hash(this.i0)
@@ -57,7 +57,7 @@ export class Left<E> implements Either.Left<E> {
   public trace = undefined;
   [EffectTypeId] = effectVariance;
   [Equal.symbol](this: this, that: unknown) {
-    return isEither(that) && isLeft(that) && (that as unknown as Left<E>).i0 === this.i0
+    return isEither(that) && isLeft(that) && Equal.equals((that as unknown as Left<E>).i0, this.i0)
   }
   [Hash.symbol](this: this) {
     return Hash.hash(this.i0)

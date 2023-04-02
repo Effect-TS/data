@@ -25,7 +25,7 @@ export class Some<A> implements Option.Some<A> {
   public trace = undefined;
   [EffectTypeId] = effectVariance;
   [Equal.symbol](this: this, that: unknown): boolean {
-    return isOption(that) && isSome(that) && (that as Some<A>).i0 === this.i0
+    return isOption(that) && isSome(that) && Equal.equals((that as Some<A>).i0, this.i0)
   }
   [Hash.symbol](this: this) {
     return Hash.hash(this.i0)
