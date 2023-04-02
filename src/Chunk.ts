@@ -61,6 +61,7 @@ type Backing<A> =
   | IConcat<A>
   | ISingleton<A>
   | IEmpty
+  | ISlice<A>
 
 /** @internal */
 interface IArray<A> {
@@ -84,6 +85,14 @@ interface ISingleton<A> {
 /** @internal */
 interface IEmpty {
   readonly _tag: "IEmpty"
+}
+
+/** @internal */
+interface ISlice<A> {
+  readonly _tag: "ISlice"
+  readonly chunk: Chunk<A>
+  readonly offset: number
+  readonly length: number
 }
 
 /** @internal */
@@ -138,6 +147,13 @@ class ChunkImpl<A> implements Chunk<A> {
       case "ISingleton": {
         this.length = 1
         this.depth = 0
+        this.left = _empty
+        this.right = _empty
+        break
+      }
+      case "ISlice": {
+        this.length = backing.length
+        this.depth = backing.chunk.depth + 1
         this.left = _empty
         this.right = _empty
         break
@@ -200,6 +216,16 @@ const copyToArray = <A>(self: Chunk<A>, array: Array<any>, initial: number): voi
     }
     case "ISingleton": {
       array[initial] = self.backing.a
+      break
+    }
+    case "ISlice": {
+      let i = 0
+      let j = initial
+      while (i < self.length) {
+        array[j] = unsafeGet(i)(self)
+        i += 1
+        j += 1
+      }
       break
     }
   }
@@ -323,6 +349,9 @@ export const unsafeGet: {
         ? unsafeGet(self.left, index)
         : unsafeGet(self.right, index - self.left.length)
     }
+    case "ISlice": {
+      return unsafeGet(self.backing.chunk, index + self.backing.offset)
+    }
   }
 })
 
@@ -372,7 +401,35 @@ export const take: {
   } else if (n >= self.length) {
     return self
   } else {
-    return unsafeFromArray(RA.take(n)(toReadonlyArray(self)))
+    switch (self.backing._tag) {
+      case "ISlice": {
+        return new ChunkImpl({
+          _tag: "ISlice",
+          chunk: self.backing.chunk,
+          length: n,
+          offset: self.backing.offset
+        })
+      }
+      case "IConcat": {
+        if (n > self.left.length) {
+          return new ChunkImpl({
+            _tag: "IConcat",
+            left: self.left,
+            right: take(self.right, n - self.left.length)
+          })
+        }
+
+        return take(self.left, n)
+      }
+      default: {
+        return new ChunkImpl({
+          _tag: "ISlice",
+          chunk: self,
+          offset: 0,
+          length: n
+        })
+      }
+    }
   }
 })
 
@@ -394,7 +451,34 @@ export const drop: {
   } else if (n >= self.length) {
     return _empty
   } else {
-    return unsafeFromArray(RA.drop(n)(toReadonlyArray(self)))
+    switch (self.backing._tag) {
+      case "ISlice": {
+        return new ChunkImpl({
+          _tag: "ISlice",
+          chunk: self.backing.chunk,
+          offset: self.backing.offset + n,
+          length: self.backing.length - n
+        })
+      }
+      case "IConcat": {
+        if (n > self.left.length) {
+          return drop(n - self.left.length)(self.right)
+        }
+        return new ChunkImpl({
+          _tag: "IConcat",
+          left: drop(n)(self.left),
+          right: self.right
+        })
+      }
+      default: {
+        return new ChunkImpl({
+          _tag: "ISlice",
+          chunk: self,
+          offset: n,
+          length: self.length - n
+        })
+      }
+    }
   }
 })
 
