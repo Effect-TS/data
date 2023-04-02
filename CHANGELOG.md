@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.10.2
+
+### Patch Changes
+
+- [#306](https://github.com/Effect-TS/data/pull/306) [`b715b7e`](https://github.com/Effect-TS/data/commit/b715b7eb0e62408fc21f391bed9ef4839274c679) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Fix Equal for Either and Option
+
 ## 0.10.1
 
 ### Patch Changes
