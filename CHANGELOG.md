@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.10.3
+
+### Patch Changes
+
+- [#309](https://github.com/Effect-TS/data/pull/309) [`31281f9`](https://github.com/Effect-TS/data/commit/31281f997aebd2cd165c60a25eca03789e674fd2) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Implement toJSON in Either and Option
+
 ## 0.10.2
 
 ### Patch Changes
