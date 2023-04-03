@@ -30,6 +30,12 @@ export class Some<A> implements Option.Some<A> {
   [Hash.symbol](this: this) {
     return Hash.hash(this.i0)
   }
+  toJSON() {
+    return {
+      _tag: this._tag,
+      value: this.i0
+    }
+  }
   get value() {
     return this.i0
   }
@@ -56,6 +62,11 @@ export class None implements Option.None {
   }
   [Hash.symbol](this: this) {
     return Hash.hash(this._tag)
+  }
+  toJSON() {
+    return {
+      _tag: this._tag
+    }
   }
   traced(this: this, trace: Trace): Option.TracedOption<never> | this {
     if (trace) {

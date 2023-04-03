@@ -38,6 +38,12 @@ export class Right<A> implements Either.Right<A> {
   }
   constructor(readonly i0: A) {
   }
+  toJSON() {
+    return {
+      _tag: this._tag,
+      right: this.i0
+    }
+  }
   traced(
     this: this,
     trace: Trace
@@ -66,6 +72,12 @@ export class Left<E> implements Either.Left<E> {
     return this.i0
   }
   constructor(readonly i0: E) {
+  }
+  toJSON() {
+    return {
+      _tag: this._tag,
+      left: this.i0
+    }
   }
   traced(
     this: this,
