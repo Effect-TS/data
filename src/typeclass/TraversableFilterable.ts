@@ -124,4 +124,4 @@ export const traversePartition = <T extends TypeLambda>(
   } =>
     dual(2, (self, predicate) =>
       T.traversePartitionMap(F)(self, (b) =>
-        F.map(predicate(b), (keep) => (keep ? E.right(b) : E.left(b)))))
+        F.map(predicate(b), (keep): E.Either<typeof b, typeof b> => (keep ? E.right(b) : E.left(b)))))

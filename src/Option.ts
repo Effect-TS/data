@@ -44,14 +44,29 @@ import * as traversable from "@effect/data/typeclass/Traversable"
  * @category models
  * @since 1.0.0
  */
-export type Option<A> = None | Some<A>
+export type Option<A> = None<A> | Some<A>
+
+/**
+ * @category symbols
+ * @since 1.0.0
+ */
+export const OptionTypeId = Symbol.for("@effect/data/Option")
+
+/**
+ * @category symbols
+ * @since 1.0.0
+ */
+export type OptionTypeId = typeof OptionTypeId
 
 /**
  * @category models
  * @since 1.0.0
  */
-export interface None extends Data.Case {
+export interface None<A> extends Data.Case {
   readonly _tag: "None"
+  readonly [OptionTypeId]: {
+    readonly _A: (_: never) => A
+  }
   traced(
     this: this,
     trace: Trace
@@ -65,6 +80,9 @@ export interface None extends Data.Case {
 export interface Some<A> extends Data.Case {
   readonly _tag: "Some"
   readonly value: A
+  readonly [OptionTypeId]: {
+    readonly _A: (_: never) => A
+  }
   traced(
     this: this,
     trace: Trace
@@ -144,7 +162,7 @@ export const isOption = (input: unknown): input is Option<unknown> =>
  * @category guards
  * @since 1.0.0
  */
-export const isNone: <A>(self: Option<A>) => self is None = option.isNone
+export const isNone: <A>(self: Option<A>) => self is None<A> = option.isNone
 
 /**
  * Determine if a `Option` is a `Some`.

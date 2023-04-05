@@ -19,16 +19,17 @@ const effectVariance = {
 }
 
 const EffectTypeId = Symbol.for("@effect/io/Effect")
+const EitherTypeId: Either.EitherTypeId = Symbol.for("@effect/data/Either") as Either.EitherTypeId
 
 /** @internal */
-export class Right<A> implements Either.Right<A> {
+export class Right<E, A> implements Either.Right<E, A> {
   readonly _tag = "Right"
   public i1 = undefined
   public i2 = undefined
   public trace = undefined;
   [EffectTypeId] = effectVariance;
   [Equal.symbol](this: this, that: unknown) {
-    return isEither(that) && isRight(that) && Equal.equals((that as unknown as Right<A>).i0, this.i0)
+    return isEither(that) && isRight(that) && Equal.equals((that as unknown as Right<E, A>).i0, this.i0)
   }
   [Hash.symbol](this: this) {
     return Hash.hash(this.i0)
@@ -37,6 +38,12 @@ export class Right<A> implements Either.Right<A> {
     return this.i0
   }
   constructor(readonly i0: A) {
+  }
+  get [EitherTypeId]() {
+    return {
+      _E: (_: never) => _,
+      _A: (_: never) => _
+    }
   }
   toJSON() {
     return {
@@ -56,17 +63,23 @@ export class Right<A> implements Either.Right<A> {
 }
 
 /** @internal */
-export class Left<E> implements Either.Left<E> {
+export class Left<E, A> implements Either.Left<E, A> {
   readonly _tag = "Left"
   public i1 = undefined
   public i2 = undefined
   public trace = undefined;
   [EffectTypeId] = effectVariance;
   [Equal.symbol](this: this, that: unknown) {
-    return isEither(that) && isLeft(that) && Equal.equals((that as unknown as Left<E>).i0, this.i0)
+    return isEither(that) && isLeft(that) && Equal.equals((that as unknown as Left<E, A>).i0, this.i0)
   }
   [Hash.symbol](this: this) {
     return Hash.hash(this.i0)
+  }
+  get [EitherTypeId]() {
+    return {
+      _E: (_: never) => _,
+      _A: (_: never) => _
+    }
   }
   get left() {
     return this.i0
@@ -96,10 +109,10 @@ export const isEither = (input: unknown): input is Either.Either<unknown, unknow
   (input["_tag"] === "Left" || input["_tag"] === "Right") && Equal.isEqual(input)
 
 /** @internal */
-export const isLeft = <E, A>(ma: Either.Either<E, A>): ma is Either.Left<E> => ma._tag === "Left"
+export const isLeft = <E, A>(ma: Either.Either<E, A>): ma is Either.Left<E, A> => ma._tag === "Left"
 
 /** @internal */
-export const isRight = <E, A>(ma: Either.Either<E, A>): ma is Either.Right<A> => ma._tag === "Right"
+export const isRight = <E, A>(ma: Either.Either<E, A>): ma is Either.Right<E, A> => ma._tag === "Right"
 
 /** @internal */
 export const left = <E>(e: E): Either.Either<E, never> => new Left(e)

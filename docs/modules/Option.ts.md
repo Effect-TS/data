@@ -94,6 +94,9 @@ Added in v1.0.0
   - [match](#match)
 - [sorting](#sorting)
   - [getOrder](#getorder)
+- [symbols](#symbols)
+  - [OptionTypeId](#optiontypeid)
+  - [OptionTypeId (type alias)](#optiontypeid-type-alias)
 - [transforming](#transforming)
   - [as](#as)
   - [asUnit](#asunit)
@@ -1219,7 +1222,7 @@ Determine if a `Option` is a `None`.
 **Signature**
 
 ```ts
-export declare const isNone: <A>(self: Option<A>) => self is None
+export declare const isNone: <A>(self: Option<A>) => self is None<A>
 ```
 
 **Example**
@@ -1450,8 +1453,11 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface None extends Data.Case {
+export interface None<A> extends Data.Case {
   readonly _tag: 'None'
+  readonly [OptionTypeId]: {
+    readonly _A: (_: never) => A
+  }
   traced(this: this, trace: Trace): this | TracedOption<never>
 }
 ```
@@ -1463,7 +1469,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type Option<A> = None | Some<A>
+export type Option<A> = None<A> | Some<A>
 ```
 
 Added in v1.0.0
@@ -1476,6 +1482,9 @@ Added in v1.0.0
 export interface Some<A> extends Data.Case {
   readonly _tag: 'Some'
   readonly value: A
+  readonly [OptionTypeId]: {
+    readonly _A: (_: never) => A
+  }
   traced(this: this, trace: Trace): this | TracedOption<this['value']>
 }
 ```
@@ -1573,6 +1582,28 @@ assert.deepStrictEqual(O.compare(none(), some(1)), -1)
 assert.deepStrictEqual(O.compare(some(1), none()), 1)
 assert.deepStrictEqual(O.compare(some(1), some(2)), -1)
 assert.deepStrictEqual(O.compare(some(1), some(1)), 0)
+```
+
+Added in v1.0.0
+
+# symbols
+
+## OptionTypeId
+
+**Signature**
+
+```ts
+export declare const OptionTypeId: typeof OptionTypeId
+```
+
+Added in v1.0.0
+
+## OptionTypeId (type alias)
+
+**Signature**
+
+```ts
+export type OptionTypeId = typeof OptionTypeId
 ```
 
 Added in v1.0.0

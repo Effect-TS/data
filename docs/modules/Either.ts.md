@@ -118,6 +118,9 @@ Added in v1.0.0
   - [TracedEither (interface)](#tracedeither-interface)
 - [pattern matching](#pattern-matching)
   - [match](#match)
+- [symbols](#symbols)
+  - [EitherTypeId](#eithertypeid)
+  - [EitherTypeId (type alias)](#eithertypeid-type-alias)
 - [traversing](#traversing)
   - [sequence](#sequence)
   - [traverse](#traverse)
@@ -1030,7 +1033,7 @@ Determine if a `Either` is a `Left`.
 **Signature**
 
 ```ts
-export declare const isLeft: <E, A>(self: Either<E, A>) => self is Left<E>
+export declare const isLeft: <E, A>(self: Either<E, A>) => self is Left<E, A>
 ```
 
 **Example**
@@ -1051,7 +1054,7 @@ Determine if a `Either` is a `Right`.
 **Signature**
 
 ```ts
-export declare const isRight: <E, A>(self: Either<E, A>) => self is Right<A>
+export declare const isRight: <E, A>(self: Either<E, A>) => self is Right<E, A>
 ```
 
 **Example**
@@ -1564,7 +1567,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type Either<E, A> = Left<E> | Right<A>
+export type Either<E, A> = Left<E, A> | Right<E, A>
 ```
 
 Added in v1.0.0
@@ -1574,11 +1577,12 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Left<E> extends Data.Case {
-  readonly _tag: 'Left'
-  readonly left: E
-  traced(this: this, trace: Trace): this | TracedEither<this['left'], never>
-}
+export interface Left<E, A> extends Data.Case {
+  readonly _tag: "Left"
+  readonly [EitherTypeId]: {
+    readonly _A: (_: never) => A
+    readonly _E: (_: never) => E
+  }
 ```
 
 Added in v1.0.0
@@ -1588,11 +1592,8 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Right<A> extends Data.Case {
-  readonly _tag: 'Right'
-  readonly right: A
-  traced(this: this, trace: Trace): this | TracedEither<never, this['right']>
-}
+export interface Right<E, A> extends Data.Case {
+  readonly _tag: "Right"
 ```
 
 Added in v1.0.0
@@ -1640,6 +1641,28 @@ const onRight = (value: number): string => `Ok: ${value}`
 
 assert.deepStrictEqual(pipe(E.right(1), E.match(onLeft, onRight)), 'Ok: 1')
 assert.deepStrictEqual(pipe(E.left(['error 1', 'error 2']), E.match(onLeft, onRight)), 'Errors: error 1, error 2')
+```
+
+Added in v1.0.0
+
+# symbols
+
+## EitherTypeId
+
+**Signature**
+
+```ts
+export declare const EitherTypeId: typeof EitherTypeId
+```
+
+Added in v1.0.0
+
+## EitherTypeId (type alias)
+
+**Signature**
+
+```ts
+export type EitherTypeId = typeof EitherTypeId
 ```
 
 Added in v1.0.0
