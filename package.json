@@ -78,7 +78,7 @@
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
     "@vitejs/plugin-react": "^3.0.1",
-    "@vitest/coverage-c8": "^0.29.7",
+    "@vitest/coverage-c8": "^0.29.8",
     "babel-plugin-annotate-pure-calls": "^0.4.0",
     "concurrently": "^7.6.0",
     "cpx": "^1.5.0",
@@ -104,7 +104,7 @@
     "typescript": "^5.0.0",
     "ultra-runner": "^3.10.5",
     "vite": "^4.2.1",
-    "vitest": "0.29.7"
+    "vitest": "0.29.8"
   },
   "pnpm": {
     "patchedDependencies": {
