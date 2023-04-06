@@ -4,9 +4,12 @@ import * as N from "@effect/data/Number"
 import * as O from "@effect/data/Option"
 import * as S from "@effect/data/String"
 import * as Util from "@effect/data/test/util"
+import { inspect } from "node:util"
 
 describe.concurrent("Either", () => {
   it("exports", () => {
+    expect(E.EitherTypeId).exist
+
     expect(E.toOption).exist
     expect(E.getRight).exist
     expect(E.getLeft).exist
@@ -72,6 +75,25 @@ describe.concurrent("Either", () => {
     expect(E.traverse).exist
     expect(E.sequence).exist
     expect(E.traverseTap).exist
+  })
+
+  it("toString", () => {
+    expect(String(E.right(1))).toEqual("right(1)")
+    expect(String(E.left("e"))).toEqual(`left(e)`)
+  })
+
+  it("toJSON", () => {
+    expect(JSON.stringify(E.right(1))).toEqual(
+      JSON.stringify({ _tag: "Right", right: 1 })
+    )
+    expect(JSON.stringify(E.left("e"))).toEqual(
+      JSON.stringify({ _tag: "Left", left: "e" })
+    )
+  })
+
+  it("inspect", () => {
+    expect(inspect(E.right(1))).toEqual(inspect({ _tag: "Right", right: 1 }))
+    expect(inspect(E.left("e"))).toEqual(inspect({ _tag: "Left", left: "e" }))
   })
 
   it("toRefinement", () => {

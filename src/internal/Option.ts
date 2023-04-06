@@ -31,11 +31,17 @@ export class Some<A> implements Option.Some<A> {
   [Hash.symbol](this: this) {
     return Hash.hash(this.i0)
   }
+  toString() {
+    return `some(${String(this.i0)})`
+  }
   toJSON() {
     return {
       _tag: this._tag,
       value: this.i0
     }
+  }
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return this.toJSON()
   }
   get [OptionTypeId]() {
     return {
@@ -69,10 +75,16 @@ export class None<A> implements Option.None<A> {
   [Hash.symbol](this: this) {
     return Hash.hash(this._tag)
   }
+  toString() {
+    return `none()`
+  }
   toJSON() {
     return {
       _tag: this._tag
     }
+  }
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return this.toJSON()
   }
   get [OptionTypeId]() {
     return {
