@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.11.1
+
+### Patch Changes
+
+- [#315](https://github.com/Effect-TS/data/pull/315) [`d84a624`](https://github.com/Effect-TS/data/commit/d84a6246bc1ff29d00f96d449ed40f171830bcca) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Fix traced signature
+
 ## 0.11.0
 
 ### Minor Changes
