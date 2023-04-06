@@ -67,10 +67,7 @@ export interface None<A> extends Data.Case {
   readonly [OptionTypeId]: {
     readonly _A: (_: never) => A
   }
-  traced(
-    this: this,
-    trace: Trace
-  ): this | TracedOption<never>
+  traced(trace: Trace): Option<A> | TracedOption<A>
 }
 
 /**
@@ -83,10 +80,7 @@ export interface Some<A> extends Data.Case {
   readonly [OptionTypeId]: {
     readonly _A: (_: never) => A
   }
-  traced(
-    this: this,
-    trace: Trace
-  ): this | TracedOption<this["value"]>
+  traced(trace: Trace): Option<A> | TracedOption<A>
 }
 
 /**
@@ -97,10 +91,7 @@ export interface TracedOption<A> {
   readonly _tag: "Traced"
   readonly i0: Option<A> | TracedOption<A>
   readonly trace: SourceLocation
-  traced(
-    this: TracedOption<A>,
-    trace: Trace
-  ): TracedOption<A>
+  traced(trace: Trace): TracedOption<A>
 }
 
 /**

@@ -1607,7 +1607,7 @@ export interface TracedEither<E, A> {
   readonly _tag: 'Traced'
   readonly i0: Either<E, A> | TracedEither<E, A>
   readonly trace: SourceLocation
-  traced(this: TracedEither<E, A>, trace: Trace): TracedEither<E, A>
+  traced(trace: Trace): TracedEither<E, A>
 }
 ```
 
