@@ -1,5 +1,6 @@
 import { pipe } from '@effect/data/Function'
 import * as _ from '@effect/data/Option'
+import * as U from '@effect/data/Unify'
 
 declare const n: number
 declare const sn: string | number
@@ -90,3 +91,6 @@ pipe(
     ) => true
   )
 )
+
+// $ExpectType _.Option<string | number>
+declare const unified: U.Unify<_.Option<number> | _.Option<string>>
