@@ -65,10 +65,7 @@ export interface Left<E, A> extends Data.Case {
     readonly _E: (_: never) => E
   }
   get left(): E
-  traced(
-    this: this,
-    trace: Trace
-  ): this | TracedEither<this["left"], never>
+  traced(trace: Trace): Either<E, A> | TracedEither<E, A>
 }
 
 /**
@@ -82,10 +79,7 @@ export interface Right<E, A> extends Data.Case {
     readonly _A: (_: never) => A
     readonly _E: (_: never) => E
   }
-  traced(
-    this: this,
-    trace: Trace
-  ): this | TracedEither<never, this["right"]>
+  traced(trace: Trace): Either<E, A> | TracedEither<E, A>
 }
 
 /**
@@ -96,10 +90,7 @@ export interface TracedEither<E, A> {
   readonly _tag: "Traced"
   readonly i0: Either<E, A> | TracedEither<E, A>
   readonly trace: SourceLocation
-  traced(
-    this: TracedEither<E, A>,
-    trace: Trace
-  ): TracedEither<E, A>
+  traced(trace: Trace): TracedEither<E, A>
 }
 
 /**
