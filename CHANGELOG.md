@@ -1,5 +1,17 @@
 # @effect/data
 
+## 0.11.0
+
+### Minor Changes
+
+- [#312](https://github.com/Effect-TS/data/pull/312) [`08bf01a`](https://github.com/Effect-TS/data/commit/08bf01a4625de7f5f8557b86dca5fe2edc312a5f) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Carry always all generics in union members
+
+- [#308](https://github.com/Effect-TS/data/pull/308) [`4eadecb`](https://github.com/Effect-TS/data/commit/4eadecb833018eb0c67759e0ae9303f32825a19d) Thanks [@TylorS](https://github.com/TylorS)! - Improve the performance of slicing a Chunk
+
+### Patch Changes
+
+- [#308](https://github.com/Effect-TS/data/pull/308) [`4eadecb`](https://github.com/Effect-TS/data/commit/4eadecb833018eb0c67759e0ae9303f32825a19d) Thanks [@TylorS](https://github.com/TylorS)! - Avoid creating intermediate functions
+
 ## 0.10.3
 
 ### Patch Changes
