@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.11.4
+
+### Patch Changes
+
+- [#322](https://github.com/Effect-TS/data/pull/322) [`1f58123`](https://github.com/Effect-TS/data/commit/1f58123a7193bf2412a93206d4779a3c14111b1f) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Add unify function
+
 ## 0.11.3
 
 ### Patch Changes
