@@ -903,7 +903,7 @@ describe.concurrent("ReadonlyArray", () => {
     )
     deepStrictEqual(
       pipe(
-        [E.right(1), E.left("foo"), E.right(2)],
+        [E.right(1), E.left("foo"), E.right(2)] as Array<E.Either<string, number>>,
         RA.partitionMap((a, i) => pipe(a, E.filter((n) => n > i, () => "err")))
       ),
       [["foo", "err"], [1]]

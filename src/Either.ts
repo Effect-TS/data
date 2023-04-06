@@ -40,15 +40,31 @@ import * as traversable from "@effect/data/typeclass/Traversable"
  * @category models
  * @since 1.0.0
  */
-export type Either<E, A> = Left<E> | Right<A>
+export type Either<E, A> = Left<E, A> | Right<E, A>
+
+/**
+ * @category symbols
+ * @since 1.0.0
+ */
+export const EitherTypeId = Symbol.for("@effect/data/Either")
+
+/**
+ * @category symbols
+ * @since 1.0.0
+ */
+export type EitherTypeId = typeof EitherTypeId
 
 /**
  * @category models
  * @since 1.0.0
  */
-export interface Left<E> extends Data.Case {
+export interface Left<E, A> extends Data.Case {
   readonly _tag: "Left"
-  readonly left: E
+  readonly [EitherTypeId]: {
+    readonly _A: (_: never) => A
+    readonly _E: (_: never) => E
+  }
+  get left(): E
   traced(
     this: this,
     trace: Trace
@@ -59,9 +75,13 @@ export interface Left<E> extends Data.Case {
  * @category models
  * @since 1.0.0
  */
-export interface Right<A> extends Data.Case {
+export interface Right<E, A> extends Data.Case {
   readonly _tag: "Right"
-  readonly right: A
+  get right(): A
+  readonly [EitherTypeId]: {
+    readonly _A: (_: never) => A
+    readonly _E: (_: never) => E
+  }
   traced(
     this: this,
     trace: Trace
@@ -141,7 +161,7 @@ export const isEither = (input: unknown): input is Either<unknown, unknown> =>
  * @category guards
  * @since 1.0.0
  */
-export const isLeft: <E, A>(self: Either<E, A>) => self is Left<E> = either.isLeft
+export const isLeft: <E, A>(self: Either<E, A>) => self is Left<E, A> = either.isLeft
 
 /**
  * Determine if a `Either` is a `Right`.
@@ -157,7 +177,7 @@ export const isLeft: <E, A>(self: Either<E, A>) => self is Left<E> = either.isLe
  * @category guards
  * @since 1.0.0
  */
-export const isRight: <E, A>(self: Either<E, A>) => self is Right<A> = either.isRight
+export const isRight: <E, A>(self: Either<E, A>) => self is Right<E, A> = either.isRight
 
 /**
  * Returns a `Refinement` from a `Either` returning function.
@@ -312,7 +332,7 @@ export const map: {
   <E, A, B>(self: Either<E, A>, f: (a: A) => B): Either<E, B>
 } = dual(
   2,
-  <E, A, B>(self: Either<E, A>, f: (a: A) => B): Either<E, B> => isRight(self) ? right(f(self.right)) : self
+  <E, A, B>(self: Either<E, A>, f: (a: A) => B): Either<E, B> => isRight(self) ? right(f(self.right)) : left(self.left)
 )
 
 const imap = covariant.imap<EitherTypeLambda>(map)
@@ -403,7 +423,7 @@ export const flatMap: {
 } = dual(
   2,
   <E1, A, E2, B>(self: Either<E1, A>, f: (a: A) => Either<E2, B>): Either<E1 | E2, B> =>
-    isLeft(self) ? self : f(self.right)
+    isLeft(self) ? left(self.left) : f(self.right)
 )
 
 /**
@@ -475,19 +495,19 @@ export const Monad: monad.Monad<EitherTypeLambda> = {
 }
 
 const product = <E1, A, E2, B>(self: Either<E1, A>, that: Either<E2, B>): Either<E1 | E2, [A, B]> =>
-  isRight(self) ? (isRight(that) ? right([self.right, that.right]) : that) : self
+  isRight(self) ? (isRight(that) ? right([self.right, that.right]) : left(that.left)) : left(self.left)
 
 const productMany = <E, A>(
   self: Either<E, A>,
   collection: Iterable<Either<E, A>>
 ): Either<E, [A, ...Array<A>]> => {
   if (isLeft(self)) {
-    return self
+    return left(self.left)
   }
   const out: [A, ...Array<A>] = [self.right]
   for (const e of collection) {
     if (isLeft(e)) {
-      return e
+      return left(e.left)
     }
     out.push(e.right)
   }
@@ -531,7 +551,7 @@ export const all = <E, A>(
   const out: Array<A> = []
   for (const e of collection) {
     if (isLeft(e)) {
-      return e
+      return left(e.left)
     }
     out.push(e.right)
   }
@@ -777,7 +797,7 @@ export const orElse: {
 } = dual(
   2,
   <E1, A, E2, B>(self: Either<E1, A>, that: (e1: E1) => Either<E2, B>): Either<E2, A | B> =>
-    isLeft(self) ? that(self.left) : self
+    isLeft(self) ? that(self.left) : right(self.right)
 )
 
 /**
@@ -792,10 +812,12 @@ export const orElseEither: {
   <E1, A, E2, B>(self: Either<E1, A>, that: (e1: E1) => Either<E2, B>): Either<E2, Either<A, B>>
 } = dual(
   2,
-  <E1, A, E2, B>(self: Either<E1, A>, that: (e1: E1) => Either<E2, B>): Either<E2, Either<A, B>> =>
-    isLeft(self) ?
-      map(that(self.left), right) :
-      map(self, left)
+  <E1, A, E2, B>(self: Either<E1, A>, that: (e1: E1) => Either<E2, B>): Either<E2, Either<A, B>> => {
+    if (isLeft(self)) {
+      return map(that(self.left), right)
+    }
+    return map(right(self.right), left)
+  }
 )
 
 /**
@@ -1136,7 +1158,7 @@ export const traverse = <F extends TypeLambda>(
     f: (a: A) => Kind<F, R, O, E, B>
   ): Kind<F, R, O, E, Either<TE, B>> =>
     isLeft(self) ?
-      F.of<Either<TE, B>>(self) :
+      F.of<Either<TE, B>>(left(self.left)) :
       F.map<R, O, E, B, Either<TE, B>>(f(self.right), right))
 
 /**
@@ -1228,7 +1250,7 @@ export const tapError: {
       return self
     }
     const out = onLeft(self.left)
-    return isLeft(out) ? out : self
+    return isLeft(out) ? left(out.left) : self
   }
 )
 

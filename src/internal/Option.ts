@@ -16,6 +16,7 @@ const effectVariance = {
 }
 
 const EffectTypeId = Symbol.for("@effect/io/Effect")
+const OptionTypeId: Option.OptionTypeId = Symbol.for("@effect/io/Option") as Option.OptionTypeId
 
 /** @internal */
 export class Some<A> implements Option.Some<A> {
@@ -36,6 +37,11 @@ export class Some<A> implements Option.Some<A> {
       value: this.i0
     }
   }
+  get [OptionTypeId]() {
+    return {
+      _A: (_: never) => _
+    }
+  }
   get value() {
     return this.i0
   }
@@ -50,7 +56,7 @@ export class Some<A> implements Option.Some<A> {
 }
 
 /** @internal */
-export class None implements Option.None {
+export class None<A> implements Option.None<A> {
   readonly _tag = "None"
   public i0 = undefined
   public i1 = undefined
@@ -68,6 +74,11 @@ export class None implements Option.None {
       _tag: this._tag
     }
   }
+  get [OptionTypeId]() {
+    return {
+      _A: (_: never) => _
+    }
+  }
   traced(this: this, trace: Trace): Option.TracedOption<never> | this {
     if (trace) {
       return makeTraced(this, trace)
@@ -82,7 +93,7 @@ export const isOption = (input: unknown): input is Option.Option<unknown> =>
   (input["_tag"] === "None" || input["_tag"] === "Some") && Equal.isEqual(input)
 
 /** @internal */
-export const isNone = <A>(fa: Option.Option<A>): fa is Option.None => fa._tag === "None"
+export const isNone = <A>(fa: Option.Option<A>): fa is Option.None<A> => fa._tag === "None"
 
 /** @internal */
 export const isSome = <A>(fa: Option.Option<A>): fa is Option.Some<A> => fa._tag === "Some"
