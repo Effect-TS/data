@@ -3,6 +3,7 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import type * as Context from "@effect/data/Context"
 import type * as Either from "@effect/data/Either"
 import { identity } from "@effect/data/Function"
 import type * as Option from "@effect/data/Option"
@@ -53,6 +54,14 @@ declare module "@effect/data/Either" {
   interface Right<E, A> {
     [typeSymbol]?: unknown
     [unifySymbol]?: () => this[typeSymbol] extends Either.Either<infer E0, infer A0> | infer Z ? Either.Either<E0, A0>
+      : never
+  }
+}
+
+declare module "@effect/data/Context" {
+  interface Tag<Identifier, Service> {
+    [typeSymbol]?: unknown
+    [unifySymbol]?: () => this[typeSymbol] extends Context.Tag<infer I0, infer S0> | infer Z ? Context.Tag<I0, S0>
       : never
   }
 }
