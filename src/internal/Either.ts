@@ -45,11 +45,17 @@ export class Right<E, A> implements Either.Right<E, A> {
       _A: (_: never) => _
     }
   }
+  toString() {
+    return `right(${String(this.i0)})`
+  }
   toJSON() {
     return {
       _tag: this._tag,
       right: this.i0
     }
+  }
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return this.toJSON()
   }
   traced(
     this: this,
@@ -86,11 +92,17 @@ export class Left<E, A> implements Either.Left<E, A> {
   }
   constructor(readonly i0: E) {
   }
+  toString() {
+    return `left(${String(this.i0)})`
+  }
   toJSON() {
     return {
       _tag: this._tag,
       left: this.i0
     }
+  }
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return this.toJSON()
   }
   traced(
     this: this,

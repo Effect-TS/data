@@ -6,11 +6,14 @@ import * as ReadonlyArray from "@effect/data/ReadonlyArray"
 import * as S from "@effect/data/String"
 import * as Util from "@effect/data/test/util"
 import * as Equivalence from "@effect/data/typeclass/Equivalence"
+import { inspect } from "node:util"
 
 const p = (n: number): boolean => n > 2
 
 describe.concurrent("Option", () => {
   it("exports", () => {
+    expect(_.OptionTypeId).exist
+
     expect(_.toEither).exist
     expect(_.getRight).exist
     expect(_.getLeft).exist
@@ -81,6 +84,25 @@ describe.concurrent("Option", () => {
     expect(_.Filterable).exist
     expect(_.filterMap).exist
     expect(_.filter).exist
+  })
+
+  it("toString", () => {
+    expect(String(_.none())).toEqual("none()")
+    expect(String(_.some(1))).toEqual("some(1)")
+  })
+
+  it("toJSON", () => {
+    expect(JSON.stringify(_.none())).toEqual(
+      JSON.stringify({ _tag: "None" })
+    )
+    expect(JSON.stringify(_.some(1))).toEqual(
+      JSON.stringify({ _tag: "Some", value: 1 })
+    )
+  })
+
+  it("inspect", () => {
+    expect(inspect(_.none())).toEqual(inspect({ _tag: "None" }))
+    expect(inspect(_.some(1))).toEqual(inspect({ _tag: "Some", value: 1 }))
   })
 
   it("toRefinement", () => {
