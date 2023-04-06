@@ -1,5 +1,13 @@
 # @effect/data
 
+## 0.11.2
+
+### Patch Changes
+
+- [#317](https://github.com/Effect-TS/data/pull/317) [`518e03b`](https://github.com/Effect-TS/data/commit/518e03b5e90459a012b22003de4641aa6f736521) Thanks [@gcanti](https://github.com/gcanti)! - add toString / inspect to Option / Either
+
+- [#318](https://github.com/Effect-TS/data/pull/318) [`7e6f48b`](https://github.com/Effect-TS/data/commit/7e6f48bcf0c4cf37c75036a865727fda2521fb9f) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Add Unify
+
 ## 0.11.1
 
 ### Patch Changes
