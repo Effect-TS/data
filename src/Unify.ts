@@ -4,6 +4,7 @@
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type * as Either from "@effect/data/Either"
+import { identity } from "@effect/data/Function"
 import type * as Option from "@effect/data/Option"
 
 /**
@@ -68,3 +69,48 @@ declare module "@effect/data/Option" {
       : never
   }
 }
+
+/**
+ * @since 1.0.0
+ */
+export const unify: {
+  <
+    Args extends Array<any>,
+    Args2 extends Array<any>,
+    Args3 extends Array<any>,
+    Args4 extends Array<any>,
+    Args5 extends Array<any>,
+    T
+  >(
+    x: (...args: Args) => (...args: Args2) => (...args: Args3) => (...args: Args4) => (...args: Args5) => T
+  ): (...args: Args) => (...args: Args2) => (...args: Args3) => (...args: Args4) => (...args: Args5) => Unify<T>
+  <
+    Args extends Array<any>,
+    Args2 extends Array<any>,
+    Args3 extends Array<any>,
+    Args4 extends Array<any>,
+    T
+  >(
+    x: (...args: Args) => (...args: Args2) => (...args: Args3) => (...args: Args4) => T
+  ): (...args: Args) => (...args: Args2) => (...args: Args3) => (...args: Args4) => Unify<T>
+  <
+    Args extends Array<any>,
+    Args2 extends Array<any>,
+    Args3 extends Array<any>,
+    T
+  >(
+    x: (...args: Args) => (...args: Args2) => (...args: Args3) => T
+  ): (...args: Args) => (...args: Args2) => (...args: Args3) => Unify<T>
+  <
+    Args extends Array<any>,
+    Args2 extends Array<any>,
+    T
+  >(
+    x: (...args: Args) => (...args: Args2) => T
+  ): (...args: Args) => (...args: Args2) => Unify<T>
+  <
+    Args extends Array<any>,
+    T
+  >(x: (...args: Args) => T): (...args: Args) => Unify<T>
+  <T>(x: T): Unify<T>
+} = identity as any
