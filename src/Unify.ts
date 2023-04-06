@@ -30,39 +30,41 @@ export type typeSymbol = typeof typeSymbol
  * @since 1.0.0
  */
 export type Unify<A> = ReturnType<
-  [A] extends [{
-    [typeSymbol]?: any
-    [unifySymbol]?: () => any
-  }] ? NonNullable<
-    (A & {
-      [typeSymbol]: A
-    })[unifySymbol]
+  NonNullable<
+    (
+      & Extract<A, {
+        [typeSymbol]?: any
+        [unifySymbol]?: () => any
+      }>
+      & {
+        [typeSymbol]: A
+      }
+    )[unifySymbol]
   >
-    : () => A
->
+> extends infer Z ? Z | Exclude<A, Z> : never
 
 declare module "@effect/data/Either" {
   interface Left<E, A> {
     [typeSymbol]?: unknown
-    [unifySymbol]?: () => this[typeSymbol] extends Either.Either<infer E0, infer A0> ? Either.Either<E0, A0>
-      : this[typeSymbol]
+    [unifySymbol]?: () => this[typeSymbol] extends Either.Either<infer E0, infer A0> | infer Z ? Either.Either<E0, A0>
+      : never
   }
   interface Right<E, A> {
     [typeSymbol]?: unknown
-    [unifySymbol]?: () => this[typeSymbol] extends Either.Either<infer E0, infer A0> ? Either.Either<E0, A0>
-      : this[typeSymbol]
+    [unifySymbol]?: () => this[typeSymbol] extends Either.Either<infer E0, infer A0> | infer Z ? Either.Either<E0, A0>
+      : never
   }
 }
 
 declare module "@effect/data/Option" {
   interface Some<A> {
     [typeSymbol]?: unknown
-    [unifySymbol]?: () => this[typeSymbol] extends Option.Option<infer A0> ? Option.Option<A0>
-      : this[typeSymbol]
+    [unifySymbol]?: () => this[typeSymbol] extends Option.Option<infer A0> | infer Z ? Option.Option<A0>
+      : never
   }
   interface None<A> {
     [typeSymbol]?: unknown
-    [unifySymbol]?: () => this[typeSymbol] extends Option.Option<infer A0> ? Option.Option<A0>
-      : this[typeSymbol]
+    [unifySymbol]?: () => this[typeSymbol] extends Option.Option<infer A0> | infer Z ? Option.Option<A0>
+      : never
   }
 }

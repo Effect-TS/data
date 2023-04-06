@@ -27,19 +27,20 @@ Added in v1.0.0
 
 ```ts
 export type Unify<A> = ReturnType<
-  [A] extends [
-    {
-      [typeSymbol]?: any
-      [unifySymbol]?: () => any
-    }
-  ]
-    ? NonNullable<
-        (A & {
-          [typeSymbol]: A
-        })[unifySymbol]
-      >
-    : () => A
->
+  NonNullable<
+    (Extract<
+      A,
+      {
+        [typeSymbol]?: any
+        [unifySymbol]?: () => any
+      }
+    > & {
+      [typeSymbol]: A
+    })[unifySymbol]
+  >
+> extends infer Z
+  ? Z | Exclude<A, Z>
+  : never
 ```
 
 Added in v1.0.0
