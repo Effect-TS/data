@@ -8,5 +8,5 @@ declare const option: U.Unify<Option<number> | Option<string>>
 // $ExpectType Either<"LA" | "LB", "RA" | "RB">
 declare const either: U.Unify<Either<"LA", "RA"> | Either<"LB", "RB">>
 
-// $ExpectType Option<number> | Option<string> | Either<"LA", "RA"> | Either<"LB", "RB">
-declare const both: U.Unify<Either<"LA", "RA"> | Either<"LB", "RB"> | Option<number> | Option<string>>
+// $ExpectType 0 | Option<string | number> | Either<"LA" | "LB", "RA" | "RB">
+declare const both: U.Unify<Either<"LA", "RA"> | Either<"LB", "RB"> | Option<number> | Option<string> | 0>
