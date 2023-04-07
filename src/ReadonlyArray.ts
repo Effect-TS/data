@@ -1497,8 +1497,8 @@ export const Invariant: invariant.Invariant<ReadonlyArrayTypeLambda> = {
  * @category mapping
  * @since 1.0.0
  */
-export const tupled: <A>(self: ReadonlyArray<A>) => Array<[A]> = invariant
-  .tupled(Invariant) as any
+export const asTuple: <A>(self: ReadonlyArray<A>) => Array<[A]> = invariant
+  .asTuple(Invariant) as any
 
 /**
  * @category mapping
@@ -2360,10 +2360,10 @@ export const getEquivalence: <A>(O: Equivalence<A>) => Equivalence<ReadonlyArray
  * @category do notation
  * @since 1.0.0
  */
-export const bindTo: {
+export const asProp: {
   <N extends string>(name: N): <A>(self: ReadonlyArray<A>) => Array<{ [K in N]: A }>
   <A, N extends string>(self: ReadonlyArray<A>, name: N): Array<{ [K in N]: A }>
-} = invariant.bindTo(Invariant) as any
+} = invariant.asProp(Invariant) as any
 
 const let_: {
   <N extends string, A extends object, B>(

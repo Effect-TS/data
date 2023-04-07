@@ -310,8 +310,8 @@ Invariant functors.
 | --------------- | ----------------------------- | ------------------ |
 | **imap**        | `F<A>`, `A => B`, `B => A`    | `F<B>`             |
 | imapComposition | `F<G<A>>`, `A => B`, `B => A` | `F<G<B>>`          |
-| bindTo          | `F<A>`, `name: string`        | `F<{ [name]: A }>` |
-| tupled          | `F<A>`                        | `F<[A]>`           |
+| asProp          | `F<A>`, `name: string`        | `F<{ [name]: A }>` |
+| asTuple         | `F<A>`                        | `F<[A]>`           |
 
 ### Monad
 

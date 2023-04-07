@@ -1683,7 +1683,7 @@ export const multiplyCompact = (self: Iterable<Option<number>>): number => {
  * @category do notation
  * @since 1.0.0
  */
-export const tupled: <A>(self: Option<A>) => Option<[A]> = invariant.tupled(Invariant)
+export const asTuple: <A>(self: Option<A>) => Option<[A]> = invariant.asTuple(Invariant)
 
 /**
  * Appends an element to the end of a tuple wrapped in an `Option` type.
@@ -1709,10 +1709,10 @@ export const appendElement: {
  * @category do notation
  * @since 1.0.0
  */
-export const bindTo: {
+export const asProp: {
   <N extends string>(name: N): <A>(self: Option<A>) => Option<{ [K in N]: A }>
   <A, N extends string>(self: Option<A>, name: N): Option<{ [K in N]: A }>
-} = invariant.bindTo(Invariant)
+} = invariant.asProp(Invariant)
 
 const let_: {
   <N extends string, A extends object, B>(

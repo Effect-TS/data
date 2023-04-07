@@ -19,8 +19,8 @@ describe.concurrent("Option", () => {
     expect(_.getLeft).exist
 
     expect(_.Invariant).exist
-    expect(_.tupled).exist
-    expect(_.bindTo).exist
+    expect(_.asTuple).exist
+    expect(_.asProp).exist
 
     expect(_.Covariant).exist
     expect(_.map).exist
@@ -488,7 +488,7 @@ describe.concurrent("Option", () => {
     Util.deepStrictEqual(
       pipe(
         _.some(1),
-        _.bindTo("a"),
+        _.asProp("a"),
         _.bind("b", () => _.some("b"))
       ),
       _.some({ a: 1, b: "b" })
@@ -497,13 +497,13 @@ describe.concurrent("Option", () => {
 
   it("andThenBind", () => {
     Util.deepStrictEqual(
-      pipe(_.some(1), _.bindTo("a"), _.bindDiscard("b", _.some("b"))),
+      pipe(_.some(1), _.asProp("a"), _.bindDiscard("b", _.some("b"))),
       _.some({ a: 1, b: "b" })
     )
   })
 
   it("element", () => {
-    expect(pipe(_.some(1), _.tupled, _.appendElement(_.some("b")))).toEqual(
+    expect(pipe(_.some(1), _.asTuple, _.appendElement(_.some("b")))).toEqual(
       _.some([1, "b"])
     )
   })

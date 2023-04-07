@@ -48,10 +48,10 @@ Added in v1.0.0
   - [appendElement](#appendelement)
   - [bind](#bind)
   - [bindDiscard](#binddiscard)
-  - [bindTo](#bindto)
+  - [asProp](#asprop)
   - [let](#let)
   - [letDiscard](#letdiscard)
-  - [tupled](#tupled)
+  - [asTuple](#astuple)
 - [equivalence](#equivalence)
   - [getEquivalence](#getequivalence)
 - [error handling](#error-handling)
@@ -812,12 +812,12 @@ export declare const bindDiscard: {
 
 Added in v1.0.0
 
-## bindTo
+## asProp
 
 **Signature**
 
 ```ts
-export declare const bindTo: {
+export declare const asProp: {
   <N extends string>(name: N): <A>(self: Option<A>) => Option<{ [K in N]: A }>
   <A, N extends string>(self: Option<A>, name: N): Option<{ [K in N]: A }>
 }
@@ -859,12 +859,12 @@ export declare const letDiscard: {
 
 Added in v1.0.0
 
-## tupled
+## asTuple
 
 **Signature**
 
 ```ts
-export declare const tupled: <A>(self: Option<A>) => Option<[A]>
+export declare const asTuple: <A>(self: Option<A>) => Option<[A]>
 ```
 
 Added in v1.0.0

@@ -16,7 +16,7 @@ Added in v1.0.0
   - [Do](#do)
   - [bind](#bind)
   - [bindDiscard](#binddiscard)
-  - [bindTo](#bindto)
+  - [asProp](#asprop)
   - [let](#let)
   - [letDiscard](#letdiscard)
 - [instances](#instances)
@@ -91,12 +91,12 @@ export declare const bindDiscard: {
 
 Added in v1.0.0
 
-## bindTo
+## asProp
 
 **Signature**
 
 ```ts
-export declare const bindTo: {
+export declare const asProp: {
   <N extends string>(name: N): <A>(self: A) => { [K in N]: A }
   <A, N extends string>(self: A, name: N): { [K in N]: A }
 }

@@ -6,7 +6,7 @@ import * as RR from "@effect/data/ReadonlyRecord"
 describe.concurrent("ReadonlyRecord", () => {
   it("exports", () => {
     expect(RR.Invariant).exist
-    expect(RR.tupled).exist
+    expect(RR.asTuple).exist
     expect(RR.Covariant).exist
     expect(RR.flap).exist
     expect(RR.as).exist

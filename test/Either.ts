@@ -15,8 +15,8 @@ describe.concurrent("Either", () => {
     expect(E.getLeft).exist
 
     expect(E.Invariant).exist
-    expect(E.tupled).exist
-    expect(E.bindTo).exist
+    expect(E.asTuple).exist
+    expect(E.asProp).exist
 
     expect(E.Covariant).exist
     expect(E.map).exist
@@ -365,7 +365,7 @@ describe.concurrent("Either", () => {
     Util.deepStrictEqual(
       pipe(
         E.right(1),
-        E.bindTo("a"),
+        E.asProp("a"),
         E.bind("b", () => E.right("b")),
         E.let("c", ({ a, b }) => [a, b])
       ),
@@ -375,7 +375,7 @@ describe.concurrent("Either", () => {
 
   it("andThenBind", () => {
     Util.deepStrictEqual(
-      pipe(E.right(1), E.bindTo("a"), E.bindDiscard("b", E.right("b"))),
+      pipe(E.right(1), E.asProp("a"), E.bindDiscard("b", E.right("b"))),
       E.right({ a: 1, b: "b" })
     )
   })
@@ -441,7 +441,7 @@ describe.concurrent("Either", () => {
   })
 
   it("element", () => {
-    expect(pipe(E.right(1), E.tupled, E.appendElement(E.right("b")))).toEqual(
+    expect(pipe(E.right(1), E.asTuple, E.appendElement(E.right("b")))).toEqual(
       E.right([1, "b"])
     )
   })

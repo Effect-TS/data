@@ -38,7 +38,7 @@ Added in v1.0.0
   - [Do](#do)
   - [bind](#bind)
   - [bindDiscard](#binddiscard)
-  - [bindTo](#bindto)
+  - [asProp](#asprop)
   - [let](#let)
   - [letDiscard](#letdiscard)
 - [filtering](#filtering)
@@ -131,7 +131,7 @@ Added in v1.0.0
   - [map](#map)
   - [mapNonEmpty](#mapnonempty)
   - [tuple](#tuple)
-  - [tupled](#tupled)
+  - [asTuple](#astuple)
 - [models](#models)
   - [NonEmptyArray (type alias)](#nonemptyarray-type-alias)
   - [NonEmptyReadonlyArray (type alias)](#nonemptyreadonlyarray-type-alias)
@@ -502,12 +502,12 @@ export declare const bindDiscard: {
 
 Added in v1.0.0
 
-## bindTo
+## asProp
 
 **Signature**
 
 ```ts
-export declare const bindTo: {
+export declare const asProp: {
   <N extends string>(name: N): <A>(self: readonly A[]) => { [K in N]: A }[]
   <A, N extends string>(self: readonly A[], name: N): { [K in N]: A }[]
 }
@@ -1649,12 +1649,12 @@ export declare const tuple: <Args extends any[]>(...args: Args) => Args
 
 Added in v1.0.0
 
-## tupled
+## asTuple
 
 **Signature**
 
 ```ts
-export declare const tupled: <A>(self: readonly A[]) => [A][]
+export declare const asTuple: <A>(self: readonly A[]) => [A][]
 ```
 
 Added in v1.0.0

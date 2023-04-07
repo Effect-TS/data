@@ -20,7 +20,7 @@ describe.concurrent("Identity", () => {
     expect(_.Foldable).exist
     expect(_.Traversable).exist
 
-    expect(_.bindTo).exist
+    expect(_.asProp).exist
     expect(_.let).exist
     expect(_.Do).exist
     expect(_.bind).exist

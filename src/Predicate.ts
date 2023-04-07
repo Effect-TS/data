@@ -444,7 +444,7 @@ export const Invariant: invariant.Invariant<PredicateTypeLambda> = {
 /**
  * @since 1.0.0
  */
-export const tupled: <A>(self: Predicate<A>) => Predicate<readonly [A]> = invariant.tupled(
+export const asTuple: <A>(self: Predicate<A>) => Predicate<readonly [A]> = invariant.asTuple(
   Invariant
 ) as any
 
@@ -766,10 +766,10 @@ export const some = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => get
  * @category do notation
  * @since 1.0.0
  */
-export const bindTo: {
+export const asProp: {
   <N extends string>(name: N): <A>(self: Predicate<A>) => Predicate<{ readonly [K in N]: A }>
   <A, N extends string>(self: Predicate<A>, name: N): Predicate<{ readonly [K in N]: A }>
-} = invariant.bindTo(Invariant)
+} = invariant.asProp(Invariant)
 
 /**
  * @category do notation

@@ -13,8 +13,8 @@ import * as fc from "fast-check"
 describe.concurrent("ReadonlyArray", () => {
   it("exports", () => {
     expect(RA.Invariant).exist
-    expect(RA.tupled).exist
-    expect(RA.bindTo).exist
+    expect(RA.asTuple).exist
+    expect(RA.asProp).exist
 
     expect(RA.Covariant).exist
     expect(RA.map).exist

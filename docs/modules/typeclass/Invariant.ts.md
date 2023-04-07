@@ -18,23 +18,23 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [do notation](#do-notation)
-  - [bindTo](#bindto)
+  - [asProp](#asprop)
 - [type class](#type-class)
   - [Invariant (interface)](#invariant-interface)
 - [utils](#utils)
   - [imapComposition](#imapcomposition)
-  - [tupled](#tupled)
+  - [asTuple](#astuple)
 
 ---
 
 # do notation
 
-## bindTo
+## asProp
 
 **Signature**
 
 ```ts
-export declare const bindTo: <F extends TypeLambda>(
+export declare const asProp: <F extends TypeLambda>(
   F: Invariant<F>
 ) => {
   <N extends string>(name: N): <R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, { [K in N]: A }>
@@ -82,14 +82,14 @@ export declare const imapComposition: <F extends TypeLambda, G extends TypeLambd
 
 Added in v1.0.0
 
-## tupled
+## asTuple
 
 Convert a value in a singleton array in a given effect.
 
 **Signature**
 
 ```ts
-export declare const tupled: <F extends TypeLambda>(
+export declare const asTuple: <F extends TypeLambda>(
   F: Invariant<F>
 ) => <R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, [A]>
 ```

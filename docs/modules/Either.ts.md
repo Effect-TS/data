@@ -43,10 +43,10 @@ Added in v1.0.0
   - [appendElement](#appendelement)
   - [bind](#bind)
   - [bindDiscard](#binddiscard)
-  - [bindTo](#bindto)
+  - [asProp](#asprop)
   - [let](#let)
   - [letDiscard](#letdiscard)
-  - [tupled](#tupled)
+  - [asTuple](#astuple)
 - [equivalence](#equivalence)
   - [getEquivalence](#getequivalence)
 - [error handling](#error-handling)
@@ -620,12 +620,12 @@ assert.deepStrictEqual(result, E.left('e1'))
 
 Added in v1.0.0
 
-## bindTo
+## asProp
 
 **Signature**
 
 ```ts
-export declare const bindTo: {
+export declare const asProp: {
   <N extends string>(name: N): <E, A>(self: Either<E, A>) => Either<E, { [K in N]: A }>
   <E, A, N extends string>(self: Either<E, A>, name: N): Either<E, { [K in N]: A }>
 }
@@ -669,12 +669,12 @@ export declare const letDiscard: {
 
 Added in v1.0.0
 
-## tupled
+## asTuple
 
 **Signature**
 
 ```ts
-export declare const tupled: <E, A>(self: Either<E, A>) => Either<E, [A]>
+export declare const asTuple: <E, A>(self: Either<E, A>) => Either<E, [A]>
 ```
 
 Added in v1.0.0

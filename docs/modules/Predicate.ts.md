@@ -26,7 +26,7 @@ Added in v1.0.0
 - [do notation](#do-notation)
   - [Do](#do)
   - [bindDiscard](#binddiscard)
-  - [bindTo](#bindto)
+  - [asProp](#asprop)
 - [guards](#guards)
   - [isBigint](#isbigint)
   - [isBoolean](#isboolean)
@@ -72,7 +72,7 @@ Added in v1.0.0
   - [some](#some)
   - [struct](#struct)
   - [tuple](#tuple)
-  - [tupled](#tupled)
+  - [asTuple](#asTuple)
 
 ---
 
@@ -290,12 +290,12 @@ export declare const bindDiscard: {
 
 Added in v1.0.0
 
-## bindTo
+## asProp
 
 **Signature**
 
 ```ts
-export declare const bindTo: {
+export declare const asProp: {
   <N extends string>(name: N): <A>(self: Predicate<A>) => Predicate<{ readonly [K in N]: A }>
   <A, N extends string>(self: Predicate<A>, name: N): Predicate<{ readonly [K in N]: A }>
 }
@@ -989,12 +989,12 @@ export declare const tuple: <T extends readonly Predicate<any>[]>(
 
 Added in v1.0.0
 
-## tupled
+## asTuple
 
 **Signature**
 
 ```ts
-export declare const tupled: <A>(self: Predicate<A>) => Predicate<readonly [A]>
+export declare const asTuple: <A>(self: Predicate<A>) => Predicate<readonly [A]>
 ```
 
 Added in v1.0.0

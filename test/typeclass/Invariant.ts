@@ -19,31 +19,31 @@ describe.concurrent("Invariant", () => {
     )
   })
 
-  describe.concurrent("bindTo", () => {
+  describe.concurrent("asProp", () => {
     it("Covariant (Option)", () => {
-      const bindTo = _.bindTo(O.Invariant)
-      U.deepStrictEqual(pipe(O.none(), bindTo("a")), O.none())
-      U.deepStrictEqual(pipe(O.some(1), bindTo("a")), O.some({ a: 1 }))
+      const asProp = _.asProp(O.Invariant)
+      U.deepStrictEqual(pipe(O.none(), asProp("a")), O.none())
+      U.deepStrictEqual(pipe(O.some(1), asProp("a")), O.some({ a: 1 }))
     })
 
     it("Contravariant (Predicate)", () => {
-      const bindTo = _.bindTo(P.Invariant)
-      const p = pipe(String.isString, bindTo("a"))
+      const asProp = _.asProp(P.Invariant)
+      const p = pipe(String.isString, asProp("a"))
       U.deepStrictEqual(p({ a: "a" }), true)
       U.deepStrictEqual(p({ a: 1 }), false)
     })
   })
 
-  describe.concurrent("tupled", () => {
+  describe.concurrent("asTuple", () => {
     it("Covariant (Option)", () => {
-      const tupled = _.tupled(O.Invariant)
-      U.deepStrictEqual(pipe(O.none(), tupled), O.none())
-      U.deepStrictEqual(pipe(O.some(1), tupled), O.some([1]))
+      const asTuple = _.asTuple(O.Invariant)
+      U.deepStrictEqual(pipe(O.none(), asTuple), O.none())
+      U.deepStrictEqual(pipe(O.some(1), asTuple), O.some([1]))
     })
 
     it("Contravariant (Predicate)", () => {
-      const tupled = _.tupled(P.Invariant)
-      const p = pipe(String.isString, tupled)
+      const asTuple = _.asTuple(P.Invariant)
+      const p = pipe(String.isString, asTuple)
       U.deepStrictEqual(p(["a"]), true)
       U.deepStrictEqual(p([1]), false)
     })

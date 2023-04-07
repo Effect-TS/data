@@ -46,7 +46,7 @@ export const imapComposition = <F extends TypeLambda, G extends TypeLambda>(
  * @category do notation
  * @since 1.0.0
  */
-export const bindTo = <F extends TypeLambda>(F: Invariant<F>): {
+export const asProp = <F extends TypeLambda>(F: Invariant<F>): {
   <N extends string>(
     name: N
   ): <R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, { [K in N]: A }>
@@ -65,6 +65,6 @@ export const bindTo = <F extends TypeLambda>(F: Invariant<F>): {
  *
  * @since 1.0.0
  */
-export const tupled = <F extends TypeLambda>(
+export const asTuple = <F extends TypeLambda>(
   F: Invariant<F>
 ): (<R, O, E, A>(self: Kind<F, R, O, E, A>) => Kind<F, R, O, E, [A]>) => F.imap((a) => [a], ([a]) => a)

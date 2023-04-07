@@ -1443,7 +1443,7 @@ export const lefts = <E, A>(self: Iterable<Either<E, A>>): Array<E> => {
  * @category do notation
  * @since 1.0.0
  */
-export const tupled: <E, A>(self: Either<E, A>) => Either<E, [A]> = invariant.tupled(
+export const asTuple: <E, A>(self: Either<E, A>) => Either<E, [A]> = invariant.asTuple(
   Invariant
 )
 
@@ -1467,12 +1467,12 @@ export const appendElement: {
  * @category do notation
  * @since 1.0.0
  */
-export const bindTo: {
+export const asProp: {
   <N extends string>(
     name: N
   ): <E, A>(self: Either<E, A>) => Either<E, { [K in N]: A }>
   <E, A, N extends string>(self: Either<E, A>, name: N): Either<E, { [K in N]: A }>
-} = invariant.bindTo(Invariant)
+} = invariant.asProp(Invariant)
 
 const let_: {
   <N extends string, A extends object, B>(

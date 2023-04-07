@@ -232,10 +232,10 @@ export const Traversable: traversable.Traversable<IdentityTypeLambda> = {
  * @category do notation
  * @since 1.0.0
  */
-export const bindTo: {
+export const asProp: {
   <N extends string>(name: N): <A>(self: Identity<A>) => Identity<{ [K in N]: A }>
   <A, N extends string>(self: Identity<A>, name: N): Identity<{ [K in N]: A }>
-} = invariant.bindTo(Invariant)
+} = invariant.asProp(Invariant)
 
 const let_: {
   <N extends string, A extends object, B>(
