@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.11.5
+
+### Patch Changes
+
+- [#324](https://github.com/Effect-TS/data/pull/324) [`54f17d2`](https://github.com/Effect-TS/data/commit/54f17d2e91fc8401fe6b439181a55de1aacf8c8a) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Unify Context.Tag as it is an Effect
+
 ## 0.11.4
 
 ### Patch Changes
