@@ -87,7 +87,7 @@ export const numberMultiply: Monoid<number> = fromSemigroup(semigroup.numberMult
  * @category instances
  * @since 1.0.0
  */
-export const bigintSum: Monoid<bigint> = fromSemigroup(semigroup.bigintSum, 0n)
+export const bigintSum: Monoid<bigint> = fromSemigroup(semigroup.bigintSum, BigInt(0))
 
 /**
  * `bigint` monoid under multiplication.
@@ -97,7 +97,7 @@ export const bigintSum: Monoid<bigint> = fromSemigroup(semigroup.bigintSum, 0n)
  * @category instances
  * @since 1.0.0
  */
-export const bigintMultiply: Monoid<bigint> = fromSemigroup(semigroup.bigintMultiply, 1n)
+export const bigintMultiply: Monoid<bigint> = fromSemigroup(semigroup.bigintMultiply, BigInt(1))
 
 /**
  * `boolean` monoid under conjunction.

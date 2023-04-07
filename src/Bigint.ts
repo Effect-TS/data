@@ -414,7 +414,7 @@ export const MonoidMultiply: monoid.Monoid<bigint> = monoid.bigintMultiply
  * @category math
  * @since 1.0.0
  */
-export const sign = (n: bigint): Ordering => Order.compare(n, 0n)
+export const sign = (n: bigint): Ordering => Order.compare(n, BigInt(0))
 
 /**
  * Takes an `Iterable` of `bigint`s and returns their sum as a single `bigint

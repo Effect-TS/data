@@ -94,13 +94,13 @@ export const bigintSum: Semigroup<bigint> = make((self, that) => self + that)
 export const bigintMultiply: Semigroup<bigint> = make(
   (self, that) => self * that,
   (self, collection) => {
-    if (self === 0n) {
-      return 0n
+    if (self === BigInt(0)) {
+      return BigInt(0)
     }
     let out = self
     for (const n of collection) {
-      if (n === 0n) {
-        return 0n
+      if (n === BigInt(0)) {
+        return BigInt(0)
       }
       out = out * n
     }
