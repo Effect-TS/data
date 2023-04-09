@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.11.6
+
+### Patch Changes
+
+- [#328](https://github.com/Effect-TS/data/pull/328) [`bdc3f69`](https://github.com/Effect-TS/data/commit/bdc3f6954549ff79f88a10c04ae8d8a6d6f799b2) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Fix Context.get types
+
 ## 0.11.5
 
 ### Patch Changes
