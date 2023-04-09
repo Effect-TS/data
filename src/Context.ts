@@ -344,6 +344,14 @@ export const pick: <Services, S extends Array<ValidTagsById<Services>>>(
 
 /**
  * @since 1.0.0
+ * @category utils
+ */
+export const omit: <Services, S extends Array<ValidTagsById<Services>>>(
+  ...tags: S
+) => (self: Context<Services>) => Context<Exclude<Services, { [k in keyof S]: Tag.Identifier<S[k]> }[keyof S]>> = C.omit
+
+/**
+ * @since 1.0.0
  * @category models
  */
 export type GenericTag = TracedTag<any, any> | Tag<any, any>

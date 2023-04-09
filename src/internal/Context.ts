@@ -176,3 +176,15 @@ export const pick = <Services, S extends Array<C.ValidTagsById<Services>>>(...ta
     }
     return new ContextImpl<{ [k in keyof S]: C.Tag.Identifier<S[k]> }[number]>(newEnv)
   }
+
+/** @internal */
+export const omit = <Services, S extends Array<C.ValidTagsById<Services>>>(...tags: S) =>
+  (self: C.Context<Services>): C.Context<
+    Exclude<Services, { [k in keyof S]: C.Tag.Identifier<S[k]> }[keyof S]>
+  > => {
+    const newEnv = new Map(self.unsafeMap)
+    for (const tag of tags) {
+      newEnv.delete(tag)
+    }
+    return new ContextImpl(newEnv)
+  }

@@ -103,6 +103,33 @@ describe.concurrent("Context", () => {
     )).toEqual(O.some({ c: 2 }))
   })
 
+  it("omits services from env", () => {
+    const env = pipe(
+      Context.empty(),
+      Context.add(A, { a: 0 }),
+      Context.merge(pipe(
+        Context.empty(),
+        Context.add(B, { b: 1 }),
+        Context.add(C, { c: 2 })
+      ))
+    )
+
+    const pruned = pipe(
+      env,
+      Context.omit(A, B)
+    )
+
+    expect(pipe(
+      pruned,
+      Context.getOption(A)
+    )).toEqual(O.none())
+
+    expect(pipe(
+      env,
+      Context.get(C)
+    )).toEqual({ c: 2 })
+  })
+
   it("applies a patch to the environment", () => {
     const a: A = { a: 0 }
     const b: B = { b: 1 }

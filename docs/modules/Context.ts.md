@@ -43,6 +43,7 @@ Added in v1.0.0
 - [utils](#utils)
   - [add](#add)
   - [merge](#merge)
+  - [omit](#omit)
   - [pick](#pick)
 
 ---
@@ -425,6 +426,18 @@ const Services = Context.merge(firstContext, secondContext)
 
 assert.deepStrictEqual(Context.get(Services, Port), { PORT: 8080 })
 assert.deepStrictEqual(Context.get(Services, Timeout), { TIMEOUT: 5000 })
+```
+
+Added in v1.0.0
+
+## omit
+
+**Signature**
+
+```ts
+export declare const omit: <Services, S extends ValidTagsById<Services>[]>(
+  ...tags: S
+) => (self: Context<Services>) => Context<Exclude<Services, { [k in keyof S]: Tag.Identifier<S[k]> }[keyof S]>>
 ```
 
 Added in v1.0.0
