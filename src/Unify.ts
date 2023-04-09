@@ -53,7 +53,7 @@ declare module "@effect/data/Either" {
   }
   interface Right<E, A> {
     [typeSymbol]?: unknown
-    [unifySymbol]?: () => this[typeSymbol] extends Either.Either<infer E0, infer A0> | infer Z ? Either.Either<E0, A0>
+    [unifySymbol]?: () => this[typeSymbol] extends Either.Either<infer E0, infer A0> | infer _ ? Either.Either<E0, A0>
       : never
   }
 }
@@ -61,7 +61,7 @@ declare module "@effect/data/Either" {
 declare module "@effect/data/Context" {
   interface Tag<Identifier, Service> {
     [typeSymbol]?: unknown
-    [unifySymbol]?: () => this[typeSymbol] extends Context.Tag<infer I0, infer S0> | infer Z ? Context.Tag<I0, S0>
+    [unifySymbol]?: () => this[typeSymbol] extends Context.Tag<infer I0, infer S0> | infer _ ? Context.Tag<I0, S0>
       : never
   }
 }

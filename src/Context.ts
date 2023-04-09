@@ -224,13 +224,8 @@ export const add: {
  * @category getters
  */
 export const get: {
-  <Services, T extends ValidTagsById<Services>>(
-    tag: T
-  ): (self: Context<Services>) => T extends Tag<infer S, any> ? S : never
-  <Services, T extends ValidTagsById<Services>>(
-    self: Context<Services>,
-    tag: T
-  ): T extends Tag<infer S, any> ? S : never
+  <Services, T extends ValidTagsById<Services>>(tag: T): (self: Context<Services>) => Tag.Service<T>
+  <Services, T extends ValidTagsById<Services>>(self: Context<Services>, tag: T): Tag.Service<T>
 } = C.get
 
 /**
