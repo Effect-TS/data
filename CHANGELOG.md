@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.11.7
+
+### Patch Changes
+
+- [#330](https://github.com/Effect-TS/data/pull/330) [`17bd8e3`](https://github.com/Effect-TS/data/commit/17bd8e3b3727cbe076a563b0dd7ac953a73cc130) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Implement Context.omit
+
 ## 0.11.6
 
 ### Patch Changes
