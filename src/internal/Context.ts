@@ -119,15 +119,8 @@ export const add = Dual.dual<
 
 /** @internal */
 export const get = Dual.dual<
-  <Services, T extends C.ValidTagsById<Services>>(
-    tag: T
-  ) => (
-    self: C.Context<Services>
-  ) => T extends C.Tag<infer S, any> ? S : never,
-  <Services, T extends C.ValidTagsById<Services>>(
-    self: C.Context<Services>,
-    tag: T
-  ) => T extends C.Tag<infer S, any> ? S : never
+  <Services, T extends C.ValidTagsById<Services>>(tag: T) => (self: C.Context<Services>) => C.Tag.Service<T>,
+  <Services, T extends C.ValidTagsById<Services>>(self: C.Context<Services>, tag: T) => C.Tag.Service<T>
 >(2, (self, tag) => {
   if (!self.unsafeMap.has(tag)) {
     throw new Error("Service not found")
