@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.11.8
+
+### Patch Changes
+
+- [#332](https://github.com/Effect-TS/data/pull/332) [`71c6442`](https://github.com/Effect-TS/data/commit/71c644294b5284f4aa9afa3a5595752f5f9be301) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Add Tag.of and Tag.context
+
 ## 0.11.7
 
 ### Patch Changes
