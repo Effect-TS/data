@@ -51,6 +51,12 @@ export class TagImpl<Identifier, Service> implements C.Tag<Identifier, Service> 
     }
     return this
   }
+  of(self: Service): Service {
+    return self
+  }
+  context(this: C.Tag<Identifier, Service>, self: Service): C.Context<Identifier> {
+    return make(this, self)
+  }
 }
 
 /** @internal */
