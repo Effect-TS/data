@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.12.0
+
+### Minor Changes
+
+- [#334](https://github.com/Effect-TS/data/pull/334) [`2fcdee0`](https://github.com/Effect-TS/data/commit/2fcdee0fbe4385a50ca89d8ff791dc69df93c435) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Redesign Unify to allow for extensions
+
 ## 0.11.8
 
 ### Patch Changes
