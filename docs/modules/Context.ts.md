@@ -269,10 +269,9 @@ Added in v1.0.0
 ```ts
 export interface Tag<Identifier, Service> {
   readonly _tag: 'Tag'
-  readonly [TagTypeId]: {
-    readonly _S: (_: Service) => Service
-    readonly _I: (_: Identifier) => Identifier
-  }
+  readonly [TagTypeId]: { readonly _S: (_: Service) => Service; readonly _I: (_: Identifier) => Identifier }
+  of(self: Service): Service
+  context(self: Service): Context<Identifier>
   traced(this: Tag<Identifier, Service>, trace: Trace): TracedTag<Identifier, Service> | Tag<Identifier, Service>
 }
 ```

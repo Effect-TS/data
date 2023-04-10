@@ -26,14 +26,10 @@ export type TagTypeId = typeof TagTypeId
  */
 export interface Tag<Identifier, Service> {
   readonly _tag: "Tag"
-  readonly [TagTypeId]: {
-    readonly _S: (_: Service) => Service
-    readonly _I: (_: Identifier) => Identifier
-  }
-  traced(
-    this: Tag<Identifier, Service>,
-    trace: Trace
-  ): TracedTag<Identifier, Service> | Tag<Identifier, Service>
+  readonly [TagTypeId]: { readonly _S: (_: Service) => Service; readonly _I: (_: Identifier) => Identifier }
+  of(self: Service): Service
+  context(self: Service): Context<Identifier>
+  traced(this: Tag<Identifier, Service>, trace: Trace): TracedTag<Identifier, Service> | Tag<Identifier, Service>
 }
 
 /**
@@ -44,10 +40,7 @@ export interface TracedTag<Identifier, Service> {
   readonly _tag: "Traced"
   readonly i0: Tag<Identifier, Service> | TracedTag<Identifier, Service>
   readonly trace: SourceLocation
-  traced(
-    this: TracedTag<Identifier, Service>,
-    trace: Trace
-  ): TracedTag<Identifier, Service>
+  traced(this: TracedTag<Identifier, Service>, trace: Trace): TracedTag<Identifier, Service>
 }
 
 /**
