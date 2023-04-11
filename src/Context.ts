@@ -41,7 +41,7 @@ export interface Tag<Identifier, Service> {
  * @since 1.0.0
  */
 export interface TagUnify<A extends { [Unify.typeSymbol]?: any }> {
-  Option?: () => A[Unify.typeSymbol] extends Tag<infer I0, infer S0> | infer _ ? Tag<I0, S0> : never
+  Tag?: () => A[Unify.typeSymbol] extends Tag<infer I0, infer S0> | infer _ ? Tag<I0, S0> : never
 }
 
 /**
