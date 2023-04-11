@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.12.2
+
+### Patch Changes
+
+- [#338](https://github.com/Effect-TS/data/pull/338) [`b92d341`](https://github.com/Effect-TS/data/commit/b92d341c3be18dbe28483212c7e6eddf2665321e) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Fix Tag Unify
+
 ## 0.12.1
 
 ### Patch Changes
