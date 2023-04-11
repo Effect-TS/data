@@ -35,6 +35,7 @@ import type { Semigroup } from "@effect/data/typeclass/Semigroup"
 import * as semigroup from "@effect/data/typeclass/Semigroup"
 import * as semiProduct from "@effect/data/typeclass/SemiProduct"
 import * as traversable from "@effect/data/typeclass/Traversable"
+import type * as Unify from "@effect/data/Unify"
 
 /**
  * @category models
@@ -66,6 +67,9 @@ export interface Left<E, A> extends Data.Case {
   }
   get left(): E
   traced(trace: Trace): Either<E, A> | TracedEither<E, A>
+  [Unify.typeSymbol]?: unknown
+  [Unify.unifySymbol]?: EitherUnify<this>
+  [Unify.blacklistSymbol]?: EitherUnifyBlacklist
 }
 
 /**
@@ -80,7 +84,24 @@ export interface Right<E, A> extends Data.Case {
     readonly _E: (_: never) => E
   }
   traced(trace: Trace): Either<E, A> | TracedEither<E, A>
+  [Unify.typeSymbol]?: unknown
+  [Unify.unifySymbol]?: EitherUnify<this>
+  [Unify.blacklistSymbol]?: EitherUnifyBlacklist
 }
+
+/**
+ * @category models
+ * @since 1.0.0
+ */
+export interface EitherUnify<A extends { [Unify.typeSymbol]?: any }> {
+  Either?: () => A[Unify.typeSymbol] extends Either<infer E0, infer A0> | infer _ ? Either<E0, A0> : never
+}
+
+/**
+ * @category models
+ * @since 1.0.0
+ */
+export interface EitherUnifyBlacklist {}
 
 /**
  * @since 1.0.0

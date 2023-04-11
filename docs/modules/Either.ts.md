@@ -113,6 +113,8 @@ Added in v1.0.0
   - [sum](#sum)
 - [models](#models)
   - [Either (type alias)](#either-type-alias)
+  - [EitherUnify (interface)](#eitherunify-interface)
+  - [EitherUnifyBlacklist (interface)](#eitherunifyblacklist-interface)
   - [Left (interface)](#left-interface)
   - [Right (interface)](#right-interface)
   - [TracedEither (interface)](#tracedeither-interface)
@@ -1568,6 +1570,28 @@ Added in v1.0.0
 
 ```ts
 export type Either<E, A> = Left<E, A> | Right<E, A>
+```
+
+Added in v1.0.0
+
+## EitherUnify (interface)
+
+**Signature**
+
+```ts
+export interface EitherUnify<A extends { [Unify.typeSymbol]?: any }> {
+  Either?: () => A[Unify.typeSymbol] extends Either<infer E0, infer A0> | infer _ ? Either<E0, A0> : never
+}
+```
+
+Added in v1.0.0
+
+## EitherUnifyBlacklist (interface)
+
+**Signature**
+
+```ts
+export interface EitherUnifyBlacklist {}
 ```
 
 Added in v1.0.0

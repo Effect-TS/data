@@ -33,6 +33,8 @@ Added in v1.0.0
   - [Context (interface)](#context-interface)
   - [GenericTag (type alias)](#generictag-type-alias)
   - [Tag (interface)](#tag-interface)
+  - [TagUnify (interface)](#tagunify-interface)
+  - [TagUnifyBlacklist (interface)](#tagunifyblacklist-interface)
   - [TracedTag (interface)](#tracedtag-interface)
   - [ValidTagsById (type alias)](#validtagsbyid-type-alias)
 - [symbol](#symbol)
@@ -273,7 +275,32 @@ export interface Tag<Identifier, Service> {
   of(self: Service): Service
   context(self: Service): Context<Identifier>
   traced(this: Tag<Identifier, Service>, trace: Trace): TracedTag<Identifier, Service> | Tag<Identifier, Service>
+  [Unify.typeSymbol]?: unknown
+  [Unify.unifySymbol]?: TagUnify<this>
+  [Unify.blacklistSymbol]?: TagUnifyBlacklist
 }
+```
+
+Added in v1.0.0
+
+## TagUnify (interface)
+
+**Signature**
+
+```ts
+export interface TagUnify<A extends { [Unify.typeSymbol]?: any }> {
+  Option?: () => A[Unify.typeSymbol] extends Tag<infer I0, infer S0> | infer _ ? Tag<I0, S0> : never
+}
+```
+
+Added in v1.0.0
+
+## TagUnifyBlacklist (interface)
+
+**Signature**
+
+```ts
+export interface TagUnifyBlacklist {}
 ```
 
 Added in v1.0.0

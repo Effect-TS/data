@@ -39,6 +39,7 @@ import type { Semigroup } from "@effect/data/typeclass/Semigroup"
 import * as semigroup from "@effect/data/typeclass/Semigroup"
 import * as semiProduct from "@effect/data/typeclass/SemiProduct"
 import * as traversable from "@effect/data/typeclass/Traversable"
+import type * as Unify from "@effect/data/Unify"
 
 /**
  * @category models
@@ -68,6 +69,9 @@ export interface None<A> extends Data.Case {
     readonly _A: (_: never) => A
   }
   traced(trace: Trace): Option<A> | TracedOption<A>
+  [Unify.typeSymbol]?: unknown
+  [Unify.unifySymbol]?: OptionUnify<this>
+  [Unify.blacklistSymbol]?: OptionUnifyBlacklist
 }
 
 /**
@@ -81,6 +85,9 @@ export interface Some<A> extends Data.Case {
     readonly _A: (_: never) => A
   }
   traced(trace: Trace): Option<A> | TracedOption<A>
+  [Unify.typeSymbol]?: unknown
+  [Unify.unifySymbol]?: OptionUnify<this>
+  [Unify.blacklistSymbol]?: OptionUnifyBlacklist
 }
 
 /**
@@ -93,6 +100,20 @@ export interface TracedOption<A> {
   readonly trace: SourceLocation
   traced(trace: Trace): TracedOption<A>
 }
+
+/**
+ * @category models
+ * @since 1.0.0
+ */
+export interface OptionUnify<A extends { [Unify.typeSymbol]?: any }> {
+  Option?: () => A[Unify.typeSymbol] extends Option<infer A0> | infer _ ? Option<A0> : never
+}
+
+/**
+ * @category models
+ * @since 1.0.0
+ */
+export interface OptionUnifyBlacklist {}
 
 /**
  * @category type lambdas

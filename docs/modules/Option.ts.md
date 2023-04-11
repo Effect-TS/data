@@ -88,6 +88,8 @@ Added in v1.0.0
 - [models](#models)
   - [None (interface)](#none-interface)
   - [Option (type alias)](#option-type-alias)
+  - [OptionUnify (interface)](#optionunify-interface)
+  - [OptionUnifyBlacklist (interface)](#optionunifyblacklist-interface)
   - [Some (interface)](#some-interface)
   - [TracedOption (interface)](#tracedoption-interface)
 - [pattern matching](#pattern-matching)
@@ -1459,6 +1461,9 @@ export interface None<A> extends Data.Case {
     readonly _A: (_: never) => A
   }
   traced(trace: Trace): Option<A> | TracedOption<A>
+  [Unify.typeSymbol]?: unknown
+  [Unify.unifySymbol]?: OptionUnify<this>
+  [Unify.blacklistSymbol]?: OptionUnifyBlacklist
 }
 ```
 
@@ -1470,6 +1475,28 @@ Added in v1.0.0
 
 ```ts
 export type Option<A> = None<A> | Some<A>
+```
+
+Added in v1.0.0
+
+## OptionUnify (interface)
+
+**Signature**
+
+```ts
+export interface OptionUnify<A extends { [Unify.typeSymbol]?: any }> {
+  Option?: () => A[Unify.typeSymbol] extends Option<infer A0> | infer _ ? Option<A0> : never
+}
+```
+
+Added in v1.0.0
+
+## OptionUnifyBlacklist (interface)
+
+**Signature**
+
+```ts
+export interface OptionUnifyBlacklist {}
 ```
 
 Added in v1.0.0
@@ -1486,6 +1513,9 @@ export interface Some<A> extends Data.Case {
     readonly _A: (_: never) => A
   }
   traced(trace: Trace): Option<A> | TracedOption<A>
+  [Unify.typeSymbol]?: unknown
+  [Unify.unifySymbol]?: OptionUnify<this>
+  [Unify.blacklistSymbol]?: OptionUnifyBlacklist
 }
 ```
 
