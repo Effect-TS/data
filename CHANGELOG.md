@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.12.1
+
+### Patch Changes
+
+- [#336](https://github.com/Effect-TS/data/pull/336) [`c772c73`](https://github.com/Effect-TS/data/commit/c772c73c98800206e66ce85545da393c236652c0) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Improve Unify extensibility
+
 ## 0.12.0
 
 ### Minor Changes
