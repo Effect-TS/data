@@ -11,6 +11,7 @@ import type { SourceLocation, Trace } from "@effect/data/Debug"
 import type { Equal } from "@effect/data/Equal"
 import * as C from "@effect/data/internal/Context"
 import type { Option } from "@effect/data/Option"
+import type * as Unify from "@effect/data/Unify"
 
 const TagTypeId: unique symbol = C.TagTypeId
 
@@ -30,7 +31,24 @@ export interface Tag<Identifier, Service> {
   of(self: Service): Service
   context(self: Service): Context<Identifier>
   traced(this: Tag<Identifier, Service>, trace: Trace): TracedTag<Identifier, Service> | Tag<Identifier, Service>
+  [Unify.typeSymbol]?: unknown
+  [Unify.unifySymbol]?: TagUnify<this>
+  [Unify.blacklistSymbol]?: TagUnifyBlacklist
 }
+
+/**
+ * @category models
+ * @since 1.0.0
+ */
+export interface TagUnify<A extends { [Unify.typeSymbol]?: any }> {
+  Option?: () => A[Unify.typeSymbol] extends Tag<infer I0, infer S0> | infer _ ? Tag<I0, S0> : never
+}
+
+/**
+ * @category models
+ * @since 1.0.0
+ */
+export interface TagUnifyBlacklist {}
 
 /**
  * @since 1.0.0

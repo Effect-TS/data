@@ -2,10 +2,7 @@
  * @since 1.0.0
  */
 
-import type * as Context from "@effect/data/Context"
-import type * as Either from "@effect/data/Either"
 import { identity } from "@effect/data/Function"
-import type * as Option from "@effect/data/Option"
 
 /**
  * @since 1.0.0
@@ -82,49 +79,6 @@ export type Unify<A> = Values<
     )
   >
 > extends infer Z ? Z | Exclude<A, Z> : never
-
-declare module "@effect/data/Either" {
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-  interface Left<E, A> {
-    [typeSymbol]?: unknown
-    [unifySymbol]?: UnifyEither<this>
-  }
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-  interface Right<E, A> {
-    [typeSymbol]?: unknown
-    [unifySymbol]?: UnifyEither<this>
-  }
-  interface UnifyEither<A extends { [typeSymbol]?: any }> {
-    Either?: () => A[typeSymbol] extends Either.Either<infer E0, infer A0> | infer _ ? Either.Either<E0, A0> : never
-  }
-}
-
-declare module "@effect/data/Context" {
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-  interface Tag<Identifier, Service> {
-    [typeSymbol]?: unknown
-    [unifySymbol]?: UnifyTag<this>
-  }
-  interface UnifyTag<A extends { [typeSymbol]?: any }> {
-    Tag?: () => A[typeSymbol] extends Context.Tag<infer I0, infer S0> | infer _ ? Context.Tag<I0, S0> : never
-  }
-}
-
-declare module "@effect/data/Option" {
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-  interface Some<A> {
-    [typeSymbol]?: unknown
-    [unifySymbol]?: UnifyOption<this>
-  }
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-  interface None<A> {
-    [typeSymbol]?: unknown
-    [unifySymbol]?: UnifyOption<this>
-  }
-  interface UnifyOption<A extends { [typeSymbol]?: any }> {
-    Option?: () => A[typeSymbol] extends Option.Option<infer A0> | infer _ ? Option.Option<A0> : never
-  }
-}
 
 /**
  * @since 1.0.0
