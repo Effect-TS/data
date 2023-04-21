@@ -1727,6 +1727,13 @@ export const appendElement: {
 } = semiProduct.appendElement(SemiProduct)
 
 /**
+ * @example
+ * import * as O from "@effect/data/Option"
+ *
+ * assert.deepStrictEqual(O.bindTo(O.some(1), 'a'), O.some({ a: 1 }));
+ * assert.deepStrictEqual(O.bindTo(O.none(), 'a'), O.none());
+ * assert.deepStrictEqual(O.bindTo('a')(O.some(1)), O.some({ a: 1 }));
+ *
  * @category do notation
  * @since 1.0.0
  */
@@ -1756,6 +1763,13 @@ export {
 }
 
 /**
+ * @example
+ * import * as O from "@effect/data/Option"
+ *
+ * assert.deepStrictEqual(O.letDiscard(O.some({}), 'a', 1), O.some({ a: 1 }));
+ * assert.deepStrictEqual(O.letDiscard(O.none<{}>(), 'a', 1), O.none());
+ * assert.deepStrictEqual(O.letDiscard('a', 1)(O.some({})), O.some({ a: 1 }));
+ *
  * @category do notation
  * @since 1.0.0
  */
@@ -1772,6 +1786,13 @@ export const letDiscard: {
 } = covariant.letDiscard(Covariant)
 
 /**
+ * @example
+ * import * as O from "@effect/data/Option"
+ *
+ * assert.deepStrictEqual(O.bind(O.some({}), 'a', () => O.some(1)), O.some({ a: 1 }));
+ * assert.deepStrictEqual(O.bind(O.none<{}>(), 'a', () => O.some(1)), O.none());
+ * assert.deepStrictEqual(O.bind(O.some({}), 'a', () => O.none()), O.none());
+ *
  * @category do notation
  * @since 1.0.0
  */
@@ -1795,6 +1816,12 @@ export const Do: () => Option<{}> = of_.Do(Of)
 
 /**
  * A variant of `bind` that sequentially ignores the scope.
+ * @example
+ * import * as O from "@effect/data/Option"
+ *
+ * assert.deepStrictEqual(O.bindDiscard(O.some({}), 'a', O.some(1)), O.some({ a: 1 }));
+ * assert.deepStrictEqual(O.bindDiscard(O.none<{}>(), 'a', O.some(1)), O.none());
+ * assert.deepStrictEqual(O.bindDiscard(O.some({}), 'a', O.none()), O.none());
  *
  * @category do notation
  * @since 1.0.0

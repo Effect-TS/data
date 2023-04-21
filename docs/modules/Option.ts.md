@@ -793,6 +793,25 @@ export declare const bind: {
 }
 ```
 
+**Example**
+
+```ts
+import * as O from '@effect/data/Option'
+
+assert.deepStrictEqual(
+  O.bind(O.some({}), 'a', () => O.some(1)),
+  O.some({ a: 1 })
+)
+assert.deepStrictEqual(
+  O.bind(O.none<{}>(), 'a', () => O.some(1)),
+  O.none()
+)
+assert.deepStrictEqual(
+  O.bind(O.some({}), 'a', () => O.none()),
+  O.none()
+)
+```
+
 Added in v1.0.0
 
 ## bindDiscard
@@ -812,6 +831,16 @@ export declare const bindDiscard: {
 }
 ```
 
+**Example**
+
+```ts
+import * as O from '@effect/data/Option'
+
+assert.deepStrictEqual(O.bindDiscard(O.some({}), 'a', O.some(1)), O.some({ a: 1 }))
+assert.deepStrictEqual(O.bindDiscard(O.none<{}>(), 'a', O.some(1)), O.none())
+assert.deepStrictEqual(O.bindDiscard(O.some({}), 'a', O.none()), O.none())
+```
+
 Added in v1.0.0
 
 ## bindTo
@@ -823,6 +852,16 @@ export declare const bindTo: {
   <N extends string>(name: N): <A>(self: Option<A>) => Option<{ [K in N]: A }>
   <A, N extends string>(self: Option<A>, name: N): Option<{ [K in N]: A }>
 }
+```
+
+**Example**
+
+```ts
+import * as O from '@effect/data/Option'
+
+assert.deepStrictEqual(O.bindTo(O.some(1), 'a'), O.some({ a: 1 }))
+assert.deepStrictEqual(O.bindTo(O.none(), 'a'), O.none())
+assert.deepStrictEqual(O.bindTo('a')(O.some(1)), O.some({ a: 1 }))
 ```
 
 Added in v1.0.0
@@ -857,6 +896,16 @@ export declare const letDiscard: {
     [K in N | keyof A]: K extends keyof A ? A[K] : B
   }>
 }
+```
+
+**Example**
+
+```ts
+import * as O from '@effect/data/Option'
+
+assert.deepStrictEqual(O.letDiscard(O.some({}), 'a', 1), O.some({ a: 1 }))
+assert.deepStrictEqual(O.letDiscard(O.none<{}>(), 'a', 1), O.none())
+assert.deepStrictEqual(O.letDiscard('a', 1)(O.some({})), O.some({ a: 1 }))
 ```
 
 Added in v1.0.0

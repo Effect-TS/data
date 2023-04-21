@@ -30,6 +30,8 @@ describe.concurrent("Option", () => {
     expect(_.asUnit).exist
 
     expect(_.Do).exist
+    expect(_.letDiscard).exist
+    expect(_.bindDiscard).exist
 
     expect(_.Pointed).exist
 
@@ -490,6 +492,15 @@ describe.concurrent("Option", () => {
         _.some(1),
         _.bindTo("a"),
         _.bind("b", () => _.some("b"))
+      ),
+      _.some({ a: 1, b: "b" })
+    )
+
+    Util.deepStrictEqual(
+      pipe(
+        _.Do(),
+        _.letDiscard("a", 1),
+        _.bindDiscard("b", _.some("b"))
       ),
       _.some({ a: 1, b: "b" })
     )
