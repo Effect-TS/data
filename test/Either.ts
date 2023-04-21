@@ -25,6 +25,10 @@ describe.concurrent("Either", () => {
     expect(E.as).exist
     expect(E.asUnit).exist
 
+    expect(E.Do).exist
+    expect(E.letDiscard).exist
+    expect(E.bindDiscard).exist
+
     expect(E.Bicovariant).exist
     expect(E.bimap).exist
     expect(E.mapLeft).exist
@@ -370,6 +374,15 @@ describe.concurrent("Either", () => {
         E.let("c", ({ a, b }) => [a, b])
       ),
       E.right({ a: 1, b: "b", c: [1, "b"] })
+    )
+
+    Util.deepStrictEqual(
+      pipe(
+        E.Do(),
+        E.letDiscard("a", 1),
+        E.bindDiscard("b", E.right("b")),
+      ),
+      E.right({ a: 1, b: "b" })
     )
   })
 

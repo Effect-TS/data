@@ -582,6 +582,32 @@ export declare const bind: {
 }
 ```
 
+**Example**
+
+```ts
+import * as E from '@effect/data/Either'
+
+const eitherRight: E.Either<string, {}> = E.right({})
+const eitherLeft: E.Either<string, {}> = E.left('error')
+
+assert.deepStrictEqual(
+  E.bind(eitherRight, 'a', () => E.right(1)),
+  E.right({ a: 1 })
+)
+assert.deepStrictEqual(
+  E.bind(eitherLeft, 'a', () => E.right(1)),
+  E.left('error')
+)
+assert.deepStrictEqual(
+  E.bind(eitherRight, 'a', () => E.left<string>('another error')),
+  E.left('another error')
+)
+assert.deepStrictEqual(
+  E.bind(eitherLeft, 'a', () => E.left('another error')),
+  E.left('error')
+)
+```
+
 Added in v1.0.0
 
 ## bindDiscard
@@ -633,6 +659,16 @@ export declare const bindTo: {
 }
 ```
 
+**Example**
+
+```ts
+import * as E from '@effect/data/Either'
+
+assert.deepStrictEqual(E.bindTo(E.right(1), 'a'), E.right({ a: 1 }))
+assert.deepStrictEqual(E.bindTo(E.left('error'), 'a'), E.left('error'))
+assert.deepStrictEqual(E.bindTo('a')(E.right(1)), E.right({ a: 1 }))
+```
+
 Added in v1.0.0
 
 ## let
@@ -667,6 +703,19 @@ export declare const letDiscard: {
     { [K in N | keyof A]: K extends keyof A ? A[K] : B }
   >
 }
+```
+
+**Example**
+
+```ts
+import * as E from '@effect/data/Either'
+
+const eitherRight: E.Either<string, {}> = E.right({})
+const eitherLeft: E.Either<string, {}> = E.left('error')
+
+assert.deepStrictEqual(E.letDiscard(eitherRight, 'a', 1), E.right({ a: 1 }))
+assert.deepStrictEqual(E.letDiscard(eitherLeft, 'a', 1), E.left('error'))
+assert.deepStrictEqual(E.letDiscard('a', 1)(eitherRight), E.right({ a: 1 }))
 ```
 
 Added in v1.0.0
