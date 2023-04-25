@@ -4,6 +4,7 @@
  * @since 1.0.0
  */
 
+import { dual } from "@effect/data/Function"
 import * as equivalence from "@effect/data/typeclass/Equivalence"
 import * as monoid from "@effect/data/typeclass/Monoid"
 import * as order from "@effect/data/typeclass/Order"
@@ -152,3 +153,54 @@ export const getSemigroup: <R extends { readonly [x: string]: semigroup.Semigrou
 export const getMonoid: <R extends { readonly [x: string]: monoid.Monoid<any> }>(
   fields: R
 ) => monoid.Monoid<{ [K in keyof R]: [R[K]] extends [monoid.Monoid<infer A>] ? A : never }> = monoid.struct
+
+type PartialTransform<O> = Partial<{ [K in keyof O]: (a: O[K]) => unknown }>
+
+type Transformed<O, T extends PartialTransform<O>> =
+  & unknown
+  & {
+    [K in keyof O]: K extends keyof T ? T[K] extends (...a: any) => any ? ReturnType<T[K]> : O[K] : O[K]
+  }
+
+/**
+ * Transforms the values of a Struct provided a transformation function for each key.
+ * If no transformation function is provided for a key, it will return the origional value for that key.
+ *
+ * @example
+ * import { evolve } from '@effect/data/Struct'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * assert.deepStrictEqual(
+ *   pipe(
+ *     { a: 'a', b: 1, c: 3 },
+ *     evolve({
+ *       a: (a) => a.length,
+ *       b: (b) => b * 2
+ *     })
+ *   ),
+ *   { a: 1, b: 2, c: 3 }
+ * )
+ *
+ * @since 1.0.0
+ */
+export const evolve: {
+  <O, T extends PartialTransform<O>>(t: T): (
+    obj: O
+  ) => Transformed<O, T>
+  <O, T extends PartialTransform<O>>(obj: O, t: T): Transformed<O, T>
+} = dual(
+  2,
+  <O, T extends PartialTransform<O>>(
+    obj: O,
+    t: T
+  ): unknown & Transformed<O, T> => {
+    const out = { ...obj }
+    for (const k in t) {
+      if (Object.prototype.hasOwnProperty.call(obj, k)) {
+        // @ts-ignore
+        out[k] = t[k](obj[k])
+      }
+    }
+    return out as any
+  }
+)
