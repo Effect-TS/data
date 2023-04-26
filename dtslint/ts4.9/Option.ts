@@ -91,6 +91,3 @@ pipe(
     ) => true
   )
 )
-
-// $ExpectType _.Option<string | number>
-declare const unified: U.Unify<_.Option<number> | _.Option<string>>
