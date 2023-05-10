@@ -1,4 +1,28 @@
 {
   "exclude": ["src/internal/**/*.ts"],
-  "theme": "mikearnaldi/just-the-docs"
+  "theme": "mikearnaldi/just-the-docs",
+  "parseCompilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "target": "ES2021",
+    "lib": ["ES2021"],
+    "paths": {
+      "@effect/data": ["./src/index.ts"],
+      "@effect/data/test/*": ["./test/*"],
+      "@effect/data/examples/*": ["./examples/*"],
+      "@effect/data/*": ["./src/*"]
+    }
+  },
+  "examplesCompilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "target": "ES2021",
+    "lib": ["ES2021"],
+    "paths": {
+      "@effect/data": ["../../src/index.ts"],
+      "@effect/data/test/*": ["../../test/*"],
+      "@effect/data/examples/*": ["../../examples/*"],
+      "@effect/data/*": ["../../src/*"]
+    }
+  }
 }
