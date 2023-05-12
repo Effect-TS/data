@@ -1739,7 +1739,7 @@ export const partition: {
  * @category filtering
  * @since 1.0.0
  */
-export const separate: <A, B>(self: Iterable<Either<A, B>>) => [Array<A>, Array<B>] = partitionMap(
+export const separate: <E, A>(self: Iterable<Either<E, A>>) => [Array<E>, Array<A>] = partitionMap(
   identity
 )
 
