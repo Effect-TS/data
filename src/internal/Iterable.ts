@@ -25,6 +25,7 @@ export function concat<B>(that: Iterable<B>) {
   }
 }
 
+/** @internal */
 export function reduce<A, B>(b: B, f: (s: B, a: A) => B) {
   return function(iterable: Iterable<A>): B {
     if (Array.isArray(iterable)) {
@@ -38,6 +39,7 @@ export function reduce<A, B>(b: B, f: (s: B, a: A) => B) {
   }
 }
 
+/** @internal */
 export function map<A, B>(f: (a: A) => B) {
   return function(iterable: Iterable<A>): Iterable<B> {
     if (Array.isArray(iterable)) {
