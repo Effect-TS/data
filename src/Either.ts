@@ -586,7 +586,7 @@ export const Product: product_.Product<EitherTypeLambda> = {
  * Similar to `Promise.all` but operates on `Either`s.
  *
  * ```
- * [Either<E1, A>, Either<E1, B>, ...] -> Either<E1 \| E2 \| ..., [A, B, ...]>
+ * [Either<E1, A>, Either<E2, B>, ...] -> Either<E1 | E2 | ..., [A, B, ...]>
  * ```
  *
  * @since 1.0.0
