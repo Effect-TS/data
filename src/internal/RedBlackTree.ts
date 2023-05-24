@@ -150,22 +150,20 @@ export const find = Dual.dual<
   <K>(key: K) => <V>(self: RBT.RedBlackTree<K, V>) => Chunk.Chunk<V>,
   <K, V>(self: RBT.RedBlackTree<K, V>, key: K) => Chunk.Chunk<V>
 >(2, <K, V>(self: RBT.RedBlackTree<K, V>, key: K) => {
-  const cmp = (self as RedBlackTreeImpl<K, V>)._ord.compare
+  const stack: Array<Node.Node<K, V>> = []
   let node = (self as RedBlackTreeImpl<K, V>)._root
   let result = Chunk.empty<V>()
-  let stack: Array<Node.Node<K, V>> = []
   while (node !== undefined || stack.length > 0) {
     if (node) {
-      stack.push(node);
-      node = node.left;
+      stack.push(node)
+      node = node.left
     } else {
-      const current = stack.pop();
-      if (cmp(current.key, key) === 0) {
+      const current = stack.pop()!
+      if (Equal.equals(key, current.key)) {
         result = Chunk.prepend(current.value)(result)
       }
-      node = current.right;
+      node = current.right
     }
-
   }
   return result
 })
