@@ -153,16 +153,19 @@ export const find = Dual.dual<
   const cmp = (self as RedBlackTreeImpl<K, V>)._ord.compare
   let node = (self as RedBlackTreeImpl<K, V>)._root
   let result = Chunk.empty<V>()
-  while (node !== undefined) {
-    const d = cmp(key, node.key)
-    if (d === 0 && Equal.equals(key, node.key)) {
-      result = Chunk.prepend(node.value)(result)
-    }
-    if (d <= 0) {
-      node = node.left
+  let stack: Array<Node.Node<K, V>> = []
+  while (node !== undefined || stack.length > 0) {
+    if (node) {
+      stack.push(node);
+      node = node.left;
     } else {
-      node = node.right
+      const current = stack.pop();
+      if (cmp(current.key, key) === 0) {
+        result = Chunk.prepend(current.value)(result)
+      }
+      node = current.right;
     }
+
   }
   return result
 })
