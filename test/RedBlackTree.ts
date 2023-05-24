@@ -337,7 +337,7 @@ describe.concurrent("RedBlackTree", () => {
     deepStrictEqual(Array.from(RedBlackTree.find(1n)(bigintTree)), [1, 2, 3, 4, 5])
   })
 
-  it.only("find Eq/Ord", () => {
+  it("find Eq/Ord", () => {
     class Key {
       constructor(readonly n: number, readonly s: string) {}
 
