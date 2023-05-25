@@ -6,7 +6,7 @@ import type * as Data from "@effect/data/Data"
 import type { SourceLocation, Trace } from "@effect/data/Debug"
 import * as Equal from "@effect/data/Equal"
 import type { LazyArg } from "@effect/data/Function"
-import { constNull, constUndefined, dual, identity } from "@effect/data/Function"
+import { constNull, constUndefined, constVoid, dual, identity } from "@effect/data/Function"
 import * as Gen from "@effect/data/Gen"
 import type { Kind, TypeLambda } from "@effect/data/HKT"
 import * as either from "@effect/data/internal/Either"
@@ -1455,6 +1455,102 @@ export const lefts = <E, A>(self: Iterable<Either<E, A>>): Array<E> => {
   }
   return out
 }
+
+/**
+ * Feeds elements of type `A` to `f` and accumulates all errors in error
+ * channel or successes in success channel.
+ *
+ * This combinator is lossy meaning that if there are errors all successes
+ * will be lost. To retain all information please use `ReadonlyArray.separate`.
+ *
+ * @example
+ * import * as Either from "@effect/data/Either"
+ *
+ * const f = (n: number) => n > 0 ? Either.right(n) : Either.left(`${n} is negative`)
+ *
+ * assert.deepStrictEqual(Either.validateAll([], f), Either.right([]))
+ * assert.deepStrictEqual(Either.validateAll([1, 2], f), Either.right([1, 2]))
+ * assert.deepStrictEqual(Either.validateAll([1, -1, -2], f), Either.left(["-1 is negative", "-2 is negative"]))
+ *
+ * @since 1.0.0
+ */
+export const validateAll: {
+  <A, E, B>(f: (a: A) => Either<E, B>): (elements: Iterable<A>) => Either<Array<E>, Array<B>>
+  <A, E, B>(elements: Iterable<A>, f: (a: A) => Either<E, B>): Either<Array<E>, Array<B>>
+} = dual(2, <A, E, B>(elements: Iterable<A>, f: (a: A) => Either<E, B>): Either<Array<E>, Array<B>> => {
+  const es: Array<E> = []
+  const bs: Array<B> = []
+  for (const element of elements) {
+    const e = f(element)
+    if (isLeft(e)) {
+      es.push(e.left)
+    } else {
+      bs.push(e.right)
+    }
+  }
+  return es.length > 0 ? left(es) : right(bs)
+})
+
+/**
+ * Feeds elements of type `A` to `f` and accumulates all errors, discarding
+ * the successes.
+ *
+ * @example
+ * import * as Either from "@effect/data/Either"
+ *
+ * const f = (n: number) => n > 0 ? Either.right(n) : Either.left(`${n} is negative`)
+ *
+ * assert.deepStrictEqual(Either.validateAllDiscard([], f), Either.right(undefined))
+ * assert.deepStrictEqual(Either.validateAllDiscard([1, 2], f), Either.right(undefined))
+ * assert.deepStrictEqual(Either.validateAllDiscard([1, -1, -2], f), Either.left(["-1 is negative", "-2 is negative"]))
+ *
+ * @since 1.0.0
+ */
+export const validateAllDiscard: {
+  <A, E, _>(f: (a: A) => Either<E, _>): (elements: Iterable<A>) => Either<Array<E>, void>
+  <A, E, _>(elements: Iterable<A>, f: (a: A) => Either<E, _>): Either<Array<E>, void>
+} = dual(
+  2,
+  <A, E, _>(elements: Iterable<A>, f: (a: A) => Either<E, _>): Either<Array<E>, void> =>
+    map(validateAll(elements, f), constVoid)
+)
+
+/**
+ * Feeds elements of type `A` to `f` until it succeeds. Returns first success or the accumulation of all errors.
+ *
+ * If `elements` is empty then `Either.left([])` is returned.
+ *
+ * @example
+ * import * as Either from "@effect/data/Either"
+ *
+ * const f = (n: number) => n > 0 ? Either.right(n) : Either.left(`${n} is negative`)
+ *
+ * assert.deepStrictEqual(Either.validateFirst([], f), Either.left([]))
+ * assert.deepStrictEqual(Either.validateFirst([1, 2], f), Either.right(1))
+ * assert.deepStrictEqual(Either.validateFirst([1, -1], f), Either.right(1))
+ * assert.deepStrictEqual(Either.validateFirst([-1, 2], f), Either.right(2))
+ * assert.deepStrictEqual(Either.validateFirst([-1, -2], f), Either.left(["-1 is negative", "-2 is negative"]))
+ *
+ * @since 1.0.0
+ */
+export const validateFirst: {
+  <A, E, B>(f: (a: A) => Either<E, B>): (elements: Iterable<A>) => Either<Array<E>, B>
+  <A, E, B>(elements: Iterable<A>, f: (a: A) => Either<E, B>): Either<Array<E>, B>
+} = dual(
+  2,
+  <A, E, B>(elements: Iterable<A>, f: (a: A) => Either<E, B>): Either<Array<E>, B> => {
+    const es: Array<E> = []
+    for (const element of elements) {
+      const e = f(element)
+      if (isRight(e)) {
+        return right(e.right)
+      } else {
+        es.push(e.left)
+      }
+    }
+    return left(es)
+  }
+)
 
 // -------------------------------------------------------------------------------------
 // do notation

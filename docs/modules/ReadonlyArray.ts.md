@@ -622,7 +622,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const separate: <A, B>(self: Iterable<Either<A, B>>) => [A[], B[]]
+export declare const separate: <E, A>(self: Iterable<Either<E, A>>) => [E[], A[]]
 ```
 
 Added in v1.0.0
