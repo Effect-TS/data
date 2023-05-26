@@ -23,6 +23,7 @@ Added in v1.0.0
   - [random](#random)
   - [string](#string)
   - [structure](#structure)
+  - [structureKeys](#structurekeys)
 - [models](#models)
   - [Hash (interface)](#hash-interface)
 - [symbols](#symbols)
@@ -120,6 +121,16 @@ Added in v1.0.0
 
 ```ts
 export declare const structure: <A extends object>(o: A) => number
+```
+
+Added in v1.0.0
+
+## structureKeys
+
+**Signature**
+
+```ts
+export declare const structureKeys: <A extends object>(o: A, keys: readonly (keyof A)[]) => number
 ```
 
 Added in v1.0.0

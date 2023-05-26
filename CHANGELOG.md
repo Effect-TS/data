@@ -1,5 +1,17 @@
 # @effect/data
 
+## 0.12.3
+
+### Patch Changes
+
+- [#348](https://github.com/Effect-TS/data/pull/348) [`c51a27c`](https://github.com/Effect-TS/data/commit/c51a27c2e3b035a2202615349344e99d402d9d06) Thanks [@gcanti](https://github.com/gcanti)! - Either: add validateAll, validateAllDiscard, validateFirst
+
+- [#342](https://github.com/Effect-TS/data/pull/342) [`befe3e6`](https://github.com/Effect-TS/data/commit/befe3e670ce95c4cfac9a0b13c36be7f69f5a0f3) Thanks [@jessekelly881](https://github.com/jessekelly881)! - Struct: added evolve
+
+- [#351](https://github.com/Effect-TS/data/pull/351) [`0a17fda`](https://github.com/Effect-TS/data/commit/0a17fda1982cd427eedf4508f320f04e08bc580f) Thanks [@RareBodhi](https://github.com/RareBodhi)! - Patches RedBlackTree find method to correctly return all results for a key
+
+- [#340](https://github.com/Effect-TS/data/pull/340) [`b5a47cf`](https://github.com/Effect-TS/data/commit/b5a47cf1f370fb809e3f7f5cab433edc773f2929) Thanks [@tim-smart](https://github.com/tim-smart)! - add Hash.structureKeys
+
 ## 0.12.2
 
 ### Patch Changes

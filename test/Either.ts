@@ -1,4 +1,4 @@
-import * as E from "@effect/data/Either"
+import * as Either from "@effect/data/Either"
 import { flow, identity, pipe } from "@effect/data/Function"
 import * as N from "@effect/data/Number"
 import * as O from "@effect/data/Option"
@@ -8,550 +8,587 @@ import { inspect } from "node:util"
 
 describe.concurrent("Either", () => {
   it("exports", () => {
-    expect(E.EitherTypeId).exist
+    expect(Either.EitherTypeId).exist
 
-    expect(E.toOption).exist
-    expect(E.getRight).exist
-    expect(E.getLeft).exist
+    expect(Either.toOption).exist
+    expect(Either.getRight).exist
+    expect(Either.getLeft).exist
 
-    expect(E.Invariant).exist
-    expect(E.tupled).exist
-    expect(E.bindTo).exist
+    expect(Either.Invariant).exist
+    expect(Either.tupled).exist
+    expect(Either.bindTo).exist
 
-    expect(E.Covariant).exist
-    expect(E.map).exist
-    expect(E.let).exist
-    expect(E.flap).exist
-    expect(E.as).exist
-    expect(E.asUnit).exist
+    expect(Either.Covariant).exist
+    expect(Either.map).exist
+    expect(Either.let).exist
+    expect(Either.flap).exist
+    expect(Either.as).exist
+    expect(Either.asUnit).exist
 
-    expect(E.Do).exist
-    expect(E.letDiscard).exist
-    expect(E.bindDiscard).exist
+    expect(Either.Do).exist
+    expect(Either.letDiscard).exist
+    expect(Either.bindDiscard).exist
 
-    expect(E.Bicovariant).exist
-    expect(E.bimap).exist
-    expect(E.mapLeft).exist
+    expect(Either.Bicovariant).exist
+    expect(Either.bimap).exist
+    expect(Either.mapLeft).exist
 
-    expect(E.unit).exist
-    expect(E.Do).exist
+    expect(Either.unit).exist
+    expect(Either.Do).exist
 
-    expect(E.Pointed).exist
+    expect(Either.Pointed).exist
 
-    expect(E.FlatMap).exist
-    expect(E.flatMap).exist
-    expect(E.flatten).exist
-    expect(E.zipRight).exist
-    expect(E.composeK).exist
+    expect(Either.FlatMap).exist
+    expect(Either.flatMap).exist
+    expect(Either.flatten).exist
+    expect(Either.zipRight).exist
+    expect(Either.composeK).exist
 
-    expect(E.Chainable).exist
-    expect(E.bind).exist
-    expect(E.tap).exist
-    expect(E.zipLeft).exist
+    expect(Either.Chainable).exist
+    expect(Either.bind).exist
+    expect(Either.tap).exist
+    expect(Either.zipLeft).exist
 
-    expect(E.Monad).exist
+    expect(Either.Monad).exist
 
-    expect(E.SemiProduct).exist
+    expect(Either.SemiProduct).exist
 
-    expect(E.Product).exist
-    expect(E.all).exist
-    expect(E.tuple).exist
-    expect(E.struct).exist
+    expect(Either.Product).exist
+    expect(Either.all).exist
+    expect(Either.tuple).exist
+    expect(Either.struct).exist
 
-    expect(E.SemiApplicative).exist
-    expect(E.getFirstLeftSemigroup).exist // liftSemigroup
-    expect(E.lift2).exist
-    expect(E.ap).exist
-    expect(E.zipLeft).exist
-    expect(E.zipRight).exist
+    expect(Either.SemiApplicative).exist
+    expect(Either.getFirstLeftSemigroup).exist // liftSemigroup
+    expect(Either.lift2).exist
+    expect(Either.ap).exist
+    expect(Either.zipLeft).exist
+    expect(Either.zipRight).exist
 
-    expect(E.Applicative).exist
-    expect(E.getFirstLeftMonoid).exist // liftMonoid
+    expect(Either.Applicative).exist
+    expect(Either.getFirstLeftMonoid).exist // liftMonoid
 
-    expect(E.SemiCoproduct).exist
-    expect(E.getFirstRightSemigroup).exist // getSemigroup
+    expect(Either.SemiCoproduct).exist
+    expect(Either.getFirstRightSemigroup).exist // getSemigroup
 
-    expect(E.SemiAlternative).exist
+    expect(Either.SemiAlternative).exist
 
-    expect(E.Foldable).exist
+    expect(Either.Foldable).exist
 
-    expect(E.Traversable).exist
-    expect(E.traverse).exist
-    expect(E.sequence).exist
-    expect(E.traverseTap).exist
+    expect(Either.Traversable).exist
+    expect(Either.traverse).exist
+    expect(Either.sequence).exist
+    expect(Either.traverseTap).exist
+  })
+
+  it("validateAll", () => {
+    const f = (n: number) => n > 0 ? Either.right(n) : Either.left(`${n} is negative`)
+    expect(Either.validateAll([], f)).toEqual(Either.right([]))
+    expect(Either.validateAll([1], f)).toEqual(Either.right([1]))
+    expect(Either.validateAll([1, 2], f)).toEqual(Either.right([1, 2]))
+    expect(Either.validateAll([1, -1], f)).toEqual(Either.left(["-1 is negative"]))
+    expect(Either.validateAll([1, -1, -2], f)).toEqual(
+      Either.left(["-1 is negative", "-2 is negative"])
+    )
+  })
+
+  it("validateAllDiscard", () => {
+    const f = (n: number) => n > 0 ? Either.right(n) : Either.left(`${n} is negative`)
+    expect(Either.validateAllDiscard([], f)).toEqual(Either.right(undefined))
+    expect(Either.validateAllDiscard([1], f)).toEqual(Either.right(undefined))
+    expect(Either.validateAllDiscard([1, 2], f)).toEqual(Either.right(undefined))
+    expect(Either.validateAllDiscard([1, -1], f)).toEqual(Either.left(["-1 is negative"]))
+    expect(Either.validateAllDiscard([1, -1, -2], f)).toEqual(
+      Either.left(["-1 is negative", "-2 is negative"])
+    )
+  })
+
+  it("validateFirst", () => {
+    const f = (n: number) => n > 0 ? Either.right(n) : Either.left(`${n} is negative`)
+    expect(Either.validateFirst([], f)).toEqual(Either.left([]))
+    expect(Either.validateFirst([1], f)).toEqual(Either.right(1))
+    expect(Either.validateFirst([1, 2], f)).toEqual(Either.right(1))
+    expect(Either.validateFirst([1, -1], f)).toEqual(Either.right(1))
+    expect(Either.validateFirst([-1, 2], f)).toEqual(Either.right(2))
+    expect(Either.validateFirst([-1, -2], f)).toEqual(
+      Either.left(["-1 is negative", "-2 is negative"])
+    )
   })
 
   it("toString", () => {
-    expect(String(E.right(1))).toEqual("right(1)")
-    expect(String(E.left("e"))).toEqual(`left(e)`)
+    expect(String(Either.right(1))).toEqual("right(1)")
+    expect(String(Either.left("e"))).toEqual(`left(e)`)
   })
 
   it("toJSON", () => {
-    expect(JSON.stringify(E.right(1))).toEqual(
+    expect(JSON.stringify(Either.right(1))).toEqual(
       JSON.stringify({ _tag: "Right", right: 1 })
     )
-    expect(JSON.stringify(E.left("e"))).toEqual(
+    expect(JSON.stringify(Either.left("e"))).toEqual(
       JSON.stringify({ _tag: "Left", left: "e" })
     )
   })
 
   it("inspect", () => {
-    expect(inspect(E.right(1))).toEqual(inspect({ _tag: "Right", right: 1 }))
-    expect(inspect(E.left("e"))).toEqual(inspect({ _tag: "Left", left: "e" }))
+    expect(inspect(Either.right(1))).toEqual(inspect({ _tag: "Right", right: 1 }))
+    expect(inspect(Either.left("e"))).toEqual(inspect({ _tag: "Left", left: "e" }))
   })
 
   it("toRefinement", () => {
-    const f = (s: string | number): E.Either<string, string> =>
-      typeof s === "string" ? E.right(s) : E.left("not a string")
-    const isString = E.toRefinement(f)
+    const f = (s: string | number): Either.Either<string, string> =>
+      typeof s === "string" ? Either.right(s) : Either.left("not a string")
+    const isString = Either.toRefinement(f)
     Util.deepStrictEqual(isString("s"), true)
     Util.deepStrictEqual(isString(1), false)
     type A = { readonly type: "A" }
     type B = { readonly type: "B" }
     type C = A | B
-    const isA = E.toRefinement((
+    const isA = Either.toRefinement((
       c: C
-    ) => (c.type === "A" ? E.right(c) : E.left("not as A")))
+    ) => (c.type === "A" ? Either.right(c) : Either.left("not as A")))
     Util.deepStrictEqual(isA({ type: "A" }), true)
     Util.deepStrictEqual(isA({ type: "B" }), false)
   })
 
   it("isEither", () => {
-    Util.deepStrictEqual(pipe(E.right(1), E.isEither), true)
-    Util.deepStrictEqual(pipe(E.left("e"), E.isEither), true)
-    Util.deepStrictEqual(pipe(O.some(1), E.isEither), false)
+    Util.deepStrictEqual(pipe(Either.right(1), Either.isEither), true)
+    Util.deepStrictEqual(pipe(Either.left("e"), Either.isEither), true)
+    Util.deepStrictEqual(pipe(O.some(1), Either.isEither), false)
   })
 
   it("orElseFail", () => {
-    Util.deepStrictEqual(pipe(E.right(1), E.orElseFail(() => "e2")), E.right(1))
-    Util.deepStrictEqual(pipe(E.left("e1"), E.orElseFail(() => "e2")), E.left("e2"))
+    Util.deepStrictEqual(pipe(Either.right(1), Either.orElseFail(() => "e2")), Either.right(1))
+    Util.deepStrictEqual(pipe(Either.left("e1"), Either.orElseFail(() => "e2")), Either.left("e2"))
   })
 
   it("reduce", () => {
-    Util.deepStrictEqual(pipe(E.right("bar"), E.Foldable.reduce("foo", (b, a) => b + a)), "foobar")
-    Util.deepStrictEqual(pipe(E.left("bar"), E.Foldable.reduce("foo", (b, a) => b + a)), "foo")
+    Util.deepStrictEqual(pipe(Either.right("bar"), Either.Foldable.reduce("foo", (b, a) => b + a)), "foobar")
+    Util.deepStrictEqual(pipe(Either.left("bar"), Either.Foldable.reduce("foo", (b, a) => b + a)), "foo")
   })
 
   it("getRight", () => {
-    Util.deepStrictEqual(pipe(E.right(1), E.getRight), O.some(1))
-    Util.deepStrictEqual(pipe(E.left("a"), E.getRight), O.none())
+    Util.deepStrictEqual(pipe(Either.right(1), Either.getRight), O.some(1))
+    Util.deepStrictEqual(pipe(Either.left("a"), Either.getRight), O.none())
   })
 
   it("getLeft", () => {
-    Util.deepStrictEqual(pipe(E.right(1), E.getLeft), O.none())
-    Util.deepStrictEqual(pipe(E.left("e"), E.getLeft), O.some("e"))
+    Util.deepStrictEqual(pipe(Either.right(1), Either.getLeft), O.none())
+    Util.deepStrictEqual(pipe(Either.left("e"), Either.getLeft), O.some("e"))
   })
 
   it("getOrNull", () => {
-    Util.deepStrictEqual(pipe(E.right(1), E.getOrNull), 1)
-    Util.deepStrictEqual(pipe(E.left("a"), E.getOrNull), null)
+    Util.deepStrictEqual(pipe(Either.right(1), Either.getOrNull), 1)
+    Util.deepStrictEqual(pipe(Either.left("a"), Either.getOrNull), null)
   })
 
   it("getOrUndefined", () => {
-    Util.deepStrictEqual(pipe(E.right(1), E.getOrUndefined), 1)
-    Util.deepStrictEqual(pipe(E.left("a"), E.getOrUndefined), undefined)
+    Util.deepStrictEqual(pipe(Either.right(1), Either.getOrUndefined), 1)
+    Util.deepStrictEqual(pipe(Either.left("a"), Either.getOrUndefined), undefined)
   })
 
   it("compact", () => {
-    Util.deepStrictEqual(pipe(E.right(O.some(1)), E.compact(() => "e2")), E.right(1))
-    Util.deepStrictEqual(pipe(E.right(O.none()), E.compact(() => "e2")), E.left("e2"))
-    Util.deepStrictEqual(pipe(E.left("e1"), E.compact(() => "e2")), E.left("e1"))
+    Util.deepStrictEqual(pipe(Either.right(O.some(1)), Either.compact(() => "e2")), Either.right(1))
+    Util.deepStrictEqual(pipe(Either.right(O.none()), Either.compact(() => "e2")), Either.left("e2"))
+    Util.deepStrictEqual(pipe(Either.left("e1"), Either.compact(() => "e2")), Either.left("e1"))
   })
 
   it("inspectRight", () => {
     const log: Array<number> = []
-    pipe(E.right(1), E.inspectRight((e) => log.push(e)))
-    pipe(E.left("e"), E.inspectRight((e) => log.push(e)))
+    pipe(Either.right(1), Either.inspectRight((e) => log.push(e)))
+    pipe(Either.left("e"), Either.inspectRight((e) => log.push(e)))
     Util.deepStrictEqual(log, [1])
   })
 
   it("tapError", () => {
-    Util.deepStrictEqual(pipe(E.right(1), E.tapError(() => E.right(2))), E.right(1))
-    Util.deepStrictEqual(pipe(E.left("a"), E.tapError(() => E.right(2))), E.left("a"))
-    Util.deepStrictEqual(pipe(E.left("a"), E.tapError(() => E.left("b"))), E.left("b"))
+    Util.deepStrictEqual(pipe(Either.right(1), Either.tapError(() => Either.right(2))), Either.right(1))
+    Util.deepStrictEqual(pipe(Either.left("a"), Either.tapError(() => Either.right(2))), Either.left("a"))
+    Util.deepStrictEqual(pipe(Either.left("a"), Either.tapError(() => Either.left("b"))), Either.left("b"))
   })
 
   it("inspectLeft", () => {
     const log: Array<string> = []
-    pipe(E.right(1), E.inspectLeft((e) => log.push(e)))
-    pipe(E.left("e"), E.inspectLeft((e) => log.push(e)))
+    pipe(Either.right(1), Either.inspectLeft((e) => log.push(e)))
+    pipe(Either.left("e"), Either.inspectLeft((e) => log.push(e)))
     Util.deepStrictEqual(log, ["e"])
   })
 
   it("getOrThrow", () => {
-    expect(pipe(E.right(1), E.getOrThrow)).toEqual(1)
-    expect(() => pipe(E.left("e"), E.getOrThrow)).toThrowError(
+    expect(pipe(Either.right(1), Either.getOrThrow)).toEqual(1)
+    expect(() => pipe(Either.left("e"), Either.getOrThrow)).toThrowError(
       new Error("getOrThrow called on a Left")
     )
   })
 
   it("getOrThrowWith", () => {
-    expect(pipe(E.right(1), E.getOrThrowWith((e) => new Error(`Unexpected Left: ${e}`)))).toEqual(1)
-    expect(() => pipe(E.left("e"), E.getOrThrowWith((e) => new Error(`Unexpected Left: ${e}`))))
+    expect(pipe(Either.right(1), Either.getOrThrowWith((e) => new Error(`Unexpected Left: ${e}`)))).toEqual(1)
+    expect(() => pipe(Either.left("e"), Either.getOrThrowWith((e) => new Error(`Unexpected Left: ${e}`))))
       .toThrowError(
         new Error("Unexpected Left: e")
       )
   })
 
   it("andThenDiscard", () => {
-    Util.deepStrictEqual(pipe(E.right(1), E.zipLeft(E.right("a"))), E.right(1))
-    Util.deepStrictEqual(pipe(E.right(1), E.zipLeft(E.left(true))), E.left(true))
-    Util.deepStrictEqual(pipe(E.left(1), E.zipLeft(E.right("a"))), E.left(1))
-    Util.deepStrictEqual(pipe(E.left(1), E.zipLeft(E.left(true))), E.left(1))
+    Util.deepStrictEqual(pipe(Either.right(1), Either.zipLeft(Either.right("a"))), Either.right(1))
+    Util.deepStrictEqual(pipe(Either.right(1), Either.zipLeft(Either.left(true))), Either.left(true))
+    Util.deepStrictEqual(pipe(Either.left(1), Either.zipLeft(Either.right("a"))), Either.left(1))
+    Util.deepStrictEqual(pipe(Either.left(1), Either.zipLeft(Either.left(true))), Either.left(1))
   })
 
   it("andThen", () => {
-    Util.deepStrictEqual(pipe(E.right(1), E.zipRight(E.right("a"))), E.right("a"))
-    Util.deepStrictEqual(pipe(E.right(1), E.zipRight(E.left(true))), E.left(true))
-    Util.deepStrictEqual(pipe(E.left(1), E.zipRight(E.right("a"))), E.left(1))
-    Util.deepStrictEqual(pipe(E.left(1), E.zipRight(E.left(true))), E.left(1))
+    Util.deepStrictEqual(pipe(Either.right(1), Either.zipRight(Either.right("a"))), Either.right("a"))
+    Util.deepStrictEqual(pipe(Either.right(1), Either.zipRight(Either.left(true))), Either.left(true))
+    Util.deepStrictEqual(pipe(Either.left(1), Either.zipRight(Either.right("a"))), Either.left(1))
+    Util.deepStrictEqual(pipe(Either.left(1), Either.zipRight(Either.left(true))), Either.left(1))
   })
 
   it("orElse", () => {
-    Util.deepStrictEqual(pipe(E.right(1), E.orElse(() => E.right(2))), E.right(1))
-    Util.deepStrictEqual(pipe(E.right(1), E.orElse(() => E.left("b"))), E.right(1))
-    Util.deepStrictEqual(pipe(E.left("a"), E.orElse(() => E.right(2))), E.right(2))
-    Util.deepStrictEqual(pipe(E.left("a"), E.orElse(() => E.left("b"))), E.left("b"))
+    Util.deepStrictEqual(pipe(Either.right(1), Either.orElse(() => Either.right(2))), Either.right(1))
+    Util.deepStrictEqual(pipe(Either.right(1), Either.orElse(() => Either.left("b"))), Either.right(1))
+    Util.deepStrictEqual(pipe(Either.left("a"), Either.orElse(() => Either.right(2))), Either.right(2))
+    Util.deepStrictEqual(pipe(Either.left("a"), Either.orElse(() => Either.left("b"))), Either.left("b"))
   })
 
   it("orElseEither", () => {
-    expect(pipe(E.right(1), E.orElseEither(() => E.right(2)))).toEqual(E.right(E.left(1)))
-    expect(pipe(E.right(1), E.orElseEither(() => E.left("b")))).toEqual(E.right(E.left(1)))
-    expect(pipe(E.left("a"), E.orElseEither(() => E.right(2)))).toEqual(E.right(E.right(2)))
-    expect(pipe(E.left("a"), E.orElseEither(() => E.left("b")))).toEqual(E.left("b"))
+    expect(pipe(Either.right(1), Either.orElseEither(() => Either.right(2)))).toEqual(Either.right(Either.left(1)))
+    expect(pipe(Either.right(1), Either.orElseEither(() => Either.left("b")))).toEqual(Either.right(Either.left(1)))
+    expect(pipe(Either.left("a"), Either.orElseEither(() => Either.right(2)))).toEqual(Either.right(Either.right(2)))
+    expect(pipe(Either.left("a"), Either.orElseEither(() => Either.left("b")))).toEqual(Either.left("b"))
   })
 
   it("map", () => {
-    const f = E.map(S.length)
-    Util.deepStrictEqual(pipe(E.right("abc"), f), E.right(3))
-    Util.deepStrictEqual(pipe(E.left("s"), f), E.left("s"))
+    const f = Either.map(S.length)
+    Util.deepStrictEqual(pipe(Either.right("abc"), f), Either.right(3))
+    Util.deepStrictEqual(pipe(Either.left("s"), f), Either.left("s"))
   })
 
   it("flatMap", () => {
-    const f = E.flatMap<string, string, number>(flow(S.length, E.right))
-    Util.deepStrictEqual(pipe(E.right("abc"), f), E.right(3))
-    Util.deepStrictEqual(pipe(E.left("maError"), f), E.left("maError"))
+    const f = Either.flatMap<string, string, number>(flow(S.length, Either.right))
+    Util.deepStrictEqual(pipe(Either.right("abc"), f), Either.right(3))
+    Util.deepStrictEqual(pipe(Either.left("maError"), f), Either.left("maError"))
   })
 
   it("bimap", () => {
-    const f = E.bimap(S.length, (n: number) => n > 2)
-    Util.deepStrictEqual(pipe(E.right(1), f), E.right(false))
+    const f = Either.bimap(S.length, (n: number) => n > 2)
+    Util.deepStrictEqual(pipe(Either.right(1), f), Either.right(false))
   })
 
   it("mapLeft", () => {
-    const f = E.mapLeft(Util.double)
-    Util.deepStrictEqual(pipe(E.right("a"), f), E.right("a"))
-    Util.deepStrictEqual(pipe(E.left(1), f), E.left(2))
+    const f = Either.mapLeft(Util.double)
+    Util.deepStrictEqual(pipe(Either.right("a"), f), Either.right("a"))
+    Util.deepStrictEqual(pipe(Either.left(1), f), Either.left(2))
   })
 
   it("traverse", () => {
-    const traverse = E.traverse(O.Applicative)((
+    const traverse = Either.traverse(O.Applicative)((
       n: number
     ) => (n >= 2 ? O.some(n) : O.none()))
-    Util.deepStrictEqual(pipe(E.left("a"), traverse), O.some(E.left("a")))
-    Util.deepStrictEqual(pipe(E.right(1), traverse), O.none())
-    Util.deepStrictEqual(pipe(E.right(3), traverse), O.some(E.right(3)))
+    Util.deepStrictEqual(pipe(Either.left("a"), traverse), O.some(Either.left("a")))
+    Util.deepStrictEqual(pipe(Either.right(1), traverse), O.none())
+    Util.deepStrictEqual(pipe(Either.right(3), traverse), O.some(Either.right(3)))
   })
 
   it("sequence", () => {
-    const sequence = E.sequence(O.Applicative)
-    Util.deepStrictEqual(sequence(E.right(O.some(1))), O.some(E.right(1)))
-    Util.deepStrictEqual(sequence(E.left("a")), O.some(E.left("a")))
-    Util.deepStrictEqual(sequence(E.right(O.none())), O.none())
+    const sequence = Either.sequence(O.Applicative)
+    Util.deepStrictEqual(sequence(Either.right(O.some(1))), O.some(Either.right(1)))
+    Util.deepStrictEqual(sequence(Either.left("a")), O.some(Either.left("a")))
+    Util.deepStrictEqual(sequence(Either.right(O.none())), O.none())
   })
 
   it("match", () => {
     const f = (s: string) => `left${s.length}`
     const g = (s: string) => `right${s.length}`
-    const match = E.match(f, g)
-    Util.deepStrictEqual(match(E.left("abc")), "left3")
-    Util.deepStrictEqual(match(E.right("abc")), "right3")
+    const match = Either.match(f, g)
+    Util.deepStrictEqual(match(Either.left("abc")), "left3")
+    Util.deepStrictEqual(match(Either.right("abc")), "right3")
   })
 
   it("getOrElse", () => {
-    Util.deepStrictEqual(pipe(E.right(12), E.getOrElse(() => 17)), 12)
-    Util.deepStrictEqual(pipe(E.left("a"), E.getOrElse(() => 17)), 17)
+    Util.deepStrictEqual(pipe(Either.right(12), Either.getOrElse(() => 17)), 12)
+    Util.deepStrictEqual(pipe(Either.left("a"), Either.getOrElse(() => 17)), 17)
   })
 
   it("contains", () => {
-    const contains = E.contains(N.Equivalence)
-    Util.deepStrictEqual(pipe(E.left("a"), contains(2)), false)
-    Util.deepStrictEqual(pipe(E.right(2), contains(2)), true)
-    Util.deepStrictEqual(pipe(E.right(2), contains(1)), false)
+    const contains = Either.contains(N.Equivalence)
+    Util.deepStrictEqual(pipe(Either.left("a"), contains(2)), false)
+    Util.deepStrictEqual(pipe(Either.right(2), contains(2)), true)
+    Util.deepStrictEqual(pipe(Either.right(2), contains(1)), false)
   })
 
   it("filter", () => {
     const predicate = (n: number) => n > 10
-    Util.deepStrictEqual(pipe(E.right(12), E.filter(predicate, () => -1)), E.right(12))
-    Util.deepStrictEqual(pipe(E.right(7), E.filter(predicate, () => -1)), E.left(-1))
-    Util.deepStrictEqual(pipe(E.left(12), E.filter(predicate, () => -1)), E.left(12))
+    Util.deepStrictEqual(pipe(Either.right(12), Either.filter(predicate, () => -1)), Either.right(12))
+    Util.deepStrictEqual(pipe(Either.right(7), Either.filter(predicate, () => -1)), Either.left(-1))
+    Util.deepStrictEqual(pipe(Either.left(12), Either.filter(predicate, () => -1)), Either.left(12))
   })
 
   it("isLeft", () => {
-    Util.deepStrictEqual(E.isLeft(E.right(1)), false)
-    Util.deepStrictEqual(E.isLeft(E.left(1)), true)
+    Util.deepStrictEqual(Either.isLeft(Either.right(1)), false)
+    Util.deepStrictEqual(Either.isLeft(Either.left(1)), true)
   })
 
   it("isRight", () => {
-    Util.deepStrictEqual(E.isRight(E.right(1)), true)
-    Util.deepStrictEqual(E.isRight(E.left(1)), false)
+    Util.deepStrictEqual(Either.isRight(Either.right(1)), true)
+    Util.deepStrictEqual(Either.isRight(Either.left(1)), false)
   })
 
   it("swap", () => {
-    Util.deepStrictEqual(E.reverse(E.right("a")), E.left("a"))
-    Util.deepStrictEqual(E.reverse(E.left("b")), E.right("b"))
+    Util.deepStrictEqual(Either.reverse(Either.right("a")), Either.left("a"))
+    Util.deepStrictEqual(Either.reverse(Either.left("b")), Either.right("b"))
   })
 
   it("liftPredicate", () => {
-    const f = E.liftPredicate((n: number) => n >= 2, () => "e")
-    Util.deepStrictEqual(f(3), E.right(3))
-    Util.deepStrictEqual(f(1), E.left("e"))
+    const f = Either.liftPredicate((n: number) => n >= 2, () => "e")
+    Util.deepStrictEqual(f(3), Either.right(3))
+    Util.deepStrictEqual(f(1), Either.left("e"))
   })
 
   it("fromNullable", () => {
-    Util.deepStrictEqual(E.fromNullable(() => "default")(null), E.left("default"))
-    Util.deepStrictEqual(E.fromNullable(() => "default")(undefined), E.left("default"))
-    Util.deepStrictEqual(E.fromNullable(() => "default")(1), E.right(1))
+    Util.deepStrictEqual(Either.fromNullable(() => "default")(null), Either.left("default"))
+    Util.deepStrictEqual(Either.fromNullable(() => "default")(undefined), Either.left("default"))
+    Util.deepStrictEqual(Either.fromNullable(() => "default")(1), Either.right(1))
   })
 
   it("filterMap", () => {
     const p = (n: number) => n > 2
     const f = (n: number) => (p(n) ? O.some(n + 1) : O.none())
-    Util.deepStrictEqual(pipe(E.left("123"), E.filterMap(f, () => "")), E.left("123"))
-    Util.deepStrictEqual(pipe(E.right(1), E.filterMap(f, () => "")), E.left(S.Monoid.empty))
-    Util.deepStrictEqual(pipe(E.right(3), E.filterMap(f, () => "")), E.right(4))
+    Util.deepStrictEqual(pipe(Either.left("123"), Either.filterMap(f, () => "")), Either.left("123"))
+    Util.deepStrictEqual(pipe(Either.right(1), Either.filterMap(f, () => "")), Either.left(S.Monoid.empty))
+    Util.deepStrictEqual(pipe(Either.right(3), Either.filterMap(f, () => "")), Either.right(4))
   })
 
   it("fromIterable", () => {
-    Util.deepStrictEqual(E.fromIterable(() => "e")([]), E.left("e"))
-    Util.deepStrictEqual(E.fromIterable(() => "e")(["a"]), E.right("a"))
+    Util.deepStrictEqual(Either.fromIterable(() => "e")([]), Either.left("e"))
+    Util.deepStrictEqual(Either.fromIterable(() => "e")(["a"]), Either.right("a"))
   })
 
   it("firstRightOf", () => {
-    Util.deepStrictEqual(pipe(E.right(1), E.firstRightOf([])), E.right(1))
-    Util.deepStrictEqual(pipe(E.left("e"), E.firstRightOf([])), E.left("e"))
+    Util.deepStrictEqual(pipe(Either.right(1), Either.firstRightOf([])), Either.right(1))
+    Util.deepStrictEqual(pipe(Either.left("e"), Either.firstRightOf([])), Either.left("e"))
     Util.deepStrictEqual(
-      pipe(E.left("e1"), E.firstRightOf([E.left("e2"), E.left("e3"), E.left("e4"), E.right(1)])),
-      E.right(1)
+      pipe(
+        Either.left("e1"),
+        Either.firstRightOf([Either.left("e2"), Either.left("e3"), Either.left("e4"), Either.right(1)])
+      ),
+      Either.right(1)
     )
     Util.deepStrictEqual(
-      pipe(E.left("e1"), E.firstRightOf([E.left("e2"), E.left("e3"), E.left("e4")])),
-      E.left("e4")
+      pipe(Either.left("e1"), Either.firstRightOf([Either.left("e2"), Either.left("e3"), Either.left("e4")])),
+      Either.left("e4")
     )
   })
 
   it("fromOption", () => {
-    Util.deepStrictEqual(E.fromOption(() => "none")(O.none()), E.left("none"))
-    Util.deepStrictEqual(E.fromOption(() => "none")(O.some(1)), E.right(1))
+    Util.deepStrictEqual(Either.fromOption(() => "none")(O.none()), Either.left("none"))
+    Util.deepStrictEqual(Either.fromOption(() => "none")(O.some(1)), Either.right(1))
   })
 
   it("liftOption", () => {
-    const f = E.liftOption((n: number) => (n > 0 ? O.some(n) : O.none()), () => "a")
-    Util.deepStrictEqual(f(1), E.right(1))
-    Util.deepStrictEqual(f(-1), E.left("a"))
+    const f = Either.liftOption((n: number) => (n > 0 ? O.some(n) : O.none()), () => "a")
+    Util.deepStrictEqual(f(1), Either.right(1))
+    Util.deepStrictEqual(f(-1), Either.left("a"))
   })
 
   it("flatMapOption", () => {
-    const f = E.flatMapOption((n: number) => (n > 0 ? O.some(n) : O.none()), () => "a")
-    Util.deepStrictEqual(f(E.right(1)), E.right(1))
-    Util.deepStrictEqual(f(E.right(-1)), E.left("a"))
-    Util.deepStrictEqual(f(E.left("b")), E.left("b"))
+    const f = Either.flatMapOption((n: number) => (n > 0 ? O.some(n) : O.none()), () => "a")
+    Util.deepStrictEqual(f(Either.right(1)), Either.right(1))
+    Util.deepStrictEqual(f(Either.right(-1)), Either.left("a"))
+    Util.deepStrictEqual(f(Either.left("b")), Either.left("b"))
   })
 
   it("exists", () => {
-    const gt2 = E.exists((n: number) => n > 2)
-    Util.deepStrictEqual(gt2(E.left("a")), false)
-    Util.deepStrictEqual(gt2(E.right(1)), false)
-    Util.deepStrictEqual(gt2(E.right(3)), true)
+    const gt2 = Either.exists((n: number) => n > 2)
+    Util.deepStrictEqual(gt2(Either.left("a")), false)
+    Util.deepStrictEqual(gt2(Either.right(1)), false)
+    Util.deepStrictEqual(gt2(Either.right(3)), true)
   })
 
   it("do notation", () => {
     Util.deepStrictEqual(
       pipe(
-        E.right(1),
-        E.bindTo("a"),
-        E.bind("b", () => E.right("b")),
-        E.let("c", ({ a, b }) => [a, b])
+        Either.right(1),
+        Either.bindTo("a"),
+        Either.bind("b", () => Either.right("b")),
+        Either.let("c", ({ a, b }) => [a, b])
       ),
-      E.right({ a: 1, b: "b", c: [1, "b"] })
+      Either.right({ a: 1, b: "b", c: [1, "b"] })
     )
 
     Util.deepStrictEqual(
       pipe(
-        E.Do(),
-        E.letDiscard("a", 1),
-        E.bindDiscard("b", E.right("b")),
+        Either.Do(),
+        Either.letDiscard("a", 1),
+        Either.bindDiscard("b", Either.right("b"))
       ),
-      E.right({ a: 1, b: "b" })
+      Either.right({ a: 1, b: "b" })
     )
   })
 
   it("andThenBind", () => {
     Util.deepStrictEqual(
-      pipe(E.right(1), E.bindTo("a"), E.bindDiscard("b", E.right("b"))),
-      E.right({ a: 1, b: "b" })
+      pipe(Either.right(1), Either.bindTo("a"), Either.bindDiscard("b", Either.right("b"))),
+      Either.right({ a: 1, b: "b" })
     )
   })
 
   it("product", () => {
-    const product = E.SemiProduct.product
-    Util.deepStrictEqual(product(E.right(1), E.right("a")), E.right([1, "a"]))
-    Util.deepStrictEqual(product(E.right(1), E.left("e2")), E.left("e2"))
-    Util.deepStrictEqual(product(E.left("e1"), E.right("a")), E.left("e1"))
-    Util.deepStrictEqual(product(E.left("e1"), E.left("2")), E.left("e1"))
+    const product = Either.SemiProduct.product
+    Util.deepStrictEqual(product(Either.right(1), Either.right("a")), Either.right([1, "a"]))
+    Util.deepStrictEqual(product(Either.right(1), Either.left("e2")), Either.left("e2"))
+    Util.deepStrictEqual(product(Either.left("e1"), Either.right("a")), Either.left("e1"))
+    Util.deepStrictEqual(product(Either.left("e1"), Either.left("2")), Either.left("e1"))
   })
 
   it("productMany", () => {
     const productMany: <E, A>(
-      self: E.Either<E, A>,
-      collection: Iterable<E.Either<E, A>>
-    ) => E.Either<E, [A, ...Array<A>]> = E.SemiProduct.productMany
+      self: Either.Either<E, A>,
+      collection: Iterable<Either.Either<E, A>>
+    ) => Either.Either<E, [A, ...Array<A>]> = Either.SemiProduct.productMany
 
-    Util.deepStrictEqual(productMany(E.right(1), []), E.right([1]))
+    Util.deepStrictEqual(productMany(Either.right(1), []), Either.right([1]))
     Util.deepStrictEqual(
-      productMany(E.right(1), [E.right(2), E.right(3)]),
-      E.right([1, 2, 3])
+      productMany(Either.right(1), [Either.right(2), Either.right(3)]),
+      Either.right([1, 2, 3])
     )
     Util.deepStrictEqual(
-      productMany(E.right(1), [E.left("e"), E.right(3)]),
-      E.left("e")
+      productMany(Either.right(1), [Either.left("e"), Either.right(3)]),
+      Either.left("e")
     )
     expect(
-      productMany(E.left("e"), [E.right(2), E.right(3)])
-    ).toEqual(E.left("e"))
+      productMany(Either.left("e"), [Either.right(2), Either.right(3)])
+    ).toEqual(Either.left("e"))
   })
 
   it("productAll", () => {
-    const productAll = E.Product.productAll
-    Util.deepStrictEqual(productAll([]), E.right([]))
+    const productAll = Either.Product.productAll
+    Util.deepStrictEqual(productAll([]), Either.right([]))
     Util.deepStrictEqual(
-      productAll([E.right(1), E.right(2), E.right(3)]),
-      E.right([1, 2, 3])
+      productAll([Either.right(1), Either.right(2), Either.right(3)]),
+      Either.right([1, 2, 3])
     )
     Util.deepStrictEqual(
-      productAll([E.left("e"), E.right(2), E.right(3)]),
-      E.left("e")
+      productAll([Either.left("e"), Either.right(2), Either.right(3)]),
+      Either.left("e")
     )
   })
 
   it("coproduct", () => {
-    const coproduct = E.SemiCoproduct.coproduct
-    Util.deepStrictEqual(coproduct(E.right(1), E.right(2)), E.right(1))
-    Util.deepStrictEqual(coproduct(E.right(1), E.left("e2")), E.right(1))
-    Util.deepStrictEqual(coproduct(E.left("e1"), E.right(2)), E.right(2))
-    Util.deepStrictEqual(coproduct(E.left("e1"), E.left("e2")), E.left("e2"))
+    const coproduct = Either.SemiCoproduct.coproduct
+    Util.deepStrictEqual(coproduct(Either.right(1), Either.right(2)), Either.right(1))
+    Util.deepStrictEqual(coproduct(Either.right(1), Either.left("e2")), Either.right(1))
+    Util.deepStrictEqual(coproduct(Either.left("e1"), Either.right(2)), Either.right(2))
+    Util.deepStrictEqual(coproduct(Either.left("e1"), Either.left("e2")), Either.left("e2"))
   })
 
   it("coproductMany", () => {
-    const coproductMany = E.SemiCoproduct.coproductMany
-    Util.deepStrictEqual(coproductMany(E.right(1), [E.right(2)]), E.right(1))
+    const coproductMany = Either.SemiCoproduct.coproductMany
+    Util.deepStrictEqual(coproductMany(Either.right(1), [Either.right(2)]), Either.right(1))
     Util.deepStrictEqual(
-      coproductMany(E.right(1), [E.left("e2")]),
-      E.right(1)
+      coproductMany(Either.right(1), [Either.left("e2")]),
+      Either.right(1)
     )
-    Util.deepStrictEqual(coproductMany(E.left("e1"), [E.right(2)]), E.right(2))
-    Util.deepStrictEqual(coproductMany(E.left("e1"), [E.left("e2")]), E.left("e2"))
+    Util.deepStrictEqual(coproductMany(Either.left("e1"), [Either.right(2)]), Either.right(2))
+    Util.deepStrictEqual(coproductMany(Either.left("e1"), [Either.left("e2")]), Either.left("e2"))
   })
 
   it("element", () => {
-    expect(pipe(E.right(1), E.tupled, E.appendElement(E.right("b")))).toEqual(
-      E.right([1, "b"])
+    expect(pipe(Either.right(1), Either.tupled, Either.appendElement(Either.right("b")))).toEqual(
+      Either.right([1, "b"])
     )
   })
 
   it("liftNullable", () => {
-    const f = E.liftNullable((n: number) => (n > 0 ? n : null), () => "error")
-    Util.deepStrictEqual(f(1), E.right(1))
-    Util.deepStrictEqual(f(-1), E.left("error"))
+    const f = Either.liftNullable((n: number) => (n > 0 ? n : null), () => "error")
+    Util.deepStrictEqual(f(1), Either.right(1))
+    Util.deepStrictEqual(f(-1), Either.left("error"))
   })
 
   it("flatMapNullable", () => {
-    const f = E.flatMapNullable((n: number) => (n > 0 ? n : null), () => "error")
-    Util.deepStrictEqual(f(E.right(1)), E.right(1))
-    Util.deepStrictEqual(f(E.right(-1)), E.left("error"))
-    Util.deepStrictEqual(f(E.left("a")), E.left("a"))
+    const f = Either.flatMapNullable((n: number) => (n > 0 ? n : null), () => "error")
+    Util.deepStrictEqual(f(Either.right(1)), Either.right(1))
+    Util.deepStrictEqual(f(Either.right(-1)), Either.left("error"))
+    Util.deepStrictEqual(f(Either.left("a")), Either.left("a"))
   })
 
   it("merge", () => {
-    Util.deepStrictEqual(E.merge(E.right(1)), 1)
-    Util.deepStrictEqual(E.merge(E.left("a")), "a")
+    Util.deepStrictEqual(Either.merge(Either.right(1)), 1)
+    Util.deepStrictEqual(Either.merge(Either.left("a")), "a")
   })
 
   it("liftThrowable", () => {
-    const f = E.liftThrowable((s: string) => {
+    const f = Either.liftThrowable((s: string) => {
       const len = s.length
       if (len > 0) {
         return len
       }
       throw new Error("empty string")
     }, identity)
-    Util.deepStrictEqual(f("a"), E.right(1))
-    Util.deepStrictEqual(f(""), E.left(new Error("empty string")))
+    Util.deepStrictEqual(f("a"), Either.right(1))
+    Util.deepStrictEqual(f(""), Either.left(new Error("empty string")))
   })
 
   it("zipWith", () => {
-    expect(pipe(E.left("a"), E.zipWith(E.right(2), (a, b) => a + b))).toEqual(E.left("a"))
-    expect(pipe(E.right(1), E.zipWith(E.left("a"), (a, b) => a + b))).toEqual(E.left("a"))
-    expect(pipe(E.right(1), E.zipWith(E.right(2), (a, b) => a + b))).toEqual(E.right(3))
+    expect(pipe(Either.left("a"), Either.zipWith(Either.right(2), (a, b) => a + b))).toEqual(Either.left("a"))
+    expect(pipe(Either.right(1), Either.zipWith(Either.left("a"), (a, b) => a + b))).toEqual(Either.left("a"))
+    expect(pipe(Either.right(1), Either.zipWith(Either.right(2), (a, b) => a + b))).toEqual(Either.right(3))
   })
 
   it("sum", () => {
-    expect(pipe(E.left("a"), E.sum(E.right(2)))).toEqual(E.left("a"))
-    expect(pipe(E.right(1), E.sum(E.left("a")))).toEqual(E.left("a"))
-    expect(pipe(E.right(2), E.sum(E.right(3)))).toEqual(E.right(5))
+    expect(pipe(Either.left("a"), Either.sum(Either.right(2)))).toEqual(Either.left("a"))
+    expect(pipe(Either.right(1), Either.sum(Either.left("a")))).toEqual(Either.left("a"))
+    expect(pipe(Either.right(2), Either.sum(Either.right(3)))).toEqual(Either.right(5))
   })
 
   it("multiply", () => {
-    expect(pipe(E.left("a"), E.multiply(E.right(2)))).toEqual(E.left("a"))
-    expect(pipe(E.right(1), E.multiply(E.left("a")))).toEqual(E.left("a"))
-    expect(pipe(E.right(2), E.multiply(E.right(3)))).toEqual(E.right(6))
+    expect(pipe(Either.left("a"), Either.multiply(Either.right(2)))).toEqual(Either.left("a"))
+    expect(pipe(Either.right(1), Either.multiply(Either.left("a")))).toEqual(Either.left("a"))
+    expect(pipe(Either.right(2), Either.multiply(Either.right(3)))).toEqual(Either.right(6))
   })
 
   it("subtract", () => {
-    expect(pipe(E.left("a"), E.subtract(E.right(2)))).toEqual(E.left("a"))
-    expect(pipe(E.right(1), E.subtract(E.left("a")))).toEqual(E.left("a"))
-    expect(pipe(E.right(2), E.subtract(E.right(3)))).toEqual(E.right(-1))
+    expect(pipe(Either.left("a"), Either.subtract(Either.right(2)))).toEqual(Either.left("a"))
+    expect(pipe(Either.right(1), Either.subtract(Either.left("a")))).toEqual(Either.left("a"))
+    expect(pipe(Either.right(2), Either.subtract(Either.right(3)))).toEqual(Either.right(-1))
   })
 
   it("divide", () => {
-    expect(pipe(E.left("a"), E.divide(E.right(2)))).toEqual(E.left("a"))
-    expect(pipe(E.right(1), E.divide(E.left("a")))).toEqual(E.left("a"))
-    expect(pipe(E.right(6), E.divide(E.right(3)))).toEqual(E.right(2))
+    expect(pipe(Either.left("a"), Either.divide(Either.right(2)))).toEqual(Either.left("a"))
+    expect(pipe(Either.right(1), Either.divide(Either.left("a")))).toEqual(Either.left("a"))
+    expect(pipe(Either.right(6), Either.divide(Either.right(3)))).toEqual(Either.right(2))
   })
 
   it("getOptionalSemigroup", () => {
-    const OS = E.getOptionalSemigroup(S.Semigroup)
-    Util.deepStrictEqual(OS.combine(E.left("e"), E.left("e")), E.left("e"))
-    Util.deepStrictEqual(OS.combine(E.left("e"), E.right("a")), E.right("a"))
-    Util.deepStrictEqual(OS.combine(E.right("a"), E.left("e")), E.right("a"))
-    Util.deepStrictEqual(OS.combine(E.right("b"), E.right("a")), E.right("ba"))
-    Util.deepStrictEqual(OS.combine(E.right("a"), E.right("b")), E.right("ab"))
+    const OS = Either.getOptionalSemigroup(S.Semigroup)
+    Util.deepStrictEqual(OS.combine(Either.left("e"), Either.left("e")), Either.left("e"))
+    Util.deepStrictEqual(OS.combine(Either.left("e"), Either.right("a")), Either.right("a"))
+    Util.deepStrictEqual(OS.combine(Either.right("a"), Either.left("e")), Either.right("a"))
+    Util.deepStrictEqual(OS.combine(Either.right("b"), Either.right("a")), Either.right("ba"))
+    Util.deepStrictEqual(OS.combine(Either.right("a"), Either.right("b")), Either.right("ab"))
 
-    Util.deepStrictEqual(OS.combineMany(E.right("a"), [E.right("b")]), E.right("ab"))
-    Util.deepStrictEqual(OS.combineMany(E.left("e"), [E.right("b")]), E.right("b"))
-    Util.deepStrictEqual(OS.combineMany(E.right("a"), [E.left("e")]), E.right("a"))
+    Util.deepStrictEqual(OS.combineMany(Either.right("a"), [Either.right("b")]), Either.right("ab"))
+    Util.deepStrictEqual(OS.combineMany(Either.left("e"), [Either.right("b")]), Either.right("b"))
+    Util.deepStrictEqual(OS.combineMany(Either.right("a"), [Either.left("e")]), Either.right("a"))
   })
 
   it("getEquivalence", () => {
-    const isEquivalent = E.getEquivalence(S.Equivalence, N.Equivalence)
-    Util.deepStrictEqual(isEquivalent(E.right(1), E.right(1)), true)
-    Util.deepStrictEqual(isEquivalent(E.right(1), E.right(2)), false)
-    Util.deepStrictEqual(isEquivalent(E.right(1), E.left("foo")), false)
-    Util.deepStrictEqual(isEquivalent(E.left("foo"), E.left("foo")), true)
-    Util.deepStrictEqual(isEquivalent(E.left("foo"), E.left("bar")), false)
-    Util.deepStrictEqual(isEquivalent(E.left("foo"), E.right(1)), false)
+    const isEquivalent = Either.getEquivalence(S.Equivalence, N.Equivalence)
+    Util.deepStrictEqual(isEquivalent(Either.right(1), Either.right(1)), true)
+    Util.deepStrictEqual(isEquivalent(Either.right(1), Either.right(2)), false)
+    Util.deepStrictEqual(isEquivalent(Either.right(1), Either.left("foo")), false)
+    Util.deepStrictEqual(isEquivalent(Either.left("foo"), Either.left("foo")), true)
+    Util.deepStrictEqual(isEquivalent(Either.left("foo"), Either.left("bar")), false)
+    Util.deepStrictEqual(isEquivalent(Either.left("foo"), Either.right(1)), false)
   })
 
   it("toArray", () => {
-    expect(E.toArray(E.right(1))).toEqual([1])
-    expect(E.toArray(E.left("error"))).toEqual([])
+    expect(Either.toArray(Either.right(1))).toEqual([1])
+    expect(Either.toArray(Either.left("error"))).toEqual([])
   })
 
   it("gen", () => {
-    expect(E.gen(function*($) {
-      const a = yield* $(E.right(1))
-      const b = yield* $(E.right(2))
+    expect(Either.gen(function*($) {
+      const a = yield* $(Either.right(1))
+      const b = yield* $(Either.right(2))
       return a + b
-    })).toEqual(E.right(3))
+    })).toEqual(Either.right(3))
   })
 })

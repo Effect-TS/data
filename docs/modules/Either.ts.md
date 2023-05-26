@@ -139,6 +139,9 @@ Added in v1.0.0
   - [struct](#struct)
   - [tuple](#tuple)
   - [unit](#unit)
+  - [validateAll](#validateall)
+  - [validateAllDiscard](#validatealldiscard)
+  - [validateFirst](#validatefirst)
   - [zipRight](#zipright)
 
 ---
@@ -1908,7 +1911,7 @@ Added in v1.0.0
 Similar to `Promise.all` but operates on `Either`s.
 
 ```
-[Either<E1, A>, Either<E1, B>, ...] -> Either<E1 \| E2 \| ..., [A, B, ...]>
+[Either<E1, A>, Either<E2, B>, ...] -> Either<E1 | E2 | ..., [A, B, ...]>
 ```
 
 **Signature**
@@ -1930,6 +1933,96 @@ Added in v1.0.0
 
 ```ts
 export declare const unit: <E = never>() => Either<E, void>
+```
+
+Added in v1.0.0
+
+## validateAll
+
+Feeds elements of type `A` to `f` and accumulates all errors in error
+channel or successes in success channel.
+
+This combinator is lossy meaning that if there are errors all successes
+will be lost. To retain all information please use `ReadonlyArray.separate`.
+
+**Signature**
+
+```ts
+export declare const validateAll: {
+  <A, E, B>(f: (a: A) => Either<E, B>): (elements: Iterable<A>) => Either<E[], B[]>
+  <A, E, B>(elements: Iterable<A>, f: (a: A) => Either<E, B>): Either<E[], B[]>
+}
+```
+
+**Example**
+
+```ts
+import * as Either from '@effect/data/Either'
+
+const f = (n: number) => (n > 0 ? Either.right(n) : Either.left(`${n} is negative`))
+
+assert.deepStrictEqual(Either.validateAll([], f), Either.right([]))
+assert.deepStrictEqual(Either.validateAll([1, 2], f), Either.right([1, 2]))
+assert.deepStrictEqual(Either.validateAll([1, -1, -2], f), Either.left(['-1 is negative', '-2 is negative']))
+```
+
+Added in v1.0.0
+
+## validateAllDiscard
+
+Feeds elements of type `A` to `f` and accumulates all errors, discarding
+the successes.
+
+**Signature**
+
+```ts
+export declare const validateAllDiscard: {
+  <A, E, _>(f: (a: A) => Either<E, _>): (elements: Iterable<A>) => Either<E[], void>
+  <A, E, _>(elements: Iterable<A>, f: (a: A) => Either<E, _>): Either<E[], void>
+}
+```
+
+**Example**
+
+```ts
+import * as Either from '@effect/data/Either'
+
+const f = (n: number) => (n > 0 ? Either.right(n) : Either.left(`${n} is negative`))
+
+assert.deepStrictEqual(Either.validateAllDiscard([], f), Either.right(undefined))
+assert.deepStrictEqual(Either.validateAllDiscard([1, 2], f), Either.right(undefined))
+assert.deepStrictEqual(Either.validateAllDiscard([1, -1, -2], f), Either.left(['-1 is negative', '-2 is negative']))
+```
+
+Added in v1.0.0
+
+## validateFirst
+
+Feeds elements of type `A` to `f` until it succeeds. Returns first success or the accumulation of all errors.
+
+If `elements` is empty then `Either.left([])` is returned.
+
+**Signature**
+
+```ts
+export declare const validateFirst: {
+  <A, E, B>(f: (a: A) => Either<E, B>): (elements: Iterable<A>) => Either<E[], B>
+  <A, E, B>(elements: Iterable<A>, f: (a: A) => Either<E, B>): Either<E[], B>
+}
+```
+
+**Example**
+
+```ts
+import * as Either from '@effect/data/Either'
+
+const f = (n: number) => (n > 0 ? Either.right(n) : Either.left(`${n} is negative`))
+
+assert.deepStrictEqual(Either.validateFirst([], f), Either.left([]))
+assert.deepStrictEqual(Either.validateFirst([1, 2], f), Either.right(1))
+assert.deepStrictEqual(Either.validateFirst([1, -1], f), Either.right(1))
+assert.deepStrictEqual(Either.validateFirst([-1, 2], f), Either.right(2))
+assert.deepStrictEqual(Either.validateFirst([-1, -2], f), Either.left(['-1 is negative', '-2 is negative']))
 ```
 
 Added in v1.0.0
