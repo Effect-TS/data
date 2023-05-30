@@ -35,7 +35,7 @@ The `empty` value is `0`.
 **Signature**
 
 ```ts
-export declare const Monoid: monoid.Monoid<0 | 1 | -1>
+export declare const Monoid: monoid.Monoid<Ordering>
 ```
 
 **Example**
@@ -57,7 +57,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Semigroup: semigroup.Semigroup<0 | 1 | -1>
+export declare const Semigroup: semigroup.Semigroup<Ordering>
 ```
 
 **Example**
