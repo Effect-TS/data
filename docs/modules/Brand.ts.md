@@ -29,6 +29,8 @@ Added in v1.0.0
 
 - [alias](#alias)
   - [Branded (type alias)](#branded-type-alias)
+- [combining](#combining)
+  - [all](#all)
 - [constructors](#constructors)
   - [error](#error)
   - [errors](#errors)
@@ -52,6 +54,51 @@ Added in v1.0.0
 
 ```ts
 export type Branded<A, K extends string | symbol> = A & Brand<K>
+```
+
+Added in v1.0.0
+
+# combining
+
+## all
+
+Combines two or more brands together to form a single branded type.
+This API is useful when you want to validate that the input data passes multiple brand validators.
+
+**Signature**
+
+```ts
+export declare const all: <Brands extends readonly [Brand.Constructor<any>, ...Brand.Constructor<any>[]]>(
+  ...brands: Brand.EnsureCommonBase<Brands>
+) => Brand.Constructor<
+  Brand.UnionToIntersection<
+    { [B in keyof Brands]: Brand.FromConstructor<Brands[B]> }[number]
+  > extends infer X extends Brand<any>
+    ? X
+    : Brand<any>
+>
+```
+
+**Example**
+
+```ts
+import * as Brand from '@effect/data/Brand'
+
+type Int = number & Brand.Brand<'Int'>
+const Int = Brand.refined<Int>(
+  (n) => Number.isInteger(n),
+  (n) => Brand.error(`Expected ${n} to be an integer`)
+)
+type Positive = number & Brand.Brand<'Positive'>
+const Positive = Brand.refined<Positive>(
+  (n) => n > 0,
+  (n) => Brand.error(`Expected ${n} to be positive`)
+)
+
+const PositiveInt = Brand.all(Int, Positive)
+
+assert.strictEqual(PositiveInt(1), 1)
+assert.throws(() => PositiveInt(1.1))
 ```
 
 Added in v1.0.0
@@ -92,7 +139,7 @@ If you also want to perform some validation, see {@link refined}.
 **Signature**
 
 ```ts
-export declare const nominal: <A extends any>() => any
+export declare const nominal: <A extends Brand<any>>() => Brand.Constructor<A>
 ```
 
 **Example**
@@ -120,10 +167,10 @@ see {@link nominal}.
 **Signature**
 
 ```ts
-export declare const refined: <A extends any>(
+export declare const refined: <A extends Brand<any>>(
   refinement: Predicate<Brand.Unbranded<A>>,
   onFailure: (a: Brand.Unbranded<A>) => Brand.BrandErrors
-) => any
+) => Brand.Constructor<A>
 ```
 
 **Example**
@@ -153,7 +200,11 @@ A generic interface that defines a branded type.
 **Signature**
 
 ```ts
-export interface Brand<
+export interface Brand<in out K extends string | symbol> {
+  readonly [BrandTypeId]: {
+    readonly [k in K]: K
+  }
+}
 ```
 
 Added in v1.0.0

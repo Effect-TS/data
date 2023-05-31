@@ -610,7 +610,9 @@ A guard that succeeds when the input is a readonly record.
 **Signature**
 
 ```ts
-export declare const isReadonlyRecord: (input: unknown) => input is {}
+export declare const isReadonlyRecord: (
+  input: unknown
+) => input is { readonly [x: string]: unknown; readonly [x: symbol]: unknown }
 ```
 
 **Example**
@@ -636,7 +638,7 @@ A guard that succeeds when the input is a record.
 **Signature**
 
 ```ts
-export declare const isRecord: (input: unknown) => input is {}
+export declare const isRecord: (input: unknown) => input is { [x: string]: unknown; [x: symbol]: unknown }
 ```
 
 **Example**

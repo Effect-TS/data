@@ -1605,11 +1605,17 @@ Added in v1.0.0
 
 ```ts
 export interface Left<E, A> extends Data.Case {
-  readonly _tag: "Left"
+  readonly _tag: 'Left'
   readonly [EitherTypeId]: {
     readonly _A: (_: never) => A
     readonly _E: (_: never) => E
   }
+  get left(): E
+  traced(trace: Trace): Either<E, A> | TracedEither<E, A>
+  [Unify.typeSymbol]?: unknown
+  [Unify.unifySymbol]?: EitherUnify<this>
+  [Unify.blacklistSymbol]?: EitherUnifyBlacklist
+}
 ```
 
 Added in v1.0.0
@@ -1620,7 +1626,17 @@ Added in v1.0.0
 
 ```ts
 export interface Right<E, A> extends Data.Case {
-  readonly _tag: "Right"
+  readonly _tag: 'Right'
+  get right(): A
+  readonly [EitherTypeId]: {
+    readonly _A: (_: never) => A
+    readonly _E: (_: never) => E
+  }
+  traced(trace: Trace): Either<E, A> | TracedEither<E, A>
+  [Unify.typeSymbol]?: unknown
+  [Unify.unifySymbol]?: EitherUnify<this>
+  [Unify.blacklistSymbol]?: EitherUnifyBlacklist
+}
 ```
 
 Added in v1.0.0
