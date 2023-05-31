@@ -23,7 +23,7 @@ const EffectTypeId = Symbol.for("@effect/io/Effect")
 /** @internal */
 export class TagImpl<Identifier, Service> implements C.Tag<Identifier, Service> {
   readonly _tag = "Tag"
-  public i0 = undefined
+  public i0: any | undefined = undefined
   public i1 = undefined
   public i2 = undefined
   public trace = undefined;
@@ -40,10 +40,23 @@ export class TagImpl<Identifier, Service> implements C.Tag<Identifier, Service> 
       _I: (_: Identifier) => _
     }
   }
-  constructor(id?: unknown) {
-    if (typeof id !== "undefined") {
-      return G.globalValue(id, () => this)
+  constructor(identifier?: unknown) {
+    if (typeof identifier !== "undefined") {
+      this.i0 = identifier
+      return G.globalValue(identifier, () => this)
     }
+  }
+  toString() {
+    return JSON.stringify(this)
+  }
+  toJSON() {
+    return {
+      _tag: "Tag",
+      identifier: this.i0
+    }
+  }
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return this.toJSON()
   }
   traced(this: this, trace: Trace): C.TracedTag<Identifier, Service> | this {
     if (trace) {
