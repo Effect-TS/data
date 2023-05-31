@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.12.4
+
+### Patch Changes
+
+- [#354](https://github.com/Effect-TS/data/pull/354) [`f00c71c`](https://github.com/Effect-TS/data/commit/f00c71ce7ae53805c3d9f4cf6eabe00441590eea) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Make sure Id is in Tag and can be printed
+
 ## 0.12.3
 
 ### Patch Changes
