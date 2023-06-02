@@ -91,8 +91,8 @@ Transforms the values of a `ReadonlyRecord` into an `Array` with a custom mappin
 
 ```ts
 export declare const collect: {
-  <K extends string, A, B>(f: (key: K, a: A) => B): (self: Readonly<Record<K, A>>) => B[]
-  <K extends string, A, B>(self: Readonly<Record<K, A>>, f: (key: string, a: A) => B): B[]
+  <K extends string, A, B>(f: (key: K, a: A) => B): (self: Record<K, A>) => B[]
+  <K extends string, A, B>(self: Record<K, A>, f: (key: string, a: A) => B): B[]
 }
 ```
 
@@ -180,7 +180,7 @@ Alias of {@link toEntries}.
 **Signature**
 
 ```ts
-export declare const toArray: <K extends string, A>(self: Readonly<Record<K, A>>) => [K, A][]
+export declare const toArray: <K extends string, A>(self: Record<K, A>) => [K, A][]
 ```
 
 **Example**
@@ -205,7 +205,7 @@ Takes a record and returns an array of tuples containing its keys and values.
 **Signature**
 
 ```ts
-export declare const toEntries: <K extends string, A>(self: Readonly<Record<K, A>>) => [K, A][]
+export declare const toEntries: <K extends string, A>(self: Record<K, A>) => [K, A][]
 ```
 
 **Example**
@@ -777,8 +777,8 @@ Maps a `ReadonlyRecord` into another `Record` by applying a transformation funct
 
 ```ts
 export declare const map: {
-  <K extends string, A, B>(f: (a: A, key: K) => B): (self: Readonly<Record<K, A>>) => Record<K, B>
-  <K extends string, A, B>(self: Readonly<Record<K, A>>, f: (a: A, key: K) => B): Record<K, B>
+  <K extends string, A, B>(f: (a: A, key: K) => B): (self: Record<K, A>) => Record<K, B>
+  <K extends string, A, B>(self: Record<K, A>, f: (a: A, key: K) => B): Record<K, B>
 }
 ```
 
