@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.12.5
+
+### Patch Changes
+
+- [#356](https://github.com/Effect-TS/data/pull/356) [`41ffb28`](https://github.com/Effect-TS/data/commit/41ffb281bcf53e4cc6aaa2f47b9aa4c534e5105d) Thanks [@gcanti](https://github.com/gcanti)! - remove useless `Readonly` modifier in `ReadonlyRecord` module
+
 ## 0.12.4
 
 ### Patch Changes
