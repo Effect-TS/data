@@ -164,8 +164,8 @@ export const fromEntries: <A>(self: Iterable<[string, A]>) => Record<string, A> 
  * @since 1.0.0
  */
 export const collect: {
-  <K extends string, A, B>(f: (key: K, a: A) => B): (self: Readonly<Record<K, A>>) => Array<B>
-  <K extends string, A, B>(self: Readonly<Record<K, A>>, f: (key: string, a: A) => B): Array<B>
+  <K extends string, A, B>(f: (key: K, a: A) => B): (self: Record<K, A>) => Array<B>
+  <K extends string, A, B>(self: Record<K, A>, f: (key: string, a: A) => B): Array<B>
 } = dual(
   2,
   <A, B>(self: ReadonlyRecord<A>, f: (key: string, a: A) => B): Array<B> => {
@@ -191,7 +191,7 @@ export const collect: {
  * @category conversions
  * @since 1.0.0
  */
-export const toEntries: <K extends string, A>(self: Readonly<Record<K, A>>) => Array<[K, A]> = collect((
+export const toEntries: <K extends string, A>(self: Record<K, A>) => Array<[K, A]> = collect((
   key,
   value
 ) => [key, value])
@@ -212,7 +212,7 @@ export const toEntries: <K extends string, A>(self: Readonly<Record<K, A>>) => A
  * @category conversions
  * @since 1.0.0
  */
-export const toArray: <K extends string, A>(self: Readonly<Record<K, A>>) => Array<[K, A]> = toEntries
+export const toArray: <K extends string, A>(self: Record<K, A>) => Array<[K, A]> = toEntries
 
 // -------------------------------------------------------------------------------------
 // utils
@@ -414,8 +414,8 @@ export const pop: {
  * @since 1.0.0
  */
 export const map: {
-  <K extends string, A, B>(f: (a: A, key: K) => B): (self: Readonly<Record<K, A>>) => Record<K, B>
-  <K extends string, A, B>(self: Readonly<Record<K, A>>, f: (a: A, key: K) => B): Record<K, B>
+  <K extends string, A, B>(f: (a: A, key: K) => B): (self: Record<K, A>) => Record<K, B>
+  <K extends string, A, B>(self: Record<K, A>, f: (a: A, key: K) => B): Record<K, B>
 } = dual(
   2,
   <A, B>(self: ReadonlyRecord<A>, f: (a: A, key: string) => B): Record<string, B> => {

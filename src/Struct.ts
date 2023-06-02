@@ -197,7 +197,7 @@ export const evolve: {
     const out = { ...obj }
     for (const k in t) {
       if (Object.prototype.hasOwnProperty.call(obj, k)) {
-        // @ts-ignore
+        // @ts-expect-error
         out[k] = t[k](obj[k])
       }
     }
