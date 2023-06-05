@@ -46,7 +46,7 @@
     "circular": "madge --ts-config ./tsconfig.madge.json --circular --no-color --no-spinner --warning build/esm",
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "dtslint": "dtslint dtslint"
+    "dtslint": "dtslint --expectOnly dtslint"
   },
   "exports": {
     ".": {
@@ -62,6 +62,7 @@
     "@babel/plugin-transform-modules-commonjs": "^7.21.2",
     "@changesets/changelog-github": "^0.4.8",
     "@changesets/cli": "^2.26.1",
+    "@definitelytyped/dtslint": "^0.0.163",
     "@effect-ts/build-utils": "0.40.7",
     "@effect-ts/core": "^0.60.5",
     "@effect/babel-plugin": "^0.2.0",
@@ -83,7 +84,6 @@
     "babel-plugin-annotate-pure-calls": "^0.4.0",
     "concurrently": "^7.6.0",
     "cpx": "^1.5.0",
-    "dtslint": "github:gcanti/dtslint",
     "error-stack-parser": "^2.1.4",
     "eslint": "^8.36.0",
     "eslint-import-resolver-typescript": "^3.5.3",
