@@ -36,8 +36,8 @@ devDependencies:
     specifier: ^0.0.16
     version: 0.0.16
   '@effect/docgen':
-    specifier: ^0.0.2
-    version: 0.0.2(@types/node@18.15.11)(typescript@5.0.4)
+    specifier: ^0.1.1
+    version: 0.1.1(@types/node@18.15.11)(typescript@5.0.4)
   '@effect/language-service':
     specifier: ^0.0.19
     version: 0.0.19
@@ -764,8 +764,8 @@ packages:
       '@tsplus/stdlib': 0.2.8
     dev: true
 
-  /@effect/docgen@0.0.2(@types/node@18.15.11)(typescript@5.0.4):
-    resolution: {integrity: sha512-TynTRxWFMn0tSiIRpJ/VT8S6x5sIPJ+x3xlPrGEdXjzf8kupeD9su655RpDi9mRD/m7fBA4i5RpgHU7/9WDmew==}
+  /@effect/docgen@0.1.1(@types/node@18.15.11)(typescript@5.0.4):
+    resolution: {integrity: sha512-WymDghrzsbMpNmgTZDo6qYtOUnaSqvVicJPdESrQEterO2aw/iQVTngTIN6bzJUDQOljOYFsFtBzFJwG5hv8MA==}
     engines: {node: '>=16.17.1'}
     hasBin: true
     peerDependencies:

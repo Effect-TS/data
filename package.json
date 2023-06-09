@@ -67,7 +67,7 @@
     "@effect-ts/core": "^0.60.5",
     "@effect/babel-plugin": "^0.2.0",
     "@effect/core": "^0.0.16",
-    "@effect/docgen": "^0.0.2",
+    "@effect/docgen": "^0.1.1",
     "@effect/language-service": "^0.0.19",
     "@repo-tooling/eslint-plugin-dprint": "^0.0.4",
     "@rollup/pluginutils": "^5.0.2",
