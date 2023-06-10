@@ -363,30 +363,6 @@ export const takeRight: {
   (self: string, n: number): string => self.slice(Math.max(0, self.length - Math.floor(n)), Infinity)
 )
 
-/*
-
-  Missing:
-
-  - charCodeAt
-  - substring
-  - at
-  - charAt
-  - codePointAt
-  - indexOf
-  - lastIndexOf
-  - localeCompare
-  - match
-  - matchAll
-  - normalize
-  - padEnd
-  - padStart
-  - repeat
-  - replaceAll
-  - search
-  - toLocaleLowerCase
-  - toLocaleUpperCase
-*/
-
 const CR = 0x0d
 const LF = 0x0a
 

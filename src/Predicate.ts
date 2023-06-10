@@ -610,6 +610,8 @@ export const or: {
  * @since 1.0.0
  */
 export const and: {
+  <A, C extends A>(that: Refinement<A, C>): <B extends A>(self: Refinement<A, B>) => Refinement<A, B & C>
+  <A, B extends A, C extends A>(self: Refinement<A, B>, that: Refinement<A, C>): Refinement<A, B & C>
   <A>(that: Predicate<A>): (self: Predicate<A>) => Predicate<A>
   <A>(self: Predicate<A>, that: Predicate<A>): Predicate<A>
 } = dual(2, <A>(self: Predicate<A>, that: Predicate<A>): Predicate<A> => (a) => self(a) && that(a))
