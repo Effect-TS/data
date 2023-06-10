@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.12.6
+
+### Patch Changes
+
+- [#361](https://github.com/Effect-TS/data/pull/361) [`ed081a0`](https://github.com/Effect-TS/data/commit/ed081a04b5ee27e68ffb1db46dfde94f035ff8cf) Thanks [@gcanti](https://github.com/gcanti)! - Predicate: add Refinement support to `and` function
+
 ## 0.12.5
 
 ### Patch Changes
