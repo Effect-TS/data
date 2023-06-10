@@ -13,7 +13,7 @@ interface NonEmptyStringBrand {
 
 type NonEmptyString = string & NonEmptyStringBrand
 
-const NonEmptyString: _.Refinement<string, NonEmptyString> = (s): s is NonEmptyString => s.length > 0
+const isNonEmptyString: _.Refinement<string, NonEmptyString> = (s): s is NonEmptyString => s.length > 0
 
 describe.concurrent("Predicate", () => {
   it("instances and derived exports", () => {
@@ -36,7 +36,7 @@ describe.concurrent("Predicate", () => {
   })
 
   it("compose", () => {
-    const refinement = pipe(isString, _.compose(NonEmptyString))
+    const refinement = pipe(isString, _.compose(isNonEmptyString))
     deepStrictEqual(refinement("a"), true)
     deepStrictEqual(refinement(null), false)
     deepStrictEqual(refinement(""), false)

@@ -1,4 +1,5 @@
-import * as _ from '@effect/data/Predicate'
+import { pipe } from '@effect/data/Function'
+import * as Predicate from '@effect/data/Predicate'
 
 declare const u: unknown
 declare const anys: Array<any>
@@ -12,105 +13,105 @@ declare const numberOrNullOrUndefined: Array<number | null | undefined>
 // -------------------------------------------------------------------------------------
 
 // $ExpectType string[]
-unknowns.filter(_.isString)
+unknowns.filter(Predicate.isString)
 
 // -------------------------------------------------------------------------------------
 // isNumber
 // -------------------------------------------------------------------------------------
 
 // $ExpectType number[]
-unknowns.filter(_.isNumber)
+unknowns.filter(Predicate.isNumber)
 
 // -------------------------------------------------------------------------------------
 // isBoolean
 // -------------------------------------------------------------------------------------
 
 // $ExpectType boolean[]
-unknowns.filter(_.isBoolean)
+unknowns.filter(Predicate.isBoolean)
 
 // -------------------------------------------------------------------------------------
 // isBigint
 // -------------------------------------------------------------------------------------
 
 // $ExpectType bigint[]
-unknowns.filter(_.isBigint)
+unknowns.filter(Predicate.isBigint)
 
 // -------------------------------------------------------------------------------------
 // isSymbol
 // -------------------------------------------------------------------------------------
 
 // $ExpectType symbol[]
-unknowns.filter(_.isSymbol)
+unknowns.filter(Predicate.isSymbol)
 
 // -------------------------------------------------------------------------------------
 // isUndefined
 // -------------------------------------------------------------------------------------
 
 // $ExpectType undefined[]
-unknowns.filter(_.isUndefined)
+unknowns.filter(Predicate.isUndefined)
 
 // -------------------------------------------------------------------------------------
 // isNotUndefined
 // -------------------------------------------------------------------------------------
 
 // $ExpectType number[]
-numberOrUndefined.filter(_.isNotUndefined)
+numberOrUndefined.filter(Predicate.isNotUndefined)
 
 // $ExpectType (number | null)[]
-numberOrNullOrUndefined.filter(_.isNotUndefined)
+numberOrNullOrUndefined.filter(Predicate.isNotUndefined)
 
 // -------------------------------------------------------------------------------------
 // isUndefined
 // -------------------------------------------------------------------------------------
 
 // $ExpectType null[]
-unknowns.filter(_.isNull)
+unknowns.filter(Predicate.isNull)
 
 // -------------------------------------------------------------------------------------
 // isNotUndefined
 // -------------------------------------------------------------------------------------
 
 // $ExpectType number[]
-numberOrNull.filter(_.isNotNull)
+numberOrNull.filter(Predicate.isNotNull)
 
 // $ExpectType (number | undefined)[]
-numberOrNullOrUndefined.filter(_.isNotNull)
+numberOrNullOrUndefined.filter(Predicate.isNotNull)
 
 // -------------------------------------------------------------------------------------
 // isNever
 // -------------------------------------------------------------------------------------
 
 // $ExpectType never[]
-unknowns.filter(_.isNever)
+unknowns.filter(Predicate.isNever)
 
 // -------------------------------------------------------------------------------------
 // isUnknown
 // -------------------------------------------------------------------------------------
 
 // $ExpectType unknown[]
-anys.filter(_.isUnknown)
+anys.filter(Predicate.isUnknown)
 
 // -------------------------------------------------------------------------------------
 // isObject
 // -------------------------------------------------------------------------------------
 
 // $ExpectType object[]
-anys.filter(_.isObject)
+anys.filter(Predicate.isObject)
 
 // -------------------------------------------------------------------------------------
 // isNullable
 // -------------------------------------------------------------------------------------
 
 // $ExpectType null[]
-numberOrNull.filter(_.isNullable)
+numberOrNull.filter(Predicate.isNullable)
 
 // $ExpectType undefined[]
-numberOrUndefined.filter(_.isNullable)
+numberOrUndefined.filter(Predicate.isNullable)
 
 // $ExpectType (null | undefined)[]
-numberOrNullOrUndefined.filter(_.isNullable)
+numberOrNullOrUndefined.filter(Predicate.isNullable)
 
-if (_.isNullable(u)) {
+if (Predicate.isNullable(u)) {
   // $ExpectType never
   u
 }
@@ -120,15 +121,15 @@ if (_.isNullable(u)) {
 // -------------------------------------------------------------------------------------
 
 // $ExpectType number[]
-numberOrNull.filter(_.isNotNullable)
+numberOrNull.filter(Predicate.isNotNullable)
 
 // $ExpectType number[]
-numberOrUndefined.filter(_.isNotNullable)
+numberOrUndefined.filter(Predicate.isNotNullable)
 
 // $ExpectType number[]
-numberOrNullOrUndefined.filter(_.isNotNullable)
+numberOrNullOrUndefined.filter(Predicate.isNotNullable)
 
-if (_.isNotNullable(u)) {
+if (Predicate.isNotNullable(u)) {
   // $ExpectType {}
   u
 }
@@ -138,25 +139,81 @@ if (_.isNotNullable(u)) {
 // -------------------------------------------------------------------------------------
 
 // $ExpectType Error[]
-unknowns.filter(_.isError)
+unknowns.filter(Predicate.isError)
 
 // -------------------------------------------------------------------------------------
 // isDate
 // -------------------------------------------------------------------------------------
 
 // $ExpectType Date[]
-unknowns.filter(_.isDate)
+unknowns.filter(Predicate.isDate)
 
 // -------------------------------------------------------------------------------------
 // isRecord
 // -------------------------------------------------------------------------------------
 
 // $ExpectType { [x: string]: unknown; [x: symbol]: unknown; }[]
-unknowns.filter(_.isRecord)
+unknowns.filter(Predicate.isRecord)
 
 // -------------------------------------------------------------------------------------
 // isReadonlyRecord
 // -------------------------------------------------------------------------------------
 
 // $ExpectType { readonly [x: string]: unknown; readonly [x: symbol]: unknown; }[]
-unknowns.filter(_.isReadonlyRecord)
+unknowns.filter(Predicate.isReadonlyRecord)
+
+// -------------------------------------------------------------------------------------
+// compose
+// -------------------------------------------------------------------------------------
+
+interface NonEmptyStringBrand {
+  readonly NonEmptyString: unique symbol
+}
+
+type NonEmptyString = string & NonEmptyStringBrand
+
+declare const isNonEmptyString: Predicate.Refinement<string, NonEmptyString>
+
+// $ExpectType Refinement<unknown, NonEmptyString>
+pipe(Predicate.isString, Predicate.compose(isNonEmptyString))
+
+// $ExpectType Refinement<unknown, NonEmptyString>
+Predicate.compose(Predicate.isString, isNonEmptyString)
+
+// $ExpectType Refinement<unknown, NonEmptyString>
+pipe(Predicate.isString, Predicate.compose((
+  s // $ExpectType string
+): s is NonEmptyString => s.length > 0))
+
+// $ExpectType Refinement<unknown, NonEmptyString>
+Predicate.compose(Predicate.isString, (
+  s // $ExpectType string
+): s is NonEmptyString => s.length > 0)
+
+// -------------------------------------------------------------------------------------
+// and
+// -------------------------------------------------------------------------------------
+
+declare const isPositive: Predicate.Predicate<number>
+declare const isLessThan2: Predicate.Predicate<number>
+
+// $ExpectType Predicate<number>
+pipe(isPositive, Predicate.and(isLessThan2))
+
+// $ExpectType Predicate<number>
+Predicate.and(isPositive, isLessThan2)
+
+// $ExpectType Predicate<number>
+pipe(Predicate.isNumber, Predicate.and(isPositive))
+
+// $ExpectType Predicate<number>
+Predicate.and(Predicate.isNumber, isPositive)
+
+declare const hasa: Predicate.Refinement<unknown, { a: unknown }>
+declare const hasb: Predicate.Refinement<unknown, { b: unknown }>
+
+// $ExpectType Refinement<unknown, { a: unknown; } & { b: unknown; }>
+pipe(hasa, Predicate.and(hasb))
+
+// $ExpectType Refinement<unknown, { a: unknown; } & { b: unknown; }>
+Predicate.and(hasa, hasb)
