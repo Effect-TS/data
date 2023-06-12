@@ -170,4 +170,54 @@ describe.concurrent("Data", () => {
 
     expect(bar._tag).toStrictEqual("Bar")
   })
+
+  it("taggedEnum", () => {
+    type HttpError = Data.TaggedEnum<{
+      NotFound: {}
+      InternalServerError: { reason: string }
+    }>
+    const HttpError = Data.taggedEnum<HttpError>()
+    const NotFound = HttpError("NotFound")
+    const InternalServerError = HttpError("InternalServerError")
+
+    const a = NotFound()
+    const b = InternalServerError({ reason: "test" })
+    const c = InternalServerError({ reason: "test" })
+
+    expect(a._tag).toBe("NotFound")
+    expect(b._tag).toBe("InternalServerError")
+
+    expect(b.reason).toBe("test")
+    expect(c.reason).toBe("test")
+
+    expect(Equal.equals(a, b)).toBe(false)
+    expect(Equal.equals(b, c)).toBe(true)
+  })
+
+  it("taggedEnum - generics", () => {
+    type Result<E, A> = Data.TaggedEnum<{
+      Success: { value: A }
+      Failure: { error: E }
+    }>
+    interface ResultDefinition extends Data.TaggedEnum.WithGenerics<2> {
+      readonly taggedEnum: Result<this["A"], this["B"]>
+    }
+    const Result = Data.taggedEnum<ResultDefinition>()
+    const Success = Result("Success")
+    const Failure = Result("Failure")
+
+    const a = Success({ value: 1 }) satisfies Result<unknown, number>
+    const b = Failure({ error: "test" }) satisfies Result<string, unknown>
+    const c = Success({ value: 1 }) satisfies Result<string, number>
+
+    expect(a._tag).toBe("Success")
+    expect(b._tag).toBe("Failure")
+    expect(c._tag).toBe("Success")
+
+    expect(a.value).toBe(1)
+    expect(b.error).toBe("test")
+
+    expect(Equal.equals(a, b)).toBe(false)
+    expect(Equal.equals(a, c)).toBe(true)
+  })
 })
