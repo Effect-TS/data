@@ -140,4 +140,37 @@ describe.concurrent("Data", () => {
 
     expect(bar._tag).toStrictEqual("Bar")
   })
+
+  it("adt", () => {
+    type Result<E, A> = Data.ADT<{
+      Initial: {}
+      Loading: {}
+      Error: { error: E }
+      Success: { value: A }
+    }>
+    interface ResultC extends Data.ADT.Constructor {
+      adt: Result<this["A"], this["B"]>
+    }
+    const Result = Data.adt2<ResultC>()
+
+    const Initial = Result("Initial")
+    const Loading = Result("Loading")
+    const Error = Result("Error")
+    const Success = Result("Success")
+
+    const a = Initial()
+    const b = Loading()
+    const c = Error({ error: "error" }) satisfies Result<string, unknown>
+    const d = Success({ value: 10 }) satisfies Result<unknown, number>
+    const e = Success({ value: "20" }) satisfies Result<unknown, string>
+    const f = Success({ value: 10 }) satisfies Result<unknown, number>
+
+    expect(a._tag).toBe("Initial")
+    expect(b._tag).toBe("Loading")
+    expect(c._tag).toBe("Error")
+    expect(d._tag).toBe("Success")
+
+    expect(Equal.equals(d, e)).toBe(false)
+    expect(Equal.equals(d, f)).toBe(true)
+  })
 })

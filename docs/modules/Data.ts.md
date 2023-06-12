@@ -15,6 +15,10 @@ Added in v1.0.0
 - [constructors](#constructors)
   - [Class](#class)
   - [TaggedClass](#taggedclass)
+  - [adt](#adt)
+  - [adt1](#adt1)
+  - [adt2](#adt2)
+  - [adt3](#adt3)
   - [array](#array)
   - [case](#case)
   - [struct](#struct)
@@ -23,6 +27,7 @@ Added in v1.0.0
   - [unsafeArray](#unsafearray)
   - [unsafeStruct](#unsafestruct)
 - [models](#models)
+  - [ADT (type alias)](#adt-type-alias)
   - [Case (interface)](#case-interface)
   - [Data (type alias)](#data-type-alias)
   - [IsEqualTo (type alias)](#isequalto-type-alias)
@@ -57,6 +62,46 @@ export declare const TaggedClass: <Key extends string>(
 ) => new <A extends Record<string, any>>(
   args: IsEqualTo<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
 ) => Data<A & { _tag: Key }>
+```
+
+Added in v1.0.0
+
+## adt
+
+**Signature**
+
+```ts
+export declare const adt: <A extends ADT.Constructor>() => ADT.Constructor4<A>
+```
+
+Added in v1.0.0
+
+## adt1
+
+**Signature**
+
+```ts
+export declare const adt1: <A extends ADT.Constructor>() => ADT.Constructor1<A>
+```
+
+Added in v1.0.0
+
+## adt2
+
+**Signature**
+
+```ts
+export declare const adt2: <A extends ADT.Constructor>() => ADT.Constructor2<A>
+```
+
+Added in v1.0.0
+
+## adt3
+
+**Signature**
+
+```ts
+export declare const adt3: <A extends ADT.Constructor>() => ADT.Constructor3<A>
 ```
 
 Added in v1.0.0
@@ -136,6 +181,18 @@ export declare const unsafeStruct: <As extends Readonly<Record<string, any>>>(as
 Added in v1.0.0
 
 # models
+
+## ADT (type alias)
+
+**Signature**
+
+```ts
+export type ADT<A extends Record<string, Record<string, any>>> = {
+  [K in keyof A]: Data<Simplify<Readonly<A[K]> & { readonly _tag: K }>>
+}[keyof A]
+```
+
+Added in v1.0.0
 
 ## Case (interface)
 
