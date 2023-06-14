@@ -24,25 +24,43 @@ Added in v1.0.0
   - [Order](#order)
   - [Semigroup](#semigroup)
 - [utils](#utils)
+  - [at](#at)
+  - [charAt](#charat)
+  - [charCodeAt](#charcodeat)
+  - [codePointAt](#codepointat)
   - [concat](#concat)
   - [empty](#empty)
   - [endsWith](#endswith)
   - [endsWithPosition](#endswithposition)
   - [includes](#includes)
   - [includesWithPosition](#includeswithposition)
+  - [indexOf](#indexof)
   - [isEmpty](#isempty)
   - [isNonEmpty](#isnonempty)
+  - [lastIndexOf](#lastindexof)
   - [length](#length)
   - [linesWithSeparators](#lineswithseparators)
+  - [localeCompare](#localecompare)
+  - [match](#match)
+  - [matchAll](#matchall)
+  - [normalize](#normalize)
+  - [padEnd](#padend)
+  - [padStart](#padstart)
+  - [repeat](#repeat)
   - [replace](#replace)
+  - [replaceAll](#replaceall)
+  - [search](#search)
   - [slice](#slice)
   - [split](#split)
   - [startsWith](#startswith)
   - [startsWithPosition](#startswithposition)
   - [stripMargin](#stripmargin)
   - [stripMarginWith](#stripmarginwith)
+  - [substring](#substring)
   - [takeLeft](#takeleft)
   - [takeRight](#takeright)
+  - [toLocaleLowerCase](#tolocalelowercase)
+  - [toLocaleUpperCase](#tolocaleuppercase)
   - [toLowerCase](#tolowercase)
   - [toUpperCase](#touppercase)
   - [trim](#trim)
@@ -123,6 +141,84 @@ export declare const Semigroup: semigroup.Semigroup<string>
 Added in v1.0.0
 
 # utils
+
+## at
+
+**Signature**
+
+```ts
+export declare const at: {
+  (index: number): (self: string) => string | undefined
+  (self: string, index: number): string | undefined
+}
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+
+assert.deepStrictEqual(S.at('abc', 1), 'b')
+```
+
+Added in v1.0.0
+
+## charAt
+
+**Signature**
+
+```ts
+export declare const charAt: { (index: number): (self: string) => string; (self: string, index: number): string }
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+
+assert.deepStrictEqual(S.charAt('abc', 1), 'b')
+```
+
+Added in v1.0.0
+
+## charCodeAt
+
+**Signature**
+
+```ts
+export declare const charCodeAt: { (index: number): (self: string) => number; (self: string, index: number): number }
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+
+assert.deepStrictEqual(S.charCodeAt('abc', 1), 98)
+```
+
+Added in v1.0.0
+
+## codePointAt
+
+**Signature**
+
+```ts
+export declare const codePointAt: {
+  (index: number): (self: string) => number | undefined
+  (self: string, index: number): number | undefined
+}
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+
+assert.deepStrictEqual(S.codePointAt('abc', 1), 98)
+```
+
+Added in v1.0.0
 
 ## concat
 
@@ -240,6 +336,27 @@ assert.deepStrictEqual(S.includesWithPosition('abc', 'a', 1), false)
 
 Added in v1.0.0
 
+## indexOf
+
+**Signature**
+
+```ts
+export declare const indexOf: {
+  (searchString: string): (self: string) => number
+  (self: string, searchString: string): number
+}
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+
+assert.deepStrictEqual(S.indexOf('abbbc', 'b'), 1)
+```
+
+Added in v1.0.0
+
 ## isEmpty
 
 Test whether a `string` is empty.
@@ -269,6 +386,27 @@ Test whether a `string` is non empty.
 
 ```ts
 export declare const isNonEmpty: (self: string) => boolean
+```
+
+Added in v1.0.0
+
+## lastIndexOf
+
+**Signature**
+
+```ts
+export declare const lastIndexOf: {
+  (searchString: string): (self: string) => number
+  (self: string, searchString: string): number
+}
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+
+assert.deepStrictEqual(S.lastIndexOf('abbbc', 'b'), 3)
 ```
 
 Added in v1.0.0
@@ -306,6 +444,152 @@ export declare const linesWithSeparators: (s: string) => LinesIterator
 
 Added in v1.0.0
 
+## localeCompare
+
+**Signature**
+
+```ts
+export declare const localeCompare: {
+  (compareString: string): (self: string) => number
+  (self: string, compareString: string): number
+}
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+
+assert.deepStrictEqual(S.localeCompare('a', 'b'), -1)
+assert.deepStrictEqual(S.localeCompare('b', 'a'), 1)
+assert.deepStrictEqual(S.localeCompare('a', 'a'), 0)
+```
+
+Added in v1.0.0
+
+## match
+
+**Signature**
+
+```ts
+export declare const match: {
+  (regexp: RegExp | string): (self: string) => RegExpMatchArray | null
+  (self: string, regexp: RegExp | string): RegExpMatchArray | null
+}
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+
+assert.ok(S.match('a', /a/)?.[0] === 'a')
+```
+
+Added in v1.0.0
+
+## matchAll
+
+**Signature**
+
+```ts
+export declare const matchAll: {
+  (regexp: RegExp): (self: string) => IterableIterator<RegExpMatchArray>
+  (self: string, regexp: RegExp): IterableIterator<RegExpMatchArray>
+}
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+
+S.matchAll('a', /a/g)
+```
+
+Added in v1.0.0
+
+## normalize
+
+**Signature**
+
+```ts
+export declare const normalize: {
+  (form: 'NFC' | 'NFD' | 'NFKC' | 'NFKD'): (self: string) => string
+  (self: string, form: 'NFC' | 'NFD' | 'NFKC' | 'NFKD'): string
+}
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+
+assert.deepStrictEqual(S.normalize('a', 'NFC'), 'a')
+```
+
+Added in v1.0.0
+
+## padEnd
+
+**Signature**
+
+```ts
+export declare const padEnd: {
+  (maxLength: number, fillString?: string): (self: string) => string
+  (self: string, maxLength: number, fillString?: string): string
+}
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+
+assert.deepStrictEqual(S.padEnd('a', 5), 'a    ')
+```
+
+Added in v1.0.0
+
+## padStart
+
+**Signature**
+
+```ts
+export declare const padStart: {
+  (maxLength: number, fillString?: string): (self: string) => string
+  (self: string, maxLength: number, fillString?: string): string
+}
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+
+assert.deepStrictEqual(S.padStart('a', 5), '    a')
+```
+
+Added in v1.0.0
+
+## repeat
+
+**Signature**
+
+```ts
+export declare const repeat: { (count: number): (self: string) => string; (self: string, count: number): string }
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+
+assert.deepStrictEqual(S.repeat('a', 3), 'aaa')
+```
+
+Added in v1.0.0
+
 ## replace
 
 **Signature**
@@ -324,6 +608,48 @@ import * as S from '@effect/data/String'
 import { pipe } from '@effect/data/Function'
 
 assert.deepStrictEqual(pipe('abc', S.replace('b', 'd')), 'adc')
+```
+
+Added in v1.0.0
+
+## replaceAll
+
+**Signature**
+
+```ts
+export declare const replaceAll: {
+  (searchValue: string | RegExp, replaceValue: string): (self: string) => string
+  (self: string, searchValue: string | RegExp, replaceValue: string): string
+}
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+
+assert.deepStrictEqual(S.replaceAll('ababb', 'b', 'c'), 'acacc')
+```
+
+Added in v1.0.0
+
+## search
+
+**Signature**
+
+```ts
+export declare const search: {
+  (regexp: RegExp | string): (self: string) => number
+  (self: string, regexp: RegExp | string): number
+}
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+
+assert.deepStrictEqual(S.search('ababb', 'b'), 1)
 ```
 
 Added in v1.0.0
@@ -449,6 +775,24 @@ export declare const stripMarginWith: ((marginChar: string) => (self: string) =>
 
 Added in v1.0.0
 
+## substring
+
+**Signature**
+
+```ts
+export declare const substring: { (start: number): (self: string) => string; (self: string, start: number): string }
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+
+assert.deepStrictEqual(S.substring('abcd', 1), 'bcd')
+```
+
+Added in v1.0.0
+
 ## takeLeft
 
 Keep the specified number of characters from the start of a string.
@@ -499,6 +843,48 @@ export declare const takeRight: { (n: number): (self: string) => string; (self: 
 import * as S from '@effect/data/String'
 
 assert.deepStrictEqual(S.takeRight('Hello World', 5), 'World')
+```
+
+Added in v1.0.0
+
+## toLocaleLowerCase
+
+**Signature**
+
+```ts
+export declare const toLocaleLowerCase: {
+  (locale?: string | Array<string>): (self: string) => string
+  (self: string, locale?: string | Array<string>): string
+}
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+
+assert.deepStrictEqual(S.toLocaleLowerCase('\u0130', 'tr'), 'i')
+```
+
+Added in v1.0.0
+
+## toLocaleUpperCase
+
+**Signature**
+
+```ts
+export declare const toLocaleUpperCase: {
+  (locale?: string | Array<string>): (self: string) => string
+  (self: string, locale?: string | Array<string>): string
+}
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+
+assert.deepStrictEqual(S.toLocaleUpperCase('i\u0307', 'lt-LT'), 'I')
 ```
 
 Added in v1.0.0

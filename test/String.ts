@@ -123,6 +123,98 @@ describe.concurrent("String", () => {
     deepStrictEqual(pipe("abcd", S.slice(1, 3)), "bc")
   })
 
+  it("charCodeAt", () => {
+    expect(S.charCodeAt("abc", 1)).toBe(98)
+  })
+
+  it("substring", () => {
+    expect(S.substring("abcd", 1)).toBe("bcd")
+  })
+
+  it("at", () => {
+    expect(S.at("abc", 1)).toBe("b")
+    expect(S.at("abc", 4)).toBe(undefined)
+  })
+
+  it("charAt", () => {
+    expect(S.charAt("abc", 1)).toBe("b")
+  })
+
+  it("codePointAt", () => {
+    expect(S.codePointAt("abc", 1)).toBe(98)
+    expect(S.codePointAt("abc", 4)).toBe(undefined)
+  })
+
+  it("indexOf", () => {
+    expect(S.indexOf("abbbc", "b")).toBe(1)
+    expect(S.indexOf("abbbc", "d")).toBe(-1)
+  })
+
+  it("lastIndexOf", () => {
+    expect(S.lastIndexOf("abbbc", "b")).toBe(3)
+    expect(S.lastIndexOf("abbbc", "d")).toBe(-1)
+  })
+
+  it("localeCompare", () => {
+    expect(S.localeCompare("a", "b")).toBeLessThanOrEqual(-1)
+    expect(S.localeCompare("b", "a")).toBeGreaterThanOrEqual(1)
+    expect(S.localeCompare("a", "a")).toBe(0)
+  })
+
+  it("match", () => {
+    expect(S.match("a", /a/)).toHaveProperty("0", "a")
+    expect(S.match("a", /b/)).toBe(null)
+  })
+
+  it("matchAll", () => {
+    expect([...S.matchAll("apple, banana", /a[pn]/g)]).toHaveLength(3)
+    expect([...S.matchAll("apple, banana", /c/g)]).toHaveLength(0)
+  })
+
+  it("normalize", () => {
+    expect(S.normalize("a\u0300", "NFD")).toBe("a\u0300")
+    expect(S.normalize("a\u0300", "NFC")).toBe("à")
+    expect(S.normalize("a\u0300", "NFKC")).toBe("à")
+    expect(S.normalize("a\u0300", "NFKD")).toBe("a\u0300")
+  })
+
+  it("padEnd", () => {
+    expect(S.padEnd("a", 5)).toBe("a    ")
+    expect(S.padEnd("a", 5, "b")).toBe("abbbb")
+  })
+
+  it("padStart", () => {
+    expect(S.padStart("a", 5)).toBe("    a")
+    expect(S.padStart("a", 5, "b")).toBe("bbbba")
+  })
+
+  it("repeat", () => {
+    expect(S.repeat("a", 3)).toBe("aaa")
+  })
+
+  it("replaceAll", () => {
+    expect(S.replaceAll("cake bake lake take", "ake", "ap")).toBe("cap bap lap tap")
+    expect(S.replaceAll("cake basket lapid taken", /a\w+/g, "ap")).toBe("cap bap lap tap")
+  })
+
+  it("search", () => {
+    expect(S.search("abc", "ab")).toBe(0)
+    expect(S.search("abc", /b/)).toBe(1)
+    expect(S.search("abc", /d/)).toBe(-1)
+    expect(S.search("abc", "d")).toBe(-1)
+  })
+
+  it("toLocaleLowerCase", () => {
+    const locales = ["tr", "TR", "tr-TR", "tr-u-co-search", "tr-x-turkish"]
+    expect(S.toLocaleLowerCase("\u0130")).not.toBe("i")
+    expect(S.toLocaleLowerCase("\u0130", locales)).toBe("i")
+  })
+
+  it("toLocaleUpperCase", () => {
+    const locales = ["lt", "LT", "lt-LT", "lt-u-co-phonebk", "lt-x-lietuva"]
+    expect(S.toLocaleUpperCase("i\u0307", locales)).toBe("I")
+  })
+
   describe.concurrent("takeLeft", () => {
     it("should take the specified number of characters from the left side of a string", () => {
       expect(S.takeLeft("Hello, World!", 7)).toBe("Hello, ")
