@@ -147,18 +147,17 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const at: {
-  (index: number): (self: string) => string | undefined
-  (self: string, index: number): string | undefined
-}
+export declare const at: (index: number) => (self: string) => string | undefined
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(S.at('abc', 1), 'b')
+assert.deepStrictEqual(pipe('abc', S.at(1)), 'b')
+assert.deepStrictEqual(pipe('abc', S.at(4)), undefined)
 ```
 
 Added in v1.0.0
@@ -168,15 +167,16 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const charAt: { (index: number): (self: string) => string; (self: string, index: number): string }
+export declare const charAt: (index: number) => (self: string) => string
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(S.charAt('abc', 1), 'b')
+assert.deepStrictEqual(pipe('abc', S.charAt(1)), 'b')
 ```
 
 Added in v1.0.0
@@ -186,15 +186,16 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const charCodeAt: { (index: number): (self: string) => number; (self: string, index: number): number }
+export declare const charCodeAt: (index: number) => (self: string) => number
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(S.charCodeAt('abc', 1), 98)
+assert.deepStrictEqual(pipe('abc', S.charCodeAt(1)), 98)
 ```
 
 Added in v1.0.0
@@ -204,18 +205,16 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const codePointAt: {
-  (index: number): (self: string) => number | undefined
-  (self: string, index: number): number | undefined
-}
+export declare const codePointAt: (index: number) => (self: string) => number | undefined
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(S.codePointAt('abc', 1), 98)
+assert.deepStrictEqual(pipe('abc', S.codePointAt(1)), 98)
 ```
 
 Added in v1.0.0
@@ -341,18 +340,16 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const indexOf: {
-  (searchString: string): (self: string) => number
-  (self: string, searchString: string): number
-}
+export declare const indexOf: (searchString: string) => (self: string) => number
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(S.indexOf('abbbc', 'b'), 1)
+assert.deepStrictEqual(pipe('abbbc', S.indexOf('b')), 1)
 ```
 
 Added in v1.0.0
@@ -395,18 +392,16 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const lastIndexOf: {
-  (searchString: string): (self: string) => number
-  (self: string, searchString: string): number
-}
+export declare const lastIndexOf: (searchString: string) => (self: string) => number
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(S.lastIndexOf('abbbc', 'b'), 3)
+assert.deepStrictEqual(pipe('abbbc', S.lastIndexOf('b')), 3)
 ```
 
 Added in v1.0.0
@@ -449,62 +444,46 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const localeCompare: {
-  (compareString: string): (self: string) => number
-  (self: string, compareString: string): number
-}
+export declare const localeCompare: (
+  that: string,
+  locales?: Array<string>,
+  options?: Intl.CollatorOptions
+) => (self: string) => number
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(S.localeCompare('a', 'b'), -1)
-assert.deepStrictEqual(S.localeCompare('b', 'a'), 1)
-assert.deepStrictEqual(S.localeCompare('a', 'a'), 0)
+assert.deepStrictEqual(pipe('a', S.localeCompare('b')), -1)
+assert.deepStrictEqual(pipe('b', S.localeCompare('a')), 1)
+assert.deepStrictEqual(pipe('a', S.localeCompare('a')), 0)
 ```
 
 Added in v1.0.0
 
 ## match
 
+It is the `pipe`-able version of the native `match` method.
+
 **Signature**
 
 ```ts
-export declare const match: {
-  (regexp: RegExp | string): (self: string) => RegExpMatchArray | null
-  (self: string, regexp: RegExp | string): RegExpMatchArray | null
-}
-```
-
-**Example**
-
-```ts
-import * as S from '@effect/data/String'
-
-assert.ok(S.match('a', /a/)?.[0] === 'a')
+export declare const match: (regexp: RegExp | string) => (self: string) => RegExpMatchArray | null
 ```
 
 Added in v1.0.0
 
 ## matchAll
 
+It is the `pipe`-able version of the native `matchAll` method.
+
 **Signature**
 
 ```ts
-export declare const matchAll: {
-  (regexp: RegExp): (self: string) => IterableIterator<RegExpMatchArray>
-  (self: string, regexp: RegExp): IterableIterator<RegExpMatchArray>
-}
-```
-
-**Example**
-
-```ts
-import * as S from '@effect/data/String'
-
-assert.ok([...S.matchAll('ababb', /a/g)].length === 2)
+export declare const matchAll: (regexp: RegExp) => (self: string) => IterableIterator<RegExpMatchArray>
 ```
 
 Added in v1.0.0
@@ -514,18 +493,21 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const normalize: {
-  (form: 'NFC' | 'NFD' | 'NFKC' | 'NFKD'): (self: string) => string
-  (self: string, form: 'NFC' | 'NFD' | 'NFKC' | 'NFKD'): string
-}
+export declare const normalize: (form?: 'NFC' | 'NFD' | 'NFKC' | 'NFKD') => (self: string) => string
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(S.normalize('a', 'NFC'), 'a')
+const str = '\u1E9B\u0323'
+assert.deepStrictEqual(pipe(str, S.normalize()), '\u1E9B\u0323')
+assert.deepStrictEqual(pipe(str, S.normalize('NFC')), '\u1E9B\u0323')
+assert.deepStrictEqual(pipe(str, S.normalize('NFD')), '\u017F\u0323\u0307')
+assert.deepStrictEqual(pipe(str, S.normalize('NFKC')), '\u1E69')
+assert.deepStrictEqual(pipe(str, S.normalize('NFKD')), '\u0073\u0323\u0307')
 ```
 
 Added in v1.0.0
@@ -535,18 +517,17 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const padEnd: {
-  (maxLength: number, fillString?: string): (self: string) => string
-  (self: string, maxLength: number, fillString?: string): string
-}
+export declare const padEnd: (maxLength: number, fillString?: string) => (self: string) => string
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(S.padEnd('a', 5), 'a    ')
+assert.deepStrictEqual(pipe('a', S.padEnd(5)), 'a    ')
+assert.deepStrictEqual(pipe('a', S.padEnd(5, '_')), 'a____')
 ```
 
 Added in v1.0.0
@@ -556,18 +537,17 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const padStart: {
-  (maxLength: number, fillString?: string): (self: string) => string
-  (self: string, maxLength: number, fillString?: string): string
-}
+export declare const padStart: (maxLength: number, fillString?: string) => (self: string) => string
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(S.padStart('a', 5), '    a')
+assert.deepStrictEqual(pipe('a', S.padStart(5)), '    a')
+assert.deepStrictEqual(pipe('a', S.padStart(5, '_')), '____a')
 ```
 
 Added in v1.0.0
@@ -577,15 +557,16 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const repeat: { (count: number): (self: string) => string; (self: string, count: number): string }
+export declare const repeat: (count: number) => (self: string) => string
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(S.repeat('a', 3), 'aaa')
+assert.deepStrictEqual(pipe('a', S.repeat(5)), 'aaaaa')
 ```
 
 Added in v1.0.0
@@ -617,18 +598,17 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const replaceAll: {
-  (searchValue: string | RegExp, replaceValue: string): (self: string) => string
-  (self: string, searchValue: string | RegExp, replaceValue: string): string
-}
+export declare const replaceAll: (searchValue: string | RegExp, replaceValue: string) => (self: string) => string
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(S.replaceAll('ababb', 'b', 'c'), 'acacc')
+assert.deepStrictEqual(pipe('ababb', S.replaceAll('b', 'c')), 'acacc')
+assert.deepStrictEqual(pipe('ababb', S.replaceAll(/ba/g, 'cc')), 'accbb')
 ```
 
 Added in v1.0.0
@@ -638,18 +618,17 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const search: {
-  (regexp: RegExp | string): (self: string) => number
-  (self: string, regexp: RegExp | string): number
-}
+export declare const search: (regexp: RegExp | string) => (self: string) => number
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(S.search('ababb', 'b'), 1)
+assert.deepStrictEqual(pipe('ababb', S.search('b')), 1)
+assert.deepStrictEqual(pipe('ababb', S.search(/abb/)), 2)
 ```
 
 Added in v1.0.0
@@ -780,15 +759,17 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const substring: { (start: number): (self: string) => string; (self: string, start: number): string }
+export declare const substring: (start: number, end?: number) => (self: string) => string
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(S.substring('abcd', 1), 'bcd')
+assert.deepStrictEqual(pipe('abcd', S.substring(1)), 'bcd')
+assert.deepStrictEqual(pipe('abcd', S.substring(1, 3)), 'bc')
 ```
 
 Added in v1.0.0
@@ -852,18 +833,17 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const toLocaleLowerCase: {
-  (locale?: string | Array<string>): (self: string) => string
-  (self: string, locale?: string | Array<string>): string
-}
+export declare const toLocaleLowerCase: (locale?: string | Array<string>) => (self: string) => string
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(S.toLocaleLowerCase('\u0130', 'tr'), 'i')
+const str = '\u0130'
+assert.deepStrictEqual(pipe(str, S.toLocaleLowerCase('tr')), 'i')
 ```
 
 Added in v1.0.0
@@ -873,18 +853,17 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const toLocaleUpperCase: {
-  (locale?: string | Array<string>): (self: string) => string
-  (self: string, locale?: string | Array<string>): string
-}
+export declare const toLocaleUpperCase: (locale?: string | Array<string>) => (self: string) => string
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(S.toLocaleUpperCase('i\u0307', 'lt-LT'), 'I')
+const str = 'i\u0307'
+assert.deepStrictEqual(pipe(str, S.toLocaleUpperCase('lt-LT')), 'I')
 ```
 
 Added in v1.0.0

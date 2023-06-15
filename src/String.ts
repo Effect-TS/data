@@ -302,242 +302,213 @@ export const endsWith: {
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(S.charCodeAt("abc", 1), 98)
+ * assert.deepStrictEqual(pipe("abc", S.charCodeAt(1)), 98)
  *
  * @since 1.0.0
  */
-export const charCodeAt: {
-  (index: number): (self: string) => number
-  (self: string, index: number): number
-} = dual(2, (self: string, index: number): number => self.charCodeAt(index))
+export const charCodeAt = (index: number) => (self: string): number => self.charCodeAt(index)
 
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(S.substring("abcd", 1), "bcd")
+ * assert.deepStrictEqual(pipe("abcd", S.substring(1)), "bcd")
+ * assert.deepStrictEqual(pipe("abcd", S.substring(1, 3)), "bc")
  *
  * @since 1.0.0
  */
-export const substring: {
-  (start: number): (self: string) => string
-  (self: string, start: number): string
-} = dual(2, (self: string, start: number): string => self.substring(start))
+export const substring = (start: number, end?: number) => (self: string): string => self.substring(start, end)
 
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(S.at("abc", 1), "b")
+ * assert.deepStrictEqual(pipe("abc", S.at(1)), "b")
+ * assert.deepStrictEqual(pipe("abc", S.at(4)), undefined)
  *
  * @since 1.0.0
  */
-export const at: {
-  (index: number): (self: string) => string | undefined
-  (self: string, index: number): string | undefined
-} = dual(2, (self: string, index: number): string | undefined => self.at(index))
+export const at = (index: number) => (self: string): string | undefined => self.at(index)
 
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(S.charAt("abc", 1), "b")
+ * assert.deepStrictEqual(pipe("abc", S.charAt(1)), "b")
  *
  * @since 1.0.0
  */
-export const charAt: {
-  (index: number): (self: string) => string
-  (self: string, index: number): string
-} = dual(2, (self: string, index: number): string => self.charAt(index))
+export const charAt = (index: number) => (self: string): string => self.charAt(index)
 
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(S.codePointAt("abc", 1), 98)
+ * assert.deepStrictEqual(pipe("abc", S.codePointAt(1)), 98)
  *
  * @since 1.0.0
  */
-export const codePointAt: {
-  (index: number): (self: string) => number | undefined
-  (self: string, index: number): number | undefined
-} = dual(2, (self: string, index: number): number | undefined => self.codePointAt(index))
+export const codePointAt = (index: number) => (self: string): number | undefined => self.codePointAt(index)
 
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(S.indexOf("abbbc", "b"), 1)
+ * assert.deepStrictEqual(pipe("abbbc", S.indexOf("b")), 1)
  *
  * @since 1.0.0
  */
-export const indexOf: {
-  (searchString: string): (self: string) => number
-  (self: string, searchString: string): number
-} = dual(2, (self: string, searchString: string): number => self.indexOf(searchString))
+export const indexOf = (searchString: string) => (self: string): number => self.indexOf(searchString)
 
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(S.lastIndexOf("abbbc", "b"), 3)
+ * assert.deepStrictEqual(pipe("abbbc", S.lastIndexOf("b")), 3)
  *
  * @since 1.0.0
  */
-export const lastIndexOf: {
-  (searchString: string): (self: string) => number
-  (self: string, searchString: string): number
-} = dual(2, (self: string, searchString: string): number => self.lastIndexOf(searchString))
+export const lastIndexOf = (searchString: string) => (self: string): number => self.lastIndexOf(searchString)
 
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(S.localeCompare("a", "b"), -1)
- * assert.deepStrictEqual(S.localeCompare("b", "a"), 1)
- * assert.deepStrictEqual(S.localeCompare("a", "a"), 0)
+ * assert.deepStrictEqual(pipe("a", S.localeCompare("b")), -1)
+ * assert.deepStrictEqual(pipe("b", S.localeCompare("a")), 1)
+ * assert.deepStrictEqual(pipe("a", S.localeCompare("a")), 0)
  *
  * @since 1.0.0
  */
-export const localeCompare: {
-  (compareString: string): (self: string) => number
-  (self: string, compareString: string): number
-} = dual(2, (self: string, compareString: string): number => self.localeCompare(compareString))
+export const localeCompare = (that: string, locales?: Array<string>, options?: Intl.CollatorOptions) =>
+  (self: string): number => self.localeCompare(that, locales, options)
+
+/**
+ * It is the `pipe`-able version of the native `match` method.
+ *
+ * @since 1.0.0
+ */
+export const match = (regexp: RegExp | string) => (self: string): RegExpMatchArray | null => self.match(regexp)
+
+/**
+ * It is the `pipe`-able version of the native `matchAll` method.
+ *
+ * @since 1.0.0
+ */
+export const matchAll = (regexp: RegExp) => (self: string): IterableIterator<RegExpMatchArray> => self.matchAll(regexp)
 
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
  *
- * assert.ok(S.match("a", /a/)?.[0] === "a")
+ * const str = "\u1E9B\u0323";
+ * assert.deepStrictEqual(pipe(str, S.normalize()), "\u1E9B\u0323")
+ * assert.deepStrictEqual(pipe(str, S.normalize("NFC")), "\u1E9B\u0323")
+ * assert.deepStrictEqual(pipe(str, S.normalize("NFD")), "\u017F\u0323\u0307")
+ * assert.deepStrictEqual(pipe(str, S.normalize("NFKC")), "\u1E69")
+ * assert.deepStrictEqual(pipe(str, S.normalize("NFKD")), "\u0073\u0323\u0307")
  *
  * @since 1.0.0
  */
-export const match: {
-  (regexp: RegExp | string): (self: string) => RegExpMatchArray | null
-  (self: string, regexp: RegExp | string): RegExpMatchArray | null
-} = dual(2, (self: string, regexp: RegExp | string): RegExpMatchArray | null => self.match(regexp))
+export const normalize = (form?: "NFC" | "NFD" | "NFKC" | "NFKD") => (self: string): string => self.normalize(form)
 
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
  *
- * assert.ok([...S.matchAll("ababb", /a/g)].length === 2)
+ * assert.deepStrictEqual(pipe("a", S.padEnd(5)), "a    ")
+ * assert.deepStrictEqual(pipe("a", S.padEnd(5, "_")), "a____")
  *
  * @since 1.0.0
  */
-export const matchAll: {
-  (regexp: RegExp): (self: string) => IterableIterator<RegExpMatchArray>
-  (self: string, regexp: RegExp): IterableIterator<RegExpMatchArray>
-} = dual(2, (self: string, regexp: RegExp): IterableIterator<RegExpMatchArray> => self.matchAll(regexp))
+export const padEnd = (maxLength: number, fillString?: string) =>
+  (self: string): string => self.padEnd(maxLength, fillString)
 
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(S.normalize("a", "NFC"), "a")
+ * assert.deepStrictEqual(pipe("a", S.padStart(5)), "    a")
+ * assert.deepStrictEqual(pipe("a", S.padStart(5, "_")), "____a")
  *
  * @since 1.0.0
  */
-export const normalize: {
-  (form: "NFC" | "NFD" | "NFKC" | "NFKD"): (self: string) => string
-  (self: string, form: "NFC" | "NFD" | "NFKC" | "NFKD"): string
-} = dual(2, (self: string, form: "NFC" | "NFD" | "NFKC" | "NFKD"): string => self.normalize(form))
+export const padStart = (maxLength: number, fillString?: string) =>
+  (self: string): string => self.padStart(maxLength, fillString)
 
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(S.padEnd("a", 5), "a    ")
+ * assert.deepStrictEqual(pipe("a", S.repeat(5)), "aaaaa")
  *
  * @since 1.0.0
  */
-export const padEnd: {
-  (maxLength: number, fillString?: string): (self: string) => string
-  (self: string, maxLength: number, fillString?: string): string
-} = dual(2, (self: string, maxLength: number, fillString?: string): string => self.padEnd(maxLength, fillString))
+export const repeat = (count: number) => (self: string): string => self.repeat(count)
 
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(S.padStart("a", 5), "    a")
+ * assert.deepStrictEqual(pipe("ababb", S.replaceAll("b", "c")), "acacc")
+ * assert.deepStrictEqual(pipe("ababb", S.replaceAll(/ba/g, "cc")), "accbb")
  *
  * @since 1.0.0
  */
-export const padStart: {
-  (maxLength: number, fillString?: string): (self: string) => string
-  (self: string, maxLength: number, fillString?: string): string
-} = dual(2, (self: string, maxLength: number, fillString?: string): string => self.padStart(maxLength, fillString))
+export const replaceAll = (searchValue: string | RegExp, replaceValue: string) =>
+  (self: string): string => self.replaceAll(searchValue, replaceValue)
 
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(S.repeat("a", 3), "aaa")
+ * assert.deepStrictEqual(pipe("ababb", S.search("b")), 1)
+ * assert.deepStrictEqual(pipe("ababb", S.search(/abb/)), 2)
  *
  * @since 1.0.0
  */
-export const repeat: {
-  (count: number): (self: string) => string
-  (self: string, count: number): string
-} = dual(2, (self: string, count: number): string => self.repeat(count))
+export const search = (regexp: RegExp | string) => (self: string): number => self.search(regexp)
 
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(S.replaceAll("ababb", "b", "c"), "acacc")
+ * const str = "\u0130"
+ * assert.deepStrictEqual(pipe(str, S.toLocaleLowerCase("tr")), "i")
  *
  * @since 1.0.0
  */
-export const replaceAll: {
-  (searchValue: string | RegExp, replaceValue: string): (self: string) => string
-  (self: string, searchValue: string | RegExp, replaceValue: string): string
-} = dual(
-  3,
-  (self: string, searchValue: string | RegExp, replaceValue: string): string =>
-    self.replaceAll(searchValue, replaceValue)
-)
+export const toLocaleLowerCase = (locale?: string | Array<string>) =>
+  (self: string): string => self.toLocaleLowerCase(locale)
 
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(S.search("ababb", "b"), 1)
- *
- * @since 1.0.0
- */
-export const search: {
-  (regexp: RegExp | string): (self: string) => number
-  (self: string, regexp: RegExp | string): number
-} = dual(2, (self: string, regexp: RegExp | string): number => self.search(regexp))
-
-/**
- * @example
- * import * as S from '@effect/data/String'
- *
- * assert.deepStrictEqual(S.toLocaleLowerCase("\u0130", "tr"), "i")
+ * const str = "i\u0307"
+ * assert.deepStrictEqual(pipe(str, S.toLocaleUpperCase("lt-LT")), "I")
  *
  * @since 1.0.0
  */
-export const toLocaleLowerCase: {
-  (locale?: string | Array<string>): (self: string) => string
-  (self: string, locale?: string | Array<string>): string
-} = dual(1, (self: string, locale?: string | Array<string>): string => self.toLocaleLowerCase(locale))
-
-/**
- * @example
- * import * as S from '@effect/data/String'
- *
- * assert.deepStrictEqual(S.toLocaleUpperCase("i\u0307", "lt-LT"), "I")
- *
- * @since 1.0.0
- */
-export const toLocaleUpperCase: {
-  (locale?: string | Array<string>): (self: string) => string
-  (self: string, locale?: string | Array<string>): string
-} = dual(1, (self: string, locale?: string | Array<string>): string => self.toLocaleUpperCase(locale))
+export const toLocaleUpperCase = (locale?: string | Array<string>) =>
+  (self: string): string => self.toLocaleUpperCase(locale)
 
 /**
  * @example

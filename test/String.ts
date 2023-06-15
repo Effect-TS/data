@@ -124,95 +124,95 @@ describe.concurrent("String", () => {
   })
 
   it("charCodeAt", () => {
-    expect(S.charCodeAt("abc", 1)).toBe(98)
+    expect(pipe("abc", S.charCodeAt(1))).toBe(98)
   })
 
   it("substring", () => {
-    expect(S.substring("abcd", 1)).toBe("bcd")
+    expect(pipe("abcd", S.substring(1))).toBe("bcd")
+    expect(pipe("abcd", S.substring(1, 3))).toBe("bc")
   })
 
   it("at", () => {
-    expect(S.at("abc", 1)).toBe("b")
-    expect(S.at("abc", 4)).toBe(undefined)
+    expect(pipe("abc", S.at(1))).toBe("b")
+    expect(pipe("abc", S.at(4))).toBe(undefined)
   })
 
   it("charAt", () => {
-    expect(S.charAt("abc", 1)).toBe("b")
+    expect(pipe("abc", S.charAt(1))).toBe("b")
   })
 
   it("codePointAt", () => {
-    expect(S.codePointAt("abc", 1)).toBe(98)
-    expect(S.codePointAt("abc", 4)).toBe(undefined)
+    expect(pipe("abc", S.codePointAt(1))).toBe(98)
+    expect(pipe("abc", S.codePointAt(4))).toBe(undefined)
   })
 
   it("indexOf", () => {
-    expect(S.indexOf("abbbc", "b")).toBe(1)
-    expect(S.indexOf("abbbc", "d")).toBe(-1)
+    expect(pipe("abbbc", S.indexOf("b"))).toBe(1)
+    expect(pipe("abbbc", S.indexOf("d"))).toBe(-1)
   })
 
   it("lastIndexOf", () => {
-    expect(S.lastIndexOf("abbbc", "b")).toBe(3)
-    expect(S.lastIndexOf("abbbc", "d")).toBe(-1)
+    expect(pipe("abbbc", S.lastIndexOf("b"))).toBe(3)
+    expect(pipe("abbbc", S.lastIndexOf("d"))).toBe(-1)
   })
 
   it("localeCompare", () => {
-    expect(S.localeCompare("a", "b")).toBeLessThanOrEqual(-1)
-    expect(S.localeCompare("b", "a")).toBeGreaterThanOrEqual(1)
-    expect(S.localeCompare("a", "a")).toBe(0)
+    expect(pipe("a", S.localeCompare("b"))).toBeLessThanOrEqual(-1)
+    expect(pipe("b", S.localeCompare("a"))).toBeGreaterThanOrEqual(1)
+    expect(pipe("a", S.localeCompare("a"))).toBe(0)
   })
 
   it("match", () => {
-    expect(S.match("a", /a/)).toHaveProperty("0", "a")
-    expect(S.match("a", /b/)).toBe(null)
+    expect(pipe("a", S.match(/a/))).toContainEqual("a")
+    expect(pipe("a", S.match(/b/))).toBe(null)
   })
 
   it("matchAll", () => {
-    expect([...S.matchAll("apple, banana", /a[pn]/g)]).toHaveLength(3)
-    expect([...S.matchAll("apple, banana", /c/g)]).toHaveLength(0)
+    expect(Array.from(pipe("apple, banana", S.matchAll(/a[pn]/g)))).toHaveLength(3)
+    expect(Array.from(pipe("apple, banana", S.matchAll(/c/g)))).toHaveLength(0)
   })
 
   it("normalize", () => {
-    expect(S.normalize("a\u0300", "NFD")).toBe("a\u0300")
-    expect(S.normalize("a\u0300", "NFC")).toBe("à")
-    expect(S.normalize("a\u0300", "NFKC")).toBe("à")
-    expect(S.normalize("a\u0300", "NFKD")).toBe("a\u0300")
+    const str = "\u1E9B\u0323"
+    expect(pipe(str, S.normalize())).toBe("\u1E9B\u0323")
+    expect(pipe(str, S.normalize("NFC"))).toBe("\u1E9B\u0323")
+    expect(pipe(str, S.normalize("NFD"))).toBe("\u017F\u0323\u0307")
+    expect(pipe(str, S.normalize("NFKC"))).toBe("\u1E69")
+    expect(pipe(str, S.normalize("NFKD"))).toBe("\u0073\u0323\u0307")
   })
 
   it("padEnd", () => {
-    expect(S.padEnd("a", 5)).toBe("a    ")
-    expect(S.padEnd("a", 5, "b")).toBe("abbbb")
+    expect(pipe("a", S.padEnd(5))).toBe("a    ")
+    expect(pipe("a", S.padEnd(5, "_"))).toBe("a____")
   })
 
   it("padStart", () => {
-    expect(S.padStart("a", 5)).toBe("    a")
-    expect(S.padStart("a", 5, "b")).toBe("bbbba")
+    expect(pipe("a", S.padStart(5))).toBe("    a")
+    expect(pipe("a", S.padStart(5, "_"))).toBe("____a")
   })
 
   it("repeat", () => {
-    expect(S.repeat("a", 3)).toBe("aaa")
+    expect(pipe("a", S.repeat(3))).toBe("aaa")
   })
 
   it("replaceAll", () => {
-    expect(S.replaceAll("cake bake lake take", "ake", "ap")).toBe("cap bap lap tap")
-    expect(S.replaceAll("cake basket lapid taken", /a\w+/g, "ap")).toBe("cap bap lap tap")
+    expect(pipe("ababb", S.replaceAll("b", "c"))).toBe("acacc")
+    expect(pipe("ababb", S.replaceAll(/ba/g, "cc"))).toBe("accbb")
   })
 
   it("search", () => {
-    expect(S.search("abc", "ab")).toBe(0)
-    expect(S.search("abc", /b/)).toBe(1)
-    expect(S.search("abc", /d/)).toBe(-1)
-    expect(S.search("abc", "d")).toBe(-1)
+    expect(pipe("ababb", S.search("b"))).toBe(1)
+    expect(pipe("ababb", S.search(/abb/))).toBe(2)
   })
 
   it("toLocaleLowerCase", () => {
     const locales = ["tr", "TR", "tr-TR", "tr-u-co-search", "tr-x-turkish"]
-    expect(S.toLocaleLowerCase("\u0130")).not.toBe("i")
-    expect(S.toLocaleLowerCase("\u0130", locales)).toBe("i")
+    expect(pipe("\u0130", S.toLocaleLowerCase(locales))).toBe("i")
   })
 
   it("toLocaleUpperCase", () => {
     const locales = ["lt", "LT", "lt-LT", "lt-u-co-phonebk", "lt-x-lietuva"]
-    expect(S.toLocaleUpperCase("i\u0307", locales)).toBe("I")
+    expect(pipe("i\u0307", S.toLocaleUpperCase(locales))).toBe("I")
   })
 
   describe.concurrent("takeLeft", () => {
