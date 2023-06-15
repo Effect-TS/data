@@ -422,7 +422,7 @@ export const match: {
  * @example
  * import * as S from '@effect/data/String'
  *
- * S.matchAll("a", /a/g)
+ * assert.ok([...S.matchAll("ababb", /a/g)].length === 2)
  *
  * @since 1.0.0
  */

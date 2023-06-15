@@ -504,7 +504,7 @@ export declare const matchAll: {
 ```ts
 import * as S from '@effect/data/String'
 
-S.matchAll('a', /a/g)
+assert.ok([...S.matchAll('ababb', /a/g)].length === 2)
 ```
 
 Added in v1.0.0
