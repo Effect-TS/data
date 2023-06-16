@@ -1,4 +1,5 @@
 import { pipe } from "@effect/data/Function"
+import * as Option from "@effect/data/Option"
 import * as S from "@effect/data/String"
 import { deepStrictEqual } from "@effect/data/test/util"
 import * as Order from "@effect/data/typeclass/Order"
@@ -121,6 +122,101 @@ describe.concurrent("String", () => {
 
   it("slice", () => {
     deepStrictEqual(pipe("abcd", S.slice(1, 3)), "bc")
+  })
+
+  it("charCodeAt", () => {
+    expect(pipe("abc", S.charCodeAt(1))).toStrictEqual(Option.some(98))
+    expect(pipe("abc", S.charCodeAt(4))).toStrictEqual(Option.none())
+  })
+
+  it("substring", () => {
+    expect(pipe("abcd", S.substring(1))).toBe("bcd")
+    expect(pipe("abcd", S.substring(1, 3))).toBe("bc")
+  })
+
+  it("at", () => {
+    expect(pipe("abc", S.at(1))).toStrictEqual(Option.some("b"))
+    expect(pipe("abc", S.at(4))).toStrictEqual(Option.none())
+  })
+
+  it("charAt", () => {
+    expect(pipe("abc", S.charAt(1))).toStrictEqual(Option.some("b"))
+    expect(pipe("abc", S.charAt(4))).toStrictEqual(Option.none())
+  })
+
+  it("codePointAt", () => {
+    expect(pipe("abc", S.codePointAt(1))).toStrictEqual(Option.some(98))
+    expect(pipe("abc", S.codePointAt(4))).toStrictEqual(Option.none())
+  })
+
+  it("indexOf", () => {
+    expect(pipe("abbbc", S.indexOf("b"))).toStrictEqual(Option.some(1))
+    expect(pipe("abbbc", S.indexOf("d"))).toStrictEqual(Option.none())
+  })
+
+  it("lastIndexOf", () => {
+    expect(pipe("abbbc", S.lastIndexOf("b"))).toStrictEqual(Option.some(3))
+    expect(pipe("abbbc", S.lastIndexOf("d"))).toStrictEqual(Option.none())
+  })
+
+  it("localeCompare", () => {
+    expect(pipe("a", S.localeCompare("b"))).toBe(-1)
+    expect(pipe("b", S.localeCompare("a"))).toBe(1)
+    expect(pipe("a", S.localeCompare("a"))).toBe(0)
+  })
+
+  it("match", () => {
+    expect(pipe("a", S.match(/a/))).toStrictEqual(Option.some(expect.arrayContaining(["a"])))
+    expect(pipe("a", S.match(/b/))).toStrictEqual(Option.none())
+  })
+
+  it("matchAll", () => {
+    expect(Array.from(pipe("apple, banana", S.matchAll(/a[pn]/g)))).toHaveLength(3)
+    expect(Array.from(pipe("apple, banana", S.matchAll(/c/g)))).toHaveLength(0)
+  })
+
+  it("normalize", () => {
+    const str = "\u1E9B\u0323"
+    expect(pipe(str, S.normalize())).toBe("\u1E9B\u0323")
+    expect(pipe(str, S.normalize("NFC"))).toBe("\u1E9B\u0323")
+    expect(pipe(str, S.normalize("NFD"))).toBe("\u017F\u0323\u0307")
+    expect(pipe(str, S.normalize("NFKC"))).toBe("\u1E69")
+    expect(pipe(str, S.normalize("NFKD"))).toBe("\u0073\u0323\u0307")
+  })
+
+  it("padEnd", () => {
+    expect(pipe("a", S.padEnd(5))).toBe("a    ")
+    expect(pipe("a", S.padEnd(5, "_"))).toBe("a____")
+  })
+
+  it("padStart", () => {
+    expect(pipe("a", S.padStart(5))).toBe("    a")
+    expect(pipe("a", S.padStart(5, "_"))).toBe("____a")
+  })
+
+  it("repeat", () => {
+    expect(pipe("a", S.repeat(3))).toBe("aaa")
+  })
+
+  it("replaceAll", () => {
+    expect(pipe("ababb", S.replaceAll("b", "c"))).toBe("acacc")
+    expect(pipe("ababb", S.replaceAll(/ba/g, "cc"))).toBe("accbb")
+  })
+
+  it("search", () => {
+    expect(pipe("ababb", S.search("b"))).toStrictEqual(Option.some(1))
+    expect(pipe("ababb", S.search(/abb/))).toStrictEqual(Option.some(2))
+    expect(pipe("ababb", S.search(/c/))).toStrictEqual(Option.none())
+  })
+
+  it("toLocaleLowerCase", () => {
+    const locales = ["tr", "TR", "tr-TR", "tr-u-co-search", "tr-x-turkish"]
+    expect(pipe("\u0130", S.toLocaleLowerCase(locales))).toBe("i")
+  })
+
+  it("toLocaleUpperCase", () => {
+    const locales = ["lt", "LT", "lt-LT", "lt-u-co-phonebk", "lt-x-lietuva"]
+    expect(pipe("i\u0307", S.toLocaleUpperCase(locales))).toBe("I")
   })
 
   describe.concurrent("takeLeft", () => {

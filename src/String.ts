@@ -8,6 +8,9 @@
 
 import { dual } from "@effect/data/Function"
 import * as readonlyArray from "@effect/data/internal/ReadonlyArray"
+import * as number from "@effect/data/Number"
+import * as Option from "@effect/data/Option"
+import type * as Ordering from "@effect/data/Ordering"
 import type { Refinement } from "@effect/data/Predicate"
 import * as predicate from "@effect/data/Predicate"
 import type { NonEmptyArray } from "@effect/data/ReadonlyArray"
@@ -298,6 +301,239 @@ export const endsWith: {
   (searchString: string): (self: string) => boolean
   (self: string, searchString: string): boolean
 } = dual(2, (self: string, searchString: string): boolean => self.endsWith(searchString))
+
+/**
+ * @example
+ * import * as S from '@effect/data/String'
+ * import * as Option from '@effect/data/Option'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * assert.deepStrictEqual(pipe("abc", S.charCodeAt(1)), Option.some(98))
+ * assert.deepStrictEqual(pipe("abc", S.charCodeAt(4)), Option.none())
+ *
+ * @since 1.0.0
+ */
+export const charCodeAt = (index: number) =>
+  (self: string): Option.Option<number> =>
+    Option.filter(Option.some(self.charCodeAt(index)), (charCode) => !isNaN(charCode))
+
+/**
+ * @example
+ * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * assert.deepStrictEqual(pipe("abcd", S.substring(1)), "bcd")
+ * assert.deepStrictEqual(pipe("abcd", S.substring(1, 3)), "bc")
+ *
+ * @since 1.0.0
+ */
+export const substring = (start: number, end?: number) => (self: string): string => self.substring(start, end)
+
+/**
+ * @example
+ * import * as S from '@effect/data/String'
+ * import * as Option from '@effect/data/Option'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * assert.deepStrictEqual(pipe("abc", S.at(1)), Option.some("b"))
+ * assert.deepStrictEqual(pipe("abc", S.at(4)), Option.none())
+ *
+ * @since 1.0.0
+ */
+export const at = (index: number) => (self: string): Option.Option<string> => Option.fromNullable(self.at(index))
+
+/**
+ * @example
+ * import * as S from '@effect/data/String'
+ * import * as Option from '@effect/data/Option'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * assert.deepStrictEqual(pipe("abc", S.charAt(1)), Option.some("b"))
+ * assert.deepStrictEqual(pipe("abc", S.charAt(4)), Option.none())
+ *
+ * @since 1.0.0
+ */
+export const charAt = (index: number) =>
+  (self: string): Option.Option<string> => Option.filter(Option.some(self.charAt(index)), isNonEmpty)
+
+/**
+ * @example
+ * import * as S from '@effect/data/String'
+ * import * as Option from '@effect/data/Option'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * assert.deepStrictEqual(pipe("abc", S.codePointAt(1)), Option.some(98))
+ *
+ * @since 1.0.0
+ */
+export const codePointAt = (index: number) =>
+  (self: string): Option.Option<number> => Option.fromNullable(self.codePointAt(index))
+
+/**
+ * @example
+ * import * as S from '@effect/data/String'
+ * import * as Option from '@effect/data/Option'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * assert.deepStrictEqual(pipe("abbbc", S.indexOf("b")), Option.some(1))
+ *
+ * @since 1.0.0
+ */
+export const indexOf = (searchString: string) =>
+  (self: string): Option.Option<number> =>
+    Option.filter(Option.some(self.indexOf(searchString)), number.greaterThanOrEqualTo(0))
+
+/**
+ * @example
+ * import * as S from '@effect/data/String'
+ * import * as Option from '@effect/data/Option'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * assert.deepStrictEqual(pipe("abbbc", S.lastIndexOf("b")), Option.some(3))
+ * assert.deepStrictEqual(pipe("abbbc", S.lastIndexOf("d")), Option.none())
+ *
+ * @since 1.0.0
+ */
+export const lastIndexOf = (searchString: string) =>
+  (self: string): Option.Option<number> =>
+    Option.filter(Option.some(self.lastIndexOf(searchString)), number.greaterThanOrEqualTo(0))
+
+/**
+ * @example
+ * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * assert.deepStrictEqual(pipe("a", S.localeCompare("b")), -1)
+ * assert.deepStrictEqual(pipe("b", S.localeCompare("a")), 1)
+ * assert.deepStrictEqual(pipe("a", S.localeCompare("a")), 0)
+ *
+ * @since 1.0.0
+ */
+export const localeCompare = (that: string, locales?: Array<string>, options?: Intl.CollatorOptions) =>
+  (self: string): Ordering.Ordering => number.sign(self.localeCompare(that, locales, options))
+
+/**
+ * It is the `pipe`-able version of the native `match` method.
+ *
+ * @since 1.0.0
+ */
+export const match = (regexp: RegExp | string) =>
+  (self: string): Option.Option<RegExpMatchArray> => Option.fromNullable(self.match(regexp))
+
+/**
+ * It is the `pipe`-able version of the native `matchAll` method.
+ *
+ * @since 1.0.0
+ */
+export const matchAll = (regexp: RegExp) => (self: string): IterableIterator<RegExpMatchArray> => self.matchAll(regexp)
+
+/**
+ * @example
+ * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * const str = "\u1E9B\u0323";
+ * assert.deepStrictEqual(pipe(str, S.normalize()), "\u1E9B\u0323")
+ * assert.deepStrictEqual(pipe(str, S.normalize("NFC")), "\u1E9B\u0323")
+ * assert.deepStrictEqual(pipe(str, S.normalize("NFD")), "\u017F\u0323\u0307")
+ * assert.deepStrictEqual(pipe(str, S.normalize("NFKC")), "\u1E69")
+ * assert.deepStrictEqual(pipe(str, S.normalize("NFKD")), "\u0073\u0323\u0307")
+ *
+ * @since 1.0.0
+ */
+export const normalize = (form?: "NFC" | "NFD" | "NFKC" | "NFKD") => (self: string): string => self.normalize(form)
+
+/**
+ * @example
+ * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * assert.deepStrictEqual(pipe("a", S.padEnd(5)), "a    ")
+ * assert.deepStrictEqual(pipe("a", S.padEnd(5, "_")), "a____")
+ *
+ * @since 1.0.0
+ */
+export const padEnd = (maxLength: number, fillString?: string) =>
+  (self: string): string => self.padEnd(maxLength, fillString)
+
+/**
+ * @example
+ * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * assert.deepStrictEqual(pipe("a", S.padStart(5)), "    a")
+ * assert.deepStrictEqual(pipe("a", S.padStart(5, "_")), "____a")
+ *
+ * @since 1.0.0
+ */
+export const padStart = (maxLength: number, fillString?: string) =>
+  (self: string): string => self.padStart(maxLength, fillString)
+
+/**
+ * @example
+ * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * assert.deepStrictEqual(pipe("a", S.repeat(5)), "aaaaa")
+ *
+ * @since 1.0.0
+ */
+export const repeat = (count: number) => (self: string): string => self.repeat(count)
+
+/**
+ * @example
+ * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * assert.deepStrictEqual(pipe("ababb", S.replaceAll("b", "c")), "acacc")
+ * assert.deepStrictEqual(pipe("ababb", S.replaceAll(/ba/g, "cc")), "accbb")
+ *
+ * @since 1.0.0
+ */
+export const replaceAll = (searchValue: string | RegExp, replaceValue: string) =>
+  (self: string): string => self.replaceAll(searchValue, replaceValue)
+
+/**
+ * @example
+ * import * as S from '@effect/data/String'
+ * import * as Option from '@effect/data/Option'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * assert.deepStrictEqual(pipe("ababb", S.search("b")), Option.some(1))
+ * assert.deepStrictEqual(pipe("ababb", S.search(/abb/)), Option.some(2))
+ * assert.deepStrictEqual(pipe("ababb", S.search("d")), Option.none())
+ *
+ * @since 1.0.0
+ */
+export const search = (regexp: RegExp | string) =>
+  (self: string): Option.Option<number> =>
+    Option.filter(Option.some(self.search(regexp)), number.greaterThanOrEqualTo(0))
+
+/**
+ * @example
+ * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * const str = "\u0130"
+ * assert.deepStrictEqual(pipe(str, S.toLocaleLowerCase("tr")), "i")
+ *
+ * @since 1.0.0
+ */
+export const toLocaleLowerCase = (locale?: string | Array<string>) =>
+  (self: string): string => self.toLocaleLowerCase(locale)
+
+/**
+ * @example
+ * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * const str = "i\u0307"
+ * assert.deepStrictEqual(pipe(str, S.toLocaleUpperCase("lt-LT")), "I")
+ *
+ * @since 1.0.0
+ */
+export const toLocaleUpperCase = (locale?: string | Array<string>) =>
+  (self: string): string => self.toLocaleUpperCase(locale)
 
 /**
  * @example
