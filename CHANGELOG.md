@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.12.7
+
+### Patch Changes
+
+- [#369](https://github.com/Effect-TS/data/pull/369) [`60fe1c0`](https://github.com/Effect-TS/data/commit/60fe1c042e7b6d3a3457836b791f901dc92955c7) Thanks [@iamchanii](https://github.com/iamchanii)! - Add missing functions in String
+
 ## 0.12.6
 
 ### Patch Changes
