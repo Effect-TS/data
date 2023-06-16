@@ -410,10 +410,7 @@ export const lastIndexOf = (searchString: string) =>
  * @since 1.0.0
  */
 export const localeCompare = (that: string, locales?: Array<string>, options?: Intl.CollatorOptions) =>
-  (self: string): Ordering.Ordering => {
-    const result = self.localeCompare(that, locales, options)
-    return result === 0 ? 0 : result > 0 ? 1 : -1
-  }
+  (self: string): Ordering.Ordering => number.sign(self.localeCompare(that, locales, options))
 
 /**
  * It is the `pipe`-able version of the native `match` method.
