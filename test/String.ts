@@ -1,4 +1,5 @@
 import { pipe } from "@effect/data/Function"
+import * as Option from "@effect/data/Option"
 import * as S from "@effect/data/String"
 import { deepStrictEqual } from "@effect/data/test/util"
 import * as Order from "@effect/data/typeclass/Order"
@@ -124,7 +125,8 @@ describe.concurrent("String", () => {
   })
 
   it("charCodeAt", () => {
-    expect(pipe("abc", S.charCodeAt(1))).toBe(98)
+    expect(pipe("abc", S.charCodeAt(1))).toStrictEqual(Option.some(98))
+    expect(pipe("abc", S.charCodeAt(4))).toStrictEqual(Option.none())
   })
 
   it("substring", () => {
@@ -133,38 +135,39 @@ describe.concurrent("String", () => {
   })
 
   it("at", () => {
-    expect(pipe("abc", S.at(1))).toBe("b")
-    expect(pipe("abc", S.at(4))).toBe(undefined)
+    expect(pipe("abc", S.at(1))).toStrictEqual(Option.some("b"))
+    expect(pipe("abc", S.at(4))).toStrictEqual(Option.none())
   })
 
   it("charAt", () => {
-    expect(pipe("abc", S.charAt(1))).toBe("b")
+    expect(pipe("abc", S.charAt(1))).toStrictEqual(Option.some("b"))
+    expect(pipe("abc", S.charAt(4))).toStrictEqual(Option.none())
   })
 
   it("codePointAt", () => {
-    expect(pipe("abc", S.codePointAt(1))).toBe(98)
-    expect(pipe("abc", S.codePointAt(4))).toBe(undefined)
+    expect(pipe("abc", S.codePointAt(1))).toStrictEqual(Option.some(98))
+    expect(pipe("abc", S.codePointAt(4))).toStrictEqual(Option.none())
   })
 
   it("indexOf", () => {
-    expect(pipe("abbbc", S.indexOf("b"))).toBe(1)
-    expect(pipe("abbbc", S.indexOf("d"))).toBe(-1)
+    expect(pipe("abbbc", S.indexOf("b"))).toStrictEqual(Option.some(1))
+    expect(pipe("abbbc", S.indexOf("d"))).toStrictEqual(Option.none())
   })
 
   it("lastIndexOf", () => {
-    expect(pipe("abbbc", S.lastIndexOf("b"))).toBe(3)
-    expect(pipe("abbbc", S.lastIndexOf("d"))).toBe(-1)
+    expect(pipe("abbbc", S.lastIndexOf("b"))).toStrictEqual(Option.some(3))
+    expect(pipe("abbbc", S.lastIndexOf("d"))).toStrictEqual(Option.none())
   })
 
   it("localeCompare", () => {
-    expect(pipe("a", S.localeCompare("b"))).toBeLessThanOrEqual(-1)
-    expect(pipe("b", S.localeCompare("a"))).toBeGreaterThanOrEqual(1)
+    expect(pipe("a", S.localeCompare("b"))).toBe(-1)
+    expect(pipe("b", S.localeCompare("a"))).toBe(1)
     expect(pipe("a", S.localeCompare("a"))).toBe(0)
   })
 
   it("match", () => {
-    expect(pipe("a", S.match(/a/))).toContainEqual("a")
-    expect(pipe("a", S.match(/b/))).toBe(null)
+    expect(pipe("a", S.match(/a/))).toStrictEqual(Option.some(expect.arrayContaining(["a"])))
+    expect(pipe("a", S.match(/b/))).toStrictEqual(Option.none())
   })
 
   it("matchAll", () => {
@@ -201,8 +204,9 @@ describe.concurrent("String", () => {
   })
 
   it("search", () => {
-    expect(pipe("ababb", S.search("b"))).toBe(1)
-    expect(pipe("ababb", S.search(/abb/))).toBe(2)
+    expect(pipe("ababb", S.search("b"))).toStrictEqual(Option.some(1))
+    expect(pipe("ababb", S.search(/abb/))).toStrictEqual(Option.some(2))
+    expect(pipe("ababb", S.search(/c/))).toStrictEqual(Option.none())
   })
 
   it("toLocaleLowerCase", () => {

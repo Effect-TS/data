@@ -147,17 +147,18 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const at: (index: number) => (self: string) => string | undefined
+export declare const at: (index: number) => (self: string) => Option.Option<string>
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import * as Option from '@effect/data/Option'
 import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(pipe('abc', S.at(1)), 'b')
-assert.deepStrictEqual(pipe('abc', S.at(4)), undefined)
+assert.deepStrictEqual(pipe('abc', S.at(1)), Option.some('b'))
+assert.deepStrictEqual(pipe('abc', S.at(4)), Option.none())
 ```
 
 Added in v1.0.0
@@ -167,16 +168,18 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const charAt: (index: number) => (self: string) => string
+export declare const charAt: (index: number) => (self: string) => Option.Option<string>
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import * as Option from '@effect/data/Option'
 import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(pipe('abc', S.charAt(1)), 'b')
+assert.deepStrictEqual(pipe('abc', S.charAt(1)), Option.some('b'))
+assert.deepStrictEqual(pipe('abc', S.charAt(4)), Option.none())
 ```
 
 Added in v1.0.0
@@ -186,16 +189,18 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const charCodeAt: (index: number) => (self: string) => number
+export declare const charCodeAt: (index: number) => (self: string) => Option.Option<number>
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import * as Option from '@effect/data/Option'
 import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(pipe('abc', S.charCodeAt(1)), 98)
+assert.deepStrictEqual(pipe('abc', S.charCodeAt(1)), Option.some(98))
+assert.deepStrictEqual(pipe('abc', S.charCodeAt(4)), Option.none())
 ```
 
 Added in v1.0.0
@@ -205,16 +210,17 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const codePointAt: (index: number) => (self: string) => number | undefined
+export declare const codePointAt: (index: number) => (self: string) => Option.Option<number>
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import * as Option from '@effect/data/Option'
 import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(pipe('abc', S.codePointAt(1)), 98)
+assert.deepStrictEqual(pipe('abc', S.codePointAt(1)), Option.some(98))
 ```
 
 Added in v1.0.0
@@ -340,16 +346,17 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const indexOf: (searchString: string) => (self: string) => number
+export declare const indexOf: (searchString: string) => (self: string) => Option.Option<number>
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import * as Option from '@effect/data/Option'
 import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(pipe('abbbc', S.indexOf('b')), 1)
+assert.deepStrictEqual(pipe('abbbc', S.indexOf('b')), Option.some(1))
 ```
 
 Added in v1.0.0
@@ -392,16 +399,18 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const lastIndexOf: (searchString: string) => (self: string) => number
+export declare const lastIndexOf: (searchString: string) => (self: string) => Option.Option<number>
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import * as Option from '@effect/data/Option'
 import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(pipe('abbbc', S.lastIndexOf('b')), 3)
+assert.deepStrictEqual(pipe('abbbc', S.lastIndexOf('b')), Option.some(3))
+assert.deepStrictEqual(pipe('abbbc', S.lastIndexOf('d')), Option.none())
 ```
 
 Added in v1.0.0
@@ -448,7 +457,7 @@ export declare const localeCompare: (
   that: string,
   locales?: Array<string>,
   options?: Intl.CollatorOptions
-) => (self: string) => number
+) => (self: string) => Ordering.Ordering
 ```
 
 **Example**
@@ -471,7 +480,7 @@ It is the `pipe`-able version of the native `match` method.
 **Signature**
 
 ```ts
-export declare const match: (regexp: RegExp | string) => (self: string) => RegExpMatchArray | null
+export declare const match: (regexp: RegExp | string) => (self: string) => Option.Option<RegExpMatchArray>
 ```
 
 Added in v1.0.0
@@ -618,17 +627,19 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const search: (regexp: RegExp | string) => (self: string) => number
+export declare const search: (regexp: RegExp | string) => (self: string) => Option.Option<number>
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
+import * as Option from '@effect/data/Option'
 import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(pipe('ababb', S.search('b')), 1)
-assert.deepStrictEqual(pipe('ababb', S.search(/abb/)), 2)
+assert.deepStrictEqual(pipe('ababb', S.search('b')), Option.some(1))
+assert.deepStrictEqual(pipe('ababb', S.search(/abb/)), Option.some(2))
+assert.deepStrictEqual(pipe('ababb', S.search('d')), Option.none())
 ```
 
 Added in v1.0.0

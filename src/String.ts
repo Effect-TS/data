@@ -8,6 +8,9 @@
 
 import { dual } from "@effect/data/Function"
 import * as readonlyArray from "@effect/data/internal/ReadonlyArray"
+import * as number from "@effect/data/Number"
+import * as Option from "@effect/data/Option"
+import type * as Ordering from "@effect/data/Ordering"
 import type { Refinement } from "@effect/data/Predicate"
 import * as predicate from "@effect/data/Predicate"
 import type { NonEmptyArray } from "@effect/data/ReadonlyArray"
@@ -302,13 +305,17 @@ export const endsWith: {
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import * as Option from '@effect/data/Option'
  * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(pipe("abc", S.charCodeAt(1)), 98)
+ * assert.deepStrictEqual(pipe("abc", S.charCodeAt(1)), Option.some(98))
+ * assert.deepStrictEqual(pipe("abc", S.charCodeAt(4)), Option.none())
  *
  * @since 1.0.0
  */
-export const charCodeAt = (index: number) => (self: string): number => self.charCodeAt(index)
+export const charCodeAt = (index: number) =>
+  (self: string): Option.Option<number> =>
+    Option.filter(Option.some(self.charCodeAt(index)), (charCode) => !isNaN(charCode))
 
 /**
  * @example
@@ -325,58 +332,71 @@ export const substring = (start: number, end?: number) => (self: string): string
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import * as Option from '@effect/data/Option'
  * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(pipe("abc", S.at(1)), "b")
- * assert.deepStrictEqual(pipe("abc", S.at(4)), undefined)
+ * assert.deepStrictEqual(pipe("abc", S.at(1)), Option.some("b"))
+ * assert.deepStrictEqual(pipe("abc", S.at(4)), Option.none())
  *
  * @since 1.0.0
  */
-export const at = (index: number) => (self: string): string | undefined => self.at(index)
+export const at = (index: number) => (self: string): Option.Option<string> => Option.fromNullable(self.at(index))
 
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import * as Option from '@effect/data/Option'
  * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(pipe("abc", S.charAt(1)), "b")
+ * assert.deepStrictEqual(pipe("abc", S.charAt(1)), Option.some("b"))
+ * assert.deepStrictEqual(pipe("abc", S.charAt(4)), Option.none())
  *
  * @since 1.0.0
  */
-export const charAt = (index: number) => (self: string): string => self.charAt(index)
+export const charAt = (index: number) =>
+  (self: string): Option.Option<string> => Option.filter(Option.some(self.charAt(index)), isNonEmpty)
 
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import * as Option from '@effect/data/Option'
  * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(pipe("abc", S.codePointAt(1)), 98)
+ * assert.deepStrictEqual(pipe("abc", S.codePointAt(1)), Option.some(98))
  *
  * @since 1.0.0
  */
-export const codePointAt = (index: number) => (self: string): number | undefined => self.codePointAt(index)
+export const codePointAt = (index: number) =>
+  (self: string): Option.Option<number> => Option.fromNullable(self.codePointAt(index))
 
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import * as Option from '@effect/data/Option'
  * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(pipe("abbbc", S.indexOf("b")), 1)
+ * assert.deepStrictEqual(pipe("abbbc", S.indexOf("b")), Option.some(1))
  *
  * @since 1.0.0
  */
-export const indexOf = (searchString: string) => (self: string): number => self.indexOf(searchString)
+export const indexOf = (searchString: string) =>
+  (self: string): Option.Option<number> =>
+    Option.filter(Option.some(self.indexOf(searchString)), number.greaterThanOrEqualTo(0))
 
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import * as Option from '@effect/data/Option'
  * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(pipe("abbbc", S.lastIndexOf("b")), 3)
+ * assert.deepStrictEqual(pipe("abbbc", S.lastIndexOf("b")), Option.some(3))
+ * assert.deepStrictEqual(pipe("abbbc", S.lastIndexOf("d")), Option.none())
  *
  * @since 1.0.0
  */
-export const lastIndexOf = (searchString: string) => (self: string): number => self.lastIndexOf(searchString)
+export const lastIndexOf = (searchString: string) =>
+  (self: string): Option.Option<number> =>
+    Option.filter(Option.some(self.lastIndexOf(searchString)), number.greaterThanOrEqualTo(0))
 
 /**
  * @example
@@ -390,14 +410,18 @@ export const lastIndexOf = (searchString: string) => (self: string): number => s
  * @since 1.0.0
  */
 export const localeCompare = (that: string, locales?: Array<string>, options?: Intl.CollatorOptions) =>
-  (self: string): number => self.localeCompare(that, locales, options)
+  (self: string): Ordering.Ordering => {
+    const result = self.localeCompare(that, locales, options)
+    return result === 0 ? 0 : result > 0 ? 1 : -1
+  }
 
 /**
  * It is the `pipe`-able version of the native `match` method.
  *
  * @since 1.0.0
  */
-export const match = (regexp: RegExp | string) => (self: string): RegExpMatchArray | null => self.match(regexp)
+export const match = (regexp: RegExp | string) =>
+  (self: string): Option.Option<RegExpMatchArray> => Option.fromNullable(self.match(regexp))
 
 /**
  * It is the `pipe`-able version of the native `matchAll` method.
@@ -475,14 +499,18 @@ export const replaceAll = (searchValue: string | RegExp, replaceValue: string) =
 /**
  * @example
  * import * as S from '@effect/data/String'
+ * import * as Option from '@effect/data/Option'
  * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(pipe("ababb", S.search("b")), 1)
- * assert.deepStrictEqual(pipe("ababb", S.search(/abb/)), 2)
+ * assert.deepStrictEqual(pipe("ababb", S.search("b")), Option.some(1))
+ * assert.deepStrictEqual(pipe("ababb", S.search(/abb/)), Option.some(2))
+ * assert.deepStrictEqual(pipe("ababb", S.search("d")), Option.none())
  *
  * @since 1.0.0
  */
-export const search = (regexp: RegExp | string) => (self: string): number => self.search(regexp)
+export const search = (regexp: RegExp | string) =>
+  (self: string): Option.Option<number> =>
+    Option.filter(Option.some(self.search(regexp)), number.greaterThanOrEqualTo(0))
 
 /**
  * @example
