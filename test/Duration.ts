@@ -144,4 +144,12 @@ describe.concurrent("Duration", () => {
     assert.isTrue(pipe(D.seconds(30), D.lessThanOrEqualTo(D.seconds(30))))
     assert.isFalse(pipe(D.minutes(1), D.lessThanOrEqualTo(D.seconds(30))))
   })
+  it("toString", () => {
+    expect(String(D.seconds(2))).toEqual("Duration(2000)")
+  })
+  it("toJSON", () => {
+    expect(JSON.stringify(D.seconds(2))).toEqual(
+      JSON.stringify({ _tag: "Duration", millis: 2000 })
+    )
+  })
 })

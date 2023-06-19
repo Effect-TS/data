@@ -37,6 +37,18 @@ class DurationImpl implements Equal.Equal {
   [Equal.symbol](that: unknown): boolean {
     return isDuration(that) && this.millis === that.millis
   }
+  toString() {
+    return `Duration(${this.millis})`
+  }
+  toJSON() {
+    return {
+      _tag: "Duration",
+      millis: this.millis
+    }
+  }
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return this.toJSON()
+  }
 }
 
 /**
