@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.12.8
+
+### Patch Changes
+
+- [#372](https://github.com/Effect-TS/data/pull/372) [`08a7eea`](https://github.com/Effect-TS/data/commit/08a7eeaf25efb103685de54952b71bec3eeb5d0a) Thanks [@gcanti](https://github.com/gcanti)! - Duration: add missing toString / toJSON
+
 ## 0.12.7
 
 ### Patch Changes
