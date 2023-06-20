@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.12.9
+
+### Patch Changes
+
+- [#374](https://github.com/Effect-TS/data/pull/374) [`eda2e4f`](https://github.com/Effect-TS/data/commit/eda2e4fbde4cdbcdd59d4b619c7d112731a47bd0) Thanks [@gcanti](https://github.com/gcanti)! - ReadonlyRecord: add support for Record<K, A>
+
 ## 0.12.8
 
 ### Patch Changes
