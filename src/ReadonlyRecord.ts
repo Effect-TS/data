@@ -165,7 +165,7 @@ export const fromEntries: <A>(self: Iterable<[string, A]>) => Record<string, A> 
  */
 export const collect: {
   <K extends string, A, B>(f: (key: K, a: A) => B): (self: Record<K, A>) => Array<B>
-  <K extends string, A, B>(self: Record<K, A>, f: (key: string, a: A) => B): Array<B>
+  <K extends string, A, B>(self: Record<K, A>, f: (key: K, a: A) => B): Array<B>
 } = dual(
   2,
   <A, B>(self: ReadonlyRecord<A>, f: (key: string, a: A) => B): Array<B> => {
@@ -445,10 +445,10 @@ export const map: {
  * @since 1.0.0
  */
 export const filterMap: {
-  <A, B>(f: (a: A, key: string) => Option<B>): (self: ReadonlyRecord<A>) => Record<string, B>
-  <A, B>(self: ReadonlyRecord<A>, f: (a: A, key: string) => Option<B>): Record<string, B>
+  <K extends string, A, B>(f: (a: A, key: K) => Option<B>): (self: Record<K, A>) => Record<string, B>
+  <K extends string, A, B>(self: Record<K, A>, f: (a: A, key: K) => Option<B>): Record<string, B>
 } = dual(2, <A, B>(
-  self: ReadonlyRecord<A>,
+  self: Record<string, A>,
   f: (a: A, key: string) => Option<B>
 ): Record<string, B> => {
   const out: Record<string, B> = {}
@@ -477,24 +477,24 @@ export const filterMap: {
  * @since 1.0.0
  */
 export const filter: {
-  <C extends A, B extends A, A = C>(
-    refinement: (a: A, key: string) => a is B
-  ): (self: ReadonlyRecord<C>) => Record<string, B>
-  <B extends A, A = B>(
-    predicate: (a: A, key: string) => boolean
-  ): (self: ReadonlyRecord<B>) => Record<string, B>
-  <C extends A, B extends A, A = C>(
-    self: ReadonlyRecord<C>,
-    refinement: (a: A, key: string) => a is B
+  <K extends string, C extends A, B extends A, A = C>(
+    refinement: (a: A, key: K) => a is B
+  ): (self: Record<K, C>) => Record<string, B>
+  <K extends string, B extends A, A = B>(
+    predicate: (a: A, key: K) => boolean
+  ): (self: Record<K, B>) => Record<string, B>
+  <K extends string, C extends A, B extends A, A = C>(
+    self: Record<K, C>,
+    refinement: (a: A, key: K) => a is B
   ): Record<string, B>
-  <B extends A, A = B>(
-    self: ReadonlyRecord<B>,
-    predicate: (a: A, key: string) => boolean
+  <K extends string, B extends A, A = B>(
+    self: Record<K, B>,
+    predicate: (a: A, key: K) => boolean
   ): Record<string, B>
 } = dual(
   2,
   <B extends A, A = B>(
-    self: ReadonlyRecord<B>,
+    self: Record<string, B>,
     predicate: (a: A, key: string) => boolean
   ): Record<string, B> => {
     const out: Record<string, B> = {}
@@ -546,17 +546,17 @@ export const compact: <A>(self: ReadonlyRecord<Option<A>>) => Record<string, A> 
  * @since 1.0.0
  */
 export const partitionMap: {
-  <A, B, C>(
-    f: (a: A, key: string) => Either<B, C>
-  ): (self: ReadonlyRecord<A>) => [Record<string, B>, Record<string, C>]
-  <A, B, C>(
-    self: ReadonlyRecord<A>,
-    f: (a: A, key: string) => Either<B, C>
+  <K extends string, A, B, C>(
+    f: (a: A, key: K) => Either<B, C>
+  ): (self: Record<K, A>) => [Record<string, B>, Record<string, C>]
+  <K extends string, A, B, C>(
+    self: Record<K, A>,
+    f: (a: A, key: K) => Either<B, C>
   ): [Record<string, B>, Record<string, C>]
 } = dual(
   2,
   <A, B, C>(
-    self: ReadonlyRecord<A>,
+    self: Record<string, A>,
     f: (a: A, key: string) => Either<B, C>
   ): [Record<string, B>, Record<string, C>] => {
     const left: Record<string, B> = {}
@@ -613,24 +613,24 @@ export const separate: <A, B>(
  * @since 1.0.0
  */
 export const partition: {
-  <C extends A, B extends A, A = C>(refinement: (a: A, key: string) => a is B): (
-    self: ReadonlyRecord<C>
+  <K extends string, C extends A, B extends A, A = C>(refinement: (a: A, key: K) => a is B): (
+    self: Record<K, C>
   ) => [Record<string, C>, Record<string, B>]
-  <B extends A, A = B>(
-    predicate: (a: A, key: string) => boolean
-  ): (self: ReadonlyRecord<B>) => [Record<string, B>, Record<string, B>]
-  <C extends A, B extends A, A = C>(
-    self: ReadonlyRecord<C>,
-    refinement: (a: A, key: string) => a is B
+  <K extends string, B extends A, A = B>(
+    predicate: (a: A, key: K) => boolean
+  ): (self: Record<K, B>) => [Record<string, B>, Record<string, B>]
+  <K extends string, C extends A, B extends A, A = C>(
+    self: Record<K, C>,
+    refinement: (a: A, key: K) => a is B
   ): [Record<string, C>, Record<string, B>]
-  <B extends A, A = B>(
-    self: ReadonlyRecord<B>,
-    predicate: (a: A, key: string) => boolean
+  <K extends string, B extends A, A = B>(
+    self: Record<K, B>,
+    predicate: (a: A, key: K) => boolean
   ): [Record<string, B>, Record<string, B>]
 } = dual(
   2,
   <B extends A, A = B>(
-    self: ReadonlyRecord<B>,
+    self: Record<string, B>,
     predicate: (a: A, key: string) => boolean
   ): [Record<string, B>, Record<string, B>] => {
     const left: Record<string, B> = {}
@@ -670,16 +670,16 @@ export const partition: {
  * @since 1.0.0
  */
 export const traverse = <F extends TypeLambda>(F: applicative.Applicative<F>): {
-  <A, R, O, E, B>(
-    f: (a: A, key: string) => Kind<F, R, O, E, B>
-  ): (self: ReadonlyRecord<A>) => Kind<F, R, O, E, Record<string, B>>
-  <A, R, O, E, B>(
-    self: ReadonlyRecord<A>,
-    f: (a: A, key: string) => Kind<F, R, O, E, B>
+  <K extends string, A, R, O, E, B>(
+    f: (a: A, key: K) => Kind<F, R, O, E, B>
+  ): (self: Record<K, A>) => Kind<F, R, O, E, Record<string, B>>
+  <K extends string, A, R, O, E, B>(
+    self: Record<K, A>,
+    f: (a: A, key: K) => Kind<F, R, O, E, B>
   ): Kind<F, R, O, E, Record<string, B>>
 } =>
   dual(2, <A, R, O, E, B>(
-    self: ReadonlyRecord<A>,
+    self: Record<string, A>,
     f: (a: A, key: string) => Kind<F, R, O, E, B>
   ): Kind<F, R, O, E, Record<string, B>> =>
     F.map(

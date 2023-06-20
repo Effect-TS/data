@@ -2,6 +2,7 @@ import { pipe } from '@effect/data/Function'
 import * as RR from '@effect/data/ReadonlyRecord'
 import * as Brand from '@effect/data/Brand'
 import * as E from '@effect/data/Either'
+import * as Option from '@effect/data/Option'
 
 declare const r: Record<string, number>
 declare const rr: Readonly<Record<string, number>>
@@ -118,4 +119,133 @@ RR.collect(r, (_, a) => a)
 RR.collect(rr, (_, a) => a)
 
 // $ExpectType number[]
-RR.collect(struct, (_, a) => a)
+pipe(struct, RR.collect((
+  _, // $ExpectType "a" | "b"
+  a) => a)
+)
+
+// $ExpectType number[]
+RR.collect(struct, (
+  _, // $ExpectType "a" | "b"
+  a) => a
+)
+
+// -------------------------------------------------------------------------------------
+// filterMap
+// -------------------------------------------------------------------------------------
+
+// $ExpectType Record<string, string>
+RR.filterMap(r, (a,
+  _k // $ExpectType string
+) => a > 0 ? Option.some('positive') : Option.none())
+
+// $ExpectType Record<string, string>
+RR.filterMap(rr, (a,
+  _k // $ExpectType string
+) => a > 0 ? Option.some('positive') : Option.none())
+
+// $ExpectType Record<string, number>
+pipe(struct, RR.filterMap((a,
+  k // $ExpectType "a" | "b"
+) => k === 'a' ? Option.some(a) : Option.none()))
+
+// $ExpectType Record<string, number>
+RR.filterMap(struct, (a,
+  k // $ExpectType "a" | "b"
+) => k === 'a' ? Option.some(a) : Option.none())
+
+// -------------------------------------------------------------------------------------
+// filter
+// -------------------------------------------------------------------------------------
+
+// $ExpectType Record<string, number>
+RR.filter(r, (a,
+  _k // $ExpectType string
+) => a > 0)
+
+// $ExpectType Record<string, number>
+RR.filter(rr, (a,
+  _k // $ExpectType string
+) => a > 0)
+
+// $ExpectType Record<string, number>
+pipe(struct, RR.filter((_a,
+  k // $ExpectType "a" | "b"
+) => k === 'a'))
+
+// $ExpectType Record<string, number>
+RR.filter(struct, (_a,
+  k // $ExpectType "a" | "b"
+) => k === 'a')
+
+// -------------------------------------------------------------------------------------
+// partitionMap
+// -------------------------------------------------------------------------------------
+
+// $ExpectType [Record<string, boolean>, Record<string, string>]
+RR.partitionMap(r, (a,
+  _k // $ExpectType string
+) => a > 0 ? E.right('positive') : E.left(false))
+
+// $ExpectType [Record<string, boolean>, Record<string, string>]
+RR.partitionMap(rr, (a,
+  _k // $ExpectType string
+) => a > 0 ? E.right('positive') : E.left(false))
+
+// $ExpectType [Record<string, boolean>, Record<string, string>]
+pipe(struct, RR.partitionMap((a,
+  k // $ExpectType "a" | "b"
+) => k === 'a' ? E.right('positive') : E.left(false)))
+
+// $ExpectType [Record<string, boolean>, Record<string, string>]
+RR.partitionMap(struct, (a,
+  k // $ExpectType "a" | "b"
+) => k === 'a' ? E.right('positive') : E.left(false))
+
+// -------------------------------------------------------------------------------------
+// partition
+// -------------------------------------------------------------------------------------
+
+// $ExpectType [Record<string, number>, Record<string, number>]
+RR.partition(r, (a,
+  _k // $ExpectType string
+) => a > 0)
+
+// $ExpectType [Record<string, number>, Record<string, number>]
+RR.partition(rr, (a,
+  _k // $ExpectType string
+) => a > 0)
+
+// $ExpectType [Record<string, number>, Record<string, number>]
+pipe(struct, RR.partition((a,
+  k // $ExpectType "a" | "b"
+) => k === 'a'))
+
+// $ExpectType [Record<string, number>, Record<string, number>]
+RR.partition(struct, (a,
+  k // $ExpectType "a" | "b"
+) => k === 'a')
+
+// -------------------------------------------------------------------------------------
+// partition
+// -------------------------------------------------------------------------------------
+
+// $ExpectType Option<Record<string, string>>
+RR.traverse(Option.Applicative)(r, (a,
+  _k // $ExpectType string
+) => a > 0 ? Option.some('positive') : Option.none())
+
+// $ExpectType Option<Record<string, string>>
+RR.traverse(Option.Applicative)(rr, (a,
+  _k // $ExpectType string
+) => a > 0 ? Option.some('positive') : Option.none())
+
+// $ExpectType Option<Record<string, number>>
+pipe(struct, RR.traverse(Option.Applicative)((a,
+  k // $ExpectType "a" | "b"
+) => k === 'a' ? Option.some(a) : Option.none()))
+
+// $ExpectType Option<Record<string, number>>
+RR.traverse(Option.Applicative)(struct, (a,
+  k // $ExpectType "a" | "b"
+) => k === 'a' ? Option.some(a) : Option.none())
