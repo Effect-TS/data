@@ -33,6 +33,7 @@ Added in v1.0.0
   - [isDate](#isdate)
   - [isError](#iserror)
   - [isFunction](#isfunction)
+  - [isIterable](#isiterable)
   - [isNever](#isnever)
   - [isNotNull](#isnotnull)
   - [isNotNullable](#isnotnullable)
@@ -415,6 +416,30 @@ import { isFunction } from '@effect/data/Predicate'
 assert.deepStrictEqual(isFunction(isFunction), true)
 
 assert.deepStrictEqual(isFunction('function'), false)
+```
+
+Added in v1.0.0
+
+## isIterable
+
+A guard that succeeds when the input is an `Iterable`.
+
+**Signature**
+
+```ts
+export declare const isIterable: (input: unknown) => input is Iterable<unknown>
+```
+
+**Example**
+
+```ts
+import { isIterable } from '@effect/data/Predicate'
+
+assert.deepStrictEqual(isIterable([]), true)
+assert.deepStrictEqual(isIterable(new Set()), true)
+
+assert.deepStrictEqual(isIterable(null), false)
+assert.deepStrictEqual(isIterable({}), false)
 ```
 
 Added in v1.0.0

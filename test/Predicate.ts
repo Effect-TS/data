@@ -300,6 +300,13 @@ describe.concurrent("Predicate", () => {
     assert.deepStrictEqual(_.isDate({}), false)
   })
 
+  it("isIterable", () => {
+    assert.deepStrictEqual(_.isIterable([]), true)
+    assert.deepStrictEqual(_.isIterable(new Set()), true)
+    assert.deepStrictEqual(_.isIterable(null), false)
+    assert.deepStrictEqual(_.isIterable({}), false)
+  })
+
   it("isRecord", () => {
     assert.deepStrictEqual(_.isRecord({}), true)
     assert.deepStrictEqual(_.isRecord({ a: 1 }), true)

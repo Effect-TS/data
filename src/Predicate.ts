@@ -366,6 +366,25 @@ export const isError = (input: unknown): input is Error => input instanceof Erro
 export const isDate = (input: unknown): input is Date => input instanceof Date
 
 /**
+ * A guard that succeeds when the input is an `Iterable`.
+ *
+ * @param input - The value to test.
+ *
+ * @example
+ * import { isIterable } from "@effect/data/Predicate"
+ *
+ * assert.deepStrictEqual(isIterable([]), true)
+ * assert.deepStrictEqual(isIterable(new Set()), true)
+ *
+ * assert.deepStrictEqual(isIterable(null), false)
+ * assert.deepStrictEqual(isIterable({}), false)
+ *
+ * @category guards
+ * @since 1.0.0
+ */
+export const isIterable = (input: unknown): input is Iterable<unknown> => isObject(input) && Symbol.iterator in input
+
+/**
  * A guard that succeeds when the input is a record.
  *
  * @param input - The value to test.
