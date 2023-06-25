@@ -240,7 +240,7 @@ export const refined: <A extends Brand<any>>(
       }, identity)
     ), {
     [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
-    option: (args: any) => Option.fromEither(either(args)),
+    option: (args: any) => Option.getRight(either(args)),
     either,
     refine: (args: any): args is Brand.Unbranded<A> & A => Either.isRight(either(args))
   })
@@ -337,7 +337,7 @@ export const all: <Brands extends readonly [Brand.Constructor<any>, ...Array<Bra
       }, identity)
     ), {
     [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
-    option: (args: any) => Option.fromEither(either(args)),
+    option: (args: any) => Option.getRight(either(args)),
     either,
     refine: (args: any): args is any => Either.isRight(either(args))
   })

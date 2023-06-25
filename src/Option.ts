@@ -277,23 +277,6 @@ export const fromIterable = <A>(collection: Iterable<A>): Option<A> => {
 /**
  * Converts a `Either` to an `Option` discarding the error.
  *
- * @param self - The `Either` to convert to an `Option`.
- *
- * @example
- * import * as O from "@effect/data/Option"
- * import * as E from "@effect/data/Either"
- *
- * assert.deepStrictEqual(O.fromEither(E.right(1)), O.some(1))
- * assert.deepStrictEqual(O.fromEither(E.left('error message')), O.none())
- *
- * @category conversions
- * @since 1.0.0
- */
-export const fromEither: <E, A>(self: Either<E, A>) => Option<A> = either.getRight
-
-/**
- * Converts a `Either` to an `Option` discarding the error.
- *
  * Alias of {@link fromEither}.
  *
  * @example
@@ -306,7 +289,7 @@ export const fromEither: <E, A>(self: Either<E, A>) => Option<A> = either.getRig
  * @category conversions
  * @since 1.0.0
  */
-export const getRight: <E, A>(self: Either<E, A>) => Option<A> = fromEither
+export const getRight: <E, A>(self: Either<E, A>) => Option<A> = either.getRight
 
 /**
  * Converts a `Either` to an `Option` discarding the value.
@@ -316,35 +299,12 @@ export const getRight: <E, A>(self: Either<E, A>) => Option<A> = fromEither
  * import * as E from "@effect/data/Either"
  *
  * assert.deepStrictEqual(O.getLeft(E.right("ok")), O.none())
- * assert.deepStrictEqual(O.getLeft(E.left("error")), O.some("error"))
+ * assert.deepStrictEqual(O.getLeft(E.left("a")), O.some("a"))
  *
  * @category conversions
  * @since 1.0.0
  */
 export const getLeft: <E, A>(self: Either<E, A>) => Option<E> = either.getLeft
-
-/**
- * Converts an `Option` to an `Either`, allowing you to provide a value to be used in the case of a `None`.
- *
- * @param self - the `Option` to convert.
- * @param onNone - a function that produces an error value when the `Option` is `None`.
- *
- * @example
- * import { pipe } from "@effect/data/Function"
- * import * as O from "@effect/data/Option"
- * import * as E from "@effect/data/Either"
- *
- * const onNone = () => 'error'
- * assert.deepStrictEqual(pipe(O.some(1), O.toEither(onNone)), E.right(1))
- * assert.deepStrictEqual(pipe(O.none(), O.toEither(onNone)), E.left('error'))
- *
- * @category conversions
- * @since 1.0.0
- */
-export const toEither: {
-  <A, E>(self: Option<A>, onNone: () => E): Either<E, A>
-  <E>(onNone: () => E): <A>(self: Option<A>) => Either<E, A>
-} = either.fromOption
 
 /**
  * Returns the value of the `Option` if it is `Some`, otherwise returns `onNone`
@@ -748,33 +708,6 @@ export const flatMap: {
 } = dual(
   2,
   <A, B>(self: Option<A>, f: (a: A) => Option<B>): Option<B> => isNone(self) ? none() : f(self.value)
-)
-
-/**
- * Applies a provided function that returns an `Either` to the contents of an `Option`, flattening the result into another `Option`.
- *
- * @param self - The `Option` to apply the function to.
- * @param f - The function to be applied to the contents of the `Option`.
- *
- * @example
- * import * as O from "@effect/data/Option"
- * import * as E from "@effect/data/Either"
- * import { pipe } from "@effect/data/Function"
- *
- * const f = (n: number) => (n > 2 ? E.left('Too big') : E.right(n + 1))
- *
- * assert.deepStrictEqual(pipe(O.some(1), O.flatMapEither(f)), O.some(2))
- * assert.deepStrictEqual(pipe(O.some(3), O.flatMapEither(f)), O.none())
- *
- * @category transforming
- * @since 1.0.0
- */
-export const flatMapEither: {
-  <A, E, B>(f: (a: A) => Either<E, B>): (self: Option<A>) => Option<B>
-  <A, E, B>(self: Option<A>, f: (a: A) => Either<E, B>): Option<B>
-} = dual(
-  2,
-  <A, E, B>(self: Option<A>, f: (a: A) => Either<E, B>): Option<B> => flatMap(self, liftEither(f))
 )
 
 /**
@@ -1376,17 +1309,6 @@ export const filter: {
  * @param self - The `Option` value.
  * @param f - An effectful function that returns an `F` value.
  *
- * @example
- * import * as O from "@effect/data/Option"
- * import * as E from "@effect/data/Either"
- *
- * const traverse = O.traverse(E.Applicative)
- * const f = (n: number) => n >= 0 ? E.right(1) : E.left("negative")
- *
- * assert.deepStrictEqual(traverse(O.some(1), f), E.right(O.some(1)))
- * assert.deepStrictEqual(traverse(O.some(-1), f), E.left("negative"))
- * assert.deepStrictEqual(traverse(O.none(), f), E.right(O.none()))
- *
  * @category combining
  * @since 1.0.0
  */
@@ -1418,16 +1340,6 @@ export const Traversable: traversable.Traversable<OptionTypeLambda> = {
  *
  * @param F - {@link applicative.Applicative} instance
  * @param self - `Option` of Kind `F`
- *
- * @example
- * import * as O from "@effect/data/Option"
- * import * as E from "@effect/data/Either"
- *
- * const sequence = O.sequence(E.Applicative)
- *
- * assert.deepStrictEqual(sequence(O.some(E.right(1))), E.right(O.some(1)))
- * assert.deepStrictEqual(sequence(O.some(E.left("error"))), E.left("error"))
- * assert.deepStrictEqual(sequence(O.none()), E.right(O.none()))
  *
  * @category combining
  * @since 1.0.0
@@ -1530,30 +1442,6 @@ export const liftPredicate: {
   <C extends A, B extends A, A = C>(refinement: Refinement<A, B>): (c: C) => Option<B>
   <B extends A, A = B>(predicate: Predicate<A>): (b: B) => Option<B>
 } = <B extends A, A = B>(predicate: Predicate<A>) => (b: B) => predicate(b) ? some(b) : none()
-
-/**
- * Lifts an `Either` function to an `Option` function.
- *
- * @param f - Any variadic function that returns an `Either`.
- *
- * @example
- * import * as O from "@effect/data/Option"
- * import * as E from "@effect/data/Either"
- *
- * const parse = (s: string) =>
- *   isNaN(+s) ? E.left(`Error: ${s} is not a number`) : E.right(+s)
- *
- * const parseNumber = O.liftEither(parse)
- *
- * assert.deepEqual(parseNumber('12'), O.some(12))
- * assert.deepEqual(parseNumber('not a number'), O.none())
- *
- * @category lifting
- * @since 1.0.0
- */
-export const liftEither = <A extends ReadonlyArray<unknown>, E, B>(
-  f: (...a: A) => Either<E, B>
-) => (...a: A): Option<B> => fromEither(f(...a))
 
 /**
  * Returns a function that checks if an `Option` contains a given value using a provided `Equivalence` instance.

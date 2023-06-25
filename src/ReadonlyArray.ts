@@ -153,12 +153,6 @@ export const fromRecord: <K extends string, A>(self: Readonly<Record<K, A>>) => 
 export const fromOption: <A>(self: Option<A>) => Array<A> = O.toArray
 
 /**
- * @category conversions
- * @since 1.0.0
- */
-export const fromEither: <E, A>(self: Either<E, A>) => Array<A> = E.toArray
-
-/**
  * @category pattern matching
  * @since 1.0.0
  */
@@ -852,22 +846,6 @@ export const reverse = <A>(self: Iterable<A>): Array<A> => Array.from(self).reve
 export const reverseNonEmpty = <A>(
   self: NonEmptyReadonlyArray<A>
 ): NonEmptyArray<A> => [lastNonEmpty(self), ...self.slice(0, -1).reverse()]
-
-/**
- * Return all the `Right` elements from an `Interable` of `Either`s.
- *
- * @category getters
- * @since 1.0.0
- */
-export const rights: <E, A>(self: Iterable<Either<E, A>>) => Array<A> = E.rights
-
-/**
- * Return all the `Left` elements from an `Interable` of `Either`s.
- *
- * @category getters
- * @since 1.0.0
- */
-export const lefts: <E, A>(self: Iterable<Either<E, A>>) => Array<E> = E.lefts
 
 /**
  * Sort the elements of an `Iterable` in increasing order, creating a new `Array`.
