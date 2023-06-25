@@ -6,7 +6,6 @@ import type { Trace } from "@effect/data/Debug"
 import { makeTraced } from "@effect/data/Debug"
 import type * as Either from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
-import { dual } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import * as option from "@effect/data/internal/Option"
 import type { Option } from "@effect/data/Option"
@@ -141,10 +140,3 @@ export const getLeft = <E, A>(
 export const getRight = <E, A>(
   self: Either.Either<E, A>
 ): Option<A> => (isLeft(self) ? option.none : option.some(self.right))
-
-/** @internal */
-export const fromOption = dual(
-  2,
-  <A, E>(self: Option<A>, onNone: () => E): Either.Either<E, A> =>
-    option.isNone(self) ? left(onNone()) : right(self.value)
-)

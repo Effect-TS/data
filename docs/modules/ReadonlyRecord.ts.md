@@ -92,7 +92,7 @@ Transforms the values of a `ReadonlyRecord` into an `Array` with a custom mappin
 ```ts
 export declare const collect: {
   <K extends string, A, B>(f: (key: K, a: A) => B): (self: Record<K, A>) => B[]
-  <K extends string, A, B>(self: Record<K, A>, f: (key: string, a: A) => B): B[]
+  <K extends string, A, B>(self: Record<K, A>, f: (key: K, a: A) => B): B[]
 }
 ```
 
@@ -254,15 +254,17 @@ Selects properties from a record whose values match the given predicate.
 
 ```ts
 export declare const filter: {
-  <C extends A, B extends A, A = C>(refinement: (a: A, key: string) => a is B): (
-    self: ReadonlyRecord<C>
+  <K extends string, C extends A, B extends A, A = C>(refinement: (a: A, key: K) => a is B): (
+    self: Record<K, C>
   ) => Record<string, B>
-  <B extends A, A = B>(predicate: (a: A, key: string) => boolean): (self: ReadonlyRecord<B>) => Record<string, B>
-  <C extends A, B extends A, A = C>(self: ReadonlyRecord<C>, refinement: (a: A, key: string) => a is B): Record<
+  <K extends string, B extends A, A = B>(predicate: (a: A, key: K) => boolean): (
+    self: Record<K, B>
+  ) => Record<string, B>
+  <K extends string, C extends A, B extends A, A = C>(self: Record<K, C>, refinement: (a: A, key: K) => a is B): Record<
     string,
     B
   >
-  <B extends A, A = B>(self: ReadonlyRecord<B>, predicate: (a: A, key: string) => boolean): Record<string, B>
+  <K extends string, B extends A, A = B>(self: Record<K, B>, predicate: (a: A, key: K) => boolean): Record<string, B>
 }
 ```
 
@@ -288,17 +290,17 @@ Partitions a `ReadonlyRecord` into two separate `Record`s based on the result of
 
 ```ts
 export declare const partition: {
-  <C extends A, B extends A, A = C>(refinement: (a: A, key: string) => a is B): (
-    self: ReadonlyRecord<C>
+  <K extends string, C extends A, B extends A, A = C>(refinement: (a: A, key: K) => a is B): (
+    self: Record<K, C>
   ) => [Record<string, C>, Record<string, B>]
-  <B extends A, A = B>(predicate: (a: A, key: string) => boolean): (
-    self: ReadonlyRecord<B>
+  <K extends string, B extends A, A = B>(predicate: (a: A, key: K) => boolean): (
+    self: Record<K, B>
   ) => [Record<string, B>, Record<string, B>]
-  <C extends A, B extends A, A = C>(self: ReadonlyRecord<C>, refinement: (a: A, key: string) => a is B): [
+  <K extends string, C extends A, B extends A, A = C>(self: Record<K, C>, refinement: (a: A, key: K) => a is B): [
     Record<string, C>,
     Record<string, B>
   ]
-  <B extends A, A = B>(self: ReadonlyRecord<B>, predicate: (a: A, key: string) => boolean): [
+  <K extends string, B extends A, A = B>(self: Record<K, B>, predicate: (a: A, key: K) => boolean): [
     Record<string, B>,
     Record<string, B>
   ]
@@ -326,8 +328,13 @@ Partitions the elements of a `ReadonlyRecord` into two groups: those that match 
 
 ```ts
 export declare const partitionMap: {
-  <A, B, C>(f: (a: A, key: string) => Either<B, C>): (self: ReadonlyRecord<A>) => [Record<string, B>, Record<string, C>]
-  <A, B, C>(self: ReadonlyRecord<A>, f: (a: A, key: string) => Either<B, C>): [Record<string, B>, Record<string, C>]
+  <K extends string, A, B, C>(f: (a: A, key: K) => Either<B, C>): (
+    self: Record<K, A>
+  ) => [Record<string, B>, Record<string, C>]
+  <K extends string, A, B, C>(self: Record<K, A>, f: (a: A, key: K) => Either<B, C>): [
+    Record<string, B>,
+    Record<string, C>
+  ]
 }
 ```
 
@@ -629,10 +636,10 @@ Maps each entry of a `ReadonlyRecord` to an effect and collects the results into
 export declare const traverse: <F extends TypeLambda>(
   F: applicative.Applicative<F>
 ) => {
-  <A, R, O, E, B>(f: (a: A, key: string) => Kind<F, R, O, E, B>): (
-    self: ReadonlyRecord<A>
+  <K extends string, A, R, O, E, B>(f: (a: A, key: K) => Kind<F, R, O, E, B>): (
+    self: Record<K, A>
   ) => Kind<F, R, O, E, Record<string, B>>
-  <A, R, O, E, B>(self: ReadonlyRecord<A>, f: (a: A, key: string) => Kind<F, R, O, E, B>): Kind<
+  <K extends string, A, R, O, E, B>(self: Record<K, A>, f: (a: A, key: K) => Kind<F, R, O, E, B>): Kind<
     F,
     R,
     O,
@@ -700,8 +707,8 @@ If the function returns `Some`, the key-value pair is included in the output `Re
 
 ```ts
 export declare const filterMap: {
-  <A, B>(f: (a: A, key: string) => Option<B>): (self: ReadonlyRecord<A>) => Record<string, B>
-  <A, B>(self: ReadonlyRecord<A>, f: (a: A, key: string) => Option<B>): Record<string, B>
+  <K extends string, A, B>(f: (a: A, key: K) => Option<B>): (self: Record<K, A>) => Record<string, B>
+  <K extends string, A, B>(self: Record<K, A>, f: (a: A, key: K) => Option<B>): Record<string, B>
 }
 ```
 

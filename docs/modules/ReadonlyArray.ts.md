@@ -29,7 +29,6 @@ Added in v1.0.0
   - [replicate](#replicate)
   - [unfold](#unfold)
 - [conversions](#conversions)
-  - [fromEither](#fromeither)
   - [fromIterable](#fromiterable)
   - [fromNullable](#fromnullable)
   - [fromOption](#fromoption)
@@ -77,9 +76,7 @@ Added in v1.0.0
   - [initNonEmpty](#initnonempty)
   - [last](#last)
   - [lastNonEmpty](#lastnonempty)
-  - [lefts](#lefts)
   - [length](#length)
-  - [rights](#rights)
   - [splitAt](#splitat)
   - [splitNonEmptyAt](#splitnonemptyat)
   - [tail](#tail)
@@ -388,16 +385,6 @@ export declare const unfold: <B, A>(b: B, f: (b: B) => Option<readonly [A, B]>) 
 Added in v1.0.0
 
 # conversions
-
-## fromEither
-
-**Signature**
-
-```ts
-export declare const fromEither: <E, A>(self: Either<E, A>) => A[]
-```
-
-Added in v1.0.0
 
 ## fromIterable
 
@@ -1024,18 +1011,6 @@ export declare const lastNonEmpty: <A>(self: readonly [A, ...A[]]) => A
 
 Added in v1.0.0
 
-## lefts
-
-Return all the `Left` elements from an `Interable` of `Either`s.
-
-**Signature**
-
-```ts
-export declare const lefts: <E, A>(self: Iterable<Either<E, A>>) => E[]
-```
-
-Added in v1.0.0
-
 ## length
 
 Return the number of elements in a `ReadonlyArray`.
@@ -1044,18 +1019,6 @@ Return the number of elements in a `ReadonlyArray`.
 
 ```ts
 export declare const length: <A>(self: readonly A[]) => number
-```
-
-Added in v1.0.0
-
-## rights
-
-Return all the `Right` elements from an `Interable` of `Either`s.
-
-**Signature**
-
-```ts
-export declare const rights: <E, A>(self: Iterable<Either<E, A>>) => A[]
 ```
 
 Added in v1.0.0

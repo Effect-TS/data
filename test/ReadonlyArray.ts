@@ -436,22 +436,6 @@ describe.concurrent("ReadonlyArray", () => {
       deepStrictEqual(RA.reverse(new Set([1, 2, 3])), [3, 2, 1])
     })
 
-    it("rights", () => {
-      deepStrictEqual(RA.rights([]), [])
-      deepStrictEqual(RA.rights([E.right(1), E.left("a"), E.right(2)]), [1, 2])
-
-      deepStrictEqual(RA.rights(new Set<E.Either<unknown, unknown>>()), [])
-      deepStrictEqual(RA.rights(new Set([E.right(1), E.left("a"), E.right(2)])), [1, 2])
-    })
-
-    it("lefts", () => {
-      deepStrictEqual(RA.lefts([]), [])
-      deepStrictEqual(RA.lefts([E.right(1), E.left("a"), E.right(2)]), ["a"])
-
-      deepStrictEqual(RA.lefts(new Set<E.Either<unknown, unknown>>()), [])
-      deepStrictEqual(RA.lefts(new Set([E.right(1), E.left("a"), E.right(2)])), ["a"])
-    })
-
     it("sort", () => {
       deepStrictEqual(RA.sort(Number.Order)([]), [])
       deepStrictEqual(RA.sort(Number.Order)([1, 3, 2]), [1, 2, 3])
@@ -900,13 +884,6 @@ describe.concurrent("ReadonlyArray", () => {
         RA.partitionMap(identity)
       ),
       [["foo"], [1, 2]]
-    )
-    deepStrictEqual(
-      pipe(
-        [E.right(1), E.left("foo"), E.right(2)] as Array<E.Either<string, number>>,
-        RA.partitionMap((a, i) => pipe(a, E.filter((n) => n > i, () => "err")))
-      ),
-      [["foo", "err"], [1]]
     )
   })
 
@@ -1544,11 +1521,6 @@ describe.concurrent("ReadonlyArray", () => {
   it("fromOption", () => {
     deepStrictEqual(RA.fromOption(O.some("hello")), ["hello"])
     deepStrictEqual(RA.fromOption(O.none()), [])
-  })
-
-  it("fromResult", () => {
-    deepStrictEqual(RA.fromEither(E.right(1)), [1])
-    deepStrictEqual(RA.fromEither(E.left("a")), RA.empty())
   })
 
   test("product", () => {

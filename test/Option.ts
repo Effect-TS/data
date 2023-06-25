@@ -14,7 +14,6 @@ describe.concurrent("Option", () => {
   it("exports", () => {
     expect(_.OptionTypeId).exist
 
-    expect(_.toEither).exist
     expect(_.getRight).exist
     expect(_.getLeft).exist
 
@@ -340,11 +339,6 @@ describe.concurrent("Option", () => {
     )
   })
 
-  it("toEither", () => {
-    Util.deepStrictEqual(pipe(_.none(), _.toEither(() => "e")), E.left("e"))
-    Util.deepStrictEqual(pipe(_.some(1), _.toEither(() => "e")), E.right(1))
-  })
-
   it("match", () => {
     const f = () => "none"
     const g = (s: string) => `some${s.length}`
@@ -479,11 +473,6 @@ describe.concurrent("Option", () => {
     Util.deepStrictEqual(pipe(_.some(2), _.exists(predicate)), true)
   })
 
-  it("fromEither", () => {
-    Util.deepStrictEqual(_.fromEither(E.right(1)), _.some(1))
-    Util.deepStrictEqual(_.fromEither(E.left("e")), _.none())
-  })
-
   it("do notation", () => {
     Util.deepStrictEqual(
       pipe(
@@ -518,19 +507,6 @@ describe.concurrent("Option", () => {
     const parse = _.liftThrowable(JSON.parse)
     Util.deepStrictEqual(parse("1"), _.some(1))
     Util.deepStrictEqual(parse(""), _.none())
-  })
-
-  it("liftEither", () => {
-    const f = _.liftEither((n: number) => (n > 0 ? E.right(n) : E.left("e")))
-    Util.deepStrictEqual(f(1), _.some(1))
-    Util.deepStrictEqual(f(-1), _.none())
-  })
-
-  it("flatMapEither", () => {
-    const f = _.flatMapEither((n: number) => (n > 0 ? E.right(n) : E.left("e")))
-    Util.deepStrictEqual(pipe(_.none(), f), _.none())
-    Util.deepStrictEqual(pipe(_.some(0), f), _.none())
-    Util.deepStrictEqual(pipe(_.some(1), f), _.some(1))
   })
 
   it("tap", () => {
