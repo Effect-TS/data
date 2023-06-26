@@ -28,10 +28,6 @@ Added in v1.0.0
   - [isEither](#iseither)
   - [isLeft](#isleft)
   - [isRight](#isright)
-- [instances](#instances)
-  - [Bicovariant](#bicovariant)
-  - [Covariant](#covariant)
-  - [Invariant](#invariant)
 - [mapping](#mapping)
   - [bimap](#bimap)
   - [map](#map)
@@ -243,38 +239,6 @@ import { isRight, left, right } from '@effect/data/Either'
 
 assert.deepStrictEqual(isRight(right(1)), true)
 assert.deepStrictEqual(isRight(left('a')), false)
-```
-
-Added in v1.0.0
-
-# instances
-
-## Bicovariant
-
-**Signature**
-
-```ts
-export declare const Bicovariant: bicovariant.Bicovariant<EitherTypeLambda>
-```
-
-Added in v1.0.0
-
-## Covariant
-
-**Signature**
-
-```ts
-export declare const Covariant: covariant.Covariant<EitherTypeLambda>
-```
-
-Added in v1.0.0
-
-## Invariant
-
-**Signature**
-
-```ts
-export declare const Invariant: invariant.Invariant<EitherTypeLambda>
 ```
 
 Added in v1.0.0

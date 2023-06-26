@@ -7,22 +7,6 @@ import * as Util from "@effect/data/test/util"
 import { inspect } from "node:util"
 
 describe.concurrent("Either", () => {
-  it("exports", () => {
-    expect(Either.EitherTypeId).exist
-
-    expect(Either.getRight).exist
-    expect(Either.getLeft).exist
-
-    expect(Either.Invariant).exist
-
-    expect(Either.Covariant).exist
-    expect(Either.map).exist
-
-    expect(Either.Bicovariant).exist
-    expect(Either.bimap).exist
-    expect(Either.mapLeft).exist
-  })
-
   it("toString", () => {
     expect(String(Either.right(1))).toEqual("right(1)")
     expect(String(Either.left("e"))).toEqual(`left(e)`)

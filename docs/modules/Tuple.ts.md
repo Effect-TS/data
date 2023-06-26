@@ -1,6 +1,6 @@
 ---
 title: Tuple.ts
-nav_order: 45
+nav_order: 46
 parent: Modules
 ---
 
@@ -16,16 +16,12 @@ Added in v1.0.0
 
 - [combinators](#combinators)
   - [getEquivalence](#getequivalence)
-  - [getMonoid](#getmonoid)
   - [getOrder](#getorder)
-  - [getSemigroup](#getsemigroup)
 - [constructors](#constructors)
   - [tuple](#tuple)
 - [getters](#getters)
   - [getFirst](#getfirst)
   - [getSecond](#getsecond)
-- [instances](#instances)
-  - [Bicovariant](#bicovariant)
 - [mapping](#mapping)
   - [bimap](#bimap)
   - [mapFirst](#mapfirst)
@@ -57,25 +53,6 @@ export declare const getEquivalence: <T extends readonly equivalence.Equivalence
 
 Added in v1.0.0
 
-## getMonoid
-
-This function creates and returns a new `Monoid` for a tuple of values based on the given `Monoid`s for each element in the tuple.
-The returned `Monoid` combines two tuples of the same type by applying the corresponding `Monoid` passed as arguments to each element in the tuple.
-
-The `empty` value of the returned `Monoid` is the tuple of `empty` values of the input `Monoid`s.
-
-It is useful when you need to combine two tuples of the same type and you have a specific way of combining each element of the tuple.
-
-**Signature**
-
-```ts
-export declare const getMonoid: <T extends readonly monoid.Monoid<any>[]>(
-  ...elements: T
-) => monoid.Monoid<{ readonly [I in keyof T]: [T[I]] extends [monoid.Monoid<infer A>] ? A : never }>
-```
-
-Added in v1.0.0
-
 ## getOrder
 
 This function creates and returns a new `Order` for a tuple of values based on the given `Order`s for each element in the tuple.
@@ -89,23 +66,6 @@ of the tuple.
 export declare const getOrder: <T extends readonly order.Order<any>[]>(
   ...elements: T
 ) => order.Order<{ [I in keyof T]: [T[I]] extends [order.Order<infer A>] ? A : never }>
-```
-
-Added in v1.0.0
-
-## getSemigroup
-
-This function creates and returns a new `Semigroup` for a tuple of values based on the given `Semigroup`s for each element in the tuple.
-The returned `Semigroup` combines two tuples of the same type by applying the corresponding `Semigroup` passed as arguments to each element in the tuple.
-
-It is useful when you need to combine two tuples of the same type and you have a specific way of combining each element of the tuple.
-
-**Signature**
-
-```ts
-export declare const getSemigroup: <T extends readonly semigroup.Semigroup<any>[]>(
-  ...elements: T
-) => semigroup.Semigroup<{ readonly [I in keyof T]: [T[I]] extends [semigroup.Semigroup<infer A>] ? A : never }>
 ```
 
 Added in v1.0.0
@@ -170,18 +130,6 @@ export declare const getSecond: <L, R>(self: readonly [L, R]) => R
 import { getSecond } from '@effect/data/Tuple'
 
 assert.deepStrictEqual(getSecond(['hello', 42]), 42)
-```
-
-Added in v1.0.0
-
-# instances
-
-## Bicovariant
-
-**Signature**
-
-```ts
-export declare const Bicovariant: bicovariant.Bicovariant<TupleTypeLambda>
 ```
 
 Added in v1.0.0

@@ -6,9 +6,9 @@ import { Direction, RedBlackTreeIterator } from "@effect/data/internal/RedBlackT
 import * as Node from "@effect/data/internal/RedBlackTree/node"
 import { Stack } from "@effect/data/internal/Stack"
 import * as Option from "@effect/data/Option"
+import type * as Order from "@effect/data/Order"
 import type * as Ordering from "@effect/data/Ordering"
 import type * as RBT from "@effect/data/RedBlackTree"
-import type * as Order from "@effect/data/typeclass/Order"
 
 const RedBlackTreeSymbolKey = "@effect/data/RedBlackTree"
 /** @internal */

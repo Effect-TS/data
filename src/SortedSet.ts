@@ -5,9 +5,9 @@ import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
 import { pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
+import type { Order } from "@effect/data/Order"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as RBT from "@effect/data/RedBlackTree"
-import type { Order } from "@effect/data/typeclass/Order"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/SortedSet")
 

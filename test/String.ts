@@ -1,8 +1,8 @@
 import { pipe } from "@effect/data/Function"
 import * as Option from "@effect/data/Option"
+import * as Order from "@effect/data/Order"
 import * as S from "@effect/data/String"
 import { deepStrictEqual } from "@effect/data/test/util"
-import * as Order from "@effect/data/typeclass/Order"
 import { describe, expect, it } from "vitest"
 
 describe.concurrent("String", () => {
@@ -14,16 +14,6 @@ describe.concurrent("String", () => {
 
   it("empty", () => {
     expect(S.empty).toEqual("")
-  })
-
-  it("Semigroup", () => {
-    expect(S.Semigroup.combine("a", "b")).toEqual("ab")
-    expect(S.Semigroup.combineMany("a", ["b", "c"])).toEqual("abc")
-    expect(S.Semigroup.combineMany("a", [])).toEqual("a")
-  })
-
-  it("Monoid", () => {
-    expect(S.Monoid.combineAll([])).toEqual("")
   })
 
   it("Equivalence", () => {

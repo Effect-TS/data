@@ -1,6 +1,6 @@
 ---
-title: typeclass/Equivalence.ts
-nav_order: 54
+title: Equivalence.ts
+nav_order: 17
 parent: Modules
 ---
 
@@ -25,14 +25,8 @@ Added in v1.0.0
   - [make](#make)
   - [strict](#strict)
 - [instances](#instances)
-  - [Contravariant](#contravariant)
-  - [Invariant](#invariant)
-  - [Product](#product)
-  - [SemiProduct](#semiproduct)
   - [bigint](#bigint)
   - [boolean](#boolean)
-  - [getMonoid](#getmonoid)
-  - [getSemigroup](#getsemigroup)
   - [number](#number)
   - [string](#string)
   - [symbol](#symbol)
@@ -40,6 +34,13 @@ Added in v1.0.0
   - [Equivalence (interface)](#equivalence-interface)
 - [type lambdas](#type-lambdas)
   - [EquivalenceTypeLambda (interface)](#equivalencetypelambda-interface)
+- [utils](#utils)
+  - [all](#all)
+  - [combine](#combine)
+  - [combineAll](#combineall)
+  - [combineMany](#combinemany)
+  - [product](#product)
+  - [productMany](#productmany)
 
 ---
 
@@ -52,7 +53,7 @@ Creates a new `Equivalence` for an array of values based on a given `Equivalence
 **Signature**
 
 ```ts
-export declare const array: <A>(predicate: Equivalence<A>) => Equivalence<readonly A[]>
+export declare const array: <A>(item: Equivalence<A>) => Equivalence<readonly A[]>
 ```
 
 Added in v1.0.0
@@ -79,7 +80,7 @@ by applying each `Equivalence` to the corresponding property of the struct.
 
 ```ts
 export declare const struct: <R extends Record<string, Equivalence<any>>>(
-  predicates: R
+  fields: R
 ) => Equivalence<{ readonly [K in keyof R]: [R[K]] extends [Equivalence<infer A>] ? A : never }>
 ```
 
@@ -100,7 +101,7 @@ by applying each `Equivalence` to the corresponding element of the tuple.
 
 ```ts
 export declare const tuple: <T extends readonly Equivalence<any>[]>(
-  ...predicates: T
+  ...elements: T
 ) => Equivalence<Readonly<{ [I in keyof T]: [T[I]] extends [Equivalence<infer A>] ? A : never }>>
 ```
 
@@ -132,46 +133,6 @@ Added in v1.0.0
 
 # instances
 
-## Contravariant
-
-**Signature**
-
-```ts
-export declare const Contravariant: contravariant.Contravariant<EquivalenceTypeLambda>
-```
-
-Added in v1.0.0
-
-## Invariant
-
-**Signature**
-
-```ts
-export declare const Invariant: invariant.Invariant<EquivalenceTypeLambda>
-```
-
-Added in v1.0.0
-
-## Product
-
-**Signature**
-
-```ts
-export declare const Product: product_.Product<EquivalenceTypeLambda>
-```
-
-Added in v1.0.0
-
-## SemiProduct
-
-**Signature**
-
-```ts
-export declare const SemiProduct: semiProduct.SemiProduct<EquivalenceTypeLambda>
-```
-
-Added in v1.0.0
-
 ## bigint
 
 **Signature**
@@ -188,26 +149,6 @@ Added in v1.0.0
 
 ```ts
 export declare const boolean: Equivalence<boolean>
-```
-
-Added in v1.0.0
-
-## getMonoid
-
-**Signature**
-
-```ts
-export declare const getMonoid: <A>() => Monoid<Equivalence<A>>
-```
-
-Added in v1.0.0
-
-## getSemigroup
-
-**Signature**
-
-```ts
-export declare const getSemigroup: <A>() => Semigroup<Equivalence<A>>
 ```
 
 Added in v1.0.0
@@ -266,6 +207,80 @@ Added in v1.0.0
 export interface EquivalenceTypeLambda extends TypeLambda {
   readonly type: Equivalence<this['Target']>
 }
+```
+
+Added in v1.0.0
+
+# utils
+
+## all
+
+**Signature**
+
+```ts
+export declare const all: <A>(collection: Iterable<Equivalence<A>>) => Equivalence<A[]>
+```
+
+Added in v1.0.0
+
+## combine
+
+**Signature**
+
+```ts
+export declare const combine: {
+  <A>(that: Equivalence<A>): (self: Equivalence<A>) => Equivalence<A>
+  <A>(self: Equivalence<A>, that: Equivalence<A>): Equivalence<A>
+}
+```
+
+Added in v1.0.0
+
+## combineAll
+
+**Signature**
+
+```ts
+export declare const combineAll: <A>(collection: Iterable<Equivalence<A>>) => Equivalence<A>
+```
+
+Added in v1.0.0
+
+## combineMany
+
+**Signature**
+
+```ts
+export declare const combineMany: {
+  <A>(collection: Iterable<Equivalence<A>>): (self: Equivalence<A>) => Equivalence<A>
+  <A>(self: Equivalence<A>, collection: Iterable<Equivalence<A>>): Equivalence<A>
+}
+```
+
+Added in v1.0.0
+
+## product
+
+**Signature**
+
+```ts
+export declare const product: {
+  <B>(that: Equivalence<B>): <A>(self: Equivalence<A>) => Equivalence<[A, B]>
+  <A, B>(self: Equivalence<A>, that: Equivalence<B>): Equivalence<[A, B]>
+}
+```
+
+Added in v1.0.0
+
+## productMany
+
+**Signature**
+
+```ts
+export declare const productMany: <A>(
+  self: Equivalence<A>,
+  collection: Iterable<Equivalence<A>>
+) => Equivalence<[A, ...A[]]>
 ```
 
 Added in v1.0.0

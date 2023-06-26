@@ -1,6 +1,6 @@
 ---
-title: typeclass/Order.ts
-nav_order: 62
+title: Order.ts
+nav_order: 34
 parent: Modules
 ---
 
@@ -20,14 +20,8 @@ Added in v1.0.0
 - [constructors](#constructors)
   - [make](#make)
 - [instances](#instances)
-  - [Contravariant](#contravariant)
-  - [Invariant](#invariant)
-  - [Product](#product)
-  - [SemiProduct](#semiproduct)
   - [bigint](#bigint)
   - [boolean](#boolean)
-  - [getMonoid](#getmonoid)
-  - [getSemigroup](#getsemigroup)
   - [number](#number)
   - [string](#string)
 - [type class](#type-class)
@@ -35,14 +29,21 @@ Added in v1.0.0
 - [type lambdas](#type-lambdas)
   - [OrderTypeLambda (interface)](#ordertypelambda-interface)
 - [utils](#utils)
+  - [all](#all)
   - [between](#between)
   - [clamp](#clamp)
+  - [combine](#combine)
+  - [combineAll](#combineall)
+  - [combineMany](#combinemany)
+  - [empty](#empty)
   - [greaterThan](#greaterthan)
   - [greaterThanOrEqualTo](#greaterthanorequalto)
   - [lessThan](#lessthan)
   - [lessThanOrEqualTo](#lessthanorequalto)
   - [max](#max)
   - [min](#min)
+  - [product](#product)
+  - [productMany](#productmany)
   - [reverse](#reverse)
 
 ---
@@ -129,46 +130,6 @@ Added in v1.0.0
 
 # instances
 
-## Contravariant
-
-**Signature**
-
-```ts
-export declare const Contravariant: contravariant.Contravariant<OrderTypeLambda>
-```
-
-Added in v1.0.0
-
-## Invariant
-
-**Signature**
-
-```ts
-export declare const Invariant: invariant.Invariant<OrderTypeLambda>
-```
-
-Added in v1.0.0
-
-## Product
-
-**Signature**
-
-```ts
-export declare const Product: product_.Product<OrderTypeLambda>
-```
-
-Added in v1.0.0
-
-## SemiProduct
-
-**Signature**
-
-```ts
-export declare const SemiProduct: semiProduct.SemiProduct<OrderTypeLambda>
-```
-
-Added in v1.0.0
-
 ## bigint
 
 **Signature**
@@ -185,26 +146,6 @@ Added in v1.0.0
 
 ```ts
 export declare const boolean: Order<boolean>
-```
-
-Added in v1.0.0
-
-## getMonoid
-
-**Signature**
-
-```ts
-export declare const getMonoid: <A>() => Monoid<Order<A>>
-```
-
-Added in v1.0.0
-
-## getSemigroup
-
-**Signature**
-
-```ts
-export declare const getSemigroup: <A>() => Semigroup<Order<A>>
 ```
 
 Added in v1.0.0
@@ -259,6 +200,16 @@ Added in v1.0.0
 
 # utils
 
+## all
+
+**Signature**
+
+```ts
+export declare const all: <A>(collection: Iterable<Order<A>>) => Order<A[]>
+```
+
+Added in v1.0.0
+
 ## between
 
 Test whether a value is between a minimum and a maximum (inclusive).
@@ -285,6 +236,52 @@ export declare const clamp: <A>(O: Order<A>) => {
   (minimum: A, maximum: A): (self: A) => A
   (self: A, minimum: A, maximum: A): A
 }
+```
+
+Added in v1.0.0
+
+## combine
+
+**Signature**
+
+```ts
+export declare const combine: {
+  <A>(that: Order<A>): (self: Order<A>) => Order<A>
+  <A>(self: Order<A>, that: Order<A>): Order<A>
+}
+```
+
+Added in v1.0.0
+
+## combineAll
+
+**Signature**
+
+```ts
+export declare const combineAll: <A>(collection: Iterable<Order<A>>) => Order<A>
+```
+
+Added in v1.0.0
+
+## combineMany
+
+**Signature**
+
+```ts
+export declare const combineMany: {
+  <A>(collection: Iterable<Order<A>>): (self: Order<A>) => Order<A>
+  <A>(self: Order<A>, collection: Iterable<Order<A>>): Order<A>
+}
+```
+
+Added in v1.0.0
+
+## empty
+
+**Signature**
+
+```ts
+export declare const empty: <A>() => Order<A>
 ```
 
 Added in v1.0.0
@@ -363,6 +360,32 @@ Take the minimum of two values. If they are considered equal, the first argument
 
 ```ts
 export declare const min: <A>(O: Order<A>) => { (that: A): (self: A) => A; (self: A, that: A): A }
+```
+
+Added in v1.0.0
+
+## product
+
+**Signature**
+
+```ts
+export declare const product: {
+  <B>(that: Order<B>): <A>(self: Order<A>) => Order<[A, B]>
+  <A, B>(self: Order<A>, that: Order<B>): Order<[A, B]>
+}
+```
+
+Added in v1.0.0
+
+## productMany
+
+**Signature**
+
+```ts
+export declare const productMany: {
+  <A>(collection: Iterable<Order<A>>): (self: Order<A>) => Order<[A, ...A[]]>
+  <A>(self: Order<A>, collection: Iterable<Order<A>>): Order<[A, ...A[]]>
+}
 ```
 
 Added in v1.0.0

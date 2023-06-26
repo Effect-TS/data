@@ -1,6 +1,6 @@
 ---
 title: Predicate.ts
-nav_order: 35
+nav_order: 36
 parent: Modules
 ---
 
@@ -23,10 +23,6 @@ Added in v1.0.0
   - [xor](#xor)
 - [constructors](#constructors)
   - [contramap](#contramap)
-- [do notation](#do-notation)
-  - [Do](#do)
-  - [bindDiscard](#binddiscard)
-  - [bindTo](#bindto)
 - [guards](#guards)
   - [isBigint](#isbigint)
   - [isBoolean](#isboolean)
@@ -47,32 +43,20 @@ Added in v1.0.0
   - [isSymbol](#issymbol)
   - [isUndefined](#isundefined)
   - [isUnknown](#isunknown)
-- [instances](#instances)
-  - [Contravariant](#contravariant)
-  - [Invariant](#invariant)
-  - [Product](#product)
-  - [SemiProduct](#semiproduct)
-  - [getMonoidEqv](#getmonoideqv)
-  - [getMonoidEvery](#getmonoidevery)
-  - [getMonoidSome](#getmonoidsome)
-  - [getMonoidXor](#getmonoidxor)
-  - [getSemigroupEqv](#getsemigroupeqv)
-  - [getSemigroupEvery](#getsemigroupevery)
-  - [getSemigroupSome](#getsemigroupsome)
-  - [getSemigroupXor](#getsemigroupxor)
 - [models](#models)
   - [Predicate (interface)](#predicate-interface)
   - [Refinement (interface)](#refinement-interface)
 - [type lambdas](#type-lambdas)
   - [PredicateTypeLambda (interface)](#predicatetypelambda-interface)
 - [utils](#utils)
-  - [appendElement](#appendelement)
+  - [all](#all)
   - [compose](#compose)
   - [every](#every)
+  - [product](#product)
+  - [productMany](#productmany)
   - [some](#some)
   - [struct](#struct)
   - [tuple](#tuple)
-  - [tupled](#tupled)
 
 ---
 
@@ -255,52 +239,6 @@ assert.deepStrictEqual(minLength3('a'), false)
 assert.deepStrictEqual(minLength3('aa'), false)
 assert.deepStrictEqual(minLength3('aaa'), true)
 assert.deepStrictEqual(minLength3('aaaa'), true)
-```
-
-Added in v1.0.0
-
-# do notation
-
-## Do
-
-**Signature**
-
-```ts
-export declare const Do: () => Predicate<{}>
-```
-
-Added in v1.0.0
-
-## bindDiscard
-
-A variant of `bind` that sequentially ignores the scope.
-
-**Signature**
-
-```ts
-export declare const bindDiscard: {
-  <N extends string, A extends object, B>(name: Exclude<N, keyof A>, that: Predicate<B>): (
-    self: Predicate<A>
-  ) => Predicate<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-  <A extends object, N extends string, B>(
-    self: Predicate<A>,
-    name: Exclude<N, keyof A>,
-    that: Predicate<B>
-  ): Predicate<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-}
-```
-
-Added in v1.0.0
-
-## bindTo
-
-**Signature**
-
-```ts
-export declare const bindTo: {
-  <N extends string>(name: N): <A>(self: Predicate<A>) => Predicate<{ readonly [K in N]: A }>
-  <A, N extends string>(self: Predicate<A>, name: N): Predicate<{ readonly [K in N]: A }>
-}
 ```
 
 Added in v1.0.0
@@ -750,128 +688,6 @@ assert.deepStrictEqual(isUnknown([]), true)
 
 Added in v1.0.0
 
-# instances
-
-## Contravariant
-
-**Signature**
-
-```ts
-export declare const Contravariant: contravariant.Contravariant<PredicateTypeLambda>
-```
-
-Added in v1.0.0
-
-## Invariant
-
-**Signature**
-
-```ts
-export declare const Invariant: invariant.Invariant<PredicateTypeLambda>
-```
-
-Added in v1.0.0
-
-## Product
-
-**Signature**
-
-```ts
-export declare const Product: product_.Product<PredicateTypeLambda>
-```
-
-Added in v1.0.0
-
-## SemiProduct
-
-**Signature**
-
-```ts
-export declare const SemiProduct: semiProduct.SemiProduct<PredicateTypeLambda>
-```
-
-Added in v1.0.0
-
-## getMonoidEqv
-
-**Signature**
-
-```ts
-export declare const getMonoidEqv: <A>() => monoid.Monoid<Predicate<A>>
-```
-
-Added in v1.0.0
-
-## getMonoidEvery
-
-**Signature**
-
-```ts
-export declare const getMonoidEvery: <A>() => monoid.Monoid<Predicate<A>>
-```
-
-Added in v1.0.0
-
-## getMonoidSome
-
-**Signature**
-
-```ts
-export declare const getMonoidSome: <A>() => monoid.Monoid<Predicate<A>>
-```
-
-Added in v1.0.0
-
-## getMonoidXor
-
-**Signature**
-
-```ts
-export declare const getMonoidXor: <A>() => monoid.Monoid<Predicate<A>>
-```
-
-Added in v1.0.0
-
-## getSemigroupEqv
-
-**Signature**
-
-```ts
-export declare const getSemigroupEqv: <A>() => semigroup.Semigroup<Predicate<A>>
-```
-
-Added in v1.0.0
-
-## getSemigroupEvery
-
-**Signature**
-
-```ts
-export declare const getSemigroupEvery: <A>() => semigroup.Semigroup<Predicate<A>>
-```
-
-Added in v1.0.0
-
-## getSemigroupSome
-
-**Signature**
-
-```ts
-export declare const getSemigroupSome: <A>() => semigroup.Semigroup<Predicate<A>>
-```
-
-Added in v1.0.0
-
-## getSemigroupXor
-
-**Signature**
-
-```ts
-export declare const getSemigroupXor: <A>() => semigroup.Semigroup<Predicate<A>>
-```
-
-Added in v1.0.0
-
 # models
 
 ## Predicate (interface)
@@ -914,18 +730,12 @@ Added in v1.0.0
 
 # utils
 
-## appendElement
-
-This function appends a predicate to a tuple-like predicate, allowing you to create a new predicate that includes
-the original elements and the new one.
+## all
 
 **Signature**
 
 ```ts
-export declare const appendElement: {
-  <A extends readonly any[], B>(self: Predicate<A>, that: Predicate<B>): Predicate<readonly [...A, B]>
-  <B>(that: Predicate<B>): <A extends readonly any[]>(self: Predicate<A>) => Predicate<readonly [...A, B]>
-}
+export declare const all: <A>(collection: Iterable<Predicate<A>>) => Predicate<readonly A[]>
 ```
 
 Added in v1.0.0
@@ -953,6 +763,29 @@ export declare const every: <A>(collection: Iterable<Predicate<A>>) => Predicate
 
 Added in v1.0.0
 
+## product
+
+**Signature**
+
+```ts
+export declare const product: <A, B>(self: Predicate<A>, that: Predicate<B>) => Predicate<readonly [A, B]>
+```
+
+Added in v1.0.0
+
+## productMany
+
+**Signature**
+
+```ts
+export declare const productMany: <A>(
+  self: Predicate<A>,
+  collection: Iterable<Predicate<A>>
+) => Predicate<readonly [A, ...A[]]>
+```
+
+Added in v1.0.0
+
 ## some
 
 **Signature**
@@ -969,7 +802,7 @@ Added in v1.0.0
 
 ```ts
 export declare const struct: <R extends Record<string, Predicate<any>>>(
-  predicates: R
+  fields: R
 ) => Predicate<{ readonly [K in keyof R]: [R[K]] extends [Predicate<infer A>] ? A : never }>
 ```
 
@@ -987,18 +820,8 @@ Similar to `Promise.all` but operates on `Predicate`s.
 
 ```ts
 export declare const tuple: <T extends readonly Predicate<any>[]>(
-  ...predicates: T
+  ...elements: T
 ) => Predicate<Readonly<{ [I in keyof T]: [T[I]] extends [Predicate<infer A>] ? A : never }>>
-```
-
-Added in v1.0.0
-
-## tupled
-
-**Signature**
-
-```ts
-export declare const tupled: <A>(self: Predicate<A>) => Predicate<readonly [A]>
 ```
 
 Added in v1.0.0

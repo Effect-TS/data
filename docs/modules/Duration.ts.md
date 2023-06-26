@@ -24,19 +24,11 @@ Added in v1.0.0
 - [guards](#guards)
   - [isDuration](#isduration)
 - [instances](#instances)
-  - [Bounded](#bounded)
   - [Equivalence](#equivalence)
-  - [MonoidMax](#monoidmax)
-  - [MonoidMin](#monoidmin)
-  - [MonoidSum](#monoidsum)
   - [Order](#order)
-  - [SemigroupMax](#semigroupmax)
-  - [SemigroupMin](#semigroupmin)
-  - [SemigroupSum](#semigroupsum)
 - [math](#math)
   - [subtract](#subtract)
   - [sum](#sum)
-  - [sumAll](#sumall)
   - [times](#times)
 - [models](#models)
   - [Duration (interface)](#duration-interface)
@@ -152,16 +144,6 @@ Added in v1.0.0
 
 # instances
 
-## Bounded
-
-**Signature**
-
-```ts
-export declare const Bounded: bounded.Bounded<Duration>
-```
-
-Added in v1.0.0
-
 ## Equivalence
 
 **Signature**
@@ -172,72 +154,12 @@ export declare const Equivalence: equivalence.Equivalence<Duration>
 
 Added in v1.0.0
 
-## MonoidMax
-
-**Signature**
-
-```ts
-export declare const MonoidMax: monoid.Monoid<Duration>
-```
-
-Added in v1.0.0
-
-## MonoidMin
-
-**Signature**
-
-```ts
-export declare const MonoidMin: monoid.Monoid<Duration>
-```
-
-Added in v1.0.0
-
-## MonoidSum
-
-**Signature**
-
-```ts
-export declare const MonoidSum: monoid.Monoid<Duration>
-```
-
-Added in v1.0.0
-
 ## Order
 
 **Signature**
 
 ```ts
 export declare const Order: order.Order<Duration>
-```
-
-Added in v1.0.0
-
-## SemigroupMax
-
-**Signature**
-
-```ts
-export declare const SemigroupMax: semigroup.Semigroup<Duration>
-```
-
-Added in v1.0.0
-
-## SemigroupMin
-
-**Signature**
-
-```ts
-export declare const SemigroupMin: semigroup.Semigroup<Duration>
-```
-
-Added in v1.0.0
-
-## SemigroupSum
-
-**Signature**
-
-```ts
-export declare const SemigroupSum: semigroup.Semigroup<Duration>
 ```
 
 Added in v1.0.0
@@ -266,16 +188,6 @@ export declare const sum: { (that: Duration): (self: Duration) => Duration; (sel
 ```
 
 Added in v1.0.0
-
-## sumAll
-
-**Signature**
-
-```ts
-export declare const sumAll: (collection: Iterable<Duration>) => Duration
-```
-
-Added in v1.0.15
 
 ## times
 

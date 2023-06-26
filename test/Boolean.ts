@@ -3,24 +3,6 @@ import { pipe } from "@effect/data/Function"
 import { deepStrictEqual } from "@effect/data/test/util"
 
 describe.concurrent("Boolean", () => {
-  it("exports", () => {
-    expect(Boolean.SemigroupEvery).exist
-    expect(Boolean.MonoidEvery).exist
-    expect(Boolean.SemigroupSome).exist
-    expect(Boolean.MonoidSome).exist
-    expect(Boolean.SemigroupXor).exist
-    expect(Boolean.MonoidXor).exist
-    expect(Boolean.SemigroupEqv).exist
-    expect(Boolean.MonoidEqv).exist
-    expect(Boolean.every).exist
-    expect(Boolean.some).exist
-    expect(Boolean.xor).exist
-    expect(Boolean.eqv).exist
-    expect(Boolean.nand).exist
-    expect(Boolean.nor).exist
-    expect(Boolean.implies).exist
-  })
-
   it("isBoolean", () => {
     expect(Boolean.isBoolean(true)).toEqual(true)
     expect(Boolean.isBoolean(false)).toEqual(true)
@@ -80,81 +62,6 @@ describe.concurrent("Boolean", () => {
   it("not", () => {
     deepStrictEqual(pipe(true, Boolean.not), false)
     deepStrictEqual(pipe(false, Boolean.not), true)
-  })
-
-  describe.concurrent("MonoidXor", () => {
-    it("baseline", () => {
-      deepStrictEqual(Boolean.MonoidXor.combineMany(true, []), true)
-      deepStrictEqual(Boolean.MonoidXor.combineMany(false, []), false)
-      deepStrictEqual(Boolean.MonoidXor.combineMany(false, [true]), true)
-      deepStrictEqual(Boolean.MonoidXor.combineMany(false, [false]), false)
-      deepStrictEqual(Boolean.MonoidXor.combineMany(true, [true]), false)
-      deepStrictEqual(Boolean.MonoidXor.combineMany(true, [false]), true)
-      deepStrictEqual(Boolean.MonoidXor.combineMany(true, [true, false]), false)
-      deepStrictEqual(Boolean.MonoidXor.combineMany(true, [false, true]), false)
-      deepStrictEqual(Boolean.MonoidXor.combineAll([true, false]), true)
-      deepStrictEqual(Boolean.MonoidXor.combineAll([false, true]), true)
-    })
-
-    it("should handle iterables", () => {
-      deepStrictEqual(Boolean.MonoidXor.combineAll(new Set([true, true])), true)
-      deepStrictEqual(Boolean.MonoidXor.combineAll(new Set([true, false])), true)
-      deepStrictEqual(Boolean.MonoidXor.combineAll(new Set([false, false])), false)
-    })
-  })
-
-  describe.concurrent("MonoidEqv", () => {
-    it("baseline", () => {
-      deepStrictEqual(Boolean.MonoidEqv.combineMany(true, []), true)
-      deepStrictEqual(Boolean.MonoidEqv.combineMany(false, []), false)
-      deepStrictEqual(Boolean.MonoidEqv.combineMany(false, [true]), false)
-      deepStrictEqual(Boolean.MonoidEqv.combineMany(false, [false]), true)
-      deepStrictEqual(Boolean.MonoidEqv.combineMany(true, [true]), true)
-      deepStrictEqual(Boolean.MonoidEqv.combineMany(true, [false]), false)
-      deepStrictEqual(Boolean.MonoidEqv.combineMany(true, [true, false]), false)
-      deepStrictEqual(Boolean.MonoidEqv.combineMany(true, [false, true]), false)
-      deepStrictEqual(Boolean.MonoidEqv.combineAll([true, false]), false)
-      deepStrictEqual(Boolean.MonoidEqv.combineAll([false, true]), false)
-    })
-
-    it("should handle iterables", () => {
-      deepStrictEqual(Boolean.MonoidEqv.combineAll(new Set([true, true])), true)
-      deepStrictEqual(Boolean.MonoidEqv.combineAll(new Set([true, false])), false)
-      deepStrictEqual(Boolean.MonoidEqv.combineAll(new Set([false, false])), false)
-    })
-  })
-
-  describe.concurrent("MonoidEvery", () => {
-    it("baseline", () => {
-      deepStrictEqual(Boolean.MonoidEvery.combineMany(true, [true, true]), true)
-      deepStrictEqual(Boolean.MonoidEvery.combineMany(true, [true, false]), false)
-      deepStrictEqual(Boolean.MonoidEvery.combineMany(false, [true, false]), false)
-      deepStrictEqual(Boolean.MonoidEvery.combineAll([true, true, true]), true)
-      deepStrictEqual(Boolean.MonoidEvery.combineAll([true, true, false]), false)
-    })
-
-    it("should handle iterables", () => {
-      deepStrictEqual(Boolean.MonoidEvery.combineAll(new Set([true, true])), true)
-      deepStrictEqual(Boolean.MonoidEvery.combineAll(new Set([true, false])), false)
-      deepStrictEqual(Boolean.MonoidEvery.combineAll(new Set([false, false])), false)
-    })
-  })
-
-  describe.concurrent("MonoidSome", () => {
-    it("baseline", () => {
-      deepStrictEqual(Boolean.MonoidSome.combineMany(true, [true, true]), true)
-      deepStrictEqual(Boolean.MonoidSome.combineMany(true, [true, false]), true)
-      deepStrictEqual(Boolean.MonoidSome.combineMany(false, [false, false]), false)
-      deepStrictEqual(Boolean.MonoidSome.combineAll([true, true, true]), true)
-      deepStrictEqual(Boolean.MonoidSome.combineAll([true, true, false]), true)
-      deepStrictEqual(Boolean.MonoidSome.combineAll([false, false, false]), false)
-    })
-
-    it("should handle iterables", () => {
-      deepStrictEqual(Boolean.MonoidSome.combineAll(new Set([true, true])), true)
-      deepStrictEqual(Boolean.MonoidSome.combineAll(new Set([true, false])), true)
-      deepStrictEqual(Boolean.MonoidSome.combineAll(new Set([false, false])), false)
-    })
   })
 
   it("match", () => {

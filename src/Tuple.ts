@@ -3,13 +3,10 @@
  *
  * @since 1.0.0
  */
+import * as equivalence from "@effect/data/Equivalence"
 import { dual } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
-import * as bicovariant from "@effect/data/typeclass/Bicovariant"
-import * as equivalence from "@effect/data/typeclass/Equivalence"
-import * as monoid from "@effect/data/typeclass/Monoid"
-import * as order from "@effect/data/typeclass/Order"
-import * as semigroup from "@effect/data/typeclass/Semigroup"
+import * as order from "@effect/data/Order"
 
 /**
  * @category type lambdas
@@ -95,14 +92,6 @@ export const bimap: {
 )
 
 /**
- * @category instances
- * @since 1.0.0
- */
-export const Bicovariant: bicovariant.Bicovariant<TupleTypeLambda> = {
-  bimap
-}
-
-/**
  * Transforms the first component of a tuple using a given function.
  *
  * @param self - A tuple of length `2`.
@@ -122,7 +111,7 @@ export const Bicovariant: bicovariant.Bicovariant<TupleTypeLambda> = {
 export const mapFirst: {
   <L1, L2>(f: (left: L1) => L2): <R>(self: readonly [L1, R]) => [L2, R]
   <L1, R, L2>(self: readonly [L1, R], f: (left: L1) => L2): [L2, R]
-} = bicovariant.mapLeft(Bicovariant) as any
+} = dual(2, <L1, R, L2>(self: readonly [L1, R], f: (left: L1) => L2): [L2, R] => [f(self[0]), self[1]])
 
 /**
  * Transforms the second component of a tuple using a given function.
@@ -144,7 +133,7 @@ export const mapFirst: {
 export const mapSecond: {
   <R1, R2>(f: (right: R1) => R2): <L>(self: readonly [L, R1]) => [L, R2]
   <L, R1, R2>(self: readonly [L, R1], f: (right: R1) => R2): [L, R2]
-} = bicovariant.map(Bicovariant) as any
+} = dual(2, <L, R1, R2>(self: readonly [L, R1], f: (right: R1) => R2): [L, R2] => [self[0], f(self[1])])
 
 /**
  * Swaps the two elements of a tuple.
@@ -185,30 +174,6 @@ export const getEquivalence: <T extends ReadonlyArray<equivalence.Equivalence<an
 export const getOrder: <T extends ReadonlyArray<order.Order<any>>>(
   ...elements: T
 ) => order.Order<{ [I in keyof T]: [T[I]] extends [order.Order<infer A>] ? A : never }> = order.tuple
-
-/**
- * This function creates and returns a new `Semigroup` for a tuple of values based on the given `Semigroup`s for each element in the tuple.
- * The returned `Semigroup` combines two tuples of the same type by applying the corresponding `Semigroup` passed as arguments to each element in the tuple.
- *
- * It is useful when you need to combine two tuples of the same type and you have a specific way of combining each element of the tuple.
- *
- * @category combinators
- * @since 1.0.0
- */
-export const getSemigroup = semigroup.tuple
-
-/**
- * This function creates and returns a new `Monoid` for a tuple of values based on the given `Monoid`s for each element in the tuple.
- * The returned `Monoid` combines two tuples of the same type by applying the corresponding `Monoid` passed as arguments to each element in the tuple.
- *
- * The `empty` value of the returned `Monoid` is the tuple of `empty` values of the input `Monoid`s.
- *
- * It is useful when you need to combine two tuples of the same type and you have a specific way of combining each element of the tuple.
- *
- * @category combinators
- * @since 1.0.0
- */
-export const getMonoid = monoid.tuple
 
 /**
  * Appends an element to the end of a tuple.

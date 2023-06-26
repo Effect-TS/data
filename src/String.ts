@@ -6,18 +6,16 @@
  * @since 1.0.0
  */
 
+import * as equivalence from "@effect/data/Equivalence"
 import { dual } from "@effect/data/Function"
 import * as readonlyArray from "@effect/data/internal/ReadonlyArray"
 import * as number from "@effect/data/Number"
 import * as Option from "@effect/data/Option"
+import * as order from "@effect/data/Order"
 import type * as Ordering from "@effect/data/Ordering"
 import type { Refinement } from "@effect/data/Predicate"
 import * as predicate from "@effect/data/Predicate"
 import type { NonEmptyArray } from "@effect/data/ReadonlyArray"
-import * as equivalence from "@effect/data/typeclass/Equivalence"
-import * as monoid from "@effect/data/typeclass/Monoid"
-import * as order from "@effect/data/typeclass/Order"
-import * as semigroup from "@effect/data/typeclass/Semigroup"
 
 /**
  * Tests if a value is a `string`.
@@ -48,24 +46,6 @@ export const Equivalence: equivalence.Equivalence<string> = equivalence.string
 export const Order: order.Order<string> = order.string
 
 /**
- * `string` semigroup under concatenation.
- *
- * @category instances
- * @since 1.0.0
- */
-export const Semigroup: semigroup.Semigroup<string> = semigroup.string
-
-/**
- * `string` monoid under concatenation.
- *
- * The `empty` value is `''`.
- *
- * @category instances
- * @since 1.0.0
- */
-export const Monoid: monoid.Monoid<string> = monoid.string
-
-/**
  * The empty string `""`.
  *
  * @since 1.0.0
@@ -78,7 +58,7 @@ export const empty: "" = "" as const
 export const concat: {
   (that: string): (self: string) => string
   (self: string, that: string): string
-} = dual(2, Semigroup.combine)
+} = dual(2, (self: string, that: string): string => self + that)
 
 /**
  * @example

@@ -5,13 +5,11 @@
  *
  * @since 1.0.0
  */
+import * as equivalence from "@effect/data/Equivalence"
 import type { LazyArg } from "@effect/data/Function"
-import { dual, flow } from "@effect/data/Function"
+import { dual } from "@effect/data/Function"
+import * as order from "@effect/data/Order"
 import * as predicate from "@effect/data/Predicate"
-import * as equivalence from "@effect/data/typeclass/Equivalence"
-import * as monoid from "@effect/data/typeclass/Monoid"
-import * as order from "@effect/data/typeclass/Order"
-import * as semigroup from "@effect/data/typeclass/Semigroup"
 
 /**
  * Tests if a value is a `boolean`.
@@ -69,110 +67,6 @@ export const Equivalence: equivalence.Equivalence<boolean> = equivalence.boolean
 export const Order: order.Order<boolean> = order.boolean
 
 /**
- * `boolean` semigroup under conjunction.
- *
- * @example
- * import { SemigroupEvery } from '@effect/data/Boolean'
- *
- * assert.deepStrictEqual(SemigroupEvery.combine(true, true), true)
- * assert.deepStrictEqual(SemigroupEvery.combine(true, false), false)
- * assert.deepStrictEqual(SemigroupEvery.combine(false, true), false)
- * assert.deepStrictEqual(SemigroupEvery.combine(false, false), false)
- *
- * @category instances
- * @since 1.0.0
- */
-export const SemigroupEvery: semigroup.Semigroup<boolean> = semigroup.booleanEvery
-
-/**
- * `boolean` semigroup under disjunction.
- *
- * @example
- * import { SemigroupSome } from '@effect/data/Boolean'
- *
- * assert.deepStrictEqual(SemigroupSome.combine(true, true), true)
- * assert.deepStrictEqual(SemigroupSome.combine(true, false), true)
- * assert.deepStrictEqual(SemigroupSome.combine(false, true), true)
- * assert.deepStrictEqual(SemigroupSome.combine(false, false), false)
- *
- * @category instances
- * @since 1.0.0
- */
-export const SemigroupSome: semigroup.Semigroup<boolean> = semigroup.booleanSome
-
-/**
- * `boolean` semigroup under exclusive disjunction.
- *
- * @example
- * import { SemigroupXor } from '@effect/data/Boolean'
- *
- * assert.deepStrictEqual(SemigroupXor.combine(true, true), false)
- * assert.deepStrictEqual(SemigroupXor.combine(true, false), true)
- * assert.deepStrictEqual(SemigroupXor.combine(false, true), true)
- * assert.deepStrictEqual(SemigroupXor.combine(false, false), false)
- *
- * @category instances
- * @since 1.0.0
- */
-export const SemigroupXor: semigroup.Semigroup<boolean> = semigroup.booleanXor
-
-/**
- * `boolean` semigroup under equivalence.
- *
- * @example
- * import { SemigroupEqv } from '@effect/data/Boolean'
- *
- * assert.deepStrictEqual(SemigroupEqv.combine(true, true), true)
- * assert.deepStrictEqual(SemigroupEqv.combine(true, false), false)
- * assert.deepStrictEqual(SemigroupEqv.combine(false, true), false)
- * assert.deepStrictEqual(SemigroupEqv.combine(false, false), true)
- *
- * @category instances
- * @since 1.0.0
- */
-export const SemigroupEqv: semigroup.Semigroup<boolean> = semigroup.booleanEqv
-
-/**
- * `boolean` monoid under conjunction, see also {@link SemigroupEvery}.
- *
- * The `empty` value is `true`.
- *
- * @category instances
- * @since 1.0.0
- */
-export const MonoidEvery: monoid.Monoid<boolean> = monoid.booleanEvery
-
-/**
- * `boolean` monoid under disjunction, see also {@link SemigroupSome}.
- *
- * The `empty` value is `false`.
- *
- * @category instances
- * @since 1.0.0
- */
-export const MonoidSome: monoid.Monoid<boolean> = monoid.booleanSome
-
-/**
- * `boolean` monoid under exclusive disjunction, see also {@link SemigroupXor}.
- *
- * The `empty` value is `false`.
- *
- * @category instances
- * @since 1.0.0
- */
-export const MonoidXor: monoid.Monoid<boolean> = monoid.booleanXor
-
-/**
- * `boolean` monoid under equivalence.
- *
- * The `empty` value is `true`.
- *
- * @category instances
- * @since 1.0.0
- */
-export const MonoidEqv: monoid.Monoid<boolean> = monoid.booleanEqv
-
-/**
  * Negates the given boolean: `!self`
  *
  * @example
@@ -203,7 +97,7 @@ export const not = (self: boolean): boolean => !self
 export const and: {
   (that: boolean): (self: boolean) => boolean
   (self: boolean, that: boolean): boolean
-} = dual(2, semigroup.booleanEvery.combine)
+} = dual(2, (self: boolean, that: boolean): boolean => self && that)
 
 /**
  * Combines two boolean using NAND: `!(self && that)`.
@@ -222,7 +116,7 @@ export const and: {
 export const nand: {
   (that: boolean): (self: boolean) => boolean
   (self: boolean, that: boolean): boolean
-} = dual(2, flow(semigroup.booleanEvery.combine, not))
+} = dual(2, (self: boolean, that: boolean): boolean => !(self && that))
 
 /**
  * Combines two boolean using OR: `self || that`.
@@ -241,7 +135,7 @@ export const nand: {
 export const or: {
   (that: boolean): (self: boolean) => boolean
   (self: boolean, that: boolean): boolean
-} = dual(2, semigroup.booleanSome.combine)
+} = dual(2, (self: boolean, that: boolean): boolean => self || that)
 
 /**
  * Combines two booleans using NOR: `!(self || that)`.
@@ -260,7 +154,7 @@ export const or: {
 export const nor: {
   (that: boolean): (self: boolean) => boolean
   (self: boolean, that: boolean): boolean
-} = dual(2, flow(semigroup.booleanSome.combine, not))
+} = dual(2, (self: boolean, that: boolean): boolean => !(self || that))
 
 /**
  * Combines two booleans using XOR: `(!self && that) || (self && !that)`.
@@ -279,7 +173,7 @@ export const nor: {
 export const xor: {
   (that: boolean): (self: boolean) => boolean
   (self: boolean, that: boolean): boolean
-} = dual(2, semigroup.booleanXor.combine)
+} = dual(2, (self: boolean, that: boolean): boolean => (!self && that) || (self && !that))
 
 /**
  * Combines two booleans using EQV (aka XNOR): `!xor(self, that)`.
@@ -298,7 +192,7 @@ export const xor: {
 export const eqv: {
   (that: boolean): (self: boolean) => boolean
   (self: boolean, that: boolean): boolean
-} = dual(2, semigroup.booleanEqv.combine)
+} = dual(2, (self: boolean, that: boolean): boolean => !xor(self, that))
 
 /**
  * Combines two booleans using an implication: `(!self || that)`.
@@ -332,7 +226,14 @@ export const implies: {
  *
  * @since 1.0.0
  */
-export const every: (collection: Iterable<boolean>) => boolean = MonoidEvery.combineAll
+export const every = (collection: Iterable<boolean>): boolean => {
+  for (const b of collection) {
+    if (!b) {
+      return false
+    }
+  }
+  return true
+}
 
 /**
  * This utility function is used to check if at least one of the elements in a collection of boolean values is `true`.
@@ -347,4 +248,11 @@ export const every: (collection: Iterable<boolean>) => boolean = MonoidEvery.com
  *
  * @since 1.0.0
  */
-export const some: (collection: Iterable<boolean>) => boolean = MonoidSome.combineAll
+export const some = (collection: Iterable<boolean>): boolean => {
+  for (const b of collection) {
+    if (b) {
+      return true
+    }
+  }
+  return false
+}

@@ -2,13 +2,10 @@
  * @since 1.0.0
  */
 import * as Equal from "@effect/data/Equal"
+import type * as equivalence from "@effect/data/Equivalence"
 import * as Dual from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
-import type * as bounded from "@effect/data/typeclass/Bounded"
-import type * as equivalence from "@effect/data/typeclass/Equivalence"
-import * as monoid from "@effect/data/typeclass/Monoid"
-import * as order from "@effect/data/typeclass/Order"
-import * as semigroup from "@effect/data/typeclass/Semigroup"
+import * as order from "@effect/data/Order"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/Duration")
 
@@ -115,16 +112,6 @@ export const Order: order.Order<Duration> = {
 }
 
 /**
- * @category instances
- * @since 1.0.0
- */
-export const Bounded: bounded.Bounded<Duration> = {
-  compare: Order.compare,
-  maxBound: infinity,
-  minBound: zero
-}
-
-/**
  * Checks if a `Duration` is between a `minimum` and `maximum` value.
  *
  * @category predicates
@@ -191,48 +178,6 @@ export const sum: {
   (that: Duration) => (self: Duration) => Duration,
   (self: Duration, that: Duration) => Duration
 >(2, (self, that) => new DurationImpl(self.millis + that.millis))
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const SemigroupSum: semigroup.Semigroup<Duration> = semigroup.make(sum)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const MonoidSum: monoid.Monoid<Duration> = monoid.fromSemigroup(SemigroupSum, zero)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const SemigroupMax: semigroup.Semigroup<Duration> = semigroup.make(max)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const MonoidMax: monoid.Monoid<Duration> = monoid.fromSemigroup(SemigroupMax, zero)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const SemigroupMin: semigroup.Semigroup<Duration> = semigroup.make(min)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const MonoidMin: monoid.Monoid<Duration> = monoid.fromSemigroup(SemigroupMin, infinity)
-
-/**
- * @category math
- * @since 1.0.15
- */
-export const sumAll: (collection: Iterable<Duration>) => Duration = MonoidSum.combineAll
 
 /**
  * @since 1.0.0

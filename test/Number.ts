@@ -3,23 +3,6 @@ import * as Number from "@effect/data/Number"
 import { deepStrictEqual } from "@effect/data/test/util"
 
 describe.concurrent("Number", () => {
-  it("exports", () => {
-    expect(Number.SemigroupMax).exist
-    expect(Number.SemigroupMin).exist
-    expect(Number.MonoidMax).exist
-    expect(Number.MonoidMin).exist
-    expect(Number.sumAll).exist
-    expect(Number.multiplyAll).exist
-    expect(Number.lessThan).exist
-    expect(Number.lessThanOrEqualTo).exist
-    expect(Number.greaterThan).exist
-    expect(Number.greaterThanOrEqualTo).exist
-    expect(Number.between).exist
-    expect(Number.clamp).exist
-    expect(Number.min).exist
-    expect(Number.max).exist
-  })
-
   it("isNumber", () => {
     expect(Number.isNumber(1)).toEqual(true)
     expect(Number.isNumber("a")).toEqual(false)
@@ -61,29 +44,6 @@ describe.concurrent("Number", () => {
     deepStrictEqual(Number.Order.compare(2, 2), 0)
   })
 
-  it("Bounded", () => {
-    expect(Number.Bounded.maxBound).toEqual(Infinity)
-    expect(Number.Bounded.minBound).toEqual(-Infinity)
-  })
-
-  it("SemigroupSum", () => {
-    deepStrictEqual(Number.SemigroupSum.combine(2, 3), 5)
-  })
-
-  it("MonoidSum", () => {
-    deepStrictEqual(Number.MonoidSum.combineAll([1, 2, 3]), 6)
-  })
-
-  it("SemigroupMultiply", () => {
-    deepStrictEqual(Number.SemigroupMultiply.combine(2, 3), 6)
-    deepStrictEqual(Number.SemigroupMultiply.combineMany(0, [1, 2, 3]), 0)
-    deepStrictEqual(Number.SemigroupMultiply.combineMany(2, [1, 0, 3]), 0)
-  })
-
-  it("MonoidMultiply", () => {
-    deepStrictEqual(Number.MonoidMultiply.combineAll([2, 3, 4]), 24)
-  })
-
   it("sign", () => {
     deepStrictEqual(Number.sign(0), 0)
     deepStrictEqual(Number.sign(0.0), 0)
@@ -108,5 +68,9 @@ describe.concurrent("Number", () => {
     assert.deepStrictEqual(Number.remainder(1, -.2), 0)
     assert.deepStrictEqual(Number.remainder(2.6, -.2), 0)
     assert.deepStrictEqual(Number.remainder(3.1, -.2), 0.1)
+  })
+
+  it("multiplyAll", () => {
+    expect(Number.multiplyAll([2, 3, 4])).toEqual(24)
   })
 })

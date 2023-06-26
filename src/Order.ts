@@ -3,14 +3,6 @@
  */
 import { dual } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
-import * as contravariant from "@effect/data/typeclass/Contravariant"
-import type * as invariant from "@effect/data/typeclass/Invariant"
-import type { Monoid } from "@effect/data/typeclass/Monoid"
-import * as monoid from "@effect/data/typeclass/Monoid"
-import * as product_ from "@effect/data/typeclass/Product"
-import type { Semigroup } from "@effect/data/typeclass/Semigroup"
-import * as semigroup from "@effect/data/typeclass/Semigroup"
-import type * as semiProduct from "@effect/data/typeclass/SemiProduct"
 
 /**
  * @category type class
@@ -68,42 +60,50 @@ export const bigint: Order<bigint> = make((self, that) => self < that ? -1 : 1)
 export const reverse = <A>(O: Order<A>): Order<A> => make((self, that) => O.compare(that, self))
 
 /**
- * @category instances
  * @since 1.0.0
  */
-export const getSemigroup = <A>(): Semigroup<Order<A>> =>
-  semigroup.make(
-    (O1, O2) =>
-      make((self, that) => {
-        const out = O1.compare(self, that)
-        if (out !== 0) {
-          return out
-        }
-        return O2.compare(self, that)
-      }),
-    (self, collection) =>
-      make((a1, a2) => {
-        let out = self.compare(a1, a2)
-        if (out !== 0) {
-          return out
-        }
-        for (const O of collection) {
-          out = O.compare(a1, a2)
-          if (out !== 0) {
-            return out
-          }
-        }
-        return out
-      })
-  )
-
-const empty: Order<unknown> = make(() => 0)
+export const combine: {
+  <A>(that: Order<A>): (self: Order<A>) => Order<A>
+  <A>(self: Order<A>, that: Order<A>): Order<A>
+} = dual(2, <A>(self: Order<A>, that: Order<A>): Order<A> =>
+  make((a1, a2) => {
+    const out = self.compare(a1, a2)
+    if (out !== 0) {
+      return out
+    }
+    return that.compare(a1, a2)
+  }))
 
 /**
- * @category instances
  * @since 1.0.0
  */
-export const getMonoid = <A>(): Monoid<Order<A>> => monoid.fromSemigroup(getSemigroup<A>(), empty)
+export const combineMany: {
+  <A>(collection: Iterable<Order<A>>): (self: Order<A>) => Order<A>
+  <A>(self: Order<A>, collection: Iterable<Order<A>>): Order<A>
+} = dual(2, <A>(self: Order<A>, collection: Iterable<Order<A>>): Order<A> =>
+  make((a1, a2) => {
+    let out = self.compare(a1, a2)
+    if (out !== 0) {
+      return out
+    }
+    for (const O of collection) {
+      out = O.compare(a1, a2)
+      if (out !== 0) {
+        return out
+      }
+    }
+    return out
+  }))
+
+/**
+ * @since 1.0.0
+ */
+export const empty = <A>(): Order<A> => make(() => 0)
+
+/**
+ * @since 1.0.0
+ */
+export const combineAll = <A>(collection: Iterable<Order<A>>): Order<A> => combineMany(empty(), collection)
 
 /**
  * @category combinators
@@ -117,32 +117,22 @@ export const contramap: {
   <A, B>(self: Order<A>, f: (b: B) => A): Order<B> => make((b1, b2) => self.compare(f(b1), f(b2)))
 )
 
-const imap = contravariant.imap<OrderTypeLambda>(contramap)
-
 /**
- * @category instances
  * @since 1.0.0
  */
-export const Contravariant: contravariant.Contravariant<OrderTypeLambda> = {
-  imap,
-  contramap
-}
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Invariant: invariant.Invariant<OrderTypeLambda> = {
-  imap
-}
-
-const product = <A, B>(self: Order<A>, that: Order<B>): Order<[A, B]> =>
+export const product: {
+  <B>(that: Order<B>): <A>(self: Order<A>) => Order<[A, B]>
+  <A, B>(self: Order<A>, that: Order<B>): Order<[A, B]>
+} = dual(2, <A, B>(self: Order<A>, that: Order<B>): Order<[A, B]> =>
   make(([xa, xb], [ya, yb]) => {
     const o = self.compare(xa, ya)
     return o !== 0 ? o : that.compare(xb, yb)
-  })
+  }))
 
-const productAll = <A>(collection: Iterable<Order<A>>): Order<Array<A>> => {
+/**
+ * @since 1.0.0
+ */
+export const all = <A>(collection: Iterable<Order<A>>): Order<Array<A>> => {
   return make((x, y) => {
     const len = Math.min(x.length, y.length)
     let collectionLength = 0
@@ -160,40 +150,19 @@ const productAll = <A>(collection: Iterable<Order<A>>): Order<Array<A>> => {
   })
 }
 
-const productMany = <A>(
-  self: Order<A>,
-  collection: Iterable<Order<A>>
-): Order<[A, ...Array<A>]> => {
-  const order = productAll(collection)
+/**
+ * @since 1.0.0
+ */
+export const productMany: {
+  <A>(collection: Iterable<Order<A>>): (self: Order<A>) => Order<[A, ...Array<A>]>
+  <A>(self: Order<A>, collection: Iterable<Order<A>>): Order<[A, ...Array<A>]>
+} = dual(2, <A>(self: Order<A>, collection: Iterable<Order<A>>): Order<[A, ...Array<A>]> => {
+  const order = all(collection)
   return make((x, y) => {
     const o = self.compare(x[0], y[0])
     return o !== 0 ? o : order.compare(x.slice(1), y.slice(1))
   })
-}
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const SemiProduct: semiProduct.SemiProduct<OrderTypeLambda> = {
-  imap,
-  product,
-  productMany
-}
-
-const of: <A>(a: A) => Order<A> = () => empty
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Product: product_.Product<OrderTypeLambda> = {
-  of,
-  imap,
-  product,
-  productMany,
-  productAll
-}
+})
 
 /**
  * Similar to `Promise.all` but operates on `Order`s.
@@ -210,11 +179,9 @@ export const Product: product_.Product<OrderTypeLambda> = {
  * @category combinators
  * @since 1.0.0
  */
-export const tuple: <T extends ReadonlyArray<Order<any>>>(
+export const tuple = <T extends ReadonlyArray<Order<any>>>(
   ...elements: T
-) => Order<{ [I in keyof T]: [T[I]] extends [Order<infer A>] ? A : never }> = product_.tuple(
-  Product
-)
+): Order<{ [I in keyof T]: [T[I]] extends [Order<infer A>] ? A : never }> => all(elements) as any
 
 /**
  * This function creates and returns a new `Order` for an array of values based on a given `Order` for the elements of the array.
@@ -246,11 +213,10 @@ export const array = <A>(O: Order<A>): Order<ReadonlyArray<A>> =>
  * @category combinators
  * @since 1.0.0
  */
-export const struct: <R extends { readonly [x: string]: Order<any> }>(
+export const struct = <R extends { readonly [x: string]: Order<any> }>(
   fields: R
-) => Order<{ [K in keyof R]: [R[K]] extends [Order<infer A>] ? A : never }> = product_.struct(
-  Product
-)
+): Order<{ [K in keyof R]: [R[K]] extends [Order<infer A>] ? A : never }> =>
+  all(Object.keys(fields).map((k) => fields[k])) as any
 
 /**
  * Test whether one value is _strictly less than_ another.

@@ -4,11 +4,9 @@
  * @since 1.0.0
  */
 
+import * as equivalence from "@effect/data/Equivalence"
 import { dual } from "@effect/data/Function"
-import * as equivalence from "@effect/data/typeclass/Equivalence"
-import * as monoid from "@effect/data/typeclass/Monoid"
-import * as order from "@effect/data/typeclass/Order"
-import * as semigroup from "@effect/data/typeclass/Semigroup"
+import * as order from "@effect/data/Order"
 
 /**
  * Create a new object by picking properties of an existing object.
@@ -100,59 +98,6 @@ export const getEquivalence: <R extends Record<string, equivalence.Equivalence<a
 export const getOrder: <R extends { readonly [x: string]: order.Order<any> }>(
   fields: R
 ) => order.Order<{ [K in keyof R]: [R[K]] extends [order.Order<infer A>] ? A : never }> = order.struct
-
-/**
- * This function creates and returns a new `Semigroup` for a struct of values based on the given `Semigroup`s for each property in the struct.
- * The returned `Semigroup` combines two structs of the same type by applying the corresponding `Semigroup` passed as arguments to each property in the struct.
- *
- * It is useful when you need to combine two structs of the same type and you have a specific way of combining each property of the struct.
- *
- * See also {@link getMonoid}.
- *
- * @example
- * import { getSemigroup } from "@effect/data/Struct"
- * import * as Semigroup from "@effect/data/typeclass/Semigroup"
- * import * as O from "@effect/data/Option"
- *
- * const PersonSemigroup = getSemigroup({
- *   name: Semigroup.last<string>(),
- *   age: O.getOptionalMonoid(Semigroup.last<number>())
- * })
- *
- * assert.deepStrictEqual(
- *   PersonSemigroup.combine({ name: "John", age: O.none() }, { name: "John", age: O.some(25) }),
- *   { name: "John", age: O.some(25) }
- * )
- * assert.deepStrictEqual(
- *   PersonSemigroup.combine({ name: "John", age: O.some(25) }, { name: "John", age: O.none() }),
- *   { name: "John", age: O.some(25) }
- * )
- *
- * @category combinators
- * @since 1.0.0
- */
-export const getSemigroup: <R extends { readonly [x: string]: semigroup.Semigroup<any> }>(
-  fields: R
-) => semigroup.Semigroup<
-  { [K in keyof R]: [R[K]] extends [semigroup.Semigroup<infer A>] ? A : never }
-> = semigroup.struct
-
-/**
- * This function creates and returns a new `Monoid` for a struct of values based on the given `Monoid`s for each property in the struct.
- * The returned `Monoid` combines two structs of the same type by applying the corresponding `Monoid` passed as arguments to each property in the struct.
- *
- * The `empty` value of the returned `Monoid` is a struct where each property is the `empty` value of the corresponding `Monoid` in the input `monoids` object.
- *
- * It is useful when you need to combine two structs of the same type and you have a specific way of combining each property of the struct.
- *
- * See also {@link getSemigroup}.
- *
- * @category combinators
- * @since 1.0.0
- */
-export const getMonoid: <R extends { readonly [x: string]: monoid.Monoid<any> }>(
-  fields: R
-) => monoid.Monoid<{ [K in keyof R]: [R[K]] extends [monoid.Monoid<infer A>] ? A : never }> = monoid.struct
 
 type PartialTransform<O> = Partial<{ [K in keyof O]: (a: O[K]) => unknown }>
 

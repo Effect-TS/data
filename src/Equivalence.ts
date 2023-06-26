@@ -7,14 +7,6 @@
  */
 import { dual } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
-import * as contravariant from "@effect/data/typeclass/Contravariant"
-import type * as invariant from "@effect/data/typeclass/Invariant"
-import type { Monoid } from "@effect/data/typeclass/Monoid"
-import * as monoid from "@effect/data/typeclass/Monoid"
-import * as product_ from "@effect/data/typeclass/Product"
-import type { Semigroup } from "@effect/data/typeclass/Semigroup"
-import * as semigroup from "@effect/data/typeclass/Semigroup"
-import type * as semiProduct from "@effect/data/typeclass/SemiProduct"
 
 /**
  * @category type class
@@ -80,33 +72,39 @@ export const bigint: Equivalence<bigint> = strict()
 export const symbol: Equivalence<symbol> = strict()
 
 /**
- * @category instances
  * @since 1.0.0
  */
-export const getSemigroup = <A>(): Semigroup<Equivalence<A>> =>
-  semigroup.make(
-    (self, that) => make((x, y) => self(x, y) && that(x, y)),
-    (self, collection) =>
-      make((x, y) => {
-        if (!self(x, y)) {
-          return false
-        }
-        for (const equivalence of collection) {
-          if (!equivalence(x, y)) {
-            return false
-          }
-        }
-        return true
-      })
-  )
+export const combine: {
+  <A>(that: Equivalence<A>): (self: Equivalence<A>) => Equivalence<A>
+  <A>(self: Equivalence<A>, that: Equivalence<A>): Equivalence<A>
+} = dual(2, <A>(self: Equivalence<A>, that: Equivalence<A>): Equivalence<A> => make((x, y) => self(x, y) && that(x, y)))
+
+/**
+ * @since 1.0.0
+ */
+export const combineMany: {
+  <A>(collection: Iterable<Equivalence<A>>): (self: Equivalence<A>) => Equivalence<A>
+  <A>(self: Equivalence<A>, collection: Iterable<Equivalence<A>>): Equivalence<A>
+} = dual(2, <A>(self: Equivalence<A>, collection: Iterable<Equivalence<A>>): Equivalence<A> =>
+  make((x, y) => {
+    if (!self(x, y)) {
+      return false
+    }
+    for (const equivalence of collection) {
+      if (!equivalence(x, y)) {
+        return false
+      }
+    }
+    return true
+  }))
 
 const isAlwaysEquivalent: Equivalence<unknown> = (_x, _y) => true
 
 /**
- * @category instances
  * @since 1.0.0
  */
-export const getMonoid = <A>(): Monoid<Equivalence<A>> => monoid.fromSemigroup(getSemigroup<A>(), isAlwaysEquivalent)
+export const combineAll = <A>(collection: Iterable<Equivalence<A>>): Equivalence<A> =>
+  combineMany(isAlwaysEquivalent, collection)
 
 /**
  * @category combinators
@@ -120,29 +118,22 @@ export const contramap: {
   <A, B>(self: Equivalence<A>, f: (b: B) => A): Equivalence<B> => make((x, y) => self(f(x), f(y)))
 )
 
-const imap = contravariant.imap<EquivalenceTypeLambda>(contramap)
-
 /**
- * @category instances
  * @since 1.0.0
  */
-export const Contravariant: contravariant.Contravariant<EquivalenceTypeLambda> = {
-  imap,
-  contramap
-}
+export const product: {
+  <B>(that: Equivalence<B>): <A>(self: Equivalence<A>) => Equivalence<[A, B]>
+  <A, B>(self: Equivalence<A>, that: Equivalence<B>): Equivalence<[A, B]>
+} = dual(
+  2,
+  <A, B>(self: Equivalence<A>, that: Equivalence<B>): Equivalence<[A, B]> =>
+    make(([xa, xb], [ya, yb]) => self(xa, ya) && that(xb, yb))
+)
 
 /**
- * @category instances
  * @since 1.0.0
  */
-export const Invariant: invariant.Invariant<EquivalenceTypeLambda> = {
-  imap
-}
-
-const product = <A, B>(self: Equivalence<A>, that: Equivalence<B>): Equivalence<[A, B]> =>
-  make(([xa, xb], [ya, yb]) => self(xa, ya) && that(xb, yb))
-
-const productAll = <A>(collection: Iterable<Equivalence<A>>): Equivalence<Array<A>> => {
+export const all = <A>(collection: Iterable<Equivalence<A>>): Equivalence<Array<A>> => {
   return make((x, y) => {
     const len = Math.min(x.length, y.length)
 
@@ -160,36 +151,15 @@ const productAll = <A>(collection: Iterable<Equivalence<A>>): Equivalence<Array<
   })
 }
 
-const productMany = <A>(
+/**
+ * @since 1.0.0
+ */
+export const productMany = <A>(
   self: Equivalence<A>,
   collection: Iterable<Equivalence<A>>
 ): Equivalence<[A, ...Array<A>]> => {
-  const equivalence = productAll(collection)
+  const equivalence = all(collection)
   return make((x, y) => !self(x[0], y[0]) ? false : equivalence(x.slice(1), y.slice(1)))
-}
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const SemiProduct: semiProduct.SemiProduct<EquivalenceTypeLambda> = {
-  imap,
-  product,
-  productMany
-}
-
-const of: <A>(a: A) => Equivalence<A> = () => isAlwaysEquivalent
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Product: product_.Product<EquivalenceTypeLambda> = {
-  of,
-  imap,
-  product,
-  productMany,
-  productAll
 }
 
 /**
@@ -205,11 +175,9 @@ export const Product: product_.Product<EquivalenceTypeLambda> = {
  * @category combinators
  * @since 1.0.0
  */
-export const tuple: <T extends ReadonlyArray<Equivalence<any>>>(
-  ...predicates: T
-) => Equivalence<Readonly<{ [I in keyof T]: [T[I]] extends [Equivalence<infer A>] ? A : never }>> = product_.tuple(
-  Product
-)
+export const tuple = <T extends ReadonlyArray<Equivalence<any>>>(
+  ...elements: T
+): Equivalence<Readonly<{ [I in keyof T]: [T[I]] extends [Equivalence<infer A>] ? A : never }>> => all(elements) as any
 
 /**
  * Creates a new `Equivalence` for an array of values based on a given `Equivalence` for the elements of the array.
@@ -217,14 +185,14 @@ export const tuple: <T extends ReadonlyArray<Equivalence<any>>>(
  * @category combinators
  * @since 1.0.0
  */
-export const array = <A>(predicate: Equivalence<A>): Equivalence<ReadonlyArray<A>> =>
+export const array = <A>(item: Equivalence<A>): Equivalence<ReadonlyArray<A>> =>
   make((self, that) => {
     if (self.length !== that.length) {
       return false
     }
 
     for (let i = 0; i < self.length; i++) {
-      const isEq = predicate(self[i], that[i])
+      const isEq = item(self[i], that[i])
       if (!isEq) {
         return false
       }
@@ -240,8 +208,16 @@ export const array = <A>(predicate: Equivalence<A>): Equivalence<ReadonlyArray<A
  * @category combinators
  * @since 1.0.0
  */
-export const struct: <R extends Record<string, Equivalence<any>>>(
-  predicates: R
-) => Equivalence<{ readonly [K in keyof R]: [R[K]] extends [Equivalence<infer A>] ? A : never }> = product_.struct(
-  Product
-)
+export const struct = <R extends Record<string, Equivalence<any>>>(
+  fields: R
+): Equivalence<{ readonly [K in keyof R]: [R[K]] extends [Equivalence<infer A>] ? A : never }> => {
+  const keys = Object.keys(fields)
+  return make((self, that) => {
+    for (const key of keys) {
+      if (!fields[key](self[key], that[key])) {
+        return false
+      }
+    }
+    return true
+  })
+}

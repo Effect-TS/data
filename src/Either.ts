@@ -5,15 +5,12 @@
 import type * as Data from "@effect/data/Data"
 import type { SourceLocation, Trace } from "@effect/data/Debug"
 import * as Equal from "@effect/data/Equal"
+import type { Equivalence } from "@effect/data/Equivalence"
+import * as equivalence from "@effect/data/Equivalence"
 import { dual, identity } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
 import * as either from "@effect/data/internal/Either"
 import type { Option } from "@effect/data/Option"
-import * as bicovariant from "@effect/data/typeclass/Bicovariant"
-import * as covariant from "@effect/data/typeclass/Covariant"
-import type { Equivalence } from "@effect/data/typeclass/Equivalence"
-import * as equivalence from "@effect/data/typeclass/Equivalence"
-import type * as invariant from "@effect/data/typeclass/Invariant"
 import type * as Unify from "@effect/data/Unify"
 
 /**
@@ -231,14 +228,6 @@ export const bimap: {
 )
 
 /**
- * @category instances
- * @since 1.0.0
- */
-export const Bicovariant: bicovariant.Bicovariant<EitherTypeLambda> = {
-  bimap
-}
-
-/**
  * Maps the `Left` side of an `Either` value to a new `Either` value.
  *
  * @param self - The input `Either` value to map.
@@ -249,7 +238,10 @@ export const Bicovariant: bicovariant.Bicovariant<EitherTypeLambda> = {
 export const mapLeft: {
   <E, G>(f: (e: E) => G): <A>(self: Either<E, A>) => Either<G, A>
   <E, A, G>(self: Either<E, A>, f: (e: E) => G): Either<G, A>
-} = bicovariant.mapLeft(Bicovariant)
+} = dual(
+  2,
+  <E, A, G>(self: Either<E, A>, f: (e: E) => G): Either<G, A> => isLeft(self) ? left(f(self.left)) : right(self.right)
+)
 
 /**
  * Maps the `Right` side of an `Either` value to a new `Either` value.
@@ -267,25 +259,6 @@ export const map: {
   2,
   <E, A, B>(self: Either<E, A>, f: (a: A) => B): Either<E, B> => isRight(self) ? right(f(self.right)) : left(self.left)
 )
-
-const imap = covariant.imap<EitherTypeLambda>(map)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Covariant: covariant.Covariant<EitherTypeLambda> = {
-  imap,
-  map
-}
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Invariant: invariant.Invariant<EitherTypeLambda> = {
-  imap
-}
 
 /**
  * Takes two functions and an `Either` value, if the value is a `Left` the inner value is applied to the first function,

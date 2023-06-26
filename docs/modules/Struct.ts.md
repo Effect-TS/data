@@ -1,6 +1,6 @@
 ---
 title: Struct.ts
-nav_order: 43
+nav_order: 44
 parent: Modules
 ---
 
@@ -16,9 +16,7 @@ Added in v1.0.0
 
 - [combinators](#combinators)
   - [getEquivalence](#getequivalence)
-  - [getMonoid](#getmonoid)
   - [getOrder](#getorder)
-  - [getSemigroup](#getsemigroup)
 - [utils](#utils)
   - [evolve](#evolve)
   - [omit](#omit)
@@ -61,27 +59,6 @@ assert.deepStrictEqual(PersonEquivalence({ name: 'John', age: 25 }, { name: 'Joh
 
 Added in v1.0.0
 
-## getMonoid
-
-This function creates and returns a new `Monoid` for a struct of values based on the given `Monoid`s for each property in the struct.
-The returned `Monoid` combines two structs of the same type by applying the corresponding `Monoid` passed as arguments to each property in the struct.
-
-The `empty` value of the returned `Monoid` is a struct where each property is the `empty` value of the corresponding `Monoid` in the input `monoids` object.
-
-It is useful when you need to combine two structs of the same type and you have a specific way of combining each property of the struct.
-
-See also {@link getSemigroup}.
-
-**Signature**
-
-```ts
-export declare const getMonoid: <R extends { readonly [x: string]: monoid.Monoid<any> }>(
-  fields: R
-) => monoid.Monoid<{ [K in keyof R]: [R[K]] extends [monoid.Monoid<infer A>] ? A : never }>
-```
-
-Added in v1.0.0
-
 ## getOrder
 
 This function creates and returns a new `Order` for a struct of values based on the given `Order`s
@@ -95,47 +72,6 @@ Alias of {@link order.struct}.
 export declare const getOrder: <R extends { readonly [x: string]: order.Order<any> }>(
   fields: R
 ) => order.Order<{ [K in keyof R]: [R[K]] extends [order.Order<infer A>] ? A : never }>
-```
-
-Added in v1.0.0
-
-## getSemigroup
-
-This function creates and returns a new `Semigroup` for a struct of values based on the given `Semigroup`s for each property in the struct.
-The returned `Semigroup` combines two structs of the same type by applying the corresponding `Semigroup` passed as arguments to each property in the struct.
-
-It is useful when you need to combine two structs of the same type and you have a specific way of combining each property of the struct.
-
-See also {@link getMonoid}.
-
-**Signature**
-
-```ts
-export declare const getSemigroup: <R extends { readonly [x: string]: semigroup.Semigroup<any> }>(
-  fields: R
-) => semigroup.Semigroup<{ [K in keyof R]: [R[K]] extends [semigroup.Semigroup<infer A>] ? A : never }>
-```
-
-**Example**
-
-```ts
-import { getSemigroup } from '@effect/data/Struct'
-import * as Semigroup from '@effect/data/typeclass/Semigroup'
-import * as O from '@effect/data/Option'
-
-const PersonSemigroup = getSemigroup({
-  name: Semigroup.last<string>(),
-  age: O.getOptionalMonoid(Semigroup.last<number>()),
-})
-
-assert.deepStrictEqual(PersonSemigroup.combine({ name: 'John', age: O.none() }, { name: 'John', age: O.some(25) }), {
-  name: 'John',
-  age: O.some(25),
-})
-assert.deepStrictEqual(PersonSemigroup.combine({ name: 'John', age: O.some(25) }, { name: 'John', age: O.none() }), {
-  name: 'John',
-  age: O.some(25),
-})
 ```
 
 Added in v1.0.0

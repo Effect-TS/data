@@ -2,8 +2,8 @@
  * @since 1.0.0
  */
 
+import * as equivalence from "@effect/data/Equivalence"
 import * as predicate from "@effect/data/Predicate"
-import * as equivalence from "@effect/data/typeclass/Equivalence"
 
 /**
  * Tests if a value is a `symbol`.

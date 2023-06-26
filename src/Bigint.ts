@@ -6,13 +6,11 @@
  * @since 1.0.0
  */
 
+import * as equivalence from "@effect/data/Equivalence"
 import { dual } from "@effect/data/Function"
+import * as order from "@effect/data/Order"
 import type { Ordering } from "@effect/data/Ordering"
 import * as predicate from "@effect/data/Predicate"
-import * as equivalence from "@effect/data/typeclass/Equivalence"
-import * as monoid from "@effect/data/typeclass/Monoid"
-import * as order from "@effect/data/typeclass/Order"
-import * as semigroup from "@effect/data/typeclass/Semigroup"
 
 /**
  * Tests if a value is a `bigint`.
@@ -47,7 +45,7 @@ export const isBigint: (u: unknown) => u is bigint = predicate.isBigint
 export const sum: {
   (that: bigint): (self: bigint) => bigint
   (self: bigint, that: bigint): bigint
-} = dual(2, semigroup.bigintSum.combine)
+} = dual(2, (self: bigint, that: bigint): bigint => self + that)
 
 /**
  * Provides a multiplication operation on `bigint`s.
@@ -66,7 +64,7 @@ export const sum: {
 export const multiply: {
   (that: bigint): (self: bigint) => bigint
   (self: bigint, that: bigint): bigint
-} = dual(2, semigroup.bigintMultiply.combine)
+} = dual(2, (self: bigint, that: bigint): bigint => self * that)
 
 /**
  * Provides a subtraction operation on `bigint`s.
@@ -321,85 +319,6 @@ export const max: {
 } = order.max(Order)
 
 /**
- * `bigint` semigroup under addition.
- *
- * @example
- * import { SemigroupSum } from '@effect/data/Bigint'
- *
- * assert.deepStrictEqual(SemigroupSum.combine(2n, 3n), 5n)
- *
- * @category instances
- * @since 1.0.0
- */
-export const SemigroupSum: semigroup.Semigroup<bigint> = semigroup.bigintSum
-
-/**
- * `bigint` semigroup under multiplication.
- *
- * @category instances
- * @since 1.0.0
- */
-export const SemigroupMultiply: semigroup.Semigroup<bigint> = semigroup.bigintMultiply
-
-/**
- * A `Semigroup` that uses the minimum between two values.
- *
- * @example
- * import { SemigroupMin } from '@effect/data/Bigint'
- *
- * assert.deepStrictEqual(SemigroupMin.combine(2n, 3n), 2n)
- *
- * @category instances
- * @since 1.0.0
- */
-export const SemigroupMin: semigroup.Semigroup<bigint> = semigroup.min(Order)
-
-/**
- * A `Semigroup` that uses the maximum between two values.
- *
- * @example
- * import { SemigroupMax } from '@effect/data/Bigint'
- *
- * assert.deepStrictEqual(SemigroupMax.combine(2n, 3n), 3n)
- *
- * @category instances
- * @since 1.0.0
- */
-export const SemigroupMax: semigroup.Semigroup<bigint> = semigroup.max(Order)
-
-/**
- * `bigint` monoid under addition.
- *
- * The `empty` value is `0n`.
- *
- * @example
- * import { MonoidSum } from '@effect/data/Bigint'
- *
- * assert.deepStrictEqual(MonoidSum.combine(2n, 3n), 5n)
- * assert.deepStrictEqual(MonoidSum.combine(2n, MonoidSum.empty), 2n)
- *
- * @category instances
- * @since 1.0.0
- */
-export const MonoidSum: monoid.Monoid<bigint> = monoid.bigintSum
-
-/**
- * `bigint` monoid under multiplication.
- *
- * The `empty` value is `1n`.
- *
- * @example
- * import { MonoidMultiply } from '@effect/data/Bigint'
- *
- * assert.deepStrictEqual(MonoidMultiply.combine(2n, 3n), 6n)
- * assert.deepStrictEqual(MonoidMultiply.combine(2n, MonoidMultiply.empty), 2n)
- *
- * @category instances
- * @since 1.0.0
- */
-export const MonoidMultiply: monoid.Monoid<bigint> = monoid.bigintMultiply
-
-/**
  * Determines the sign of a given `bigint`.
  *
  * @param n - The `bigint` to determine the sign of.
@@ -429,7 +348,13 @@ export const sign = (n: bigint): Ordering => Order.compare(n, 0n)
  * @category math
  * @since 1.0.0
  */
-export const sumAll: (collection: Iterable<bigint>) => bigint = MonoidSum.combineAll
+export const sumAll = (collection: Iterable<bigint>): bigint => {
+  let out = 0n
+  for (const n of collection) {
+    out += n
+  }
+  return out
+}
 
 /**
  * Takes an `Iterable` of `bigint`s and returns their multiplication as a single `number`.
@@ -444,4 +369,13 @@ export const sumAll: (collection: Iterable<bigint>) => bigint = MonoidSum.combin
  * @category math
  * @since 1.0.0
  */
-export const multiplyAll: (collection: Iterable<bigint>) => bigint = MonoidMultiply.combineAll
+export const multiplyAll = (collection: Iterable<bigint>): bigint => {
+  let out = 1n
+  for (const n of collection) {
+    if (n === 0n) {
+      return 0n
+    }
+    out *= n
+  }
+  return out
+}
