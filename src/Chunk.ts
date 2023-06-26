@@ -10,9 +10,9 @@ import type { TypeLambda } from "@effect/data/HKT"
 import type { NonEmptyIterable } from "@effect/data/NonEmpty"
 import type { Option } from "@effect/data/Option"
 import * as O from "@effect/data/Option"
+import type { Order } from "@effect/data/Order"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as RA from "@effect/data/ReadonlyArray"
-import type { Order } from "@effect/data/typeclass/Order"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/Chunk") as TypeId
 

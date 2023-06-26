@@ -6,8 +6,8 @@ import * as Dual from "@effect/data/Function"
 import { pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import * as Option from "@effect/data/Option"
+import type { Order } from "@effect/data/Order"
 import * as RBT from "@effect/data/RedBlackTree"
-import type { Order } from "@effect/data/typeclass/Order"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/SortedMap")
 

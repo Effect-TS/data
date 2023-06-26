@@ -6,39 +6,18 @@
 
 import type { Either } from "@effect/data/Either"
 import * as E from "@effect/data/Either"
+import * as equivalence from "@effect/data/Equivalence"
+import type { Equivalence } from "@effect/data/Equivalence"
 import { dual, identity } from "@effect/data/Function"
 import type { LazyArg } from "@effect/data/Function"
-import type { Kind, TypeLambda } from "@effect/data/HKT"
+import type { TypeLambda } from "@effect/data/HKT"
 import * as readonlyArray from "@effect/data/internal/ReadonlyArray"
 import type { Option } from "@effect/data/Option"
 import * as O from "@effect/data/Option"
+import * as order from "@effect/data/Order"
+import type { Order } from "@effect/data/Order"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as RR from "@effect/data/ReadonlyRecord"
-import * as string from "@effect/data/String"
-import * as applicative from "@effect/data/typeclass/Applicative"
-import * as chainable from "@effect/data/typeclass/Chainable"
-import type { Coproduct } from "@effect/data/typeclass/Coproduct"
-import * as covariant from "@effect/data/typeclass/Covariant"
-import * as equivalence from "@effect/data/typeclass/Equivalence"
-import type { Equivalence } from "@effect/data/typeclass/Equivalence"
-import type * as filterable from "@effect/data/typeclass/Filterable"
-import * as flatMap_ from "@effect/data/typeclass/FlatMap"
-import * as foldable from "@effect/data/typeclass/Foldable"
-import * as invariant from "@effect/data/typeclass/Invariant"
-import type * as monad from "@effect/data/typeclass/Monad"
-import type { Monoid } from "@effect/data/typeclass/Monoid"
-import * as monoid from "@effect/data/typeclass/Monoid"
-import * as of_ from "@effect/data/typeclass/Of"
-import * as order from "@effect/data/typeclass/Order"
-import type { Order } from "@effect/data/typeclass/Order"
-import type * as pointed from "@effect/data/typeclass/Pointed"
-import type * as product_ from "@effect/data/typeclass/Product"
-import * as semiApplicative from "@effect/data/typeclass/SemiApplicative"
-import type { Semigroup } from "@effect/data/typeclass/Semigroup"
-import * as semigroup from "@effect/data/typeclass/Semigroup"
-import * as semiProduct from "@effect/data/typeclass/SemiProduct"
-import * as traversable from "@effect/data/typeclass/Traversable"
-import * as traversableFilterable from "@effect/data/typeclass/TraversableFilterable"
 
 /**
  * @category type lambdas
@@ -892,8 +871,7 @@ export const sortBy = <B>(...orders: ReadonlyArray<Order<B>>) =>
  */
 export const sortByNonEmpty = <B>(
   ...orders: ReadonlyArray<Order<B>>
-): (<A extends B>(as: NonEmptyReadonlyArray<A>) => NonEmptyArray<A>) =>
-  sortNonEmpty(order.getMonoid<B>().combineAll(orders))
+): (<A extends B>(as: NonEmptyReadonlyArray<A>) => NonEmptyArray<A>) => sortNonEmpty(order.combineAll(orders))
 
 /**
  * Takes two `Iterable`s and returns an `Array` of corresponding pairs.
@@ -1430,10 +1408,6 @@ export const empty: <A = never>() => Array<A> = () => []
  */
 export const of = <A>(a: A): NonEmptyArray<A> => [a]
 
-const Of: of_.Of<ReadonlyArrayTypeLambda> = {
-  of
-}
-
 /**
  * @category mapping
  * @since 1.0.0
@@ -1451,57 +1425,6 @@ export const mapNonEmpty: {
   <A, B>(f: (a: A, i: number) => B): (self: readonly [A, ...Array<A>]) => [B, ...Array<B>]
   <A, B>(self: readonly [A, ...Array<A>], f: (a: A, i: number) => B): [B, ...Array<B>]
 } = map as any
-
-const imap = covariant.imap<ReadonlyArrayTypeLambda>(map)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Covariant: covariant.Covariant<ReadonlyArrayTypeLambda> = {
-  imap,
-  map
-}
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Invariant: invariant.Invariant<ReadonlyArrayTypeLambda> = {
-  imap
-}
-
-/**
- * @category mapping
- * @since 1.0.0
- */
-export const tupled: <A>(self: ReadonlyArray<A>) => Array<[A]> = invariant
-  .tupled(Invariant) as any
-
-/**
- * @category mapping
- * @since 1.0.0
- */
-export const tuple: <Args extends Array<any>>(...args: Args) => Args = (...args) => args
-
-/**
- * @category mapping
- * @since 1.0.0
- */
-export const flap: {
-  <A, B>(a: A, self: ReadonlyArray<(a: A) => B>): Array<B>
-  <A, B>(self: ReadonlyArray<(a: A) => B>): (a: A) => Array<B>
-} = covariant.flap(Covariant) as any
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Pointed: pointed.Pointed<ReadonlyArrayTypeLambda> = {
-  of,
-  imap,
-  map
-}
 
 /**
  * @category combining
@@ -1539,19 +1462,10 @@ export const flatMapNonEmpty: {
 } = flatMap as any
 
 /**
- * @category instances
- * @since 1.0.0
- */
-export const FlatMap: flatMap_.FlatMap<ReadonlyArrayTypeLambda> = {
-  flatMap
-}
-
-/**
  * @category combining
  * @since 1.0.0
  */
-export const flatten: <A>(self: ReadonlyArray<ReadonlyArray<A>>) => Array<A> = flatMap_
-  .flatten(FlatMap) as any
+export const flatten: <A>(self: ReadonlyArray<ReadonlyArray<A>>) => Array<A> = flatMap(identity)
 
 /**
  * @category combining
@@ -1560,29 +1474,6 @@ export const flatten: <A>(self: ReadonlyArray<ReadonlyArray<A>>) => Array<A> = f
 export const flattenNonEmpty: <A>(
   self: NonEmptyReadonlyArray<NonEmptyReadonlyArray<A>>
 ) => NonEmptyArray<A> = flatMapNonEmpty(identity)
-
-/**
- * @since 1.0.0
- */
-export const composeK: {
-  <A, B, C>(
-    afb: (a: A) => ReadonlyArray<B>,
-    bfc: (b: B) => ReadonlyArray<C>
-  ): (a: A) => ReadonlyArray<C>
-  <B, C>(
-    bfc: (b: B) => ReadonlyArray<C>
-  ): <A>(afb: (a: A) => ReadonlyArray<B>) => (a: A) => ReadonlyArray<C>
-} = flatMap_.composeK(FlatMap)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Chainable: chainable.Chainable<ReadonlyArrayTypeLambda> = {
-  imap,
-  map,
-  flatMap
-}
 
 /**
  * @category filtering
@@ -1630,15 +1521,6 @@ export const partitionMap: {
     return [left, right]
   }
 )
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Filterable: filterable.Filterable<ReadonlyArrayTypeLambda> = {
-  partitionMap,
-  filterMap
-}
 
 /**
  * @category filtering
@@ -1722,196 +1604,6 @@ export const separate: <E, A>(self: Iterable<Either<E, A>>) => [Array<E>, Array<
 )
 
 /**
- * @category traversing
- * @since 1.0.0
- */
-export const traverseNonEmpty = <F extends TypeLambda>(
-  F: semiApplicative.SemiApplicative<F>
-): {
-  <A, R, O, E, B>(
-    f: (a: A, i: number) => Kind<F, R, O, E, B>
-  ): (self: NonEmptyReadonlyArray<A>) => Kind<F, R, O, E, NonEmptyArray<B>>
-  <A, R, O, E, B>(
-    self: NonEmptyReadonlyArray<A>,
-    f: (a: A, i: number) => Kind<F, R, O, E, B>
-  ): Kind<F, R, O, E, NonEmptyArray<B>>
-} =>
-  dual(2, <A, R, O, E, B>(
-    self: NonEmptyReadonlyArray<A>,
-    f: (a: A, i: number) => Kind<F, R, O, E, B>
-  ): Kind<F, R, O, E, NonEmptyArray<B>> => {
-    const [head, ...tail] = mapNonEmpty(self, f)
-    return F.productMany(head, tail)
-  })
-
-/**
- * @category traversing
- * @since 1.0.0
- */
-export const traverse = <F extends TypeLambda>(F: applicative.Applicative<F>): {
-  <A, R, O, E, B>(
-    f: (a: A, i: number) => Kind<F, R, O, E, B>
-  ): (self: Iterable<A>) => Kind<F, R, O, E, Array<B>>
-  <A, R, O, E, B>(
-    self: Iterable<A>,
-    f: (a: A, i: number) => Kind<F, R, O, E, B>
-  ): Kind<F, R, O, E, Array<B>>
-} =>
-  dual(2, <A, R, O, E, B>(
-    self: Iterable<A>,
-    f: (a: A, i: number) => Kind<F, R, O, E, B>
-  ): Kind<F, R, O, E, Array<B>> => F.productAll(fromIterable(self).map(f)))
-
-/**
- * @category traversing
- * @since 1.0.0
- */
-export const sequence = <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-): <R, O, E, A>(
-  self: ReadonlyArray<Kind<F, R, O, E, A>>
-) => Kind<F, R, O, E, Array<A>> => traverse(F)(identity)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Traversable: traversable.Traversable<ReadonlyArrayTypeLambda> = {
-  traverse: traverse as any
-}
-
-/**
- * @category traversing
- * @since 1.0.0
- */
-export const traverseTap: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => {
-  <A, R, O, E, B>(
-    self: ReadonlyArray<A>,
-    f: (a: A) => Kind<F, R, O, E, B>
-  ): Kind<F, R, O, E, Array<A>>
-  <A, R, O, E, B>(
-    f: (a: A) => Kind<F, R, O, E, B>
-  ): (self: ReadonlyArray<A>) => Kind<F, R, O, E, Array<A>>
-} = traversable.traverseTap(Traversable) as any
-
-/**
- * @category traversing
- * @since 1.0.0
- */
-export const sequenceNonEmpty = <F extends TypeLambda>(
-  F: semiApplicative.SemiApplicative<F>
-): (<R, O, E, A>(
-  self: NonEmptyReadonlyArray<Kind<F, R, O, E, A>>
-) => Kind<F, R, O, E, NonEmptyArray<A>>) => traverseNonEmpty(F)(identity)
-
-const product = <A, B>(self: ReadonlyArray<A>, that: ReadonlyArray<B>): ReadonlyArray<[A, B]> => {
-  if (isEmptyReadonlyArray(self) || isEmptyReadonlyArray(that)) {
-    return empty()
-  }
-  const out: Array<[A, B]> = []
-  for (let i = 0; i < self.length; i++) {
-    for (let j = 0; j < that.length; j++) {
-      out.push([self[i], that[j]])
-    }
-  }
-  return out
-}
-
-const productMany = semiProduct.productMany<ReadonlyArrayTypeLambda>(map, product)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const SemiProduct: semiProduct.SemiProduct<ReadonlyArrayTypeLambda> = {
-  imap,
-  product,
-  productMany
-}
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const SemiApplicative: semiApplicative.SemiApplicative<ReadonlyArrayTypeLambda> = {
-  imap,
-  map,
-  product,
-  productMany
-}
-
-/**
- * @since 1.0.0
- */
-export const ap: {
-  <A, B>(self: ReadonlyArray<(a: A) => B>, that: ReadonlyArray<A>): Array<B>
-  <A>(that: ReadonlyArray<A>): <B>(self: ReadonlyArray<(a: A) => B>) => Array<B>
-} = semiApplicative.ap(SemiApplicative) as any
-
-/**
- * Lifts a binary function into `ReadonlyArray`.
- *
- * @param f - The function to lift.
- *
- * @category lifting
- * @since 1.0.0
- */
-export const lift2: <A, B, C>(f: (a: A, b: B) => C) => {
-  (self: ReadonlyArray<A>, that: ReadonlyArray<B>): Array<C>
-  (that: ReadonlyArray<B>): (self: ReadonlyArray<A>) => Array<C>
-} = semiApplicative.lift2(SemiApplicative) as any
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Product: product_.Product<ReadonlyArrayTypeLambda> = {
-  of,
-  imap,
-  product,
-  productMany,
-  productAll: (collection) => {
-    const arrays = fromIterable(collection)
-    return isEmptyReadonlyArray(arrays) ? empty() : SemiProduct.productMany(arrays[0], arrays.slice(1))
-  }
-}
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Applicative: applicative.Applicative<ReadonlyArrayTypeLambda> = {
-  imap,
-  of,
-  map,
-  product,
-  productMany,
-  productAll: Product.productAll
-}
-
-/**
- * @category lifting
- * @since 1.0.0
- */
-export const liftMonoid: <A>(M: Monoid<A>) => Monoid<ReadonlyArray<A>> = applicative
-  .getMonoid(
-    Applicative
-  )
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Monad: monad.Monad<ReadonlyArrayTypeLambda> = {
-  imap,
-  of,
-  map,
-  flatMap
-}
-
-/**
  * @category folding
  * @since 1.0.0
  */
@@ -1936,163 +1628,6 @@ export const reduceRight: {
   <A, B>(self: Iterable<A>, b: B, f: (b: B, a: A, i: number) => B): B =>
     fromIterable(self).reduceRight((b, a, i) => f(b, a, i), b)
 )
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Foldable: foldable.Foldable<ReadonlyArrayTypeLambda> = {
-  reduce
-}
-
-/**
- * @category folding
- * @since 1.0.0
- */
-export const combineMap = <M>(Monoid: Monoid<M>): {
-  <A>(f: (a: A, i: number) => M): (self: Iterable<A>) => M
-  <A>(self: Iterable<A>, f: (a: A, i: number) => M): M
-} =>
-  dual(
-    2,
-    <A>(self: Iterable<A>, f: (a: A, i: number) => M): M =>
-      fromIterable(self).reduce((m, a, i) => Monoid.combine(m, f(a, i)), Monoid.empty)
-  )
-
-/**
- * @category folding
- * @since 1.0.0
- */
-export const combineMapNonEmpty = <S>(S: Semigroup<S>): {
-  <A>(f: (a: A, i: number) => S): (self: NonEmptyReadonlyArray<A>) => S
-  <A>(self: NonEmptyReadonlyArray<A>, f: (a: A, i: number) => S): S
-} =>
-  dual(
-    2,
-    <A>(self: NonEmptyReadonlyArray<A>, f: (a: A, i: number) => S): S =>
-      tailNonEmpty(self).reduce((s, a, i) => S.combine(s, f(a, i + 1)), f(headNonEmpty(self), 0))
-  )
-
-/**
- * @category folding
- * @since 1.0.0
- */
-export const reduceKind: <G extends TypeLambda>(
-  G: monad.Monad<G>
-) => {
-  <B, A, R, O, E>(
-    b: B,
-    f: (b: B, a: A) => Kind<G, R, O, E, B>
-  ): (self: ReadonlyArray<A>) => Kind<G, R, O, E, B>
-  <A, B, R, O, E>(
-    self: ReadonlyArray<A>,
-    b: B,
-    f: (b: B, a: A) => Kind<G, R, O, E, B>
-  ): Kind<G, R, O, E, B>
-} = foldable.reduceKind(Foldable)
-
-/**
- * @category folding
- * @since 1.0.0
- */
-export const coproductMapKind: <G extends TypeLambda>(
-  G: Coproduct<G>
-) => {
-  <A, R, O, E, B>(
-    f: (a: A) => Kind<G, R, O, E, B>
-  ): (self: ReadonlyArray<A>) => Kind<G, R, O, E, B>
-  <A, R, O, E, B>(
-    self: ReadonlyArray<A>,
-    f: (a: A) => Kind<G, R, O, E, B>
-  ): Kind<G, R, O, E, B>
-} = foldable.coproductMapKind(Foldable)
-
-/**
- * @category filtering
- * @since 1.0.0
- */
-export const traversePartitionMap = <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-): {
-  <A, R, O, E, B, C>(
-    f: (a: A) => Kind<F, R, O, E, Either<B, C>>
-  ): (self: ReadonlyArray<A>) => Kind<F, R, O, E, [Array<B>, Array<C>]>
-  <A, R, O, E, B, C>(
-    self: ReadonlyArray<A>,
-    f: (a: A) => Kind<F, R, O, E, Either<B, C>>
-  ): Kind<F, R, O, E, [Array<B>, Array<C>]>
-} =>
-  dual(2, <A, R, O, E, B, C>(
-    self: ReadonlyArray<A>,
-    f: (a: A) => Kind<F, R, O, E, Either<B, C>>
-  ): Kind<F, R, O, E, [Array<B>, Array<C>]> => {
-    return F.map(traverse(F)(self, f), separate)
-  })
-
-/**
- * @category filtering
- * @since 1.0.0
- */
-export const traverseFilterMap = <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-): {
-  <A, R, O, E, B>(
-    f: (a: A) => Kind<F, R, O, E, Option<B>>
-  ): (self: ReadonlyArray<A>) => Kind<F, R, O, E, Array<B>>
-  <A, R, O, E, B>(
-    self: ReadonlyArray<A>,
-    f: (a: A) => Kind<F, R, O, E, Option<B>>
-  ): Kind<F, R, O, E, Array<B>>
-} =>
-  dual(2, <A, R, O, E, B>(
-    self: ReadonlyArray<A>,
-    f: (a: A) => Kind<F, R, O, E, Option<B>>
-  ): Kind<F, R, O, E, Array<B>> => {
-    return F.map(traverse(F)(self, f), compact)
-  })
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const TraversableFilterable: traversableFilterable.TraversableFilterable<
-  ReadonlyArrayTypeLambda
-> = {
-  traversePartitionMap: traversePartitionMap as any,
-  traverseFilterMap: traverseFilterMap as any
-}
-
-/**
- * Filter values inside a context.
- *
- * @since 1.0.0
- */
-export const traverseFilter: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => {
-  <B extends A, R, O, E, A = B>(
-    predicate: (a: A) => Kind<F, R, O, E, boolean>
-  ): (self: ReadonlyArray<B>) => Kind<F, R, O, E, Array<B>>
-  <B extends A, R, O, E, A = B>(
-    self: ReadonlyArray<B>,
-    predicate: (a: A) => Kind<F, R, O, E, boolean>
-  ): Kind<F, R, O, E, Array<B>>
-} = traversableFilterable.traverseFilter(TraversableFilterable) as any
-
-/**
- * @since 1.0.0
- */
-export const traversePartition: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => {
-  <B extends A, R, O, E, A = B>(
-    predicate: (a: A) => Kind<F, R, O, E, boolean>
-  ): (self: ReadonlyArray<B>) => Kind<F, R, O, E, [Array<B>, Array<B>]>
-  <B extends A, R, O, E, A = B>(
-    self: ReadonlyArray<B>,
-    predicate: (a: A) => Kind<F, R, O, E, boolean>
-  ): Kind<F, R, O, E, [Array<B>, Array<B>]>
-} = traversableFilterable.traversePartition(TraversableFilterable) as any
 
 /**
  * @category lifting
@@ -2174,49 +1709,6 @@ export const some = <A>(predicate: Predicate<A>) =>
   (self: ReadonlyArray<A>): self is NonEmptyReadonlyArray<A> => self.some(predicate)
 
 /**
- * Fold an `Iterable`, accumulating values in some `Monoid`, combining adjacent elements
- * using the specified separator.
- *
- * @since 1.0.0
- */
-export const intercalate = <A>(M: Monoid<A>): {
-  (middle: A): (self: Iterable<A>) => A
-  (self: Iterable<A>, middle: A): A
-} =>
-  dual(
-    2,
-    (self: Iterable<A>, middle: A): A => {
-      const as = fromIterable(self)
-      return isNonEmptyReadonlyArray(as) ? intercalateNonEmpty(M)(as, middle) : M.empty
-    }
-  )
-
-/**
- * Places an element in between members of a `NonEmptyReadonlyArray`, then folds the results using the provided `Semigroup`.
- *
- * @since 1.0.0
- */
-export const intercalateNonEmpty = <A>(
-  S: Semigroup<A>
-): {
-  (middle: A): (self: NonEmptyReadonlyArray<A>) => A
-  (self: NonEmptyReadonlyArray<A>, middle: A): A
-} =>
-  dual(
-    2,
-    (self: NonEmptyReadonlyArray<A>, middle: A): A =>
-      semigroup.intercalate(S, middle).combineMany(headNonEmpty(self), tailNonEmpty(self))
-  )
-
-/**
- * @since 1.0.0
- */
-export const join: {
-  (middle: string): (self: ReadonlyArray<string>) => string
-  (self: ReadonlyArray<string>, middle: string): string
-} = intercalate(string.Monoid)
-
-/**
  * @since 1.0.0
  */
 export const extend: {
@@ -2233,10 +1725,7 @@ export const extend: {
 export const min: {
   <A>(O: Order<A>): (self: NonEmptyReadonlyArray<A>) => A
   <A>(self: NonEmptyReadonlyArray<A>, O: Order<A>): A
-} = dual(2, <A>(self: NonEmptyReadonlyArray<A>, O: Order<A>): A => {
-  const S = semigroup.min(O)
-  return self.reduce(S.combine)
-})
+} = dual(2, <A>(self: NonEmptyReadonlyArray<A>, O: Order<A>): A => self.reduce(order.min(O)))
 
 /**
  * @since 1.0.0
@@ -2244,10 +1733,7 @@ export const min: {
 export const max: {
   <A>(O: Order<A>): (self: NonEmptyReadonlyArray<A>) => A
   <A>(self: NonEmptyReadonlyArray<A>, O: Order<A>): A
-} = dual(2, <A>(self: NonEmptyReadonlyArray<A>, O: Order<A>): A => {
-  const S = semigroup.max(O)
-  return self.reduce(S.combine)
-})
+} = dual(2, <A>(self: NonEmptyReadonlyArray<A>, O: Order<A>): A => self.reduce(order.max(O)))
 
 /**
  * @category constructors
@@ -2266,54 +1752,6 @@ export const unfold = <B, A>(b: B, f: (b: B) => Option<readonly [A, B]>): Array<
 }
 
 /**
- * @category instances
- * @since 1.0.0
- */
-export const getUnionSemigroup = <A>(
-  isEquivalent: (self: A, that: A) => boolean
-): Semigroup<ReadonlyArray<A>> => semigroup.make(union(isEquivalent)) as any
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const getUnionMonoid = <A>(
-  isEquivalent: (self: A, that: A) => boolean
-): Monoid<ReadonlyArray<A>> => {
-  const S = getUnionSemigroup<A>(isEquivalent)
-  return ({
-    combine: S.combine,
-    combineMany: S.combineMany,
-    combineAll: (collection) => S.combineMany([], collection),
-    empty: []
-  })
-}
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const getIntersectionSemigroup = <A>(
-  isEquivalent: (self: A, that: A) => boolean
-): Semigroup<ReadonlyArray<A>> => semigroup.make(intersection(isEquivalent)) as any
-
-/**
- * Returns a `Semigroup` for `ReadonlyArray<A>`.
- *
- * @category instances
- * @since 1.0.0
- */
-export const getSemigroup: <A>() => Semigroup<ReadonlyArray<A>> = semigroup.array
-
-/**
- * Returns a `Monoid` for `ReadonlyArray<A>`.
- *
- * @category instances
- * @since 1.0.0
- */
-export const getMonoid: <A>() => Monoid<ReadonlyArray<A>> = monoid.array
-
-/**
  * This function creates and returns a new `Order` for an array of values based on a given `Order` for the elements of the array.
  * The returned `Order` compares two arrays by applying the given `Order` to each element in the arrays.
  * If all elements are equal, the arrays are then compared based on their length.
@@ -2329,92 +1767,3 @@ export const getOrder: <A>(O: Order<A>) => Order<ReadonlyArray<A>> = order.array
  * @since 1.0.0
  */
 export const getEquivalence: <A>(O: Equivalence<A>) => Equivalence<ReadonlyArray<A>> = equivalence.array
-
-// -------------------------------------------------------------------------------------
-// do notation
-// -------------------------------------------------------------------------------------
-
-/**
- * @category do notation
- * @since 1.0.0
- */
-export const bindTo: {
-  <N extends string>(name: N): <A>(self: ReadonlyArray<A>) => Array<{ [K in N]: A }>
-  <A, N extends string>(self: ReadonlyArray<A>, name: N): Array<{ [K in N]: A }>
-} = invariant.bindTo(Invariant) as any
-
-const let_: {
-  <N extends string, A extends object, B>(
-    name: Exclude<N, keyof A>,
-    f: (a: A) => B
-  ): (self: ReadonlyArray<A>) => Array<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-  <A extends object, N extends string, B>(
-    self: ReadonlyArray<A>,
-    name: Exclude<N, keyof A>,
-    f: (a: A) => B
-  ): Array<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = covariant.let(Covariant) as any
-
-export {
-  /**
-   * @category do notation
-   * @since 1.0.0
-   */
-  let_ as let
-}
-
-/**
- * @category do notation
- * @since 1.0.0
- */
-export const letDiscard: {
-  <N extends string, A extends object, B>(
-    name: Exclude<N, keyof A>,
-    b: B
-  ): (self: ReadonlyArray<A>) => Array<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-  <A extends object, N extends string, B>(
-    self: ReadonlyArray<A>,
-    name: Exclude<N, keyof A>,
-    b: B
-  ): Array<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = covariant.letDiscard(Covariant) as any
-
-/**
- * @category do notation
- * @since 1.0.0
- */
-export const Do: () => ReadonlyArray<{}> = of_.Do(Of)
-
-/**
- * @category do notation
- * @since 1.0.0
- */
-export const bind: {
-  <N extends string, A extends object, B>(
-    name: Exclude<N, keyof A>,
-    f: (a: A) => ReadonlyArray<B>
-  ): (self: ReadonlyArray<A>) => Array<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-  <A extends object, N extends string, B>(
-    self: ReadonlyArray<A>,
-    name: Exclude<N, keyof A>,
-    f: (a: A) => ReadonlyArray<B>
-  ): Array<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = chainable.bind(Chainable) as any
-
-/**
- * A variant of `bind` that sequentially ignores the scope.
- *
- * @category do notation
- * @since 1.0.0
- */
-export const bindDiscard: {
-  <N extends string, A extends object, B>(
-    name: Exclude<N, keyof A>,
-    that: ReadonlyArray<B>
-  ): (self: ReadonlyArray<A>) => Array<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-  <A extends object, N extends string, B>(
-    self: ReadonlyArray<A>,
-    name: Exclude<N, keyof A>,
-    that: ReadonlyArray<B>
-  ): Array<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = semiProduct.bindDiscard(SemiProduct) as any

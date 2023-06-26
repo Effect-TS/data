@@ -1,6 +1,6 @@
 ---
 title: Ordering.ts
-nav_order: 34
+nav_order: 35
 parent: Modules
 ---
 
@@ -12,65 +12,17 @@ Added in v1.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [instances](#instances)
-  - [Monoid](#monoid)
-  - [Semigroup](#semigroup)
 - [model](#model)
   - [Ordering (type alias)](#ordering-type-alias)
 - [pattern matching](#pattern-matching)
   - [match](#match)
 - [utils](#utils)
+  - [combine](#combine)
+  - [combineAll](#combineall)
+  - [combineMany](#combinemany)
   - [reverse](#reverse)
 
 ---
-
-# instances
-
-## Monoid
-
-`Monoid` instance for `Ordering`, returns the left-most non-zero `Ordering`.
-
-The `empty` value is `0`.
-
-**Signature**
-
-```ts
-export declare const Monoid: monoid.Monoid<Ordering>
-```
-
-**Example**
-
-```ts
-import { Monoid } from '@effect/data/Ordering'
-
-assert.deepStrictEqual(Monoid.combine(Monoid.empty, -1), -1)
-assert.deepStrictEqual(Monoid.combine(Monoid.empty, 1), 1)
-assert.deepStrictEqual(Monoid.combine(1, -1), 1)
-```
-
-Added in v1.0.0
-
-## Semigroup
-
-`Semigroup` instance for `Ordering`, returns the left-most non-zero `Ordering`.
-
-**Signature**
-
-```ts
-export declare const Semigroup: semigroup.Semigroup<Ordering>
-```
-
-**Example**
-
-```ts
-import { Semigroup } from '@effect/data/Ordering'
-
-assert.deepStrictEqual(Semigroup.combine(0, -1), -1)
-assert.deepStrictEqual(Semigroup.combine(0, 1), 1)
-assert.deepStrictEqual(Semigroup.combine(1, -1), 1)
-```
-
-Added in v1.0.0
 
 # model
 
@@ -115,6 +67,42 @@ assert.deepStrictEqual(toMessage(1), 'greater than')
 Added in v1.0.0
 
 # utils
+
+## combine
+
+**Signature**
+
+```ts
+export declare const combine: {
+  (that: Ordering): (self: Ordering) => Ordering
+  (self: Ordering, that: Ordering): Ordering
+}
+```
+
+Added in v1.0.0
+
+## combineAll
+
+**Signature**
+
+```ts
+export declare const combineAll: (collection: Iterable<Ordering>) => Ordering
+```
+
+Added in v1.0.0
+
+## combineMany
+
+**Signature**
+
+```ts
+export declare const combineMany: {
+  (collection: Iterable<Ordering>): (self: Ordering) => Ordering
+  (self: Ordering, collection: Iterable<Ordering>): Ordering
+}
+```
+
+Added in v1.0.0
 
 ## reverse
 

@@ -1,7 +1,6 @@
 import { pipe } from '@effect/data/Function'
 import * as RA from '@effect/data/ReadonlyArray'
 import * as O from '@effect/data/Option'
-import * as Brand from '@effect/data/Brand'
 
 declare const neras: RA.NonEmptyReadonlyArray<number>
 declare const neas: RA.NonEmptyArray<number>

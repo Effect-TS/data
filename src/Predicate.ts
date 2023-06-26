@@ -1,16 +1,8 @@
 /**
  * @since 1.0.0
  */
-import { constFalse, constTrue, dual, isFunction as isFunction_ } from "@effect/data/Function"
+import { dual, isFunction as isFunction_ } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
-import * as contravariant from "@effect/data/typeclass/Contravariant"
-import * as invariant from "@effect/data/typeclass/Invariant"
-import * as monoid from "@effect/data/typeclass/Monoid"
-import * as of_ from "@effect/data/typeclass/Of"
-import * as product_ from "@effect/data/typeclass/Product"
-import * as semigroup from "@effect/data/typeclass/Semigroup"
-import type { Semigroup } from "@effect/data/typeclass/Semigroup"
-import * as semiProduct from "@effect/data/typeclass/SemiProduct"
 
 /**
  * @category models
@@ -441,42 +433,16 @@ export const compose: {
     (a): a is C => ab(a) && bc(a)
 )
 
-const imap = contravariant.imap<PredicateTypeLambda>(contramap)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Contravariant: contravariant.Contravariant<PredicateTypeLambda> = {
-  imap,
-  contramap
-}
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Invariant: invariant.Invariant<PredicateTypeLambda> = {
-  imap
-}
-
 /**
  * @since 1.0.0
  */
-export const tupled: <A>(self: Predicate<A>) => Predicate<readonly [A]> = invariant.tupled(
-  Invariant
-) as any
-
-const of = <A>(_: A): Predicate<A> => isUnknown
-
-const Of: of_.Of<PredicateTypeLambda> = {
-  of
-}
-
-const product = <A, B>(self: Predicate<A>, that: Predicate<B>): Predicate<readonly [A, B]> =>
+export const product = <A, B>(self: Predicate<A>, that: Predicate<B>): Predicate<readonly [A, B]> =>
   ([a, b]) => self(a) && that(b)
 
-const productAll = <A>(
+/**
+ * @since 1.0.0
+ */
+export const all = <A>(
   collection: Iterable<Predicate<A>>
 ): Predicate<ReadonlyArray<A>> => {
   return (as) => {
@@ -494,54 +460,16 @@ const productAll = <A>(
   }
 }
 
-const productMany = <A>(
+/**
+ * @since 1.0.0
+ */
+export const productMany = <A>(
   self: Predicate<A>,
   collection: Iterable<Predicate<A>>
 ): Predicate<readonly [A, ...Array<A>]> => {
-  const rest = productAll(collection)
+  const rest = all(collection)
   return ([head, ...tail]) => self(head) === false ? false : rest(tail)
 }
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const SemiProduct: semiProduct.SemiProduct<PredicateTypeLambda> = {
-  imap,
-  product,
-  productMany
-}
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const Product: product_.Product<PredicateTypeLambda> = {
-  of,
-  imap,
-  product,
-  productMany,
-  productAll
-}
-
-/**
- * This function appends a predicate to a tuple-like predicate, allowing you to create a new predicate that includes
- * the original elements and the new one.
- *
- * @param self - The tuple-like predicate to append to.
- * @param that - The predicate to append.
- *
- * @since 1.0.0
- */
-export const appendElement: {
-  <A extends ReadonlyArray<any>, B>(
-    self: Predicate<A>,
-    that: Predicate<B>
-  ): Predicate<readonly [...A, B]>
-  <B>(
-    that: Predicate<B>
-  ): <A extends ReadonlyArray<any>>(self: Predicate<A>) => Predicate<readonly [...A, B]>
-} = semiProduct.appendElement(SemiProduct) as any
 
 /**
  * Similar to `Promise.all` but operates on `Predicate`s.
@@ -552,16 +480,17 @@ export const appendElement: {
  *
  * @since 1.0.0
  */
-export const tuple: <T extends ReadonlyArray<Predicate<any>>>(
-  ...predicates: T
-) => Predicate<Readonly<{ [I in keyof T]: [T[I]] extends [Predicate<infer A>] ? A : never }>> = product_.tuple(Product)
+export const tuple = <T extends ReadonlyArray<Predicate<any>>>(
+  ...elements: T
+): Predicate<Readonly<{ [I in keyof T]: [T[I]] extends [Predicate<infer A>] ? A : never }>> => all(elements) as any
 
 /**
  * @since 1.0.0
  */
-export const struct: <R extends Record<string, Predicate<any>>>(
-  predicates: R
-) => Predicate<{ readonly [K in keyof R]: [R[K]] extends [Predicate<infer A>] ? A : never }> = product_.struct(Product)
+export const struct = <R extends Record<string, Predicate<any>>>(
+  fields: R
+): Predicate<{ readonly [K in keyof R]: [R[K]] extends [Predicate<infer A>] ? A : never }> =>
+  all(Object.keys(fields).map((k) => fields[k])) as any
 
 /**
  * Negates the result of a given predicate.
@@ -690,130 +619,27 @@ export const nand: {
 )
 
 /**
- * @category instances
  * @since 1.0.0
  */
-export const getSemigroupEqv = <A>(): Semigroup<Predicate<A>> => semigroup.make<Predicate<A>>(eqv)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const getMonoidEqv = <A>(): monoid.Monoid<Predicate<A>> => monoid.fromSemigroup(getSemigroupEqv<A>(), constTrue)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const getSemigroupXor = <A>(): Semigroup<Predicate<A>> => semigroup.make<Predicate<A>>(xor)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const getMonoidXor = <A>(): monoid.Monoid<Predicate<A>> => monoid.fromSemigroup(getSemigroupXor<A>(), constFalse)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const getSemigroupSome = <A>(): Semigroup<Predicate<A>> =>
-  semigroup.make<Predicate<A>>(
-    or,
-    (self, collection) =>
-      (a) => {
-        if (self(a)) {
-          return true
-        }
-        for (const p of collection) {
-          if (p(a)) {
-            return true
-          }
-        }
+export const every = <A>(collection: Iterable<Predicate<A>>): Predicate<A> =>
+  (a: A) => {
+    for (const p of collection) {
+      if (!p(a)) {
         return false
       }
-  )
+    }
+    return true
+  }
 
 /**
- * @category instances
  * @since 1.0.0
  */
-export const getMonoidSome = <A>(): monoid.Monoid<Predicate<A>> =>
-  monoid.fromSemigroup(getSemigroupSome<A>(), constFalse)
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const getSemigroupEvery = <A>(): Semigroup<Predicate<A>> =>
-  semigroup.make<Predicate<A>>(
-    and,
-    (self, collection) =>
-      (a) => {
-        if (!self(a)) {
-          return false
-        }
-        for (const p of collection) {
-          if (!p(a)) {
-            return false
-          }
-        }
+export const some = <A>(collection: Iterable<Predicate<A>>): Predicate<A> =>
+  (a) => {
+    for (const p of collection) {
+      if (p(a)) {
         return true
       }
-  )
-
-/**
- * @category instances
- * @since 1.0.0
- */
-export const getMonoidEvery = <A>(): monoid.Monoid<Predicate<A>> =>
-  monoid.fromSemigroup(getSemigroupEvery<A>(), constTrue)
-
-/**
- * @since 1.0.0
- */
-export const every = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => getMonoidEvery<A>().combineAll(collection)
-
-/**
- * @since 1.0.0
- */
-export const some = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => getMonoidSome<A>().combineAll(collection)
-
-// -------------------------------------------------------------------------------------
-// do notation
-// -------------------------------------------------------------------------------------
-
-/**
- * @category do notation
- * @since 1.0.0
- */
-export const bindTo: {
-  <N extends string>(name: N): <A>(self: Predicate<A>) => Predicate<{ readonly [K in N]: A }>
-  <A, N extends string>(self: Predicate<A>, name: N): Predicate<{ readonly [K in N]: A }>
-} = invariant.bindTo(Invariant)
-
-/**
- * @category do notation
- * @since 1.0.0
- */
-export const Do: () => Predicate<{}> = of_.Do(Of)
-
-/**
- * A variant of `bind` that sequentially ignores the scope.
- *
- * @category do notation
- * @since 1.0.0
- */
-export const bindDiscard: {
-  <N extends string, A extends object, B>(
-    name: Exclude<N, keyof A>,
-    that: Predicate<B>
-  ): (
-    self: Predicate<A>
-  ) => Predicate<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-  <A extends object, N extends string, B>(
-    self: Predicate<A>,
-    name: Exclude<N, keyof A>,
-    that: Predicate<B>
-  ): Predicate<{ readonly [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-} = semiProduct.bindDiscard(SemiProduct)
+    }
+    return false
+  }

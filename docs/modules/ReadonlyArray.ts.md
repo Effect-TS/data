@@ -1,6 +1,6 @@
 ---
 title: ReadonlyArray.ts
-nav_order: 37
+nav_order: 38
 parent: Modules
 ---
 
@@ -33,13 +33,6 @@ Added in v1.0.0
   - [fromNullable](#fromnullable)
   - [fromOption](#fromoption)
   - [fromRecord](#fromrecord)
-- [do notation](#do-notation)
-  - [Do](#do)
-  - [bind](#bind)
-  - [bindDiscard](#binddiscard)
-  - [bindTo](#bindto)
-  - [let](#let)
-  - [letDiscard](#letdiscard)
 - [filtering](#filtering)
   - [compact](#compact)
   - [filter](#filter)
@@ -48,14 +41,8 @@ Added in v1.0.0
   - [partitionMap](#partitionmap)
   - [separate](#separate)
   - [span](#span)
-  - [traverseFilterMap](#traversefiltermap)
-  - [traversePartitionMap](#traversepartitionmap)
 - [folding](#folding)
-  - [combineMap](#combinemap)
-  - [combineMapNonEmpty](#combinemapnonempty)
-  - [coproductMapKind](#coproductmapkind)
   - [reduce](#reduce)
-  - [reduceKind](#reducekind)
   - [reduceRight](#reduceright)
   - [scan](#scan)
   - [scanRight](#scanright)
@@ -95,40 +82,16 @@ Added in v1.0.0
   - [isNonEmptyArray](#isnonemptyarray)
   - [isNonEmptyReadonlyArray](#isnonemptyreadonlyarray)
 - [instances](#instances)
-  - [Applicative](#applicative)
-  - [Chainable](#chainable)
-  - [Covariant](#covariant)
-  - [Filterable](#filterable)
-  - [FlatMap](#flatmap)
-  - [Foldable](#foldable)
-  - [Invariant](#invariant)
-  - [Monad](#monad)
-  - [Pointed](#pointed)
-  - [Product](#product)
-  - [SemiApplicative](#semiapplicative)
-  - [SemiProduct](#semiproduct)
-  - [Traversable](#traversable)
-  - [TraversableFilterable](#traversablefilterable)
   - [getEquivalence](#getequivalence)
-  - [getIntersectionSemigroup](#getintersectionsemigroup)
-  - [getMonoid](#getmonoid)
   - [getOrder](#getorder)
-  - [getSemigroup](#getsemigroup)
-  - [getUnionMonoid](#getunionmonoid)
-  - [getUnionSemigroup](#getunionsemigroup)
 - [lifting](#lifting)
-  - [lift2](#lift2)
   - [liftEither](#lifteither)
-  - [liftMonoid](#liftmonoid)
   - [liftNullable](#liftnullable)
   - [liftOption](#liftoption)
   - [liftPredicate](#liftpredicate)
 - [mapping](#mapping)
-  - [flap](#flap)
   - [map](#map)
   - [mapNonEmpty](#mapnonempty)
-  - [tuple](#tuple)
-  - [tupled](#tupled)
 - [models](#models)
   - [NonEmptyArray (type alias)](#nonemptyarray-type-alias)
   - [NonEmptyReadonlyArray (type alias)](#nonemptyreadonlyarray-type-alias)
@@ -145,34 +108,23 @@ Added in v1.0.0
   - [sortBy](#sortby)
   - [sortByNonEmpty](#sortbynonempty)
   - [sortNonEmpty](#sortnonempty)
-- [traversing](#traversing)
-  - [sequence](#sequence)
-  - [sequenceNonEmpty](#sequencenonempty)
-  - [traverse](#traverse)
-  - [traverseNonEmpty](#traversenonempty)
-  - [traverseTap](#traversetap)
 - [type lambdas](#type-lambdas)
   - [ReadonlyArrayTypeLambda (interface)](#readonlyarraytypelambda-interface)
 - [unsafe](#unsafe)
   - [unsafeGet](#unsafeget)
 - [utils](#utils)
-  - [ap](#ap)
   - [append](#append)
   - [appendAll](#appendall)
   - [appendAllNonEmpty](#appendallnonempty)
   - [chop](#chop)
   - [chopNonEmpty](#chopnonempty)
-  - [composeK](#composek)
   - [copy](#copy)
   - [difference](#difference)
   - [extend](#extend)
   - [insertAt](#insertat)
-  - [intercalate](#intercalate)
-  - [intercalateNonEmpty](#intercalatenonempty)
   - [intersection](#intersection)
   - [intersperse](#intersperse)
   - [intersperseNonEmpty](#interspersenonempty)
-  - [join](#join)
   - [max](#max)
   - [min](#min)
   - [modify](#modify)
@@ -191,8 +143,6 @@ Added in v1.0.0
   - [rotateNonEmpty](#rotatenonempty)
   - [setNonEmptyHead](#setnonemptyhead)
   - [setNonEmptyLast](#setnonemptylast)
-  - [traverseFilter](#traversefilter)
-  - [traversePartition](#traversepartition)
   - [union](#union)
   - [unionNonEmpty](#unionnonempty)
   - [uniq](#uniq)
@@ -441,101 +391,6 @@ assert.deepStrictEqual(fromRecord(x), [
 
 Added in v1.0.0
 
-# do notation
-
-## Do
-
-**Signature**
-
-```ts
-export declare const Do: () => ReadonlyArray<{}>
-```
-
-Added in v1.0.0
-
-## bind
-
-**Signature**
-
-```ts
-export declare const bind: {
-  <N extends string, A extends object, B>(name: Exclude<N, keyof A>, f: (a: A) => readonly B[]): (
-    self: readonly A[]
-  ) => { [K in N | keyof A]: K extends keyof A ? A[K] : B }[]
-  <A extends object, N extends string, B>(self: readonly A[], name: Exclude<N, keyof A>, f: (a: A) => readonly B[]): {
-    [K in N | keyof A]: K extends keyof A ? A[K] : B
-  }[]
-}
-```
-
-Added in v1.0.0
-
-## bindDiscard
-
-A variant of `bind` that sequentially ignores the scope.
-
-**Signature**
-
-```ts
-export declare const bindDiscard: {
-  <N extends string, A extends object, B>(name: Exclude<N, keyof A>, that: readonly B[]): (
-    self: readonly A[]
-  ) => { [K in N | keyof A]: K extends keyof A ? A[K] : B }[]
-  <A extends object, N extends string, B>(self: readonly A[], name: Exclude<N, keyof A>, that: readonly B[]): {
-    [K in N | keyof A]: K extends keyof A ? A[K] : B
-  }[]
-}
-```
-
-Added in v1.0.0
-
-## bindTo
-
-**Signature**
-
-```ts
-export declare const bindTo: {
-  <N extends string>(name: N): <A>(self: readonly A[]) => { [K in N]: A }[]
-  <A, N extends string>(self: readonly A[], name: N): { [K in N]: A }[]
-}
-```
-
-Added in v1.0.0
-
-## let
-
-**Signature**
-
-```ts
-export declare const let: {
-  <N extends string, A extends object, B>(name: Exclude<N, keyof A>, f: (a: A) => B): (
-    self: readonly A[]
-  ) => { [K in N | keyof A]: K extends keyof A ? A[K] : B }[]
-  <A extends object, N extends string, B>(self: readonly A[], name: Exclude<N, keyof A>, f: (a: A) => B): {
-    [K in N | keyof A]: K extends keyof A ? A[K] : B
-  }[]
-}
-```
-
-Added in v1.0.0
-
-## letDiscard
-
-**Signature**
-
-```ts
-export declare const letDiscard: {
-  <N extends string, A extends object, B>(name: Exclude<N, keyof A>, b: B): (
-    self: readonly A[]
-  ) => { [K in N | keyof A]: K extends keyof A ? A[K] : B }[]
-  <A extends object, N extends string, B>(self: readonly A[], name: Exclude<N, keyof A>, b: B): {
-    [K in N | keyof A]: K extends keyof A ? A[K] : B
-  }[]
-}
-```
-
-Added in v1.0.0
-
 # filtering
 
 ## compact
@@ -634,78 +489,7 @@ export declare const span: {
 
 Added in v1.0.0
 
-## traverseFilterMap
-
-**Signature**
-
-```ts
-export declare const traverseFilterMap: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => {
-  <A, R, O, E, B>(f: (a: A) => Kind<F, R, O, E, Option<B>>): (self: readonly A[]) => Kind<F, R, O, E, B[]>
-  <A, R, O, E, B>(self: readonly A[], f: (a: A) => Kind<F, R, O, E, Option<B>>): Kind<F, R, O, E, B[]>
-}
-```
-
-Added in v1.0.0
-
-## traversePartitionMap
-
-**Signature**
-
-```ts
-export declare const traversePartitionMap: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => {
-  <A, R, O, E, B, C>(f: (a: A) => Kind<F, R, O, E, Either<B, C>>): (self: readonly A[]) => Kind<F, R, O, E, [B[], C[]]>
-  <A, R, O, E, B, C>(self: readonly A[], f: (a: A) => Kind<F, R, O, E, Either<B, C>>): Kind<F, R, O, E, [B[], C[]]>
-}
-```
-
-Added in v1.0.0
-
 # folding
-
-## combineMap
-
-**Signature**
-
-```ts
-export declare const combineMap: <M>(Monoid: Monoid<M>) => {
-  <A>(f: (a: A, i: number) => M): (self: Iterable<A>) => M
-  <A>(self: Iterable<A>, f: (a: A, i: number) => M): M
-}
-```
-
-Added in v1.0.0
-
-## combineMapNonEmpty
-
-**Signature**
-
-```ts
-export declare const combineMapNonEmpty: <S>(S: Semigroup<S>) => {
-  <A>(f: (a: A, i: number) => S): (self: readonly [A, ...A[]]) => S
-  <A>(self: readonly [A, ...A[]], f: (a: A, i: number) => S): S
-}
-```
-
-Added in v1.0.0
-
-## coproductMapKind
-
-**Signature**
-
-```ts
-export declare const coproductMapKind: <G extends TypeLambda>(
-  G: Coproduct<G>
-) => {
-  <A, R, O, E, B>(f: (a: A) => Kind<G, R, O, E, B>): (self: readonly A[]) => Kind<G, R, O, E, B>
-  <A, R, O, E, B>(self: readonly A[], f: (a: A) => Kind<G, R, O, E, B>): Kind<G, R, O, E, B>
-}
-```
-
-Added in v1.0.0
 
 ## reduce
 
@@ -715,21 +499,6 @@ Added in v1.0.0
 export declare const reduce: {
   <B, A>(b: B, f: (b: B, a: A, i: number) => B): (self: Iterable<A>) => B
   <A, B>(self: Iterable<A>, b: B, f: (b: B, a: A, i: number) => B): B
-}
-```
-
-Added in v1.0.0
-
-## reduceKind
-
-**Signature**
-
-```ts
-export declare const reduceKind: <G extends TypeLambda>(
-  G: monad.Monad<G>
-) => {
-  <B, A, R, O, E>(b: B, f: (b: B, a: A) => Kind<G, R, O, E, B>): (self: readonly A[]) => Kind<G, R, O, E, B>
-  <A, B, R, O, E>(self: readonly A[], b: B, f: (b: B, a: A) => Kind<G, R, O, E, B>): Kind<G, R, O, E, B>
 }
 ```
 
@@ -1269,176 +1038,12 @@ Added in v1.0.0
 
 # instances
 
-## Applicative
-
-**Signature**
-
-```ts
-export declare const Applicative: applicative.Applicative<ReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
-## Chainable
-
-**Signature**
-
-```ts
-export declare const Chainable: chainable.Chainable<ReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
-## Covariant
-
-**Signature**
-
-```ts
-export declare const Covariant: covariant.Covariant<ReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
-## Filterable
-
-**Signature**
-
-```ts
-export declare const Filterable: filterable.Filterable<ReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
-## FlatMap
-
-**Signature**
-
-```ts
-export declare const FlatMap: flatMap_.FlatMap<ReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
-## Foldable
-
-**Signature**
-
-```ts
-export declare const Foldable: foldable.Foldable<ReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
-## Invariant
-
-**Signature**
-
-```ts
-export declare const Invariant: invariant.Invariant<ReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
-## Monad
-
-**Signature**
-
-```ts
-export declare const Monad: monad.Monad<ReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
-## Pointed
-
-**Signature**
-
-```ts
-export declare const Pointed: pointed.Pointed<ReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
-## Product
-
-**Signature**
-
-```ts
-export declare const Product: product_.Product<ReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
-## SemiApplicative
-
-**Signature**
-
-```ts
-export declare const SemiApplicative: semiApplicative.SemiApplicative<ReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
-## SemiProduct
-
-**Signature**
-
-```ts
-export declare const SemiProduct: semiProduct.SemiProduct<ReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
-## Traversable
-
-**Signature**
-
-```ts
-export declare const Traversable: traversable.Traversable<ReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
-## TraversableFilterable
-
-**Signature**
-
-```ts
-export declare const TraversableFilterable: traversableFilterable.TraversableFilterable<ReadonlyArrayTypeLambda>
-```
-
-Added in v1.0.0
-
 ## getEquivalence
 
 **Signature**
 
 ```ts
 export declare const getEquivalence: <A>(O: equivalence.Equivalence<A>) => equivalence.Equivalence<readonly A[]>
-```
-
-Added in v1.0.0
-
-## getIntersectionSemigroup
-
-**Signature**
-
-```ts
-export declare const getIntersectionSemigroup: <A>(
-  isEquivalent: (self: A, that: A) => boolean
-) => Semigroup<readonly A[]>
-```
-
-Added in v1.0.0
-
-## getMonoid
-
-Returns a `Monoid` for `ReadonlyArray<A>`.
-
-**Signature**
-
-```ts
-export declare const getMonoid: <A>() => Monoid<readonly A[]>
 ```
 
 Added in v1.0.0
@@ -1458,53 +1063,7 @@ export declare const getOrder: <A>(O: order.Order<A>) => order.Order<readonly A[
 
 Added in v1.0.0
 
-## getSemigroup
-
-Returns a `Semigroup` for `ReadonlyArray<A>`.
-
-**Signature**
-
-```ts
-export declare const getSemigroup: <A>() => Semigroup<readonly A[]>
-```
-
-Added in v1.0.0
-
-## getUnionMonoid
-
-**Signature**
-
-```ts
-export declare const getUnionMonoid: <A>(isEquivalent: (self: A, that: A) => boolean) => Monoid<readonly A[]>
-```
-
-Added in v1.0.0
-
-## getUnionSemigroup
-
-**Signature**
-
-```ts
-export declare const getUnionSemigroup: <A>(isEquivalent: (self: A, that: A) => boolean) => Semigroup<readonly A[]>
-```
-
-Added in v1.0.0
-
 # lifting
-
-## lift2
-
-Lifts a binary function into `ReadonlyArray`.
-
-**Signature**
-
-```ts
-export declare const lift2: <A, B, C>(
-  f: (a: A, b: B) => C
-) => { (self: readonly A[], that: readonly B[]): C[]; (that: readonly B[]): (self: readonly A[]) => C[] }
-```
-
-Added in v1.0.0
 
 ## liftEither
 
@@ -1512,16 +1071,6 @@ Added in v1.0.0
 
 ```ts
 export declare const liftEither: <A extends unknown[], E, B>(f: (...a: A) => Either<E, B>) => (...a: A) => B[]
-```
-
-Added in v1.0.0
-
-## liftMonoid
-
-**Signature**
-
-```ts
-export declare const liftMonoid: <A>(M: Monoid<A>) => Monoid<readonly A[]>
 ```
 
 Added in v1.0.0
@@ -1563,19 +1112,6 @@ Added in v1.0.0
 
 # mapping
 
-## flap
-
-**Signature**
-
-```ts
-export declare const flap: {
-  <A, B>(a: A, self: readonly ((a: A) => B)[]): B[]
-  <A, B>(self: readonly ((a: A) => B)[]): (a: A) => B[]
-}
-```
-
-Added in v1.0.0
-
 ## map
 
 **Signature**
@@ -1598,26 +1134,6 @@ export declare const mapNonEmpty: {
   <A, B>(f: (a: A, i: number) => B): (self: readonly [A, ...A[]]) => [B, ...B[]]
   <A, B>(self: readonly [A, ...A[]], f: (a: A, i: number) => B): [B, ...B[]]
 }
-```
-
-Added in v1.0.0
-
-## tuple
-
-**Signature**
-
-```ts
-export declare const tuple: <Args extends any[]>(...args: Args) => Args
-```
-
-Added in v1.0.0
-
-## tupled
-
-**Signature**
-
-```ts
-export declare const tupled: <A>(self: readonly A[]) => [A][]
 ```
 
 Added in v1.0.0
@@ -1786,85 +1302,6 @@ export declare const sortNonEmpty: {
 
 Added in v1.0.0
 
-# traversing
-
-## sequence
-
-**Signature**
-
-```ts
-export declare const sequence: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => <R, O, E, A>(self: readonly Kind<F, R, O, E, A>[]) => Kind<F, R, O, E, A[]>
-```
-
-Added in v1.0.0
-
-## sequenceNonEmpty
-
-**Signature**
-
-```ts
-export declare const sequenceNonEmpty: <F extends TypeLambda>(
-  F: semiApplicative.SemiApplicative<F>
-) => <R, O, E, A>(self: readonly [Kind<F, R, O, E, A>, ...Kind<F, R, O, E, A>[]]) => Kind<F, R, O, E, [A, ...A[]]>
-```
-
-Added in v1.0.0
-
-## traverse
-
-**Signature**
-
-```ts
-export declare const traverse: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => {
-  <A, R, O, E, B>(f: (a: A, i: number) => Kind<F, R, O, E, B>): (self: Iterable<A>) => Kind<F, R, O, E, B[]>
-  <A, R, O, E, B>(self: Iterable<A>, f: (a: A, i: number) => Kind<F, R, O, E, B>): Kind<F, R, O, E, B[]>
-}
-```
-
-Added in v1.0.0
-
-## traverseNonEmpty
-
-**Signature**
-
-```ts
-export declare const traverseNonEmpty: <F extends TypeLambda>(
-  F: semiApplicative.SemiApplicative<F>
-) => {
-  <A, R, O, E, B>(f: (a: A, i: number) => Kind<F, R, O, E, B>): (
-    self: readonly [A, ...A[]]
-  ) => Kind<F, R, O, E, [B, ...B[]]>
-  <A, R, O, E, B>(self: readonly [A, ...A[]], f: (a: A, i: number) => Kind<F, R, O, E, B>): Kind<
-    F,
-    R,
-    O,
-    E,
-    [B, ...B[]]
-  >
-}
-```
-
-Added in v1.0.0
-
-## traverseTap
-
-**Signature**
-
-```ts
-export declare const traverseTap: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => {
-  <A, R, O, E, B>(self: readonly A[], f: (a: A) => Kind<F, R, O, E, B>): Kind<F, R, O, E, A[]>
-  <A, R, O, E, B>(f: (a: A) => Kind<F, R, O, E, B>): (self: readonly A[]) => Kind<F, R, O, E, A[]>
-}
-```
-
-Added in v1.0.0
-
 # type lambdas
 
 ## ReadonlyArrayTypeLambda (interface)
@@ -1897,19 +1334,6 @@ export declare const unsafeGet: {
 Added in v1.0.0
 
 # utils
-
-## ap
-
-**Signature**
-
-```ts
-export declare const ap: {
-  <A, B>(self: readonly ((a: A) => B)[], that: readonly A[]): B[]
-  <A>(that: readonly A[]): <B>(self: readonly ((a: A) => B)[]) => B[]
-}
-```
-
-Added in v1.0.0
 
 ## append
 
@@ -1988,19 +1412,6 @@ export declare const chopNonEmpty: {
 
 Added in v1.0.0
 
-## composeK
-
-**Signature**
-
-```ts
-export declare const composeK: {
-  <A, B, C>(afb: (a: A) => readonly B[], bfc: (b: B) => readonly C[]): (a: A) => readonly C[]
-  <B, C>(bfc: (b: B) => readonly C[]): <A>(afb: (a: A) => readonly B[]) => (a: A) => readonly C[]
-}
-```
-
-Added in v1.0.0
-
 ## copy
 
 **Signature**
@@ -2056,37 +1467,6 @@ export declare const insertAt: {
 
 Added in v1.0.0
 
-## intercalate
-
-Fold an `Iterable`, accumulating values in some `Monoid`, combining adjacent elements
-using the specified separator.
-
-**Signature**
-
-```ts
-export declare const intercalate: <A>(M: Monoid<A>) => {
-  (middle: A): (self: Iterable<A>) => A
-  (self: Iterable<A>, middle: A): A
-}
-```
-
-Added in v1.0.0
-
-## intercalateNonEmpty
-
-Places an element in between members of a `NonEmptyReadonlyArray`, then folds the results using the provided `Semigroup`.
-
-**Signature**
-
-```ts
-export declare const intercalateNonEmpty: <A>(S: Semigroup<A>) => {
-  (middle: A): (self: readonly [A, ...A[]]) => A
-  (self: readonly [A, ...A[]], middle: A): A
-}
-```
-
-Added in v1.0.0
-
 ## intersection
 
 Creates an `Array` of unique values that are included in all given `Iterable`s.
@@ -2128,19 +1508,6 @@ Places an element in between members of a `NonEmptyReadonlyArray`
 export declare const intersperseNonEmpty: {
   <B>(middle: B): <A>(self: readonly [A, ...A[]]) => [B | A, ...(B | A)[]]
   <A, B>(self: readonly [A, ...A[]], middle: B): [A | B, ...(A | B)[]]
-}
-```
-
-Added in v1.0.0
-
-## join
-
-**Signature**
-
-```ts
-export declare const join: {
-  (middle: string): (self: ReadonlyArray<string>) => string
-  (self: ReadonlyArray<string>, middle: string): string
 }
 ```
 
@@ -2393,54 +1760,6 @@ Change the last element, creating a new `NonEmptyReadonlyArray`.
 export declare const setNonEmptyLast: {
   <B>(b: B): <A>(self: readonly [A, ...A[]]) => [B | A, ...(B | A)[]]
   <A, B>(self: readonly [A, ...A[]], b: B): [A | B, ...(A | B)[]]
-}
-```
-
-Added in v1.0.0
-
-## traverseFilter
-
-Filter values inside a context.
-
-**Signature**
-
-```ts
-export declare const traverseFilter: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => {
-  <B extends A, R, O, E, A = B>(predicate: (a: A) => Kind<F, R, O, E, boolean>): (
-    self: readonly B[]
-  ) => Kind<F, R, O, E, B[]>
-  <B extends A, R, O, E, A = B>(self: readonly B[], predicate: (a: A) => Kind<F, R, O, E, boolean>): Kind<
-    F,
-    R,
-    O,
-    E,
-    B[]
-  >
-}
-```
-
-Added in v1.0.0
-
-## traversePartition
-
-**Signature**
-
-```ts
-export declare const traversePartition: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => {
-  <B extends A, R, O, E, A = B>(predicate: (a: A) => Kind<F, R, O, E, boolean>): (
-    self: readonly B[]
-  ) => Kind<F, R, O, E, [B[], B[]]>
-  <B extends A, R, O, E, A = B>(self: readonly B[], predicate: (a: A) => Kind<F, R, O, E, boolean>): Kind<
-    F,
-    R,
-    O,
-    E,
-    [B[], B[]]
-  >
 }
 ```
 

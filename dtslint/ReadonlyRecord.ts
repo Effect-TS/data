@@ -226,26 +226,3 @@ RR.partition(struct, (a,
   k // $ExpectType "a" | "b"
 ) => k === 'a')
 
-// -------------------------------------------------------------------------------------
-// partition
-// -------------------------------------------------------------------------------------
-
-// $ExpectType Option<Record<string, string>>
-RR.traverse(Option.Applicative)(r, (a,
-  _k // $ExpectType string
-) => a > 0 ? Option.some('positive') : Option.none())
-
-// $ExpectType Option<Record<string, string>>
-RR.traverse(Option.Applicative)(rr, (a,
-  _k // $ExpectType string
-) => a > 0 ? Option.some('positive') : Option.none())
-
-// $ExpectType Option<Record<string, number>>
-pipe(struct, RR.traverse(Option.Applicative)((a,
-  k // $ExpectType "a" | "b"
-) => k === 'a' ? Option.some(a) : Option.none()))
-
-// $ExpectType Option<Record<string, number>>
-RR.traverse(Option.Applicative)(struct, (a,
-  k // $ExpectType "a" | "b"
-) => k === 'a' ? Option.some(a) : Option.none())

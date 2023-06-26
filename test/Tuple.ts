@@ -2,17 +2,6 @@ import { pipe } from "@effect/data/Function"
 import * as T from "@effect/data/Tuple"
 
 describe.concurrent("Tuple", () => {
-  it("exports", () => {
-    expect(T.Bicovariant).exist
-    expect(T.mapFirst).exist
-    expect(T.mapSecond).exist
-    expect(T.appendElement).exist
-    expect(T.getEquivalence).exist
-    expect(T.getOrder).exist
-    expect(T.getSemigroup).exist
-    expect(T.getMonoid).exist
-  })
-
   it("tuple", () => {
     expect(T.tuple("a", 1, true)).toEqual(["a", 1, true])
   })

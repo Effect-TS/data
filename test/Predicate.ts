@@ -16,25 +16,6 @@ type NonEmptyString = string & NonEmptyStringBrand
 const isNonEmptyString: _.Refinement<string, NonEmptyString> = (s): s is NonEmptyString => s.length > 0
 
 describe.concurrent("Predicate", () => {
-  it("instances and derived exports", () => {
-    expect(_.Invariant).exist
-    expect(_.tupled).exist
-    expect(_.bindTo).exist
-
-    expect(_.Contravariant).exist
-    expect(_.contramap).exist
-
-    expect(_.Do).exist
-
-    expect(_.SemiProduct).exist
-    expect(_.bindDiscard).exist
-    expect(_.appendElement).exist
-
-    expect(_.Product).exist
-    expect(_.tuple).exist
-    expect(_.struct).exist
-  })
-
   it("compose", () => {
     const refinement = pipe(isString, _.compose(isNonEmptyString))
     deepStrictEqual(refinement("a"), true)
@@ -56,7 +37,7 @@ describe.concurrent("Predicate", () => {
   })
 
   it("product", () => {
-    const product = _.SemiProduct.product
+    const product = _.product
     const p = product(isPositive, isNegative)
     deepStrictEqual(p([1, -1]), true)
     deepStrictEqual(p([1, 1]), false)
@@ -65,7 +46,7 @@ describe.concurrent("Predicate", () => {
   })
 
   it("productMany", () => {
-    const productMany = _.SemiProduct.productMany
+    const productMany = _.productMany
     const p = productMany(isPositive, [isNegative])
     deepStrictEqual(p([1, -1]), true)
     deepStrictEqual(p([1, 1]), false)
@@ -73,8 +54,8 @@ describe.concurrent("Predicate", () => {
     deepStrictEqual(p([-1, 1]), false)
   })
 
-  it("productAll", () => {
-    const p = _.Product.productAll([isPositive, isNegative])
+  it("all", () => {
+    const p = _.all([isPositive, isNegative])
     deepStrictEqual(p([1]), true)
     deepStrictEqual(p([1, -1]), true)
     deepStrictEqual(p([1, 1]), false)
@@ -136,78 +117,6 @@ describe.concurrent("Predicate", () => {
     expect(pipe(constTrue, _.nand(constFalse))(null)).toBeTruthy() // true nand false = true
     expect(pipe(constFalse, _.nand(constTrue))(null)).toBeTruthy() // false nand true = true
     expect(pipe(constFalse, _.nand(constFalse))(null)).toBeTruthy() // false nand false = true
-  })
-
-  it("getSemigroupSome", () => {
-    const S = _.getSemigroupSome<number>()
-    const p1 = S.combine(isPositive, isNegative)
-    deepStrictEqual(p1(0), false)
-    deepStrictEqual(p1(-1), true)
-    deepStrictEqual(p1(1), true)
-    const p2 = S.combineMany(isPositive, [isNegative])
-    deepStrictEqual(p2(0), false)
-    deepStrictEqual(p2(-1), true)
-    deepStrictEqual(p2(1), true)
-  })
-
-  it("getMonoidSome", () => {
-    const M = _.getMonoidSome<number>()
-    const predicate = M.combine(isPositive, M.empty)
-    deepStrictEqual(predicate(0), isPositive(0))
-    deepStrictEqual(predicate(-1), isPositive(-1))
-    deepStrictEqual(predicate(1), isPositive(1))
-  })
-
-  it("getSemigroupEvery", () => {
-    const S = _.getSemigroupEvery<number>()
-    const p1 = S.combine(isPositive, isLessThan2)
-    deepStrictEqual(p1(0), false)
-    deepStrictEqual(p1(-2), false)
-    deepStrictEqual(p1(1), true)
-    const p2 = S.combineMany(isPositive, [isLessThan2])
-    deepStrictEqual(p2(0), false)
-    deepStrictEqual(p2(-2), false)
-    deepStrictEqual(p2(1), true)
-  })
-
-  it("getMonoidEvery", () => {
-    const M = _.getMonoidEvery<number>()
-    const predicate = M.combine(isPositive, M.empty)
-    deepStrictEqual(predicate(0), isPositive(0))
-    deepStrictEqual(predicate(-1), isPositive(-1))
-    deepStrictEqual(predicate(1), isPositive(1))
-  })
-
-  it("getSemigroupXor", () => {
-    const S = _.getSemigroupXor<null>()
-    expect(S.combine(constTrue, constTrue)(null)).toBeFalsy() // true xor true = false
-    expect(S.combine(constTrue, constFalse)(null)).toBeTruthy() // true xor false = true
-    expect(S.combine(constFalse, constTrue)(null)).toBeTruthy() // true xor true = true
-    expect(S.combine(constFalse, constFalse)(null)).toBeFalsy() // true xor false = false
-  })
-
-  it("getMonoidXor", () => {
-    const M = _.getMonoidXor<null>()
-    expect(M.combine(constTrue, constTrue)(null)).toBeFalsy() // true xor true = false
-    expect(M.combine(constTrue, constFalse)(null)).toBeTruthy() // true xor false = true
-    expect(M.combine(constFalse, constTrue)(null)).toBeTruthy() // true xor true = true
-    expect(M.combine(constFalse, constFalse)(null)).toBeFalsy() // true xor false = false
-  })
-
-  it("getSemigroupEqv", () => {
-    const S = _.getSemigroupEqv<null>()
-    expect(S.combine(constTrue, constTrue)(null)).toBeTruthy() // true eqv true = true
-    expect(S.combine(constTrue, constFalse)(null)).toBeFalsy() // true eqv false = false
-    expect(S.combine(constFalse, constTrue)(null)).toBeFalsy() // true eqv true = true
-    expect(S.combine(constFalse, constFalse)(null)).toBeTruthy() // true eqv false = false
-  })
-
-  it("getMonoidEqv", () => {
-    const M = _.getMonoidEqv<null>()
-    expect(M.combine(constTrue, constTrue)(null)).toBeTruthy() // true eqv true = true
-    expect(M.combine(constTrue, constFalse)(null)).toBeFalsy() // true eqv false = false
-    expect(M.combine(constFalse, constTrue)(null)).toBeFalsy() // true eqv true = true
-    expect(M.combine(constFalse, constFalse)(null)).toBeTruthy() // true eqv false = false
   })
 
   it("some", () => {

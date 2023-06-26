@@ -1,9 +1,8 @@
 /**
  * @since 1.0.0
  */
-import { identity, pipe } from "@effect/data/Function"
+import { identity } from "@effect/data/Function"
 import type { Kind, TypeLambda } from "@effect/data/HKT"
-import type { Monad } from "@effect/data/typeclass/Monad"
 
 /**
  * @category symbols
@@ -452,36 +451,3 @@ export const adapter: <F extends TypeLambda>() => Adapter<F> = () =>
     }
     return new GenKindImpl(x)
   }
-
-function runGen<F extends TypeLambda, K extends GenKind<F, any, any, any, any>, AEff>(
-  F: Monad<F>,
-  state: IteratorYieldResult<K> | IteratorReturnResult<AEff>,
-  iterator: Generator<K, AEff, any>
-): Kind<F, any, any, any, any> {
-  if (state.done) {
-    return F.of(state.value)
-  }
-  return F.flatMap((val) => {
-    const next = iterator.next(val)
-    return runGen(F, next, iterator)
-  })(state.value.value)
-}
-
-/**
- * @category constructors
- * @since 1.0.0
- */
-export const singleShot: <F extends TypeLambda>(
-  F: Monad<F>
-) => <Z extends Adapter<F>>(adapter: Z) => Gen<F, Z> = (F) =>
-  (adapter) =>
-    (body) =>
-      pipe(
-        F.of(void 0),
-        F.flatMap(() => {
-          const iterator = body(adapter)
-          const state = iterator.next()
-          // @ts-expect-error
-          return runGen(F, state, iterator)
-        })
-      )
