@@ -1,5 +1,13 @@
 # @effect/data
 
+## 0.12.10
+
+### Patch Changes
+
+- [#380](https://github.com/Effect-TS/data/pull/380) [`862cbf6`](https://github.com/Effect-TS/data/commit/862cbf66de833a83c3d7d5dfbb87c2339201794c) Thanks [@IMax153](https://github.com/IMax153)! - fix Chunk.join when initial string elements are empty
+
+- [#377](https://github.com/Effect-TS/data/pull/377) [`c660ff8`](https://github.com/Effect-TS/data/commit/c660ff8fb89cdd42c11b240f82a5501257e4d556) Thanks [@tim-smart](https://github.com/tim-smart)! - add isIterable to /Predicate
+
 ## 0.12.9
 
 ### Patch Changes
