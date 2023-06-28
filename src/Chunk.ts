@@ -1022,7 +1022,7 @@ export const join: {
 } = Dual.dual<
   (sep: string) => (self: Chunk<string>) => string,
   (self: Chunk<string>, sep: string) => string
->(2, (self, sep) => reduce(self, "", (s, a) => (s.length > 0 ? `${s}${sep}${a}` : a)))
+>(2, (self, sep) => toReadonlyArray(self).join(sep))
 
 /**
  * Returns the last element of this chunk if it exists.
