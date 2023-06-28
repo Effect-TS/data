@@ -1,7 +1,8 @@
 import * as C from "@effect/data/Chunk"
 import * as Duration from "@effect/data/Duration"
+import * as E from "@effect/data/Either"
 import { equals, symbol } from "@effect/data/Equal"
-import { pipe } from "@effect/data/Function"
+import { identity, pipe } from "@effect/data/Function"
 import * as O from "@effect/data/Option"
 import * as RA from "@effect/data/ReadonlyArray"
 import * as fc from "fast-check"
@@ -657,5 +658,43 @@ describe.concurrent("Chunk", () => {
       const zipped = pipe(left, C.zipWith(pipe(right, C.take(left.length)), (a, b) => [a, b]))
       expect(Array.from(zipped)).toEqual([[0, 0], [1, 0]])
     })
+  })
+
+  it("last", () => {
+    expect(C.last(C.empty())).toEqual(O.none())
+    expect(C.last(C.make(1, 2, 3))).toEqual(O.some(3))
+  })
+
+  it("makeBy", () => {
+    expect(C.makeBy(2, (i) => i + 1)).toEqual(C.make(1, 2))
+  })
+
+  it("map", () => {
+    expect(C.map(C.empty(), (n) => n + 1)).toEqual(C.empty())
+    expect(C.map(C.of(1), (n) => n + 1)).toEqual(C.of(2))
+    expect(C.map(C.make(1, 2, 3), (n) => n + 1)).toEqual(C.make(2, 3, 4))
+  })
+
+  it("mapWithIndex", () => {
+    expect(C.mapWithIndex(C.make(1, 2, 3), (n, i) => n + i)).toEqual(C.make(1, 3, 5))
+  })
+
+  it("mapAccum", () => {
+    expect(C.mapAccum(C.make(1, 2, 3), "-", (s, a) => [s + a, a + 1])).toEqual(["-123", C.make(2, 3, 4)])
+  })
+
+  it("partition", () => {
+    expect(C.partition(C.empty(), (n) => n > 2)).toEqual([C.empty(), C.empty()])
+    expect(C.partition(C.make(1, 3), (n) => n > 2)).toEqual([C.make(1), C.make(3)])
+  })
+
+  it("partitionWithIndex", () => {
+    expect(C.partitionWithIndex(C.empty(), (n, i) => n + i > 2)).toEqual([C.empty(), C.empty()])
+    expect(C.partitionWithIndex(C.make(1, 2), (n, i) => n + i > 2)).toEqual([C.make(1), C.make(2)])
+  })
+
+  it("partitionMap", () => {
+    expect(C.partitionMap(C.empty(), identity)).toEqual([C.empty(), C.empty()])
+    expect(C.partitionMap(C.make(E.right(1), E.left("a"), E.right(2)), identity)).toEqual([C.make("a"), C.make(1, 2)])
   })
 })
