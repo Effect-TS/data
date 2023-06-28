@@ -55,4 +55,98 @@ describe.concurrent("Foldable", () => {
       O.some("a")
     )
   })
+
+  it("length", () => {
+    const length = _.length(RA.Foldable)
+    U.deepStrictEqual(pipe([], length), 0)
+    U.deepStrictEqual(pipe([1], length), 1)
+    U.deepStrictEqual(pipe([1, 2], length), 2)
+  })
+
+  it("isEmpty", () => {
+    const isEmpty = _.isEmpty(RA.Foldable)
+    U.deepStrictEqual(pipe([], isEmpty), true)
+    U.deepStrictEqual(pipe([1], isEmpty), false)
+    U.deepStrictEqual(pipe([""], isEmpty), false)
+  })
+
+  it("contains", () => {
+    const contains = _.contains(RA.Foldable)(N.Equivalence)
+    U.deepStrictEqual(pipe([], contains(1)), false)
+    U.deepStrictEqual(pipe([0], contains(1)), false)
+    U.deepStrictEqual(contains([0, 1], 1), true)
+    U.deepStrictEqual(contains([3, 2, 1], 1), true)
+  })
+
+  it("sum", () => {
+    const sum = _.sum(RA.Foldable)
+    U.deepStrictEqual(pipe([], sum), 0)
+    U.deepStrictEqual(pipe([0], sum), 0)
+    U.deepStrictEqual(pipe([1], sum), 1)
+    U.deepStrictEqual(pipe([1, 2], sum), 3)
+  })
+
+  it("sumBigint", () => {
+    const sumBigint = _.sumBigint(RA.Foldable)
+    U.deepStrictEqual(pipe([], sumBigint), 0n)
+    U.deepStrictEqual(pipe([0n], sumBigint), 0n)
+    U.deepStrictEqual(pipe([1n], sumBigint), 1n)
+    U.deepStrictEqual(pipe([1n, 2n], sumBigint), 3n)
+  })
+
+  it("product", () => {
+    const product = _.product(RA.Foldable)
+    U.deepStrictEqual(pipe([], product), 1)
+    U.deepStrictEqual(pipe([0], product), 0)
+    U.deepStrictEqual(pipe([1], product), 1)
+    U.deepStrictEqual(pipe([1, 2], product), 2)
+  })
+
+  it("productBigint", () => {
+    const productBigint = _.productBigint(RA.Foldable)
+    U.deepStrictEqual(pipe([], productBigint), 1n)
+    U.deepStrictEqual(pipe([0n], productBigint), 0n)
+    U.deepStrictEqual(pipe([1n], productBigint), 1n)
+    U.deepStrictEqual(pipe([1n, 2n], productBigint), 2n)
+  })
+
+  it("and", () => {
+    const and = _.and(RA.Foldable)
+    U.deepStrictEqual(pipe([], and), true)
+    U.deepStrictEqual(pipe([true], and), true)
+    U.deepStrictEqual(pipe([false], and), false)
+    U.deepStrictEqual(pipe([true, false], and), false)
+    U.deepStrictEqual(pipe([true, true], and), true)
+  })
+
+  it("or", () => {
+    const or = _.or(RA.Foldable)
+    U.deepStrictEqual(pipe([], or), false)
+    U.deepStrictEqual(pipe([true], or), true)
+    U.deepStrictEqual(pipe([false], or), false)
+    U.deepStrictEqual(pipe([true, false], or), true)
+    U.deepStrictEqual(pipe([true, true], or), true)
+  })
+
+  it("every", () => {
+    const every = _.every(RA.Foldable)
+    const isEven = (n: number) => n % 2 === 0
+
+    U.deepStrictEqual(pipe([], every(isEven)), true)
+    U.deepStrictEqual(pipe([2], every(isEven)), true)
+    U.deepStrictEqual(pipe([1], every(isEven)), false)
+    U.deepStrictEqual(pipe([1, 2], every(isEven)), false)
+    U.deepStrictEqual(pipe([2, 4], every(isEven)), true)
+  })
+
+  it("any", () => {
+    const any = _.any(RA.Foldable)
+    const isEven = (n: number) => n % 2 === 0
+
+    U.deepStrictEqual(pipe([], any(isEven)), false)
+    U.deepStrictEqual(pipe([2], any(isEven)), true)
+    U.deepStrictEqual(pipe([1], any(isEven)), false)
+    U.deepStrictEqual(pipe([1, 2], any(isEven)), true)
+    U.deepStrictEqual(pipe([1, 2, 3], any(isEven)), true)
+  })
 })
