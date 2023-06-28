@@ -753,33 +753,16 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("partitionMap", () => {
-    deepStrictEqual(pipe([], RA.partitionMap(identity)), [[], []])
-    deepStrictEqual(
-      pipe(
-        [E.right(1), E.left("foo"), E.right(2)],
-        RA.partitionMap(identity)
-      ),
-      [["foo"], [1, 2]]
-    )
+    expect(RA.partitionMap([], identity)).toEqual([[], []])
+    expect(RA.partitionMap([E.right(1), E.left("a"), E.right(2)], identity)).toEqual([["a"], [1, 2]])
   })
 
   it("partition", () => {
-    deepStrictEqual(
-      pipe([], RA.partition((n) => n > 2)),
-      [[], []]
-    )
-    deepStrictEqual(
-      pipe([1, 3], RA.partition((n) => n > 2)),
-      [[1], [3]]
-    )
-    deepStrictEqual(
-      pipe([], RA.partition((i, n) => i + n > 2)),
-      [[], []]
-    )
-    deepStrictEqual(
-      pipe([1, 2], RA.partition((i, n) => i + n > 2)),
-      [[1], [2]]
-    )
+    expect(RA.partition([], (n) => n > 2)).toEqual([[], []])
+    expect(RA.partition([1, 3], (n) => n > 2)).toEqual([[1], [3]])
+
+    expect(RA.partition([], (n, i) => n + i > 2)).toEqual([[], []])
+    expect(RA.partition([1, 2], (n, i) => n + i > 2)).toEqual([[1], [2]])
   })
 
   it("reduce", () => {

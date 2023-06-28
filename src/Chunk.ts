@@ -970,10 +970,7 @@ export const makeBy: {
 export const map: {
   <A, B>(f: (a: A) => B): (self: Chunk<A>) => Chunk<B>
   <A, B>(self: Chunk<A>, f: (a: A) => B): Chunk<B>
-} = Dual.dual(2, <A, B>(self: Chunk<A>, f: (a: A) => B): Chunk<B> =>
-  self.backing._tag === "ISingleton" ?
-    of(f(self.backing.a)) :
-    unsafeFromArray(RA.map(toReadonlyArray(self), f)))
+} = Dual.dual(2, <A, B>(self: Chunk<A>, f: (a: A) => B): Chunk<B> => mapWithIndex(self, (a) => f(a)))
 
 /**
  * Returns an effect whose success is mapped by the specified f function.
@@ -987,7 +984,7 @@ export const mapWithIndex: {
 } = Dual.dual(2, <A, B>(self: Chunk<A>, f: (a: A, i: number) => B): Chunk<B> =>
   self.backing._tag === "ISingleton" ?
     of(f(self.backing.a, 0)) :
-    unsafeFromArray(pipe(toReadonlyArray(self), RA.map(f))))
+    unsafeFromArray(pipe(toReadonlyArray(self), RA.map((a, i) => f(a, i)))))
 
 /**
  * Statefully maps over the chunk, producing new elements of type `B`.
@@ -1043,12 +1040,10 @@ export const partition: {
   <B extends A, A = B>(predicate: Predicate<A>): (self: Chunk<B>) => readonly [Chunk<B>, Chunk<B>]
   <C extends A, B extends A, A = C>(self: Chunk<C>, refinement: Refinement<A, B>): readonly [Chunk<C>, Chunk<B>]
   <B extends A, A = B>(self: Chunk<B>, predicate: Predicate<A>): readonly [Chunk<B>, Chunk<B>]
-} = Dual.dual(2, <B extends A, A = B>(self: Chunk<B>, predicate: Predicate<A>) =>
-  pipe(
-    toReadonlyArray(self),
-    RA.partition(predicate),
-    ([l, r]) => [unsafeFromArray(l), unsafeFromArray(r)] as const
-  ))
+} = Dual.dual(
+  2,
+  <B extends A, A = B>(self: Chunk<B>, predicate: Predicate<A>) => partitionWithIndex(self, (a) => predicate(a))
+)
 
 /**
  * Partitions the elements of this chunk into two chunks using f.
