@@ -29,6 +29,16 @@ describe.concurrent("Option", () => {
     expect(inspect(_.some(1))).toEqual(inspect({ _tag: "Some", value: 1 }))
   })
 
+  it("getRight", () => {
+    expect(_.getRight(E.right(1))).toEqual(_.some(1))
+    expect(_.getRight(E.left("a"))).toEqual(_.none())
+  })
+
+  it("getLeft", () => {
+    expect(_.getLeft(E.right(1))).toEqual(_.none())
+    expect(_.getLeft(E.left("a"))).toEqual(_.some("a"))
+  })
+
   it("toRefinement", () => {
     const f = (
       s: string | number
@@ -315,9 +325,10 @@ describe.concurrent("Option", () => {
       pipe(
         _.some(1),
         _.bindTo("a"),
-        _.bind("b", () => _.some("b"))
+        _.bind("b", () => _.some("b")),
+        _.let("c", () => true)
       ),
-      _.some({ a: 1, b: "b" })
+      _.some({ a: 1, b: "b", c: true })
     )
   })
 
@@ -425,6 +436,12 @@ describe.concurrent("Option", () => {
     expect(isEquivalent(_.some(2), _.some(1))).toEqual(false)
     expect(isEquivalent(_.some(1), _.some(2))).toEqual(false)
     expect(isEquivalent(_.some(2), _.some(2))).toEqual(true)
+  })
+
+  it("tuple", () => {
+    assert.deepStrictEqual(_.tuple(), _.some([]))
+    assert.deepStrictEqual(_.tuple(_.some(1), _.some("hello")), _.some([1, "hello"]))
+    assert.deepStrictEqual(_.tuple(_.some(1), _.none()), _.none())
   })
 
   it("struct", () => {

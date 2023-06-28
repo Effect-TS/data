@@ -215,8 +215,18 @@ export const array = <A>(O: Order<A>): Order<ReadonlyArray<A>> =>
  */
 export const struct = <R extends { readonly [x: string]: Order<any> }>(
   fields: R
-): Order<{ [K in keyof R]: [R[K]] extends [Order<infer A>] ? A : never }> =>
-  all(Object.keys(fields).map((k) => fields[k])) as any
+): Order<{ [K in keyof R]: [R[K]] extends [Order<infer A>] ? A : never }> => {
+  const keys = Object.keys(fields)
+  return make((self, that) => {
+    for (const key of keys) {
+      const o = fields[key].compare(self[key], that[key])
+      if (o !== 0) {
+        return o
+      }
+    }
+    return 0
+  })
+}
 
 /**
  * Test whether one value is _strictly less than_ another.

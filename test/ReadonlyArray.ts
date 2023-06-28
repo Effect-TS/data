@@ -11,6 +11,15 @@ import * as assert from "assert"
 import * as fc from "fast-check"
 
 describe.concurrent("ReadonlyArray", () => {
+  it("exports", () => {
+    expect(RA.fromRecord).exist
+    expect(RA.getEquivalence).exist
+  })
+
+  it("of", () => {
+    expect(RA.of(1)).toEqual([1])
+  })
+
   it("fromIterable/Array should return the same reference if the iterable is an Array", () => {
     const i = [1, 2, 3]
     expect(RA.fromIterable(i) === i).toEqual(true)

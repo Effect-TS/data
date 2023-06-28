@@ -82,4 +82,14 @@ describe.concurrent("Boolean", () => {
     deepStrictEqual(Boolean.Order.compare(true, false), 1)
     deepStrictEqual(Boolean.Order.compare(true, true), 0)
   })
+
+  it("every", () => {
+    assert.deepStrictEqual(Boolean.every([true, true, true]), true)
+    assert.deepStrictEqual(Boolean.every([true, false, true]), false)
+  })
+
+  it("some", () => {
+    assert.deepStrictEqual(Boolean.some([true, false, true]), true)
+    assert.deepStrictEqual(Boolean.some([false, false, false]), false)
+  })
 })

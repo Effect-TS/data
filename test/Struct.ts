@@ -4,6 +4,10 @@ import * as String from "@effect/data/String"
 import * as Struct from "@effect/data/Struct"
 
 describe.concurrent("Struct", () => {
+  it("exports", () => {
+    expect(Struct.getOrder).exist
+  })
+
   it("pick", () => {
     expect(pipe({ a: "a", b: 1, c: true }, Struct.pick("a", "b"))).toEqual({ a: "a", b: 1 })
   })

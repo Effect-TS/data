@@ -2,6 +2,11 @@ import { pipe } from "@effect/data/Function"
 import * as T from "@effect/data/Tuple"
 
 describe.concurrent("Tuple", () => {
+  it("exports", () => {
+    expect(T.getOrder).exist
+    expect(T.getEquivalence).exist
+  })
+
   it("tuple", () => {
     expect(T.tuple("a", 1, true)).toEqual(["a", 1, true])
   })

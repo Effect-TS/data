@@ -489,8 +489,17 @@ export const tuple = <T extends ReadonlyArray<Predicate<any>>>(
  */
 export const struct = <R extends Record<string, Predicate<any>>>(
   fields: R
-): Predicate<{ readonly [K in keyof R]: [R[K]] extends [Predicate<infer A>] ? A : never }> =>
-  all(Object.keys(fields).map((k) => fields[k])) as any
+): Predicate<{ readonly [K in keyof R]: [R[K]] extends [Predicate<infer A>] ? A : never }> => {
+  const keys = Object.keys(fields)
+  return (a) => {
+    for (const key of keys) {
+      if (!fields[key](a[key])) {
+        return false
+      }
+    }
+    return true
+  }
+}
 
 /**
  * Negates the result of a given predicate.
