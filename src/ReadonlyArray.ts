@@ -107,7 +107,8 @@ export const replicate: {
  * @category conversions
  * @since 1.0.0
  */
-export const fromIterable: <A>(collection: Iterable<A>) => Array<A> = readonlyArray.fromIterable
+export const fromIterable = <A>(collection: Iterable<A>): Array<A> =>
+  Array.isArray(collection) ? collection : Array.from(collection)
 
 /**
  * Takes a record and returns an array of tuples containing its keys and values.
