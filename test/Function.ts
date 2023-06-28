@@ -97,26 +97,27 @@ describe.concurrent("Function", () => {
   })
 
   it("pipe", () => {
-    deepStrictEqual(Function.pipe(2), 2)
-    deepStrictEqual(Function.pipe(2, f), 3)
-    deepStrictEqual(Function.pipe(2, f, g), 6)
-    deepStrictEqual(Function.pipe(2, f, g, f), 7)
-    deepStrictEqual(Function.pipe(2, f, g, f, g), 14)
-    deepStrictEqual(Function.pipe(2, f, g, f, g, f), 15)
-    deepStrictEqual(Function.pipe(2, f, g, f, g, f, g), 30)
-    deepStrictEqual(Function.pipe(2, f, g, f, g, f, g, f), 31)
-    deepStrictEqual(Function.pipe(2, f, g, f, g, f, g, f, g), 62)
-    deepStrictEqual(Function.pipe(2, f, g, f, g, f, g, f, g, f), 63)
-    deepStrictEqual(Function.pipe(2, f, g, f, g, f, g, f, g, f, g), 126)
-    deepStrictEqual(Function.pipe(2, f, g, f, g, f, g, f, g, f, g, f), 127)
-    deepStrictEqual(Function.pipe(2, f, g, f, g, f, g, f, g, f, g, f, g), 254)
-    deepStrictEqual(Function.pipe(2, f, g, f, g, f, g, f, g, f, g, f, g, f), 255)
-    deepStrictEqual(Function.pipe(2, f, g, f, g, f, g, f, g, f, g, f, g, f, g), 510)
-    deepStrictEqual(Function.pipe(2, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f), 511)
-    deepStrictEqual(Function.pipe(2, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f, g), 1022)
-    deepStrictEqual(Function.pipe(2, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f), 1023)
-    deepStrictEqual(Function.pipe(2, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f, g), 2046)
-    deepStrictEqual(Function.pipe(2, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f), 2047)
+    const pipe = Function.pipe // this alias is required in order to exclude the `@effect/babel-plugin` compiler and get 100% coverage
+    deepStrictEqual(pipe(2), 2)
+    deepStrictEqual(pipe(2, f), 3)
+    deepStrictEqual(pipe(2, f, g), 6)
+    deepStrictEqual(pipe(2, f, g, f), 7)
+    deepStrictEqual(pipe(2, f, g, f, g), 14)
+    deepStrictEqual(pipe(2, f, g, f, g, f), 15)
+    deepStrictEqual(pipe(2, f, g, f, g, f, g), 30)
+    deepStrictEqual(pipe(2, f, g, f, g, f, g, f), 31)
+    deepStrictEqual(pipe(2, f, g, f, g, f, g, f, g), 62)
+    deepStrictEqual(pipe(2, f, g, f, g, f, g, f, g, f), 63)
+    deepStrictEqual(pipe(2, f, g, f, g, f, g, f, g, f, g), 126)
+    deepStrictEqual(pipe(2, f, g, f, g, f, g, f, g, f, g, f), 127)
+    deepStrictEqual(pipe(2, f, g, f, g, f, g, f, g, f, g, f, g), 254)
+    deepStrictEqual(pipe(2, f, g, f, g, f, g, f, g, f, g, f, g, f), 255)
+    deepStrictEqual(pipe(2, f, g, f, g, f, g, f, g, f, g, f, g, f, g), 510)
+    deepStrictEqual(pipe(2, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f), 511)
+    deepStrictEqual(pipe(2, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f, g), 1022)
+    deepStrictEqual(pipe(2, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f), 1023)
+    deepStrictEqual(pipe(2, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f, g), 2046)
+    deepStrictEqual(pipe(2, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f), 2047)
     deepStrictEqual(
       (Function.pipe as any)(...[2, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f, g, f, g]),
       4094
@@ -124,11 +125,24 @@ describe.concurrent("Function", () => {
   })
 
   it("dual", () => {
+    // arity as number
     const f = Function.dual<
       (that: number) => (self: number) => number,
       (self: number, that: number) => number
     >(2, (a: number, b: number): number => a - b)
     deepStrictEqual(f(3, 2), 1)
     deepStrictEqual(Function.pipe(3, f(2)), 1)
+    // should ignore excess arguments
+    deepStrictEqual(f.apply(null, [3, 2, 100] as any), 1)
+
+    // arity as predicate
+    const g = Function.dual<
+      (that: number) => (self: number) => number,
+      (self: number, that: number) => number
+    >((args) => args.length >= 2, (a: number, b: number): number => a - b)
+    deepStrictEqual(g(3, 2), 1)
+    deepStrictEqual(Function.pipe(3, g(2)), 1)
+    // should ignore excess arguments
+    deepStrictEqual(g.apply(null, [3, 2, 100] as any), 1)
   })
 })
