@@ -155,6 +155,12 @@ describe.concurrent("Chunk", () => {
         expect(C.fromIterable(myIterable)).toEqual(C.unsafeFromArray([1, 2, 3, 4, 5]))
       })
     })
+
+    it("should return the same reference if the input is a Chunk", () => {
+      const expected = C.make(1, 2, 3)
+      const actual = C.fromIterable(expected)
+      expect(actual === expected).toEqual(true)
+    })
   })
 
   describe.concurrent("get", () => {
@@ -394,6 +400,14 @@ describe.concurrent("Chunk", () => {
 
       it("should return the available subset", () => {
         expect(pipe(chunk, C.take(amount), C.toReadonlyArray)).toEqual([1, 2])
+      })
+    })
+
+    describe.concurrent("Given a concatenated Chunk and an amount <= self.left", () => {
+      it("should return the available subset", () => {
+        const chunk = C.concat(C.make(2, 3, 4), C.of(1))
+        expect(pipe(chunk, C.take(2), C.toReadonlyArray)).toEqual([2, 3])
+        expect(pipe(chunk, C.take(3), C.toReadonlyArray)).toEqual([2, 3, 4])
       })
     })
   })
