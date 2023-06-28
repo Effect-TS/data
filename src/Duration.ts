@@ -19,7 +19,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface Duration {
+export interface Duration extends Equal.Equal {
   readonly _id: TypeId
   readonly nanos: bigint
   readonly millis: number
