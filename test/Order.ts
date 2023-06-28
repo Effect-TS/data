@@ -1,16 +1,33 @@
 import { pipe } from "@effect/data/Function"
 import * as _ from "@effect/data/Order"
+import { sort } from "@effect/data/ReadonlyArray"
 import * as U from "./util"
 
 describe.concurrent("Order", () => {
-  it("all", () => {
-    const O = _.all([_.string, _.string])
-    U.deepStrictEqual(O.compare(["a"], ["b"]), -1)
-    U.deepStrictEqual(O.compare(["a"], ["a"]), 0)
-    U.deepStrictEqual(O.compare(["b"], ["a"]), 1)
+  it("struct", () => {
+    const O = _.struct({ a: _.string, b: _.string })
+    U.deepStrictEqual(O.compare({ a: "a", b: "b" }, { a: "a", b: "c" }), -1)
+    U.deepStrictEqual(O.compare({ a: "a", b: "b" }, { a: "a", b: "b" }), 0)
+    U.deepStrictEqual(O.compare({ a: "a", b: "c" }, { a: "a", b: "b" }), 1)
+  })
+
+  it("tuple", () => {
+    const O = _.tuple(_.string, _.string)
     U.deepStrictEqual(O.compare(["a", "b"], ["a", "c"]), -1)
     U.deepStrictEqual(O.compare(["a", "b"], ["a", "b"]), 0)
-    U.deepStrictEqual(O.compare(["a", "c"], ["a", "b"]), 1)
+    U.deepStrictEqual(O.compare(["a", "b"], ["a", "a"]), 1)
+    U.deepStrictEqual(O.compare(["a", "b"], ["b", "a"]), -1)
+  })
+
+  it("all", () => {
+    const O = _.all([_.string, _.string, _.string])
+    U.deepStrictEqual(O.compare([], []), 0)
+    U.deepStrictEqual(O.compare(["a", "b"], ["a"]), 0)
+    U.deepStrictEqual(O.compare(["a"], ["a", "c"]), 0)
+    U.deepStrictEqual(O.compare(["a", "b"], ["a", "c"]), -1)
+    U.deepStrictEqual(O.compare(["a", "b"], ["a", "b"]), 0)
+    U.deepStrictEqual(O.compare(["a", "b"], ["a", "a"]), 1)
+    U.deepStrictEqual(O.compare(["a", "b"], ["b", "a"]), -1)
   })
 
   it("contramap", () => {
@@ -119,16 +136,45 @@ describe.concurrent("Order", () => {
     U.deepStrictEqual(O.compare(["a", "b"], ["b", "a"]), -1)
   })
 
-  it("all", () => {
-    const O = pipe(
-      _.all([_.string, _.string, _.string])
+  it("combine / combineMany", () => {
+    type T = [number, string]
+    const tuples: Array<T> = [
+      [2, "c"],
+      [1, "b"],
+      [2, "a"],
+      [1, "c"]
+    ]
+    const sortByFst = pipe(
+      _.number,
+      _.contramap((x: T) => x[0])
     )
-    U.deepStrictEqual(O.compare([], []), 0)
-    U.deepStrictEqual(O.compare(["a", "b"], ["a"]), 0)
-    U.deepStrictEqual(O.compare(["a"], ["a", "c"]), 0)
-    U.deepStrictEqual(O.compare(["a", "b"], ["a", "c"]), -1)
-    U.deepStrictEqual(O.compare(["a", "b"], ["a", "b"]), 0)
-    U.deepStrictEqual(O.compare(["a", "b"], ["a", "a"]), 1)
-    U.deepStrictEqual(O.compare(["a", "b"], ["b", "a"]), -1)
+    const sortBySnd = pipe(
+      _.string,
+      _.contramap((x: T) => x[1])
+    )
+    U.deepStrictEqual(sort(_.combine(sortByFst, sortBySnd))(tuples), [
+      [1, "b"],
+      [1, "c"],
+      [2, "a"],
+      [2, "c"]
+    ])
+    U.deepStrictEqual(sort(_.combine(sortBySnd, sortByFst))(tuples), [
+      [2, "a"],
+      [1, "b"],
+      [1, "c"],
+      [2, "c"]
+    ])
+    U.deepStrictEqual(sort(_.combineMany(sortBySnd, []))(tuples), [
+      [2, "a"],
+      [1, "b"],
+      [2, "c"],
+      [1, "c"]
+    ])
+    U.deepStrictEqual(sort(_.combineMany(sortBySnd, [sortByFst]))(tuples), [
+      [2, "a"],
+      [1, "b"],
+      [1, "c"],
+      [2, "c"]
+    ])
   })
 })

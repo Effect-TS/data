@@ -54,6 +54,22 @@ describe.concurrent("Predicate", () => {
     deepStrictEqual(p([-1, 1]), false)
   })
 
+  it("tuple", () => {
+    const p = _.tuple(isPositive, isNegative)
+    deepStrictEqual(p([1, -1]), true)
+    deepStrictEqual(p([1, 1]), false)
+    deepStrictEqual(p([-1, -1]), false)
+    deepStrictEqual(p([-1, 1]), false)
+  })
+
+  it("struct", () => {
+    const p = _.struct({ a: isPositive, b: isNegative })
+    deepStrictEqual(p({ a: 1, b: -1 }), true)
+    deepStrictEqual(p({ a: 1, b: 1 }), false)
+    deepStrictEqual(p({ a: -1, b: -1 }), false)
+    deepStrictEqual(p({ a: -1, b: 1 }), false)
+  })
+
   it("all", () => {
     const p = _.all([isPositive, isNegative])
     deepStrictEqual(p([1]), true)

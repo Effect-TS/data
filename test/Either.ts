@@ -7,6 +7,10 @@ import * as Util from "@effect/data/test/util"
 import { inspect } from "node:util"
 
 describe.concurrent("Either", () => {
+  it("exports", () => {
+    expect(Either.EitherTypeId).exist
+  })
+
   it("toString", () => {
     expect(String(Either.right(1))).toEqual("right(1)")
     expect(String(Either.left("e"))).toEqual(`left(e)`)
@@ -65,6 +69,7 @@ describe.concurrent("Either", () => {
   it("bimap", () => {
     const f = Either.bimap(S.length, (n: number) => n > 2)
     Util.deepStrictEqual(pipe(Either.right(1), f), Either.right(false))
+    Util.deepStrictEqual(pipe(Either.left("a"), f), Either.left(1))
   })
 
   it("mapLeft", () => {

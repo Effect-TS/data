@@ -51,7 +51,56 @@ describe.concurrent("Bigint", () => {
     deepStrictEqual(Bigint.Order.compare(2n, 2n), 0)
   })
 
+  it("lessThan", () => {
+    assert.deepStrictEqual(Bigint.lessThan(2n, 3n), true)
+    assert.deepStrictEqual(Bigint.lessThan(3n, 3n), false)
+    assert.deepStrictEqual(Bigint.lessThan(4n, 3n), false)
+  })
+
+  it("lessThanOrEqualTo", () => {
+    assert.deepStrictEqual(Bigint.lessThanOrEqualTo(2n, 3n), true)
+    assert.deepStrictEqual(Bigint.lessThanOrEqualTo(3n, 3n), true)
+    assert.deepStrictEqual(Bigint.lessThanOrEqualTo(4n, 3n), false)
+  })
+
+  it("greaterThan", () => {
+    assert.deepStrictEqual(Bigint.greaterThan(2n, 3n), false)
+    assert.deepStrictEqual(Bigint.greaterThan(3n, 3n), false)
+    assert.deepStrictEqual(Bigint.greaterThan(4n, 3n), true)
+  })
+
+  it("greaterThanOrEqualTo", () => {
+    assert.deepStrictEqual(Bigint.greaterThanOrEqualTo(2n, 3n), false)
+    assert.deepStrictEqual(Bigint.greaterThanOrEqualTo(3n, 3n), true)
+    assert.deepStrictEqual(Bigint.greaterThanOrEqualTo(4n, 3n), true)
+  })
+
+  it("between", () => {
+    assert.deepStrictEqual(Bigint.between(0n, 5n)(3n), true)
+    assert.deepStrictEqual(Bigint.between(0n, 5n)(-1n), false)
+    assert.deepStrictEqual(Bigint.between(0n, 5n)(6n), false)
+  })
+
+  it("clamp", () => {
+    assert.deepStrictEqual(Bigint.clamp(0n, 5n)(3n), 3n)
+    assert.deepStrictEqual(Bigint.clamp(0n, 5n)(-1n), 0n)
+    assert.deepStrictEqual(Bigint.clamp(0n, 5n)(6n), 5n)
+  })
+
+  it("min", () => {
+    assert.deepStrictEqual(Bigint.min(2n, 3n), 2n)
+  })
+
+  it("max", () => {
+    assert.deepStrictEqual(Bigint.max(2n, 3n), 3n)
+  })
+
+  it("sumAll", () => {
+    assert.deepStrictEqual(Bigint.sumAll([2n, 3n, 4n]), 9n)
+  })
+
   it("multiplyAll", () => {
-    expect(Bigint.multiplyAll([2n, 3n, 4n])).toEqual(24n)
+    assert.deepStrictEqual(Bigint.multiplyAll([2n, 0n, 4n]), 0n)
+    assert.deepStrictEqual(Bigint.multiplyAll([2n, 3n, 4n]), 24n)
   })
 })

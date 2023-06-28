@@ -126,6 +126,11 @@ describe.concurrent("ReadonlyRecord", () => {
     expect(RR.empty()).toEqual({})
   })
 
+  it("isEmptyRecord", () => {
+    assert.deepStrictEqual(RR.isEmptyRecord({}), true)
+    assert.deepStrictEqual(RR.isEmptyRecord({ a: 3 }), false)
+  })
+
   it("isEmptyReadonlyRecord", () => {
     assert.deepStrictEqual(RR.isEmptyReadonlyRecord({}), true)
     assert.deepStrictEqual(RR.isEmptyReadonlyRecord({ a: 3 }), false)
