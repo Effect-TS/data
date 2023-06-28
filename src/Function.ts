@@ -605,7 +605,6 @@ export function pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>(
   mn: (m: M) => N,
   no: (n: N) => O
 ): O
-
 export function pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>(
   a: A,
   ab: (a: A) => B,
@@ -624,7 +623,6 @@ export function pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>(
   no: (n: N) => O,
   op: (o: O) => P
 ): P
-
 export function pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>(
   a: A,
   ab: (a: A) => B,
@@ -644,7 +642,6 @@ export function pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>(
   op: (o: O) => P,
   pq: (p: P) => Q
 ): Q
-
 export function pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>(
   a: A,
   ab: (a: A) => B,
@@ -665,7 +662,6 @@ export function pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>(
   pq: (p: P) => Q,
   qr: (q: Q) => R
 ): R
-
 export function pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>(
   a: A,
   ab: (a: A) => B,
@@ -687,7 +683,6 @@ export function pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>(
   qr: (q: Q) => R,
   rs: (r: R) => S
 ): S
-
 export function pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>(
   a: A,
   ab: (a: A) => B,
