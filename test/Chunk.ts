@@ -1,5 +1,6 @@
 import * as C from "@effect/data/Chunk"
-import { equals } from "@effect/data/Equal"
+import * as Duration from "@effect/data/Duration"
+import { equals, symbol } from "@effect/data/Equal"
 import { pipe } from "@effect/data/Function"
 import * as O from "@effect/data/Option"
 import * as RA from "@effect/data/ReadonlyArray"
@@ -15,6 +16,10 @@ describe.concurrent("Chunk", () => {
     expect(JSON.stringify(C.make(0, 1, 2))).toEqual(
       JSON.stringify({ _tag: "Chunk", values: [0, 1, 2] })
     )
+  })
+
+  it("equals", () => {
+    expect(C.make(0)[symbol](Duration.millis(1))).toEqual(false)
   })
 
   it("inspect", () => {
