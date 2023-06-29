@@ -16,25 +16,14 @@ Added in v1.0.0
   - [empty](#empty)
   - [isChunk](#ischunk)
   - [make](#make)
-  - [makeBy](#makeby)
   - [of](#of)
-  - [range](#range)
 - [conversions](#conversions)
   - [fromIterable](#fromiterable)
   - [toReadonlyArray](#toreadonlyarray)
 - [elements](#elements)
   - [chunksOf](#chunksof)
   - [correspondsTo](#correspondsto)
-  - [cross](#cross)
-  - [crossWith](#crosswith)
   - [dedupe](#dedupe)
-  - [elem](#elem)
-  - [every](#every)
-  - [findFirst](#findfirst)
-  - [findFirstIndex](#findfirstindex)
-  - [findLast](#findlast)
-  - [findLastIndex](#findlastindex)
-  - [forEach](#foreach)
   - [get](#get)
   - [head](#head)
   - [headNonEmpty](#headnonempty)
@@ -44,7 +33,6 @@ Added in v1.0.0
   - [last](#last)
   - [reverse](#reverse)
   - [size](#size)
-  - [some](#some)
   - [sort](#sort)
   - [split](#split)
   - [splitAt](#splitat)
@@ -53,61 +41,53 @@ Added in v1.0.0
   - [tailNonEmpty](#tailnonempty)
   - [takeRight](#takeright)
   - [takeWhile](#takewhile)
-  - [unfold](#unfold)
   - [union](#union)
   - [unzip](#unzip)
   - [zip](#zip)
-  - [zipAll](#zipall)
-  - [zipAllWith](#zipallwith)
   - [zipWith](#zipwith)
-  - [zipWithIndex](#zipwithindex)
-  - [zipWithIndexOffset](#zipwithindexoffset)
 - [filtering](#filtering)
   - [compact](#compact)
   - [dedupeAdjacent](#dedupeadjacent)
   - [filter](#filter)
   - [filterMap](#filtermap)
   - [filterMapWhile](#filtermapwhile)
-  - [filterMapWithIndex](#filtermapwithindex)
   - [partition](#partition)
   - [partitionMap](#partitionmap)
-  - [partitionWithIndex](#partitionwithindex)
   - [separate](#separate)
 - [folding](#folding)
-  - [join](#join)
   - [mapAccum](#mapaccum)
-  - [reduce](#reduce)
-  - [reduceRight](#reduceright)
-  - [reduceRightWithIndex](#reducerightwithindex)
-  - [reduceWithIndex](#reducewithindex)
 - [mapping](#mapping)
   - [map](#map)
-  - [mapWithIndex](#mapwithindex)
 - [model](#model)
   - [NonEmptyChunk (interface)](#nonemptychunk-interface)
 - [models](#models)
   - [Chunk (interface)](#chunk-interface)
 - [sequencing](#sequencing)
   - [flatMap](#flatmap)
+  - [flatMapNonEmpty](#flatmapnonempty)
   - [flatten](#flatten)
+  - [flattenNonEmpty](#flattennonempty)
 - [symbol](#symbol)
   - [TypeId (type alias)](#typeid-type-alias)
 - [type lambdas](#type-lambdas)
   - [ChunkTypeLambda (interface)](#chunktypelambda-interface)
 - [unsafe](#unsafe)
   - [unsafeFromArray](#unsafefromarray)
+  - [unsafeFromNonEmptyArray](#unsafefromnonemptyarray)
   - [unsafeGet](#unsafeget)
   - [unsafeHead](#unsafehead)
   - [unsafeLast](#unsafelast)
 - [utils](#utils)
   - [append](#append)
-  - [concat](#concat)
+  - [appendAll](#appendall)
+  - [appendAllNonEmpty](#appendallnonempty)
   - [drop](#drop)
   - [dropRight](#dropright)
   - [dropWhile](#dropwhile)
   - [modify](#modify)
   - [modifyOption](#modifyoption)
   - [prepend](#prepend)
+  - [prependAll](#prependall)
   - [prependAllNonEmpty](#prependallnonempty)
   - [remove](#remove)
   - [replace](#replace)
@@ -152,23 +132,6 @@ export declare const make: <As extends readonly [any, ...any[]]>(...as: As) => N
 
 Added in v1.0.0
 
-## makeBy
-
-Return a Chunk of length n with element i initialized with f(i).
-
-**Note**. `n` is normalized to an integer >= 1.
-
-**Signature**
-
-```ts
-export declare const makeBy: {
-  <A>(f: (i: number) => A): (n: number) => NonEmptyChunk<A>
-  <A>(n: number, f: (i: number) => A): NonEmptyChunk<A>
-}
-```
-
-Added in v1.0.0
-
 ## of
 
 Builds a `NonEmptyChunk` from a single element.
@@ -177,18 +140,6 @@ Builds a `NonEmptyChunk` from a single element.
 
 ```ts
 export declare const of: <A>(a: A) => NonEmptyChunk<A>
-```
-
-Added in v1.0.0
-
-## range
-
-Create a non empty `Chunk` containing a range of integers, including both endpoints.
-
-**Signature**
-
-```ts
-export declare const range: (start: number, end: number) => NonEmptyChunk<number>
 ```
 
 Added in v1.0.0
@@ -251,36 +202,6 @@ export declare const correspondsTo: {
 
 Added in v1.0.0
 
-## cross
-
-Zips this chunk crosswise with the specified chunk.
-
-**Signature**
-
-```ts
-export declare const cross: {
-  <B>(that: Chunk<B>): <A>(self: Chunk<A>) => Chunk<readonly [A, B]>
-  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<readonly [A, B]>
-}
-```
-
-Added in v1.0.0
-
-## crossWith
-
-Zips this chunk crosswise with the specified chunk using the specified combiner.
-
-**Signature**
-
-```ts
-export declare const crossWith: {
-  <A, B, C>(that: Chunk<B>, f: (a: A, b: B) => C): (self: Chunk<A>) => Chunk<C>
-  <A, B, C>(self: Chunk<A>, that: Chunk<B>, f: (a: A, b: B) => C): Chunk<C>
-}
-```
-
-Added in v1.0.0
-
 ## dedupe
 
 Remove duplicates from an array, keeping the first occurrence of an element.
@@ -289,112 +210,6 @@ Remove duplicates from an array, keeping the first occurrence of an element.
 
 ```ts
 export declare const dedupe: <A>(self: Chunk<A>) => Chunk<A>
-```
-
-Added in v1.0.0
-
-## elem
-
-Tests whether a value is a member of a `Chunk<A>`.
-
-**Signature**
-
-```ts
-export declare const elem: { <B>(b: B): <A>(self: Chunk<A>) => boolean; <A, B>(self: Chunk<A>, b: B): boolean }
-```
-
-Added in v1.0.0
-
-## every
-
-Check if a predicate holds true for every `Chunk` member.
-
-**Signature**
-
-```ts
-export declare const every: {
-  <A>(f: Predicate<A>): (self: Chunk<A>) => boolean
-  <A>(self: Chunk<A>, f: Predicate<A>): boolean
-}
-```
-
-Added in v1.0.0
-
-## findFirst
-
-Find the first element which satisfies a predicate (or a refinement) function.
-
-**Signature**
-
-```ts
-export declare const findFirst: {
-  <A, B extends A>(refinement: Refinement<A, B>): (self: Chunk<A>) => Option<B>
-  <A>(predicate: Predicate<A>): (self: Chunk<A>) => Option<A>
-  <A, B extends A>(self: Chunk<A>, refinement: Refinement<A, B>): Option<B>
-  <A>(self: Chunk<A>, predicate: Predicate<A>): Option<A>
-}
-```
-
-Added in v1.0.0
-
-## findFirstIndex
-
-Find the first index for which a predicate holds
-
-**Signature**
-
-```ts
-export declare const findFirstIndex: {
-  <A>(f: Predicate<A>): (self: Chunk<A>) => Option<number>
-  <A>(self: Chunk<A>, f: Predicate<A>): Option<number>
-}
-```
-
-Added in v1.0.0
-
-## findLast
-
-Find the last element which satisfies a predicate function
-
-**Signature**
-
-```ts
-export declare const findLast: {
-  <A, B extends A>(f: Refinement<A, B>): (self: Chunk<A>) => Option<B>
-  <A>(f: Predicate<A>): (self: Chunk<A>) => Option<A>
-  <A, B extends A>(self: Chunk<A>, f: Refinement<A, B>): Option<B>
-  <A>(self: Chunk<A>, f: Predicate<A>): Option<A>
-}
-```
-
-Added in v1.0.0
-
-## findLastIndex
-
-Find the first index for which a predicate holds
-
-**Signature**
-
-```ts
-export declare const findLastIndex: {
-  <A>(f: Predicate<A>): (self: Chunk<A>) => Option<number>
-  <A>(self: Chunk<A>, f: Predicate<A>): Option<number>
-}
-```
-
-Added in v1.0.0
-
-## forEach
-
-Iterate over the chunk applying `f`.
-
-**Signature**
-
-```ts
-export declare const forEach: {
-  <A>(f: (a: A) => void): (self: Chunk<A>) => void
-  <A>(self: Chunk<A>, f: (a: A) => void): void
-}
 ```
 
 Added in v1.0.0
@@ -493,8 +308,6 @@ Added in v1.0.0
 
 ## reverse
 
-Reverse a Chunk, creating a new Chunk.
-
 **Signature**
 
 ```ts
@@ -511,21 +324,6 @@ Retireves the size of the chunk
 
 ```ts
 export declare const size: <A>(self: Chunk<A>) => number
-```
-
-Added in v1.0.0
-
-## some
-
-Check if a predicate holds true for any `Chunk` member.
-
-**Signature**
-
-```ts
-export declare const some: {
-  <A>(f: Predicate<A>): (self: Chunk<A>) => boolean
-  <A>(self: Chunk<A>, f: Predicate<A>): boolean
-}
 ```
 
 Added in v1.0.0
@@ -568,8 +366,8 @@ Returns two splits of this chunk at the specified index.
 
 ```ts
 export declare const splitAt: {
-  (n: number): <A>(self: Chunk<A>) => readonly [Chunk<A>, Chunk<A>]
-  <A>(self: Chunk<A>, n: number): readonly [Chunk<A>, Chunk<A>]
+  (n: number): <A>(self: Chunk<A>) => [Chunk<A>, Chunk<A>]
+  <A>(self: Chunk<A>, n: number): [Chunk<A>, Chunk<A>]
 }
 ```
 
@@ -583,8 +381,8 @@ Splits this chunk on the first element that matches this predicate.
 
 ```ts
 export declare const splitWhere: {
-  <A>(f: Predicate<A>): (self: Chunk<A>) => readonly [Chunk<A>, Chunk<A>]
-  <A>(self: Chunk<A>, f: Predicate<A>): readonly [Chunk<A>, Chunk<A>]
+  <A>(predicate: Predicate<A>): (self: Chunk<A>) => [Chunk<A>, Chunk<A>]
+  <A>(self: Chunk<A>, predicate: Predicate<A>): [Chunk<A>, Chunk<A>]
 }
 ```
 
@@ -637,21 +435,9 @@ Takes all elements so long as the predicate returns true.
 
 ```ts
 export declare const takeWhile: {
-  <A>(f: Predicate<A>): (self: Chunk<A>) => Chunk<A>
-  <A>(self: Chunk<A>, f: Predicate<A>): Chunk<A>
+  <A>(predicate: Predicate<A>): (self: Chunk<A>) => Chunk<A>
+  <A>(self: Chunk<A>, predicate: Predicate<A>): Chunk<A>
 }
-```
-
-Added in v1.0.0
-
-## unfold
-
-Constructs a `Chunk` by repeatedly applying the function `f` as long as it \* returns `Some`.
-
-**Signature**
-
-```ts
-export declare const unfold: <A, S>(s: S, f: (s: S) => Option<readonly [A, S]>) => Chunk<A>
 ```
 
 Added in v1.0.0
@@ -673,14 +459,14 @@ Added in v1.0.0
 
 ## unzip
 
-Takes an array of pairs and return two corresponding arrays.
+Takes a `Chunk` of pairs and return two corresponding `Chunk`s.
 
 Note: The function is reverse of `zip`.
 
 **Signature**
 
 ```ts
-export declare const unzip: <A, B>(as: Chunk<readonly [A, B]>) => readonly [Chunk<A>, Chunk<B>]
+export declare const unzip: <A, B>(self: Chunk<readonly [A, B]>) => [Chunk<A>, Chunk<B>]
 ```
 
 Added in v1.0.0
@@ -693,49 +479,8 @@ Zips this chunk pointwise with the specified chunk.
 
 ```ts
 export declare const zip: {
-  <B>(that: Chunk<B>): <A>(self: Chunk<A>) => Chunk<readonly [A, B]>
-  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<readonly [A, B]>
-}
-```
-
-Added in v1.0.0
-
-## zipAll
-
-Zips this chunk pointwise with the specified chunk to produce a new chunk with
-pairs of elements from each chunk, filling in missing values from the
-shorter chunk with `None`. The returned chunk will have the length of the
-longer chunk.
-
-**Signature**
-
-```ts
-export declare const zipAll: {
-  <B>(that: Chunk<B>): <A>(self: Chunk<A>) => Chunk<readonly [Option<A>, Option<B>]>
-  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<readonly [Option<A>, Option<B>]>
-}
-```
-
-Added in v1.0.0
-
-## zipAllWith
-
-Zips with chunk with the specified chunk to produce a new chunk with
-pairs of elements from each chunk combined using the specified function
-`both`. If one chunk is shorter than the other uses the specified
-function `left` or `right` to map the element that does exist to the
-result type.
-
-**Signature**
-
-```ts
-export declare const zipAllWith: {
-  <A, B, C, D, E>(that: Chunk<B>, f: (a: A, b: B) => C, left: (a: A) => D, right: (b: B) => E): (
-    self: Chunk<A>
-  ) => Chunk<C | D | E>
-  <A, B, C, D, E>(self: Chunk<A>, that: Chunk<B>, f: (a: A, b: B) => C, left: (a: A) => D, right: (b: B) => E): Chunk<
-    C | D | E
-  >
+  <B>(that: Chunk<B>): <A>(self: Chunk<A>) => Chunk<[A, B]>
+  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<[A, B]>
 }
 ```
 
@@ -751,35 +496,6 @@ Zips this chunk pointwise with the specified chunk using the specified combiner.
 export declare const zipWith: {
   <A, B, C>(that: Chunk<B>, f: (a: A, b: B) => C): (self: Chunk<A>) => Chunk<C>
   <A, B, C>(self: Chunk<A>, that: Chunk<B>, f: (a: A, b: B) => C): Chunk<C>
-}
-```
-
-Added in v1.0.0
-
-## zipWithIndex
-
-Zips this chunk with the index of every element, starting from the initial
-index value.
-
-**Signature**
-
-```ts
-export declare const zipWithIndex: <A>(self: Chunk<A>) => Chunk<readonly [A, number]>
-```
-
-Added in v1.0.0
-
-## zipWithIndexOffset
-
-Zips this chunk with the index of every element, starting from the initial
-index value.
-
-**Signature**
-
-```ts
-export declare const zipWithIndexOffset: {
-  (offset: number): <A>(self: Chunk<A>) => Chunk<[A, number]>
-  <A>(self: Chunk<A>, offset: number): Chunk<[A, number]>
 }
 ```
 
@@ -806,7 +522,7 @@ Deduplicates adjacent elements that are identical.
 **Signature**
 
 ```ts
-export declare const dedupeAdjacent: <A>(self: Chunk<A>) => Chunk<A>
+export declare const dedupeAdjacent: <A>(self: Iterable<A>) => Chunk<A>
 ```
 
 Added in v1.0.0
@@ -836,8 +552,8 @@ Returns a filtered and mapped subset of the elements.
 
 ```ts
 export declare const filterMap: {
-  <A, B>(f: (a: A) => Option<B>): (self: Iterable<A>) => Chunk<B>
-  <A, B>(self: Iterable<A>, f: (a: A) => Option<B>): Chunk<B>
+  <A, B>(f: (a: A, i: number) => Option<B>): (self: Iterable<A>) => Chunk<B>
+  <A, B>(self: Iterable<A>, f: (a: A, i: number) => Option<B>): Chunk<B>
 }
 ```
 
@@ -858,33 +574,18 @@ export declare const filterMapWhile: {
 
 Added in v1.0.0
 
-## filterMapWithIndex
-
-Returns a filtered and mapped subset of the elements.
-
-**Signature**
-
-```ts
-export declare const filterMapWithIndex: {
-  <A, B>(f: (a: A, i: number) => Option<B>): (self: Iterable<A>) => Chunk<B>
-  <A, B>(self: Iterable<A>, f: (a: A, i: number) => Option<B>): Chunk<B>
-}
-```
-
-Added in v1.0.0
-
 ## partition
 
-Separate elements based on a predicate.
+Separate elements based on a predicate that also exposes the index of the element.
 
 **Signature**
 
 ```ts
 export declare const partition: {
-  <C extends A, B extends A, A = C>(refinement: Refinement<A, B>): (self: Chunk<C>) => readonly [Chunk<C>, Chunk<B>]
-  <B extends A, A = B>(predicate: Predicate<A>): (self: Chunk<B>) => readonly [Chunk<B>, Chunk<B>]
-  <C extends A, B extends A, A = C>(self: Chunk<C>, refinement: Refinement<A, B>): readonly [Chunk<C>, Chunk<B>]
-  <B extends A, A = B>(self: Chunk<B>, predicate: Predicate<A>): readonly [Chunk<B>, Chunk<B>]
+  <C extends A, B extends A, A = C>(refinement: (a: A, i: number) => a is B): (self: Chunk<C>) => [Chunk<C>, Chunk<B>]
+  <B extends A, A = B>(predicate: (a: A, i: number) => boolean): (self: Chunk<B>) => [Chunk<B>, Chunk<B>]
+  <C extends A, B extends A, A = C>(self: Chunk<C>, refinement: (a: A, i: number) => a is B): [Chunk<C>, Chunk<B>]
+  <B extends A, A = B>(self: Chunk<B>, predicate: (a: A, i: number) => boolean): [Chunk<B>, Chunk<B>]
 }
 ```
 
@@ -898,30 +599,8 @@ Partitions the elements of this chunk into two chunks using f.
 
 ```ts
 export declare const partitionMap: {
-  <A, B, C>(f: (a: A) => Either<B, C>): (self: Chunk<A>) => readonly [Chunk<B>, Chunk<C>]
-  <A, B, C>(self: Chunk<A>, f: (a: A) => Either<B, C>): readonly [Chunk<B>, Chunk<C>]
-}
-```
-
-Added in v1.0.0
-
-## partitionWithIndex
-
-Separate elements based on a predicate that also exposes the index of the element.
-
-**Signature**
-
-```ts
-export declare const partitionWithIndex: {
-  <C extends A, B extends A, A = C>(refinement: (a: A, i: number) => a is B): (
-    self: Chunk<C>
-  ) => readonly [Chunk<C>, Chunk<B>]
-  <B extends A, A = B>(predicate: (a: A, i: number) => boolean): (self: Chunk<B>) => readonly [Chunk<B>, Chunk<B>]
-  <C extends A, B extends A, A = C>(self: Chunk<C>, refinement: (a: A, i: number) => a is B): readonly [
-    Chunk<C>,
-    Chunk<B>
-  ]
-  <B extends A, A = B>(self: Chunk<B>, predicate: (a: A, i: number) => boolean): readonly [Chunk<B>, Chunk<B>]
+  <A, B, C>(f: (a: A) => Either<B, C>): (self: Chunk<A>) => [Chunk<B>, Chunk<C>]
+  <A, B, C>(self: Chunk<A>, f: (a: A) => Either<B, C>): [Chunk<B>, Chunk<C>]
 }
 ```
 
@@ -934,27 +613,12 @@ Partitions the elements of this chunk into two chunks.
 **Signature**
 
 ```ts
-export declare const separate: <A, B>(self: Chunk<Either<A, B>>) => readonly [Chunk<A>, Chunk<B>]
+export declare const separate: <A, B>(self: Chunk<Either<A, B>>) => [Chunk<A>, Chunk<B>]
 ```
 
 Added in v1.0.0
 
 # folding
-
-## join
-
-Joins the elements together with "sep" in the middle.
-
-**Signature**
-
-```ts
-export declare const join: {
-  (sep: string): (self: Chunk<string>) => string
-  (self: Chunk<string>, sep: string): string
-}
-```
-
-Added in v1.0.0
 
 ## mapAccum
 
@@ -964,68 +628,8 @@ Statefully maps over the chunk, producing new elements of type `B`.
 
 ```ts
 export declare const mapAccum: {
-  <S, A, B>(s: S, f: (s: S, a: A) => readonly [S, B]): (self: Chunk<A>) => readonly [S, Chunk<B>]
-  <S, A, B>(self: Chunk<A>, s: S, f: (s: S, a: A) => readonly [S, B]): readonly [S, Chunk<B>]
-}
-```
-
-Added in v1.0.0
-
-## reduce
-
-Folds over the elements in this chunk from the left.
-
-**Signature**
-
-```ts
-export declare const reduce: {
-  <A, B>(b: B, f: (s: B, a: A) => B): (self: Chunk<A>) => B
-  <A, B>(self: Chunk<A>, b: B, f: (s: B, a: A) => B): B
-}
-```
-
-Added in v1.0.0
-
-## reduceRight
-
-Folds over the elements in this chunk from the right.
-
-**Signature**
-
-```ts
-export declare const reduceRight: {
-  <B, A>(b: B, f: (b: B, a: A) => B): (self: Chunk<A>) => B
-  <A, B>(self: Chunk<A>, b: B, f: (b: B, a: A) => B): B
-}
-```
-
-Added in v1.0.0
-
-## reduceRightWithIndex
-
-Folds over the elements in this chunk from the right.
-
-**Signature**
-
-```ts
-export declare const reduceRightWithIndex: {
-  <B, A>(b: B, f: (b: B, a: A, i: number) => B): (self: Chunk<A>) => B
-  <A, B>(self: Chunk<A>, b: B, f: (b: B, a: A, i: number) => B): B
-}
-```
-
-Added in v1.0.0
-
-## reduceWithIndex
-
-Folds over the elements in this chunk from the left.
-
-**Signature**
-
-```ts
-export declare const reduceWithIndex: {
-  <B, A>(b: B, f: (b: B, a: A, i: number) => B): (self: Chunk<A>) => B
-  <A, B>(self: Chunk<A>, b: B, f: (b: B, a: A, i: number) => B): B
+  <S, A, B>(s: S, f: (s: S, a: A) => readonly [S, B]): (self: Chunk<A>) => [S, Chunk<B>]
+  <S, A, B>(self: Chunk<A>, s: S, f: (s: S, a: A) => readonly [S, B]): [S, Chunk<B>]
 }
 ```
 
@@ -1041,21 +645,6 @@ Returns an effect whose success is mapped by the specified f function.
 
 ```ts
 export declare const map: {
-  <A, B>(f: (a: A) => B): (self: Chunk<A>) => Chunk<B>
-  <A, B>(self: Chunk<A>, f: (a: A) => B): Chunk<B>
-}
-```
-
-Added in v1.0.0
-
-## mapWithIndex
-
-Returns an effect whose success is mapped by the specified f function.
-
-**Signature**
-
-```ts
-export declare const mapWithIndex: {
   <A, B>(f: (a: A, i: number) => B): (self: Chunk<A>) => Chunk<B>
   <A, B>(self: Chunk<A>, f: (a: A, i: number) => B): Chunk<B>
 }
@@ -1117,6 +706,19 @@ export declare const flatMap: {
 
 Added in v1.0.0
 
+## flatMapNonEmpty
+
+**Signature**
+
+```ts
+export declare const flatMapNonEmpty: {
+  <A, B>(f: (a: A, i: number) => NonEmptyChunk<B>): (self: NonEmptyChunk<A>) => NonEmptyChunk<B>
+  <A, B>(self: NonEmptyChunk<A>, f: (a: A, i: number) => NonEmptyChunk<B>): NonEmptyChunk<B>
+}
+```
+
+Added in v1.0.0
+
 ## flatten
 
 Flattens a chunk of chunks into a single chunk by concatenating all chunks.
@@ -1125,6 +727,16 @@ Flattens a chunk of chunks into a single chunk by concatenating all chunks.
 
 ```ts
 export declare const flatten: <A>(self: Chunk<Chunk<A>>) => Chunk<A>
+```
+
+Added in v1.0.0
+
+## flattenNonEmpty
+
+**Signature**
+
+```ts
+export declare const flattenNonEmpty: <A>(self: NonEmptyChunk<NonEmptyChunk<A>>) => NonEmptyChunk<A>
 ```
 
 Added in v1.0.0
@@ -1165,6 +777,18 @@ Wraps an array into a chunk without copying, unsafe on mutable arrays
 
 ```ts
 export declare const unsafeFromArray: <A>(self: readonly A[]) => Chunk<A>
+```
+
+Added in v1.0.0
+
+## unsafeFromNonEmptyArray
+
+Wraps an array into a chunk without copying, unsafe on mutable arrays
+
+**Signature**
+
+```ts
+export declare const unsafeFromNonEmptyArray: <A>(self: readonly [A, ...A[]]) => NonEmptyChunk<A>
 ```
 
 Added in v1.0.0
@@ -1222,16 +846,31 @@ export declare const append: {
 
 Added in v1.0.0
 
-## concat
+## appendAll
 
 Concatenates the two chunks
 
 **Signature**
 
 ```ts
-export declare const concat: {
+export declare const appendAll: {
   <B>(that: Chunk<B>): <A>(self: Chunk<A>) => Chunk<B | A>
   <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<A | B>
+}
+```
+
+Added in v1.0.0
+
+## appendAllNonEmpty
+
+**Signature**
+
+```ts
+export declare const appendAllNonEmpty: {
+  <B>(that: NonEmptyChunk<B>): <A>(self: Chunk<A>) => NonEmptyChunk<B | A>
+  <B>(that: Chunk<B>): <A>(self: NonEmptyChunk<A>) => NonEmptyChunk<B | A>
+  <A, B>(self: Chunk<A>, that: NonEmptyChunk<B>): NonEmptyChunk<A | B>
+  <A, B>(self: NonEmptyChunk<A>, that: Chunk<B>): NonEmptyChunk<A | B>
 }
 ```
 
@@ -1318,6 +957,19 @@ Prepends the value to the chunk
 export declare const prepend: {
   <B>(elem: B): <A>(self: Chunk<A>) => Chunk<B | A>
   <A, B>(self: Chunk<A>, elem: B): Chunk<A | B>
+}
+```
+
+Added in v1.0.0
+
+## prependAll
+
+**Signature**
+
+```ts
+export declare const prependAll: {
+  <B>(that: Chunk<B>): <A>(self: Chunk<A>) => Chunk<B | A>
+  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<A | B>
 }
 ```
 
