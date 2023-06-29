@@ -32,6 +32,12 @@ describe.concurrent("Chunk", () => {
     expect(inspect(Chunk.make(0, 1, 2))).toEqual(inspect({ _tag: "Chunk", values: [0, 1, 2] }))
   })
 
+  it("join", () => {
+    expect(C.join(C.make("a", "b", "c"), "\n")).toBe("a\nb\nc")
+    expect(C.join(C.make("", "a"), "\n")).toBe("\na")
+    expect(C.join(C.empty<string>(), "\n")).toBe("")
+  })
+
   it("modifyOption", () => {
     expect(pipe(Chunk.empty(), Chunk.modifyOption(0, (n: number) => n * 2))).toEqual(O.none())
     expect(pipe(Chunk.make(1, 2, 3), Chunk.modifyOption(0, (n: number) => n * 2))).toEqual(
