@@ -1728,8 +1728,8 @@ The order and references of result values are determined by the first `Iterable`
 
 ```ts
 export declare const intersection: {
-  <A>(that: Iterable<A>): (self: Iterable<A>) => A[]
-  <A>(self: Iterable<A>, that: Iterable<A>): A[]
+  <B>(that: Iterable<B>): <A>(self: Iterable<A>) => (A & B)[]
+  <A, B>(self: Iterable<A>, that: Iterable<B>): (A & B)[]
 }
 ```
 
@@ -2039,8 +2039,8 @@ Added in v1.0.0
 
 ```ts
 export declare const union: {
-  <A>(that: Iterable<A>): (self: Iterable<A>) => A[]
-  <A>(self: Iterable<A>, that: Iterable<A>): A[]
+  <B>(that: Iterable<B>): <A>(self: Iterable<A>) => (B | A)[]
+  <A, B>(self: Iterable<A>, that: Iterable<B>): (A | B)[]
 }
 ```
 
