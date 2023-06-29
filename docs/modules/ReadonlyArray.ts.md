@@ -15,11 +15,7 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [combining](#combining)
-  - [flatMap](#flatmap)
-  - [flatMapNonEmpty](#flatmapnonempty)
   - [flatMapNullable](#flatmapnullable)
-  - [flatten](#flatten)
-  - [flattenNonEmpty](#flattennonempty)
 - [constructors](#constructors)
   - [empty](#empty)
   - [make](#make)
@@ -33,15 +29,21 @@ Added in v1.0.0
   - [fromNullable](#fromnullable)
   - [fromOption](#fromoption)
   - [fromRecord](#fromrecord)
+- [elements](#elements)
+  - [cartesian](#cartesian)
+  - [cartesianWith](#cartesianwith)
 - [filtering](#filtering)
   - [compact](#compact)
   - [filter](#filter)
   - [filterMap](#filtermap)
+  - [filterMapWhile](#filtermapwhile)
   - [partition](#partition)
   - [partitionMap](#partitionmap)
   - [separate](#separate)
   - [span](#span)
 - [folding](#folding)
+  - [join](#join)
+  - [mapAccum](#mapaccum)
   - [reduce](#reduce)
   - [reduceRight](#reduceright)
   - [scan](#scan)
@@ -76,6 +78,7 @@ Added in v1.0.0
 - [grouping](#grouping)
   - [group](#group)
   - [groupBy](#groupby)
+  - [groupWith](#groupwith)
 - [guards](#guards)
   - [isEmptyArray](#isemptyarray)
   - [isEmptyReadonlyArray](#isemptyreadonlyarray)
@@ -101,8 +104,14 @@ Added in v1.0.0
   - [matchRight](#matchright)
 - [predicates](#predicates)
   - [contains](#contains)
+  - [containsWith](#containswith)
   - [every](#every)
   - [some](#some)
+- [sequencing](#sequencing)
+  - [flatMap](#flatmap)
+  - [flatMapNonEmpty](#flatmapnonempty)
+  - [flatten](#flatten)
+  - [flattenNonEmpty](#flattennonempty)
 - [sorting](#sorting)
   - [sort](#sort)
   - [sortBy](#sortby)
@@ -119,10 +128,20 @@ Added in v1.0.0
   - [chop](#chop)
   - [chopNonEmpty](#chopnonempty)
   - [copy](#copy)
+  - [correspondsTo](#correspondsto)
+  - [dedupe](#dedupe)
+  - [dedupeAdjacent](#dedupeadjacent)
+  - [dedupeAdjacentWith](#dedupeadjacentwith)
+  - [dedupeNonEmpty](#dedupenonempty)
+  - [dedupeNonEmptyWith](#dedupenonemptywith)
+  - [dedupeWith](#dedupewith)
   - [difference](#difference)
+  - [differenceWith](#differencewith)
   - [extend](#extend)
+  - [forEach](#foreach)
   - [insertAt](#insertat)
   - [intersection](#intersection)
+  - [intersectionWith](#intersectionwith)
   - [intersperse](#intersperse)
   - [intersperseNonEmpty](#interspersenonempty)
   - [max](#max)
@@ -145,8 +164,8 @@ Added in v1.0.0
   - [setNonEmptyLast](#setnonemptylast)
   - [union](#union)
   - [unionNonEmpty](#unionnonempty)
-  - [uniq](#uniq)
-  - [uniqNonEmpty](#uniqnonempty)
+  - [unionNonEmptyWith](#unionnonemptywith)
+  - [unionWith](#unionwith)
   - [unzip](#unzip)
   - [unzipNonEmpty](#unzipnonempty)
   - [zip](#zip)
@@ -158,32 +177,6 @@ Added in v1.0.0
 
 # combining
 
-## flatMap
-
-**Signature**
-
-```ts
-export declare const flatMap: {
-  <A, B>(f: (a: A, i: number) => readonly B[]): (self: readonly A[]) => B[]
-  <A, B>(self: readonly A[], f: (a: A, i: number) => readonly B[]): B[]
-}
-```
-
-Added in v1.0.0
-
-## flatMapNonEmpty
-
-**Signature**
-
-```ts
-export declare const flatMapNonEmpty: {
-  <A, B>(f: (a: A, i: number) => readonly [B, ...B[]]): (self: readonly [A, ...A[]]) => [B, ...B[]]
-  <A, B>(self: readonly [A, ...A[]], f: (a: A, i: number) => readonly [B, ...B[]]): [B, ...B[]]
-}
-```
-
-Added in v1.0.0
-
 ## flatMapNullable
 
 **Signature**
@@ -193,28 +186,6 @@ export declare const flatMapNullable: {
   <A, B>(f: (a: A) => B | null | undefined): (self: readonly A[]) => NonNullable<B>[]
   <A, B>(self: readonly A[], f: (a: A) => B | null | undefined): NonNullable<B>[]
 }
-```
-
-Added in v1.0.0
-
-## flatten
-
-**Signature**
-
-```ts
-export declare const flatten: <A>(self: readonly (readonly A[])[]) => A[]
-```
-
-Added in v1.0.0
-
-## flattenNonEmpty
-
-**Signature**
-
-```ts
-export declare const flattenNonEmpty: <A>(
-  self: readonly [readonly [A, ...A[]], ...(readonly [A, ...A[]])[]]
-) => [A, ...A[]]
 ```
 
 Added in v1.0.0
@@ -391,6 +362,38 @@ assert.deepStrictEqual(fromRecord(x), [
 
 Added in v1.0.0
 
+# elements
+
+## cartesian
+
+Zips this chunk crosswise with the specified chunk.
+
+**Signature**
+
+```ts
+export declare const cartesian: {
+  <B>(that: readonly B[]): <A>(self: readonly A[]) => [A, B][]
+  <A, B>(self: readonly A[], that: readonly B[]): [A, B][]
+}
+```
+
+Added in v1.0.0
+
+## cartesianWith
+
+Zips this chunk crosswise with the specified chunk using the specified combiner.
+
+**Signature**
+
+```ts
+export declare const cartesianWith: {
+  <A, B, C>(that: readonly B[], f: (a: A, b: B) => C): (self: readonly A[]) => C[]
+  <A, B, C>(self: readonly A[], that: readonly B[], f: (a: A, b: B) => C): C[]
+}
+```
+
+Added in v1.0.0
+
 # filtering
 
 ## compact
@@ -426,6 +429,21 @@ Added in v1.0.0
 export declare const filterMap: {
   <A, B>(f: (a: A, i: number) => Option<B>): (self: Iterable<A>) => B[]
   <A, B>(self: Iterable<A>, f: (a: A, i: number) => Option<B>): B[]
+}
+```
+
+Added in v1.0.0
+
+## filterMapWhile
+
+Transforms all elements of the `readonlyArray` for as long as the specified function returns some value
+
+**Signature**
+
+```ts
+export declare const filterMapWhile: {
+  <A, B>(f: (a: A) => Option<B>): (self: Iterable<A>) => B[]
+  <A, B>(self: Iterable<A>, f: (a: A) => Option<B>): B[]
 }
 ```
 
@@ -490,6 +508,36 @@ export declare const span: {
 Added in v1.0.0
 
 # folding
+
+## join
+
+Joins the elements together with "sep" in the middle.
+
+**Signature**
+
+```ts
+export declare const join: {
+  (sep: string): (self: Iterable<string>) => string
+  (self: Iterable<string>, sep: string): string
+}
+```
+
+Added in v1.0.0
+
+## mapAccum
+
+Statefully maps over the chunk, producing new elements of type `B`.
+
+**Signature**
+
+```ts
+export declare const mapAccum: {
+  <S, A, B>(s: S, f: (s: S, a: A) => readonly [S, B]): (self: Iterable<A>) => [S, B[]]
+  <S, A, B>(self: Iterable<A>, s: S, f: (s: S, a: A) => readonly [S, B]): [S, B[]]
+}
+```
+
+Added in v1.0.0
 
 ## reduce
 
@@ -922,10 +970,7 @@ Group equal, consecutive elements of a `NonEmptyReadonlyArray` into `NonEmptyArr
 **Signature**
 
 ```ts
-export declare const group: {
-  <A>(isEquivalent: (self: A, that: A) => boolean): (self: readonly [A, ...A[]]) => [[A, ...A[]], ...[A, ...A[]][]]
-  <A>(self: readonly [A, ...A[]], isEquivalent: (self: A, that: A) => boolean): [[A, ...A[]], ...[A, ...A[]][]]
-}
+export declare const group: <A>(self: readonly [A, ...A[]]) => [[A, ...A[]], ...[A, ...A[]][]]
 ```
 
 Added in v1.0.0
@@ -941,6 +986,21 @@ function on each element, and grouping the results according to values returned
 export declare const groupBy: {
   <A>(f: (a: A) => string): (self: Iterable<A>) => Record<string, [A, ...A[]]>
   <A>(self: Iterable<A>, f: (a: A) => string): Record<string, [A, ...A[]]>
+}
+```
+
+Added in v1.0.0
+
+## groupWith
+
+Group equal, consecutive elements of a `NonEmptyReadonlyArray` into `NonEmptyArray`s using the provided `isEquivalent` function.
+
+**Signature**
+
+```ts
+export declare const groupWith: {
+  <A>(isEquivalent: (self: A, that: A) => boolean): (self: readonly [A, ...A[]]) => [[A, ...A[]], ...[A, ...A[]][]]
+  <A>(self: readonly [A, ...A[]], isEquivalent: (self: A, that: A) => boolean): [[A, ...A[]], ...[A, ...A[]][]]
 }
 ```
 
@@ -1205,12 +1265,24 @@ Added in v1.0.0
 
 ## contains
 
-Returns a function that checks if a `ReadonlyArray` contains a given value using a provided `equivalence` function.
+Returns a function that checks if a `ReadonlyArray` contains a given value using the provided `isEquivalent` function.
 
 **Signature**
 
 ```ts
-export declare const contains: <A>(isEquivalent: (self: A, that: A) => boolean) => {
+export declare const contains: { <A>(a: A): (self: Iterable<A>) => boolean; <A>(self: Iterable<A>, a: A): boolean }
+```
+
+Added in v1.0.0
+
+## containsWith
+
+Returns a function that checks if a `ReadonlyArray` contains a given value using a provided `isEquivalent` function.
+
+**Signature**
+
+```ts
+export declare const containsWith: <A>(isEquivalent: (self: A, that: A) => boolean) => {
   (a: A): (self: Iterable<A>) => boolean
   (self: Iterable<A>, a: A): boolean
 }
@@ -1225,10 +1297,10 @@ Check if a predicate holds true for every `ReadonlyArray` member.
 **Signature**
 
 ```ts
-export declare function every<A, B extends A>(
-  refinement: Refinement<A, B>
-): Refinement<ReadonlyArray<A>, ReadonlyArray<B>>
-export declare function every<A>(predicate: Predicate<A>): Predicate<ReadonlyArray<A>>
+export declare const every: {
+  <A>(predicate: Predicate<A>): (self: readonly A[]) => boolean
+  <A>(self: readonly A[], predicate: Predicate<A>): boolean
+}
 ```
 
 Added in v1.0.0
@@ -1240,7 +1312,60 @@ Check if a predicate holds true for some `ReadonlyArray` member.
 **Signature**
 
 ```ts
-export declare const some: <A>(predicate: Predicate<A>) => (self: readonly A[]) => self is readonly [A, ...A[]]
+export declare const some: {
+  <A>(predicate: Predicate<A>): (self: readonly A[]) => self is readonly [A, ...A[]]
+  <A>(self: readonly A[], predicate: Predicate<A>): self is readonly [A, ...A[]]
+}
+```
+
+Added in v1.0.0
+
+# sequencing
+
+## flatMap
+
+**Signature**
+
+```ts
+export declare const flatMap: {
+  <A, B>(f: (a: A, i: number) => readonly B[]): (self: readonly A[]) => B[]
+  <A, B>(self: readonly A[], f: (a: A, i: number) => readonly B[]): B[]
+}
+```
+
+Added in v1.0.0
+
+## flatMapNonEmpty
+
+**Signature**
+
+```ts
+export declare const flatMapNonEmpty: {
+  <A, B>(f: (a: A, i: number) => readonly [B, ...B[]]): (self: readonly [A, ...A[]]) => [B, ...B[]]
+  <A, B>(self: readonly [A, ...A[]], f: (a: A, i: number) => readonly [B, ...B[]]): [B, ...B[]]
+}
+```
+
+Added in v1.0.0
+
+## flatten
+
+**Signature**
+
+```ts
+export declare const flatten: <A>(self: readonly (readonly A[])[]) => A[]
+```
+
+Added in v1.0.0
+
+## flattenNonEmpty
+
+**Signature**
+
+```ts
+export declare const flattenNonEmpty: <A>(
+  self: readonly [readonly [A, ...A[]], ...(readonly [A, ...A[]])[]]
+) => [A, ...A[]]
 ```
 
 Added in v1.0.0
@@ -1422,15 +1547,127 @@ export declare const copy: { <A>(self: readonly [A, ...A[]]): [A, ...A[]]; <A>(s
 
 Added in v1.0.0
 
+## correspondsTo
+
+Compares the two `Iterable`s of equal length using the specified function.
+
+**Signature**
+
+```ts
+export declare const correspondsTo: {
+  <A, B>(that: readonly B[], f: (a: A, b: B) => boolean): (self: readonly A[]) => boolean
+  <A, B>(self: readonly A[], that: readonly B[], f: (a: A, b: B) => boolean): boolean
+}
+```
+
+Added in v1.0.0
+
+## dedupe
+
+Remove duplicates from am `Iterable`, keeping the first occurrence of an element.
+
+**Signature**
+
+```ts
+export declare const dedupe: <A>(self: Iterable<A>) => A[]
+```
+
+Added in v1.0.0
+
+## dedupeAdjacent
+
+Deduplicates adjacent elements that are identical.
+
+**Signature**
+
+```ts
+export declare const dedupeAdjacent: <A>(self: Iterable<A>) => A[]
+```
+
+Added in v1.0.0
+
+## dedupeAdjacentWith
+
+Deduplicates adjacent elements that are identical using the provided `isEquivalent` function.
+
+**Signature**
+
+```ts
+export declare const dedupeAdjacentWith: {
+  <A>(isEquivalent: (self: A, that: A) => boolean): (self: Iterable<A>) => A[]
+  <A>(self: Iterable<A>, isEquivalent: (self: A, that: A) => boolean): A[]
+}
+```
+
+Added in v1.0.0
+
+## dedupeNonEmpty
+
+Remove duplicates from a `NonEmptyReadonlyArray`, keeping the first occurrence of an element.
+
+**Signature**
+
+```ts
+export declare const dedupeNonEmpty: <A>(self: readonly [A, ...A[]]) => [A, ...A[]]
+```
+
+Added in v1.0.0
+
+## dedupeNonEmptyWith
+
+Remove duplicates from a `NonEmptyReadonlyArray`, keeping the first occurrence of an element using the provided `isEquivalent` function.
+
+**Signature**
+
+```ts
+export declare const dedupeNonEmptyWith: {
+  <A>(isEquivalent: (self: A, that: A) => boolean): (self: readonly [A, ...A[]]) => [A, ...A[]]
+  <A>(self: readonly [A, ...A[]], isEquivalent: (self: A, that: A) => boolean): [A, ...A[]]
+}
+```
+
+Added in v1.0.0
+
+## dedupeWith
+
+Remove duplicates from am `Iterable` using the provided `isEquivalent` function, keeping the first occurrence of an element.
+
+**Signature**
+
+```ts
+export declare const dedupeWith: {
+  <A>(isEquivalent: (self: A, that: A) => boolean): (self: Iterable<A>) => A[]
+  <A>(self: Iterable<A>, isEquivalent: (self: A, that: A) => boolean): A[]
+}
+```
+
+Added in v1.0.0
+
 ## difference
 
-Creates a `Array` of values not included in the other given `Iterable`.
+Creates a `Array` of values not included in the other given `Iterable` using the provided `isEquivalent` function.
 The order and references of result values are determined by the first `Iterable`.
 
 **Signature**
 
 ```ts
-export declare const difference: <A>(isEquivalent: (self: A, that: A) => boolean) => {
+export declare const difference: {
+  <A>(that: Iterable<A>): (self: Iterable<A>) => A[]
+  <A>(self: Iterable<A>, that: Iterable<A>): A[]
+}
+```
+
+Added in v1.0.0
+
+## differenceWith
+
+Creates a `Array` of values not included in the other given `Iterable` using the provided `isEquivalent` function.
+The order and references of result values are determined by the first `Iterable`.
+
+**Signature**
+
+```ts
+export declare const differenceWith: <A>(isEquivalent: (self: A, that: A) => boolean) => {
   (that: Iterable<A>): (self: Iterable<A>) => A[]
   (self: Iterable<A>, that: Iterable<A>): A[]
 }
@@ -1446,6 +1683,21 @@ Added in v1.0.0
 export declare const extend: {
   <A, B>(f: (as: readonly A[]) => B): (self: readonly A[]) => B[]
   <A, B>(self: readonly A[], f: (as: readonly A[]) => B): B[]
+}
+```
+
+Added in v1.0.0
+
+## forEach
+
+Iterate over the `Iterable` applying `f`.
+
+**Signature**
+
+```ts
+export declare const forEach: {
+  <A>(f: (a: A, i: number) => void): (self: Iterable<A>) => void
+  <A>(self: Iterable<A>, f: (a: A, i: number) => void): void
 }
 ```
 
@@ -1475,7 +1727,23 @@ The order and references of result values are determined by the first `Iterable`
 **Signature**
 
 ```ts
-export declare const intersection: <A>(isEquivalent: (self: A, that: A) => boolean) => {
+export declare const intersection: {
+  <A>(that: Iterable<A>): (self: Iterable<A>) => A[]
+  <A>(self: Iterable<A>, that: Iterable<A>): A[]
+}
+```
+
+Added in v1.0.0
+
+## intersectionWith
+
+Creates an `Array` of unique values that are included in all given `Iterable`s using the provided `isEquivalent` function.
+The order and references of result values are determined by the first `Iterable`.
+
+**Signature**
+
+```ts
+export declare const intersectionWith: <A>(isEquivalent: (self: A, that: A) => boolean) => {
   (that: Iterable<A>): (self: Iterable<A>) => A[]
   (self: Iterable<A>, that: Iterable<A>): A[]
 }
@@ -1770,9 +2038,9 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const union: <A>(isEquivalent: (self: A, that: A) => boolean) => {
-  (that: readonly A[]): (self: readonly A[]) => A[]
-  (self: readonly A[], that: readonly A[]): A[]
+export declare const union: {
+  <A>(that: Iterable<A>): (self: Iterable<A>) => A[]
+  <A>(self: Iterable<A>, that: Iterable<A>): A[]
 }
 ```
 
@@ -1783,7 +2051,22 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unionNonEmpty: <A>(isEquivalent: (self: A, that: A) => boolean) => {
+export declare const unionNonEmpty: {
+  <A>(that: readonly [A, ...A[]]): (self: readonly A[]) => [A, ...A[]]
+  <A>(that: readonly A[]): (self: readonly [A, ...A[]]) => [A, ...A[]]
+  <A>(self: readonly A[], that: readonly [A, ...A[]]): [A, ...A[]]
+  <A>(self: readonly [A, ...A[]], that: readonly A[]): [A, ...A[]]
+}
+```
+
+Added in v1.0.0
+
+## unionNonEmptyWith
+
+**Signature**
+
+```ts
+export declare const unionNonEmptyWith: <A>(isEquivalent: (self: A, that: A) => boolean) => {
   (that: readonly [A, ...A[]]): (self: readonly A[]) => [A, ...A[]]
   (that: readonly A[]): (self: readonly [A, ...A[]]) => [A, ...A[]]
   (self: readonly A[], that: readonly [A, ...A[]]): [A, ...A[]]
@@ -1793,31 +2076,14 @@ export declare const unionNonEmpty: <A>(isEquivalent: (self: A, that: A) => bool
 
 Added in v1.0.0
 
-## uniq
-
-Remove duplicates from am `Iterable`, keeping the first occurrence of an element.
+## unionWith
 
 **Signature**
 
 ```ts
-export declare const uniq: {
-  <A>(isEquivalent: (self: A, that: A) => boolean): (self: Iterable<A>) => A[]
-  <A>(self: Iterable<A>, isEquivalent: (self: A, that: A) => boolean): A[]
-}
-```
-
-Added in v1.0.0
-
-## uniqNonEmpty
-
-Remove duplicates from a `NonEmptyReadonlyArray`, keeping the first occurrence of an element.
-
-**Signature**
-
-```ts
-export declare const uniqNonEmpty: {
-  <A>(isEquivalent: (self: A, that: A) => boolean): (self: readonly [A, ...A[]]) => [A, ...A[]]
-  <A>(self: readonly [A, ...A[]], isEquivalent: (self: A, that: A) => boolean): [A, ...A[]]
+export declare const unionWith: <A>(isEquivalent: (self: A, that: A) => boolean) => {
+  (that: Iterable<A>): (self: Iterable<A>) => A[]
+  (self: Iterable<A>, that: Iterable<A>): A[]
 }
 ```
 
@@ -1830,7 +2096,7 @@ This function is the inverse of `zip`. Takes an `Iterable` of pairs and return t
 **Signature**
 
 ```ts
-export declare const unzip: <A, B>(self: Iterable<[A, B]>) => [A[], B[]]
+export declare const unzip: <A, B>(self: Iterable<readonly [A, B]>) => [A[], B[]]
 ```
 
 Added in v1.0.0
@@ -1840,7 +2106,9 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unzipNonEmpty: <A, B>(self: readonly [[A, B], ...[A, B][]]) => [[A, ...A[]], [B, ...B[]]]
+export declare const unzipNonEmpty: <A, B>(
+  self: readonly [readonly [A, B], ...(readonly [A, B])[]]
+) => [[A, ...A[]], [B, ...B[]]]
 ```
 
 Added in v1.0.0

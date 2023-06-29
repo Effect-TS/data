@@ -188,7 +188,7 @@ export const patch = Dual.dual<
         break
       }
       case "Append": {
-        chunk = Chunk.concat(head.values)(chunk)
+        chunk = Chunk.appendAll(head.values)(chunk)
         patches = tail
         break
       }

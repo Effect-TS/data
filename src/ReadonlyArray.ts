@@ -6,6 +6,7 @@
 
 import type { Either } from "@effect/data/Either"
 import * as E from "@effect/data/Either"
+import * as Equal from "@effect/data/Equal"
 import * as equivalence from "@effect/data/Equivalence"
 import type { Equivalence } from "@effect/data/Equivalence"
 import { dual, identity } from "@effect/data/Function"
@@ -947,7 +948,7 @@ export const zipNonEmptyWith: {
  *
  * @since 1.0.0
  */
-export const unzip = <A, B>(self: Iterable<[A, B]>): [Array<A>, Array<B>] => {
+export const unzip = <A, B>(self: Iterable<readonly [A, B]>): [Array<A>, Array<B>] => {
   const input = fromIterable(self)
   return isNonEmptyReadonlyArray(input) ? unzipNonEmpty(input) : [[], []]
 }
@@ -956,7 +957,7 @@ export const unzip = <A, B>(self: Iterable<[A, B]>): [Array<A>, Array<B>] => {
  * @since 1.0.0
  */
 export const unzipNonEmpty = <A, B>(
-  self: NonEmptyReadonlyArray<[A, B]>
+  self: NonEmptyReadonlyArray<readonly [A, B]>
 ): [NonEmptyArray<A>, NonEmptyArray<B>] => {
   const fa: NonEmptyArray<A> = [self[0][0]]
   const fb: NonEmptyArray<B> = [self[0][1]]
@@ -1092,12 +1093,12 @@ export const rotateNonEmpty: {
 })
 
 /**
- * Returns a function that checks if a `ReadonlyArray` contains a given value using a provided `equivalence` function.
+ * Returns a function that checks if a `ReadonlyArray` contains a given value using a provided `isEquivalent` function.
  *
  * @category predicates
  * @since 1.0.0
  */
-export const contains = <A>(isEquivalent: (self: A, that: A) => boolean): {
+export const containsWith = <A>(isEquivalent: (self: A, that: A) => boolean): {
   (a: A): (self: Iterable<A>) => boolean
   (self: Iterable<A>, a: A): boolean
 } =>
@@ -1111,27 +1112,22 @@ export const contains = <A>(isEquivalent: (self: A, that: A) => boolean): {
   })
 
 /**
- * Remove duplicates from am `Iterable`, keeping the first occurrence of an element.
+ * Returns a function that checks if a `ReadonlyArray` contains a given value using the provided `isEquivalent` function.
  *
+ * @category predicates
  * @since 1.0.0
  */
-export const uniq: {
-  <A>(isEquivalent: (self: A, that: A) => boolean): (self: Iterable<A>) => Array<A>
-  <A>(self: Iterable<A>, isEquivalent: (self: A, that: A) => boolean): Array<A>
-} = dual(
-  2,
-  <A>(self: Iterable<A>, isEquivalent: (self: A, that: A) => boolean): Array<A> => {
-    const input = fromIterable(self)
-    return isNonEmptyReadonlyArray(input) ? uniqNonEmpty(isEquivalent)(input) : []
-  }
-)
+export const contains: {
+  <A>(a: A): (self: Iterable<A>) => boolean
+  <A>(self: Iterable<A>, a: A): boolean
+} = containsWith(Equal.equivalence())
 
 /**
- * Remove duplicates from a `NonEmptyReadonlyArray`, keeping the first occurrence of an element.
+ * Remove duplicates from a `NonEmptyReadonlyArray`, keeping the first occurrence of an element using the provided `isEquivalent` function.
  *
  * @since 1.0.0
  */
-export const uniqNonEmpty: {
+export const dedupeNonEmptyWith: {
   <A>(isEquivalent: (self: A, that: A) => boolean): (self: NonEmptyReadonlyArray<A>) => NonEmptyArray<A>
   <A>(self: NonEmptyReadonlyArray<A>, isEquivalent: (self: A, that: A) => boolean): NonEmptyArray<A>
 } = dual(2, <A>(self: NonEmptyReadonlyArray<A>, isEquivalent: (self: A, that: A) => boolean): NonEmptyArray<A> => {
@@ -1144,6 +1140,15 @@ export const uniqNonEmpty: {
   }
   return out
 })
+
+/**
+ * Remove duplicates from a `NonEmptyReadonlyArray`, keeping the first occurrence of an element.
+ *
+ * @since 1.0.0
+ */
+export const dedupeNonEmpty: <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyArray<A> = dedupeNonEmptyWith(
+  Equal.equivalence()
+)
 
 /**
  * A useful recursion pattern for processing an `Iterable` to produce a new `Array`, often used for "chopping" up the input
@@ -1279,12 +1284,12 @@ export const chunksOfNonEmpty: {
 )
 
 /**
- * Group equal, consecutive elements of a `NonEmptyReadonlyArray` into `NonEmptyArray`s.
+ * Group equal, consecutive elements of a `NonEmptyReadonlyArray` into `NonEmptyArray`s using the provided `isEquivalent` function.
  *
  * @category grouping
  * @since 1.0.0
  */
-export const group: {
+export const groupWith: {
   <A>(isEquivalent: (self: A, that: A) => boolean): (self: NonEmptyReadonlyArray<A>) => NonEmptyArray<NonEmptyArray<A>>
   <A>(self: NonEmptyReadonlyArray<A>, isEquivalent: (self: A, that: A) => boolean): NonEmptyArray<NonEmptyArray<A>>
 } = dual(
@@ -1304,6 +1309,16 @@ export const group: {
       }
       return [out, as.slice(i)]
     })
+)
+
+/**
+ * Group equal, consecutive elements of a `NonEmptyReadonlyArray` into `NonEmptyArray`s.
+ *
+ * @category grouping
+ * @since 1.0.0
+ */
+export const group: <A>(self: NonEmptyReadonlyArray<A>) => NonEmptyArray<NonEmptyArray<A>> = groupWith(
+  Equal.equivalence()
 )
 
 /**
@@ -1332,15 +1347,15 @@ export const groupBy: {
 /**
  * @since 1.0.0
  */
-export const union = <A>(isEquivalent: (self: A, that: A) => boolean): {
-  (that: ReadonlyArray<A>): (self: ReadonlyArray<A>) => Array<A>
-  (self: ReadonlyArray<A>, that: ReadonlyArray<A>): Array<A>
+export const unionWith = <A>(isEquivalent: (self: A, that: A) => boolean): {
+  (that: Iterable<A>): (self: Iterable<A>) => Array<A>
+  (self: Iterable<A>, that: Iterable<A>): Array<A>
 } =>
-  dual(2, (self: ReadonlyArray<A>, that: ReadonlyArray<A>): Array<A> => {
-    const a = Array.from(self)
-    const b = Array.from(that)
+  dual(2, (self: Iterable<A>, that: Iterable<A>): Array<A> => {
+    const a = fromIterable(self)
+    const b = fromIterable(that)
     return isNonEmptyReadonlyArray(a) && isNonEmptyReadonlyArray(b) ?
-      unionNonEmpty(isEquivalent)(a, b) :
+      unionNonEmptyWith(isEquivalent)(a, b) :
       isNonEmptyReadonlyArray(a) ?
       a :
       b
@@ -1349,29 +1364,48 @@ export const union = <A>(isEquivalent: (self: A, that: A) => boolean): {
 /**
  * @since 1.0.0
  */
-export const unionNonEmpty = <A>(isEquivalent: (self: A, that: A) => boolean): {
+export const union: {
+  <B>(that: Iterable<B>): <A>(self: Iterable<A>) => Array<A | B>
+  <A, B>(self: Iterable<A>, that: Iterable<B>): Array<A | B>
+} = unionWith(Equal.equivalence())
+
+/**
+ * @since 1.0.0
+ */
+export const unionNonEmptyWith = <A>(isEquivalent: (self: A, that: A) => boolean): {
   (that: NonEmptyReadonlyArray<A>): (self: ReadonlyArray<A>) => NonEmptyArray<A>
   (that: ReadonlyArray<A>): (self: NonEmptyReadonlyArray<A>) => NonEmptyArray<A>
   (self: ReadonlyArray<A>, that: NonEmptyReadonlyArray<A>): NonEmptyArray<A>
   (self: NonEmptyReadonlyArray<A>, that: ReadonlyArray<A>): NonEmptyArray<A>
-} =>
-  dual(
+} => {
+  const dedupe = dedupeNonEmptyWith(isEquivalent)
+  return dual(
     2,
-    (self: NonEmptyReadonlyArray<A>, that: ReadonlyArray<A>): NonEmptyArray<A> =>
-      uniqNonEmpty(isEquivalent)(appendAllNonEmpty(self, that))
+    (self: NonEmptyReadonlyArray<A>, that: ReadonlyArray<A>): NonEmptyArray<A> => dedupe(appendAllNonEmpty(self, that))
   )
+}
 
 /**
- * Creates an `Array` of unique values that are included in all given `Iterable`s.
+ * @since 1.0.0
+ */
+export const unionNonEmpty: {
+  <A>(that: NonEmptyReadonlyArray<A>): (self: ReadonlyArray<A>) => NonEmptyArray<A>
+  <A>(that: ReadonlyArray<A>): (self: NonEmptyReadonlyArray<A>) => NonEmptyArray<A>
+  <A>(self: ReadonlyArray<A>, that: NonEmptyReadonlyArray<A>): NonEmptyArray<A>
+  <A>(self: NonEmptyReadonlyArray<A>, that: ReadonlyArray<A>): NonEmptyArray<A>
+} = unionNonEmptyWith(Equal.equivalence())
+
+/**
+ * Creates an `Array` of unique values that are included in all given `Iterable`s using the provided `isEquivalent` function.
  * The order and references of result values are determined by the first `Iterable`.
  *
  * @since 1.0.0
  */
-export const intersection = <A>(isEquivalent: (self: A, that: A) => boolean): {
+export const intersectionWith = <A>(isEquivalent: (self: A, that: A) => boolean): {
   (that: Iterable<A>): (self: Iterable<A>) => Array<A>
   (self: Iterable<A>, that: Iterable<A>): Array<A>
 } => {
-  const has = contains(isEquivalent)
+  const has = containsWith(isEquivalent)
   return dual(
     2,
     (self: Iterable<A>, that: Iterable<A>): Array<A> => fromIterable(self).filter((a) => has(that, a))
@@ -1379,21 +1413,43 @@ export const intersection = <A>(isEquivalent: (self: A, that: A) => boolean): {
 }
 
 /**
- * Creates a `Array` of values not included in the other given `Iterable`.
+ * Creates an `Array` of unique values that are included in all given `Iterable`s.
  * The order and references of result values are determined by the first `Iterable`.
  *
  * @since 1.0.0
  */
-export const difference = <A>(isEquivalent: (self: A, that: A) => boolean): {
+export const intersection: {
+  <B>(that: Iterable<B>): <A>(self: Iterable<A>) => Array<A & B>
+  <A, B>(self: Iterable<A>, that: Iterable<B>): Array<A & B>
+} = intersectionWith(Equal.equivalence())
+
+/**
+ * Creates a `Array` of values not included in the other given `Iterable` using the provided `isEquivalent` function.
+ * The order and references of result values are determined by the first `Iterable`.
+ *
+ * @since 1.0.0
+ */
+export const differenceWith = <A>(isEquivalent: (self: A, that: A) => boolean): {
   (that: Iterable<A>): (self: Iterable<A>) => Array<A>
   (self: Iterable<A>, that: Iterable<A>): Array<A>
 } => {
-  const has = contains(isEquivalent)
+  const has = containsWith(isEquivalent)
   return dual(
     2,
     (self: Iterable<A>, that: Iterable<A>): Array<A> => fromIterable(self).filter((a) => !has(that, a))
   )
 }
+
+/**
+ * Creates a `Array` of values not included in the other given `Iterable` using the provided `isEquivalent` function.
+ * The order and references of result values are determined by the first `Iterable`.
+ *
+ * @since 1.0.0
+ */
+export const difference: {
+  <A>(that: Iterable<A>): (self: Iterable<A>) => Array<A>
+  <A>(self: Iterable<A>, that: Iterable<A>): Array<A>
+} = differenceWith(Equal.equivalence())
 
 /**
  * @category constructors
@@ -1428,7 +1484,7 @@ export const mapNonEmpty: {
 } = map as any
 
 /**
- * @category combining
+ * @category sequencing
  * @since 1.0.0
  */
 export const flatMap: {
@@ -1449,27 +1505,22 @@ export const flatMap: {
 )
 
 /**
- * @category combining
+ * @category sequencing
  * @since 1.0.0
  */
 export const flatMapNonEmpty: {
-  <A, B>(
-    f: (a: A, i: number) => NonEmptyReadonlyArray<B>
-  ): (self: NonEmptyReadonlyArray<A>) => NonEmptyArray<B>
-  <A, B>(
-    self: NonEmptyReadonlyArray<A>,
-    f: (a: A, i: number) => NonEmptyReadonlyArray<B>
-  ): NonEmptyArray<B>
+  <A, B>(f: (a: A, i: number) => NonEmptyReadonlyArray<B>): (self: NonEmptyReadonlyArray<A>) => NonEmptyArray<B>
+  <A, B>(self: NonEmptyReadonlyArray<A>, f: (a: A, i: number) => NonEmptyReadonlyArray<B>): NonEmptyArray<B>
 } = flatMap as any
 
 /**
- * @category combining
+ * @category sequencing
  * @since 1.0.0
  */
 export const flatten: <A>(self: ReadonlyArray<ReadonlyArray<A>>) => Array<A> = flatMap(identity)
 
 /**
- * @category combining
+ * @category sequencing
  * @since 1.0.0
  */
 export const flattenNonEmpty: <A>(
@@ -1497,6 +1548,28 @@ export const filterMap: {
     return out
   }
 )
+
+/**
+ * Transforms all elements of the `readonlyArray` for as long as the specified function returns some value
+ *
+ * @category filtering
+ * @since 1.0.0
+ */
+export const filterMapWhile: {
+  <A, B>(f: (a: A) => Option<B>): (self: Iterable<A>) => Array<B>
+  <A, B>(self: Iterable<A>, f: (a: A) => Option<B>): Array<B>
+} = dual(2, <A, B>(self: Iterable<A>, f: (a: A) => Option<B>) => {
+  const out: Array<B> = []
+  for (const a of self) {
+    const b = f(a)
+    if (O.isSome(b)) {
+      out.push(b.value)
+    } else {
+      break
+    }
+  }
+  return out
+})
 
 /**
  * @category filtering
@@ -1692,13 +1765,10 @@ export const liftEither = <A extends Array<unknown>, E, B>(
  * @category predicates
  * @since 1.0.0
  */
-export function every<A, B extends A>(
-  refinement: Refinement<A, B>
-): Refinement<ReadonlyArray<A>, ReadonlyArray<B>>
-export function every<A>(predicate: Predicate<A>): Predicate<ReadonlyArray<A>>
-export function every<A>(predicate: Predicate<A>): Predicate<ReadonlyArray<A>> {
-  return (self) => self.every(predicate)
-}
+export const every: {
+  <A>(predicate: Predicate<A>): (self: ReadonlyArray<A>) => boolean
+  <A>(self: ReadonlyArray<A>, predicate: Predicate<A>): boolean
+} = dual(2, <A>(self: ReadonlyArray<A>, predicate: Predicate<A>): boolean => self.every(predicate))
 
 /**
  * Check if a predicate holds true for some `ReadonlyArray` member.
@@ -1706,8 +1776,13 @@ export function every<A>(predicate: Predicate<A>): Predicate<ReadonlyArray<A>> {
  * @category predicates
  * @since 1.0.0
  */
-export const some = <A>(predicate: Predicate<A>) =>
-  (self: ReadonlyArray<A>): self is NonEmptyReadonlyArray<A> => self.some(predicate)
+export const some: {
+  <A>(predicate: Predicate<A>): (self: ReadonlyArray<A>) => self is NonEmptyReadonlyArray<A>
+  <A>(self: ReadonlyArray<A>, predicate: Predicate<A>): self is NonEmptyReadonlyArray<A>
+} = dual(
+  2,
+  <A>(self: ReadonlyArray<A>, predicate: Predicate<A>): self is NonEmptyReadonlyArray<A> => self.some(predicate)
+)
 
 /**
  * @since 1.0.0
@@ -1768,3 +1843,138 @@ export const getOrder: <A>(O: Order<A>) => Order<ReadonlyArray<A>> = order.array
  * @since 1.0.0
  */
 export const getEquivalence: <A>(O: Equivalence<A>) => Equivalence<ReadonlyArray<A>> = equivalence.array
+
+/**
+ * Compares the two `Iterable`s of equal length using the specified function.
+ *
+ * @since 1.0.0
+ */
+export const correspondsTo: {
+  <A, B>(that: ReadonlyArray<B>, f: (a: A, b: B) => boolean): (self: ReadonlyArray<A>) => boolean
+  <A, B>(self: ReadonlyArray<A>, that: ReadonlyArray<B>, f: (a: A, b: B) => boolean): boolean
+} = dual(3, <A, B>(self: ReadonlyArray<A>, that: ReadonlyArray<B>, f: (a: A, b: B) => boolean): boolean => {
+  if (self.length !== that.length) {
+    return false
+  }
+  return self.every((v, i) => f(v, that[i]))
+})
+
+/**
+ * Iterate over the `Iterable` applying `f`.
+ *
+ * @since 1.0.0
+ */
+export const forEach: {
+  <A>(f: (a: A, i: number) => void): (self: Iterable<A>) => void
+  <A>(self: Iterable<A>, f: (a: A, i: number) => void): void
+} = dual(2, <A>(self: Iterable<A>, f: (a: A, i: number) => void): void => fromIterable(self).forEach((a, i) => f(a, i)))
+
+/**
+ * Remove duplicates from am `Iterable` using the provided `isEquivalent` function, keeping the first occurrence of an element.
+ *
+ * @since 1.0.0
+ */
+export const dedupeWith: {
+  <A>(isEquivalent: (self: A, that: A) => boolean): (self: Iterable<A>) => Array<A>
+  <A>(self: Iterable<A>, isEquivalent: (self: A, that: A) => boolean): Array<A>
+} = dual(
+  2,
+  <A>(self: Iterable<A>, isEquivalent: (self: A, that: A) => boolean): Array<A> => {
+    const input = fromIterable(self)
+    return isNonEmptyReadonlyArray(input) ? dedupeNonEmptyWith(isEquivalent)(input) : []
+  }
+)
+
+/**
+ * Remove duplicates from am `Iterable`, keeping the first occurrence of an element.
+ *
+ * @since 1.0.0
+ */
+export const dedupe: <A>(self: Iterable<A>) => Array<A> = dedupeWith(Equal.equivalence())
+
+/**
+ * Deduplicates adjacent elements that are identical using the provided `isEquivalent` function.
+ *
+ * @since 1.0.0
+ */
+export const dedupeAdjacentWith: {
+  <A>(isEquivalent: (self: A, that: A) => boolean): (self: Iterable<A>) => Array<A>
+  <A>(self: Iterable<A>, isEquivalent: (self: A, that: A) => boolean): Array<A>
+} = dual(2, <A>(self: Iterable<A>, isEquivalent: (self: A, that: A) => boolean): Array<A> => {
+  const out: Array<A> = []
+  let lastA: O.Option<A> = O.none()
+  for (const a of self) {
+    if (O.isNone(lastA) || !isEquivalent(a, lastA.value)) {
+      out.push(a)
+      lastA = O.some(a)
+    }
+  }
+  return out
+})
+
+/**
+ * Deduplicates adjacent elements that are identical.
+ *
+ * @since 1.0.0
+ */
+export const dedupeAdjacent: <A>(self: Iterable<A>) => Array<A> = dedupeAdjacentWith(Equal.equivalence())
+
+/**
+ * Joins the elements together with "sep" in the middle.
+ *
+ * @since 1.0.0
+ * @category folding
+ */
+export const join: {
+  (sep: string): (self: Iterable<string>) => string
+  (self: Iterable<string>, sep: string): string
+} = dual(2, (self: Iterable<string>, sep: string): string => fromIterable(self).join(sep))
+
+/**
+ * Statefully maps over the chunk, producing new elements of type `B`.
+ *
+ * @since 1.0.0
+ * @category folding
+ */
+export const mapAccum: {
+  <S, A, B>(s: S, f: (s: S, a: A) => readonly [S, B]): (self: Iterable<A>) => [S, Array<B>]
+  <S, A, B>(self: Iterable<A>, s: S, f: (s: S, a: A) => readonly [S, B]): [S, Array<B>]
+} = dual(3, <S, A, B>(self: Iterable<A>, s: S, f: (s: S, a: A) => [S, B]) => {
+  let s1 = s
+  const out: Array<B> = []
+  for (const a of self) {
+    const r = f(s1, a)
+    s1 = r[0]
+    out.push(r[1])
+  }
+  return [s1, out]
+})
+
+/**
+ * Zips this chunk crosswise with the specified chunk using the specified combiner.
+ *
+ * @since 1.0.0
+ * @category elements
+ */
+export const cartesianWith: {
+  <A, B, C>(that: ReadonlyArray<B>, f: (a: A, b: B) => C): (self: ReadonlyArray<A>) => Array<C>
+  <A, B, C>(self: ReadonlyArray<A>, that: ReadonlyArray<B>, f: (a: A, b: B) => C): Array<C>
+} = dual(
+  3,
+  <A, B, C>(self: ReadonlyArray<A>, that: ReadonlyArray<B>, f: (a: A, b: B) => C): Array<C> =>
+    flatMap(self, (a) => map(that, (b) => f(a, b)))
+)
+
+/**
+ * Zips this chunk crosswise with the specified chunk.
+ *
+ * @since 1.0.0
+ * @category elements
+ */
+export const cartesian: {
+  <B>(that: ReadonlyArray<B>): <A>(self: ReadonlyArray<A>) => Array<[A, B]>
+  <A, B>(self: ReadonlyArray<A>, that: ReadonlyArray<B>): Array<[A, B]>
+} = dual(
+  2,
+  <A, B>(self: ReadonlyArray<A>, that: ReadonlyArray<B>): Array<[A, B]> => cartesianWith(self, that, (a, b) => [a, b])
+)
