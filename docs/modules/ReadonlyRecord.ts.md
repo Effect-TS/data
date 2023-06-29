@@ -58,7 +58,7 @@ Creates a new, empty record.
 **Signature**
 
 ```ts
-export declare const empty: <A>() => Record<string, A>;
+export declare const empty: <A>() => Record<string, A>
 ```
 
 Added in v1.0.0
@@ -73,25 +73,25 @@ Transforms the values of a `ReadonlyRecord` into an `Array` with a custom mappin
 
 ```ts
 export declare const collect: {
-  <K extends string, A, B>(f: (key: K, a: A) => B): (self: Record<K, A>) => B[];
-  <K extends string, A, B>(self: Record<K, A>, f: (key: K, a: A) => B): B[];
-};
+  <K extends string, A, B>(f: (key: K, a: A) => B): (self: Record<K, A>) => B[]
+  <K extends string, A, B>(self: Record<K, A>, f: (key: K, a: A) => B): B[]
+}
 ```
 
 **Example**
 
 ```ts
-import { collect } from "@effect/data/ReadonlyRecord";
+import { collect } from '@effect/data/ReadonlyRecord'
 
-const x = { a: 1, b: 2, c: 3 };
+const x = { a: 1, b: 2, c: 3 }
 assert.deepStrictEqual(
   collect(x, (key, n) => [key, n]),
   [
-    ["a", 1],
-    ["b", 2],
-    ["c", 3],
+    ['a', 1],
+    ['b', 2],
+    ['c', 3],
   ]
-);
+)
 ```
 
 Added in v1.0.0
@@ -106,22 +106,20 @@ previous ones. So the resulting record will only have the value of the last occu
 **Signature**
 
 ```ts
-export declare const fromEntries: <A>(
-  self: Iterable<[string, A]>
-) => Record<string, A>;
+export declare const fromEntries: <A>(self: Iterable<[string, A]>) => Record<string, A>
 ```
 
 **Example**
 
 ```ts
-import { fromEntries } from "@effect/data/ReadonlyRecord";
+import { fromEntries } from '@effect/data/ReadonlyRecord'
 
 const input: Array<[string, number]> = [
-  ["a", 1],
-  ["b", 2],
-];
+  ['a', 1],
+  ['b', 2],
+]
 
-assert.deepStrictEqual(fromEntries(input), { a: 1, b: 2 });
+assert.deepStrictEqual(fromEntries(input), { a: 1, b: 2 })
 ```
 
 Added in v1.0.0
@@ -135,27 +133,22 @@ The projection function maps each value of the iterable to a tuple of a key and 
 
 ```ts
 export declare const fromIterable: {
-  <A, B>(f: (a: A) => readonly [string, B]): (
-    self: Iterable<A>
-  ) => Record<string, B>;
-  <A, B>(self: Iterable<A>, f: (a: A) => readonly [string, B]): Record<
-    string,
-    B
-  >;
-};
+  <A, B>(f: (a: A) => readonly [string, B]): (self: Iterable<A>) => Record<string, B>
+  <A, B>(self: Iterable<A>, f: (a: A) => readonly [string, B]): Record<string, B>
+}
 ```
 
 **Example**
 
 ```ts
-import { fromIterable } from "@effect/data/ReadonlyRecord";
+import { fromIterable } from '@effect/data/ReadonlyRecord'
 
-const input = [1, 2, 3, 4];
+const input = [1, 2, 3, 4]
 
 assert.deepStrictEqual(
   fromIterable(input, (a) => [String(a), a * 2]),
-  { "1": 2, "2": 4, "3": 6, "4": 8 }
-);
+  { '1': 2, '2': 4, '3': 6, '4': 8 }
+)
 ```
 
 Added in v1.0.0
@@ -169,22 +162,20 @@ Alias of {@link toEntries}.
 **Signature**
 
 ```ts
-export declare const toArray: <K extends string, A>(
-  self: Record<K, A>
-) => [K, A][];
+export declare const toArray: <K extends string, A>(self: Record<K, A>) => [K, A][]
 ```
 
 **Example**
 
 ```ts
-import { toArray } from "@effect/data/ReadonlyRecord";
+import { toArray } from '@effect/data/ReadonlyRecord'
 
-const x = { a: 1, b: 2, c: 3 };
+const x = { a: 1, b: 2, c: 3 }
 assert.deepStrictEqual(toArray(x), [
-  ["a", 1],
-  ["b", 2],
-  ["c", 3],
-]);
+  ['a', 1],
+  ['b', 2],
+  ['c', 3],
+])
 ```
 
 Added in v1.0.0
@@ -196,22 +187,20 @@ Takes a record and returns an array of tuples containing its keys and values.
 **Signature**
 
 ```ts
-export declare const toEntries: <K extends string, A>(
-  self: Record<K, A>
-) => [K, A][];
+export declare const toEntries: <K extends string, A>(self: Record<K, A>) => [K, A][]
 ```
 
 **Example**
 
 ```ts
-import { toEntries } from "@effect/data/ReadonlyRecord";
+import { toEntries } from '@effect/data/ReadonlyRecord'
 
-const x = { a: 1, b: 2, c: 3 };
+const x = { a: 1, b: 2, c: 3 }
 assert.deepStrictEqual(toEntries(x), [
-  ["a", 1],
-  ["b", 2],
-  ["c", 3],
-]);
+  ['a', 1],
+  ['b', 2],
+  ['c', 3],
+])
 ```
 
 Added in v1.0.0
@@ -225,21 +214,16 @@ Given a `ReadonlyRecord` with `Option` values, returns a `Record` with only the 
 **Signature**
 
 ```ts
-export declare const compact: <A>(
-  self: ReadonlyRecord<Option<A>>
-) => Record<string, A>;
+export declare const compact: <A>(self: ReadonlyRecord<Option<A>>) => Record<string, A>
 ```
 
 **Example**
 
 ```ts
-import { compact } from "@effect/data/ReadonlyRecord";
-import { some, none } from "@effect/data/Option";
+import { compact } from '@effect/data/ReadonlyRecord'
+import { some, none } from '@effect/data/Option'
 
-assert.deepStrictEqual(compact({ a: some(1), b: none(), c: some(2) }), {
-  a: 1,
-  c: 2,
-});
+assert.deepStrictEqual(compact({ a: some(1), b: none(), c: some(2) }), { a: 1, c: 2 })
 ```
 
 Added in v1.0.0
@@ -252,33 +236,30 @@ Selects properties from a record whose values match the given predicate.
 
 ```ts
 export declare const filter: {
-  <K extends string, C extends A, B extends A, A = C>(
-    refinement: (a: A, key: K) => a is B
-  ): (self: Record<K, C>) => Record<string, B>;
-  <K extends string, B extends A, A = B>(
-    predicate: (a: A, key: K) => boolean
-  ): (self: Record<K, B>) => Record<string, B>;
-  <K extends string, C extends A, B extends A, A = C>(
-    self: Record<K, C>,
-    refinement: (a: A, key: K) => a is B
-  ): Record<string, B>;
-  <K extends string, B extends A, A = B>(
-    self: Record<K, B>,
-    predicate: (a: A, key: K) => boolean
-  ): Record<string, B>;
-};
+  <K extends string, C extends A, B extends A, A = C>(refinement: (a: A, key: K) => a is B): (
+    self: Record<K, C>
+  ) => Record<string, B>
+  <K extends string, B extends A, A = B>(predicate: (a: A, key: K) => boolean): (
+    self: Record<K, B>
+  ) => Record<string, B>
+  <K extends string, C extends A, B extends A, A = C>(self: Record<K, C>, refinement: (a: A, key: K) => a is B): Record<
+    string,
+    B
+  >
+  <K extends string, B extends A, A = B>(self: Record<K, B>, predicate: (a: A, key: K) => boolean): Record<string, B>
+}
 ```
 
 **Example**
 
 ```ts
-import { filter } from "@effect/data/ReadonlyRecord";
+import { filter } from '@effect/data/ReadonlyRecord'
 
-const x = { a: 1, b: 2, c: 3, d: 4 };
+const x = { a: 1, b: 2, c: 3, d: 4 }
 assert.deepStrictEqual(
   filter(x, (n) => n > 2),
   { c: 3, d: 4 }
-);
+)
 ```
 
 Added in v1.0.0
@@ -291,32 +272,32 @@ Partitions a `ReadonlyRecord` into two separate `Record`s based on the result of
 
 ```ts
 export declare const partition: {
-  <K extends string, C extends A, B extends A, A = C>(
-    refinement: (a: A, key: K) => a is B
-  ): (self: Record<K, C>) => [Record<string, C>, Record<string, B>];
-  <K extends string, B extends A, A = B>(
-    predicate: (a: A, key: K) => boolean
-  ): (self: Record<K, B>) => [Record<string, B>, Record<string, B>];
-  <K extends string, C extends A, B extends A, A = C>(
-    self: Record<K, C>,
-    refinement: (a: A, key: K) => a is B
-  ): [Record<string, C>, Record<string, B>];
-  <K extends string, B extends A, A = B>(
-    self: Record<K, B>,
-    predicate: (a: A, key: K) => boolean
-  ): [Record<string, B>, Record<string, B>];
-};
+  <K extends string, C extends A, B extends A, A = C>(refinement: (a: A, key: K) => a is B): (
+    self: Record<K, C>
+  ) => [Record<string, C>, Record<string, B>]
+  <K extends string, B extends A, A = B>(predicate: (a: A, key: K) => boolean): (
+    self: Record<K, B>
+  ) => [Record<string, B>, Record<string, B>]
+  <K extends string, C extends A, B extends A, A = C>(self: Record<K, C>, refinement: (a: A, key: K) => a is B): [
+    Record<string, C>,
+    Record<string, B>
+  ]
+  <K extends string, B extends A, A = B>(self: Record<K, B>, predicate: (a: A, key: K) => boolean): [
+    Record<string, B>,
+    Record<string, B>
+  ]
+}
 ```
 
 **Example**
 
 ```ts
-import { partition } from "@effect/data/ReadonlyRecord";
+import { partition } from '@effect/data/ReadonlyRecord'
 
 assert.deepStrictEqual(
   partition({ a: 1, b: 3 }, (n) => n > 2),
   [{ a: 1 }, { b: 3 }]
-);
+)
 ```
 
 Added in v1.0.0
@@ -331,23 +312,23 @@ Partitions the elements of a `ReadonlyRecord` into two groups: those that match 
 export declare const partitionMap: {
   <K extends string, A, B, C>(f: (a: A, key: K) => Either<B, C>): (
     self: Record<K, A>
-  ) => [Record<string, B>, Record<string, C>];
-  <K extends string, A, B, C>(
-    self: Record<K, A>,
-    f: (a: A, key: K) => Either<B, C>
-  ): [Record<string, B>, Record<string, C>];
-};
+  ) => [Record<string, B>, Record<string, C>]
+  <K extends string, A, B, C>(self: Record<K, A>, f: (a: A, key: K) => Either<B, C>): [
+    Record<string, B>,
+    Record<string, C>
+  ]
+}
 ```
 
 **Example**
 
 ```ts
-import { partitionMap } from "@effect/data/ReadonlyRecord";
-import { left, right } from "@effect/data/Either";
+import { partitionMap } from '@effect/data/ReadonlyRecord'
+import { left, right } from '@effect/data/Either'
 
-const x = { a: 1, b: 2, c: 3 };
-const f = (n: number) => (n % 2 === 0 ? right(n) : left(n));
-assert.deepStrictEqual(partitionMap(x, f), [{ a: 1, c: 3 }, { b: 2 }]);
+const x = { a: 1, b: 2, c: 3 }
+const f = (n: number) => (n % 2 === 0 ? right(n) : left(n))
+assert.deepStrictEqual(partitionMap(x, f), [{ a: 1, c: 3 }, { b: 2 }])
 ```
 
 Added in v1.0.0
@@ -360,21 +341,16 @@ one with the `Left` values and one with the `Right` values.
 **Signature**
 
 ```ts
-export declare const separate: <A, B>(
-  self: ReadonlyRecord<Either<A, B>>
-) => [Record<string, A>, Record<string, B>];
+export declare const separate: <A, B>(self: ReadonlyRecord<Either<A, B>>) => [Record<string, A>, Record<string, B>]
 ```
 
 **Example**
 
 ```ts
-import { separate } from "@effect/data/ReadonlyRecord";
-import { left, right } from "@effect/data/Either";
+import { separate } from '@effect/data/ReadonlyRecord'
+import { left, right } from '@effect/data/Either'
 
-assert.deepStrictEqual(separate({ a: left("e"), b: right(1) }), [
-  { a: "e" },
-  { b: 1 },
-]);
+assert.deepStrictEqual(separate({ a: left('e'), b: right(1) }), [{ a: 'e' }, { b: 1 }])
 ```
 
 Added in v1.0.0
@@ -388,18 +364,16 @@ Determine if a `ReadonlyRecord` is empty.
 **Signature**
 
 ```ts
-export declare const isEmptyReadonlyRecord: <A>(
-  self: ReadonlyRecord<A>
-) => self is ReadonlyRecord<never>;
+export declare const isEmptyReadonlyRecord: <A>(self: ReadonlyRecord<A>) => self is ReadonlyRecord<never>
 ```
 
 **Example**
 
 ```ts
-import { isEmptyReadonlyRecord } from "@effect/data/ReadonlyRecord";
+import { isEmptyReadonlyRecord } from '@effect/data/ReadonlyRecord'
 
-assert.deepStrictEqual(isEmptyReadonlyRecord({}), true);
-assert.deepStrictEqual(isEmptyReadonlyRecord({ a: 3 }), false);
+assert.deepStrictEqual(isEmptyReadonlyRecord({}), true)
+assert.deepStrictEqual(isEmptyReadonlyRecord({ a: 3 }), false)
 ```
 
 Added in v1.0.0
@@ -411,18 +385,16 @@ Determine if a `Record` is empty.
 **Signature**
 
 ```ts
-export declare const isEmptyRecord: <A>(
-  self: Record<string, A>
-) => self is Record<string, never>;
+export declare const isEmptyRecord: <A>(self: Record<string, A>) => self is Record<string, never>
 ```
 
 **Example**
 
 ```ts
-import { isEmptyRecord } from "@effect/data/ReadonlyRecord";
+import { isEmptyRecord } from '@effect/data/ReadonlyRecord'
 
-assert.deepStrictEqual(isEmptyRecord({}), true);
-assert.deepStrictEqual(isEmptyRecord({ a: 3 }), false);
+assert.deepStrictEqual(isEmptyRecord({}), true)
+assert.deepStrictEqual(isEmptyRecord({ a: 3 }), false)
 ```
 
 Added in v1.0.0
@@ -435,7 +407,7 @@ Added in v1.0.0
 
 ```ts
 export interface ReadonlyRecord<A> {
-  readonly [x: string]: A;
+  readonly [x: string]: A
 }
 ```
 
@@ -453,23 +425,19 @@ If the key is not present, returns `O.none`.
 
 ```ts
 export declare const pop: {
-  (key: string): <A>(
-    self: ReadonlyRecord<A>
-  ) => Option<readonly [A, ReadonlyRecord<A>]>;
-  <A>(self: ReadonlyRecord<A>, key: string): Option<
-    readonly [A, ReadonlyRecord<A>]
-  >;
-};
+  (key: string): <A>(self: ReadonlyRecord<A>) => Option<readonly [A, ReadonlyRecord<A>]>
+  <A>(self: ReadonlyRecord<A>, key: string): Option<readonly [A, ReadonlyRecord<A>]>
+}
 ```
 
 **Example**
 
 ```ts
-import { pop } from "@effect/data/ReadonlyRecord";
-import { some, none } from "@effect/data/Option";
+import { pop } from '@effect/data/ReadonlyRecord'
+import { some, none } from '@effect/data/Option'
 
-assert.deepStrictEqual(pop({ a: 1, b: 2 }, "a"), some([1, { b: 2 }]));
-assert.deepStrictEqual(pop({ a: 1, b: 2 }, "c"), none());
+assert.deepStrictEqual(pop({ a: 1, b: 2 }, 'a'), some([1, { b: 2 }]))
+assert.deepStrictEqual(pop({ a: 1, b: 2 }, 'c'), none())
 ```
 
 Added in v1.0.0
@@ -482,7 +450,7 @@ Added in v1.0.0
 
 ```ts
 export interface ReadonlyRecordTypeLambda extends TypeLambda {
-  readonly type: ReadonlyRecord<this["Target"]>;
+  readonly type: ReadonlyRecord<this['Target']>
 }
 ```
 
@@ -499,25 +467,20 @@ If the function returns `Some`, the key-value pair is included in the output `Re
 
 ```ts
 export declare const filterMap: {
-  <K extends string, A, B>(f: (a: A, key: K) => Option<B>): (
-    self: Record<K, A>
-  ) => Record<string, B>;
-  <K extends string, A, B>(
-    self: Record<K, A>,
-    f: (a: A, key: K) => Option<B>
-  ): Record<string, B>;
-};
+  <K extends string, A, B>(f: (a: A, key: K) => Option<B>): (self: Record<K, A>) => Record<string, B>
+  <K extends string, A, B>(self: Record<K, A>, f: (a: A, key: K) => Option<B>): Record<string, B>
+}
 ```
 
 **Example**
 
 ```ts
-import { filterMap } from "@effect/data/ReadonlyRecord";
-import { some, none } from "@effect/data/Option";
+import { filterMap } from '@effect/data/ReadonlyRecord'
+import { some, none } from '@effect/data/Option'
 
-const x = { a: 1, b: 2, c: 3 };
-const f = (a: number, key: string) => (a > 2 ? some(a * 2) : none());
-assert.deepStrictEqual(filterMap(x, f), { c: 6 });
+const x = { a: 1, b: 2, c: 3 }
+const f = (a: number, key: string) => (a > 2 ? some(a * 2) : none())
+assert.deepStrictEqual(filterMap(x, f), { c: 6 })
 ```
 
 Added in v1.0.0
@@ -530,21 +493,21 @@ Retrieve a value at a particular key from a `ReadonlyRecord`, returning it wrapp
 
 ```ts
 export declare const get: {
-  (key: string): <A>(self: ReadonlyRecord<A>) => Option<A>;
-  <A>(self: ReadonlyRecord<A>, key: string): Option<A>;
-};
+  (key: string): <A>(self: ReadonlyRecord<A>) => Option<A>
+  <A>(self: ReadonlyRecord<A>, key: string): Option<A>
+}
 ```
 
 **Example**
 
 ```ts
-import { get } from "@effect/data/ReadonlyRecord";
-import { some, none } from "@effect/data/Option";
+import { get } from '@effect/data/ReadonlyRecord'
+import { some, none } from '@effect/data/Option'
 
-const person = { name: "John Doe", age: 35 };
+const person = { name: 'John Doe', age: 35 }
 
-assert.deepStrictEqual(get(person, "name"), some("John Doe"));
-assert.deepStrictEqual(get(person, "email"), none());
+assert.deepStrictEqual(get(person, 'name'), some('John Doe'))
+assert.deepStrictEqual(get(person, 'email'), none())
 ```
 
 Added in v1.0.0
@@ -557,18 +520,18 @@ Check if a given `key` exists in a `ReadonlyRecord`.
 
 ```ts
 export declare const has: {
-  (key: string): <A>(self: ReadonlyRecord<A>) => boolean;
-  <A>(self: ReadonlyRecord<A>, key: string): boolean;
-};
+  (key: string): <A>(self: ReadonlyRecord<A>) => boolean
+  <A>(self: ReadonlyRecord<A>, key: string): boolean
+}
 ```
 
 **Example**
 
 ```ts
-import { has } from "@effect/data/ReadonlyRecord";
+import { has } from '@effect/data/ReadonlyRecord'
 
-assert.deepStrictEqual(has({ a: 1, b: 2 }, "a"), true);
-assert.deepStrictEqual(has({ a: 1, b: 2 }, "c"), false);
+assert.deepStrictEqual(has({ a: 1, b: 2 }, 'a'), true)
+assert.deepStrictEqual(has({ a: 1, b: 2 }, 'c'), false)
 ```
 
 Added in v1.0.0
@@ -581,28 +544,23 @@ Maps a `ReadonlyRecord` into another `Record` by applying a transformation funct
 
 ```ts
 export declare const map: {
-  <K extends string, A, B>(f: (a: A, key: K) => B): (
-    self: Record<K, A>
-  ) => Record<K, B>;
-  <K extends string, A, B>(self: Record<K, A>, f: (a: A, key: K) => B): Record<
-    K,
-    B
-  >;
-};
+  <K extends string, A, B>(f: (a: A, key: K) => B): (self: Record<K, A>) => Record<K, B>
+  <K extends string, A, B>(self: Record<K, A>, f: (a: A, key: K) => B): Record<K, B>
+}
 ```
 
 **Example**
 
 ```ts
-import { map } from "@effect/data/ReadonlyRecord";
+import { map } from '@effect/data/ReadonlyRecord'
 
-const f = (n: number) => `-${n}`;
+const f = (n: number) => `-${n}`
 
-assert.deepStrictEqual(map({ a: 3, b: 5 }, f), { a: "-3", b: "-5" });
+assert.deepStrictEqual(map({ a: 3, b: 5 }, f), { a: '-3', b: '-5' })
 
-const g = (n: number, key: string) => `${key.toUpperCase()}-${n}`;
+const g = (n: number, key: string) => `${key.toUpperCase()}-${n}`
 
-assert.deepStrictEqual(map({ a: 3, b: 5 }, g), { a: "A-3", b: "B-5" });
+assert.deepStrictEqual(map({ a: 3, b: 5 }, g), { a: 'A-3', b: 'B-5' })
 ```
 
 Added in v1.0.0
@@ -616,25 +574,21 @@ or return `None` if the key doesn't exist.
 
 ```ts
 export declare const modifyOption: {
-  <A, B>(key: string, f: (a: A) => B): (
-    self: ReadonlyRecord<A>
-  ) => Option<Record<string, A | B>>;
-  <A, B>(self: ReadonlyRecord<A>, key: string, f: (a: A) => B): Option<
-    Record<string, A | B>
-  >;
-};
+  <A, B>(key: string, f: (a: A) => B): (self: ReadonlyRecord<A>) => Option<Record<string, A | B>>
+  <A, B>(self: ReadonlyRecord<A>, key: string, f: (a: A) => B): Option<Record<string, A | B>>
+}
 ```
 
 **Example**
 
 ```ts
-import { modifyOption } from "@effect/data/ReadonlyRecord";
-import { some, none } from "@effect/data/Option";
+import { modifyOption } from '@effect/data/ReadonlyRecord'
+import { some, none } from '@effect/data/Option'
 
-const f = (x: number) => x * 2;
+const f = (x: number) => x * 2
 
-assert.deepStrictEqual(modifyOption({ a: 3 }, "a", f), some({ a: 6 }));
-assert.deepStrictEqual(modifyOption({ a: 3 }, "b", f), none());
+assert.deepStrictEqual(modifyOption({ a: 3 }, 'a', f), some({ a: 6 }))
+assert.deepStrictEqual(modifyOption({ a: 3 }, 'b', f), none())
 ```
 
 Added in v1.0.0
@@ -647,17 +601,17 @@ Removes a key from a `ReadonlyRecord` and returns a new `Record`
 
 ```ts
 export declare const remove: {
-  (key: string): <A>(self: ReadonlyRecord<A>) => Record<string, A>;
-  <A>(self: ReadonlyRecord<A>, key: string): Record<string, A>;
-};
+  (key: string): <A>(self: ReadonlyRecord<A>) => Record<string, A>
+  <A>(self: ReadonlyRecord<A>, key: string): Record<string, A>
+}
 ```
 
 **Example**
 
 ```ts
-import { remove } from "@effect/data/ReadonlyRecord";
+import { remove } from '@effect/data/ReadonlyRecord'
 
-assert.deepStrictEqual(remove({ a: 1, b: 2 }, "a"), { b: 2 });
+assert.deepStrictEqual(remove({ a: 1, b: 2 }, 'a'), { b: 2 })
 ```
 
 Added in v1.0.0
@@ -670,26 +624,19 @@ Replaces a value in the record with the new value passed as parameter.
 
 ```ts
 export declare const replaceOption: {
-  <B>(key: string, b: B): <A>(
-    self: ReadonlyRecord<A>
-  ) => Option<Record<string, B | A>>;
-  <A, B>(self: ReadonlyRecord<A>, key: string, b: B): Option<
-    Record<string, A | B>
-  >;
-};
+  <B>(key: string, b: B): <A>(self: ReadonlyRecord<A>) => Option<Record<string, B | A>>
+  <A, B>(self: ReadonlyRecord<A>, key: string, b: B): Option<Record<string, A | B>>
+}
 ```
 
 **Example**
 
 ```ts
-import { replaceOption } from "@effect/data/ReadonlyRecord";
-import { some, none } from "@effect/data/Option";
+import { replaceOption } from '@effect/data/ReadonlyRecord'
+import { some, none } from '@effect/data/Option'
 
-assert.deepStrictEqual(
-  replaceOption({ a: 1, b: 2, c: 3 }, "a", 10),
-  some({ a: 10, b: 2, c: 3 })
-);
-assert.deepStrictEqual(replaceOption({}, "a", 10), none());
+assert.deepStrictEqual(replaceOption({ a: 1, b: 2, c: 3 }, 'a', 10), some({ a: 10, b: 2, c: 3 }))
+assert.deepStrictEqual(replaceOption({}, 'a', 10), none())
 ```
 
 Added in v1.0.0
@@ -701,15 +648,15 @@ Returns the number of key/value pairs in a `ReadonlyRecord`.
 **Signature**
 
 ```ts
-export declare const size: <A>(self: ReadonlyRecord<A>) => number;
+export declare const size: <A>(self: ReadonlyRecord<A>) => number
 ```
 
 **Example**
 
 ```ts
-import { size } from "@effect/data/ReadonlyRecord";
+import { size } from '@effect/data/ReadonlyRecord'
 
-assert.deepStrictEqual(size({ a: "a", b: 1, c: true }), 3);
+assert.deepStrictEqual(size({ a: 'a', b: 1, c: true }), 3)
 ```
 
 Added in v1.0.0
