@@ -398,4 +398,10 @@ describe.concurrent("HashMap", () => {
   it("pipe", () => {
     expect(HM.empty<string, string>().pipe(HM.set("key", "value"))).toEqual(HM.make(["key", "value"]))
   })
+
+  it("isHashMap", () => {
+    expect(HM.isHashMap(HM.empty())).toBe(true)
+    expect(HM.isHashMap(null)).toBe(false)
+    expect(HM.isHashMap({})).toBe(false)
+  })
 })
