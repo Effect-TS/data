@@ -11,6 +11,21 @@ describe.concurrent("Data", () => {
     expect(c).toBe(2)
     expect(Equal.equals(x, y)).toBe(true)
     expect(Equal.equals(x, Data.struct({ a: 0 }))).toBe(false)
+
+    // different keys length
+    expect(Data.struct({ a: 0, b: 1 })[Equal.symbol](Data.struct({ a: 0 }))).toBe(false)
+    // same length but different keys
+    expect(Data.struct({ a: 0 })[Equal.symbol](Data.struct({ b: 1 }))).toBe(false)
+  })
+
+  it("unsafeStruct", () => {
+    const x = Data.unsafeStruct({ a: 0, b: 1, c: 2 })
+    const y = Data.unsafeStruct({ a: 0, b: 1, c: 2 })
+    const { a, b, c } = x
+    expect(a).toBe(0)
+    expect(b).toBe(1)
+    expect(c).toBe(2)
+    expect(Equal.equals(x, y)).toBe(true)
   })
 
   it("tuple", () => {
@@ -34,6 +49,9 @@ describe.concurrent("Data", () => {
     expect(Equal.equals(x, y)).toBe(true)
     expect(Equal.equals(x, Data.tuple(0, 1, 2))).toBe(true)
     expect(Equal.equals(x, Data.array([0, 1]))).toBe(false)
+
+    // different length
+    expect(Data.array([0, 1, 2])[Equal.symbol](Data.array([0, 1]))).toBe(false)
   })
 
   it("case", () => {
@@ -52,6 +70,9 @@ describe.concurrent("Data", () => {
     expect(c.name).toBe("Foo")
     expect(Equal.equals(a, b)).toBe(true)
     expect(Equal.equals(a, c)).toBe(false)
+
+    const Empty = Data.case()
+    expect(Equal.equals(Empty(), Empty())).toBe(true)
   })
 
   it("tagged", () => {
@@ -85,6 +106,15 @@ describe.concurrent("Data", () => {
     expect(c.name).toBe("Foo")
     expect(Equal.equals(a, b)).toBe(true)
     expect(Equal.equals(a, c)).toBe(false)
+
+    // different keys length
+    class D extends Data.Class<{ d: string; e: string }> {}
+    const d = new D({ d: "d", e: "e" })
+    expect(a[Equal.symbol](d)).toBe(false)
+    // same length but different keys
+    class E extends Data.Class<{ e: string }> {}
+    const e = new E({ e: "e" })
+    expect(a[Equal.symbol](e)).toBe(false)
   })
 
   it("tagged class", () => {
