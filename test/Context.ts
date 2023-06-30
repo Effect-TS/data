@@ -190,4 +190,14 @@ describe.concurrent("Context", () => {
     const result = A.pipe((tag) => Context.make(tag, { a: 0 }))
     expect(result.pipe(Context.get(A))).toEqual({ a: 0 })
   })
+
+  it("isContext", () => {
+    expect(Context.isContext(Context.empty())).toEqual(true)
+    expect(Context.isContext(null)).toEqual(false)
+  })
+
+  it("isTag", () => {
+    expect(Context.isTag(Context.Tag())).toEqual(true)
+    expect(Context.isContext(null)).toEqual(false)
+  })
 })
