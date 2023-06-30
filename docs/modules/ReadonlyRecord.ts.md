@@ -106,7 +106,7 @@ previous ones. So the resulting record will only have the value of the last occu
 **Signature**
 
 ```ts
-export declare const fromEntries: <A>(self: Iterable<[string, A]>) => Record<string, A>
+export declare const fromEntries: <A>(self: Iterable<readonly [string, A]>) => Record<string, A>
 ```
 
 **Example**
