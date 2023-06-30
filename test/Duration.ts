@@ -1,4 +1,5 @@
 import * as D from "@effect/data/Duration"
+import * as Equal from "@effect/data/Equal"
 import { pipe } from "@effect/data/Function"
 import { deepStrictEqual } from "@effect/data/test/util"
 
@@ -100,5 +101,32 @@ describe.concurrent("Duration", () => {
   })
   it("pipe", () => {
     expect(D.seconds(1).pipe(D.sum(D.seconds(1)))).toEqual(D.seconds(2))
+  })
+
+  it("isDuration", () => {
+    expect(D.isDuration(D.millis(100))).toBe(true)
+    expect(D.isDuration(null)).toBe(false)
+  })
+
+  it(`Symbol.for("nodejs.util.inspect.custom")`, () => {
+    const sym = Symbol.for("nodejs.util.inspect.custom")
+    const instance: any = new D.DurationImpl(1000)
+    expect(instance[sym]()).toEqual({
+      _tag: "Duration",
+      millis: 1000
+    })
+  })
+
+  it("zero", () => {
+    expect(D.zero.millis).toBe(0)
+  })
+
+  it("infinity", () => {
+    expect(D.infinity.millis).toBe(Infinity)
+  })
+
+  it("weeks", () => {
+    expect(Equal.equals(D.weeks(1), D.days(7))).toBe(true)
+    expect(Equal.equals(D.weeks(1), D.days(1))).toBe(false)
   })
 })
