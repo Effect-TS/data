@@ -7,6 +7,7 @@ import { makeTraced } from "@effect/data/Debug"
 import type * as Either from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
 import * as Hash from "@effect/data/Hash"
+import { EffectTypeId } from "@effect/data/internal/Effect"
 import * as option from "@effect/data/internal/Option"
 import type { Option } from "@effect/data/Option"
 import { pipeArguments } from "@effect/data/Pipeable"
@@ -18,7 +19,6 @@ const effectVariance = {
   _A: (_: never) => _
 }
 
-const EffectTypeId = Symbol.for("@effect/io/Effect")
 const EitherTypeId: Either.EitherTypeId = Symbol.for("@effect/data/Either") as Either.EitherTypeId
 
 /** @internal */

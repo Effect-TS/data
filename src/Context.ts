@@ -370,8 +370,6 @@ export const omit: <Services, S extends Array<ValidTagsById<Services>>>(
  */
 export type GenericTag = TracedTag<any, any> | Tag<any, any>
 
-const EffectTypeId = Symbol.for("@effect/io/Effect")
-
 /**
  * @since 1.0.0
  * @category guards

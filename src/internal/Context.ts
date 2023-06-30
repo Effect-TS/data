@@ -5,6 +5,7 @@ import * as Equal from "@effect/data/Equal"
 import { dual } from "@effect/data/Function"
 import * as G from "@effect/data/Global"
 import * as Hash from "@effect/data/Hash"
+import { EffectTypeId } from "@effect/data/internal/Effect"
 import type * as O from "@effect/data/Option"
 import * as option from "@effect/data/Option"
 import { pipeArguments } from "@effect/data/Pipeable"
@@ -18,8 +19,6 @@ const effectVariance = {
   _E: (_: never) => _,
   _A: (_: never) => _
 }
-
-const EffectTypeId = Symbol.for("@effect/io/Effect")
 
 /** @internal */
 export class TagImpl<Identifier, Service> implements C.Tag<Identifier, Service> {
