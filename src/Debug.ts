@@ -5,6 +5,7 @@
 import * as Equal from "@effect/data/Equal"
 import { globalValue } from "@effect/data/Global"
 import * as Hash from "@effect/data/Hash"
+import { EffectTypeId } from "@effect/data/internal/Effect"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
 
@@ -417,8 +418,6 @@ export interface Traced<T> extends Pipeable<T> {
   readonly trace: SourceLocation
   traced(this: this, trace: Trace): Traced<this> | this
 }
-
-const EffectTypeId = Symbol.for("@effect/io/Effect")
 
 class TracedPrimitive<T> implements Traced<T> {
   readonly _tag = "Traced"
