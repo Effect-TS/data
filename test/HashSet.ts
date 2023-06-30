@@ -211,4 +211,10 @@ describe.concurrent("HashSet", () => {
   it("pipe", () => {
     expect(HashSet.empty<string>().pipe(HashSet.add("value"))).toEqual(HashSet.make("value"))
   })
+
+  it("isHashSet", () => {
+    expect(HashSet.isHashSet(HashSet.empty())).toBe(true)
+    expect(HashSet.isHashSet(null)).toBe(false)
+    expect(HashSet.isHashSet({})).toBe(false)
+  })
 })
