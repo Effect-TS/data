@@ -2,6 +2,8 @@
  * @since 1.0.0
  */
 import * as Dual from "@effect/data/Function"
+import type { Withable } from "@effect/data/Withable"
+import { pipeArguments } from "@effect/data/Withable"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/MutableList") as TypeId
 
@@ -15,7 +17,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category model
  */
-export interface MutableList<A> extends Iterable<A> {
+export interface MutableList<A> extends Iterable<A>, Withable<MutableList<A>> {
   readonly _id: TypeId
 
   /** @internal */
@@ -70,6 +72,10 @@ class MutableListImpl<A> implements MutableList<A> {
 
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
+  }
+
+  with() {
+    return pipeArguments(this, arguments)
   }
 }
 

@@ -578,4 +578,8 @@ describe.concurrent("Either", () => {
       return a + b
     })).toEqual(Either.right(3))
   })
+
+  it("with", () => {
+    expect(Either.right(1).with(Either.map((n) => n + 1))).toEqual(Either.right(2))
+  })
 })

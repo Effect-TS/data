@@ -113,4 +113,8 @@ describe.concurrent("List", () => {
     )
     expect(List.unsafeLast(List.make(1, 2, 3, 4))).toEqual(4)
   })
+
+  it("with", () => {
+    expect(List.empty<string>().with(List.prepend("a"))).toEqual(List.make("a"))
+  })
 })

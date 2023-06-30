@@ -9,6 +9,8 @@ import type * as equivalence from "@effect/data/typeclass/Equivalence"
 import * as monoid from "@effect/data/typeclass/Monoid"
 import * as order from "@effect/data/typeclass/Order"
 import * as semigroup from "@effect/data/typeclass/Semigroup"
+import type { Withable } from "@effect/data/Withable"
+import { pipeArguments } from "@effect/data/Withable"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/Duration")
 
@@ -22,7 +24,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface Duration {
+export interface Duration extends Withable<Duration> {
   readonly _id: TypeId
   readonly millis: number
 }
@@ -48,6 +50,9 @@ class DurationImpl implements Equal.Equal {
   }
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
+  }
+  with() {
+    return pipeArguments(this, arguments)
   }
 }
 

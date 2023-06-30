@@ -13,6 +13,8 @@ import * as O from "@effect/data/Option"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as RA from "@effect/data/ReadonlyArray"
 import type { Order } from "@effect/data/typeclass/Order"
+import type { Withable } from "@effect/data/Withable"
+import { pipeArguments } from "@effect/data/Withable"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/Chunk") as TypeId
 
@@ -32,7 +34,7 @@ export interface NonEmptyChunk<A> extends Chunk<A>, NonEmptyIterable<A> {}
  * @since 1.0.0
  * @category models
  */
-export interface Chunk<A> extends Iterable<A>, Equal.Equal {
+export interface Chunk<A> extends Iterable<A>, Equal.Equal, Withable<Chunk<A>> {
   readonly _id: TypeId
 
   readonly length: number
@@ -199,6 +201,10 @@ class ChunkImpl<A> implements Chunk<A> {
         return toReadonlyArray(this)[Symbol.iterator]()
       }
     }
+  }
+
+  with() {
+    return pipeArguments(this, arguments)
   }
 }
 

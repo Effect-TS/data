@@ -5,6 +5,7 @@
 import type { Equal } from "@effect/data/Equal"
 import * as HS from "@effect/data/internal/HashSet"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
+import type { Withable } from "@effect/data/Withable"
 
 const TypeId: unique symbol = HS.HashSetTypeId as TypeId
 
@@ -18,7 +19,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface HashSet<A> extends Iterable<A>, Equal {
+export interface HashSet<A> extends Iterable<A>, Equal, Withable<HashSet<A>> {
   readonly _id: TypeId
 }
 

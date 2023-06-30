@@ -8,6 +8,8 @@ import * as Hash from "@effect/data/Hash"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as RBT from "@effect/data/RedBlackTree"
 import type { Order } from "@effect/data/typeclass/Order"
+import type { Withable } from "@effect/data/Withable"
+import { pipeArguments } from "@effect/data/Withable"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/SortedSet")
 
@@ -21,14 +23,14 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface SortedSet<A> extends Iterable<A>, Equal.Equal {
+export interface SortedSet<A> extends Iterable<A>, Equal.Equal, Withable<SortedSet<A>> {
   readonly _id: TypeId
   /** @internal */
   readonly keyTree: RBT.RedBlackTree<A, boolean>
 }
 
 /** @internal */
-class SortedSetImpl<A> implements Iterable<A>, Equal.Equal {
+class SortedSetImpl<A> implements Iterable<A>, Equal.Equal, Withable<SortedSet<A>> {
   readonly _id: TypeId = TypeId
 
   constructor(readonly keyTree: RBT.RedBlackTree<A, boolean>) {}
@@ -58,6 +60,10 @@ class SortedSetImpl<A> implements Iterable<A>, Equal.Equal {
 
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
+  }
+
+  with() {
+    return pipeArguments(this, arguments)
   }
 }
 

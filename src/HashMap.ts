@@ -8,6 +8,7 @@ import * as HM from "@effect/data/internal/HashMap"
 import * as _keySet from "@effect/data/internal/HashMap/keySet"
 import type { Option } from "@effect/data/Option"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
+import type { Withable } from "@effect/data/Withable"
 
 const TypeId: unique symbol = HM.HashMapTypeId as TypeId
 
@@ -21,7 +22,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface HashMap<Key, Value> extends Iterable<readonly [Key, Value]>, Equal {
+export interface HashMap<Key, Value> extends Iterable<readonly [Key, Value]>, Equal, Withable<HashMap<Key, Value>> {
   readonly _id: TypeId
 }
 

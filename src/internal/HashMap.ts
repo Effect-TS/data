@@ -8,6 +8,7 @@ import { SIZE } from "@effect/data/internal/HashMap/config"
 import * as Node from "@effect/data/internal/HashMap/node"
 import * as Option from "@effect/data/Option"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
+import { pipeArguments } from "@effect/data/Withable"
 
 /** @internal */
 export const HashMapTypeId: HM.TypeId = Symbol.for("@effect/data/HashMap") as HM.TypeId
@@ -87,6 +88,10 @@ export class HashMapImpl<K, V> implements HM.HashMap<K, V> {
 
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
+  }
+
+  with() {
+    return pipeArguments(this, arguments)
   }
 }
 

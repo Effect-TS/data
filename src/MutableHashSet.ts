@@ -3,6 +3,8 @@
  */
 import * as Dual from "@effect/data/Function"
 import * as MutableHashMap from "@effect/data/MutableHashMap"
+import type { Withable } from "@effect/data/Withable"
+import { pipeArguments } from "@effect/data/Withable"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/MutableHashSet") as TypeId
 
@@ -16,7 +18,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface MutableHashSet<V> extends Iterable<V> {
+export interface MutableHashSet<V> extends Iterable<V>, Withable<MutableHashSet<V>> {
   readonly _id: TypeId
   readonly _V: (_: V) => V
 
@@ -48,6 +50,10 @@ class MutableHashSetImpl<V> implements MutableHashSet<V> {
 
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
+  }
+
+  with() {
+    return pipeArguments(this, arguments)
   }
 }
 

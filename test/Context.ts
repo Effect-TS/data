@@ -180,4 +180,14 @@ describe.concurrent("Context", () => {
     assert.deepNestedPropertyVal(result, "second._tag", "RemoveService")
     assert.deepNestedPropertyVal(result, "second.tag", C)
   })
+
+  it("with", () => {
+    const result = Context.empty().with(Context.add(A, { a: 0 }))
+    expect(result.with(Context.get(A))).toEqual({ a: 0 })
+  })
+
+  it("tag with", () => {
+    const result = A.with((tag) => Context.make(tag, { a: 0 }))
+    expect(result.with(Context.get(A))).toEqual({ a: 0 })
+  })
 })

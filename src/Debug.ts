@@ -5,6 +5,8 @@
 import * as Equal from "@effect/data/Equal"
 import { globalValue } from "@effect/data/Global"
 import * as Hash from "@effect/data/Hash"
+import type { Withable } from "@effect/data/Withable"
+import { pipeArguments } from "@effect/data/Withable"
 
 /**
  * @since 1.0.0
@@ -409,7 +411,7 @@ export const restoreOff: Restore = (body): any =>
  * @since 1.0.0
  * @category models
  */
-export interface Traced<T> {
+export interface Traced<T> extends Withable<T> {
   readonly _tag: "Traced"
   readonly i0: T
   readonly trace: SourceLocation
@@ -430,6 +432,9 @@ class TracedPrimitive<T> implements Traced<T> {
     return Hash.random(this)
   }
   constructor(readonly i0: T, readonly trace: SourceLocation) {}
+  with() {
+    return pipeArguments(this, arguments)
+  }
   traced(this: this, trace: Trace): Traced<this> | this {
     if (trace) {
       return new TracedPrimitive(this, trace)

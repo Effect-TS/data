@@ -3,6 +3,8 @@
  */
 import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
+import type { Withable } from "@effect/data/Withable"
+import { pipeArguments } from "@effect/data/Withable"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/MutableRef") as TypeId
 
@@ -16,7 +18,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface MutableRef<T> {
+export interface MutableRef<T> extends Withable<MutableRef<T>> {
   readonly _id: TypeId
   readonly _T: (_: never) => T
 
@@ -43,6 +45,10 @@ class MutableRefImpl<T> implements MutableRef<T> {
 
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
+  }
+
+  with() {
+    return pipeArguments(this, arguments)
   }
 }
 

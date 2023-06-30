@@ -5,6 +5,7 @@ import type { HashMap } from "@effect/data/HashMap"
 import type * as HS from "@effect/data/HashSet"
 import * as HM from "@effect/data/internal/HashMap"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
+import { pipeArguments } from "@effect/data/Withable"
 
 /** @internal */
 export const HashSetTypeId: HS.TypeId = Symbol.for("@effect/data/HashSet") as HS.TypeId
@@ -46,6 +47,10 @@ export class HashSetImpl<A> implements HS.HashSet<A> {
 
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
+  }
+
+  with() {
+    return pipeArguments(this, arguments)
   }
 }
 

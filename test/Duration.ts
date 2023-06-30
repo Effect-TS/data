@@ -152,4 +152,7 @@ describe.concurrent("Duration", () => {
       JSON.stringify({ _tag: "Duration", millis: 2000 })
     )
   })
+  it("with", () => {
+    expect(D.seconds(1).with(D.sum(D.seconds(1)))).toEqual(D.seconds(2))
+  })
 })

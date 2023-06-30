@@ -269,4 +269,8 @@ describe.concurrent("MutableHashMap", () => {
       HM.get(key(0, 0))
     )).toEqual(O.none())
   })
+
+  it("with", () => {
+    expect(HM.empty<string, string>().with(HM.set("key", "value"))).toEqual(HM.make(["key", "value"]))
+  })
 })

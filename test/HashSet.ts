@@ -207,4 +207,8 @@ describe.concurrent("HashSet", () => {
 
     deepStrictEqual(result, [value(0), value(1), value(2)])
   })
+
+  it("with", () => {
+    expect(HashSet.empty<string>().with(HashSet.add("value"))).toEqual(HashSet.make("value"))
+  })
 })

@@ -36,6 +36,7 @@ import * as semigroup from "@effect/data/typeclass/Semigroup"
 import * as semiProduct from "@effect/data/typeclass/SemiProduct"
 import * as traversable from "@effect/data/typeclass/Traversable"
 import type * as Unify from "@effect/data/Unify"
+import type { Withable } from "@effect/data/Withable"
 
 /**
  * @category models
@@ -59,7 +60,7 @@ export type EitherTypeId = typeof EitherTypeId
  * @category models
  * @since 1.0.0
  */
-export interface Left<E, A> extends Data.Case {
+export interface Left<E, A> extends Data.Case, Withable<Either<E, A>> {
   readonly _tag: "Left"
   readonly [EitherTypeId]: {
     readonly _A: (_: never) => A
@@ -76,7 +77,7 @@ export interface Left<E, A> extends Data.Case {
  * @category models
  * @since 1.0.0
  */
-export interface Right<E, A> extends Data.Case {
+export interface Right<E, A> extends Data.Case, Withable<Either<E, A>> {
   readonly _tag: "Right"
   get right(): A
   readonly [EitherTypeId]: {
@@ -107,7 +108,7 @@ export interface EitherUnifyBlacklist {}
  * @since 1.0.0
  * @category models
  */
-export interface TracedEither<E, A> {
+export interface TracedEither<E, A> extends Withable<Either<E, A> | TracedEither<E, A>> {
   readonly _tag: "Traced"
   readonly i0: Either<E, A> | TracedEither<E, A>
   readonly trace: SourceLocation

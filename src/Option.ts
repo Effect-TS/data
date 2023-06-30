@@ -40,6 +40,7 @@ import * as semigroup from "@effect/data/typeclass/Semigroup"
 import * as semiProduct from "@effect/data/typeclass/SemiProduct"
 import * as traversable from "@effect/data/typeclass/Traversable"
 import type * as Unify from "@effect/data/Unify"
+import type { Withable } from "@effect/data/Withable"
 
 /**
  * @category models
@@ -63,7 +64,7 @@ export type OptionTypeId = typeof OptionTypeId
  * @category models
  * @since 1.0.0
  */
-export interface None<A> extends Data.Case {
+export interface None<A> extends Data.Case, Withable<Option<A>> {
   readonly _tag: "None"
   readonly [OptionTypeId]: {
     readonly _A: (_: never) => A
@@ -78,7 +79,7 @@ export interface None<A> extends Data.Case {
  * @category models
  * @since 1.0.0
  */
-export interface Some<A> extends Data.Case {
+export interface Some<A> extends Data.Case, Withable<Option<A>> {
   readonly _tag: "Some"
   readonly value: A
   readonly [OptionTypeId]: {
@@ -94,7 +95,7 @@ export interface Some<A> extends Data.Case {
  * @since 1.0.0
  * @category models
  */
-export interface TracedOption<A> {
+export interface TracedOption<A> extends Withable<Option<A> | TracedOption<A>> {
   readonly _tag: "Traced"
   readonly i0: Option<A> | TracedOption<A>
   readonly trace: SourceLocation

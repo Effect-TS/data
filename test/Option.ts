@@ -633,4 +633,8 @@ describe.concurrent("Option", () => {
       return a + b
     })).toEqual(_.some(3))
   })
+
+  it("with", () => {
+    expect(_.some(1).with(_.map((n) => n + 1))).toEqual(_.some(2))
+  })
 })

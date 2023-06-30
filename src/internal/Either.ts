@@ -10,6 +10,7 @@ import { dual } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import * as option from "@effect/data/internal/Option"
 import type { Option } from "@effect/data/Option"
+import { pipeArguments } from "@effect/data/Withable"
 
 /** @internal */
 const effectVariance = {
@@ -57,6 +58,9 @@ export class Right<E, A> implements Either.Right<E, A> {
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
   }
+  with() {
+    return pipeArguments(this, arguments)
+  }
   traced(
     this: this,
     trace: Trace
@@ -103,6 +107,9 @@ export class Left<E, A> implements Either.Left<E, A> {
   }
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
+  }
+  with() {
+    return pipeArguments(this, arguments)
   }
   traced(
     this: this,
