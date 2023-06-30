@@ -870,10 +870,8 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("flatMapNonEmpty", () => {
-    const f = (a: number): RA.NonEmptyReadonlyArray<number> => [a, 4]
-    deepStrictEqual(pipe(RA.make(1, 2), RA.flatMapNonEmpty(f)), [1, 4, 2, 4])
-    const g = (a: number, i: number): RA.NonEmptyReadonlyArray<number> => [a + i, 4]
-    deepStrictEqual(pipe(RA.make(1, 2), RA.flatMapNonEmpty(g)), [1, 4, 3, 4])
+    expect(RA.flatMapNonEmpty(RA.make(1, 2), (a) => [a, 4])).toEqual([1, 4, 2, 4])
+    expect(RA.flatMapNonEmpty(RA.make(1, 2), (a, i) => [a + i, 4])).toEqual([1, 4, 3, 4])
   })
 
   it("chunksOfNonEmpty", () => {
@@ -907,18 +905,8 @@ describe.concurrent("ReadonlyArray", () => {
     assertSingleChunk(RA.make(1, 2), 3)
   })
 
-  it("mapNonEmpty", () => {
-    deepStrictEqual(
-      pipe(
-        RA.make(RA.make(1, 2), RA.make(3, 4)),
-        RA.flattenNonEmpty
-      ),
-      [1, 2, 3, 4]
-    )
-    deepStrictEqual(
-      pipe(RA.make("a", "b"), RA.mapNonEmpty((s: string, i: number) => s + i)),
-      ["a0", "b1"]
-    )
+  it("flattenNonEmpty", () => {
+    expect(RA.flattenNonEmpty(RA.make(RA.make(1, 2), RA.make(3, 4)))).toEqual([1, 2, 3, 4])
   })
 
   it("mapNonEmpty", () => {
@@ -945,7 +933,7 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("flatten", () => {
-    deepStrictEqual(RA.flatten([[1], [2], [3]]), [1, 2, 3])
+    expect(RA.flatten([[1], [2], [3]])).toEqual([1, 2, 3])
   })
 
   it("groupWith", () => {
