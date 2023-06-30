@@ -66,7 +66,7 @@ export const hash: <A>(self: A) => number = <A>(self: A) => {
       }
     }
     default: {
-      throw new Error("Bug in Equal.hashGeneric")
+      throw new Error("Bug in Equal.hash")
     }
   }
 }
