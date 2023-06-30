@@ -312,7 +312,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Left<E, A> extends Data.Case {
+export interface Left<E, A> extends Data.Case, Pipeable<Either<E, A>> {
   readonly _tag: 'Left'
   readonly [EitherTypeId]: {
     readonly _A: (_: never) => A
@@ -333,7 +333,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Right<E, A> extends Data.Case {
+export interface Right<E, A> extends Data.Case, Pipeable<Either<E, A>> {
   readonly _tag: 'Right'
   get right(): A
   readonly [EitherTypeId]: {
@@ -354,7 +354,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface TracedEither<E, A> {
+export interface TracedEither<E, A> extends Pipeable<Either<E, A> | TracedEither<E, A>> {
   readonly _tag: 'Traced'
   readonly i0: Either<E, A> | TracedEither<E, A>
   readonly trace: SourceLocation

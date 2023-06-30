@@ -244,7 +244,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Context<Services> extends Equal {
+export interface Context<Services> extends Equal, Pipeable<Context<Services>> {
   readonly _id: TypeId
   readonly _S: (_: Services) => unknown
   /** @internal */
@@ -269,7 +269,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Tag<Identifier, Service> {
+export interface Tag<Identifier, Service> extends Pipeable<Tag<Identifier, Service>> {
   readonly _tag: 'Tag'
   readonly [TagTypeId]: { readonly _S: (_: Service) => Service; readonly _I: (_: Identifier) => Identifier }
   of(self: Service): Service
@@ -310,7 +310,8 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface TracedTag<Identifier, Service> {
+export interface TracedTag<Identifier, Service>
+  extends Pipeable<Tag<Identifier, Service> | TracedTag<Identifier, Service>> {
   readonly _tag: 'Traced'
   readonly i0: Tag<Identifier, Service> | TracedTag<Identifier, Service>
   readonly trace: SourceLocation

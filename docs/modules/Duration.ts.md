@@ -206,7 +206,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Duration extends Equal.Equal {
+export interface Duration extends Equal.Equal, Pipeable<Duration> {
   readonly _id: TypeId
   readonly millis: number
 }
