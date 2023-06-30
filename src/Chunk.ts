@@ -664,15 +664,16 @@ export const compact = <A>(self: Iterable<Option<A>>): Chunk<A> => filterMap(sel
  * @category sequencing
  */
 export const flatMap: {
-  <A, B>(f: (a: A) => Chunk<B>): (self: Chunk<A>) => Chunk<B>
-  <A, B>(self: Chunk<A>, f: (a: A) => Chunk<B>): Chunk<B>
-} = dual(2, <A, B>(self: Chunk<A>, f: (a: A) => Chunk<B>) => {
+  <A, B>(f: (a: A, i: number) => Chunk<B>): (self: Chunk<A>) => Chunk<B>
+  <A, B>(self: Chunk<A>, f: (a: A, i: number) => Chunk<B>): Chunk<B>
+} = dual(2, <A, B>(self: Chunk<A>, f: (a: A, i: number) => Chunk<B>) => {
   if (self.backing._tag === "ISingleton") {
-    return f(self.backing.a)
+    return f(self.backing.a, 0)
   }
   let out: Chunk<B> = _empty
+  let i = 0
   for (const k of self) {
-    out = appendAll(out, f(k))
+    out = appendAll(out, f(k, i++))
   }
   return out
 })
