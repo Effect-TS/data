@@ -85,6 +85,10 @@ describe.concurrent("Chunk", () => {
     )
   })
 
+  it(".pipe", () => {
+    expect(Chunk.empty().pipe(Chunk.append(1))).toEqual(Chunk.make(1))
+  })
+
   describe.concurrent("toReadonlyArray", () => {
     describe.concurrent("Given an empty Chunk", () => {
       const chunk = Chunk.empty()

@@ -7,6 +7,7 @@ import * as RBT from "@effect/data/internal/RedBlackTree"
 import * as RBTI from "@effect/data/internal/RedBlackTree/iterator"
 import type { Option } from "@effect/data/Option"
 import type { Order } from "@effect/data/Order"
+import type { Pipeable } from "@effect/data/Pipeable"
 
 const TypeId: unique symbol = RBT.RedBlackTreeTypeId as TypeId
 
@@ -28,7 +29,9 @@ export const Direction = RBTI.Direction
  * @since 1.0.0
  * @category models
  */
-export interface RedBlackTree<Key, Value> extends Iterable<readonly [Key, Value]>, Equal {
+export interface RedBlackTree<Key, Value>
+  extends Iterable<readonly [Key, Value]>, Equal, Pipeable<RedBlackTree<Key, Value>>
+{
   readonly _id: TypeId
 }
 

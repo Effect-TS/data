@@ -19,6 +19,8 @@ import * as Dual from "@effect/data/Function"
 import { identity, unsafeCoerce } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import * as Option from "@effect/data/Option"
+import type { Pipeable } from "@effect/data/Pipeable"
+import { pipeArguments } from "@effect/data/Pipeable"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 
 const ListSymbolKey = "@effect/data/List"
@@ -51,7 +53,7 @@ export type List<A> = Cons<A> | Nil<A>
  * @since 1.0.0
  * @category models
  */
-export interface Cons<A> extends List.Variance<A>, Iterable<A>, Equal.Equal {
+export interface Cons<A> extends List.Variance<A>, Iterable<A>, Equal.Equal, Pipeable<List<A>> {
   readonly _tag: "Cons"
   readonly head: A
   readonly tail: List<A>
@@ -61,7 +63,7 @@ export interface Cons<A> extends List.Variance<A>, Iterable<A>, Equal.Equal {
  * @since 1.0.0
  * @category models
  */
-export interface Nil<A> extends List.Variance<A>, Iterable<A>, Equal.Equal {
+export interface Nil<A> extends List.Variance<A>, Iterable<A>, Equal.Equal, Pipeable<List<A>> {
   readonly _tag: "Nil"
 }
 
@@ -148,6 +150,9 @@ class ConsImpl<A> implements List.Cons<A> {
       }
     }
   }
+  pipe() {
+    return pipeArguments(this, arguments)
+  }
 }
 
 class NilImpl<A> implements List.Nil<A> {
@@ -176,6 +181,9 @@ class NilImpl<A> implements List.Nil<A> {
         return { done: true, value: undefined }
       }
     }
+  }
+  pipe() {
+    return pipeArguments(this, arguments)
   }
 }
 

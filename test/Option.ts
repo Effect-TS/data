@@ -448,4 +448,8 @@ describe.concurrent("Option", () => {
     assert.deepStrictEqual(_.struct({ a: _.some(1), b: _.some("hello") }), _.some({ a: 1, b: "hello" }))
     assert.deepStrictEqual(_.struct({ a: _.some(1), b: _.none() }), _.none())
   })
+
+  it("pipe", () => {
+    expect(_.some(1).pipe(_.map((n) => n + 1))).toEqual(_.some(2))
+  })
 })

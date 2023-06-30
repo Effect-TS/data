@@ -5,6 +5,8 @@ import * as Dual from "@effect/data/Function"
 import * as HashMap from "@effect/data/HashMap"
 import * as MutableRef from "@effect/data/MutableRef"
 import * as Option from "@effect/data/Option"
+import type { Pipeable } from "@effect/data/Pipeable"
+import { pipeArguments } from "@effect/data/Pipeable"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/MutableHashMap") as TypeId
 
@@ -18,7 +20,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]> {
+export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, Pipeable<MutableHashMap<K, V>> {
   readonly _id: TypeId
 
   /** @internal */
@@ -48,6 +50,10 @@ class MutableHashMapImpl<K, V> implements MutableHashMap<K, V> {
 
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
+  }
+
+  pipe() {
+    return pipeArguments(this, arguments)
   }
 }
 
