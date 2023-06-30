@@ -8,6 +8,7 @@ import { Stack } from "@effect/data/internal/Stack"
 import * as Option from "@effect/data/Option"
 import type * as Order from "@effect/data/Order"
 import type * as Ordering from "@effect/data/Ordering"
+import { pipeArguments } from "@effect/data/Pipeable"
 import type * as RBT from "@effect/data/RedBlackTree"
 
 const RedBlackTreeSymbolKey = "@effect/data/RedBlackTree"
@@ -59,6 +60,10 @@ export class RedBlackTreeImpl<K, V> implements RBT.RedBlackTree<K, V> {
 
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
+  }
+
+  pipe() {
+    return pipeArguments(this, arguments)
   }
 }
 

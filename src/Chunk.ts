@@ -10,6 +10,8 @@ import type { NonEmptyIterable } from "@effect/data/NonEmpty"
 import type { Option } from "@effect/data/Option"
 import * as O from "@effect/data/Option"
 import type { Order } from "@effect/data/Order"
+import type { Pipeable } from "@effect/data/Pipeable"
+import { pipeArguments } from "@effect/data/Pipeable"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as RA from "@effect/data/ReadonlyArray"
 import type { NonEmptyReadonlyArray } from "@effect/data/ReadonlyArray"
@@ -32,7 +34,7 @@ export interface NonEmptyChunk<A> extends Chunk<A>, NonEmptyIterable<A> {}
  * @category models
  * @since 1.0.0
  */
-export interface Chunk<A> extends Iterable<A>, Equal.Equal {
+export interface Chunk<A> extends Iterable<A>, Equal.Equal, Pipeable<Chunk<A>> {
   readonly _id: TypeId
 
   readonly length: number
@@ -190,6 +192,10 @@ class ChunkImpl<A> implements Chunk<A> {
         return unsafeToReadonlyArray(this)[Symbol.iterator]()
       }
     }
+  }
+
+  pipe() {
+    return pipeArguments(this, arguments)
   }
 }
 

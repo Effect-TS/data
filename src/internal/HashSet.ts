@@ -4,6 +4,7 @@ import * as Hash from "@effect/data/Hash"
 import type { HashMap } from "@effect/data/HashMap"
 import type * as HS from "@effect/data/HashSet"
 import * as HM from "@effect/data/internal/HashMap"
+import { pipeArguments } from "@effect/data/Pipeable"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 
 /** @internal */
@@ -46,6 +47,10 @@ export class HashSetImpl<A> implements HS.HashSet<A> {
 
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
+  }
+
+  pipe() {
+    return pipeArguments(this, arguments)
   }
 }
 

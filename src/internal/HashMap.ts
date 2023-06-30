@@ -7,6 +7,7 @@ import { fromBitmap, hashFragment, toBitmap } from "@effect/data/internal/HashMa
 import { SIZE } from "@effect/data/internal/HashMap/config"
 import * as Node from "@effect/data/internal/HashMap/node"
 import * as Option from "@effect/data/Option"
+import { pipeArguments } from "@effect/data/Pipeable"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 
 /** @internal */
@@ -87,6 +88,10 @@ export class HashMapImpl<K, V> implements HM.HashMap<K, V> {
 
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
+  }
+
+  pipe() {
+    return pipeArguments(this, arguments)
   }
 }
 

@@ -394,4 +394,8 @@ describe.concurrent("HashMap", () => {
 
     deepStrictEqual(result, [value("a"), value("b")])
   })
+
+  it("pipe", () => {
+    expect(HM.empty<string, string>().pipe(HM.set("key", "value"))).toEqual(HM.make(["key", "value"]))
+  })
 })

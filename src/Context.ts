@@ -11,6 +11,7 @@ import type { SourceLocation, Trace } from "@effect/data/Debug"
 import type { Equal } from "@effect/data/Equal"
 import * as C from "@effect/data/internal/Context"
 import type { Option } from "@effect/data/Option"
+import type { Pipeable } from "@effect/data/Pipeable"
 import type * as Unify from "@effect/data/Unify"
 
 const TagTypeId: unique symbol = C.TagTypeId
@@ -25,7 +26,7 @@ export type TagTypeId = typeof TagTypeId
  * @since 1.0.0
  * @category models
  */
-export interface Tag<Identifier, Service> {
+export interface Tag<Identifier, Service> extends Pipeable<Tag<Identifier, Service>> {
   readonly _tag: "Tag"
   readonly [TagTypeId]: { readonly _S: (_: Service) => Service; readonly _I: (_: Identifier) => Identifier }
   of(self: Service): Service
@@ -54,7 +55,9 @@ export interface TagUnifyBlacklist {}
  * @since 1.0.0
  * @category models
  */
-export interface TracedTag<Identifier, Service> {
+export interface TracedTag<Identifier, Service>
+  extends Pipeable<Tag<Identifier, Service> | TracedTag<Identifier, Service>>
+{
   readonly _tag: "Traced"
   readonly i0: Tag<Identifier, Service> | TracedTag<Identifier, Service>
   readonly trace: SourceLocation
@@ -109,7 +112,7 @@ export type ValidTagsById<R> = R extends infer S ? Tag<S, any> : never
  * @since 1.0.0
  * @category models
  */
-export interface Context<Services> extends Equal {
+export interface Context<Services> extends Equal, Pipeable<Context<Services>> {
   readonly _id: TypeId
   readonly _S: (_: Services) => unknown
   /** @internal */

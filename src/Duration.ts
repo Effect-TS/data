@@ -6,6 +6,8 @@ import type * as equivalence from "@effect/data/Equivalence"
 import * as Dual from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import * as order from "@effect/data/Order"
+import type { Pipeable } from "@effect/data/Pipeable"
+import { pipeArguments } from "@effect/data/Pipeable"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/Duration")
 
@@ -19,7 +21,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface Duration extends Equal.Equal {
+export interface Duration extends Equal.Equal, Pipeable<Duration> {
   readonly _id: TypeId
   readonly millis: number
 }
@@ -45,6 +47,9 @@ class DurationImpl implements Equal.Equal {
   }
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
+  }
+  pipe() {
+    return pipeArguments(this, arguments)
   }
 }
 

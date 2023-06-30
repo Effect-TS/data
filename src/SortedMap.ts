@@ -7,6 +7,8 @@ import { pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import * as Option from "@effect/data/Option"
 import type { Order } from "@effect/data/Order"
+import type { Pipeable } from "@effect/data/Pipeable"
+import { pipeArguments } from "@effect/data/Pipeable"
 import * as RBT from "@effect/data/RedBlackTree"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/SortedMap")
@@ -21,7 +23,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface SortedMap<K, V> extends Iterable<readonly [K, V]>, Equal.Equal {
+export interface SortedMap<K, V> extends Iterable<readonly [K, V]>, Equal.Equal, Pipeable<SortedMap<K, V>> {
   readonly _id: TypeId
   /** @internal */
   readonly tree: RBT.RedBlackTree<K, V>
@@ -58,6 +60,10 @@ class SortedMapImpl<K, V> implements Iterable<readonly [K, V]>, Equal.Equal {
 
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
+  }
+
+  pipe() {
+    return pipeArguments(this, arguments)
   }
 }
 
