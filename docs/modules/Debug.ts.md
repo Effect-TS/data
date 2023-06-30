@@ -138,7 +138,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Traced<T> {
+export interface Traced<T> extends Pipeable<T> {
   readonly _tag: 'Traced'
   readonly i0: T
   readonly trace: SourceLocation

@@ -1162,7 +1162,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface None<A> extends Data.Case {
+export interface None<A> extends Data.Case, Pipeable<Option<A>> {
   readonly _tag: 'None'
   readonly [OptionTypeId]: {
     readonly _A: (_: never) => A
@@ -1213,7 +1213,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Some<A> extends Data.Case {
+export interface Some<A> extends Data.Case, Pipeable<Option<A>> {
   readonly _tag: 'Some'
   readonly value: A
   readonly [OptionTypeId]: {
@@ -1233,7 +1233,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface TracedOption<A> {
+export interface TracedOption<A> extends Pipeable<Option<A> | TracedOption<A>> {
   readonly _tag: 'Traced'
   readonly i0: Option<A> | TracedOption<A>
   readonly trace: SourceLocation

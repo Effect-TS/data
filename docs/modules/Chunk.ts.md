@@ -479,8 +479,8 @@ Zips this chunk pointwise with the specified chunk.
 
 ```ts
 export declare const zip: {
-  <B>(that: Chunk<B>): <A>(self: Chunk<A>) => Chunk<[A, B]>
-  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<[A, B]>
+  <B>(that: Chunk<B>): <A>(self: Chunk<A>) => Chunk<readonly [A, B]>
+  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<readonly [A, B]>
 }
 ```
 
@@ -671,7 +671,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Chunk<A> extends Iterable<A>, Equal.Equal {
+export interface Chunk<A> extends Iterable<A>, Equal.Equal, Pipeable<Chunk<A>> {
   readonly _id: TypeId
 
   readonly length: number

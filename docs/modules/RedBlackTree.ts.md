@@ -1,6 +1,6 @@
 ---
 title: RedBlackTree.ts
-nav_order: 40
+nav_order: 41
 parent: Modules
 ---
 
@@ -319,7 +319,10 @@ A Red-Black Tree.
 **Signature**
 
 ```ts
-export interface RedBlackTree<Key, Value> extends Iterable<readonly [Key, Value]>, Equal {
+export interface RedBlackTree<Key, Value>
+  extends Iterable<readonly [Key, Value]>,
+    Equal,
+    Pipeable<RedBlackTree<Key, Value>> {
   readonly _id: TypeId
 }
 ```

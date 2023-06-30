@@ -155,13 +155,13 @@ class ChunkImpl<A> implements Chunk<A> {
   }
 
   toString() {
-    return `Chunk(${unsafeToReadonlyArray(this).map(String).join(", ")})`
+    return `Chunk(${toReadonlyArray(this).map(String).join(", ")})`
   }
 
   toJSON() {
     return {
       _tag: "Chunk",
-      values: unsafeToReadonlyArray(this)
+      values: toReadonlyArray(this)
     }
   }
 
@@ -171,13 +171,13 @@ class ChunkImpl<A> implements Chunk<A> {
 
   [Equal.symbol](that: unknown): boolean {
     if (isChunk(that) && this.length === that.length) {
-      return unsafeToReadonlyArray(this).every((value, i) => Equal.equals(value, unsafeGet(that, i)))
+      return toReadonlyArray(this).every((value, i) => Equal.equals(value, unsafeGet(that, i)))
     }
     return false
   }
 
   [Hash.symbol](): number {
-    return Hash.array(unsafeToReadonlyArray(this))
+    return Hash.array(toReadonlyArray(this))
   }
 
   [Symbol.iterator](): Iterator<A> {
@@ -189,7 +189,7 @@ class ChunkImpl<A> implements Chunk<A> {
         return emptyArray[Symbol.iterator]()
       }
       default: {
-        return unsafeToReadonlyArray(this)[Symbol.iterator]()
+        return toReadonlyArray(this)[Symbol.iterator]()
       }
     }
   }
@@ -273,7 +273,13 @@ const copyToArray = <A>(self: Chunk<A>, array: Array<any>, initial: number): voi
   }
 }
 
-const unsafeToReadonlyArray = <A>(self: Chunk<A>): ReadonlyArray<A> => {
+/**
+ * Converts to a `ReadonlyArray<A>`
+ *
+ * @category conversions
+ * @since 1.0.0
+ */
+export const toReadonlyArray = <A>(self: Chunk<A>): ReadonlyArray<A> => {
   switch (self.backing._tag) {
     case "IEmpty": {
       return emptyArray
@@ -297,14 +303,6 @@ const unsafeToReadonlyArray = <A>(self: Chunk<A>): ReadonlyArray<A> => {
 }
 
 /**
- * Converts to a `ReadonlyArray<A>`
- *
- * @category conversions
- * @since 1.0.0
- */
-export const toReadonlyArray = <A>(self: Chunk<A>): ReadonlyArray<A> => unsafeToReadonlyArray(self).slice()
-
-/**
  * @since 1.0.0
  * @category elements
  */
@@ -320,7 +318,7 @@ export const reverse = <A>(self: Chunk<A>): Chunk<A> => {
       return new ChunkImpl({ _tag: "IConcat", left: reverse(self.backing.right), right: reverse(self.backing.left) })
     }
     case "ISlice":
-      return unsafeFromArray(RA.reverse(unsafeToReadonlyArray(self)))
+      return unsafeFromArray(RA.reverse(toReadonlyArray(self)))
   }
 }
 
@@ -523,7 +521,7 @@ export const dropWhile: {
   <A>(f: (a: A) => boolean): (self: Chunk<A>) => Chunk<A>
   <A>(self: Chunk<A>, f: (a: A) => boolean): Chunk<A>
 } = dual(2, <A>(self: Chunk<A>, f: (a: A) => boolean): Chunk<A> => {
-  const arr = unsafeToReadonlyArray(self)
+  const arr = toReadonlyArray(self)
   const len = arr.length
   let i = 0
   while (i < len && f(arr[i]!)) {
@@ -717,7 +715,7 @@ export const correspondsTo: {
   if (self.length !== that.length) {
     return false
   }
-  return RA.correspondsTo(unsafeToReadonlyArray(self), unsafeToReadonlyArray(that), f)
+  return RA.correspondsTo(toReadonlyArray(self), toReadonlyArray(that), f)
 })
 
 /**
@@ -732,7 +730,7 @@ export const chunksOf: {
 } = dual(2, <A>(self: Chunk<A>, n: number) => {
   const gr: Array<Chunk<A>> = []
   let current: Array<A> = []
-  unsafeToReadonlyArray(self).forEach((a) => {
+  toReadonlyArray(self).forEach((a) => {
     current.push(a)
     if (current.length >= n) {
       gr.push(unsafeFromArray(current))
@@ -759,7 +757,7 @@ export const intersection: {
 } = dual(
   2,
   <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<A & B> =>
-    unsafeFromArray(RA.intersection(unsafeToReadonlyArray(self), unsafeToReadonlyArray(that)))
+    unsafeFromArray(RA.intersection(toReadonlyArray(self), toReadonlyArray(that)))
 )
 
 /**
@@ -830,7 +828,7 @@ export const map: {
 } = dual(2, <A, B>(self: Chunk<A>, f: (a: A, i: number) => B): Chunk<B> =>
   self.backing._tag === "ISingleton" ?
     of(f(self.backing.a, 0)) :
-    unsafeFromArray(pipe(unsafeToReadonlyArray(self), RA.map((a, i) => f(a, i)))))
+    unsafeFromArray(pipe(toReadonlyArray(self), RA.map((a, i) => f(a, i)))))
 
 /**
  * Statefully maps over the chunk, producing new elements of type `B`.
@@ -866,7 +864,7 @@ export const partition: {
   2,
   <B extends A, A = B>(self: Chunk<B>, predicate: (a: A, i: number) => boolean): [Chunk<B>, Chunk<B>] =>
     pipe(
-      RA.partition(unsafeToReadonlyArray(self), predicate),
+      RA.partition(toReadonlyArray(self), predicate),
       ([l, r]) => [unsafeFromArray(l), unsafeFromArray(r)]
     )
 )
@@ -882,7 +880,7 @@ export const partitionMap: {
   <A, B, C>(self: Chunk<A>, f: (a: A) => Either<B, C>): [Chunk<B>, Chunk<C>]
 } = dual(2, <A, B, C>(self: Chunk<A>, f: (a: A) => Either<B, C>): [Chunk<B>, Chunk<C>] =>
   pipe(
-    RA.partitionMap(unsafeToReadonlyArray(self), f),
+    RA.partitionMap(toReadonlyArray(self), f),
     ([l, r]) => [unsafeFromArray(l), unsafeFromArray(r)]
   ))
 
@@ -894,7 +892,7 @@ export const partitionMap: {
  */
 export const separate = <A, B>(self: Chunk<Either<A, B>>): [Chunk<A>, Chunk<B>] =>
   pipe(
-    RA.separate(unsafeToReadonlyArray(self)),
+    RA.separate(toReadonlyArray(self)),
     ([l, r]) => [unsafeFromArray(l), unsafeFromArray(r)]
   )
 
@@ -917,7 +915,7 @@ export const sort: {
   <A extends B, B>(self: Chunk<A>, O: Order<B>): Chunk<A>
 } = dual(
   2,
-  <A extends B, B>(self: Chunk<A>, O: Order<B>): Chunk<A> => unsafeFromArray(RA.sort(unsafeToReadonlyArray(self), O))
+  <A extends B, B>(self: Chunk<A>, O: Order<B>): Chunk<A> => unsafeFromArray(RA.sort(toReadonlyArray(self), O))
 )
 
 /**
@@ -953,7 +951,7 @@ export const splitWhere: {
   <A>(self: Chunk<A>, predicate: Predicate<A>): [Chunk<A>, Chunk<A>]
 } = dual(2, <A>(self: Chunk<A>, predicate: Predicate<A>): [Chunk<A>, Chunk<A>] => {
   let i = 0
-  for (const a of unsafeToReadonlyArray(self)) {
+  for (const a of toReadonlyArray(self)) {
     if (predicate(a)) {
       break
     } else {
@@ -1001,7 +999,7 @@ export const takeWhile: {
   <A>(self: Chunk<A>, predicate: Predicate<A>): Chunk<A>
 } = dual(2, <A>(self: Chunk<A>, predicate: Predicate<A>) => {
   const res: Array<A> = []
-  for (const a of unsafeToReadonlyArray(self)) {
+  for (const a of toReadonlyArray(self)) {
     if (predicate(a)) {
       res.push(a)
     } else {
@@ -1022,8 +1020,7 @@ export const union: {
   <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<A | B>
 } = dual(
   2,
-  <A, B>(self: Chunk<A>, that: Chunk<B>) =>
-    unsafeFromArray(RA.union(unsafeToReadonlyArray(self), unsafeToReadonlyArray(that)))
+  <A, B>(self: Chunk<A>, that: Chunk<B>) => unsafeFromArray(RA.union(toReadonlyArray(self), toReadonlyArray(that)))
 )
 
 /**
@@ -1032,7 +1029,7 @@ export const union: {
  * @since 1.0.0
  * @category elements
  */
-export const dedupe = <A>(self: Chunk<A>): Chunk<A> => unsafeFromArray(RA.dedupe(unsafeToReadonlyArray(self)))
+export const dedupe = <A>(self: Chunk<A>): Chunk<A> => unsafeFromArray(RA.dedupe(toReadonlyArray(self)))
 
 /**
  * Deduplicates adjacent elements that are identical.
@@ -1077,11 +1074,11 @@ export const zipWith: {
  * @category elements
  */
 export const zip: {
-  <B>(that: Chunk<B>): <A>(self: Chunk<A>) => Chunk<[A, B]>
-  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<[A, B]>
+  <B>(that: Chunk<B>): <A>(self: Chunk<A>) => Chunk<readonly [A, B]>
+  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<readonly [A, B]>
 } = dual(
   2,
-  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<[A, B]> => zipWith(self, that, (a, b) => [a, b])
+  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<readonly [A, B]> => zipWith(self, that, (a, b) => [a, b])
 )
 
 /**
@@ -1095,7 +1092,7 @@ export const remove: {
   <A>(self: Chunk<A>, i: number): Chunk<A>
 } = dual(
   2,
-  <A>(self: Chunk<A>, i: number): Chunk<A> => unsafeFromArray(RA.remove(unsafeToReadonlyArray(self), i))
+  <A>(self: Chunk<A>, i: number): Chunk<A> => unsafeFromArray(RA.remove(toReadonlyArray(self), i))
 )
 
 /**
@@ -1107,7 +1104,7 @@ export const modifyOption: {
 } = dual(
   3,
   <A, B>(self: Chunk<A>, i: number, f: (a: A) => B): Option<Chunk<A | B>> =>
-    O.map(RA.modifyOption(unsafeToReadonlyArray(self), i, f), unsafeFromArray)
+    O.map(RA.modifyOption(toReadonlyArray(self), i, f), unsafeFromArray)
 )
 
 /**
