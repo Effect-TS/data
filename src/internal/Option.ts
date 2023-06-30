@@ -7,6 +7,7 @@ import { makeTraced } from "@effect/data/Debug"
 import * as Equal from "@effect/data/Equal"
 import * as Hash from "@effect/data/Hash"
 import type * as Option from "@effect/data/Option"
+import { pipeArguments } from "@effect/data/Pipeable"
 
 /** @internal */
 const effectVariance = {
@@ -53,6 +54,9 @@ export class Some<A> implements Option.Some<A> {
   }
   constructor(readonly i0: A) {
   }
+  pipe() {
+    return pipeArguments(this, arguments)
+  }
   traced(this: this, trace: Trace): Option.TracedOption<this["value"]> | this {
     if (trace) {
       return makeTraced(this, trace)
@@ -90,6 +94,9 @@ export class None<A> implements Option.None<A> {
     return {
       _A: (_: never) => _
     }
+  }
+  pipe() {
+    return pipeArguments(this, arguments)
   }
   traced(this: this, trace: Trace): Option.TracedOption<never> | this {
     if (trace) {

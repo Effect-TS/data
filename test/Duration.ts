@@ -98,4 +98,7 @@ describe.concurrent("Duration", () => {
   it("subtract/ Infinity", () => {
     expect(D.subtract(D.seconds(1), D.infinity)).toEqual(D.nanos(-Infinity as any))
   })
+  it("pipe", () => {
+    expect(D.seconds(1).pipe(D.sum(D.seconds(1)))).toEqual(D.seconds(2))
+  })
 })

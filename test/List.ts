@@ -113,4 +113,8 @@ describe.concurrent("List", () => {
     )
     expect(List.unsafeLast(List.make(1, 2, 3, 4))).toEqual(4)
   })
+
+  it("pipe", () => {
+    expect(List.empty<string>().pipe(List.prepend("a"))).toEqual(List.make("a"))
+  })
 })

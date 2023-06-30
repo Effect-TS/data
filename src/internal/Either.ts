@@ -9,6 +9,7 @@ import * as Equal from "@effect/data/Equal"
 import * as Hash from "@effect/data/Hash"
 import * as option from "@effect/data/internal/Option"
 import type { Option } from "@effect/data/Option"
+import { pipeArguments } from "@effect/data/Pipeable"
 
 /** @internal */
 const effectVariance = {
@@ -56,6 +57,9 @@ export class Right<E, A> implements Either.Right<E, A> {
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
   }
+  pipe() {
+    return pipeArguments(this, arguments)
+  }
   traced(
     this: this,
     trace: Trace
@@ -102,6 +106,9 @@ export class Left<E, A> implements Either.Left<E, A> {
   }
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
+  }
+  pipe() {
+    return pipeArguments(this, arguments)
   }
   traced(
     this: this,

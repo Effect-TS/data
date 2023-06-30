@@ -15,6 +15,7 @@ import * as option from "@effect/data/internal/Option"
 import * as N from "@effect/data/Number"
 import type { Order } from "@effect/data/Order"
 import * as order from "@effect/data/Order"
+import type { Pipeable } from "@effect/data/Pipeable"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import type * as Unify from "@effect/data/Unify"
 
@@ -40,7 +41,7 @@ export type OptionTypeId = typeof OptionTypeId
  * @category models
  * @since 1.0.0
  */
-export interface None<A> extends Data.Case {
+export interface None<A> extends Data.Case, Pipeable<Option<A>> {
   readonly _tag: "None"
   readonly [OptionTypeId]: {
     readonly _A: (_: never) => A
@@ -55,7 +56,7 @@ export interface None<A> extends Data.Case {
  * @category models
  * @since 1.0.0
  */
-export interface Some<A> extends Data.Case {
+export interface Some<A> extends Data.Case, Pipeable<Option<A>> {
   readonly _tag: "Some"
   readonly value: A
   readonly [OptionTypeId]: {
@@ -71,7 +72,7 @@ export interface Some<A> extends Data.Case {
  * @since 1.0.0
  * @category models
  */
-export interface TracedOption<A> {
+export interface TracedOption<A> extends Pipeable<Option<A> | TracedOption<A>> {
   readonly _tag: "Traced"
   readonly i0: Option<A> | TracedOption<A>
   readonly trace: SourceLocation
