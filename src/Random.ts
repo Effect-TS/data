@@ -11,10 +11,7 @@
  * @since 1.0.0
  */
 
-/** @internal */
-export function isNothing<T>(value: T | null | undefined) {
-  return value === void 0 || value === null
-}
+import { isNullable } from "@effect/data/Predicate"
 
 const defaultIncHi = 0x14057b7e
 const defaultIncLo = 0xf767814f
@@ -44,7 +41,7 @@ export type OptionalNumber = number | null | undefined
  * @since 1.0.0
  */
 export class PCGRandom {
-  private _state: Int32Array
+  private _state!: Int32Array
 
   /**
    * Creates an instance of PCGRandom.
@@ -58,7 +55,7 @@ export class PCGRandom {
    * Creates an instance of PCGRandom.
    *
    * @param seedHi - The high 32 bits of the seed.
-   * @param seedLo - The how 32 bits of the seed.
+   * @param seedLo - The low 32 bits of the seed.
    * @param inc - The low 32 bits of the incrementer (0 is used for high 32 bits).
    *
    * @memberOf PCGRandom
@@ -68,9 +65,9 @@ export class PCGRandom {
    * Creates an instance of PCGRandom.
    *
    * @param seedHi - The high 32 bits of the seed.
-   * @param seedLo - The how 32 bits of the seed.
+   * @param seedLo - The low 32 bits of the seed.
    * @param incHi - The high 32 bits of the incrementer.
-   * @param incLo - The how 32 bits of the incrementer.
+   * @param incLo - The low 32 bits of the incrementer.
    *
    * @memberOf PCGRandom
    */
@@ -86,19 +83,17 @@ export class PCGRandom {
     incHi?: OptionalNumber,
     incLo?: OptionalNumber
   ) {
-    if (isNothing(seedLo) && isNothing(seedHi)) {
+    if (isNullable(seedLo) && isNullable(seedHi)) {
       seedLo = (Math.random() * 0xffffffff) >>> 0
       seedHi = 0
-    } else if (isNothing(seedLo)) {
+    } else if (isNullable(seedLo)) {
       seedLo = seedHi
       seedHi = 0
     }
-    if (isNothing(incLo) && isNothing(incHi)) {
-      // @ts-expect-error
+    if (isNullable(incLo) && isNullable(incHi)) {
       incLo = this._state ? this._state[3] : defaultIncLo
-      // @ts-expect-error
       incHi = this._state ? this._state[2] : defaultIncHi
-    } else if (isNothing(incLo)) {
+    } else if (isNullable(incLo)) {
       incLo = <number> incHi
       incHi = 0
     }
