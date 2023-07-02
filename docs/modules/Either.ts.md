@@ -1,6 +1,6 @@
 ---
 title: Either.ts
-nav_order: 15
+nav_order: 14
 parent: Modules
 ---
 
@@ -37,7 +37,6 @@ Added in v1.0.0
   - [EitherUnifyBlacklist (interface)](#eitherunifyblacklist-interface)
   - [Left (interface)](#left-interface)
   - [Right (interface)](#right-interface)
-  - [TracedEither (interface)](#tracedeither-interface)
 - [pattern matching](#pattern-matching)
   - [match](#match)
 - [symbols](#symbols)
@@ -319,7 +318,6 @@ export interface Left<E, A> extends Data.Case, Pipeable<Either<E, A>> {
     readonly _E: (_: never) => E
   }
   get left(): E
-  traced(trace: Trace): Either<E, A> | TracedEither<E, A>
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: EitherUnify<this>
   [Unify.blacklistSymbol]?: EitherUnifyBlacklist
@@ -340,25 +338,9 @@ export interface Right<E, A> extends Data.Case, Pipeable<Either<E, A>> {
     readonly _A: (_: never) => A
     readonly _E: (_: never) => E
   }
-  traced(trace: Trace): Either<E, A> | TracedEither<E, A>
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: EitherUnify<this>
   [Unify.blacklistSymbol]?: EitherUnifyBlacklist
-}
-```
-
-Added in v1.0.0
-
-## TracedEither (interface)
-
-**Signature**
-
-```ts
-export interface TracedEither<E, A> extends Pipeable<Either<E, A> | TracedEither<E, A>> {
-  readonly _tag: 'Traced'
-  readonly i0: Either<E, A> | TracedEither<E, A>
-  readonly trace: SourceLocation
-  traced(trace: Trace): TracedEither<E, A>
 }
 ```
 
