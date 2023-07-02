@@ -27,11 +27,9 @@ Added in v1.0.0
   - [getOption](#getoption)
 - [guards](#guards)
   - [isContext](#iscontext)
-  - [isGenericTag](#isgenerictag)
   - [isTag](#istag)
 - [models](#models)
   - [Context (interface)](#context-interface)
-  - [GenericTag (type alias)](#generictag-type-alias)
   - [Tag (interface)](#tag-interface)
   - [TagUnify (interface)](#tagunify-interface)
   - [TagUnifyBlacklist (interface)](#tagunifyblacklist-interface)
@@ -207,16 +205,6 @@ assert.strictEqual(Context.isContext(Context.empty()), true)
 
 Added in v1.0.0
 
-## isGenericTag
-
-**Signature**
-
-```ts
-export declare const isGenericTag: (u: unknown) => u is GenericTag
-```
-
-Added in v1.0.0
-
 ## isTag
 
 Checks if the provided argument is a `Tag`.
@@ -250,16 +238,6 @@ export interface Context<Services> extends Equal, Pipeable<Context<Services>> {
   /** @internal */
   readonly unsafeMap: Map<Tag<any, any>, any>
 }
-```
-
-Added in v1.0.0
-
-## GenericTag (type alias)
-
-**Signature**
-
-```ts
-export type GenericTag = TracedTag<any, any> | Tag<any, any>
 ```
 
 Added in v1.0.0

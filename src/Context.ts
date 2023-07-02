@@ -363,25 +363,3 @@ export const pick: <Services, S extends Array<ValidTagsById<Services>>>(
 export const omit: <Services, S extends Array<ValidTagsById<Services>>>(
   ...tags: S
 ) => (self: Context<Services>) => Context<Exclude<Services, { [k in keyof S]: Tag.Identifier<S[k]> }[keyof S]>> = C.omit
-
-/**
- * @since 1.0.0
- * @category models
- */
-export type GenericTag = TracedTag<any, any> | Tag<any, any>
-
-/**
- * @since 1.0.0
- * @category guards
- */
-export const isGenericTag = (u: unknown): u is GenericTag => {
-  if (isTag(u)) {
-    return true
-  }
-  // @ts-expect-error
-  if (typeof u === "object" && u !== null && EffectTypeId in u && u["_tag"] === "Traced") {
-    // @ts-expect-error
-    return isGenericTag(u["i0"])
-  }
-  return false
-}
