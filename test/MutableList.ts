@@ -20,13 +20,17 @@ describe.concurrent("MutableList", () => {
     )
   })
 
+  it("pipe", () => {
+    expect(MutableList.empty<string>().pipe(MutableList.prepend("a"))).toEqual(MutableList.make("a"))
+  })
+
   it("empty", () => {
     deepStrictEqual(Array.from(MutableList.empty<number>()), [])
   })
 
-  it("from", () => {
-    deepStrictEqual(Array.from(MutableList.from([])), [])
-    deepStrictEqual(Array.from(MutableList.from([1, 2, 3])), [1, 2, 3])
+  it("fromIterable", () => {
+    deepStrictEqual(Array.from(MutableList.fromIterable([])), [])
+    deepStrictEqual(Array.from(MutableList.fromIterable([1, 2, 3])), [1, 2, 3])
   })
 
   it("make", () => {
