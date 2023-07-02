@@ -2,6 +2,7 @@ import * as D from "@effect/data/Duration"
 import * as Equal from "@effect/data/Equal"
 import { pipe } from "@effect/data/Function"
 import { deepStrictEqual } from "@effect/data/test/util"
+import { inspect } from "node:util"
 
 describe.concurrent("Duration", () => {
   it("Order", () => {
@@ -108,13 +109,8 @@ describe.concurrent("Duration", () => {
     expect(D.isDuration(null)).toBe(false)
   })
 
-  it(`Symbol.for("nodejs.util.inspect.custom")`, () => {
-    const sym = Symbol.for("nodejs.util.inspect.custom")
-    const instance: any = new D.DurationImpl(1000)
-    expect(instance[sym]()).toEqual({
-      _tag: "Duration",
-      millis: 1000
-    })
+  it(`inspect`, () => {
+    expect(inspect(D.millis(1000))).toEqual(inspect({ _tag: "Duration", millis: 1000 }))
   })
 
   it("zero", () => {

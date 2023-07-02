@@ -27,8 +27,7 @@ export interface Duration extends Equal.Equal, Pipeable<Duration> {
   readonly millis: number
 }
 
-/** @internal */
-export class DurationImpl implements Equal.Equal {
+class DurationImpl implements Equal.Equal {
   readonly _id: TypeId = TypeId
   readonly millis: number
   readonly nanos: bigint

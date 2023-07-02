@@ -3,7 +3,7 @@ import * as Duration from "@effect/data/Duration"
 import * as E from "@effect/data/Either"
 import { equals, symbol } from "@effect/data/Equal"
 import { identity, pipe } from "@effect/data/Function"
-import * as O from "@effect/data/Option"
+import * as Option from "@effect/data/Option"
 import * as RA from "@effect/data/ReadonlyArray"
 import * as Util from "@effect/data/test/util"
 import * as fc from "fast-check"
@@ -25,6 +25,7 @@ describe.concurrent("Chunk", () => {
   })
 
   it("equals", () => {
+    expect(Chunk.make(0)[symbol](Chunk.make(0))).toEqual(true)
     expect(Chunk.make(0)[symbol](Duration.millis(1))).toEqual(false)
   })
 
@@ -33,9 +34,9 @@ describe.concurrent("Chunk", () => {
   })
 
   it("modifyOption", () => {
-    expect(pipe(Chunk.empty(), Chunk.modifyOption(0, (n: number) => n * 2))).toEqual(O.none())
+    expect(pipe(Chunk.empty(), Chunk.modifyOption(0, (n: number) => n * 2))).toEqual(Option.none())
     expect(pipe(Chunk.make(1, 2, 3), Chunk.modifyOption(0, (n: number) => n * 2))).toEqual(
-      O.some(Chunk.make(2, 2, 3))
+      Option.some(Chunk.make(2, 2, 3))
     )
   })
 
@@ -45,8 +46,8 @@ describe.concurrent("Chunk", () => {
   })
 
   it("replaceOption", () => {
-    expect(pipe(Chunk.empty(), Chunk.replaceOption(0, 2))).toEqual(O.none())
-    expect(pipe(Chunk.make(1, 2, 3), Chunk.replaceOption(0, 2))).toEqual(O.some(Chunk.make(2, 2, 3)))
+    expect(pipe(Chunk.empty(), Chunk.replaceOption(0, 2))).toEqual(Option.none())
+    expect(pipe(Chunk.make(1, 2, 3), Chunk.replaceOption(0, 2))).toEqual(Option.some(Chunk.make(2, 2, 3)))
   })
 
   it("replace", () => {
@@ -176,7 +177,7 @@ describe.concurrent("Chunk", () => {
         expect(pipe(
           chunk,
           Chunk.get(index)
-        )).toEqual(O.some(1))
+        )).toEqual(Option.some(1))
       })
     })
 
@@ -184,7 +185,7 @@ describe.concurrent("Chunk", () => {
       const chunk = Chunk.unsafeFromArray([1, 2, 3])
 
       it("should return a None", () => {
-        expect(pipe(chunk, Chunk.get(4))).toEqual(O.none())
+        expect(pipe(chunk, Chunk.get(4))).toEqual(Option.none())
       })
     })
   })
@@ -616,8 +617,8 @@ describe.concurrent("Chunk", () => {
   })
 
   it("last", () => {
-    expect(Chunk.last(Chunk.empty())).toEqual(O.none())
-    expect(Chunk.last(Chunk.make(1, 2, 3))).toEqual(O.some(3))
+    expect(Chunk.last(Chunk.empty())).toEqual(Option.none())
+    expect(Chunk.last(Chunk.make(1, 2, 3))).toEqual(Option.some(3))
   })
 
   it("map", () => {
@@ -676,8 +677,8 @@ describe.concurrent("Chunk", () => {
   })
 
   it("tail", () => {
-    expect(Chunk.tail(Chunk.empty())).toEqual(O.none())
-    expect(Chunk.tail(Chunk.make(1, 2, 3))).toEqual(O.some(Chunk.make(2, 3)))
+    expect(Chunk.tail(Chunk.empty())).toEqual(Option.none())
+    expect(Chunk.tail(Chunk.make(1, 2, 3))).toEqual(Option.some(Chunk.make(2, 3)))
   })
 
   it("correspondsTo", () => {
@@ -690,22 +691,24 @@ describe.concurrent("Chunk", () => {
 
   it("filter", () => {
     Util.deepStrictEqual(Chunk.filter(Chunk.make(1, 2, 3), (n) => n % 2 === 1), Chunk.make(1, 3))
-    expect(Chunk.filter(Chunk.make(O.some(3), O.some(2), O.some(1)), O.isSome)).toEqual(
-      Chunk.make(O.some(3), O.some(2), O.some(1))
+    expect(Chunk.filter(Chunk.make(Option.some(3), Option.some(2), Option.some(1)), Option.isSome)).toEqual(
+      Chunk.make(Option.some(3), Option.some(2), Option.some(1))
     )
-    expect(Chunk.filter(Chunk.make(O.some(3), O.none(), O.some(1)), O.isSome)).toEqual(Chunk.make(O.some(3), O.some(1)))
+    expect(Chunk.filter(Chunk.make(Option.some(3), Option.none(), Option.some(1)), Option.isSome)).toEqual(
+      Chunk.make(Option.some(3), Option.some(1))
+    )
   })
 
   it("filterMapWhile", () => {
-    expect(Chunk.filterMapWhile(Chunk.make(1, 3, 4, 5), (n) => n % 2 === 1 ? O.some(n) : O.none())).toEqual(
+    expect(Chunk.filterMapWhile(Chunk.make(1, 3, 4, 5), (n) => n % 2 === 1 ? Option.some(n) : Option.none())).toEqual(
       Chunk.make(1, 3)
     )
   })
 
   it("compact", () => {
     expect(Chunk.compact([])).toEqual(Chunk.empty())
-    expect(Chunk.compact([O.some(1), O.some(2), O.some(3)])).toEqual(Chunk.make(1, 2, 3))
-    expect(Chunk.compact([O.some(1), O.none(), O.some(3)])).toEqual(Chunk.make(1, 3))
+    expect(Chunk.compact([Option.some(1), Option.some(2), Option.some(3)])).toEqual(Chunk.make(1, 2, 3))
+    expect(Chunk.compact([Option.some(1), Option.none(), Option.some(3)])).toEqual(Chunk.make(1, 3))
   })
 
   it("dedupeAdjacent", () => {
