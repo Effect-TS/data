@@ -2,8 +2,6 @@
  * @since 1.0.0
  */
 
-import type { Trace } from "@effect/data/Debug"
-import { makeTraced } from "@effect/data/Debug"
 import type * as Either from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
 import * as Hash from "@effect/data/Hash"
@@ -53,15 +51,6 @@ export class Right<E, A> implements Either.Right<E, A> {
   pipe() {
     return pipeArguments(this, arguments)
   }
-  traced(
-    this: this,
-    trace: Trace
-  ): this | Either.TracedEither<never, this["right"]> {
-    if (trace) {
-      return makeTraced(this, trace)
-    }
-    return this
-  }
 }
 
 /** @internal */
@@ -102,15 +91,6 @@ export class Left<E, A> implements Either.Left<E, A> {
   }
   pipe() {
     return pipeArguments(this, arguments)
-  }
-  traced(
-    this: this,
-    trace: Trace
-  ): this | Either.TracedEither<this["left"], never> {
-    if (trace) {
-      return makeTraced(this, trace)
-    }
-    return this
   }
 }
 

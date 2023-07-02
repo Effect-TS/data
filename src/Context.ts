@@ -7,7 +7,6 @@
  *
  * @since 1.0.0
  */
-import type { SourceLocation, Trace } from "@effect/data/Debug"
 import type { Equal } from "@effect/data/Equal"
 import * as C from "@effect/data/internal/Context"
 import type { Option } from "@effect/data/Option"
@@ -31,7 +30,6 @@ export interface Tag<Identifier, Service> extends Pipeable<Tag<Identifier, Servi
   readonly [TagTypeId]: { readonly _S: (_: Service) => Service; readonly _I: (_: Identifier) => Identifier }
   of(self: Service): Service
   context(self: Service): Context<Identifier>
-  traced(this: Tag<Identifier, Service>, trace: Trace): TracedTag<Identifier, Service> | Tag<Identifier, Service>
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: TagUnify<this>
   [Unify.blacklistSymbol]?: TagUnifyBlacklist
@@ -50,19 +48,6 @@ export interface TagUnify<A extends { [Unify.typeSymbol]?: any }> {
  * @since 1.0.0
  */
 export interface TagUnifyBlacklist {}
-
-/**
- * @since 1.0.0
- * @category models
- */
-export interface TracedTag<Identifier, Service>
-  extends Pipeable<Tag<Identifier, Service> | TracedTag<Identifier, Service>>
-{
-  readonly _tag: "Traced"
-  readonly i0: Tag<Identifier, Service> | TracedTag<Identifier, Service>
-  readonly trace: SourceLocation
-  traced(this: TracedTag<Identifier, Service>, trace: Trace): TracedTag<Identifier, Service>
-}
 
 /**
  * @since 1.0.0
