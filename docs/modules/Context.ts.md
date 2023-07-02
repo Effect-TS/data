@@ -33,7 +33,6 @@ Added in v1.0.0
   - [Tag (interface)](#tag-interface)
   - [TagUnify (interface)](#tagunify-interface)
   - [TagUnifyBlacklist (interface)](#tagunifyblacklist-interface)
-  - [TracedTag (interface)](#tracedtag-interface)
   - [ValidTagsById (type alias)](#validtagsbyid-type-alias)
 - [symbol](#symbol)
   - [TagTypeId (type alias)](#tagtypeid-type-alias)
@@ -252,7 +251,6 @@ export interface Tag<Identifier, Service> extends Pipeable<Tag<Identifier, Servi
   readonly [TagTypeId]: { readonly _S: (_: Service) => Service; readonly _I: (_: Identifier) => Identifier }
   of(self: Service): Service
   context(self: Service): Context<Identifier>
-  traced(this: Tag<Identifier, Service>, trace: Trace): TracedTag<Identifier, Service> | Tag<Identifier, Service>
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: TagUnify<this>
   [Unify.blacklistSymbol]?: TagUnifyBlacklist
@@ -279,22 +277,6 @@ Added in v1.0.0
 
 ```ts
 export interface TagUnifyBlacklist {}
-```
-
-Added in v1.0.0
-
-## TracedTag (interface)
-
-**Signature**
-
-```ts
-export interface TracedTag<Identifier, Service>
-  extends Pipeable<Tag<Identifier, Service> | TracedTag<Identifier, Service>> {
-  readonly _tag: 'Traced'
-  readonly i0: Tag<Identifier, Service> | TracedTag<Identifier, Service>
-  readonly trace: SourceLocation
-  traced(this: TracedTag<Identifier, Service>, trace: Trace): TracedTag<Identifier, Service>
-}
 ```
 
 Added in v1.0.0

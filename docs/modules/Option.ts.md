@@ -1,6 +1,6 @@
 ---
 title: Option.ts
-nav_order: 33
+nav_order: 32
 parent: Modules
 ---
 
@@ -78,7 +78,6 @@ Added in v1.0.0
   - [OptionUnify (interface)](#optionunify-interface)
   - [OptionUnifyBlacklist (interface)](#optionunifyblacklist-interface)
   - [Some (interface)](#some-interface)
-  - [TracedOption (interface)](#tracedoption-interface)
 - [pattern matching](#pattern-matching)
   - [match](#match)
 - [sorting](#sorting)
@@ -1167,7 +1166,6 @@ export interface None<A> extends Data.Case, Pipeable<Option<A>> {
   readonly [OptionTypeId]: {
     readonly _A: (_: never) => A
   }
-  traced(trace: Trace): Option<A> | TracedOption<A>
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: OptionUnify<this>
   [Unify.blacklistSymbol]?: OptionUnifyBlacklist
@@ -1219,25 +1217,9 @@ export interface Some<A> extends Data.Case, Pipeable<Option<A>> {
   readonly [OptionTypeId]: {
     readonly _A: (_: never) => A
   }
-  traced(trace: Trace): Option<A> | TracedOption<A>
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: OptionUnify<this>
   [Unify.blacklistSymbol]?: OptionUnifyBlacklist
-}
-```
-
-Added in v1.0.0
-
-## TracedOption (interface)
-
-**Signature**
-
-```ts
-export interface TracedOption<A> extends Pipeable<Option<A> | TracedOption<A>> {
-  readonly _tag: 'Traced'
-  readonly i0: Option<A> | TracedOption<A>
-  readonly trace: SourceLocation
-  traced(trace: Trace): TracedOption<A>
 }
 ```
 
