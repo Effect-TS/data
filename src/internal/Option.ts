@@ -2,8 +2,6 @@
  * @since 1.0.0
  */
 
-import type { Trace } from "@effect/data/Debug"
-import { makeTraced } from "@effect/data/Debug"
 import * as Equal from "@effect/data/Equal"
 import * as Hash from "@effect/data/Hash"
 import { EffectTypeId, effectVariance } from "@effect/data/internal/Effect"
@@ -50,12 +48,6 @@ export class Some<A> implements Option.Some<A> {
   pipe() {
     return pipeArguments(this, arguments)
   }
-  traced(this: this, trace: Trace): Option.TracedOption<this["value"]> | this {
-    if (trace) {
-      return makeTraced(this, trace)
-    }
-    return this
-  }
 }
 
 /** @internal */
@@ -90,12 +82,6 @@ export class None<A> implements Option.None<A> {
   }
   pipe() {
     return pipeArguments(this, arguments)
-  }
-  traced(this: this, trace: Trace): Option.TracedOption<never> | this {
-    if (trace) {
-      return makeTraced(this, trace)
-    }
-    return this
   }
 }
 

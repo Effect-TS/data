@@ -2,7 +2,6 @@
  * @since 1.0.0
  */
 import type * as Data from "@effect/data/Data"
-import type { SourceLocation, Trace } from "@effect/data/Debug"
 import type { Either } from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
 import type { Equivalence } from "@effect/data/Equivalence"
@@ -46,7 +45,6 @@ export interface None<A> extends Data.Case, Pipeable<Option<A>> {
   readonly [OptionTypeId]: {
     readonly _A: (_: never) => A
   }
-  traced(trace: Trace): Option<A> | TracedOption<A>
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: OptionUnify<this>
   [Unify.blacklistSymbol]?: OptionUnifyBlacklist
@@ -62,21 +60,9 @@ export interface Some<A> extends Data.Case, Pipeable<Option<A>> {
   readonly [OptionTypeId]: {
     readonly _A: (_: never) => A
   }
-  traced(trace: Trace): Option<A> | TracedOption<A>
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: OptionUnify<this>
   [Unify.blacklistSymbol]?: OptionUnifyBlacklist
-}
-
-/**
- * @since 1.0.0
- * @category models
- */
-export interface TracedOption<A> extends Pipeable<Option<A> | TracedOption<A>> {
-  readonly _tag: "Traced"
-  readonly i0: Option<A> | TracedOption<A>
-  readonly trace: SourceLocation
-  traced(trace: Trace): TracedOption<A>
 }
 
 /**

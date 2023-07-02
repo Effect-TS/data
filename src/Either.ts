@@ -3,7 +3,6 @@
  */
 
 import type * as Data from "@effect/data/Data"
-import type { SourceLocation, Trace } from "@effect/data/Debug"
 import * as Equal from "@effect/data/Equal"
 import type { Equivalence } from "@effect/data/Equivalence"
 import * as equivalence from "@effect/data/Equivalence"
@@ -43,7 +42,6 @@ export interface Left<E, A> extends Data.Case, Pipeable<Either<E, A>> {
     readonly _E: (_: never) => E
   }
   get left(): E
-  traced(trace: Trace): Either<E, A> | TracedEither<E, A>
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: EitherUnify<this>
   [Unify.blacklistSymbol]?: EitherUnifyBlacklist
@@ -60,7 +58,6 @@ export interface Right<E, A> extends Data.Case, Pipeable<Either<E, A>> {
     readonly _A: (_: never) => A
     readonly _E: (_: never) => E
   }
-  traced(trace: Trace): Either<E, A> | TracedEither<E, A>
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: EitherUnify<this>
   [Unify.blacklistSymbol]?: EitherUnifyBlacklist
@@ -79,17 +76,6 @@ export interface EitherUnify<A extends { [Unify.typeSymbol]?: any }> {
  * @since 1.0.0
  */
 export interface EitherUnifyBlacklist {}
-
-/**
- * @since 1.0.0
- * @category models
- */
-export interface TracedEither<E, A> extends Pipeable<Either<E, A> | TracedEither<E, A>> {
-  readonly _tag: "Traced"
-  readonly i0: Either<E, A> | TracedEither<E, A>
-  readonly trace: SourceLocation
-  traced(trace: Trace): TracedEither<E, A>
-}
 
 /**
  * @category type lambdas

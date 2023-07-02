@@ -1,6 +1,4 @@
 import type * as C from "@effect/data/Context"
-import type { Trace } from "@effect/data/Debug"
-import { makeTraced } from "@effect/data/Debug"
 import * as Equal from "@effect/data/Equal"
 import { dual } from "@effect/data/Function"
 import * as G from "@effect/data/Global"
@@ -53,12 +51,6 @@ export class TagImpl<Identifier, Service> implements C.Tag<Identifier, Service> 
   }
   pipe() {
     return pipeArguments(this, arguments)
-  }
-  traced(this: this, trace: Trace): C.TracedTag<Identifier, Service> | this {
-    if (trace) {
-      return makeTraced(this, trace)
-    }
-    return this
   }
   of(self: Service): Service {
     return self
