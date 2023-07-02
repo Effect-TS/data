@@ -6,16 +6,9 @@ import type { Trace } from "@effect/data/Debug"
 import { makeTraced } from "@effect/data/Debug"
 import * as Equal from "@effect/data/Equal"
 import * as Hash from "@effect/data/Hash"
-import { EffectTypeId } from "@effect/data/internal/Effect"
+import { EffectTypeId, effectVariance } from "@effect/data/internal/Effect"
 import type * as Option from "@effect/data/Option"
 import { pipeArguments } from "@effect/data/Pipeable"
-
-/** @internal */
-const effectVariance = {
-  _R: (_: never) => _,
-  _E: (_: never) => _,
-  _A: (_: never) => _
-}
 
 const OptionTypeId: Option.OptionTypeId = Symbol.for("@effect/io/Option") as Option.OptionTypeId
 

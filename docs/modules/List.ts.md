@@ -6,6 +6,15 @@ parent: Modules
 
 ## List overview
 
+A data type for immutable linked lists representing ordered collections of elements of type `A`.
+
+This data type is optimal for last-in-first-out (LIFO), stack-like access patterns. If you need another access pattern, for example, random access or FIFO, consider using a collection more suited to this than `List`.
+
+**Performance**
+
+- Time: `List` has `O(1)` prepend and head/tail access. Most other operations are `O(n)` on the number of elements in the list. This includes the index-based lookup of elements, `length`, `append` and `reverse`.
+- Space: `List` implements structural sharing of the tail list. This means that many operations are either zero- or constant-memory cost.
+
 Added in v1.0.0
 
 ---
@@ -13,10 +22,10 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [combinators](#combinators)
+  - [append](#append)
+  - [appendAll](#appendall)
   - [compact](#compact)
-  - [concat](#concat)
   - [drop](#drop)
-  - [equalsWith](#equalswith)
   - [every](#every)
   - [filter](#filter)
   - [filterMap](#filtermap)
@@ -45,10 +54,12 @@ Added in v1.0.0
 - [conversions](#conversions)
   - [toChunk](#tochunk)
   - [toReadonlyArray](#toreadonlyarray)
+- [equivalence](#equivalence)
+  - [getEquivalence](#getequivalence)
 - [getters](#getters)
   - [head](#head)
   - [last](#last)
-  - [length](#length)
+  - [size](#size)
   - [tail](#tail)
 - [models](#models)
   - [Cons (interface)](#cons-interface)
@@ -70,6 +81,36 @@ Added in v1.0.0
 
 # combinators
 
+## append
+
+Appends the specified element to the end of the list.
+
+**Signature**
+
+```ts
+export declare const append: {
+  <B>(element: B): <A>(self: List<A>) => Cons<B | A>
+  <A, B>(self: List<A>, element: B): Cons<A | B>
+}
+```
+
+Added in v1.0.0
+
+## appendAll
+
+Concatentates the specified lists together.
+
+**Signature**
+
+```ts
+export declare const appendAll: {
+  <B>(that: List<B>): <A>(self: List<A>) => List<B | A>
+  <A, B>(self: List<A>, that: List<B>): List<A | B>
+}
+```
+
+Added in v1.0.0
+
 ## compact
 
 Removes all `None` values from the specified list.
@@ -82,21 +123,6 @@ export declare const compact: <A>(self: Iterable<Option.Option<A>>) => List<A>
 
 Added in v1.0.0
 
-## concat
-
-Concatentates the specified lists together.
-
-**Signature**
-
-```ts
-export declare const concat: {
-  <B>(that: List<B>): <A>(self: List<A>) => List<B | A>
-  <A, B>(self: List<A>, that: List<B>): List<A | B>
-}
-```
-
-Added in v1.0.0
-
 ## drop
 
 Drops the first `n` elements from the specified list.
@@ -105,22 +131,6 @@ Drops the first `n` elements from the specified list.
 
 ```ts
 export declare const drop: { (n: number): <A>(self: List<A>) => List<A>; <A>(self: List<A>, n: number): List<A> }
-```
-
-Added in v1.0.0
-
-## equalsWith
-
-Returns `true` if the two lists are equal according to the provided function,
-`false` otherwise.
-
-**Signature**
-
-```ts
-export declare const equalsWith: {
-  <A, B>(that: List<B>, f: (a: A, b: B) => boolean): (self: List<A>) => boolean
-  <A, B>(self: List<A>, that: List<B>, f: (a: A, b: B) => boolean): boolean
-}
 ```
 
 Added in v1.0.0
@@ -506,6 +516,18 @@ export declare const toReadonlyArray: <A>(self: List<A>) => readonly A[]
 
 Added in v1.0.0
 
+# equivalence
+
+## getEquivalence
+
+**Signature**
+
+```ts
+export declare const getEquivalence: <A>(isEquivalent: Equivalence.Equivalence<A>) => Equivalence.Equivalence<List<A>>
+```
+
+Added in v1.0.0
+
 # getters
 
 ## head
@@ -534,14 +556,14 @@ export declare const last: <A>(self: List<A>) => Option.Option<A>
 
 Added in v1.0.0
 
-## length
+## size
 
 Returns the number of elements contained in the specified `List`
 
 **Signature**
 
 ```ts
-export declare const length: <A>(self: List<A>) => number
+export declare const size: <A>(self: List<A>) => number
 ```
 
 Added in v1.0.0

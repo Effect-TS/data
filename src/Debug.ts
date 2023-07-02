@@ -5,7 +5,7 @@
 import * as Equal from "@effect/data/Equal"
 import { globalValue } from "@effect/data/Global"
 import * as Hash from "@effect/data/Hash"
-import { EffectTypeId } from "@effect/data/internal/Effect"
+import { EffectTypeId, effectVariance } from "@effect/data/internal/Effect"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
 
@@ -440,13 +440,6 @@ class TracedPrimitive<T> implements Traced<T> {
     }
     return this
   }
-}
-
-/** @internal */
-const effectVariance = {
-  _R: (_: never) => _,
-  _E: (_: never) => _,
-  _A: (_: never) => _
 }
 
 /**
