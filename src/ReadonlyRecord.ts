@@ -146,7 +146,7 @@ export const fromIterable: {
  * @category conversions
  * @since 1.0.0
  */
-export const fromEntries: <A>(self: Iterable<[string, A]>) => Record<string, A> = fromIterable(identity)
+export const fromEntries: <A>(self: Iterable<readonly [string, A]>) => Record<string, A> = fromIterable(identity)
 
 /**
  * Transforms the values of a `ReadonlyRecord` into an `Array` with a custom mapping function.
