@@ -1228,8 +1228,13 @@ Added in v1.0.0
 
 ```ts
 export declare const match: {
-  <B, A, C = B>(onEmpty: LazyArg<B>, onNonEmpty: (self: readonly [A, ...A[]]) => C): (self: readonly A[]) => B | C
-  <A, B, C = B>(self: readonly A[], onEmpty: LazyArg<B>, onNonEmpty: (self: readonly [A, ...A[]]) => C): B | C
+  <B, A, C = B>(options: { readonly onEmpty: LazyArg<B>; readonly onNonEmpty: (self: readonly [A, ...A[]]) => C }): (
+    self: readonly A[]
+  ) => B | C
+  <A, B, C = B>(
+    self: readonly A[],
+    options: { readonly onEmpty: LazyArg<B>; readonly onNonEmpty: (self: readonly [A, ...A[]]) => C }
+  ): B | C
 }
 ```
 
@@ -1241,8 +1246,13 @@ Added in v1.0.0
 
 ```ts
 export declare const matchLeft: {
-  <B, A, C = B>(onEmpty: LazyArg<B>, onNonEmpty: (head: A, tail: A[]) => C): (self: readonly A[]) => B | C
-  <A, B, C = B>(self: readonly A[], onEmpty: LazyArg<B>, onNonEmpty: (head: A, tail: A[]) => C): B | C
+  <B, A, C = B>(options: { readonly onEmpty: LazyArg<B>; readonly onNonEmpty: (head: A, tail: A[]) => C }): (
+    self: readonly A[]
+  ) => B | C
+  <A, B, C = B>(
+    self: readonly A[],
+    options: { readonly onEmpty: LazyArg<B>; readonly onNonEmpty: (head: A, tail: A[]) => C }
+  ): B | C
 }
 ```
 
@@ -1254,8 +1264,13 @@ Added in v1.0.0
 
 ```ts
 export declare const matchRight: {
-  <B, A, C = B>(onEmpty: LazyArg<B>, onNonEmpty: (init: A[], last: A) => C): (self: readonly A[]) => B | C
-  <A, B, C = B>(self: readonly A[], onEmpty: LazyArg<B>, onNonEmpty: (init: A[], last: A) => C): B | C
+  <B, A, C = B>(options: { readonly onEmpty: LazyArg<B>; readonly onNonEmpty: (init: A[], last: A) => C }): (
+    self: readonly A[]
+  ) => B | C
+  <A, B, C = B>(
+    self: readonly A[],
+    options: { readonly onEmpty: LazyArg<B>; readonly onNonEmpty: (init: A[], last: A) => C }
+  ): B | C
 }
 ```
 

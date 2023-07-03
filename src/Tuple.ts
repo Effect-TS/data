@@ -72,7 +72,7 @@ export const getSecond = <L, R>(self: readonly [L, R]): R => self[1]
  * import { bimap } from "@effect/data/Tuple"
  *
  * assert.deepStrictEqual(
- *   bimap(["hello", 42], s => s.toUpperCase(), n => n.toString()),
+ *   bimap(["hello", 42], { onFirst: s => s.toUpperCase(), onSecond: n => n.toString() }),
  *   ["HELLO", "42"]
  * )
  *

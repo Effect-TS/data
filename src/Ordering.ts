@@ -38,11 +38,11 @@ export const reverse = (o: Ordering): Ordering => (o === -1 ? 1 : o === 1 ? -1 :
  * import { match } from "@effect/data/Ordering"
  * import { constant } from "@effect/data/Function"
  *
- * const toMessage = match(
- *   constant('less than'),
- *   constant('equal'),
- *   constant('greater than')
- * )
+ * const toMessage = match({
+ *   onLessThan: constant('less than'),
+ *   onEqual: constant('equal'),
+ *   onGreaterThan: constant('greater than')
+ * })
  *
  * assert.deepStrictEqual(toMessage(-1), "less than")
  * assert.deepStrictEqual(toMessage(0), "equal")

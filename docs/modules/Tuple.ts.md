@@ -144,8 +144,13 @@ Transforms both elements of a tuple using the given functions.
 
 ```ts
 export declare const bimap: {
-  <L1, L2, R1, R2>(f: (e: L1) => L2, g: (a: R1) => R2): (self: readonly [L1, R1]) => [L2, R2]
-  <L1, R1, L2, R2>(self: readonly [L1, R1], f: (e: L1) => L2, g: (a: R1) => R2): [L2, R2]
+  <L1, L2, R1, R2>(options: { readonly onFirst: (e: L1) => L2; readonly onSecond: (a: R1) => R2 }): (
+    self: readonly [L1, R1]
+  ) => [L2, R2]
+  <L1, R1, L2, R2>(
+    self: readonly [L1, R1],
+    options: { readonly onFirst: (e: L1) => L2; readonly onSecond: (a: R1) => R2 }
+  ): [L2, R2]
 }
 ```
 
@@ -154,14 +159,10 @@ export declare const bimap: {
 ```ts
 import { bimap } from '@effect/data/Tuple'
 
-assert.deepStrictEqual(
-  bimap(
-    ['hello', 42],
-    (s) => s.toUpperCase(),
-    (n) => n.toString()
-  ),
-  ['HELLO', '42']
-)
+assert.deepStrictEqual(bimap(['hello', 42], { onFirst: (s) => s.toUpperCase(), onSecond: (n) => n.toString() }), [
+  'HELLO',
+  '42',
+])
 ```
 
 Added in v1.0.0

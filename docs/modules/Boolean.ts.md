@@ -278,8 +278,8 @@ It is useful when you have to run one of two functions depending on the boolean 
 
 ```ts
 export declare const match: {
-  <A, B = A>(onFalse: LazyArg<A>, onTrue: LazyArg<B>): (value: boolean) => A | B
-  <A, B>(value: boolean, onFalse: LazyArg<A>, onTrue: LazyArg<B>): A | B
+  <A, B = A>(options: { readonly onFalse: LazyArg<A>; readonly onTrue: LazyArg<B> }): (value: boolean) => A | B
+  <A, B>(value: boolean, options: { readonly onFalse: LazyArg<A>; readonly onTrue: LazyArg<B> }): A | B
 }
 ```
 
@@ -288,14 +288,7 @@ export declare const match: {
 ```ts
 import * as B from '@effect/data/Boolean'
 
-assert.deepStrictEqual(
-  B.match(
-    true,
-    () => "It's false!",
-    () => "It's true!"
-  ),
-  "It's true!"
-)
+assert.deepStrictEqual(B.match(true, { onFalse: () => "It's false!", onTrue: () => "It's true!" }), "It's true!")
 ```
 
 Added in v1.0.0

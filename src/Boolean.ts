@@ -38,10 +38,7 @@ export const isBoolean: (input: unknown) => input is boolean = predicate.isBoole
  * @example
  * import * as B from "@effect/data/Boolean"
  *
- * assert.deepStrictEqual(
- *  B.match(true, () => "It's false!", () => "It's true!"),
- *  "It's true!"
- * )
+ * assert.deepStrictEqual(B.match(true, { onFalse: () => "It's false!", onTrue: () => "It's true!" }), "It's true!")
  *
  * @category pattern matching
  * @since 1.0.0

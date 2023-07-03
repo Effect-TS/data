@@ -35,11 +35,9 @@ Added in v1.0.0
   - [inspectSome](#inspectsome)
 - [do notation](#do-notation)
   - [Do](#do)
-  - [appendElement](#appendelement)
   - [bind](#bind)
   - [bindTo](#bindto)
   - [let](#let)
-  - [tupled](#tupled)
 - [equivalence](#equivalence)
   - [getEquivalence](#getequivalence)
 - [error handling](#error-handling)
@@ -510,30 +508,6 @@ export declare const Do: () => Option<{}>
 
 Added in v1.0.0
 
-## appendElement
-
-Appends an element to the end of a tuple wrapped in an `Option` type.
-
-**Signature**
-
-```ts
-export declare const appendElement: {
-  <B>(that: Option<B>): <A extends readonly any[]>(self: Option<A>) => Option<[...A, B]>
-  <A extends readonly any[], B>(self: Option<A>, that: Option<B>): Option<[...A, B]>
-}
-```
-
-**Example**
-
-```ts
-import * as O from '@effect/data/Option'
-
-assert.deepStrictEqual(O.appendElement(O.some([1, 2]), O.some(3)), O.some([1, 2, 3]))
-assert.deepStrictEqual(O.appendElement(O.some([1, 2]), O.none()), O.none())
-```
-
-Added in v1.0.0
-
 ## bind
 
 **Signature**
@@ -577,16 +551,6 @@ export declare const let: {
     [K in N | keyof A]: K extends keyof A ? A[K] : B
   }>
 }
-```
-
-Added in v1.0.0
-
-## tupled
-
-**Signature**
-
-```ts
-export declare const tupled: <A>(self: Option<A>) => Option<[A]>
 ```
 
 Added in v1.0.0
@@ -1192,8 +1156,8 @@ function when passed the `Option`'s value.
 
 ```ts
 export declare const match: {
-  <B, A, C = B>(onNone: LazyArg<B>, onSome: (a: A) => C): (self: Option<A>) => B | C
-  <A, B, C = B>(self: Option<A>, onNone: LazyArg<B>, onSome: (a: A) => C): B | C
+  <B, A, C = B>(options: { readonly onNone: LazyArg<B>; readonly onSome: (a: A) => C }): (self: Option<A>) => B | C
+  <A, B, C = B>(self: Option<A>, options: { readonly onNone: LazyArg<B>; readonly onSome: (a: A) => C }): B | C
 }
 ```
 
@@ -1204,24 +1168,12 @@ import { some, none, match } from '@effect/data/Option'
 import { pipe } from '@effect/data/Function'
 
 assert.deepStrictEqual(
-  pipe(
-    some(1),
-    match(
-      () => 'a none',
-      (a) => `a some containing ${a}`
-    )
-  ),
+  pipe(some(1), match({ onNone: () => 'a none', onSome: (a) => `a some containing ${a}` })),
   'a some containing 1'
 )
 
 assert.deepStrictEqual(
-  pipe(
-    none(),
-    match(
-      () => 'a none',
-      (a) => `a some containing ${a}`
-    )
-  ),
+  pipe(none(), match({ onNone: () => 'a none', onSome: (a) => `a some containing ${a}` })),
   'a none'
 )
 ```

@@ -267,18 +267,9 @@ export const map: {
  *
  * const onRight = (value: number): string => `Ok: ${value}`
  *
+ * assert.deepStrictEqual(pipe(E.right(1), E.match({ onLeft, onRight })), 'Ok: 1')
  * assert.deepStrictEqual(
- *   pipe(
- *     E.right(1),
- *     E.match({ onLeft , onRight })
- *   ),
- *   'Ok: 1'
- * )
- * assert.deepStrictEqual(
- *   pipe(
- *     E.left(['string 1', 'string 2']),
- *     E.match({ onLeft , onRight })
- *   ),
+ *   pipe(E.left(['string 1', 'string 2']), E.match({ onLeft, onRight })),
  *   'strings: string 1, string 2'
  * )
  *

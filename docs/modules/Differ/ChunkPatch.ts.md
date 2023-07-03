@@ -36,11 +36,11 @@ for the values.
 **Signature**
 
 ```ts
-export declare const diff: <Value, Patch>(
-  oldValue: Chunk<Value>,
-  newValue: Chunk<Value>,
-  differ: Differ<Value, Patch>
-) => ChunkPatch<Value, Patch>
+export declare const diff: <Value, Patch>(options: {
+  readonly oldValue: Chunk<Value>
+  readonly newValue: Chunk<Value>
+  readonly differ: Differ<Value, Patch>
+}) => ChunkPatch<Value, Patch>
 ```
 
 Added in v1.0.0

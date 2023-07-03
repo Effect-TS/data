@@ -169,18 +169,12 @@ export const isSome: <A>(self: Option<A>) => self is Some<A> = option.isSome
  * import { pipe } from "@effect/data/Function"
  *
  * assert.deepStrictEqual(
- *   pipe(
- *     some(1),
- *     match(() => 'a none', a => `a some containing ${a}`)
- *   ),
+ *   pipe(some(1), match({ onNone: () => 'a none', onSome: (a) => `a some containing ${a}` })),
  *   'a some containing 1'
  * )
  *
  * assert.deepStrictEqual(
- *   pipe(
- *     none(),
- *     match(() => 'a none', a => `a some containing ${a}`)
- *   ),
+ *   pipe(none(), match({ onNone: () => 'a none', onSome: (a) => `a some containing ${a}` })),
  *   'a none'
  * )
  *
