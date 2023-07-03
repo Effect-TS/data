@@ -1268,36 +1268,6 @@ export const multiplyCompact = (self: Iterable<Option<number>>): number => {
  * @category do notation
  * @since 1.0.0
  */
-export const tupled: <A>(self: Option<A>) => Option<[A]> = map((a) => [a])
-
-/**
- * Appends an element to the end of a tuple wrapped in an `Option` type.
- *
- * @param self - The option of a tuple to which an element needs to be added.
- * @param that - The element which needs to be added to the tuple.
- *
- * @example
- * import * as O from "@effect/data/Option"
- *
- * assert.deepStrictEqual(O.appendElement(O.some([1, 2]), O.some(3)), O.some([1, 2, 3]))
- * assert.deepStrictEqual(O.appendElement(O.some([1, 2]), O.none()), O.none())
- *
- * @category do notation
- * @since 1.0.0
- */
-export const appendElement: {
-  <B>(that: Option<B>): <A extends ReadonlyArray<any>>(self: Option<A>) => Option<[...A, B]>
-  <A extends ReadonlyArray<any>, B>(self: Option<A>, that: Option<B>): Option<[...A, B]>
-} = dual(
-  2,
-  <A extends ReadonlyArray<any>, B>(self: Option<A>, that: Option<B>): Option<[...A, B]> =>
-    zipWith(self, that, (a, b) => [...a, b])
-)
-
-/**
- * @category do notation
- * @since 1.0.0
- */
 export const bindTo: {
   <N extends string>(name: N): <A>(self: Option<A>) => Option<{ [K in N]: A }>
   <A, N extends string>(self: Option<A>, name: N): Option<{ [K in N]: A }>

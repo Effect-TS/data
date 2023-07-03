@@ -332,12 +332,6 @@ describe.concurrent("Option", () => {
     )
   })
 
-  it("element", () => {
-    expect(pipe(_.some(1), _.tupled, _.appendElement(_.some("b")))).toEqual(
-      _.some([1, "b"])
-    )
-  })
-
   it("liftNullable", () => {
     const f = _.liftNullable((n: number) => (n > 0 ? n : null))
     Util.deepStrictEqual(f(1), _.some(1))
