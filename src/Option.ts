@@ -802,17 +802,17 @@ export const productMany = <A>(
 export const all: {
   <A extends ReadonlyArray<Option<any>>>(
     elements: A
-  ): Option<{ [I in keyof A]: [A[I]] extends [Option<infer _A>] ? _A : never }>
+  ): Option<{ -readonly [I in keyof A]: [A[I]] extends [Option<infer _A>] ? _A : never }>
 
   <A>(elements: Iterable<Option<A>>): Option<Array<A>>
 
   <A extends ReadonlyArray<Option<any>>>(
     ...elements: A
-  ): Option<{ [I in keyof A]: [A[I]] extends [Option<infer A>] ? A : never }>
+  ): Option<{ -readonly [I in keyof A]: [A[I]] extends [Option<infer A>] ? A : never }>
 
   <A extends Record<string, Option<any>>>(
     fields: A
-  ): Option<{ [K in keyof A]: [A[K]] extends [Option<infer A>] ? A : never }>
+  ): Option<{ -readonly [K in keyof A]: [A[K]] extends [Option<infer A>] ? A : never }>
 } = function() {
   const collection: Record<string, Option<any>> | Iterable<Option<any>> =
     arguments.length === 1 && isOption(arguments[0]) ?
