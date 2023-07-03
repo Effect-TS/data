@@ -120,14 +120,14 @@ Takes a structure of `Option`s and returns an `Option` of values with the same s
 ```ts
 export declare const all: {
   <A extends readonly Option<any>[]>(elements: A): Option<{
-    [I in keyof A]: [A[I]] extends [Option<infer _A>] ? _A : never
+    -readonly [I in keyof A]: [A[I]] extends [Option<infer _A>] ? _A : never
   }>
   <A>(elements: Iterable<Option<A>>): Option<A[]>
   <A extends readonly Option<any>[]>(...elements: A): Option<{
-    [I in keyof A]: [A[I]] extends [Option<infer A>] ? A : never
+    -readonly [I in keyof A]: [A[I]] extends [Option<infer A>] ? A : never
   }>
   <A extends Record<string, Option<any>>>(fields: A): Option<{
-    [K in keyof A]: [A[K]] extends [Option<infer A>] ? A : never
+    -readonly [K in keyof A]: [A[K]] extends [Option<infer A>] ? A : never
   }>
 }
 ```
