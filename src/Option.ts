@@ -397,38 +397,6 @@ export const firstSomeOf = <A>(collection: Iterable<Option<A>>): Option<A> => {
 }
 
 /**
- * Similar to `Promise.all` but operates on `Option`s.
- *
- * ```
- * Iterable<Option<A>> -> Option<A[]>
- * ```
- *
- * Flattens a collection of `Option`s into a single `Option` that contains a list of all the `Some` values.
- * If there is a `None` value in the collection, it returns `None` as the result.
- *
- * @param collection - An iterable collection of `Option`s to flatten.
- *
- * @example
- * import * as O from "@effect/data/Option"
- *
- * assert.deepStrictEqual(O.all([O.some(1), O.some(2), O.some(3)]), O.some([1, 2, 3]))
- * assert.deepStrictEqual(O.all([O.some(1), O.none(), O.some(3)]), O.none())
- *
- * @category combining
- * @since 1.0.0
- */
-export const all = <A>(collection: Iterable<Option<A>>): Option<Array<A>> => {
-  const out: Array<A> = []
-  for (const o of collection) {
-    if (isNone(o)) {
-      return none()
-    }
-    out.push(o.value)
-  }
-  return some(out)
-}
-
-/**
  * Constructs a new `Option` from a nullable type. If the value is `null` or `undefined`, returns `None`, otherwise
  * returns the value wrapped in a `Some`.
  *
@@ -820,49 +788,61 @@ export const productMany = <A>(
 }
 
 /**
- * Similar to `Promise.all` but operates on `Option`s.
+ * Takes a structure of `Option`s and returns an `Option` of values with the same structure.
  *
- * ```
- * [Option<A>, Option<B>, ...] -> Option<[A, B, ...]>
- * ```
- *
- * Takes a tuple of `Option`s and returns an `Option` of a tuple of values.
- *
- * @param elements - the tuple of `Option`s to be sequenced.
- *
- * @example
- * import * as O from "@effect/data/Option"
- *
- * assert.deepStrictEqual(O.tuple(O.some(1), O.some("hello")), O.some([1, "hello"]))
- * assert.deepStrictEqual(O.tuple(O.some(1), O.none()), O.none())
- *
- * @category combining
- * @since 1.0.0
- */
-export const tuple = <T extends ReadonlyArray<Option<any>>>(
-  ...elements: T
-): Option<{ [I in keyof T]: [T[I]] extends [Option<infer A>] ? A : never }> => all(elements) as any
-
-/**
- * Takes a struct of `Option`s and returns an `Option` of a struct of values.
+ * - If a tuple is supplied, then the returned `Option` will contain a tuple with the same length.
+ * - If a struct is supplied, then the returned `Option` will contain a struct with the same keys.
+ * - If an iterable is supplied, then the returned `Option` will contain an array.
  *
  * @param fields - the struct of `Option`s to be sequenced.
  *
  * @example
  * import * as O from "@effect/data/Option"
  *
- * assert.deepStrictEqual(O.struct({ a: O.some(1), b: O.some("hello") }), O.some({ a: 1, b: "hello" }))
- * assert.deepStrictEqual(O.struct({ a: O.some(1), b: O.none() }), O.none())
+ * assert.deepStrictEqual(O.all({ a: O.some(1), b: O.some("hello") }), O.some({ a: 1, b: "hello" }))
+ * assert.deepStrictEqual(O.all({ a: O.some(1), b: O.none() }), O.none())
+ * assert.deepStrictEqual(O.all(O.some(1), O.some("hello")), O.some([1, "hello"]))
+ * assert.deepStrictEqual(O.all([O.some(1), O.some(2)]), O.some([1, 2]))
  *
  * @category combining
  * @since 1.0.0
  */
-export const struct = <R extends Record<string, Option<any>>>(
-  fields: R
-): Option<{ [K in keyof R]: [R[K]] extends [Option<infer A>] ? A : never }> => {
+export const all: {
+  <A extends ReadonlyArray<Option<any>>>(
+    elements: A
+  ): Option<{ -readonly [I in keyof A]: [A[I]] extends [Option<infer _A>] ? _A : never }>
+
+  <A>(elements: Iterable<Option<A>>): Option<Array<A>>
+
+  <A extends ReadonlyArray<Option<any>>>(
+    ...elements: A
+  ): Option<{ -readonly [I in keyof A]: [A[I]] extends [Option<infer A>] ? A : never }>
+
+  <A extends Record<string, Option<any>>>(
+    fields: A
+  ): Option<{ -readonly [K in keyof A]: [A[K]] extends [Option<infer A>] ? A : never }>
+} = function() {
+  const collection: Record<string, Option<any>> | Iterable<Option<any>> =
+    arguments.length === 1 && isOption(arguments[0]) ?
+      [arguments[0]] :
+      arguments.length !== 1 ?
+      arguments :
+      arguments[0]
+
+  if (Symbol.iterator in collection) {
+    const out: Array<Option<any>> = []
+    for (const o of collection) {
+      if (isNone(o)) {
+        return none()
+      }
+      out.push(o.value)
+    }
+    return some(out)
+  }
+
   const out: any = {}
-  for (const key of Object.keys(fields)) {
-    const o = fields[key]
+  for (const key of Object.keys(collection)) {
+    const o = collection[key]
     if (isNone(o)) {
       return none()
     }

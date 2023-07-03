@@ -150,13 +150,6 @@ describe.concurrent("Option", () => {
     Util.deepStrictEqual(productMany(_.some(1), [_.some(2)]), _.some([1, 2]))
   })
 
-  it("all", () => {
-    Util.deepStrictEqual(_.all([]), _.some([]))
-    Util.deepStrictEqual(_.all([_.none()]), _.none())
-    Util.deepStrictEqual(_.all([_.some(1), _.some(2)]), _.some([1, 2]))
-    Util.deepStrictEqual(_.all([_.some(1), _.none()]), _.none())
-  })
-
   it("fromIterable", () => {
     Util.deepStrictEqual(_.fromIterable([]), _.none())
     Util.deepStrictEqual(_.fromIterable(["a"]), _.some("a"))
@@ -432,15 +425,35 @@ describe.concurrent("Option", () => {
     expect(isEquivalent(_.some(2), _.some(2))).toEqual(true)
   })
 
-  it("tuple", () => {
-    assert.deepStrictEqual(_.tuple(), _.some([]))
-    assert.deepStrictEqual(_.tuple(_.some(1), _.some("hello")), _.some([1, "hello"]))
-    assert.deepStrictEqual(_.tuple(_.some(1), _.none()), _.none())
+  it("all/ arguments", () => {
+    assertType<_.Option<[number, string]>>(_.all(_.some(1), _.some("hello")))
+    assert.deepStrictEqual(_.all(), _.some([]))
+    assert.deepStrictEqual(_.all(_.some(1), _.some("hello")), _.some([1, "hello"]))
+    assert.deepStrictEqual(_.all(_.some(1), _.none()), _.none())
   })
 
-  it("struct", () => {
-    assert.deepStrictEqual(_.struct({ a: _.some(1), b: _.some("hello") }), _.some({ a: 1, b: "hello" }))
-    assert.deepStrictEqual(_.struct({ a: _.some(1), b: _.none() }), _.none())
+  it("all/ tuple", () => {
+    assertType<_.Option<[number, string]>>(_.all([_.some(1), _.some("hello")] as const))
+    assert.deepStrictEqual(_.all([] as const), _.some([]))
+    assert.deepStrictEqual(_.all([_.some(1), _.some("hello")] as const), _.some([1, "hello"]))
+    assert.deepStrictEqual(_.all([_.some(1), _.none()] as const), _.none())
+  })
+
+  it("all/ iterable", () => {
+    assertType<_.Option<Array<number>>>(_.all([_.some(1), _.some(2)]))
+    assertType<_.Option<Array<number>>>(_.all(new Set([_.some(1), _.some(2)])))
+
+    Util.deepStrictEqual(_.all([]), _.some([]))
+    Util.deepStrictEqual(_.all([_.none()]), _.none())
+    Util.deepStrictEqual(_.all([_.some(1), _.some(2)]), _.some([1, 2]))
+    Util.deepStrictEqual(_.all(new Set([_.some(1), _.some(2)])), _.some([1, 2]))
+    Util.deepStrictEqual(_.all([_.some(1), _.none()]), _.none())
+  })
+
+  it("all/ struct", () => {
+    assertType<_.Option<{ a: number; b: string }>>(_.all({ a: _.some(1), b: _.some("hello") }))
+    assert.deepStrictEqual(_.all({ a: _.some(1), b: _.some("hello") }), _.some({ a: 1, b: "hello" }))
+    assert.deepStrictEqual(_.all({ a: _.some(1), b: _.none() }), _.none())
   })
 
   it("pipe", () => {
