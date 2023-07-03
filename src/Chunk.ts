@@ -243,7 +243,7 @@ export const of = <A>(a: A): NonEmptyChunk<A> => new ChunkImpl({ _tag: "ISinglet
  * @since 1.0.0
  */
 export const fromIterable = <A>(self: Iterable<A>): Chunk<A> =>
-  isChunk(self) ? self : new ChunkImpl({ _tag: "IArray", array: Array.from(self) })
+  isChunk(self) ? self : new ChunkImpl({ _tag: "IArray", array: RA.fromIterable(self) })
 
 const copyToArray = <A>(self: Chunk<A>, array: Array<any>, initial: number): void => {
   switch (self.backing._tag) {
@@ -614,11 +614,11 @@ export const appendAllNonEmpty: {
  * @category filtering
  */
 export const filterMap: {
-  <A, B>(f: (a: A, i: number) => Option<B>): (self: Iterable<A>) => Chunk<B>
-  <A, B>(self: Iterable<A>, f: (a: A, i: number) => Option<B>): Chunk<B>
+  <A, B>(f: (a: A, i: number) => Option<B>): (self: Chunk<A>) => Chunk<B>
+  <A, B>(self: Chunk<A>, f: (a: A, i: number) => Option<B>): Chunk<B>
 } = dual(
   2,
-  <A, B>(self: Iterable<A>, f: (a: A, i: number) => Option<B>): Chunk<B> => unsafeFromArray(RA.filterMap(self, f))
+  <A, B>(self: Chunk<A>, f: (a: A, i: number) => Option<B>): Chunk<B> => unsafeFromArray(RA.filterMap(self, f))
 )
 
 /**
@@ -645,9 +645,9 @@ export const filter: {
  * @category filtering
  */
 export const filterMapWhile: {
-  <A, B>(f: (a: A) => Option<B>): (self: Iterable<A>) => Chunk<B>
-  <A, B>(self: Iterable<A>, f: (a: A) => Option<B>): Chunk<B>
-} = dual(2, <A, B>(self: Iterable<A>, f: (a: A) => Option<B>) => unsafeFromArray(RA.filterMapWhile(self, f)))
+  <A, B>(f: (a: A) => Option<B>): (self: Chunk<A>) => Chunk<B>
+  <A, B>(self: Chunk<A>, f: (a: A) => Option<B>): Chunk<B>
+} = dual(2, <A, B>(self: Chunk<A>, f: (a: A) => Option<B>) => unsafeFromArray(RA.filterMapWhile(self, f)))
 
 /**
  * Filter out optional values
@@ -655,7 +655,7 @@ export const filterMapWhile: {
  * @since 1.0.0
  * @category filtering
  */
-export const compact = <A>(self: Iterable<Option<A>>): Chunk<A> => filterMap(self, identity)
+export const compact = <A>(self: Chunk<Option<A>>): Chunk<A> => filterMap(self, identity)
 
 /**
  * Returns a chunk with the elements mapped by the specified function.
@@ -1038,7 +1038,7 @@ export const dedupe = <A>(self: Chunk<A>): Chunk<A> => unsafeFromArray(RA.dedupe
  * @since 1.0.0
  * @category filtering
  */
-export const dedupeAdjacent = <A>(self: Iterable<A>): Chunk<A> => unsafeFromArray(RA.dedupeAdjacent(self))
+export const dedupeAdjacent = <A>(self: Chunk<A>): Chunk<A> => unsafeFromArray(RA.dedupeAdjacent(self))
 
 /**
  * Takes a `Chunk` of pairs and return two corresponding `Chunk`s.
@@ -1140,3 +1140,112 @@ export const replaceOption: {
   <B>(i: number, b: B): <A>(self: Chunk<A>) => Option<Chunk<B | A>>
   <A, B>(self: Chunk<A>, i: number, b: B): Option<Chunk<B | A>>
 } = dual(3, <A, B>(self: Chunk<A>, i: number, b: B): Option<Chunk<B | A>> => modifyOption(self, i, () => b))
+
+/**
+ * Return a Chunk of length n with element i initialized with f(i).
+ *
+ * **Note**. `n` is normalized to an integer >= 1.
+ *
+ * @category constructors
+ * @since 1.0.0
+ */
+export const makeBy: {
+  <A>(f: (i: number) => A): (n: number) => NonEmptyChunk<A>
+  <A>(n: number, f: (i: number) => A): NonEmptyChunk<A>
+} = dual(2, (n, f) => fromIterable(RA.makeBy(n, f)))
+
+/**
+ * Create a non empty `Chunk` containing a range of integers, including both endpoints.
+ *
+ * @category constructors
+ * @since 1.0.0
+ */
+export const range = (start: number, end: number): NonEmptyChunk<number> =>
+  start <= end ? makeBy(end - start + 1, (i) => start + i) : of(start)
+
+// -------------------------------------------------------------------------------------
+// re-exports from ReadonlyArray
+// -------------------------------------------------------------------------------------
+
+/**
+ * @since 1.0.0
+ */
+export const contains: {
+  <A>(a: A): (self: Chunk<A>) => boolean
+  <A>(self: Chunk<A>, a: A): boolean
+} = RA.contains
+
+/**
+ * @since 1.0.0
+ */
+export const containsWith: <A>(
+  isEquivalent: (self: A, that: A) => boolean
+) => { (a: A): (self: Chunk<A>) => boolean; (self: Chunk<A>, a: A): boolean } = RA.containsWith
+
+/**
+ * @since 1.0.0
+ */
+export const findFirst: {
+  <A, B extends A>(refinement: Refinement<A, B>): (self: Chunk<A>) => Option<B>
+  <A>(predicate: Predicate<A>): <B extends A>(self: Chunk<B>) => Option<B>
+  <A, B extends A>(self: Chunk<A>, refinement: Refinement<A, B>): Option<B>
+  <B extends A, A>(self: Chunk<B>, predicate: Predicate<A>): Option<B>
+} = RA.findFirst
+
+/**
+ * @since 1.0.0
+ */
+export const findFirstIndex: {
+  <A>(predicate: Predicate<A>): (self: Chunk<A>) => Option<number>
+  <A>(self: Chunk<A>, predicate: Predicate<A>): Option<number>
+} = RA.findFirstIndex
+
+/**
+ * @since 1.0.0
+ */
+export const findLast: {
+  <A, B extends A>(refinement: Refinement<A, B>): (self: Chunk<A>) => Option<B>
+  <A>(predicate: Predicate<A>): <B extends A>(self: Chunk<B>) => Option<B>
+  <A, B extends A>(self: Chunk<A>, refinement: Refinement<A, B>): Option<B>
+  <B extends A, A>(self: Chunk<B>, predicate: Predicate<A>): Option<B>
+} = RA.findLast
+
+/**
+ * @since 1.0.0
+ */
+export const findLastIndex: {
+  <A>(predicate: Predicate<A>): (self: Chunk<A>) => Option<number>
+  <A>(self: Chunk<A>, predicate: Predicate<A>): Option<number>
+} = RA.findLastIndex
+
+/**
+ * @since 1.0.0
+ */
+export const every: {
+  <A>(predicate: Predicate<A>): (self: ReadonlyArray<A>) => boolean
+  <A>(self: ReadonlyArray<A>, predicate: Predicate<A>): boolean
+} = RA.every
+
+/**
+ * @since 1.0.0
+ */
+export const join: {
+  (sep: string): (self: Chunk<string>) => string
+  (self: Chunk<string>, sep: string): string
+} = RA.join
+
+/**
+ * @since 1.0.0
+ */
+export const reduce: {
+  <B, A>(b: B, f: (b: B, a: A, i: number) => B): (self: Chunk<A>) => B
+  <A, B>(self: Chunk<A>, b: B, f: (b: B, a: A, i: number) => B): B
+} = RA.reduce
+
+/**
+ * @since 1.0.0
+ */
+export const reduceRight: {
+  <B, A>(b: B, f: (b: B, a: A, i: number) => B): (self: Chunk<A>) => B
+  <A, B>(self: Chunk<A>, b: B, f: (b: B, a: A, i: number) => B): B
+} = RA.reduceRight

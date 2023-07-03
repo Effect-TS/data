@@ -12,6 +12,16 @@ import { inspect } from "node:util"
 describe.concurrent("Chunk", () => {
   it("exports", () => {
     expect(Chunk.unsafeFromNonEmptyArray).exist
+    expect(Chunk.contains).exist
+    expect(Chunk.containsWith).exist
+    expect(Chunk.findFirst).exist
+    expect(Chunk.findFirstIndex).exist
+    expect(Chunk.findLast).exist
+    expect(Chunk.findLastIndex).exist
+    expect(Chunk.every).exist
+    expect(Chunk.join).exist
+    expect(Chunk.reduce).exist
+    expect(Chunk.reduceRight).exist
   })
 
   it("toString", () => {
@@ -706,15 +716,15 @@ describe.concurrent("Chunk", () => {
   })
 
   it("compact", () => {
-    expect(Chunk.compact([])).toEqual(Chunk.empty())
-    expect(Chunk.compact([Option.some(1), Option.some(2), Option.some(3)])).toEqual(Chunk.make(1, 2, 3))
-    expect(Chunk.compact([Option.some(1), Option.none(), Option.some(3)])).toEqual(Chunk.make(1, 3))
+    expect(Chunk.compact(Chunk.empty())).toEqual(Chunk.empty())
+    expect(Chunk.compact(Chunk.make(Option.some(1), Option.some(2), Option.some(3)))).toEqual(Chunk.make(1, 2, 3))
+    expect(Chunk.compact(Chunk.make(Option.some(1), Option.none(), Option.some(3)))).toEqual(Chunk.make(1, 3))
   })
 
   it("dedupeAdjacent", () => {
-    expect(Chunk.dedupeAdjacent([])).toEqual(Chunk.empty())
-    expect(Chunk.dedupeAdjacent([1, 2, 3])).toEqual(Chunk.make(1, 2, 3))
-    expect(Chunk.dedupeAdjacent([1, 2, 2, 3, 3])).toEqual(Chunk.make(1, 2, 3))
+    expect(Chunk.dedupeAdjacent(Chunk.empty())).toEqual(Chunk.empty())
+    expect(Chunk.dedupeAdjacent(Chunk.make(1, 2, 3))).toEqual(Chunk.make(1, 2, 3))
+    expect(Chunk.dedupeAdjacent(Chunk.make(1, 2, 2, 3, 3))).toEqual(Chunk.make(1, 2, 3))
   })
 
   it("flatMap", () => {
@@ -786,5 +796,22 @@ describe.concurrent("Chunk", () => {
 
   it("flattenNonEmpty", () => {
     expect(Chunk.flattenNonEmpty(Chunk.make(Chunk.make(1, 2), Chunk.make(3, 4)))).toEqual(Chunk.make(1, 2, 3, 4))
+  })
+
+  it("makeBy", () => {
+    expect(Chunk.makeBy(5, (n) => n * 2)).toEqual(Chunk.make(0, 2, 4, 6, 8))
+    expect(Chunk.makeBy(2.2, (n) => n * 2)).toEqual(Chunk.make(0, 2))
+  })
+
+  it("range", () => {
+    expect(Chunk.range(0, 0)).toEqual(Chunk.make(0))
+    expect(Chunk.range(0, 1)).toEqual(Chunk.make(0, 1))
+    expect(Chunk.range(1, 5)).toEqual(Chunk.make(1, 2, 3, 4, 5))
+    expect(Chunk.range(10, 15)).toEqual(Chunk.make(10, 11, 12, 13, 14, 15))
+    expect(Chunk.range(-1, 0)).toEqual(Chunk.make(-1, 0))
+    expect(Chunk.range(-5, -1)).toEqual(Chunk.make(-5, -4, -3, -2, -1))
+    // out of bound
+    expect(Chunk.range(2, 1)).toEqual(Chunk.make(2))
+    expect(Chunk.range(-1, -2)).toEqual(Chunk.make(-1))
   })
 })

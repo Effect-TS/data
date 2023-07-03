@@ -16,7 +16,9 @@ Added in v1.0.0
   - [empty](#empty)
   - [isChunk](#ischunk)
   - [make](#make)
+  - [makeBy](#makeby)
   - [of](#of)
+  - [range](#range)
 - [conversions](#conversions)
   - [fromIterable](#fromiterable)
   - [toReadonlyArray](#toreadonlyarray)
@@ -81,14 +83,24 @@ Added in v1.0.0
   - [append](#append)
   - [appendAll](#appendall)
   - [appendAllNonEmpty](#appendallnonempty)
+  - [contains](#contains)
+  - [containsWith](#containswith)
   - [drop](#drop)
   - [dropRight](#dropright)
   - [dropWhile](#dropwhile)
+  - [every](#every)
+  - [findFirst](#findfirst)
+  - [findFirstIndex](#findfirstindex)
+  - [findLast](#findlast)
+  - [findLastIndex](#findlastindex)
+  - [join](#join)
   - [modify](#modify)
   - [modifyOption](#modifyoption)
   - [prepend](#prepend)
   - [prependAll](#prependall)
   - [prependAllNonEmpty](#prependallnonempty)
+  - [reduce](#reduce)
+  - [reduceRight](#reduceright)
   - [remove](#remove)
   - [replace](#replace)
   - [replaceOption](#replaceoption)
@@ -132,6 +144,23 @@ export declare const make: <As extends readonly [any, ...any[]]>(...as: As) => N
 
 Added in v1.0.0
 
+## makeBy
+
+Return a Chunk of length n with element i initialized with f(i).
+
+**Note**. `n` is normalized to an integer >= 1.
+
+**Signature**
+
+```ts
+export declare const makeBy: {
+  <A>(f: (i: number) => A): (n: number) => NonEmptyChunk<A>
+  <A>(n: number, f: (i: number) => A): NonEmptyChunk<A>
+}
+```
+
+Added in v1.0.0
+
 ## of
 
 Builds a `NonEmptyChunk` from a single element.
@@ -140,6 +169,18 @@ Builds a `NonEmptyChunk` from a single element.
 
 ```ts
 export declare const of: <A>(a: A) => NonEmptyChunk<A>
+```
+
+Added in v1.0.0
+
+## range
+
+Create a non empty `Chunk` containing a range of integers, including both endpoints.
+
+**Signature**
+
+```ts
+export declare const range: (start: number, end: number) => NonEmptyChunk<number>
 ```
 
 Added in v1.0.0
@@ -510,7 +551,7 @@ Filter out optional values
 **Signature**
 
 ```ts
-export declare const compact: <A>(self: Iterable<Option<A>>) => Chunk<A>
+export declare const compact: <A>(self: Chunk<Option<A>>) => Chunk<A>
 ```
 
 Added in v1.0.0
@@ -522,7 +563,7 @@ Deduplicates adjacent elements that are identical.
 **Signature**
 
 ```ts
-export declare const dedupeAdjacent: <A>(self: Iterable<A>) => Chunk<A>
+export declare const dedupeAdjacent: <A>(self: Chunk<A>) => Chunk<A>
 ```
 
 Added in v1.0.0
@@ -552,8 +593,8 @@ Returns a filtered and mapped subset of the elements.
 
 ```ts
 export declare const filterMap: {
-  <A, B>(f: (a: A, i: number) => Option<B>): (self: Iterable<A>) => Chunk<B>
-  <A, B>(self: Iterable<A>, f: (a: A, i: number) => Option<B>): Chunk<B>
+  <A, B>(f: (a: A, i: number) => Option<B>): (self: Chunk<A>) => Chunk<B>
+  <A, B>(self: Chunk<A>, f: (a: A, i: number) => Option<B>): Chunk<B>
 }
 ```
 
@@ -567,8 +608,8 @@ Transforms all elements of the chunk for as long as the specified function retur
 
 ```ts
 export declare const filterMapWhile: {
-  <A, B>(f: (a: A) => Option<B>): (self: Iterable<A>) => Chunk<B>
-  <A, B>(self: Iterable<A>, f: (a: A) => Option<B>): Chunk<B>
+  <A, B>(f: (a: A) => Option<B>): (self: Chunk<A>) => Chunk<B>
+  <A, B>(self: Chunk<A>, f: (a: A) => Option<B>): Chunk<B>
 }
 ```
 
@@ -876,6 +917,29 @@ export declare const appendAllNonEmpty: {
 
 Added in v1.0.0
 
+## contains
+
+**Signature**
+
+```ts
+export declare const contains: { <A>(a: A): (self: Chunk<A>) => boolean; <A>(self: Chunk<A>, a: A): boolean }
+```
+
+Added in v1.0.0
+
+## containsWith
+
+**Signature**
+
+```ts
+export declare const containsWith: <A>(isEquivalent: (self: A, that: A) => boolean) => {
+  (a: A): (self: Chunk<A>) => boolean
+  (self: Chunk<A>, a: A): boolean
+}
+```
+
+Added in v1.0.0
+
 ## drop
 
 Drops the first up to `n` elements from the chunk
@@ -913,6 +977,88 @@ Drops all elements so long as the predicate returns true.
 export declare const dropWhile: {
   <A>(f: (a: A) => boolean): (self: Chunk<A>) => Chunk<A>
   <A>(self: Chunk<A>, f: (a: A) => boolean): Chunk<A>
+}
+```
+
+Added in v1.0.0
+
+## every
+
+**Signature**
+
+```ts
+export declare const every: {
+  <A>(predicate: Predicate<A>): (self: readonly A[]) => boolean
+  <A>(self: readonly A[], predicate: Predicate<A>): boolean
+}
+```
+
+Added in v1.0.0
+
+## findFirst
+
+**Signature**
+
+```ts
+export declare const findFirst: {
+  <A, B extends A>(refinement: Refinement<A, B>): (self: Chunk<A>) => Option<B>
+  <A>(predicate: Predicate<A>): <B extends A>(self: Chunk<B>) => Option<B>
+  <A, B extends A>(self: Chunk<A>, refinement: Refinement<A, B>): Option<B>
+  <B extends A, A>(self: Chunk<B>, predicate: Predicate<A>): Option<B>
+}
+```
+
+Added in v1.0.0
+
+## findFirstIndex
+
+**Signature**
+
+```ts
+export declare const findFirstIndex: {
+  <A>(predicate: Predicate<A>): (self: Chunk<A>) => Option<number>
+  <A>(self: Chunk<A>, predicate: Predicate<A>): Option<number>
+}
+```
+
+Added in v1.0.0
+
+## findLast
+
+**Signature**
+
+```ts
+export declare const findLast: {
+  <A, B extends A>(refinement: Refinement<A, B>): (self: Chunk<A>) => Option<B>
+  <A>(predicate: Predicate<A>): <B extends A>(self: Chunk<B>) => Option<B>
+  <A, B extends A>(self: Chunk<A>, refinement: Refinement<A, B>): Option<B>
+  <B extends A, A>(self: Chunk<B>, predicate: Predicate<A>): Option<B>
+}
+```
+
+Added in v1.0.0
+
+## findLastIndex
+
+**Signature**
+
+```ts
+export declare const findLastIndex: {
+  <A>(predicate: Predicate<A>): (self: Chunk<A>) => Option<number>
+  <A>(self: Chunk<A>, predicate: Predicate<A>): Option<number>
+}
+```
+
+Added in v1.0.0
+
+## join
+
+**Signature**
+
+```ts
+export declare const join: {
+  (sep: string): (self: Chunk<string>) => string
+  (self: Chunk<string>, sep: string): string
 }
 ```
 
@@ -985,6 +1131,32 @@ export declare const prependAllNonEmpty: {
   <B>(that: Chunk<B>): <A>(self: NonEmptyChunk<A>) => NonEmptyChunk<B | A>
   <A, B>(self: Chunk<A>, that: NonEmptyChunk<B>): NonEmptyChunk<A | B>
   <A, B>(self: NonEmptyChunk<A>, that: Chunk<B>): NonEmptyChunk<A | B>
+}
+```
+
+Added in v1.0.0
+
+## reduce
+
+**Signature**
+
+```ts
+export declare const reduce: {
+  <B, A>(b: B, f: (b: B, a: A, i: number) => B): (self: Chunk<A>) => B
+  <A, B>(self: Chunk<A>, b: B, f: (b: B, a: A, i: number) => B): B
+}
+```
+
+Added in v1.0.0
+
+## reduceRight
+
+**Signature**
+
+```ts
+export declare const reduceRight: {
+  <B, A>(b: B, f: (b: B, a: A, i: number) => B): (self: Chunk<A>) => B
+  <A, B>(self: Chunk<A>, b: B, f: (b: B, a: A, i: number) => B): B
 }
 ```
 
