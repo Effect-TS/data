@@ -43,9 +43,11 @@ export const empty: <Value, Patch>() => ChunkPatch<Value, Patch> = CP.empty
  * @category constructors
  */
 export const diff: <Value, Patch>(
-  oldValue: Chunk<Value>,
-  newValue: Chunk<Value>,
-  differ: Differ<Value, Patch>
+  options: {
+    readonly oldValue: Chunk<Value>
+    readonly newValue: Chunk<Value>
+    readonly differ: Differ<Value, Patch>
+  }
 ) => ChunkPatch<Value, Patch> = CP.diff
 
 /**

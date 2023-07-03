@@ -80,15 +80,23 @@ export const getSecond = <L, R>(self: readonly [L, R]): R => self[1]
  * @since 1.0.0
  */
 export const bimap: {
-  <L1, L2, R1, R2>(f: (e: L1) => L2, g: (a: R1) => R2): (self: readonly [L1, R1]) => [L2, R2]
-  <L1, R1, L2, R2>(self: readonly [L1, R1], f: (e: L1) => L2, g: (a: R1) => R2): [L2, R2]
+  <L1, L2, R1, R2>(options: {
+    readonly onFirst: (e: L1) => L2
+    readonly onSecond: (a: R1) => R2
+  }): (self: readonly [L1, R1]) => [L2, R2]
+  <L1, R1, L2, R2>(self: readonly [L1, R1], options: {
+    readonly onFirst: (e: L1) => L2
+    readonly onSecond: (a: R1) => R2
+  }): [L2, R2]
 } = dual(
-  3,
+  2,
   <L1, R1, L2, R2>(
     self: readonly [L1, R1],
-    f: (e: L1) => L2,
-    g: (a: R1) => R2
-  ): [L2, R2] => [f(self[0]), g(self[1])]
+    { onFirst, onSecond }: {
+      readonly onFirst: (e: L1) => L2
+      readonly onSecond: (a: R1) => R2
+    }
+  ): [L2, R2] => [onFirst(self[0]), onSecond(self[1])]
 )
 
 /**

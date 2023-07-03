@@ -126,18 +126,20 @@ export const empty = <Key, Value, Patch>(): HMP.HashMapPatch<Key, Value, Patch> 
 
 /** @internal */
 export const diff = <Key, Value, Patch>(
-  oldValue: HashMap.HashMap<Key, Value>,
-  newValue: HashMap.HashMap<Key, Value>,
-  differ: Differ.Differ<Value, Patch>
+  options: {
+    readonly oldValue: HashMap.HashMap<Key, Value>
+    readonly newValue: HashMap.HashMap<Key, Value>
+    readonly differ: Differ.Differ<Value, Patch>
+  }
 ): HMP.HashMapPatch<Key, Value, Patch> => {
   const [removed, patch] = HashMap.reduceWithIndex(
-    [oldValue, empty<Key, Value, Patch>()] as const,
+    [options.oldValue, empty<Key, Value, Patch>()] as const,
     ([map, patch], newValue: Value, key: Key) => {
       const option = HashMap.get(key)(map)
       switch (option._tag) {
         case "Some": {
-          const valuePatch = differ.diff(option.value, newValue)
-          if (Equal.equals(valuePatch, differ.empty)) {
+          const valuePatch = options.differ.diff(option.value, newValue)
+          if (Equal.equals(valuePatch, options.differ.empty)) {
             return [HashMap.remove(key)(map), patch] as const
           }
           return [
@@ -150,7 +152,7 @@ export const diff = <Key, Value, Patch>(
         }
       }
     }
-  )(newValue)
+  )(options.newValue)
   return HashMap.reduceWithIndex(
     patch,
     (patch, _, key: Key) => combine<Key, Value, Patch>(new Remove(key))(patch)

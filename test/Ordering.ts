@@ -3,11 +3,11 @@ import { deepStrictEqual } from "./util"
 
 describe.concurrent("Ordering", () => {
   it("match", () => {
-    const f = _.match(
-      () => "lt",
-      () => "eq",
-      () => "gt"
-    )
+    const f = _.match({
+      onLessThan: () => "lt",
+      onEqual: () => "eq",
+      onGreaterThan: () => "gt"
+    })
     deepStrictEqual(f(-1), "lt")
     deepStrictEqual(f(0), "eq")
     deepStrictEqual(f(1), "gt")

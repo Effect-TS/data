@@ -47,12 +47,18 @@ export const isBoolean: (input: unknown) => input is boolean = predicate.isBoole
  * @since 1.0.0
  */
 export const match: {
-  <A, B = A>(onFalse: LazyArg<A>, onTrue: LazyArg<B>): (value: boolean) => A | B
-  <A, B>(value: boolean, onFalse: LazyArg<A>, onTrue: LazyArg<B>): A | B
-} = dual(
-  3,
-  <A, B>(value: boolean, onFalse: LazyArg<A>, onTrue: LazyArg<B>): A | B => value ? onTrue() : onFalse()
-)
+  <A, B = A>(options: {
+    readonly onFalse: LazyArg<A>
+    readonly onTrue: LazyArg<B>
+  }): (value: boolean) => A | B
+  <A, B>(value: boolean, options: {
+    readonly onFalse: LazyArg<A>
+    readonly onTrue: LazyArg<B>
+  }): A | B
+} = dual(2, <A, B>(value: boolean, options: {
+  readonly onFalse: LazyArg<A>
+  readonly onTrue: LazyArg<B>
+}): A | B => value ? options.onTrue() : options.onFalse())
 
 /**
  * @category instances

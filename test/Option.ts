@@ -205,9 +205,9 @@ describe.concurrent("Option", () => {
   })
 
   it("match", () => {
-    const f = () => "none"
-    const g = (s: string) => `some${s.length}`
-    const match = _.match(f, g)
+    const onNone = () => "none"
+    const onSome = (s: string) => `some${s.length}`
+    const match = _.match({ onNone, onSome })
     Util.deepStrictEqual(match(_.none()), "none")
     Util.deepStrictEqual(match(_.some("abc")), "some3")
   })

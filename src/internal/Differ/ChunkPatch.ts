@@ -120,26 +120,28 @@ export const empty = <Value, Patch>(): CP.ChunkPatch<Value, Patch> => new Empty(
 
 /** @internal */
 export const diff = <Value, Patch>(
-  oldValue: Chunk.Chunk<Value>,
-  newValue: Chunk.Chunk<Value>,
-  differ: Differ<Value, Patch>
+  options: {
+    readonly oldValue: Chunk.Chunk<Value>
+    readonly newValue: Chunk.Chunk<Value>
+    readonly differ: Differ<Value, Patch>
+  }
 ): CP.ChunkPatch<Value, Patch> => {
   let i = 0
   let patch = empty<Value, Patch>()
-  while (i < oldValue.length && i < newValue.length) {
-    const oldElement = Chunk.unsafeGet(i)(oldValue)
-    const newElement = Chunk.unsafeGet(i)(newValue)
-    const valuePatch = differ.diff(oldElement, newElement)
-    if (!Equal.equals(valuePatch, differ.empty)) {
+  while (i < options.oldValue.length && i < options.newValue.length) {
+    const oldElement = Chunk.unsafeGet(i)(options.oldValue)
+    const newElement = Chunk.unsafeGet(i)(options.newValue)
+    const valuePatch = options.differ.diff(oldElement, newElement)
+    if (!Equal.equals(valuePatch, options.differ.empty)) {
       patch = pipe(patch, combine(new Update(i, valuePatch)))
     }
     i = i + 1
   }
-  if (i < oldValue.length) {
+  if (i < options.oldValue.length) {
     patch = pipe(patch, combine(new Slice(0, i)))
   }
-  if (i < newValue.length) {
-    patch = pipe(patch, combine(new Append(Chunk.drop(i)(newValue))))
+  if (i < options.newValue.length) {
+    patch = pipe(patch, combine(new Append(Chunk.drop(i)(options.newValue))))
   }
   return patch
 }

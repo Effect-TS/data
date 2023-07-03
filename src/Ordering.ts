@@ -53,21 +53,27 @@ export const reverse = (o: Ordering): Ordering => (o === -1 ? 1 : o === 1 ? -1 :
  */
 export const match: {
   <A, B, C = B>(
-    onLessThan: LazyArg<A>,
-    onEqual: LazyArg<B>,
-    onGreaterThan: LazyArg<C>
+    options: {
+      readonly onLessThan: LazyArg<A>
+      readonly onEqual: LazyArg<B>
+      readonly onGreaterThan: LazyArg<C>
+    }
   ): (self: Ordering) => A | B | C
   <A, B, C = B>(
     o: Ordering,
-    onLessThan: LazyArg<A>,
-    onEqual: LazyArg<B>,
-    onGreaterThan: LazyArg<C>
+    options: {
+      readonly onLessThan: LazyArg<A>
+      readonly onEqual: LazyArg<B>
+      readonly onGreaterThan: LazyArg<C>
+    }
   ): A | B | C
-} = dual(4, <A, B, C = B>(
+} = dual(2, <A, B, C = B>(
   self: Ordering,
-  onLessThan: LazyArg<A>,
-  onEqual: LazyArg<B>,
-  onGreaterThan: LazyArg<C>
+  { onEqual, onGreaterThan, onLessThan }: {
+    readonly onLessThan: LazyArg<A>
+    readonly onEqual: LazyArg<B>
+    readonly onGreaterThan: LazyArg<C>
+  }
 ): A | B | C => self === -1 ? onLessThan() : self === 0 ? onEqual() : onGreaterThan())
 
 /**
