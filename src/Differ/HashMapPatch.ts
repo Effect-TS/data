@@ -44,9 +44,11 @@ export const empty: <Key, Value, Patch>() => HashMapPatch<Key, Value, Patch> = H
  * @category constructors
  */
 export const diff: <Key, Value, Patch>(
-  oldValue: HashMap<Key, Value>,
-  newValue: HashMap<Key, Value>,
-  differ: Differ<Value, Patch>
+  options: {
+    readonly oldValue: HashMap<Key, Value>
+    readonly newValue: HashMap<Key, Value>
+    readonly differ: Differ<Value, Patch>
+  }
 ) => HashMapPatch<Key, Value, Patch> = HMP.diff
 
 /**

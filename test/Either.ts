@@ -67,7 +67,10 @@ describe.concurrent("Either", () => {
   })
 
   it("bimap", () => {
-    const f = Either.bimap(S.length, (n: number) => n > 2)
+    const f = Either.bimap({
+      onLeft: S.length,
+      onRight: (n: number) => n > 2
+    })
     Util.deepStrictEqual(pipe(Either.right(1), f), Either.right(false))
     Util.deepStrictEqual(pipe(Either.left("a"), f), Either.left(1))
   })
@@ -79,9 +82,9 @@ describe.concurrent("Either", () => {
   })
 
   it("match", () => {
-    const f = (s: string) => `left${s.length}`
-    const g = (s: string) => `right${s.length}`
-    const match = Either.match(f, g)
+    const onLeft = (s: string) => `left${s.length}`
+    const onRight = (s: string) => `right${s.length}`
+    const match = Either.match({ onLeft, onRight })
     Util.deepStrictEqual(match(Either.left("abc")), "left3")
     Util.deepStrictEqual(match(Either.right("abc")), "right3")
   })

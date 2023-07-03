@@ -206,12 +206,20 @@ export const getEquivalence = <E, A>(
  * @since 1.0.0
  */
 export const bimap: {
-  <E1, E2, A, B>(f: (e: E1) => E2, g: (a: A) => B): (self: Either<E1, A>) => Either<E2, B>
-  <E1, A, E2, B>(self: Either<E1, A>, f: (e: E1) => E2, g: (a: A) => B): Either<E2, B>
+  <E1, E2, A, B>(options: {
+    readonly onLeft: (e: E1) => E2
+    readonly onRight: (a: A) => B
+  }): (self: Either<E1, A>) => Either<E2, B>
+  <E1, A, E2, B>(self: Either<E1, A>, options: {
+    readonly onLeft: (e: E1) => E2
+    readonly onRight: (a: A) => B
+  }): Either<E2, B>
 } = dual(
-  3,
-  <E1, A, E2, B>(self: Either<E1, A>, f: (e: E1) => E2, g: (a: A) => B): Either<E2, B> =>
-    isLeft(self) ? left(f(self.left)) : right(g(self.right))
+  2,
+  <E1, A, E2, B>(self: Either<E1, A>, { onLeft, onRight }: {
+    readonly onLeft: (e: E1) => E2
+    readonly onRight: (a: A) => B
+  }): Either<E2, B> => isLeft(self) ? left(onLeft(self.left)) : right(onRight(self.right))
 )
 
 /**
@@ -248,8 +256,8 @@ export const map: {
 )
 
 /**
- * Takes two functions and an `Either` value, if the value is a `Left` the inner value is applied to the first function,
- * if the value is a `Right` the inner value is applied to the second function.
+ * Takes two functions and an `Either` value, if the value is a `Left` the inner value is applied to the `onLeft function,
+ * if the value is a `Right` the inner value is applied to the `onRight` function.
  *
  * @example
  * import * as E from '@effect/data/Either'
@@ -262,14 +270,14 @@ export const map: {
  * assert.deepStrictEqual(
  *   pipe(
  *     E.right(1),
- *     E.match(onLeft , onRight)
+ *     E.match({ onLeft , onRight })
  *   ),
  *   'Ok: 1'
  * )
  * assert.deepStrictEqual(
  *   pipe(
  *     E.left(['string 1', 'string 2']),
- *     E.match(onLeft , onRight)
+ *     E.match({ onLeft , onRight })
  *   ),
  *   'strings: string 1, string 2'
  * )
@@ -278,19 +286,30 @@ export const map: {
  * @since 1.0.0
  */
 export const match: {
-  <E, B, A, C = B>(onLeft: (e: E) => B, onRight: (a: A) => C): (self: Either<E, A>) => B | C
-  <E, A, B, C = B>(self: Either<E, A>, onLeft: (e: E) => B, onRight: (a: A) => C): B | C
+  <E, B, A, C = B>(options: {
+    readonly onLeft: (e: E) => B
+    readonly onRight: (a: A) => C
+  }): (self: Either<E, A>) => B | C
+  <E, A, B, C = B>(self: Either<E, A>, options: {
+    readonly onLeft: (e: E) => B
+    readonly onRight: (a: A) => C
+  }): B | C
 } = dual(
-  3,
-  <E, A, B, C = B>(self: Either<E, A>, onLeft: (e: E) => B, onRight: (a: A) => C): B | C =>
-    isLeft(self) ? onLeft(self.left) : onRight(self.right)
+  2,
+  <E, A, B, C = B>(self: Either<E, A>, { onLeft, onRight }: {
+    readonly onLeft: (e: E) => B
+    readonly onRight: (a: A) => C
+  }): B | C => isLeft(self) ? onLeft(self.left) : onRight(self.right)
 )
 
 /**
  * @category getters
  * @since 1.0.0
  */
-export const merge: <E, A>(self: Either<E, A>) => E | A = match(identity, identity)
+export const merge: <E, A>(self: Either<E, A>) => E | A = match({
+  onLeft: identity,
+  onRight: identity
+})
 
 /**
  * @category debugging

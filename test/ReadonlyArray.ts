@@ -960,26 +960,26 @@ describe.concurrent("ReadonlyArray", () => {
   })
 
   it("match", () => {
-    const len: <A>(as: ReadonlyArray<A>) => number = RA.match(
-      () => 0,
-      (as) => 1 + len(as.slice(1))
-    )
+    const len: <A>(as: ReadonlyArray<A>) => number = RA.match({
+      onEmpty: () => 0,
+      onNonEmpty: (as) => 1 + len(as.slice(1))
+    })
     deepStrictEqual(len([1, 2, 3]), 3)
   })
 
   it("matchLeft", () => {
-    const len: <A>(as: ReadonlyArray<A>) => number = RA.matchLeft(
-      () => 0,
-      (_, tail) => 1 + len(tail)
-    )
+    const len: <A>(as: ReadonlyArray<A>) => number = RA.matchLeft({
+      onEmpty: () => 0,
+      onNonEmpty: (_, tail) => 1 + len(tail)
+    })
     deepStrictEqual(len([1, 2, 3]), 3)
   })
 
   it("matchRight", () => {
-    const len: <A>(as: ReadonlyArray<A>) => number = RA.matchRight(
-      () => 0,
-      (init, _) => 1 + len(init)
-    )
+    const len: <A>(as: ReadonlyArray<A>) => number = RA.matchRight({
+      onEmpty: () => 0,
+      onNonEmpty: (init, _) => 1 + len(init)
+    })
     deepStrictEqual(len([1, 2, 3]), 3)
   })
 

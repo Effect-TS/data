@@ -204,8 +204,12 @@ describe.concurrent("RedBlackTree", () => {
       RedBlackTree.insert(-1, "c"),
       RedBlackTree.insert(-2, "d"),
       RedBlackTree.insert(3, "e"),
-      RedBlackTree.forEachBetween(-1, 2, (k, v) => {
-        ordered.push([k, v])
+      RedBlackTree.forEachBetween({
+        min: -1,
+        max: 2,
+        body: (k, v) => {
+          ordered.push([k, v])
+        }
       })
     )
 

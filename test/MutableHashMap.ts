@@ -182,7 +182,10 @@ describe.concurrent("MutableHashMap", () => {
       map,
       HM.modifyAt(
         key(2, 2),
-        O.match(() => O.some(value(2, 2)), O.some)
+        O.match({
+          onNone: () => O.some(value(2, 2)),
+          onSome: O.some
+        })
       )
     )
 

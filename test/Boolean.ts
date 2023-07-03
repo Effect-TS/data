@@ -65,7 +65,10 @@ describe.concurrent("Boolean", () => {
   })
 
   it("match", () => {
-    const match = Boolean.match(() => "false", () => "true")
+    const match = Boolean.match({
+      onFalse: () => "false",
+      onTrue: () => "true"
+    })
     deepStrictEqual(match(true), "true")
     deepStrictEqual(match(false), "false")
   })

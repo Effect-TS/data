@@ -343,8 +343,21 @@ export const forEachLessThan: {
  * @category traversing
  */
 export const forEachBetween: {
-  <K, V>(min: K, max: K, f: (key: K, value: V) => void): (self: RedBlackTree<K, V>) => void
-  <K, V>(self: RedBlackTree<K, V>, min: K, max: K, f: (key: K, value: V) => void): void
+  <K, V>(
+    options: {
+      readonly min: K
+      readonly max: K
+      readonly body: (key: K, value: V) => void
+    }
+  ): (self: RedBlackTree<K, V>) => void
+  <K, V>(
+    self: RedBlackTree<K, V>,
+    options: {
+      readonly min: K
+      readonly max: K
+      readonly body: (key: K, value: V) => void
+    }
+  ): void
 } = RBT.forEachBetween
 
 /**

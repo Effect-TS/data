@@ -139,18 +139,24 @@ export const fromOption: <A>(self: Option<A>) => Array<A> = O.toArray
  */
 export const match: {
   <B, A, C = B>(
-    onEmpty: LazyArg<B>,
-    onNonEmpty: (self: NonEmptyReadonlyArray<A>) => C
+    options: {
+      readonly onEmpty: LazyArg<B>
+      readonly onNonEmpty: (self: NonEmptyReadonlyArray<A>) => C
+    }
   ): (self: ReadonlyArray<A>) => B | C
   <A, B, C = B>(
     self: ReadonlyArray<A>,
-    onEmpty: LazyArg<B>,
-    onNonEmpty: (self: NonEmptyReadonlyArray<A>) => C
+    options: {
+      readonly onEmpty: LazyArg<B>
+      readonly onNonEmpty: (self: NonEmptyReadonlyArray<A>) => C
+    }
   ): B | C
-} = dual(3, <A, B, C = B>(
+} = dual(2, <A, B, C = B>(
   self: ReadonlyArray<A>,
-  onEmpty: LazyArg<B>,
-  onNonEmpty: (self: NonEmptyReadonlyArray<A>) => C
+  { onEmpty, onNonEmpty }: {
+    readonly onEmpty: LazyArg<B>
+    readonly onNonEmpty: (self: NonEmptyReadonlyArray<A>) => C
+  }
 ): B | C => isNonEmptyReadonlyArray(self) ? onNonEmpty(self) : onEmpty())
 
 /**
@@ -159,18 +165,24 @@ export const match: {
  */
 export const matchLeft: {
   <B, A, C = B>(
-    onEmpty: LazyArg<B>,
-    onNonEmpty: (head: A, tail: Array<A>) => C
+    options: {
+      readonly onEmpty: LazyArg<B>
+      readonly onNonEmpty: (head: A, tail: Array<A>) => C
+    }
   ): (self: ReadonlyArray<A>) => B | C
   <A, B, C = B>(
     self: ReadonlyArray<A>,
-    onEmpty: LazyArg<B>,
-    onNonEmpty: (head: A, tail: Array<A>) => C
+    options: {
+      readonly onEmpty: LazyArg<B>
+      readonly onNonEmpty: (head: A, tail: Array<A>) => C
+    }
   ): B | C
-} = dual(3, <A, B, C = B>(
+} = dual(2, <A, B, C = B>(
   self: ReadonlyArray<A>,
-  onEmpty: LazyArg<B>,
-  onNonEmpty: (head: A, tail: Array<A>) => C
+  { onEmpty, onNonEmpty }: {
+    readonly onEmpty: LazyArg<B>
+    readonly onNonEmpty: (head: A, tail: Array<A>) => C
+  }
 ): B | C => isNonEmptyReadonlyArray(self) ? onNonEmpty(headNonEmpty(self), tailNonEmpty(self)) : onEmpty())
 
 /**
@@ -179,18 +191,24 @@ export const matchLeft: {
  */
 export const matchRight: {
   <B, A, C = B>(
-    onEmpty: LazyArg<B>,
-    onNonEmpty: (init: Array<A>, last: A) => C
+    options: {
+      readonly onEmpty: LazyArg<B>
+      readonly onNonEmpty: (init: Array<A>, last: A) => C
+    }
   ): (self: ReadonlyArray<A>) => B | C
   <A, B, C = B>(
     self: ReadonlyArray<A>,
-    onEmpty: LazyArg<B>,
-    onNonEmpty: (init: Array<A>, last: A) => C
+    options: {
+      readonly onEmpty: LazyArg<B>
+      readonly onNonEmpty: (init: Array<A>, last: A) => C
+    }
   ): B | C
-} = dual(3, <A, B, C = B>(
+} = dual(2, <A, B, C = B>(
   self: ReadonlyArray<A>,
-  onEmpty: LazyArg<B>,
-  onNonEmpty: (init: Array<A>, last: A) => C
+  { onEmpty, onNonEmpty }: {
+    readonly onEmpty: LazyArg<B>
+    readonly onNonEmpty: (init: Array<A>, last: A) => C
+  }
 ): B | C =>
   isNonEmptyReadonlyArray(self) ?
     onNonEmpty(initNonEmpty(self), lastNonEmpty(self)) :

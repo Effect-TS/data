@@ -692,14 +692,26 @@ export const forEachLessThan = Dual.dual<
 
 /** @internal */
 export const forEachBetween = Dual.dual<
-  <K, V>(min: K, max: K, f: (key: K, value: V) => void) => (self: RBT.RedBlackTree<K, V>) => void,
-  <K, V>(self: RBT.RedBlackTree<K, V>, min: K, max: K, f: (key: K, value: V) => void) => void
->(4, <K, V>(self: RBT.RedBlackTree<K, V>, min: K, max: K, f: (key: K, value: V) => void) => {
+  <K, V>(options: {
+    readonly min: K
+    readonly max: K
+    readonly body: (key: K, value: V) => void
+  }) => (self: RBT.RedBlackTree<K, V>) => void,
+  <K, V>(self: RBT.RedBlackTree<K, V>, options: {
+    readonly min: K
+    readonly max: K
+    readonly body: (key: K, value: V) => void
+  }) => void
+>(2, <K, V>(self: RBT.RedBlackTree<K, V>, { body, max, min }: {
+  readonly min: K
+  readonly max: K
+  readonly body: (key: K, value: V) => void
+}) => {
   const root = (self as RedBlackTreeImpl<K, V>)._root
   const ord = (self as RedBlackTreeImpl<K, V>)._ord
   if (root) {
     visitBetween(root, min, max, ord, (key, value) => {
-      f(key, value)
+      body(key, value)
       return Option.none()
     })
   }

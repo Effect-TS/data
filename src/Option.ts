@@ -188,12 +188,20 @@ export const isSome: <A>(self: Option<A>) => self is Some<A> = option.isSome
  * @since 1.0.0
  */
 export const match: {
-  <B, A, C = B>(onNone: LazyArg<B>, onSome: (a: A) => C): (self: Option<A>) => B | C
-  <A, B, C = B>(self: Option<A>, onNone: LazyArg<B>, onSome: (a: A) => C): B | C
+  <B, A, C = B>(options: {
+    readonly onNone: LazyArg<B>
+    readonly onSome: (a: A) => C
+  }): (self: Option<A>) => B | C
+  <A, B, C = B>(self: Option<A>, options: {
+    readonly onNone: LazyArg<B>
+    readonly onSome: (a: A) => C
+  }): B | C
 } = dual(
-  3,
-  <A, B, C = B>(self: Option<A>, onNone: LazyArg<B>, onSome: (a: A) => C): B | C =>
-    isNone(self) ? onNone() : onSome(self.value)
+  2,
+  <A, B, C = B>(self: Option<A>, { onNone, onSome }: {
+    readonly onNone: LazyArg<B>
+    readonly onSome: (a: A) => C
+  }): B | C => isNone(self) ? onNone() : onSome(self.value)
 )
 
 /**
