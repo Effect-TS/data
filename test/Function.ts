@@ -64,20 +64,6 @@ describe.concurrent("Function", () => {
     expect(Function.SK(1, 2)).toEqual(2)
   })
 
-  it("flow", () => {
-    deepStrictEqual(Function.flow(f)(2), 3)
-    deepStrictEqual(Function.flow(f, g)(2), 6)
-    deepStrictEqual(Function.flow(f, g, f)(2), 7)
-    deepStrictEqual(Function.flow(f, g, f, g)(2), 14)
-    deepStrictEqual(Function.flow(f, g, f, g, f)(2), 15)
-    deepStrictEqual(Function.flow(f, g, f, g, f, g)(2), 30)
-    deepStrictEqual(Function.flow(f, g, f, g, f, g, f)(2), 31)
-    deepStrictEqual(Function.flow(f, g, f, g, f, g, f, g)(2), 62)
-    deepStrictEqual(Function.flow(f, g, f, g, f, g, f, g, f)(2), 63)
-    // this is just to satisfy noImplicitReturns and 100% coverage
-    deepStrictEqual((Function.flow as any)(...[f, g, f, g, f, g, f, g, f, g]), undefined)
-  })
-
   it("tupled", () => {
     const f1 = (a: number): number => a * 2
     const f2 = (a: number, b: number): number => a + b

@@ -16,8 +16,10 @@ Added in v1.0.0
   - [days](#days)
   - [hours](#hours)
   - [infinity](#infinity)
+  - [micros](#micros)
   - [millis](#millis)
   - [minutes](#minutes)
+  - [nanos](#nanos)
   - [seconds](#seconds)
   - [weeks](#weeks)
   - [zero](#zero)
@@ -80,6 +82,16 @@ export declare const infinity: Duration
 
 Added in v1.0.0
 
+## micros
+
+**Signature**
+
+```ts
+export declare const micros: (micros: bigint) => Duration
+```
+
+Added in v1.0.0
+
 ## millis
 
 **Signature**
@@ -96,6 +108,16 @@ Added in v1.0.0
 
 ```ts
 export declare const minutes: (minutes: number) => Duration
+```
+
+Added in v1.0.0
+
+## nanos
+
+**Signature**
+
+```ts
+export declare const nanos: (nanos: bigint) => Duration
 ```
 
 Added in v1.0.0
@@ -208,6 +230,7 @@ Added in v1.0.0
 ```ts
 export interface Duration extends Equal.Equal, Pipeable<Duration> {
   readonly _id: TypeId
+  readonly nanos: bigint
   readonly millis: number
 }
 ```
