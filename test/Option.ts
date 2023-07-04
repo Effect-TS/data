@@ -456,7 +456,7 @@ describe.concurrent("Option", () => {
     assert.deepStrictEqual(_.all({ a: _.some(1), b: _.none() }), _.none())
   })
 
-  it("pipe", () => {
+  it(".pipe()", () => {
     expect(_.some(1).pipe(_.map((n) => n + 1))).toEqual(_.some(2))
   })
 })
