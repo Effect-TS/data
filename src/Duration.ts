@@ -24,18 +24,29 @@ export type TypeId = typeof TypeId
  */
 export interface Duration {
   readonly _id: TypeId
+  readonly nanos: bigint
   readonly millis: number
 }
 
 /** @internal */
 class DurationImpl implements Equal.Equal {
   readonly _id: TypeId = TypeId
-  constructor(readonly millis: number) {}
+  readonly millis: number
+  readonly nanos: bigint
+  constructor(input: number | bigint) {
+    if (typeof input === "number") {
+      this.millis = input
+      this.nanos = Number.isFinite(input) ? BigInt(input * 1_000_000) : (input as any)
+    } else {
+      this.millis = Number(input) / 1_000_000
+      this.nanos = input
+    }
+  }
   [Hash.symbol](): number {
-    return Hash.hash(this.millis)
+    return Hash.hash(this.nanos)
   }
   [Equal.symbol](that: unknown): boolean {
-    return isDuration(that) && this.millis === that.millis
+    return isDuration(that) && this.nanos === that.nanos
   }
   toString() {
     return `Duration(${this.millis})`
@@ -43,7 +54,11 @@ class DurationImpl implements Equal.Equal {
   toJSON() {
     return {
       _tag: "Duration",
-      millis: this.millis
+      millis: this.millis,
+      hrtime: [
+        Math.floor(this.millis),
+        Number.isFinite(this.millis) ? Number(this.nanos % 1_000_000n) : 0
+      ]
     }
   }
   [Symbol.for("nodejs.util.inspect.custom")]() {
@@ -69,6 +84,18 @@ export const zero: Duration = new DurationImpl(0)
  * @category constructors
  */
 export const infinity: Duration = new DurationImpl(Infinity)
+
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
+export const nanos = (nanos: bigint): Duration => new DurationImpl(nanos)
+
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
+export const micros = (micros: bigint): Duration => new DurationImpl(micros * 1000n)
 
 /**
  * @since 1.0.0
@@ -111,7 +138,7 @@ export const weeks = (weeks: number): Duration => new DurationImpl(weeks * 604_8
  * @since 1.0.0
  */
 export const Order: order.Order<Duration> = {
-  compare: (self, that) => (self.millis < that.millis ? -1 : self.millis > that.millis ? 1 : 0)
+  compare: (self, that) => (self.nanos < that.nanos ? -1 : self.nanos > that.nanos ? 1 : 0)
 }
 
 /**
@@ -139,7 +166,7 @@ export const between: {
  * @category instances
  * @since 1.0.0
  */
-export const Equivalence: equivalence.Equivalence<Duration> = (self, that) => self.millis === that.millis
+export const Equivalence: equivalence.Equivalence<Duration> = (self, that) => self.nanos === that.nanos
 
 /**
  * @category utils
@@ -178,7 +205,10 @@ export const times: {
 } = Dual.dual<
   (times: number) => (self: Duration) => Duration,
   (self: Duration, times: number) => Duration
->(2, (self, times) => new DurationImpl(self.millis * times))
+>(
+  2,
+  (self, times) => Number.isFinite(self.millis) ? new DurationImpl(self.nanos * BigInt(times)) : self
+)
 
 /**
  * @since 1.0.0
@@ -190,7 +220,13 @@ export const sum: {
 } = Dual.dual<
   (that: Duration) => (self: Duration) => Duration,
   (self: Duration, that: Duration) => Duration
->(2, (self, that) => new DurationImpl(self.millis + that.millis))
+>(
+  2,
+  (self, that) =>
+    Number.isFinite(self.millis) && Number.isFinite(that.millis) ?
+      new DurationImpl(self.nanos + that.nanos) :
+      new DurationImpl(self.millis + that.millis)
+)
 
 /**
  * @category instances
@@ -244,7 +280,13 @@ export const subtract: {
 } = Dual.dual<
   (that: Duration) => (self: Duration) => Duration,
   (self: Duration, that: Duration) => Duration
->(2, (self, that) => new DurationImpl(self.millis - that.millis))
+>(
+  2,
+  (self, that) =>
+    Number.isFinite(self.millis) && Number.isFinite(that.millis) ?
+      new DurationImpl(self.nanos - that.nanos) :
+      new DurationImpl(self.millis - that.millis)
+)
 
 /**
  * @since 1.0.0
@@ -256,7 +298,7 @@ export const lessThan: {
 } = Dual.dual<
   (that: Duration) => (self: Duration) => boolean,
   (self: Duration, that: Duration) => boolean
->(2, (self, that) => self.millis < that.millis)
+>(2, (self, that) => self.nanos < that.nanos)
 
 /**
  * @since 1.0.0
@@ -268,7 +310,7 @@ export const lessThanOrEqualTo: {
 } = Dual.dual<
   (that: Duration) => (self: Duration) => boolean,
   (self: Duration, that: Duration) => boolean
->(2, (self, that) => self.millis <= that.millis)
+>(2, (self, that) => self.nanos <= that.nanos)
 
 /**
  * @since 1.0.0
@@ -280,7 +322,7 @@ export const greaterThan: {
 } = Dual.dual<
   (that: Duration) => (self: Duration) => boolean,
   (self: Duration, that: Duration) => boolean
->(2, (self, that) => self.millis > that.millis)
+>(2, (self, that) => self.nanos > that.nanos)
 
 /**
  * @since 1.0.0
@@ -292,7 +334,7 @@ export const greaterThanOrEqualTo: {
 } = Dual.dual<
   (that: Duration) => (self: Duration) => boolean,
   (self: Duration, that: Duration) => boolean
->(2, (self, that) => self.millis >= that.millis)
+>(2, (self, that) => self.nanos >= that.nanos)
 
 /**
  * @since 1.0.0
@@ -304,4 +346,4 @@ export const equals: {
 } = Dual.dual<
   (that: Duration) => (self: Duration) => boolean,
   (self: Duration, that: Duration) => boolean
->(2, (self, that) => self.millis === that.millis)
+>(2, (self, that) => self.nanos === that.nanos)

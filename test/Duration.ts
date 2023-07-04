@@ -129,6 +129,11 @@ describe.concurrent("Duration", () => {
     assert.isFalse(pipe(D.seconds(30), D.greaterThan(D.seconds(30))))
     assert.isFalse(pipe(D.seconds(30), D.greaterThan(D.minutes(1))))
   })
+  it(">/ Infinity", () => {
+    assert.isTrue(pipe(D.infinity, D.greaterThan(D.seconds(20))))
+    assert.isFalse(pipe(D.seconds(-Infinity), D.greaterThan(D.infinity)))
+    assert.isFalse(pipe(D.nanos(1n), D.greaterThan(D.infinity)))
+  })
   it(">=", () => {
     assert.isTrue(pipe(D.seconds(30), D.greaterThanOrEqualTo(D.seconds(20))))
     assert.isTrue(pipe(D.seconds(30), D.greaterThanOrEqualTo(D.seconds(30))))
@@ -149,7 +154,23 @@ describe.concurrent("Duration", () => {
   })
   it("toJSON", () => {
     expect(JSON.stringify(D.seconds(2))).toEqual(
-      JSON.stringify({ _tag: "Duration", millis: 2000 })
+      JSON.stringify({ _tag: "Duration", millis: 2000, hrtime: [2000, 0] })
     )
+  })
+  it("toJSON/ millis", () => {
+    expect(JSON.stringify(D.millis(1.5))).toEqual(
+      JSON.stringify({ _tag: "Duration", millis: 1.5, hrtime: [1, 500000] })
+    )
+  })
+  it("toJSON/ nanos", () => {
+    expect(JSON.stringify(D.nanos(5n))).toEqual(
+      JSON.stringify({ _tag: "Duration", millis: 0.000005, hrtime: [0, 5] })
+    )
+  })
+  it("sum/ Infinity", () => {
+    expect(D.sum(D.seconds(1), D.infinity)).toEqual(D.infinity)
+  })
+  it("subtract/ Infinity", () => {
+    expect(D.subtract(D.seconds(1), D.infinity)).toEqual(D.nanos(-Infinity as any))
   })
 })
