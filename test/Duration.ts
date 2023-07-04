@@ -110,7 +110,7 @@ describe.concurrent("Duration", () => {
   })
 
   it(`inspect`, () => {
-    expect(inspect(D.millis(1000))).toEqual(inspect({ _tag: "Duration", millis: 1000 }))
+    expect(inspect(D.millis(1000))).toEqual(inspect({ _tag: "Duration", millis: 1000, hrtime: [1000, 0] }))
   })
 
   it("zero", () => {
