@@ -6,6 +6,7 @@ import type * as HS from "@effect/data/HashSet"
 import * as HM from "@effect/data/internal/HashMap"
 import { pipeArguments } from "@effect/data/Pipeable"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
+import { isObject } from "@effect/data/Predicate"
 
 /** @internal */
 export const HashSetTypeId: HS.TypeId = Symbol.for("@effect/data/HashSet") as HS.TypeId
@@ -58,8 +59,7 @@ export class HashSetImpl<A> implements HS.HashSet<A> {
 export const isHashSet: {
   <A>(u: Iterable<A>): u is HS.HashSet<A>
   (u: unknown): u is HS.HashSet<unknown>
-} = (u: unknown): u is HS.HashSet<unknown> =>
-  typeof u === "object" && u != null && "_id" in u && u["_id"] === HashSetTypeId
+} = (u: unknown): u is HS.HashSet<unknown> => isObject(u) && "_id" in u && u["_id"] === HashSetTypeId
 
 /** @internal */
 export const empty = <A = never>(): HS.HashSet<A> => new HashSetImpl(HM.empty<A, unknown>())

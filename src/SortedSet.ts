@@ -9,6 +9,7 @@ import type { Order } from "@effect/data/Order"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
+import { isObject } from "@effect/data/Predicate"
 import * as RBT from "@effect/data/RedBlackTree"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/SortedSet")
@@ -74,7 +75,7 @@ class SortedSetImpl<A> implements Iterable<A>, Equal.Equal, Pipeable<SortedSet<A
 export const isSortedSet: {
   <A>(u: Iterable<A>): u is SortedSet<A>
   (u: unknown): u is SortedSet<unknown>
-} = (u: unknown): u is SortedSet<unknown> => typeof u === "object" && u != null && "_id" in u && u["_id"] === TypeId
+} = (u: unknown): u is SortedSet<unknown> => isObject(u) && "_id" in u && u["_id"] === TypeId
 
 /**
  * @since 1.0.0

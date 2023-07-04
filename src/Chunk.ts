@@ -13,6 +13,7 @@ import type { Order } from "@effect/data/Order"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
+import { isObject } from "@effect/data/Predicate"
 import * as RA from "@effect/data/ReadonlyArray"
 import type { NonEmptyReadonlyArray } from "@effect/data/ReadonlyArray"
 
@@ -208,7 +209,7 @@ class ChunkImpl<A> implements Chunk<A> {
 export const isChunk: {
   <A>(u: Iterable<A>): u is Chunk<A>
   (u: unknown): u is Chunk<unknown>
-} = (u: unknown): u is Chunk<unknown> => typeof u === "object" && u != null && "_id" in u && u["_id"] === TypeId
+} = (u: unknown): u is Chunk<unknown> => isObject(u) && "_id" in u && u["_id"] === TypeId
 
 const _empty = new ChunkImpl<never>({ _tag: "IEmpty" })
 

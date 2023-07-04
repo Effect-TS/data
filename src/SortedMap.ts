@@ -9,6 +9,7 @@ import * as Option from "@effect/data/Option"
 import type { Order } from "@effect/data/Order"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
+import { isObject } from "@effect/data/Predicate"
 import * as RBT from "@effect/data/RedBlackTree"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/SortedMap")
@@ -74,8 +75,7 @@ class SortedMapImpl<K, V> implements Iterable<readonly [K, V]>, Equal.Equal {
 export const isSortedMap: {
   <K, V>(u: Iterable<readonly [K, V]>): u is SortedMap<K, V>
   (u: unknown): u is SortedMap<unknown, unknown>
-} = (u: unknown): u is SortedMap<unknown, unknown> =>
-  typeof u === "object" && u != null && "_id" in u && u["_id"] === TypeId
+} = (u: unknown): u is SortedMap<unknown, unknown> => isObject(u) && "_id" in u && u["_id"] === TypeId
 
 /**
  * @since 1.0.0

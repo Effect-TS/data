@@ -8,6 +8,7 @@ import * as Hash from "@effect/data/Hash"
 import * as order from "@effect/data/Order"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
+import { isNumber, isObject } from "@effect/data/Predicate"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/Duration")
 
@@ -32,7 +33,7 @@ class DurationImpl implements Equal.Equal {
   readonly millis: number
   readonly nanos: bigint
   constructor(input: number | bigint) {
-    if (typeof input === "number") {
+    if (isNumber(input)) {
       this.millis = input
       this.nanos = Number.isFinite(input) ? BigInt(input * 1_000_000) : (input as any)
     } else {
@@ -71,8 +72,7 @@ class DurationImpl implements Equal.Equal {
  * @since 1.0.0
  * @category guards
  */
-export const isDuration = (u: unknown): u is Duration =>
-  typeof u === "object" && u != null && "_id" in u && u["_id"] === TypeId
+export const isDuration = (u: unknown): u is Duration => isObject(u) && "_id" in u && u["_id"] === TypeId
 
 /**
  * @since 1.0.0

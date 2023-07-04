@@ -9,6 +9,7 @@ import * as Option from "@effect/data/Option"
 import type * as Order from "@effect/data/Order"
 import type * as Ordering from "@effect/data/Ordering"
 import { pipeArguments } from "@effect/data/Pipeable"
+import { isObject } from "@effect/data/Predicate"
 import type * as RBT from "@effect/data/RedBlackTree"
 
 const RedBlackTreeSymbolKey = "@effect/data/RedBlackTree"
@@ -72,7 +73,7 @@ export const isRedBlackTree: {
   <K, V>(u: Iterable<readonly [K, V]>): u is RBT.RedBlackTree<K, V>
   (u: unknown): u is RBT.RedBlackTree<unknown, unknown>
 } = (u: unknown): u is RBT.RedBlackTree<unknown, unknown> =>
-  typeof u === "object" && u != null && "_id" in u && u["_id"] === RedBlackTreeTypeId
+  isObject(u) && "_id" in u && u["_id"] === RedBlackTreeTypeId
 
 /** @internal */
 export const empty = <K, V = never>(ord: Order.Order<K>): RBT.RedBlackTree<K, V> =>

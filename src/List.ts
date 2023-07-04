@@ -31,6 +31,7 @@ import * as Option from "@effect/data/Option"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
+import { isObject } from "@effect/data/Predicate"
 import * as ReadonlyArray from "@effect/data/ReadonlyArray"
 
 const ListSymbolKey = "@effect/data/List"
@@ -223,7 +224,7 @@ class NilImpl<A> implements List.Nil<A> {
 export const isList: {
   <A>(u: Iterable<A>): u is List<A>
   (u: unknown): u is List<unknown>
-} = (u: unknown): u is List<unknown> => typeof u === "object" && u != null && ListTypeId in u
+} = (u: unknown): u is List<unknown> => isObject(u) && ListTypeId in u
 
 /**
  * Returns `true` if the specified value is a `List.Nil<A>`, `false` otherwise.
