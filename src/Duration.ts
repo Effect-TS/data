@@ -8,7 +8,7 @@ import * as Hash from "@effect/data/Hash"
 import * as order from "@effect/data/Order"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
-import { isNumber, isObject } from "@effect/data/Predicate"
+import { isBigint, isNumber, isObject } from "@effect/data/Predicate"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/Duration")
 
@@ -26,6 +26,64 @@ export interface Duration extends Equal.Equal, Pipeable<Duration> {
   readonly _id: TypeId
   readonly nanos: bigint
   readonly millis: number
+}
+
+/**
+ * @since 1.0.0
+ * @category models
+ */
+export type DurationInput =
+  | Duration
+  | number // millis
+  | bigint // nanos
+  | `${number} nanos`
+  | `${number} micros`
+  | `${number} millis`
+  | `${number} seconds`
+  | `${number} minutes`
+  | `${number} hours`
+  | `${number} days`
+  | `${number} weeks`
+
+const DURATION_REGEX = /^(\d+(?:\.\d+)?)\s+(nanos|micros|millis|seconds|minutes|hours|days|weeks)$/
+
+/**
+ * @since 1.0.0
+ */
+export const decodeDuration = (input: DurationInput): Duration => {
+  if (isDuration(input)) {
+    return input
+  } else if (isNumber(input)) {
+    return millis(input)
+  } else if (isBigint(input)) {
+    return nanos(input)
+  } else {
+    DURATION_REGEX.lastIndex = 0 // Reset the lastIndex before each use
+    const match = DURATION_REGEX.exec(input)
+    if (match) {
+      const [_, valueStr, unit] = match
+      const value = Number(valueStr)
+      switch (unit) {
+        case "nanos":
+          return nanos(BigInt(valueStr))
+        case "micros":
+          return micros(BigInt(valueStr))
+        case "millis":
+          return millis(value)
+        case "seconds":
+          return seconds(value)
+        case "minutes":
+          return minutes(value)
+        case "hours":
+          return hours(value)
+        case "days":
+          return days(value)
+        case "weeks":
+          return weeks(value)
+      }
+    }
+  }
+  throw new Error("Invalid duration input")
 }
 
 class DurationImpl implements Equal.Equal {

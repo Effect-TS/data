@@ -5,6 +5,28 @@ import { deepStrictEqual } from "@effect/data/test/util"
 import { inspect } from "node:util"
 
 describe.concurrent("Duration", () => {
+  it("decodeDuration", () => {
+    const millis100 = D.millis(100)
+    expect(D.decodeDuration(millis100) === millis100).toEqual(true)
+
+    expect(D.decodeDuration(100)).toEqual(millis100)
+
+    expect(D.decodeDuration(10n)).toEqual(D.nanos(10n))
+
+    expect(D.decodeDuration("10 nanos")).toEqual(D.nanos(10n))
+    expect(D.decodeDuration("10 micros")).toEqual(D.micros(10n))
+    expect(D.decodeDuration("10 millis")).toEqual(D.millis(10))
+    expect(D.decodeDuration("10 seconds")).toEqual(D.seconds(10))
+    expect(D.decodeDuration("10 minutes")).toEqual(D.minutes(10))
+    expect(D.decodeDuration("10 hours")).toEqual(D.hours(10))
+    expect(D.decodeDuration("10 days")).toEqual(D.days(10))
+    expect(D.decodeDuration("10 weeks")).toEqual(D.weeks(10))
+
+    expect(D.decodeDuration("1.5 seconds")).toEqual(D.seconds(1.5))
+
+    expect(() => D.decodeDuration("1.5 secs" as any)).toThrowError(new Error("Invalid duration input"))
+  })
+
   it("Order", () => {
     deepStrictEqual(D.Order.compare(D.millis(1), D.millis(2)), -1)
     deepStrictEqual(D.Order.compare(D.millis(2), D.millis(1)), 1)

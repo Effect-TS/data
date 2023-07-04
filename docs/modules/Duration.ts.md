@@ -34,6 +34,7 @@ Added in v1.0.0
   - [times](#times)
 - [models](#models)
   - [Duration (interface)](#duration-interface)
+  - [DurationInput (type alias)](#durationinput-type-alias)
 - [predicates](#predicates)
   - [between](#between)
   - [equals](#equals)
@@ -45,6 +46,7 @@ Added in v1.0.0
   - [TypeId (type alias)](#typeid-type-alias)
 - [utils](#utils)
   - [clamp](#clamp)
+  - [decodeDuration](#decodeduration)
   - [max](#max)
   - [min](#min)
 
@@ -237,6 +239,27 @@ export interface Duration extends Equal.Equal, Pipeable<Duration> {
 
 Added in v1.0.0
 
+## DurationInput (type alias)
+
+**Signature**
+
+```ts
+export type DurationInput =
+  | Duration
+  | number // millis
+  | bigint // nanos
+  | `${number} nanos`
+  | `${number} micros`
+  | `${number} millis`
+  | `${number} seconds`
+  | `${number} minutes`
+  | `${number} hours`
+  | `${number} days`
+  | `${number} weeks`
+```
+
+Added in v1.0.0
+
 # predicates
 
 ## between
@@ -342,6 +365,16 @@ export declare const clamp: {
   (minimum: Duration, maximum: Duration): (self: Duration) => Duration
   (self: Duration, minimum: Duration, maximum: Duration): Duration
 }
+```
+
+Added in v1.0.0
+
+## decodeDuration
+
+**Signature**
+
+```ts
+export declare const decodeDuration: (input: DurationInput) => Duration
 ```
 
 Added in v1.0.0
