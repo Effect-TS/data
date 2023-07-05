@@ -20,9 +20,13 @@ Added in v1.0.0
   - [millis](#millis)
   - [minutes](#minutes)
   - [nanos](#nanos)
+  - [negativeInfinity](#negativeinfinity)
   - [seconds](#seconds)
   - [weeks](#weeks)
   - [zero](#zero)
+- [getters](#getters)
+  - [toHrTime](#tohrtime)
+  - [toMillis](#tomillis)
 - [guards](#guards)
   - [isDuration](#isduration)
 - [instances](#instances)
@@ -35,6 +39,10 @@ Added in v1.0.0
 - [models](#models)
   - [Duration (interface)](#duration-interface)
   - [DurationInput (type alias)](#durationinput-type-alias)
+  - [DurationValue (type alias)](#durationvalue-type-alias)
+- [pattern matching](#pattern-matching)
+  - [match](#match)
+  - [matchWith](#matchwith)
 - [predicates](#predicates)
   - [between](#between)
   - [equals](#equals)
@@ -46,7 +54,7 @@ Added in v1.0.0
   - [TypeId (type alias)](#typeid-type-alias)
 - [utils](#utils)
   - [clamp](#clamp)
-  - [decodeDuration](#decodeduration)
+  - [decode](#decode)
   - [max](#max)
   - [min](#min)
 
@@ -124,6 +132,16 @@ export declare const nanos: (nanos: bigint) => Duration
 
 Added in v1.0.0
 
+## negativeInfinity
+
+**Signature**
+
+```ts
+export declare const negativeInfinity: Duration
+```
+
+Added in v1.0.0
+
 ## seconds
 
 **Signature**
@@ -150,6 +168,28 @@ Added in v1.0.0
 
 ```ts
 export declare const zero: Duration
+```
+
+Added in v1.0.0
+
+# getters
+
+## toHrTime
+
+**Signature**
+
+```ts
+export declare const toHrTime: (self: Duration) => readonly [seconds: number, nanos: number]
+```
+
+Added in v1.0.0
+
+## toMillis
+
+**Signature**
+
+```ts
+export declare const toMillis: (self: Duration) => number
 ```
 
 Added in v1.0.0
@@ -232,8 +272,7 @@ Added in v1.0.0
 ```ts
 export interface Duration extends Equal.Equal, Pipeable<Duration> {
   readonly _id: TypeId
-  readonly nanos: bigint
-  readonly millis: number
+  readonly value: DurationValue
 }
 ```
 
@@ -256,6 +295,61 @@ export type DurationInput =
   | `${number} hours`
   | `${number} days`
   | `${number} weeks`
+```
+
+Added in v1.0.0
+
+## DurationValue (type alias)
+
+**Signature**
+
+```ts
+export type DurationValue =
+  | { _tag: 'Millis'; millis: number }
+  | { _tag: 'Nanos'; nanos: bigint }
+  | { _tag: 'Infinity' }
+  | { _tag: '-Infinity' }
+```
+
+Added in v1.0.0
+
+# pattern matching
+
+## match
+
+**Signature**
+
+```ts
+export declare const match: {
+  <A, B>(options: { readonly onMillis: (millis: number) => A; readonly onNanos: (nanos: bigint) => B }): (
+    self: Duration
+  ) => A | B
+  <A, B>(
+    self: Duration,
+    options: { readonly onMillis: (millis: number) => A; readonly onNanos: (nanos: bigint) => B }
+  ): A | B
+}
+```
+
+Added in v1.0.0
+
+## matchWith
+
+**Signature**
+
+```ts
+export declare const matchWith: (<A, B>(
+  that: Duration,
+  options: { readonly onMillis: (self: number, that: number) => A; readonly onNanos: (self: bigint, that: bigint) => B }
+) => (self: Duration) => A | B) &
+  (<A, B>(
+    self: Duration,
+    that: Duration,
+    options: {
+      readonly onMillis: (self: number, that: number) => A
+      readonly onNanos: (self: bigint, that: bigint) => B
+    }
+  ) => A | B)
 ```
 
 Added in v1.0.0
@@ -369,12 +463,12 @@ export declare const clamp: {
 
 Added in v1.0.0
 
-## decodeDuration
+## decode
 
 **Signature**
 
 ```ts
-export declare const decodeDuration: (input: DurationInput) => Duration
+export declare const decode: (input: DurationInput) => Duration
 ```
 
 Added in v1.0.0

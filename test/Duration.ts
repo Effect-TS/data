@@ -5,26 +5,26 @@ import { deepStrictEqual } from "@effect/data/test/util"
 import { inspect } from "node:util"
 
 describe.concurrent("Duration", () => {
-  it("decodeDuration", () => {
+  it("decode", () => {
     const millis100 = D.millis(100)
-    expect(D.decodeDuration(millis100) === millis100).toEqual(true)
+    expect(D.decode(millis100) === millis100).toEqual(true)
 
-    expect(D.decodeDuration(100)).toEqual(millis100)
+    expect(D.decode(100)).toEqual(millis100)
 
-    expect(D.decodeDuration(10n)).toEqual(D.nanos(10n))
+    expect(D.decode(10n)).toEqual(D.nanos(10n))
 
-    expect(D.decodeDuration("10 nanos")).toEqual(D.nanos(10n))
-    expect(D.decodeDuration("10 micros")).toEqual(D.micros(10n))
-    expect(D.decodeDuration("10 millis")).toEqual(D.millis(10))
-    expect(D.decodeDuration("10 seconds")).toEqual(D.seconds(10))
-    expect(D.decodeDuration("10 minutes")).toEqual(D.minutes(10))
-    expect(D.decodeDuration("10 hours")).toEqual(D.hours(10))
-    expect(D.decodeDuration("10 days")).toEqual(D.days(10))
-    expect(D.decodeDuration("10 weeks")).toEqual(D.weeks(10))
+    expect(D.decode("10 nanos")).toEqual(D.nanos(10n))
+    expect(D.decode("10 micros")).toEqual(D.micros(10n))
+    expect(D.decode("10 millis")).toEqual(D.millis(10))
+    expect(D.decode("10 seconds")).toEqual(D.seconds(10))
+    expect(D.decode("10 minutes")).toEqual(D.minutes(10))
+    expect(D.decode("10 hours")).toEqual(D.hours(10))
+    expect(D.decode("10 days")).toEqual(D.days(10))
+    expect(D.decode("10 weeks")).toEqual(D.weeks(10))
 
-    expect(D.decodeDuration("1.5 seconds")).toEqual(D.seconds(1.5))
+    expect(D.decode("1.5 seconds")).toEqual(D.seconds(1.5))
 
-    expect(() => D.decodeDuration("1.5 secs" as any)).toThrowError(new Error("Invalid duration input"))
+    expect(() => D.decode("1.5 secs" as any)).toThrowError(new Error("Invalid duration input"))
   })
 
   it("Order", () => {
@@ -99,21 +99,29 @@ describe.concurrent("Duration", () => {
     assert.isFalse(pipe(D.minutes(1), D.lessThanOrEqualTo(D.seconds(30))))
   })
   it("toString", () => {
-    expect(String(D.seconds(2))).toEqual("Duration(2000)")
+    expect(String(D.seconds(2))).toEqual("Duration(Millis, 2000)")
   })
   it("toJSON", () => {
     expect(JSON.stringify(D.seconds(2))).toEqual(
-      JSON.stringify({ _tag: "Duration", millis: 2000, hrtime: [2000, 0] })
+      JSON.stringify({ _tag: "Duration", value: { _tag: "Millis", millis: 2000 } })
     )
   })
-  it("toJSON/ millis", () => {
+  it("toJSON/ non-integer millis", () => {
     expect(JSON.stringify(D.millis(1.5))).toEqual(
-      JSON.stringify({ _tag: "Duration", millis: 1.5, hrtime: [1, 500000] })
+      JSON.stringify({ _tag: "Duration", value: { _tag: "Nanos", hrtime: [0, 1_500_000] } })
     )
   })
   it("toJSON/ nanos", () => {
     expect(JSON.stringify(D.nanos(5n))).toEqual(
-      JSON.stringify({ _tag: "Duration", millis: 0.000005, hrtime: [0, 5] })
+      JSON.stringify({ _tag: "Duration", value: { _tag: "Nanos", hrtime: [0, 5] } })
+    )
+  })
+  it("toJSON/ infinity", () => {
+    expect(JSON.stringify(D.infinity)).toEqual(
+      JSON.stringify({ _tag: "Duration", value: { _tag: "Infinity" } })
+    )
+    expect(JSON.stringify(D.negativeInfinity)).toEqual(
+      JSON.stringify({ _tag: "Duration", value: { _tag: "-Infinity" } })
     )
   })
   it("sum/ Infinity", () => {
@@ -132,19 +140,35 @@ describe.concurrent("Duration", () => {
   })
 
   it(`inspect`, () => {
-    expect(inspect(D.millis(1000))).toEqual(inspect({ _tag: "Duration", millis: 1000, hrtime: [1000, 0] }))
+    expect(inspect(D.millis(1000))).toEqual(inspect({ _tag: "Duration", value: { _tag: "Millis", millis: 1000 } }))
   })
 
   it("zero", () => {
-    expect(D.zero.millis).toBe(0)
+    expect(D.zero.value).toEqual({ _tag: "Millis", millis: 0 })
   })
 
   it("infinity", () => {
-    expect(D.infinity.millis).toBe(Infinity)
+    expect(D.infinity.value).toEqual({ _tag: "Infinity" })
   })
 
   it("weeks", () => {
     expect(Equal.equals(D.weeks(1), D.days(7))).toBe(true)
     expect(Equal.equals(D.weeks(1), D.days(1))).toBe(false)
+  })
+
+  it("toMillis", () => {
+    expect(D.millis(1).pipe(D.toMillis)).toBe(1)
+    expect(D.nanos(1n).pipe(D.toMillis)).toBe(0.000001)
+    expect(D.infinity.pipe(D.toMillis)).toBe(Infinity)
+    expect(D.negativeInfinity.pipe(D.toMillis)).toBe(-Infinity)
+  })
+
+  it("toHrTime", () => {
+    expect(D.millis(1).pipe(D.toHrTime)).toEqual([0, 1_000_000])
+    expect(D.nanos(1n).pipe(D.toHrTime)).toEqual([0, 1])
+    expect(D.nanos(1_000_000_001n).pipe(D.toHrTime)).toEqual([1, 1])
+    expect(D.millis(1001).pipe(D.toHrTime)).toEqual([1, 1_000_000])
+    expect(D.infinity.pipe(D.toHrTime)).toEqual([Infinity, 0])
+    expect(D.negativeInfinity.pipe(D.toHrTime)).toEqual([-Infinity, 0])
   })
 })
