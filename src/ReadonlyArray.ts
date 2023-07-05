@@ -857,7 +857,7 @@ export const sort: {
   <A extends B, B>(self: Iterable<A>, O: Order<B>): Array<A>
 } = dual(2, <A extends B, B>(self: Iterable<A>, O: Order<B>): Array<A> => {
   const out = Array.from(self)
-  out.sort(O.compare)
+  out.sort(O)
   return out
 })
 

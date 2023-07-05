@@ -333,7 +333,7 @@ export const max: {
  * @category math
  * @since 1.0.0
  */
-export const sign = (n: bigint): Ordering => Order.compare(n, 0n)
+export const sign = (n: bigint): Ordering => Order(n, 0n)
 
 /**
  * Takes an `Iterable` of `bigint`s and returns their sum as a single `bigint

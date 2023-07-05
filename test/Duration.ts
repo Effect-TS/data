@@ -28,9 +28,9 @@ describe.concurrent("Duration", () => {
   })
 
   it("Order", () => {
-    deepStrictEqual(D.Order.compare(D.millis(1), D.millis(2)), -1)
-    deepStrictEqual(D.Order.compare(D.millis(2), D.millis(1)), 1)
-    deepStrictEqual(D.Order.compare(D.millis(2), D.millis(2)), 0)
+    deepStrictEqual(D.Order(D.millis(1), D.millis(2)), -1)
+    deepStrictEqual(D.Order(D.millis(2), D.millis(1)), 1)
+    deepStrictEqual(D.Order(D.millis(2), D.millis(2)), 0)
   })
 
   it("Equivalence", () => {

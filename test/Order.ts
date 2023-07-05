@@ -6,35 +6,35 @@ import * as U from "./util"
 describe.concurrent("Order", () => {
   it("struct", () => {
     const O = _.struct({ a: _.string, b: _.string })
-    U.deepStrictEqual(O.compare({ a: "a", b: "b" }, { a: "a", b: "c" }), -1)
-    U.deepStrictEqual(O.compare({ a: "a", b: "b" }, { a: "a", b: "b" }), 0)
-    U.deepStrictEqual(O.compare({ a: "a", b: "c" }, { a: "a", b: "b" }), 1)
+    U.deepStrictEqual(O({ a: "a", b: "b" }, { a: "a", b: "c" }), -1)
+    U.deepStrictEqual(O({ a: "a", b: "b" }, { a: "a", b: "b" }), 0)
+    U.deepStrictEqual(O({ a: "a", b: "c" }, { a: "a", b: "b" }), 1)
   })
 
   it("tuple", () => {
     const O = _.tuple(_.string, _.string)
-    U.deepStrictEqual(O.compare(["a", "b"], ["a", "c"]), -1)
-    U.deepStrictEqual(O.compare(["a", "b"], ["a", "b"]), 0)
-    U.deepStrictEqual(O.compare(["a", "b"], ["a", "a"]), 1)
-    U.deepStrictEqual(O.compare(["a", "b"], ["b", "a"]), -1)
+    U.deepStrictEqual(O(["a", "b"], ["a", "c"]), -1)
+    U.deepStrictEqual(O(["a", "b"], ["a", "b"]), 0)
+    U.deepStrictEqual(O(["a", "b"], ["a", "a"]), 1)
+    U.deepStrictEqual(O(["a", "b"], ["b", "a"]), -1)
   })
 
   it("all", () => {
     const O = _.all([_.string, _.string, _.string])
-    U.deepStrictEqual(O.compare([], []), 0)
-    U.deepStrictEqual(O.compare(["a", "b"], ["a"]), 0)
-    U.deepStrictEqual(O.compare(["a"], ["a", "c"]), 0)
-    U.deepStrictEqual(O.compare(["a", "b"], ["a", "c"]), -1)
-    U.deepStrictEqual(O.compare(["a", "b"], ["a", "b"]), 0)
-    U.deepStrictEqual(O.compare(["a", "b"], ["a", "a"]), 1)
-    U.deepStrictEqual(O.compare(["a", "b"], ["b", "a"]), -1)
+    U.deepStrictEqual(O([], []), 0)
+    U.deepStrictEqual(O(["a", "b"], ["a"]), 0)
+    U.deepStrictEqual(O(["a"], ["a", "c"]), 0)
+    U.deepStrictEqual(O(["a", "b"], ["a", "c"]), -1)
+    U.deepStrictEqual(O(["a", "b"], ["a", "b"]), 0)
+    U.deepStrictEqual(O(["a", "b"], ["a", "a"]), 1)
+    U.deepStrictEqual(O(["a", "b"], ["b", "a"]), -1)
   })
 
   it("contramap", () => {
     const O = _.contramap(_.number, (s: string) => s.length)
-    U.deepStrictEqual(O.compare("a", "b"), 0)
-    U.deepStrictEqual(O.compare("a", "bb"), -1)
-    U.deepStrictEqual(O.compare("aa", "b"), 1)
+    U.deepStrictEqual(O("a", "b"), 0)
+    U.deepStrictEqual(O("a", "bb"), -1)
+    U.deepStrictEqual(O("aa", "b"), 1)
   })
 
   it("clamp", () => {
@@ -57,9 +57,9 @@ describe.concurrent("Order", () => {
 
   it("reverse", () => {
     const O = _.reverse(_.number)
-    U.deepStrictEqual(O.compare(1, 2), 1)
-    U.deepStrictEqual(O.compare(2, 1), -1)
-    U.deepStrictEqual(O.compare(2, 2), 0)
+    U.deepStrictEqual(O(1, 2), 1)
+    U.deepStrictEqual(O(2, 1), -1)
+    U.deepStrictEqual(O(2, 2), 0)
   })
 
   it("lessThan", () => {
@@ -122,18 +122,18 @@ describe.concurrent("Order", () => {
 
   it("product", () => {
     const O = _.product(_.string, _.number)
-    U.deepStrictEqual(O.compare(["a", 1], ["a", 2]), -1)
-    U.deepStrictEqual(O.compare(["a", 1], ["a", 1]), 0)
-    U.deepStrictEqual(O.compare(["a", 1], ["a", 0]), 1)
-    U.deepStrictEqual(O.compare(["a", 1], ["b", 1]), -1)
+    U.deepStrictEqual(O(["a", 1], ["a", 2]), -1)
+    U.deepStrictEqual(O(["a", 1], ["a", 1]), 0)
+    U.deepStrictEqual(O(["a", 1], ["a", 0]), 1)
+    U.deepStrictEqual(O(["a", 1], ["b", 1]), -1)
   })
 
   it("productMany", () => {
     const O = _.productMany(_.string, [_.string, _.string])
-    U.deepStrictEqual(O.compare(["a", "b"], ["a", "c"]), -1)
-    U.deepStrictEqual(O.compare(["a", "b"], ["a", "b"]), 0)
-    U.deepStrictEqual(O.compare(["a", "b"], ["a", "a"]), 1)
-    U.deepStrictEqual(O.compare(["a", "b"], ["b", "a"]), -1)
+    U.deepStrictEqual(O(["a", "b"], ["a", "c"]), -1)
+    U.deepStrictEqual(O(["a", "b"], ["a", "b"]), 0)
+    U.deepStrictEqual(O(["a", "b"], ["a", "a"]), 1)
+    U.deepStrictEqual(O(["a", "b"], ["b", "a"]), -1)
   })
 
   it("combine / combineMany", () => {

@@ -1054,17 +1054,17 @@ export const getEquivalence = <A>(E: Equivalence<A>): Equivalence<Option<A>> =>
  * import { pipe } from "@effect/data/Function"
  *
  * const O = getOrder(N.Order)
- * assert.deepStrictEqual(O.compare(none(), none()), 0)
- * assert.deepStrictEqual(O.compare(none(), some(1)), -1)
- * assert.deepStrictEqual(O.compare(some(1), none()), 1)
- * assert.deepStrictEqual(O.compare(some(1), some(2)), -1)
- * assert.deepStrictEqual(O.compare(some(1), some(1)), 0)
+ * assert.deepStrictEqual(O(none(), none()), 0)
+ * assert.deepStrictEqual(O(none(), some(1)), -1)
+ * assert.deepStrictEqual(O(some(1), none()), 1)
+ * assert.deepStrictEqual(O(some(1), some(2)), -1)
+ * assert.deepStrictEqual(O(some(1), some(1)), 0)
  *
  * @category sorting
  * @since 1.0.0
  */
 export const getOrder = <A>(O: Order<A>): Order<Option<A>> =>
-  order.make((self, that) => isSome(self) ? (isSome(that) ? O.compare(self.value, that.value) : 1) : -1)
+  order.make((self, that) => isSome(self) ? (isSome(that) ? O(self.value, that.value) : 1) : -1)
 
 /**
  * Lifts a binary function into `Option`.

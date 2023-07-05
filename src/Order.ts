@@ -9,7 +9,7 @@ import type { TypeLambda } from "@effect/data/HKT"
  * @since 1.0.0
  */
 export interface Order<A> {
-  readonly compare: (self: A, that: A) => -1 | 0 | 1
+  (self: A, that: A): -1 | 0 | 1
 }
 
 /**
@@ -25,10 +25,8 @@ export interface OrderTypeLambda extends TypeLambda {
  * @since 1.0.0
  */
 export const make = <A>(
-  compare: Order<A>["compare"]
-): Order<A> => ({
-  compare: (self, that) => self === that ? 0 : compare(self, that)
-})
+  compare: (self: A, that: A) => -1 | 0 | 1
+): Order<A> => (self, that) => self === that ? 0 : compare(self, that)
 
 /**
  * @category instances
@@ -57,7 +55,7 @@ export const bigint: Order<bigint> = make((self, that) => self < that ? -1 : 1)
 /**
  * @since 1.0.0
  */
-export const reverse = <A>(O: Order<A>): Order<A> => make((self, that) => O.compare(that, self))
+export const reverse = <A>(O: Order<A>): Order<A> => make((self, that) => O(that, self))
 
 /**
  * @since 1.0.0
@@ -67,11 +65,11 @@ export const combine: {
   <A>(self: Order<A>, that: Order<A>): Order<A>
 } = dual(2, <A>(self: Order<A>, that: Order<A>): Order<A> =>
   make((a1, a2) => {
-    const out = self.compare(a1, a2)
+    const out = self(a1, a2)
     if (out !== 0) {
       return out
     }
-    return that.compare(a1, a2)
+    return that(a1, a2)
   }))
 
 /**
@@ -82,12 +80,12 @@ export const combineMany: {
   <A>(self: Order<A>, collection: Iterable<Order<A>>): Order<A>
 } = dual(2, <A>(self: Order<A>, collection: Iterable<Order<A>>): Order<A> =>
   make((a1, a2) => {
-    let out = self.compare(a1, a2)
+    let out = self(a1, a2)
     if (out !== 0) {
       return out
     }
     for (const O of collection) {
-      out = O.compare(a1, a2)
+      out = O(a1, a2)
       if (out !== 0) {
         return out
       }
@@ -114,7 +112,7 @@ export const contramap: {
   <A, B>(self: Order<A>, f: (b: B) => A): Order<B>
 } = dual(
   2,
-  <A, B>(self: Order<A>, f: (b: B) => A): Order<B> => make((b1, b2) => self.compare(f(b1), f(b2)))
+  <A, B>(self: Order<A>, f: (b: B) => A): Order<B> => make((b1, b2) => self(f(b1), f(b2)))
 )
 
 /**
@@ -125,8 +123,8 @@ export const product: {
   <A, B>(self: Order<A>, that: Order<B>): Order<[A, B]>
 } = dual(2, <A, B>(self: Order<A>, that: Order<B>): Order<[A, B]> =>
   make(([xa, xb], [ya, yb]) => {
-    const o = self.compare(xa, ya)
-    return o !== 0 ? o : that.compare(xb, yb)
+    const o = self(xa, ya)
+    return o !== 0 ? o : that(xb, yb)
   }))
 
 /**
@@ -136,11 +134,11 @@ export const all = <A>(collection: Iterable<Order<A>>): Order<Array<A>> => {
   return make((x, y) => {
     const len = Math.min(x.length, y.length)
     let collectionLength = 0
-    for (const order of collection) {
+    for (const O of collection) {
       if (collectionLength >= len) {
         break
       }
-      const o = order.compare(x[collectionLength], y[collectionLength])
+      const o = O(x[collectionLength], y[collectionLength])
       if (o !== 0) {
         return o
       }
@@ -157,10 +155,10 @@ export const productMany: {
   <A>(collection: Iterable<Order<A>>): (self: Order<A>) => Order<[A, ...Array<A>]>
   <A>(self: Order<A>, collection: Iterable<Order<A>>): Order<[A, ...Array<A>]>
 } = dual(2, <A>(self: Order<A>, collection: Iterable<Order<A>>): Order<[A, ...Array<A>]> => {
-  const order = all(collection)
+  const O = all(collection)
   return make((x, y) => {
-    const o = self.compare(x[0], y[0])
-    return o !== 0 ? o : order.compare(x.slice(1), y.slice(1))
+    const o = self(x[0], y[0])
+    return o !== 0 ? o : O(x.slice(1), y.slice(1))
   })
 })
 
@@ -198,12 +196,12 @@ export const array = <A>(O: Order<A>): Order<ReadonlyArray<A>> =>
     const bLen = that.length
     const len = Math.min(aLen, bLen)
     for (let i = 0; i < len; i++) {
-      const o = O.compare(self[i], that[i])
+      const o = O(self[i], that[i])
       if (o !== 0) {
         return o
       }
     }
-    return number.compare(aLen, bLen)
+    return number(aLen, bLen)
   })
 
 /**
@@ -219,7 +217,7 @@ export const struct = <R extends { readonly [x: string]: Order<any> }>(
   const keys = Object.keys(fields)
   return make((self, that) => {
     for (const key of keys) {
-      const o = fields[key].compare(self[key], that[key])
+      const o = fields[key](self[key], that[key])
       if (o !== 0) {
         return o
       }
@@ -236,7 +234,7 @@ export const struct = <R extends { readonly [x: string]: Order<any> }>(
 export const lessThan = <A>(O: Order<A>): {
   (that: A): (self: A) => boolean
   (self: A, that: A): boolean
-} => dual(2, (self: A, that: A) => O.compare(self, that) === -1)
+} => dual(2, (self: A, that: A) => O(self, that) === -1)
 
 /**
  * Test whether one value is _strictly greater than_ another.
@@ -246,7 +244,7 @@ export const lessThan = <A>(O: Order<A>): {
 export const greaterThan = <A>(O: Order<A>): {
   (that: A): (self: A) => boolean
   (self: A, that: A): boolean
-} => dual(2, (self: A, that: A) => O.compare(self, that) === 1)
+} => dual(2, (self: A, that: A) => O(self, that) === 1)
 
 /**
  * Test whether one value is _non-strictly less than_ another.
@@ -256,7 +254,7 @@ export const greaterThan = <A>(O: Order<A>): {
 export const lessThanOrEqualTo = <A>(O: Order<A>): {
   (that: A): (self: A) => boolean
   (self: A, that: A): boolean
-} => dual(2, (self: A, that: A) => O.compare(self, that) !== 1)
+} => dual(2, (self: A, that: A) => O(self, that) !== 1)
 
 /**
  * Test whether one value is _non-strictly greater than_ another.
@@ -266,7 +264,7 @@ export const lessThanOrEqualTo = <A>(O: Order<A>): {
 export const greaterThanOrEqualTo = <A>(O: Order<A>): {
   (that: A): (self: A) => boolean
   (self: A, that: A): boolean
-} => dual(2, (self: A, that: A) => O.compare(self, that) !== -1)
+} => dual(2, (self: A, that: A) => O(self, that) !== -1)
 
 /**
  * Take the minimum of two values. If they are considered equal, the first argument is chosen.
@@ -276,7 +274,7 @@ export const greaterThanOrEqualTo = <A>(O: Order<A>): {
 export const min = <A>(O: Order<A>): {
   (that: A): (self: A) => A
   (self: A, that: A): A
-} => dual(2, (self: A, that: A) => self === that || O.compare(self, that) < 1 ? self : that)
+} => dual(2, (self: A, that: A) => self === that || O(self, that) < 1 ? self : that)
 
 /**
  * Take the maximum of two values. If they are considered equal, the first argument is chosen.
@@ -286,7 +284,7 @@ export const min = <A>(O: Order<A>): {
 export const max = <A>(O: Order<A>): {
   (that: A): (self: A) => A
   (self: A, that: A): A
-} => dual(2, (self: A, that: A) => self === that || O.compare(self, that) > -1 ? self : that)
+} => dual(2, (self: A, that: A) => self === that || O(self, that) > -1 ? self : that)
 
 /**
  * Clamp a value between a minimum and a maximum.

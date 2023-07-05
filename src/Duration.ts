@@ -361,13 +361,12 @@ export const matchWith = dual<
  * @category instances
  * @since 1.0.0
  */
-export const Order: order.Order<Duration> = {
-  compare: (self, that) =>
-    matchWith(self, that, {
-      onMillis: (self, that) => (self < that ? -1 : self > that ? 1 : 0),
-      onNanos: (self, that) => (self < that ? -1 : self > that ? 1 : 0)
-    })
-}
+export const Order: order.Order<Duration> = order.make((self, that) =>
+  matchWith(self, that, {
+    onMillis: (self, that) => (self < that ? -1 : self > that ? 1 : 0),
+    onNanos: (self, that) => (self < that ? -1 : self > that ? 1 : 0)
+  })
+)
 
 /**
  * Checks if a `Duration` is between a `minimum` and `maximum` value.

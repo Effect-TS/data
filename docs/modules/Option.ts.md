@@ -1204,11 +1204,11 @@ import * as N from '@effect/data/Number'
 import { pipe } from '@effect/data/Function'
 
 const O = getOrder(N.Order)
-assert.deepStrictEqual(O.compare(none(), none()), 0)
-assert.deepStrictEqual(O.compare(none(), some(1)), -1)
-assert.deepStrictEqual(O.compare(some(1), none()), 1)
-assert.deepStrictEqual(O.compare(some(1), some(2)), -1)
-assert.deepStrictEqual(O.compare(some(1), some(1)), 0)
+assert.deepStrictEqual(O(none(), none()), 0)
+assert.deepStrictEqual(O(none(), some(1)), -1)
+assert.deepStrictEqual(O(some(1), none()), 1)
+assert.deepStrictEqual(O(some(1), some(2)), -1)
+assert.deepStrictEqual(O(some(1), some(1)), 0)
 ```
 
 Added in v1.0.0

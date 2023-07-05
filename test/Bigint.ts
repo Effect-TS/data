@@ -46,9 +46,9 @@ describe.concurrent("Bigint", () => {
   })
 
   it("Order", () => {
-    deepStrictEqual(Bigint.Order.compare(1n, 2n), -1)
-    deepStrictEqual(Bigint.Order.compare(2n, 1n), 1)
-    deepStrictEqual(Bigint.Order.compare(2n, 2n), 0)
+    deepStrictEqual(Bigint.Order(1n, 2n), -1)
+    deepStrictEqual(Bigint.Order(2n, 1n), 1)
+    deepStrictEqual(Bigint.Order(2n, 2n), 0)
   })
 
   it("lessThan", () => {

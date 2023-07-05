@@ -23,9 +23,7 @@ const OrdMember: Order.Order<Member> = pipe(Str.Order, Order.contramap((member) 
 function makeNumericSortedSet(
   ...numbers: Array<number>
 ): SortedSet.SortedSet<number> {
-  return SortedSet.fromIterable({
-    compare: (self, that: number) => self > that ? 1 : self < that ? -1 : 0
-  })(numbers)
+  return SortedSet.fromIterable((self, that: number) => self > that ? 1 : self < that ? -1 : 0)(numbers)
 }
 
 describe.concurrent("SortedSet", () => {

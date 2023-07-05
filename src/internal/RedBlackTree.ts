@@ -179,7 +179,7 @@ export const findFirst = Dual.dual<
   <K>(key: K) => <V>(self: RBT.RedBlackTree<K, V>) => Option.Option<V>,
   <K, V>(self: RBT.RedBlackTree<K, V>, key: K) => Option.Option<V>
 >(2, <K, V>(self: RBT.RedBlackTree<K, V>, key: K) => {
-  const cmp = (self as RedBlackTreeImpl<K, V>)._ord.compare
+  const cmp = (self as RedBlackTreeImpl<K, V>)._ord
   let node = (self as RedBlackTreeImpl<K, V>)._root
   while (node !== undefined) {
     const d = cmp(key, node.key)
@@ -255,7 +255,7 @@ export const insert = Dual.dual<
   <K, V>(key: K, value: V) => (self: RBT.RedBlackTree<K, V>) => RBT.RedBlackTree<K, V>,
   <K, V>(self: RBT.RedBlackTree<K, V>, key: K, value: V) => RBT.RedBlackTree<K, V>
 >(3, <K, V>(self: RBT.RedBlackTree<K, V>, key: K, value: V) => {
-  const cmp = (self as RedBlackTreeImpl<K, V>)._ord.compare
+  const cmp = (self as RedBlackTreeImpl<K, V>)._ord
   // Find point to insert new node at
   let n: Node.Node<K, V> | undefined = (self as RedBlackTreeImpl<K, V>)._root
   const n_stack: Array<Node.Node<K, V>> = []
@@ -502,7 +502,7 @@ const greaterThan = <K, V>(
 ): Iterable<readonly [K, V]> => {
   return {
     [Symbol.iterator]: () => {
-      const cmp = (self as RedBlackTreeImpl<K, V>)._ord.compare
+      const cmp = (self as RedBlackTreeImpl<K, V>)._ord
       let node = (self as RedBlackTreeImpl<K, V>)._root
       const stack = []
       let last_ptr = 0
@@ -543,7 +543,7 @@ const greaterThanEqual = <K, V>(
 ): Iterable<readonly [K, V]> => {
   return {
     [Symbol.iterator]: () => {
-      const cmp = (self as RedBlackTreeImpl<K, V>)._ord.compare
+      const cmp = (self as RedBlackTreeImpl<K, V>)._ord
       let node = (self as RedBlackTreeImpl<K, V>)._root
       const stack = []
       let last_ptr = 0
@@ -584,7 +584,7 @@ const lessThan = <K, V>(
 ): Iterable<readonly [K, V]> => {
   return {
     [Symbol.iterator]: () => {
-      const cmp = (self as RedBlackTreeImpl<K, V>)._ord.compare
+      const cmp = (self as RedBlackTreeImpl<K, V>)._ord
       let node = (self as RedBlackTreeImpl<K, V>)._root
       const stack = []
       let last_ptr = 0
@@ -625,7 +625,7 @@ const lessThanEqual = <K, V>(
 ): Iterable<readonly [K, V]> => {
   return {
     [Symbol.iterator]: () => {
-      const cmp = (self as RedBlackTreeImpl<K, V>)._ord.compare
+      const cmp = (self as RedBlackTreeImpl<K, V>)._ord
       let node = (self as RedBlackTreeImpl<K, V>)._root
       const stack = []
       let last_ptr = 0
@@ -753,7 +753,7 @@ export const removeFirst = Dual.dual<
     return self
   }
   const ord = (self as RedBlackTreeImpl<K, V>)._ord
-  const cmp = ord.compare
+  const cmp = ord
   let node: Node.Node<K, V> | undefined = (self as RedBlackTreeImpl<K, V>)._root
   const stack = []
   while (node !== undefined) {
@@ -939,13 +939,13 @@ const visitGreaterThanEqual = <K, V, A>(
   while (!done) {
     if (current !== undefined) {
       stack = new Stack(current, stack)
-      if (ord.compare(min, current.key) <= 0) {
+      if (ord(min, current.key) <= 0) {
         current = current.left
       } else {
         current = undefined
       }
     } else if (stack !== undefined) {
-      if (ord.compare(min, stack.value.key) <= 0) {
+      if (ord(min, stack.value.key) <= 0) {
         const value = visit(stack.value.key, stack.value.value)
         if (Option.isSome(value)) {
           return value
@@ -973,7 +973,7 @@ const visitLessThan = <K, V, A>(
     if (current !== undefined) {
       stack = new Stack(current, stack)
       current = current.left
-    } else if (stack !== undefined && ord.compare(max, stack.value.key) > 0) {
+    } else if (stack !== undefined && ord(max, stack.value.key) > 0) {
       const value = visit(stack.value.key, stack.value.value)
       if (Option.isSome(value)) {
         return value
@@ -1000,13 +1000,13 @@ const visitBetween = <K, V, A>(
   while (!done) {
     if (current !== undefined) {
       stack = new Stack(current, stack)
-      if (ord.compare(min, current.key) <= 0) {
+      if (ord(min, current.key) <= 0) {
         current = current.left
       } else {
         current = undefined
       }
-    } else if (stack !== undefined && ord.compare(max, stack.value.key) > 0) {
-      if (ord.compare(min, stack.value.key) <= 0) {
+    } else if (stack !== undefined && ord(max, stack.value.key) > 0) {
+      if (ord(min, stack.value.key) <= 0) {
         const value = visit(stack.value.key, stack.value.value)
         if (Option.isSome(value)) {
           return value

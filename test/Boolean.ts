@@ -81,9 +81,9 @@ describe.concurrent("Boolean", () => {
   })
 
   it("Order", () => {
-    deepStrictEqual(Boolean.Order.compare(false, true), -1)
-    deepStrictEqual(Boolean.Order.compare(true, false), 1)
-    deepStrictEqual(Boolean.Order.compare(true, true), 0)
+    deepStrictEqual(Boolean.Order(false, true), -1)
+    deepStrictEqual(Boolean.Order(true, false), 1)
+    deepStrictEqual(Boolean.Order(true, true), 0)
   })
 
   it("every", () => {

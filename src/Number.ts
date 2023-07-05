@@ -327,7 +327,7 @@ export const max: {
  * @category math
  * @since 1.0.0
  */
-export const sign = (n: number): Ordering => Order.compare(n, 0)
+export const sign = (n: number): Ordering => Order(n, 0)
 
 /**
  * Takes an `Iterable` of `number`s and returns their sum as a single `number`.

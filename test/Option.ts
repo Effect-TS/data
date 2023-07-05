@@ -222,12 +222,12 @@ describe.concurrent("Option", () => {
 
   it("getOrder", () => {
     const OS = _.getOrder(S.Order)
-    Util.deepStrictEqual(OS.compare(_.none(), _.none()), 0)
-    Util.deepStrictEqual(OS.compare(_.some("a"), _.none()), 1)
-    Util.deepStrictEqual(OS.compare(_.none(), _.some("a")), -1)
-    Util.deepStrictEqual(OS.compare(_.some("a"), _.some("a")), 0)
-    Util.deepStrictEqual(OS.compare(_.some("a"), _.some("b")), -1)
-    Util.deepStrictEqual(OS.compare(_.some("b"), _.some("a")), 1)
+    Util.deepStrictEqual(OS(_.none(), _.none()), 0)
+    Util.deepStrictEqual(OS(_.some("a"), _.none()), 1)
+    Util.deepStrictEqual(OS(_.none(), _.some("a")), -1)
+    Util.deepStrictEqual(OS(_.some("a"), _.some("a")), 0)
+    Util.deepStrictEqual(OS(_.some("a"), _.some("b")), -1)
+    Util.deepStrictEqual(OS(_.some("b"), _.some("a")), 1)
   })
 
   it("flatMapNullable", () => {
