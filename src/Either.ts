@@ -205,7 +205,7 @@ export const getEquivalence = <E, A>(
  * @category mapping
  * @since 1.0.0
  */
-export const bimap: {
+export const mapBoth: {
   <E1, E2, A, B>(options: {
     readonly onLeft: (e: E1) => E2
     readonly onRight: (a: A) => B

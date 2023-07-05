@@ -69,17 +69,17 @@ export const getSecond = <L, R>(self: readonly [L, R]): R => self[1]
  * @param g - The function to transform the second element of the tuple.
  *
  * @example
- * import { bimap } from "@effect/data/Tuple"
+ * import { mapBoth } from "@effect/data/Tuple"
  *
  * assert.deepStrictEqual(
- *   bimap(["hello", 42], { onFirst: s => s.toUpperCase(), onSecond: n => n.toString() }),
+ *   mapBoth(["hello", 42], { onFirst: s => s.toUpperCase(), onSecond: n => n.toString() }),
  *   ["HELLO", "42"]
  * )
  *
  * @category mapping
  * @since 1.0.0
  */
-export const bimap: {
+export const mapBoth: {
   <L1, L2, R1, R2>(options: {
     readonly onFirst: (e: L1) => L2
     readonly onSecond: (a: R1) => R2

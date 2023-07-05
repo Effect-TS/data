@@ -66,8 +66,8 @@ describe.concurrent("Either", () => {
     Util.deepStrictEqual(pipe(Either.left("s"), f), Either.left("s"))
   })
 
-  it("bimap", () => {
-    const f = Either.bimap({
+  it("mapBoth", () => {
+    const f = Either.mapBoth({
       onLeft: S.length,
       onRight: (n: number) => n > 2
     })

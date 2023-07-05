@@ -23,8 +23,8 @@ describe.concurrent("Tuple", () => {
     expect(T.getSecond(T.tuple("a", 1))).toEqual(1)
   })
 
-  it("bimap", () => {
-    expect(T.bimap(T.tuple("a", 1), {
+  it("mapBoth", () => {
+    expect(T.mapBoth(T.tuple("a", 1), {
       onFirst: (s) => s + "!",
       onSecond: (n) => n * 2
     })).toEqual(["a!", 2])

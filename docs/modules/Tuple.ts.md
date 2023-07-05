@@ -23,7 +23,7 @@ Added in v1.0.0
   - [getFirst](#getfirst)
   - [getSecond](#getsecond)
 - [mapping](#mapping)
-  - [bimap](#bimap)
+  - [mapBoth](#mapboth)
   - [mapFirst](#mapfirst)
   - [mapSecond](#mapsecond)
 - [type lambdas](#type-lambdas)
@@ -136,14 +136,14 @@ Added in v1.0.0
 
 # mapping
 
-## bimap
+## mapBoth
 
 Transforms both elements of a tuple using the given functions.
 
 **Signature**
 
 ```ts
-export declare const bimap: {
+export declare const mapBoth: {
   <L1, L2, R1, R2>(options: { readonly onFirst: (e: L1) => L2; readonly onSecond: (a: R1) => R2 }): (
     self: readonly [L1, R1]
   ) => [L2, R2]
@@ -157,9 +157,9 @@ export declare const bimap: {
 **Example**
 
 ```ts
-import { bimap } from '@effect/data/Tuple'
+import { mapBoth } from '@effect/data/Tuple'
 
-assert.deepStrictEqual(bimap(['hello', 42], { onFirst: (s) => s.toUpperCase(), onSecond: (n) => n.toString() }), [
+assert.deepStrictEqual(mapBoth(['hello', 42], { onFirst: (s) => s.toUpperCase(), onSecond: (n) => n.toString() }), [
   'HELLO',
   '42',
 ])

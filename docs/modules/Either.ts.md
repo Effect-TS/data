@@ -29,8 +29,8 @@ Added in v1.0.0
   - [isLeft](#isleft)
   - [isRight](#isright)
 - [mapping](#mapping)
-  - [bimap](#bimap)
   - [map](#map)
+  - [mapBoth](#mapboth)
 - [models](#models)
   - [Either (type alias)](#either-type-alias)
   - [EitherUnify (interface)](#eitherunify-interface)
@@ -244,24 +244,6 @@ Added in v1.0.0
 
 # mapping
 
-## bimap
-
-**Signature**
-
-```ts
-export declare const bimap: {
-  <E1, E2, A, B>(options: { readonly onLeft: (e: E1) => E2; readonly onRight: (a: A) => B }): (
-    self: Either<E1, A>
-  ) => Either<E2, B>
-  <E1, A, E2, B>(
-    self: Either<E1, A>,
-    options: { readonly onLeft: (e: E1) => E2; readonly onRight: (a: A) => B }
-  ): Either<E2, B>
-}
-```
-
-Added in v1.0.0
-
 ## map
 
 Maps the `Right` side of an `Either` value to a new `Either` value.
@@ -272,6 +254,24 @@ Maps the `Right` side of an `Either` value to a new `Either` value.
 export declare const map: {
   <A, B>(f: (a: A) => B): <E>(self: Either<E, A>) => Either<E, B>
   <E, A, B>(self: Either<E, A>, f: (a: A) => B): Either<E, B>
+}
+```
+
+Added in v1.0.0
+
+## mapBoth
+
+**Signature**
+
+```ts
+export declare const mapBoth: {
+  <E1, E2, A, B>(options: { readonly onLeft: (e: E1) => E2; readonly onRight: (a: A) => B }): (
+    self: Either<E1, A>
+  ) => Either<E2, B>
+  <E1, A, E2, B>(
+    self: Either<E1, A>,
+    options: { readonly onLeft: (e: E1) => E2; readonly onRight: (a: A) => B }
+  ): Either<E2, B>
 }
 ```
 
