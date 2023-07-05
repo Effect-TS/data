@@ -12,6 +12,9 @@ import { isBigint, isNumber, isObject } from "@effect/data/Predicate"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/Duration")
 
+const bigint1e3 = BigInt(1_000)
+const bigint1e9 = BigInt(1_000_000_000)
+
 /**
  * @since 1.0.0
  * @category symbol
@@ -185,7 +188,7 @@ export const nanos = (nanos: bigint): Duration => new DurationImpl(nanos)
  * @since 1.0.0
  * @category constructors
  */
-export const micros = (micros: bigint): Duration => new DurationImpl(micros * 1000n)
+export const micros = (micros: bigint): Duration => new DurationImpl(micros * bigint1e3)
 
 /**
  * @since 1.0.0
@@ -252,8 +255,8 @@ export const toHrTime = (self: Duration): readonly [seconds: number, nanos: numb
       return [-Infinity, 0]
     case "Nanos":
       return [
-        Number(self.value.nanos / 1_000_000_000n),
-        Number(self.value.nanos % 1_000_000_000n)
+        Number(self.value.nanos / bigint1e9),
+        Number(self.value.nanos % bigint1e9)
       ]
     case "Millis":
       return [
