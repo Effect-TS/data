@@ -303,34 +303,6 @@ export const merge: <E, A>(self: Either<E, A>) => E | A = match({
 })
 
 /**
- * @category debugging
- * @since 1.0.0
- */
-export const inspectRight: {
-  <A>(onRight: (a: A) => void): <E>(self: Either<E, A>) => Either<E, A>
-  <E, A>(self: Either<E, A>, onRight: (a: A) => void): Either<E, A>
-} = dual(2, <E, A>(self: Either<E, A>, onRight: (a: A) => void): Either<E, A> => {
-  if (isRight(self)) {
-    onRight(self.right)
-  }
-  return self
-})
-
-/**
- * @category debugging
- * @since 1.0.0
- */
-export const inspectLeft: {
-  <E>(onLeft: (e: E) => void): <A>(self: Either<E, A>) => Either<E, A>
-  <E, A>(self: Either<E, A>, onLeft: (e: E) => void): Either<E, A>
-} = dual(2, <E, A>(self: Either<E, A>, onLeft: (e: E) => void): Either<E, A> => {
-  if (isLeft(self)) {
-    onLeft(self.left)
-  }
-  return self
-})
-
-/**
  * @since 1.0.0
  */
 export const reverse = <E, A>(self: Either<E, A>): Either<A, E> => isLeft(self) ? right(self.left) : left(self.right)

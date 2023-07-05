@@ -15,9 +15,6 @@ Added in v1.0.0
 - [constructors](#constructors)
   - [left](#left)
   - [right](#right)
-- [debugging](#debugging)
-  - [inspectLeft](#inspectleft)
-  - [inspectRight](#inspectright)
 - [equivalence](#equivalence)
   - [getEquivalence](#getequivalence)
 - [getters](#getters)
@@ -74,34 +71,6 @@ of this structure.
 
 ```ts
 export declare const right: <A>(a: A) => Either<never, A>
-```
-
-Added in v1.0.0
-
-# debugging
-
-## inspectLeft
-
-**Signature**
-
-```ts
-export declare const inspectLeft: {
-  <E>(onLeft: (e: E) => void): <A>(self: Either<E, A>) => Either<E, A>
-  <E, A>(self: Either<E, A>, onLeft: (e: E) => void): Either<E, A>
-}
-```
-
-Added in v1.0.0
-
-## inspectRight
-
-**Signature**
-
-```ts
-export declare const inspectRight: {
-  <A>(onRight: (a: A) => void): <E>(self: Either<E, A>) => Either<E, A>
-  <E, A>(self: Either<E, A>, onRight: (a: A) => void): Either<E, A>
-}
 ```
 
 Added in v1.0.0

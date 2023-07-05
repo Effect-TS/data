@@ -46,20 +46,6 @@ describe.concurrent("Either", () => {
     Util.deepStrictEqual(pipe(Either.left("e"), Either.getLeft), O.some("e"))
   })
 
-  it("inspectRight", () => {
-    const log: Array<number> = []
-    pipe(Either.right(1), Either.inspectRight((e) => log.push(e)))
-    pipe(Either.left("e"), Either.inspectRight((e) => log.push(e)))
-    Util.deepStrictEqual(log, [1])
-  })
-
-  it("inspectLeft", () => {
-    const log: Array<string> = []
-    pipe(Either.right(1), Either.inspectLeft((e) => log.push(e)))
-    pipe(Either.left("e"), Either.inspectLeft((e) => log.push(e)))
-    Util.deepStrictEqual(log, ["e"])
-  })
-
   it("map", () => {
     const f = Either.map(S.length)
     Util.deepStrictEqual(pipe(Either.right("abc"), f), Either.right(3))
