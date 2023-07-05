@@ -1,7 +1,7 @@
 import * as Chunk from "@effect/data/Chunk"
 import * as Duration from "@effect/data/Duration"
 import * as E from "@effect/data/Either"
-import { equals, symbol } from "@effect/data/Equal"
+import * as Equal from "@effect/data/Equal"
 import { identity, pipe } from "@effect/data/Function"
 import * as Option from "@effect/data/Option"
 import * as RA from "@effect/data/ReadonlyArray"
@@ -22,6 +22,7 @@ describe.concurrent("Chunk", () => {
     expect(Chunk.join).exist
     expect(Chunk.reduce).exist
     expect(Chunk.reduceRight).exist
+    expect(Chunk.getEquivalence).exist
   })
 
   it("toString", () => {
@@ -35,8 +36,9 @@ describe.concurrent("Chunk", () => {
   })
 
   it("equals", () => {
-    expect(Chunk.make(0)[symbol](Chunk.make(0))).toEqual(true)
-    expect(Chunk.make(0)[symbol](Duration.millis(1))).toEqual(false)
+    expect(Equal.equals(Chunk.make(0), Chunk.make(0))).toBe(true)
+    expect(Equal.equals(Chunk.make(1, 2, 3), Chunk.make(1, 2, 3))).toBe(true)
+    expect(Equal.equals(Chunk.make(0), Duration.millis(1))).toBe(false)
   })
 
   it("inspect", () => {
@@ -594,19 +596,19 @@ describe.concurrent("Chunk", () => {
     pipe(
       Chunk.empty(),
       Chunk.zip(Chunk.empty()),
-      equals(Chunk.unsafeFromArray([])),
+      Equal.equals(Chunk.unsafeFromArray([])),
       assert.isTrue
     )
     pipe(
       Chunk.empty(),
       Chunk.zip(Chunk.of(1)),
-      equals(Chunk.unsafeFromArray([])),
+      Equal.equals(Chunk.unsafeFromArray([])),
       assert.isTrue
     )
     pipe(
       Chunk.of(1),
       Chunk.zip(Chunk.empty()),
-      equals(Chunk.unsafeFromArray([])),
+      Equal.equals(Chunk.unsafeFromArray([])),
       assert.isTrue
     )
     expect(pipe(
@@ -689,14 +691,6 @@ describe.concurrent("Chunk", () => {
   it("tail", () => {
     expect(Chunk.tail(Chunk.empty())).toEqual(Option.none())
     expect(Chunk.tail(Chunk.make(1, 2, 3))).toEqual(Option.some(Chunk.make(2, 3)))
-  })
-
-  it("correspondsTo", () => {
-    expect(Chunk.correspondsTo(Chunk.empty(), Chunk.empty(), () => true)).toEqual(true)
-    expect(Chunk.correspondsTo(Chunk.empty(), Chunk.empty(), () => false)).toEqual(true)
-    expect(Chunk.correspondsTo(Chunk.empty(), Chunk.make(1), () => false)).toEqual(false)
-    expect(Chunk.correspondsTo(Chunk.make(1, 2, 3), Chunk.make(1, 2, 3), (a, b) => a === b)).toEqual(true)
-    expect(Chunk.correspondsTo(Chunk.make(1, 2, 3), Chunk.make(1, "a", 3), (a, b) => a === b)).toEqual(false)
   })
 
   it("filter", () => {

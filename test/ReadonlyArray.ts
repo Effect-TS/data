@@ -1196,14 +1196,6 @@ describe.concurrent("ReadonlyArray", () => {
     deepStrictEqual(RA.fromOption(O.none()), [])
   })
 
-  it("correspondsTo", () => {
-    expect(RA.correspondsTo([], [], () => true)).toEqual(true)
-    expect(RA.correspondsTo([], [], () => false)).toEqual(true)
-    expect(RA.correspondsTo([], [1], () => false)).toEqual(false)
-    expect(RA.correspondsTo([1, 2, 3], [1, 2, 3], (a, b) => a === b)).toEqual(true)
-    expect(RA.correspondsTo([1, 2, 3], [1, "a", 3], (a, b) => a === b)).toEqual(false)
-  })
-
   it("forEach", () => {
     const log: Array<string> = []
     RA.forEach(["a", "b", "c"], (a, i) => log.push(`${a}-${i}`))

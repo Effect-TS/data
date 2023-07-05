@@ -1863,21 +1863,6 @@ export const getOrder: <A>(O: Order<A>) => Order<ReadonlyArray<A>> = order.array
 export const getEquivalence: <A>(O: Equivalence<A>) => Equivalence<ReadonlyArray<A>> = equivalence.array
 
 /**
- * Compares the two `Iterable`s of equal length using the specified function.
- *
- * @since 1.0.0
- */
-export const correspondsTo: {
-  <A, B>(that: ReadonlyArray<B>, f: (a: A, b: B) => boolean): (self: ReadonlyArray<A>) => boolean
-  <A, B>(self: ReadonlyArray<A>, that: ReadonlyArray<B>, f: (a: A, b: B) => boolean): boolean
-} = dual(3, <A, B>(self: ReadonlyArray<A>, that: ReadonlyArray<B>, f: (a: A, b: B) => boolean): boolean => {
-  if (self.length !== that.length) {
-    return false
-  }
-  return self.every((v, i) => f(v, that[i]))
-})
-
-/**
  * Iterate over the `Iterable` applying `f`.
  *
  * @since 1.0.0

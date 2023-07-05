@@ -3,6 +3,7 @@
  */
 import type { Either } from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
+import * as Equivalence from "@effect/data/Equivalence"
 import { dual, identity, pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import type { TypeLambda } from "@effect/data/HKT"
@@ -107,6 +108,17 @@ function copy<A>(
 
 const emptyArray: ReadonlyArray<never> = []
 
+/**
+ * Compares the two chunks of equal length using the specified function
+ *
+ * @category equivalence
+ * @since 1.0.0
+ */
+export const getEquivalence = <A>(isEquivalent: Equivalence.Equivalence<A>): Equivalence.Equivalence<Chunk<A>> =>
+  Equivalence.make((self, that) => toReadonlyArray(self).every((value, i) => isEquivalent(value, unsafeGet(that, i))))
+
+const _equivalence = getEquivalence(Equal.equals)
+
 class ChunkImpl<A> implements Chunk<A> {
   readonly _id: typeof TypeId = TypeId
 
@@ -171,10 +183,7 @@ class ChunkImpl<A> implements Chunk<A> {
   }
 
   [Equal.symbol](that: unknown): boolean {
-    if (isChunk(that) && this.length === that.length) {
-      return toReadonlyArray(this).every((value, i) => Equal.equals(value, unsafeGet(that, i)))
-    }
-    return false
+    return isChunk(that) && _equivalence(this, that)
   }
 
   [Hash.symbol](): number {
@@ -703,22 +712,6 @@ export const flatten: <A>(self: Chunk<Chunk<A>>) => Chunk<A> = flatMap(identity)
 export const flattenNonEmpty: <A>(
   self: NonEmptyChunk<NonEmptyChunk<A>>
 ) => NonEmptyChunk<A> = flatMapNonEmpty(identity)
-
-/**
- * Compares the two chunks of equal length using the specified function
- *
- * @since 1.0.0
- * @category elements
- */
-export const correspondsTo: {
-  <A, B>(that: Chunk<B>, f: (a: A, b: B) => boolean): (self: Chunk<A>) => boolean
-  <A, B>(self: Chunk<A>, that: Chunk<B>, f: (a: A, b: B) => boolean): boolean
-} = dual(3, <A, B>(self: Chunk<A>, that: Chunk<B>, f: (a: A, b: B) => boolean): boolean => {
-  if (self.length !== that.length) {
-    return false
-  }
-  return RA.correspondsTo(toReadonlyArray(self), toReadonlyArray(that), f)
-})
 
 /**
  * Groups elements in chunks of up to `n` elements.

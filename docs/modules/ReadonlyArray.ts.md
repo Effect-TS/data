@@ -128,7 +128,6 @@ Added in v1.0.0
   - [chop](#chop)
   - [chopNonEmpty](#chopnonempty)
   - [copy](#copy)
-  - [correspondsTo](#correspondsto)
   - [dedupe](#dedupe)
   - [dedupeAdjacent](#dedupeadjacent)
   - [dedupeAdjacentWith](#dedupeadjacentwith)
@@ -1558,21 +1557,6 @@ Added in v1.0.0
 
 ```ts
 export declare const copy: { <A>(self: readonly [A, ...A[]]): [A, ...A[]]; <A>(self: readonly A[]): A[] }
-```
-
-Added in v1.0.0
-
-## correspondsTo
-
-Compares the two `Iterable`s of equal length using the specified function.
-
-**Signature**
-
-```ts
-export declare const correspondsTo: {
-  <A, B>(that: readonly B[], f: (a: A, b: B) => boolean): (self: readonly A[]) => boolean
-  <A, B>(self: readonly A[], that: readonly B[], f: (a: A, b: B) => boolean): boolean
-}
 ```
 
 Added in v1.0.0

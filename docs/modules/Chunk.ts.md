@@ -24,7 +24,6 @@ Added in v1.0.0
   - [toReadonlyArray](#toreadonlyarray)
 - [elements](#elements)
   - [chunksOf](#chunksof)
-  - [correspondsTo](#correspondsto)
   - [dedupe](#dedupe)
   - [get](#get)
   - [head](#head)
@@ -47,6 +46,8 @@ Added in v1.0.0
   - [unzip](#unzip)
   - [zip](#zip)
   - [zipWith](#zipwith)
+- [equivalence](#equivalence)
+  - [getEquivalence](#getequivalence)
 - [filtering](#filtering)
   - [compact](#compact)
   - [dedupeAdjacent](#dedupeadjacent)
@@ -223,21 +224,6 @@ Groups elements in chunks of up to `n` elements.
 export declare const chunksOf: {
   (n: number): <A>(self: Chunk<A>) => Chunk<Chunk<A>>
   <A>(self: Chunk<A>, n: number): Chunk<Chunk<A>>
-}
-```
-
-Added in v1.0.0
-
-## correspondsTo
-
-Compares the two chunks of equal length using the specified function
-
-**Signature**
-
-```ts
-export declare const correspondsTo: {
-  <A, B>(that: Chunk<B>, f: (a: A, b: B) => boolean): (self: Chunk<A>) => boolean
-  <A, B>(self: Chunk<A>, that: Chunk<B>, f: (a: A, b: B) => boolean): boolean
 }
 ```
 
@@ -538,6 +524,20 @@ export declare const zipWith: {
   <A, B, C>(that: Chunk<B>, f: (a: A, b: B) => C): (self: Chunk<A>) => Chunk<C>
   <A, B, C>(self: Chunk<A>, that: Chunk<B>, f: (a: A, b: B) => C): Chunk<C>
 }
+```
+
+Added in v1.0.0
+
+# equivalence
+
+## getEquivalence
+
+Compares the two chunks of equal length using the specified function
+
+**Signature**
+
+```ts
+export declare const getEquivalence: <A>(isEquivalent: Equivalence.Equivalence<A>) => Equivalence.Equivalence<Chunk<A>>
 ```
 
 Added in v1.0.0
