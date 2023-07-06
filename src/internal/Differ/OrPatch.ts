@@ -160,34 +160,36 @@ export const empty = <Value, Value2, Patch, Patch2>(): OP.OrPatch<
 
 /** @internal */
 export const diff = <Value, Value2, Patch, Patch2>(
-  oldValue: Either<Value, Value2>,
-  newValue: Either<Value, Value2>,
-  left: Differ<Value, Patch>,
-  right: Differ<Value2, Patch2>
+  options: {
+    readonly oldValue: Either<Value, Value2>
+    readonly newValue: Either<Value, Value2>
+    readonly left: Differ<Value, Patch>
+    readonly right: Differ<Value2, Patch2>
+  }
 ): OP.OrPatch<Value, Value2, Patch, Patch2> => {
-  switch (oldValue._tag) {
+  switch (options.oldValue._tag) {
     case "Left": {
-      switch (newValue._tag) {
+      switch (options.newValue._tag) {
         case "Left": {
-          const valuePatch = left.diff(oldValue.left, newValue.left)
-          if (Equal.equals(valuePatch, left.empty)) {
+          const valuePatch = options.left.diff(options.oldValue.left, options.newValue.left)
+          if (Equal.equals(valuePatch, options.left.empty)) {
             return new Empty()
           }
           return new UpdateLeft(valuePatch)
         }
         case "Right": {
-          return new SetRight(newValue.right)
+          return new SetRight(options.newValue.right)
         }
       }
     }
     case "Right": {
-      switch (newValue._tag) {
+      switch (options.newValue._tag) {
         case "Left": {
-          return new SetLeft(newValue.left)
+          return new SetLeft(options.newValue.left)
         }
         case "Right": {
-          const valuePatch = right.diff(oldValue.right, newValue.right)
-          if (Equal.equals(valuePatch, right.empty)) {
+          const valuePatch = options.right.diff(options.oldValue.right, options.newValue.right)
+          if (Equal.equals(valuePatch, options.right.empty)) {
             return new Empty()
           }
           return new UpdateRight(valuePatch)
@@ -213,21 +215,27 @@ export const combine = Dual.dual<
 /** @internal */
 export const patch = Dual.dual<
   <Value, Value2, Patch, Patch2>(
-    oldValue: Either<Value, Value2>,
-    left: Differ<Value, Patch>,
-    right: Differ<Value2, Patch2>
+    options: {
+      readonly oldValue: Either<Value, Value2>
+      readonly left: Differ<Value, Patch>
+      readonly right: Differ<Value2, Patch2>
+    }
   ) => (self: OP.OrPatch<Value, Value2, Patch, Patch2>) => Either<Value, Value2>,
   <Value, Value2, Patch, Patch2>(
     self: OP.OrPatch<Value, Value2, Patch, Patch2>,
-    oldValue: Either<Value, Value2>,
-    left: Differ<Value, Patch>,
-    right: Differ<Value2, Patch2>
+    options: {
+      readonly oldValue: Either<Value, Value2>
+      readonly left: Differ<Value, Patch>
+      readonly right: Differ<Value2, Patch2>
+    }
   ) => Either<Value, Value2>
->(4, <Value, Value2, Patch, Patch2>(
+>(2, <Value, Value2, Patch, Patch2>(
   self: OP.OrPatch<Value, Value2, Patch, Patch2>,
-  oldValue: Either<Value, Value2>,
-  left: Differ<Value, Patch>,
-  right: Differ<Value2, Patch2>
+  { left, oldValue, right }: {
+    oldValue: Either<Value, Value2>
+    left: Differ<Value, Patch>
+    right: Differ<Value2, Patch2>
+  }
 ) => {
   let patches: Chunk.Chunk<OP.OrPatch<Value, Value2, Patch, Patch2>> = Chunk.of(self)
   let result = oldValue

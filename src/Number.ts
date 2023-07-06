@@ -5,14 +5,11 @@
  *
  * @since 1.0.0
  */
+import * as equivalence from "@effect/data/Equivalence"
 import { dual } from "@effect/data/Function"
+import * as order from "@effect/data/Order"
 import type { Ordering } from "@effect/data/Ordering"
 import * as predicate from "@effect/data/Predicate"
-import * as bounded from "@effect/data/typeclass/Bounded"
-import * as equivalence from "@effect/data/typeclass/Equivalence"
-import * as monoid from "@effect/data/typeclass/Monoid"
-import * as order from "@effect/data/typeclass/Order"
-import * as semigroup from "@effect/data/typeclass/Semigroup"
 
 /**
  * Tests if a value is a `number`.
@@ -47,7 +44,7 @@ export const isNumber: (input: unknown) => input is number = predicate.isNumber
 export const sum: {
   (that: number): (self: number) => number
   (self: number, that: number): number
-} = dual(2, semigroup.numberSum.combine)
+} = dual(2, (self: number, that: number): number => self + that)
 
 /**
  * Provides a multiplication operation on `number`s.
@@ -66,7 +63,7 @@ export const sum: {
 export const multiply: {
   (that: number): (self: number) => number
   (self: number, that: number): number
-} = dual(2, semigroup.numberMultiply.combine)
+} = dual(2, (self: number, that: number): number => self * that)
 
 /**
  * Provides a subtraction operation on `number`s.
@@ -316,128 +313,6 @@ export const max: {
 } = order.max(Order)
 
 /**
- * @category instances
- * @since 1.0.0
- */
-export const Bounded: bounded.Bounded<number> = bounded.number
-
-/**
- * `number` semigroup under addition.
- *
- * @example
- * import { SemigroupSum } from '@effect/data/Number'
- *
- * assert.deepStrictEqual(SemigroupSum.combine(2, 3), 5)
- *
- * @category instances
- * @since 1.0.0
- */
-export const SemigroupSum: semigroup.Semigroup<number> = semigroup.numberSum
-
-/**
- * `number` semigroup under multiplication.
- *
- * @example
- * import { SemigroupMultiply } from '@effect/data/Number'
- *
- * assert.deepStrictEqual(SemigroupMultiply.combine(2, 3), 6)
- *
- * @category instances
- * @since 1.0.0
- */
-export const SemigroupMultiply: semigroup.Semigroup<number> = semigroup.numberMultiply
-
-/**
- * A `Semigroup` that uses the minimum between two values.
- *
- * @example
- * import { SemigroupMin } from '@effect/data/Number'
- *
- * assert.deepStrictEqual(SemigroupMin.combine(2, 3), 2)
- *
- * @category instances
- * @since 1.0.0
- */
-export const SemigroupMin: semigroup.Semigroup<number> = semigroup.min(Order)
-
-/**
- * A `Semigroup` that uses the maximum between two values.
- *
- * @example
- * import { SemigroupMax } from '@effect/data/Number'
- *
- * assert.deepStrictEqual(SemigroupMax.combine(2, 3), 3)
- *
- * @category instances
- * @since 1.0.0
- */
-export const SemigroupMax: semigroup.Semigroup<number> = semigroup.max(Order)
-
-/**
- * `number` monoid under addition.
- *
- * The `empty` value is `0`.
- *
- * @example
- * import { MonoidSum } from '@effect/data/Number'
- *
- * assert.deepStrictEqual(MonoidSum.combine(2, 3), 5)
- * assert.deepStrictEqual(MonoidSum.combine(2, MonoidSum.empty), 2)
- *
- * @category instances
- * @since 1.0.0
- */
-export const MonoidSum: monoid.Monoid<number> = monoid.numberSum
-
-/**
- * `number` monoid under multiplication.
- *
- * The `empty` value is `1`.
- *
- * @example
- * import { MonoidMultiply } from '@effect/data/Number'
- *
- * assert.deepStrictEqual(MonoidMultiply.combine(2, 3), 6)
- * assert.deepStrictEqual(MonoidMultiply.combine(2, MonoidMultiply.empty), 2)
- *
- * @category instances
- * @since 1.0.0
- */
-export const MonoidMultiply: monoid.Monoid<number> = monoid.numberMultiply
-
-/**
- * A `Monoid` that uses the minimum between two values.
- *
- * The `empty` value is `-Infinity`.
- *
- * @example
- * import { MonoidMin } from '@effect/data/Number'
- *
- * assert.deepStrictEqual(MonoidMin.combine(2, 3), 2)
- * assert.deepStrictEqual(MonoidMin.combine(2, MonoidMin.empty), 2)
- *
- * @category instances
- * @since 1.0.0
- */
-export const MonoidMin: monoid.Monoid<number> = bounded.min(Bounded)
-
-/**
- * A `Monoid` that uses the maximum between two values.
- *
- * The `empty` value is `Infinity`.
- *
- * @example
- * import { MonoidMax } from '@effect/data/Number'
- *
- * assert.deepStrictEqual(MonoidMax.combine(2, 3), 3)
- * assert.deepStrictEqual(MonoidMax.combine(2, MonoidMax.empty), 2)
- *
- * @category instances
- * @since 1.0.0
- */
-export const MonoidMax: monoid.Monoid<number> = bounded.max(Bounded)
-
-/**
  * Determines the sign of a given `number`.
  *
  * @param n - The `number` to determine the sign of.
@@ -452,7 +327,7 @@ export const MonoidMax: monoid.Monoid<number> = bounded.max(Bounded)
  * @category math
  * @since 1.0.0
  */
-export const sign = (n: number): Ordering => Order.compare(n, 0)
+export const sign = (n: number): Ordering => Order(n, 0)
 
 /**
  * Takes an `Iterable` of `number`s and returns their sum as a single `number`.
@@ -467,7 +342,13 @@ export const sign = (n: number): Ordering => Order.compare(n, 0)
  * @category math
  * @since 1.0.0
  */
-export const sumAll: (collection: Iterable<number>) => number = MonoidSum.combineAll
+export const sumAll = (collection: Iterable<number>): number => {
+  let out = 0
+  for (const n of collection) {
+    out += n
+  }
+  return out
+}
 
 /**
  * Takes an `Iterable` of `number`s and returns their multiplication as a single `number`.
@@ -482,7 +363,16 @@ export const sumAll: (collection: Iterable<number>) => number = MonoidSum.combin
  * @category math
  * @since 1.0.0
  */
-export const multiplyAll: (collection: Iterable<number>) => number = MonoidMultiply.combineAll
+export const multiplyAll = (collection: Iterable<number>): number => {
+  let out = 1
+  for (const n of collection) {
+    if (n === 0) {
+      return 0
+    }
+    out *= n
+  }
+  return out
+}
 
 /**
  * Returns the remainder left over when one operand is divided by a second operand.

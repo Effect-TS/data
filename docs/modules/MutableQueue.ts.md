@@ -1,6 +1,6 @@
 ---
 title: MutableQueue.ts
-nav_order: 29
+nav_order: 28
 parent: Modules
 ---
 
@@ -119,7 +119,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface MutableQueue<A> extends Iterable<A> {
+export interface MutableQueue<A> extends Iterable<A>, Pipeable<MutableQueue<A>> {
   readonly _id: TypeId
 
   /** @internal */
@@ -176,7 +176,7 @@ Added in v1.0.0
 
 Enqueues a collection of values into the queue.
 
-Returns a `List` of the values that were **not** able to be enqueued.
+Returns a `Chunk` of the values that were **not** able to be enqueued.
 
 **Signature**
 

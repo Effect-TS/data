@@ -1,6 +1,6 @@
 ---
 title: RedBlackTree.ts
-nav_order: 39
+nav_order: 40
 parent: Modules
 ---
 
@@ -319,7 +319,10 @@ A Red-Black Tree.
 **Signature**
 
 ```ts
-export interface RedBlackTree<Key, Value> extends Iterable<readonly [Key, Value]>, Equal {
+export interface RedBlackTree<Key, Value>
+  extends Iterable<readonly [Key, Value]>,
+    Equal,
+    Pipeable<RedBlackTree<Key, Value>> {
   readonly _id: TypeId
 }
 ```
@@ -415,8 +418,13 @@ than or equal to min.
 
 ```ts
 export declare const forEachBetween: {
-  <K, V>(min: K, max: K, f: (key: K, value: V) => void): (self: RedBlackTree<K, V>) => void
-  <K, V>(self: RedBlackTree<K, V>, min: K, max: K, f: (key: K, value: V) => void): void
+  <K, V>(options: { readonly min: K; readonly max: K; readonly body: (key: K, value: V) => void }): (
+    self: RedBlackTree<K, V>
+  ) => void
+  <K, V>(
+    self: RedBlackTree<K, V>,
+    options: { readonly min: K; readonly max: K; readonly body: (key: K, value: V) => void }
+  ): void
 }
 ```
 

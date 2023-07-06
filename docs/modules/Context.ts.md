@@ -27,15 +27,12 @@ Added in v1.0.0
   - [getOption](#getoption)
 - [guards](#guards)
   - [isContext](#iscontext)
-  - [isGenericTag](#isgenerictag)
   - [isTag](#istag)
 - [models](#models)
   - [Context (interface)](#context-interface)
-  - [GenericTag (type alias)](#generictag-type-alias)
   - [Tag (interface)](#tag-interface)
   - [TagUnify (interface)](#tagunify-interface)
   - [TagUnifyBlacklist (interface)](#tagunifyblacklist-interface)
-  - [TracedTag (interface)](#tracedtag-interface)
   - [ValidTagsById (type alias)](#validtagsbyid-type-alias)
 - [symbol](#symbol)
   - [TagTypeId (type alias)](#tagtypeid-type-alias)
@@ -207,16 +204,6 @@ assert.strictEqual(Context.isContext(Context.empty()), true)
 
 Added in v1.0.0
 
-## isGenericTag
-
-**Signature**
-
-```ts
-export declare const isGenericTag: (u: unknown) => u is GenericTag
-```
-
-Added in v1.0.0
-
 ## isTag
 
 Checks if the provided argument is a `Tag`.
@@ -244,7 +231,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Context<Services> extends Equal {
+export interface Context<Services> extends Equal, Pipeable<Context<Services>> {
   readonly _id: TypeId
   readonly _S: (_: Services) => unknown
   /** @internal */
@@ -254,27 +241,16 @@ export interface Context<Services> extends Equal {
 
 Added in v1.0.0
 
-## GenericTag (type alias)
-
-**Signature**
-
-```ts
-export type GenericTag = TracedTag<any, any> | Tag<any, any>
-```
-
-Added in v1.0.0
-
 ## Tag (interface)
 
 **Signature**
 
 ```ts
-export interface Tag<Identifier, Service> {
+export interface Tag<Identifier, Service> extends Pipeable<Tag<Identifier, Service>> {
   readonly _tag: 'Tag'
   readonly [TagTypeId]: { readonly _S: (_: Service) => Service; readonly _I: (_: Identifier) => Identifier }
   of(self: Service): Service
   context(self: Service): Context<Identifier>
-  traced(this: Tag<Identifier, Service>, trace: Trace): TracedTag<Identifier, Service> | Tag<Identifier, Service>
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: TagUnify<this>
   [Unify.blacklistSymbol]?: TagUnifyBlacklist
@@ -301,21 +277,6 @@ Added in v1.0.0
 
 ```ts
 export interface TagUnifyBlacklist {}
-```
-
-Added in v1.0.0
-
-## TracedTag (interface)
-
-**Signature**
-
-```ts
-export interface TracedTag<Identifier, Service> {
-  readonly _tag: 'Traced'
-  readonly i0: Tag<Identifier, Service> | TracedTag<Identifier, Service>
-  readonly trace: SourceLocation
-  traced(this: TracedTag<Identifier, Service>, trace: Trace): TracedTag<Identifier, Service>
-}
 ```
 
 Added in v1.0.0

@@ -1,9 +1,9 @@
 import * as Eq from "@effect/data/Equal"
 import { pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
+import * as Order from "@effect/data/Order"
 import * as SortedSet from "@effect/data/SortedSet"
 import * as Str from "@effect/data/String"
-import * as Order from "@effect/data/typeclass/Order"
 import { inspect } from "node:util"
 
 class Member implements Eq.Equal {
@@ -23,9 +23,7 @@ const OrdMember: Order.Order<Member> = pipe(Str.Order, Order.contramap((member) 
 function makeNumericSortedSet(
   ...numbers: Array<number>
 ): SortedSet.SortedSet<number> {
-  return SortedSet.fromIterable({
-    compare: (self, that: number) => self > that ? 1 : self < that ? -1 : 0
-  })(numbers)
+  return SortedSet.fromIterable((self, that: number) => self > that ? 1 : self < that ? -1 : 0)(numbers)
 }
 
 describe.concurrent("SortedSet", () => {

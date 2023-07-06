@@ -67,11 +67,22 @@ describe.concurrent("MutableHashMap", () => {
     expect(inspect(map)).toEqual(inspect({ _tag: "MutableHashMap", values: [[0, "a"], [1, "b"]] }))
   })
 
-  it("from", () => {
+  it("make", () => {
     const map = HM.make(
       [key(0, 0), value(0, 0)],
       [key(1, 1), value(1, 1)]
     )
+
+    assert.strictEqual(HM.size(map), 2)
+    assert.isTrue(pipe(map, HM.has(key(0, 0))))
+    assert.isTrue(pipe(map, HM.has(key(1, 1))))
+  })
+
+  it("fromIterable", () => {
+    const map = HM.fromIterable([
+      [key(0, 0), value(0, 0)],
+      [key(1, 1), value(1, 1)]
+    ])
 
     assert.strictEqual(HM.size(map), 2)
     assert.isTrue(pipe(map, HM.has(key(0, 0))))
@@ -171,7 +182,10 @@ describe.concurrent("MutableHashMap", () => {
       map,
       HM.modifyAt(
         key(2, 2),
-        O.match(() => O.some(value(2, 2)), O.some)
+        O.match({
+          onNone: () => O.some(value(2, 2)),
+          onSome: O.some
+        })
       )
     )
 
@@ -181,6 +195,16 @@ describe.concurrent("MutableHashMap", () => {
       map,
       HM.get(key(2, 2))
     )).toEqual(O.some(value(2, 2)))
+
+    pipe(
+      map,
+      HM.modifyAt(
+        key(2, 2),
+        () => O.none()
+      )
+    )
+
+    assert.strictEqual(HM.size(map), 2)
   })
 
   it("remove", () => {
@@ -268,5 +292,9 @@ describe.concurrent("MutableHashMap", () => {
       HM.remove(key(0, 0)),
       HM.get(key(0, 0))
     )).toEqual(O.none())
+  })
+
+  it("pipe", () => {
+    expect(HM.empty<string, string>().pipe(HM.set("key", "value"))).toEqual(HM.make(["key", "value"]))
   })
 })

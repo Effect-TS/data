@@ -5,9 +5,12 @@ import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
 import { pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
+import type { Order } from "@effect/data/Order"
+import type { Pipeable } from "@effect/data/Pipeable"
+import { pipeArguments } from "@effect/data/Pipeable"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
+import { isObject } from "@effect/data/Predicate"
 import * as RBT from "@effect/data/RedBlackTree"
-import type { Order } from "@effect/data/typeclass/Order"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/SortedSet")
 
@@ -21,14 +24,14 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface SortedSet<A> extends Iterable<A>, Equal.Equal {
+export interface SortedSet<A> extends Iterable<A>, Equal.Equal, Pipeable<SortedSet<A>> {
   readonly _id: TypeId
   /** @internal */
   readonly keyTree: RBT.RedBlackTree<A, boolean>
 }
 
 /** @internal */
-class SortedSetImpl<A> implements Iterable<A>, Equal.Equal {
+class SortedSetImpl<A> implements Iterable<A>, Equal.Equal, Pipeable<SortedSet<A>> {
   readonly _id: TypeId = TypeId
 
   constructor(readonly keyTree: RBT.RedBlackTree<A, boolean>) {}
@@ -59,6 +62,10 @@ class SortedSetImpl<A> implements Iterable<A>, Equal.Equal {
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
   }
+
+  pipe() {
+    return pipeArguments(this, arguments)
+  }
 }
 
 /**
@@ -68,7 +75,7 @@ class SortedSetImpl<A> implements Iterable<A>, Equal.Equal {
 export const isSortedSet: {
   <A>(u: Iterable<A>): u is SortedSet<A>
   (u: unknown): u is SortedSet<unknown>
-} = (u: unknown): u is SortedSet<unknown> => typeof u === "object" && u != null && "_id" in u && u["_id"] === TypeId
+} = (u: unknown): u is SortedSet<unknown> => isObject(u) && "_id" in u && u["_id"] === TypeId
 
 /**
  * @since 1.0.0

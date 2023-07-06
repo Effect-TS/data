@@ -4,6 +4,8 @@
 import * as Chunk from "@effect/data/Chunk"
 import * as Dual from "@effect/data/Function"
 import * as MutableList from "@effect/data/MutableList"
+import type { Pipeable } from "@effect/data/Pipeable"
+import { pipeArguments } from "@effect/data/Pipeable"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/MutableQueue") as TypeId
 
@@ -23,7 +25,7 @@ export const EmptyMutableQueue = Symbol.for("@effect/data/mutable/MutableQueue/E
  * @since 1.0.0
  * @category model
  */
-export interface MutableQueue<A> extends Iterable<A> {
+export interface MutableQueue<A> extends Iterable<A>, Pipeable<MutableQueue<A>> {
   readonly _id: TypeId
 
   /** @internal */
@@ -65,6 +67,10 @@ class MutableQueueImpl<A> implements MutableQueue<A> {
 
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
+  }
+
+  pipe() {
+    return pipeArguments(this, arguments)
   }
 }
 
@@ -146,7 +152,7 @@ export const offer: {
 /**
  * Enqueues a collection of values into the queue.
  *
- * Returns a `List` of the values that were **not** able to be enqueued.
+ * Returns a `Chunk` of the values that were **not** able to be enqueued.
  *
  * @since 1.0.0
  * @category utils

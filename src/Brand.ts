@@ -17,7 +17,7 @@
  * @since 1.0.0
  */
 import * as Either from "@effect/data/Either"
-import { identity, pipe } from "@effect/data/Function"
+import { identity } from "@effect/data/Function"
 import * as Option from "@effect/data/Option"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as ReadonlyArray from "@effect/data/ReadonlyArray"
@@ -233,14 +233,14 @@ export const refined: <A extends Brand<any>>(
     refinement(args) ? Either.right(args as A) : Either.left(onFailure(args))
   // @ts-expect-error
   return Object.assign((args) =>
-    pipe(
-      either(args),
-      Either.match((e) => {
+    Either.match(either(args), {
+      onLeft: (e) => {
         throw e
-      }, identity)
-    ), {
+      },
+      onRight: identity
+    }), {
     [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
-    option: (args: any) => Option.fromEither(either(args)),
+    option: (args: any) => Option.getRight(either(args)),
     either,
     refine: (args: any): args is Brand.Unbranded<A> & A => Either.isRight(either(args))
   })
@@ -330,14 +330,14 @@ export const all: <Brands extends readonly [Brand.Constructor<any>, ...Array<Bra
   }
   // @ts-expect-error
   return Object.assign((args) =>
-    pipe(
-      either(args),
-      Either.match((e) => {
+    Either.match(either(args), {
+      onLeft: (e) => {
         throw e
-      }, identity)
-    ), {
+      },
+      onRight: identity
+    }), {
     [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
-    option: (args: any) => Option.fromEither(either(args)),
+    option: (args: any) => Option.getRight(either(args)),
     either,
     refine: (args: any): args is any => Either.isRight(either(args))
   })

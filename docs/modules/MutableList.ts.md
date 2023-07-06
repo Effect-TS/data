@@ -1,6 +1,6 @@
 ---
 title: MutableList.ts
-nav_order: 28
+nav_order: 27
 parent: Modules
 ---
 
@@ -14,7 +14,7 @@ Added in v1.0.0
 
 - [constructors](#constructors)
   - [empty](#empty)
-  - [from](#from)
+  - [fromIterable](#fromiterable)
   - [make](#make)
 - [getters](#getters)
   - [head](#head)
@@ -50,14 +50,14 @@ export declare const empty: <A>() => MutableList<A>
 
 Added in v1.0.0
 
-## from
+## fromIterable
 
 Creates a new `MutableList` from an `Iterable`.
 
 **Signature**
 
 ```ts
-export declare const from: <A>(iterable: Iterable<A>) => MutableList<A>
+export declare const fromIterable: <A>(iterable: Iterable<A>) => MutableList<A>
 ```
 
 Added in v1.0.0
@@ -131,7 +131,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface MutableList<A> extends Iterable<A> {
+export interface MutableList<A> extends Iterable<A>, Pipeable<MutableList<A>> {
   readonly _id: TypeId
 
   /** @internal */

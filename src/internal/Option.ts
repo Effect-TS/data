@@ -2,20 +2,12 @@
  * @since 1.0.0
  */
 
-import type { Trace } from "@effect/data/Debug"
-import { makeTraced } from "@effect/data/Debug"
 import * as Equal from "@effect/data/Equal"
 import * as Hash from "@effect/data/Hash"
+import { EffectTypeId, effectVariance } from "@effect/data/internal/Effect"
 import type * as Option from "@effect/data/Option"
+import { pipeArguments } from "@effect/data/Pipeable"
 
-/** @internal */
-const effectVariance = {
-  _R: (_: never) => _,
-  _E: (_: never) => _,
-  _A: (_: never) => _
-}
-
-const EffectTypeId = Symbol.for("@effect/io/Effect")
 const OptionTypeId: Option.OptionTypeId = Symbol.for("@effect/io/Option") as Option.OptionTypeId
 
 /** @internal */
@@ -53,11 +45,8 @@ export class Some<A> implements Option.Some<A> {
   }
   constructor(readonly i0: A) {
   }
-  traced(this: this, trace: Trace): Option.TracedOption<this["value"]> | this {
-    if (trace) {
-      return makeTraced(this, trace)
-    }
-    return this
+  pipe() {
+    return pipeArguments(this, arguments)
   }
 }
 
@@ -91,11 +80,8 @@ export class None<A> implements Option.None<A> {
       _A: (_: never) => _
     }
   }
-  traced(this: this, trace: Trace): Option.TracedOption<never> | this {
-    if (trace) {
-      return makeTraced(this, trace)
-    }
-    return this
+  pipe() {
+    return pipeArguments(this, arguments)
   }
 }
 

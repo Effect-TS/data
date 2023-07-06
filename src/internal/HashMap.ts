@@ -7,7 +7,9 @@ import { fromBitmap, hashFragment, toBitmap } from "@effect/data/internal/HashMa
 import { SIZE } from "@effect/data/internal/HashMap/config"
 import * as Node from "@effect/data/internal/HashMap/node"
 import * as Option from "@effect/data/Option"
+import { pipeArguments } from "@effect/data/Pipeable"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
+import { isObject } from "@effect/data/Predicate"
 
 /** @internal */
 export const HashMapTypeId: HM.TypeId = Symbol.for("@effect/data/HashMap") as HM.TypeId
@@ -87,6 +89,10 @@ export class HashMapImpl<K, V> implements HM.HashMap<K, V> {
 
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
+  }
+
+  pipe() {
+    return pipeArguments(this, arguments)
   }
 }
 
@@ -184,8 +190,7 @@ export const fromIterable = <K, V>(entries: Iterable<readonly [K, V]>): HM.HashM
 export const isHashMap: {
   <K, V>(u: Iterable<readonly [K, V]>): u is HM.HashMap<K, V>
   (u: unknown): u is HM.HashMap<unknown, unknown>
-} = (u: unknown): u is HM.HashMap<unknown, unknown> =>
-  typeof u === "object" && u != null && "_id" in u && u["_id"] === HashMapTypeId
+} = (u: unknown): u is HM.HashMap<unknown, unknown> => isObject(u) && "_id" in u && u["_id"] === HashMapTypeId
 
 /** @internal */
 export const isEmpty = <K, V>(self: HM.HashMap<K, V>): boolean =>

@@ -3,21 +3,6 @@ import { pipe } from "@effect/data/Function"
 import { deepStrictEqual } from "@effect/data/test/util"
 
 describe.concurrent("Bigint", () => {
-  it("exports", () => {
-    expect(Bigint.SemigroupMax).exist
-    expect(Bigint.SemigroupMin).exist
-    expect(Bigint.sumAll).exist
-    expect(Bigint.multiplyAll).exist
-    expect(Bigint.lessThan).exist
-    expect(Bigint.lessThanOrEqualTo).exist
-    expect(Bigint.greaterThan).exist
-    expect(Bigint.greaterThanOrEqualTo).exist
-    expect(Bigint.between).exist
-    expect(Bigint.clamp).exist
-    expect(Bigint.min).exist
-    expect(Bigint.max).exist
-  })
-
   it("sign", () => {
     assert.deepStrictEqual(Bigint.sign(-5n), -1)
     assert.deepStrictEqual(Bigint.sign(0n), 0)
@@ -61,26 +46,61 @@ describe.concurrent("Bigint", () => {
   })
 
   it("Order", () => {
-    deepStrictEqual(Bigint.Order.compare(1n, 2n), -1)
-    deepStrictEqual(Bigint.Order.compare(2n, 1n), 1)
-    deepStrictEqual(Bigint.Order.compare(2n, 2n), 0)
+    deepStrictEqual(Bigint.Order(1n, 2n), -1)
+    deepStrictEqual(Bigint.Order(2n, 1n), 1)
+    deepStrictEqual(Bigint.Order(2n, 2n), 0)
   })
 
-  it("SemigroupSum", () => {
-    deepStrictEqual(Bigint.SemigroupSum.combine(2n, 3n), 5n)
+  it("lessThan", () => {
+    assert.deepStrictEqual(Bigint.lessThan(2n, 3n), true)
+    assert.deepStrictEqual(Bigint.lessThan(3n, 3n), false)
+    assert.deepStrictEqual(Bigint.lessThan(4n, 3n), false)
   })
 
-  it("MonoidSum", () => {
-    deepStrictEqual(Bigint.MonoidSum.combineAll([1n, 2n, 3n]), 6n)
+  it("lessThanOrEqualTo", () => {
+    assert.deepStrictEqual(Bigint.lessThanOrEqualTo(2n, 3n), true)
+    assert.deepStrictEqual(Bigint.lessThanOrEqualTo(3n, 3n), true)
+    assert.deepStrictEqual(Bigint.lessThanOrEqualTo(4n, 3n), false)
   })
 
-  it("SemigroupMultiply", () => {
-    deepStrictEqual(Bigint.SemigroupMultiply.combine(2n, 3n), 6n)
-    deepStrictEqual(Bigint.SemigroupMultiply.combineMany(0n, [1n, 2n, 3n]), 0n)
-    deepStrictEqual(Bigint.SemigroupMultiply.combineMany(2n, [1n, 0n, 3n]), 0n)
+  it("greaterThan", () => {
+    assert.deepStrictEqual(Bigint.greaterThan(2n, 3n), false)
+    assert.deepStrictEqual(Bigint.greaterThan(3n, 3n), false)
+    assert.deepStrictEqual(Bigint.greaterThan(4n, 3n), true)
   })
 
-  it("MonoidMultiply", () => {
-    deepStrictEqual(Bigint.MonoidMultiply.combineAll([2n, 3n, 4n]), 24n)
+  it("greaterThanOrEqualTo", () => {
+    assert.deepStrictEqual(Bigint.greaterThanOrEqualTo(2n, 3n), false)
+    assert.deepStrictEqual(Bigint.greaterThanOrEqualTo(3n, 3n), true)
+    assert.deepStrictEqual(Bigint.greaterThanOrEqualTo(4n, 3n), true)
+  })
+
+  it("between", () => {
+    assert.deepStrictEqual(Bigint.between(0n, 5n)(3n), true)
+    assert.deepStrictEqual(Bigint.between(0n, 5n)(-1n), false)
+    assert.deepStrictEqual(Bigint.between(0n, 5n)(6n), false)
+  })
+
+  it("clamp", () => {
+    assert.deepStrictEqual(Bigint.clamp(0n, 5n)(3n), 3n)
+    assert.deepStrictEqual(Bigint.clamp(0n, 5n)(-1n), 0n)
+    assert.deepStrictEqual(Bigint.clamp(0n, 5n)(6n), 5n)
+  })
+
+  it("min", () => {
+    assert.deepStrictEqual(Bigint.min(2n, 3n), 2n)
+  })
+
+  it("max", () => {
+    assert.deepStrictEqual(Bigint.max(2n, 3n), 3n)
+  })
+
+  it("sumAll", () => {
+    assert.deepStrictEqual(Bigint.sumAll([2n, 3n, 4n]), 9n)
+  })
+
+  it("multiplyAll", () => {
+    assert.deepStrictEqual(Bigint.multiplyAll([2n, 0n, 4n]), 0n)
+    assert.deepStrictEqual(Bigint.multiplyAll([2n, 3n, 4n]), 24n)
   })
 })

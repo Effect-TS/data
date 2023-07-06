@@ -26,10 +26,10 @@ class DifferImpl<Value, Patch> implements D.Differ<Value, Patch> {
   readonly _P: (_: Patch) => Patch = identity
   readonly _V: (_: Value) => Value = identity
   constructor(params: {
-    empty: Patch
-    diff: (oldValue: Value, newValue: Value) => Patch
-    combine: (first: Patch, second: Patch) => Patch
-    patch: (patch: Patch, oldValue: Value) => Value
+    readonly empty: Patch
+    readonly diff: (oldValue: Value, newValue: Value) => Patch
+    readonly combine: (first: Patch, second: Patch) => Patch
+    readonly patch: (patch: Patch, oldValue: Value) => Value
   }) {
     this.empty = params.empty
     this.diff = params.diff
@@ -62,7 +62,7 @@ export const chunk = <Value, Patch>(
   make({
     empty: ChunkPatch.empty(),
     combine: (first, second) => ChunkPatch.combine(second)(first),
-    diff: (oldValue, newValue) => ChunkPatch.diff(oldValue, newValue, differ),
+    diff: (oldValue, newValue) => ChunkPatch.diff({ oldValue, newValue, differ }),
     patch: (patch, oldValue) => ChunkPatch.patch(oldValue, differ)(patch)
   })
 
@@ -73,7 +73,7 @@ export const hashMap = <Key, Value, Patch>(
   make({
     empty: HashMapPatch.empty(),
     combine: (first, second) => HashMapPatch.combine(second)(first),
-    diff: (oldValue, newValue) => HashMapPatch.diff(oldValue, newValue, differ),
+    diff: (oldValue, newValue) => HashMapPatch.diff({ oldValue, newValue, differ }),
     patch: (patch, oldValue) => HashMapPatch.patch(oldValue, differ)(patch)
   })
 
@@ -98,28 +98,43 @@ export const orElseResult = Dual.dual<
 >(2, (self, that) =>
   make({
     empty: OrPatch.empty(),
-    combine: (first, second) => OrPatch.combine(second)(first),
-    diff: (oldValue, newValue) => OrPatch.diff(oldValue, newValue, self, that),
-    patch: (patch, oldValue) => OrPatch.patch(oldValue, self, that)(patch)
+    combine: (first, second) => OrPatch.combine(first, second),
+    diff: (oldValue, newValue) =>
+      OrPatch.diff({
+        oldValue,
+        newValue,
+        left: self,
+        right: that
+      }),
+    patch: (patch, oldValue) =>
+      OrPatch.patch(patch, {
+        oldValue,
+        left: self,
+        right: that
+      })
   }))
 
 /** @internal */
 export const transform = Dual.dual<
   <Value, Value2>(
-    f: (value: Value) => Value2,
-    g: (value: Value2) => Value
+    options: {
+      readonly toNew: (value: Value) => Value2
+      readonly toOld: (value: Value2) => Value
+    }
   ) => <Patch>(self: D.Differ<Value, Patch>) => D.Differ<Value2, Patch>,
   <Value, Patch, Value2>(
     self: D.Differ<Value, Patch>,
-    f: (value: Value) => Value2,
-    g: (value: Value2) => Value
+    options: {
+      readonly toNew: (value: Value) => Value2
+      readonly toOld: (value: Value2) => Value
+    }
   ) => D.Differ<Value2, Patch>
->(3, (self, f, g) =>
+>(2, (self, { toNew, toOld }) =>
   make({
     empty: self.empty,
     combine: (first, second) => self.combine(first, second),
-    diff: (oldValue, newValue) => self.diff(g(oldValue), g(newValue)),
-    patch: (patch, oldValue) => f(self.patch(patch, g(oldValue)))
+    diff: (oldValue, newValue) => self.diff(toOld(oldValue), toOld(newValue)),
+    patch: (patch, oldValue) => toNew(self.patch(patch, toOld(oldValue)))
   }))
 
 /** @internal */

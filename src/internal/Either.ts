@@ -2,23 +2,14 @@
  * @since 1.0.0
  */
 
-import type { Trace } from "@effect/data/Debug"
-import { makeTraced } from "@effect/data/Debug"
 import type * as Either from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
-import { dual } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
+import { EffectTypeId, effectVariance } from "@effect/data/internal/Effect"
 import * as option from "@effect/data/internal/Option"
 import type { Option } from "@effect/data/Option"
+import { pipeArguments } from "@effect/data/Pipeable"
 
-/** @internal */
-const effectVariance = {
-  _R: (_: never) => _,
-  _E: (_: never) => _,
-  _A: (_: never) => _
-}
-
-const EffectTypeId = Symbol.for("@effect/io/Effect")
 const EitherTypeId: Either.EitherTypeId = Symbol.for("@effect/data/Either") as Either.EitherTypeId
 
 /** @internal */
@@ -57,14 +48,8 @@ export class Right<E, A> implements Either.Right<E, A> {
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
   }
-  traced(
-    this: this,
-    trace: Trace
-  ): this | Either.TracedEither<never, this["right"]> {
-    if (trace) {
-      return makeTraced(this, trace)
-    }
-    return this
+  pipe() {
+    return pipeArguments(this, arguments)
   }
 }
 
@@ -104,14 +89,8 @@ export class Left<E, A> implements Either.Left<E, A> {
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
   }
-  traced(
-    this: this,
-    trace: Trace
-  ): this | Either.TracedEither<this["left"], never> {
-    if (trace) {
-      return makeTraced(this, trace)
-    }
-    return this
+  pipe() {
+    return pipeArguments(this, arguments)
   }
 }
 
@@ -141,10 +120,3 @@ export const getLeft = <E, A>(
 export const getRight = <E, A>(
   self: Either.Either<E, A>
 ): Option<A> => (isLeft(self) ? option.none : option.some(self.right))
-
-/** @internal */
-export const fromOption = dual(
-  2,
-  <A, E>(self: Option<A>, onNone: () => E): Either.Either<E, A> =>
-    option.isNone(self) ? left(onNone()) : right(self.value)
-)

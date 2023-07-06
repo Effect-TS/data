@@ -390,7 +390,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface HashMap<Key, Value> extends Iterable<readonly [Key, Value]>, Equal {
+export interface HashMap<Key, Value> extends Iterable<readonly [Key, Value]>, Equal, Pipeable<HashMap<Key, Value>> {
   readonly _id: TypeId
 }
 ```

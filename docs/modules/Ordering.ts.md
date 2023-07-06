@@ -12,65 +12,17 @@ Added in v1.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [instances](#instances)
-  - [Monoid](#monoid)
-  - [Semigroup](#semigroup)
 - [model](#model)
   - [Ordering (type alias)](#ordering-type-alias)
 - [pattern matching](#pattern-matching)
   - [match](#match)
 - [utils](#utils)
+  - [combine](#combine)
+  - [combineAll](#combineall)
+  - [combineMany](#combinemany)
   - [reverse](#reverse)
 
 ---
-
-# instances
-
-## Monoid
-
-`Monoid` instance for `Ordering`, returns the left-most non-zero `Ordering`.
-
-The `empty` value is `0`.
-
-**Signature**
-
-```ts
-export declare const Monoid: monoid.Monoid<Ordering>
-```
-
-**Example**
-
-```ts
-import { Monoid } from '@effect/data/Ordering'
-
-assert.deepStrictEqual(Monoid.combine(Monoid.empty, -1), -1)
-assert.deepStrictEqual(Monoid.combine(Monoid.empty, 1), 1)
-assert.deepStrictEqual(Monoid.combine(1, -1), 1)
-```
-
-Added in v1.0.0
-
-## Semigroup
-
-`Semigroup` instance for `Ordering`, returns the left-most non-zero `Ordering`.
-
-**Signature**
-
-```ts
-export declare const Semigroup: semigroup.Semigroup<Ordering>
-```
-
-**Example**
-
-```ts
-import { Semigroup } from '@effect/data/Ordering'
-
-assert.deepStrictEqual(Semigroup.combine(0, -1), -1)
-assert.deepStrictEqual(Semigroup.combine(0, 1), 1)
-assert.deepStrictEqual(Semigroup.combine(1, -1), 1)
-```
-
-Added in v1.0.0
 
 # model
 
@@ -94,8 +46,15 @@ Depending on the `Ordering` parameter given to it, returns a value produced by o
 
 ```ts
 export declare const match: {
-  <A, B, C = B>(onLessThan: LazyArg<A>, onEqual: LazyArg<B>, onGreaterThan: LazyArg<C>): (self: Ordering) => A | B | C
-  <A, B, C = B>(o: Ordering, onLessThan: LazyArg<A>, onEqual: LazyArg<B>, onGreaterThan: LazyArg<C>): A | B | C
+  <A, B, C = B>(options: {
+    readonly onLessThan: LazyArg<A>
+    readonly onEqual: LazyArg<B>
+    readonly onGreaterThan: LazyArg<C>
+  }): (self: Ordering) => A | B | C
+  <A, B, C = B>(
+    o: Ordering,
+    options: { readonly onLessThan: LazyArg<A>; readonly onEqual: LazyArg<B>; readonly onGreaterThan: LazyArg<C> }
+  ): A | B | C
 }
 ```
 
@@ -105,7 +64,11 @@ export declare const match: {
 import { match } from '@effect/data/Ordering'
 import { constant } from '@effect/data/Function'
 
-const toMessage = match(constant('less than'), constant('equal'), constant('greater than'))
+const toMessage = match({
+  onLessThan: constant('less than'),
+  onEqual: constant('equal'),
+  onGreaterThan: constant('greater than'),
+})
 
 assert.deepStrictEqual(toMessage(-1), 'less than')
 assert.deepStrictEqual(toMessage(0), 'equal')
@@ -115,6 +78,42 @@ assert.deepStrictEqual(toMessage(1), 'greater than')
 Added in v1.0.0
 
 # utils
+
+## combine
+
+**Signature**
+
+```ts
+export declare const combine: {
+  (that: Ordering): (self: Ordering) => Ordering
+  (self: Ordering, that: Ordering): Ordering
+}
+```
+
+Added in v1.0.0
+
+## combineAll
+
+**Signature**
+
+```ts
+export declare const combineAll: (collection: Iterable<Ordering>) => Ordering
+```
+
+Added in v1.0.0
+
+## combineMany
+
+**Signature**
+
+```ts
+export declare const combineMany: {
+  (collection: Iterable<Ordering>): (self: Ordering) => Ordering
+  (self: Ordering, collection: Iterable<Ordering>): Ordering
+}
+```
+
+Added in v1.0.0
 
 ## reverse
 

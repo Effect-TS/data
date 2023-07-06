@@ -1,6 +1,6 @@
 ---
 title: ReadonlyRecord.ts
-nav_order: 38
+nav_order: 39
 parent: Modules
 ---
 
@@ -28,29 +28,13 @@ Added in v1.0.0
   - [partition](#partition)
   - [partitionMap](#partitionmap)
   - [separate](#separate)
-  - [traverseFilterMap](#traversefiltermap)
-  - [traversePartitionMap](#traversepartitionmap)
 - [guards](#guards)
   - [isEmptyReadonlyRecord](#isemptyreadonlyrecord)
   - [isEmptyRecord](#isemptyrecord)
-- [instances](#instances)
-  - [Covariant](#covariant)
-  - [Filterable](#filterable)
-  - [Invariant](#invariant)
-  - [Traversable](#traversable)
-  - [TraversableFilterable](#traversablefilterable)
-- [mapping](#mapping)
-  - [as](#as)
-  - [flap](#flap)
-  - [tupled](#tupled)
 - [models](#models)
   - [ReadonlyRecord (interface)](#readonlyrecord-interface)
 - [record](#record)
   - [pop](#pop)
-- [traversing](#traversing)
-  - [sequence](#sequence)
-  - [traverse](#traverse)
-  - [traverseTap](#traversetap)
 - [type lambdas](#type-lambdas)
   - [ReadonlyRecordTypeLambda (interface)](#readonlyrecordtypelambda-interface)
 - [utils](#utils)
@@ -62,8 +46,6 @@ Added in v1.0.0
   - [remove](#remove)
   - [replaceOption](#replaceoption)
   - [size](#size)
-  - [traverseFilter](#traversefilter)
-  - [traversePartition](#traversepartition)
 
 ---
 
@@ -124,7 +106,7 @@ previous ones. So the resulting record will only have the value of the last occu
 **Signature**
 
 ```ts
-export declare const fromEntries: <A>(self: Iterable<[string, A]>) => Record<string, A>
+export declare const fromEntries: <A>(self: Iterable<readonly [string, A]>) => Record<string, A>
 ```
 
 **Example**
@@ -373,52 +355,6 @@ assert.deepStrictEqual(separate({ a: left('e'), b: right(1) }), [{ a: 'e' }, { b
 
 Added in v1.0.0
 
-## traverseFilterMap
-
-**Signature**
-
-```ts
-export declare const traverseFilterMap: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => {
-  <A, R, O, E, B>(f: (a: A) => Kind<F, R, O, E, Option<B>>): (
-    self: ReadonlyRecord<A>
-  ) => Kind<F, R, O, E, Record<string, B>>
-  <A, R, O, E, B>(self: ReadonlyRecord<A>, f: (a: A) => Kind<F, R, O, E, Option<B>>): Kind<
-    F,
-    R,
-    O,
-    E,
-    Record<string, B>
-  >
-}
-```
-
-Added in v1.0.0
-
-## traversePartitionMap
-
-**Signature**
-
-```ts
-export declare const traversePartitionMap: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => {
-  <A, R, O, E, B, C>(f: (a: A) => Kind<F, R, O, E, Either<B, C>>): (
-    self: ReadonlyRecord<A>
-  ) => Kind<F, R, O, E, [Record<string, B>, Record<string, C>]>
-  <A, R, O, E, B, C>(self: ReadonlyRecord<A>, f: (a: A) => Kind<F, R, O, E, Either<B, C>>): Kind<
-    F,
-    R,
-    O,
-    E,
-    [Record<string, B>, Record<string, C>]
-  >
-}
-```
-
-Added in v1.0.0
-
 # guards
 
 ## isEmptyReadonlyRecord
@@ -463,98 +399,6 @@ assert.deepStrictEqual(isEmptyRecord({ a: 3 }), false)
 
 Added in v1.0.0
 
-# instances
-
-## Covariant
-
-**Signature**
-
-```ts
-export declare const Covariant: covariant.Covariant<ReadonlyRecordTypeLambda>
-```
-
-Added in v1.0.0
-
-## Filterable
-
-**Signature**
-
-```ts
-export declare const Filterable: filterable.Filterable<ReadonlyRecordTypeLambda>
-```
-
-Added in v1.0.0
-
-## Invariant
-
-**Signature**
-
-```ts
-export declare const Invariant: invariant.Invariant<ReadonlyRecordTypeLambda>
-```
-
-Added in v1.0.0
-
-## Traversable
-
-**Signature**
-
-```ts
-export declare const Traversable: traversable.Traversable<ReadonlyRecordTypeLambda>
-```
-
-Added in v1.0.0
-
-## TraversableFilterable
-
-**Signature**
-
-```ts
-export declare const TraversableFilterable: traversableFilterable.TraversableFilterable<ReadonlyRecordTypeLambda>
-```
-
-Added in v1.0.0
-
-# mapping
-
-## as
-
-Maps the success value of this effect to the specified constant value.
-
-**Signature**
-
-```ts
-export declare const as: {
-  <B>(b: B): <_>(self: ReadonlyRecord<_>) => Record<string, B>
-  <_, B>(self: ReadonlyRecord<_>, b: B): Record<string, B>
-}
-```
-
-Added in v1.0.0
-
-## flap
-
-**Signature**
-
-```ts
-export declare const flap: {
-  <A, B>(self: ReadonlyRecord<(a: A) => B>): (a: A) => Record<string, B>
-  <A, B>(a: A, self: ReadonlyRecord<(a: A) => B>): Record<string, B>
-}
-```
-
-Added in v1.0.0
-
-## tupled
-
-**Signature**
-
-```ts
-export declare const tupled: <A>(self: ReadonlyRecord<A>) => Record<string, [A]>
-```
-
-Added in v1.0.0
-
 # models
 
 ## ReadonlyRecord (interface)
@@ -594,90 +438,6 @@ import { some, none } from '@effect/data/Option'
 
 assert.deepStrictEqual(pop({ a: 1, b: 2 }, 'a'), some([1, { b: 2 }]))
 assert.deepStrictEqual(pop({ a: 1, b: 2 }, 'c'), none())
-```
-
-Added in v1.0.0
-
-# traversing
-
-## sequence
-
-Transforms a `ReadonlyRecord` of `Kind` values into a `Kind` of `Record` values.
-
-**Signature**
-
-```ts
-export declare const sequence: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => <R, O, E, A>(self: ReadonlyRecord<Kind<F, R, O, E, A>>) => Kind<F, R, O, E, Record<string, A>>
-```
-
-**Example**
-
-```ts
-import * as RR from '@effect/data/ReadonlyRecord'
-import { some, none, Applicative } from '@effect/data/Option'
-
-const sequence = RR.sequence(Applicative)
-
-assert.deepStrictEqual(sequence({ a: some(1), b: some(2) }), some({ a: 1, b: 2 }))
-assert.deepStrictEqual(sequence({ a: none(), b: some(2) }), none())
-```
-
-Added in v1.0.0
-
-## traverse
-
-Maps each entry of a `ReadonlyRecord` to an effect and collects the results into a new record.
-
-**Signature**
-
-```ts
-export declare const traverse: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => {
-  <K extends string, A, R, O, E, B>(f: (a: A, key: K) => Kind<F, R, O, E, B>): (
-    self: Record<K, A>
-  ) => Kind<F, R, O, E, Record<string, B>>
-  <K extends string, A, R, O, E, B>(self: Record<K, A>, f: (a: A, key: K) => Kind<F, R, O, E, B>): Kind<
-    F,
-    R,
-    O,
-    E,
-    Record<string, B>
-  >
-}
-```
-
-**Example**
-
-```ts
-import { traverse } from '@effect/data/ReadonlyRecord'
-import { some, none, Applicative } from '@effect/data/Option'
-
-assert.deepStrictEqual(
-  traverse(Applicative)({ a: 1, b: 2 }, (n: number) => (n <= 2 ? some(n) : none())),
-  some({ a: 1, b: 2 })
-)
-assert.deepStrictEqual(
-  traverse(Applicative)({ a: 1, b: 2 }, (n: number) => (n >= 2 ? some(n) : none())),
-  none()
-)
-```
-
-Added in v1.0.0
-
-## traverseTap
-
-**Signature**
-
-```ts
-export declare const traverseTap: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => {
-  <A, R, O, E, B>(f: (a: A) => Kind<F, R, O, E, B>): (self: ReadonlyRecord<A>) => Kind<F, R, O, E, Record<string, A>>
-  <A, R, O, E, B>(self: ReadonlyRecord<A>, f: (a: A) => Kind<F, R, O, E, B>): Kind<F, R, O, E, Record<string, A>>
-}
 ```
 
 Added in v1.0.0
@@ -897,54 +657,6 @@ export declare const size: <A>(self: ReadonlyRecord<A>) => number
 import { size } from '@effect/data/ReadonlyRecord'
 
 assert.deepStrictEqual(size({ a: 'a', b: 1, c: true }), 3)
-```
-
-Added in v1.0.0
-
-## traverseFilter
-
-Filter values inside a context.
-
-**Signature**
-
-```ts
-export declare const traverseFilter: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => {
-  <B extends A, R, O, E, A = B>(predicate: (a: A) => Kind<F, R, O, E, boolean>): (
-    self: ReadonlyRecord<B>
-  ) => Kind<F, R, O, E, Record<string, B>>
-  <B extends A, R, O, E, A = B>(self: ReadonlyRecord<B>, predicate: (a: A) => Kind<F, R, O, E, boolean>): Kind<
-    F,
-    R,
-    O,
-    E,
-    Record<string, B>
-  >
-}
-```
-
-Added in v1.0.0
-
-## traversePartition
-
-**Signature**
-
-```ts
-export declare const traversePartition: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => {
-  <B extends A, R, O, E, A = B>(predicate: (a: A) => Kind<F, R, O, E, boolean>): (
-    self: ReadonlyRecord<B>
-  ) => Kind<F, R, O, E, [Record<string, B>, Record<string, B>]>
-  <B extends A, R, O, E, A = B>(self: ReadonlyRecord<B>, predicate: (a: A) => Kind<F, R, O, E, boolean>): Kind<
-    F,
-    R,
-    O,
-    E,
-    [Record<string, B>, Record<string, B>]
-  >
-}
 ```
 
 Added in v1.0.0

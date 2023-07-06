@@ -3,14 +3,8 @@ import * as T from "@effect/data/Tuple"
 
 describe.concurrent("Tuple", () => {
   it("exports", () => {
-    expect(T.Bicovariant).exist
-    expect(T.mapFirst).exist
-    expect(T.mapSecond).exist
-    expect(T.appendElement).exist
-    expect(T.getEquivalence).exist
     expect(T.getOrder).exist
-    expect(T.getSemigroup).exist
-    expect(T.getMonoid).exist
+    expect(T.getEquivalence).exist
   })
 
   it("tuple", () => {
@@ -29,8 +23,11 @@ describe.concurrent("Tuple", () => {
     expect(T.getSecond(T.tuple("a", 1))).toEqual(1)
   })
 
-  it("bimap", () => {
-    expect(T.bimap(T.tuple("a", 1), (s) => s + "!", (n) => n * 2)).toEqual(["a!", 2])
+  it("mapBoth", () => {
+    expect(T.mapBoth(T.tuple("a", 1), {
+      onFirst: (s) => s + "!",
+      onSecond: (n) => n * 2
+    })).toEqual(["a!", 2])
   })
 
   it("swap", () => {

@@ -1,6 +1,6 @@
 ---
 title: String.ts
-nav_order: 42
+nav_order: 43
 parent: Modules
 ---
 
@@ -20,9 +20,7 @@ Added in v1.0.0
   - [isString](#isstring)
 - [instances](#instances)
   - [Equivalence](#equivalence)
-  - [Monoid](#monoid)
   - [Order](#order)
-  - [Semigroup](#semigroup)
 - [utils](#utils)
   - [at](#at)
   - [charAt](#charat)
@@ -104,38 +102,12 @@ export declare const Equivalence: equivalence.Equivalence<string>
 
 Added in v1.0.0
 
-## Monoid
-
-`string` monoid under concatenation.
-
-The `empty` value is `''`.
-
-**Signature**
-
-```ts
-export declare const Monoid: monoid.Monoid<string>
-```
-
-Added in v1.0.0
-
 ## Order
 
 **Signature**
 
 ```ts
 export declare const Order: order.Order<string>
-```
-
-Added in v1.0.0
-
-## Semigroup
-
-`string` semigroup under concatenation.
-
-**Signature**
-
-```ts
-export declare const Semigroup: semigroup.Semigroup<string>
 ```
 
 Added in v1.0.0

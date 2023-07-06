@@ -1,24 +1,15 @@
 import type * as C from "@effect/data/Context"
-import type { Trace } from "@effect/data/Debug"
-import { makeTraced } from "@effect/data/Debug"
 import * as Equal from "@effect/data/Equal"
-import * as Dual from "@effect/data/Function"
+import { dual } from "@effect/data/Function"
 import * as G from "@effect/data/Global"
 import * as Hash from "@effect/data/Hash"
+import { EffectTypeId, effectVariance } from "@effect/data/internal/Effect"
 import type * as O from "@effect/data/Option"
 import * as option from "@effect/data/Option"
+import { pipeArguments } from "@effect/data/Pipeable"
 
 /** @internal */
 export const TagTypeId: C.TagTypeId = Symbol.for("@effect/data/Context/Tag") as C.TagTypeId
-
-/** @internal */
-const effectVariance = {
-  _R: (_: never) => _,
-  _E: (_: never) => _,
-  _A: (_: never) => _
-}
-
-const EffectTypeId = Symbol.for("@effect/io/Effect")
 
 /** @internal */
 export class TagImpl<Identifier, Service> implements C.Tag<Identifier, Service> {
@@ -58,11 +49,8 @@ export class TagImpl<Identifier, Service> implements C.Tag<Identifier, Service> 
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
   }
-  traced(this: this, trace: Trace): C.TracedTag<Identifier, Service> | this {
-    if (trace) {
-      return makeTraced(this, trace)
-    }
-    return this
+  pipe() {
+    return pipeArguments(this, arguments)
   }
   of(self: Service): Service {
     return self
@@ -99,6 +87,10 @@ export class ContextImpl<Services> implements C.Context<Services> {
   }
 
   constructor(readonly unsafeMap: Map<C.Tag<unknown, unknown>, any>) {}
+
+  pipe() {
+    return pipeArguments(this, arguments)
+  }
 }
 
 /** @internal */
@@ -118,7 +110,7 @@ export const make = <T extends C.Tag<any, any>>(
 ): C.Context<C.Tag.Identifier<T>> => new ContextImpl(new Map([[tag, service]]))
 
 /** @internal */
-export const add = Dual.dual<
+export const add = dual<
   <T extends C.Tag<any, any>>(
     tag: T,
     service: C.Tag.Service<T>
@@ -137,7 +129,7 @@ export const add = Dual.dual<
 })
 
 /** @internal */
-export const get = Dual.dual<
+export const get = dual<
   <Services, T extends C.ValidTagsById<Services>>(tag: T) => (self: C.Context<Services>) => C.Tag.Service<T>,
   <Services, T extends C.ValidTagsById<Services>>(self: C.Context<Services>, tag: T) => C.Tag.Service<T>
 >(2, (self, tag) => {
@@ -148,7 +140,7 @@ export const get = Dual.dual<
 })
 
 /** @internal */
-export const unsafeGet = Dual.dual<
+export const unsafeGet = dual<
   <S, I>(tag: C.Tag<I, S>) => <Services>(self: C.Context<Services>) => S,
   <Services, S, I>(self: C.Context<Services>, tag: C.Tag<I, S>) => S
 >(2, (self, tag) => {
@@ -159,7 +151,7 @@ export const unsafeGet = Dual.dual<
 })
 
 /** @internal */
-export const getOption = Dual.dual<
+export const getOption = dual<
   <S, I>(tag: C.Tag<I, S>) => <Services>(self: C.Context<Services>) => O.Option<S>,
   <Services, S, I>(self: C.Context<Services>, tag: C.Tag<I, S>) => O.Option<S>
 >(2, (self, tag) => {
@@ -170,7 +162,7 @@ export const getOption = Dual.dual<
 })
 
 /** @internal */
-export const merge = Dual.dual<
+export const merge = dual<
   <R1>(that: C.Context<R1>) => <Services>(self: C.Context<Services>) => C.Context<Services | R1>,
   <Services, R1>(self: C.Context<Services>, that: C.Context<R1>) => C.Context<Services | R1>
 >(2, (self, that) => {

@@ -4,22 +4,6 @@ import * as O from "@effect/data/Option"
 import * as RR from "@effect/data/ReadonlyRecord"
 
 describe.concurrent("ReadonlyRecord", () => {
-  it("exports", () => {
-    expect(RR.Invariant).exist
-    expect(RR.tupled).exist
-    expect(RR.Covariant).exist
-    expect(RR.flap).exist
-    expect(RR.as).exist
-    expect(RR.Filterable).exist
-    expect(RR.Traversable).exist
-    expect(RR.traverseTap).exist
-    expect(RR.TraversableFilterable).exist
-    expect(RR.traverseFilter).exist
-    expect(RR.traversePartition).exist
-
-    expect(RR.isEmptyRecord).exist
-  })
-
   it("get", () => {
     expect(pipe({}, RR.get("a"))).toEqual(O.none())
     expect(pipe({ a: 1 }, RR.get("a"))).toEqual(O.some(1))
@@ -138,33 +122,13 @@ describe.concurrent("ReadonlyRecord", () => {
     assert.deepStrictEqual(pipe(o, RR.separate), [{}, {}])
   })
 
-  it("traverse", () => {
-    assert.deepStrictEqual(
-      RR.traverse(O.Applicative)({ a: 1, b: 2 }, (n: number) => (n <= 2 ? O.some(n) : O.none())),
-      O.some({ a: 1, b: 2 })
-    )
-    assert.deepStrictEqual(
-      RR.traverse(O.Applicative)((n: number) => (n <= 2 ? O.some(n) : O.none()))({ a: 1, b: 2 }),
-      O.some({ a: 1, b: 2 })
-    )
-    assert.deepStrictEqual(
-      RR.traverse(O.Applicative)({ a: 1, b: 2 }, (n: number) => (n >= 2 ? O.some(n) : O.none())),
-      O.none()
-    )
-    assert.deepStrictEqual(
-      RR.traverse(O.Applicative)((n: number) => (n >= 2 ? O.some(n) : O.none()))({ a: 1, b: 2 }),
-      O.none()
-    )
-  })
-
-  it("sequence", () => {
-    const sequence = RR.sequence(O.Applicative)
-    assert.deepStrictEqual(sequence({ a: O.some(1), b: O.some(2) }), O.some({ a: 1, b: 2 }))
-    assert.deepStrictEqual(sequence({ a: O.none(), b: O.some(2) }), O.none())
-  })
-
   it("empty", () => {
     expect(RR.empty()).toEqual({})
+  })
+
+  it("isEmptyRecord", () => {
+    assert.deepStrictEqual(RR.isEmptyRecord({}), true)
+    assert.deepStrictEqual(RR.isEmptyRecord({ a: 3 }), false)
   })
 
   it("isEmptyReadonlyRecord", () => {
@@ -179,32 +143,5 @@ describe.concurrent("ReadonlyRecord", () => {
   it("has", () => {
     assert.deepStrictEqual(RR.has({ a: 1, b: 2 }, "a"), true)
     assert.deepStrictEqual(RR.has({ a: 1, b: 2 }, "c"), false)
-  })
-
-  it("traversePartitionMap", () => {
-    const traversePartitionMap = RR.traversePartitionMap(O.Applicative)
-    const f = (s: string) => s.length > 1 ? O.some(E.right(s)) : s.length > 0 ? O.some(E.left(s)) : O.none()
-    assert.deepStrictEqual(traversePartitionMap({}, f), O.some([{}, {}]))
-    assert.deepStrictEqual(traversePartitionMap({ "": "" }, f), O.none())
-    assert.deepStrictEqual(traversePartitionMap({ a: "a" }, f), O.some([{ a: "a" }, {}]))
-    assert.deepStrictEqual(traversePartitionMap({ aa: "aa" }, f), O.some([{}, { aa: "aa" }]))
-    assert.deepStrictEqual(traversePartitionMap({ aa: "aa", a: "a", "": "" }, f), O.none())
-    expect(traversePartitionMap({ aa: "aa", a: "a", aaa: "aaa" }, f)).toEqual(
-      O.some([{ a: "a" }, { aa: "aa", aaa: "aaa" }])
-    )
-  })
-
-  it("traverseFilterMap", () => {
-    const traverseFilterMap = RR.traverseFilterMap(O.Applicative)
-    const f = (s: string) => s.length > 1 ? O.some(O.some(s)) : s.length > 0 ? O.some(O.none()) : O.none()
-    assert.deepStrictEqual(traverseFilterMap({}, f), O.some({}))
-    assert.deepStrictEqual(traverseFilterMap({ "": "" }, f), O.none())
-    assert.deepStrictEqual(traverseFilterMap({ a: "a" }, f), O.some({}))
-    assert.deepStrictEqual(traverseFilterMap({ aa: "aa" }, f), O.some({ aa: "aa" }))
-    assert.deepStrictEqual(traverseFilterMap({ aa: "aa", a: "a", "": "" }, f), O.none())
-    assert.deepStrictEqual(
-      traverseFilterMap({ aa: "aa", a: "a", aaa: "aaa" }, f),
-      O.some({ aa: "aa", aaa: "aaa" })
-    )
   })
 })

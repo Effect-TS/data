@@ -24,7 +24,6 @@ Added in v1.0.0
     - [throw (method)](#throw-method)
     - [[Symbol.iterator] (method)](#symboliterator-method-1)
   - [makeGenKind](#makegenkind)
-  - [singleShot](#singleshot)
 - [models](#models)
   - [Adapter (interface)](#adapter-interface)
   - [Gen (interface)](#gen-interface)
@@ -147,16 +146,6 @@ Added in v1.0.0
 export declare const makeGenKind: <F extends TypeLambda, R, O, E, A>(
   kind: Kind<F, R, O, E, A>
 ) => GenKind<F, R, O, E, A>
-```
-
-Added in v1.0.0
-
-## singleShot
-
-**Signature**
-
-```ts
-export declare const singleShot: <F extends TypeLambda>(F: Monad<F>) => <Z extends Adapter<F>>(adapter: Z) => Gen<F, Z>
 ```
 
 Added in v1.0.0

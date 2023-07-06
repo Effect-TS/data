@@ -4,6 +4,7 @@ import * as Equal from "@effect/data/Equal"
 import { pipe } from "@effect/data/Function"
 import * as HashMap from "@effect/data/HashMap"
 import * as HashSet from "@effect/data/HashSet"
+import * as RA from "@effect/data/ReadonlyArray"
 import { it as it_ } from "vitest"
 
 function diffLaws<Value, Patch>(
@@ -74,8 +75,8 @@ function randomChunk(): Chunk.Chunk<number> {
 
 function randomHashMap(): HashMap.HashMap<number, number> {
   return pipe(
-    Chunk.fromIterable(Array.from({ length: 2 }, smallInt)),
-    Chunk.cross(Chunk.fromIterable(Array.from({ length: 2 }, smallInt))),
+    RA.fromIterable(Array.from({ length: 2 }, smallInt)),
+    RA.cartesian(RA.fromIterable(Array.from({ length: 2 }, smallInt))),
     HashMap.fromIterable
   )
 }

@@ -1,6 +1,6 @@
 ---
 title: SortedMap.ts
-nav_order: 40
+nav_order: 41
 parent: Modules
 ---
 
@@ -263,7 +263,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface SortedMap<K, V> extends Iterable<readonly [K, V]>, Equal.Equal {
+export interface SortedMap<K, V> extends Iterable<readonly [K, V]>, Equal.Equal, Pipeable<SortedMap<K, V>> {
   readonly _id: TypeId
   /** @internal */
   readonly tree: RBT.RedBlackTree<K, V>

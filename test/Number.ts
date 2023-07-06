@@ -3,23 +3,6 @@ import * as Number from "@effect/data/Number"
 import { deepStrictEqual } from "@effect/data/test/util"
 
 describe.concurrent("Number", () => {
-  it("exports", () => {
-    expect(Number.SemigroupMax).exist
-    expect(Number.SemigroupMin).exist
-    expect(Number.MonoidMax).exist
-    expect(Number.MonoidMin).exist
-    expect(Number.sumAll).exist
-    expect(Number.multiplyAll).exist
-    expect(Number.lessThan).exist
-    expect(Number.lessThanOrEqualTo).exist
-    expect(Number.greaterThan).exist
-    expect(Number.greaterThanOrEqualTo).exist
-    expect(Number.between).exist
-    expect(Number.clamp).exist
-    expect(Number.min).exist
-    expect(Number.max).exist
-  })
-
   it("isNumber", () => {
     expect(Number.isNumber(1)).toEqual(true)
     expect(Number.isNumber("a")).toEqual(false)
@@ -56,32 +39,9 @@ describe.concurrent("Number", () => {
   })
 
   it("Order", () => {
-    deepStrictEqual(Number.Order.compare(1, 2), -1)
-    deepStrictEqual(Number.Order.compare(2, 1), 1)
-    deepStrictEqual(Number.Order.compare(2, 2), 0)
-  })
-
-  it("Bounded", () => {
-    expect(Number.Bounded.maxBound).toEqual(Infinity)
-    expect(Number.Bounded.minBound).toEqual(-Infinity)
-  })
-
-  it("SemigroupSum", () => {
-    deepStrictEqual(Number.SemigroupSum.combine(2, 3), 5)
-  })
-
-  it("MonoidSum", () => {
-    deepStrictEqual(Number.MonoidSum.combineAll([1, 2, 3]), 6)
-  })
-
-  it("SemigroupMultiply", () => {
-    deepStrictEqual(Number.SemigroupMultiply.combine(2, 3), 6)
-    deepStrictEqual(Number.SemigroupMultiply.combineMany(0, [1, 2, 3]), 0)
-    deepStrictEqual(Number.SemigroupMultiply.combineMany(2, [1, 0, 3]), 0)
-  })
-
-  it("MonoidMultiply", () => {
-    deepStrictEqual(Number.MonoidMultiply.combineAll([2, 3, 4]), 24)
+    deepStrictEqual(Number.Order(1, 2), -1)
+    deepStrictEqual(Number.Order(2, 1), 1)
+    deepStrictEqual(Number.Order(2, 2), 0)
   })
 
   it("sign", () => {
@@ -108,5 +68,58 @@ describe.concurrent("Number", () => {
     assert.deepStrictEqual(Number.remainder(1, -.2), 0)
     assert.deepStrictEqual(Number.remainder(2.6, -.2), 0)
     assert.deepStrictEqual(Number.remainder(3.1, -.2), 0.1)
+  })
+
+  it("lessThan", () => {
+    assert.deepStrictEqual(Number.lessThan(2, 3), true)
+    assert.deepStrictEqual(Number.lessThan(3, 3), false)
+    assert.deepStrictEqual(Number.lessThan(4, 3), false)
+  })
+
+  it("lessThanOrEqualTo", () => {
+    assert.deepStrictEqual(Number.lessThanOrEqualTo(2, 3), true)
+    assert.deepStrictEqual(Number.lessThanOrEqualTo(3, 3), true)
+    assert.deepStrictEqual(Number.lessThanOrEqualTo(4, 3), false)
+  })
+
+  it("greaterThan", () => {
+    assert.deepStrictEqual(Number.greaterThan(2, 3), false)
+    assert.deepStrictEqual(Number.greaterThan(3, 3), false)
+    assert.deepStrictEqual(Number.greaterThan(4, 3), true)
+  })
+
+  it("greaterThanOrEqualTo", () => {
+    assert.deepStrictEqual(Number.greaterThanOrEqualTo(2, 3), false)
+    assert.deepStrictEqual(Number.greaterThanOrEqualTo(3, 3), true)
+    assert.deepStrictEqual(Number.greaterThanOrEqualTo(4, 3), true)
+  })
+
+  it("between", () => {
+    assert.deepStrictEqual(Number.between(0, 5)(3), true)
+    assert.deepStrictEqual(Number.between(0, 5)(-1), false)
+    assert.deepStrictEqual(Number.between(0, 5)(6), false)
+  })
+
+  it("clamp", () => {
+    assert.deepStrictEqual(Number.clamp(0, 5)(3), 3)
+    assert.deepStrictEqual(Number.clamp(0, 5)(-1), 0)
+    assert.deepStrictEqual(Number.clamp(0, 5)(6), 5)
+  })
+
+  it("min", () => {
+    assert.deepStrictEqual(Number.min(2, 3), 2)
+  })
+
+  it("max", () => {
+    assert.deepStrictEqual(Number.max(2, 3), 3)
+  })
+
+  it("sumAll", () => {
+    assert.deepStrictEqual(Number.sumAll([2, 3, 4]), 9)
+  })
+
+  it("multiplyAll", () => {
+    assert.deepStrictEqual(Number.multiplyAll([2, 0, 4]), 0)
+    assert.deepStrictEqual(Number.multiplyAll([2, 3, 4]), 24)
   })
 })

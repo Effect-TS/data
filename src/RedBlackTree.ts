@@ -6,7 +6,8 @@ import type { Equal } from "@effect/data/Equal"
 import * as RBT from "@effect/data/internal/RedBlackTree"
 import * as RBTI from "@effect/data/internal/RedBlackTree/iterator"
 import type { Option } from "@effect/data/Option"
-import type { Order } from "@effect/data/typeclass/Order"
+import type { Order } from "@effect/data/Order"
+import type { Pipeable } from "@effect/data/Pipeable"
 
 const TypeId: unique symbol = RBT.RedBlackTreeTypeId as TypeId
 
@@ -28,7 +29,9 @@ export const Direction = RBTI.Direction
  * @since 1.0.0
  * @category models
  */
-export interface RedBlackTree<Key, Value> extends Iterable<readonly [Key, Value]>, Equal {
+export interface RedBlackTree<Key, Value>
+  extends Iterable<readonly [Key, Value]>, Equal, Pipeable<RedBlackTree<Key, Value>>
+{
   readonly _id: TypeId
 }
 
@@ -340,8 +343,21 @@ export const forEachLessThan: {
  * @category traversing
  */
 export const forEachBetween: {
-  <K, V>(min: K, max: K, f: (key: K, value: V) => void): (self: RedBlackTree<K, V>) => void
-  <K, V>(self: RedBlackTree<K, V>, min: K, max: K, f: (key: K, value: V) => void): void
+  <K, V>(
+    options: {
+      readonly min: K
+      readonly max: K
+      readonly body: (key: K, value: V) => void
+    }
+  ): (self: RedBlackTree<K, V>) => void
+  <K, V>(
+    self: RedBlackTree<K, V>,
+    options: {
+      readonly min: K
+      readonly max: K
+      readonly body: (key: K, value: V) => void
+    }
+  ): void
 } = RBT.forEachBetween
 
 /**

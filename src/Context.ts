@@ -7,10 +7,10 @@
  *
  * @since 1.0.0
  */
-import type { SourceLocation, Trace } from "@effect/data/Debug"
 import type { Equal } from "@effect/data/Equal"
 import * as C from "@effect/data/internal/Context"
 import type { Option } from "@effect/data/Option"
+import type { Pipeable } from "@effect/data/Pipeable"
 import type * as Unify from "@effect/data/Unify"
 
 const TagTypeId: unique symbol = C.TagTypeId
@@ -25,12 +25,11 @@ export type TagTypeId = typeof TagTypeId
  * @since 1.0.0
  * @category models
  */
-export interface Tag<Identifier, Service> {
+export interface Tag<Identifier, Service> extends Pipeable<Tag<Identifier, Service>> {
   readonly _tag: "Tag"
   readonly [TagTypeId]: { readonly _S: (_: Service) => Service; readonly _I: (_: Identifier) => Identifier }
   of(self: Service): Service
   context(self: Service): Context<Identifier>
-  traced(this: Tag<Identifier, Service>, trace: Trace): TracedTag<Identifier, Service> | Tag<Identifier, Service>
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: TagUnify<this>
   [Unify.blacklistSymbol]?: TagUnifyBlacklist
@@ -49,17 +48,6 @@ export interface TagUnify<A extends { [Unify.typeSymbol]?: any }> {
  * @since 1.0.0
  */
 export interface TagUnifyBlacklist {}
-
-/**
- * @since 1.0.0
- * @category models
- */
-export interface TracedTag<Identifier, Service> {
-  readonly _tag: "Traced"
-  readonly i0: Tag<Identifier, Service> | TracedTag<Identifier, Service>
-  readonly trace: SourceLocation
-  traced(this: TracedTag<Identifier, Service>, trace: Trace): TracedTag<Identifier, Service>
-}
 
 /**
  * @since 1.0.0
@@ -109,7 +97,7 @@ export type ValidTagsById<R> = R extends infer S ? Tag<S, any> : never
  * @since 1.0.0
  * @category models
  */
-export interface Context<Services> extends Equal {
+export interface Context<Services> extends Equal, Pipeable<Context<Services>> {
   readonly _id: TypeId
   readonly _S: (_: Services) => unknown
   /** @internal */
@@ -360,27 +348,3 @@ export const pick: <Services, S extends Array<ValidTagsById<Services>>>(
 export const omit: <Services, S extends Array<ValidTagsById<Services>>>(
   ...tags: S
 ) => (self: Context<Services>) => Context<Exclude<Services, { [k in keyof S]: Tag.Identifier<S[k]> }[keyof S]>> = C.omit
-
-/**
- * @since 1.0.0
- * @category models
- */
-export type GenericTag = TracedTag<any, any> | Tag<any, any>
-
-const EffectTypeId = Symbol.for("@effect/io/Effect")
-
-/**
- * @since 1.0.0
- * @category guards
- */
-export const isGenericTag = (u: unknown): u is GenericTag => {
-  if (isTag(u)) {
-    return true
-  }
-  // @ts-expect-error
-  if (typeof u === "object" && u !== null && EffectTypeId in u && u["_tag"] === "Traced") {
-    // @ts-expect-error
-    return isGenericTag(u["i0"])
-  }
-  return false
-}

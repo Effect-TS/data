@@ -207,4 +207,14 @@ describe.concurrent("HashSet", () => {
 
     deepStrictEqual(result, [value(0), value(1), value(2)])
   })
+
+  it("pipe", () => {
+    expect(HashSet.empty<string>().pipe(HashSet.add("value"))).toEqual(HashSet.make("value"))
+  })
+
+  it("isHashSet", () => {
+    expect(HashSet.isHashSet(HashSet.empty())).toBe(true)
+    expect(HashSet.isHashSet(null)).toBe(false)
+    expect(HashSet.isHashSet({})).toBe(false)
+  })
 })

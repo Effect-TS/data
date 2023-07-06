@@ -2,6 +2,8 @@
  * @since 1.0.0
  */
 import * as Dual from "@effect/data/Function"
+import type { Pipeable } from "@effect/data/Pipeable"
+import { pipeArguments } from "@effect/data/Pipeable"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/MutableList") as TypeId
 
@@ -15,7 +17,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category model
  */
-export interface MutableList<A> extends Iterable<A> {
+export interface MutableList<A> extends Iterable<A>, Pipeable<MutableList<A>> {
   readonly _id: TypeId
 
   /** @internal */
@@ -71,6 +73,10 @@ class MutableListImpl<A> implements MutableList<A> {
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
   }
+
+  pipe() {
+    return pipeArguments(this, arguments)
+  }
 }
 
 /** @internal */
@@ -95,7 +101,7 @@ export const empty = <A>(): MutableList<A> => new MutableListImpl()
  * @since 1.0.0
  * @category constructors
  */
-export const from = <A>(iterable: Iterable<A>): MutableList<A> => {
+export const fromIterable = <A>(iterable: Iterable<A>): MutableList<A> => {
   const list: MutableList<A> = new MutableListImpl()
   for (const element of iterable) {
     append(list, element)
@@ -109,7 +115,7 @@ export const from = <A>(iterable: Iterable<A>): MutableList<A> => {
  * @since 1.0.0
  * @category constructors
  */
-export const make = <A>(...elements: ReadonlyArray<A>): MutableList<A> => from(elements)
+export const make = <A>(...elements: ReadonlyArray<A>): MutableList<A> => fromIterable(elements)
 
 /**
  * Returns `true` if the list contains zero elements, `false`, otherwise.

@@ -1,6 +1,6 @@
 ---
 title: Duration.ts
-nav_order: 14
+nav_order: 13
 parent: Modules
 ---
 
@@ -16,30 +16,33 @@ Added in v1.0.0
   - [days](#days)
   - [hours](#hours)
   - [infinity](#infinity)
+  - [micros](#micros)
   - [millis](#millis)
   - [minutes](#minutes)
+  - [nanos](#nanos)
   - [seconds](#seconds)
   - [weeks](#weeks)
   - [zero](#zero)
+- [getters](#getters)
+  - [toHrTime](#tohrtime)
+  - [toMillis](#tomillis)
+  - [toNanos](#tonanos)
+  - [unsafeToNanos](#unsafetonanos)
 - [guards](#guards)
   - [isDuration](#isduration)
 - [instances](#instances)
-  - [Bounded](#bounded)
   - [Equivalence](#equivalence)
-  - [MonoidMax](#monoidmax)
-  - [MonoidMin](#monoidmin)
-  - [MonoidSum](#monoidsum)
   - [Order](#order)
-  - [SemigroupMax](#semigroupmax)
-  - [SemigroupMin](#semigroupmin)
-  - [SemigroupSum](#semigroupsum)
 - [math](#math)
-  - [subtract](#subtract)
   - [sum](#sum)
-  - [sumAll](#sumall)
   - [times](#times)
 - [models](#models)
   - [Duration (interface)](#duration-interface)
+  - [DurationInput (type alias)](#durationinput-type-alias)
+  - [DurationValue (type alias)](#durationvalue-type-alias)
+- [pattern matching](#pattern-matching)
+  - [match](#match)
+  - [matchWith](#matchwith)
 - [predicates](#predicates)
   - [between](#between)
   - [equals](#equals)
@@ -51,6 +54,7 @@ Added in v1.0.0
   - [TypeId (type alias)](#typeid-type-alias)
 - [utils](#utils)
   - [clamp](#clamp)
+  - [decode](#decode)
   - [max](#max)
   - [min](#min)
 
@@ -88,6 +92,16 @@ export declare const infinity: Duration
 
 Added in v1.0.0
 
+## micros
+
+**Signature**
+
+```ts
+export declare const micros: (micros: bigint) => Duration
+```
+
+Added in v1.0.0
+
 ## millis
 
 **Signature**
@@ -104,6 +118,16 @@ Added in v1.0.0
 
 ```ts
 export declare const minutes: (minutes: number) => Duration
+```
+
+Added in v1.0.0
+
+## nanos
+
+**Signature**
+
+```ts
+export declare const nanos: (nanos: bigint) => Duration
 ```
 
 Added in v1.0.0
@@ -138,6 +162,56 @@ export declare const zero: Duration
 
 Added in v1.0.0
 
+# getters
+
+## toHrTime
+
+**Signature**
+
+```ts
+export declare const toHrTime: (self: Duration) => readonly [seconds: number, nanos: number]
+```
+
+Added in v1.0.0
+
+## toMillis
+
+**Signature**
+
+```ts
+export declare const toMillis: (self: Duration) => number
+```
+
+Added in v1.0.0
+
+## toNanos
+
+Get the duration in nanoseconds as a bigint.
+
+If the duration is infinite, returns `Option.none()`
+
+**Signature**
+
+```ts
+export declare const toNanos: (self: Duration) => Option.Option<bigint>
+```
+
+Added in v1.0.0
+
+## unsafeToNanos
+
+Get the duration in nanoseconds as a bigint.
+
+If the duration is infinite, it throws an error.
+
+**Signature**
+
+```ts
+export declare const unsafeToNanos: (self: Duration) => bigint
+```
+
+Added in v1.0.0
+
 # guards
 
 ## isDuration
@@ -152,52 +226,12 @@ Added in v1.0.0
 
 # instances
 
-## Bounded
-
-**Signature**
-
-```ts
-export declare const Bounded: bounded.Bounded<Duration>
-```
-
-Added in v1.0.0
-
 ## Equivalence
 
 **Signature**
 
 ```ts
 export declare const Equivalence: equivalence.Equivalence<Duration>
-```
-
-Added in v1.0.0
-
-## MonoidMax
-
-**Signature**
-
-```ts
-export declare const MonoidMax: monoid.Monoid<Duration>
-```
-
-Added in v1.0.0
-
-## MonoidMin
-
-**Signature**
-
-```ts
-export declare const MonoidMin: monoid.Monoid<Duration>
-```
-
-Added in v1.0.0
-
-## MonoidSum
-
-**Signature**
-
-```ts
-export declare const MonoidSum: monoid.Monoid<Duration>
 ```
 
 Added in v1.0.0
@@ -212,50 +246,7 @@ export declare const Order: order.Order<Duration>
 
 Added in v1.0.0
 
-## SemigroupMax
-
-**Signature**
-
-```ts
-export declare const SemigroupMax: semigroup.Semigroup<Duration>
-```
-
-Added in v1.0.0
-
-## SemigroupMin
-
-**Signature**
-
-```ts
-export declare const SemigroupMin: semigroup.Semigroup<Duration>
-```
-
-Added in v1.0.0
-
-## SemigroupSum
-
-**Signature**
-
-```ts
-export declare const SemigroupSum: semigroup.Semigroup<Duration>
-```
-
-Added in v1.0.0
-
 # math
-
-## subtract
-
-**Signature**
-
-```ts
-export declare const subtract: {
-  (that: Duration): (self: Duration) => Duration
-  (self: Duration, that: Duration): Duration
-}
-```
-
-Added in v1.0.0
 
 ## sum
 
@@ -266,16 +257,6 @@ export declare const sum: { (that: Duration): (self: Duration) => Duration; (sel
 ```
 
 Added in v1.0.0
-
-## sumAll
-
-**Signature**
-
-```ts
-export declare const sumAll: (collection: Iterable<Duration>) => Duration
-```
-
-Added in v1.0.15
 
 ## times
 
@@ -294,10 +275,82 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Duration {
+export interface Duration extends Equal.Equal, Pipeable<Duration> {
   readonly _id: TypeId
-  readonly millis: number
+  readonly value: DurationValue
 }
+```
+
+Added in v1.0.0
+
+## DurationInput (type alias)
+
+**Signature**
+
+```ts
+export type DurationInput =
+  | Duration
+  | number // millis
+  | bigint // nanos
+  | `${number} nanos`
+  | `${number} micros`
+  | `${number} millis`
+  | `${number} seconds`
+  | `${number} minutes`
+  | `${number} hours`
+  | `${number} days`
+  | `${number} weeks`
+```
+
+Added in v1.0.0
+
+## DurationValue (type alias)
+
+**Signature**
+
+```ts
+export type DurationValue = { _tag: 'Millis'; millis: number } | { _tag: 'Nanos'; nanos: bigint } | { _tag: 'Infinity' }
+```
+
+Added in v1.0.0
+
+# pattern matching
+
+## match
+
+**Signature**
+
+```ts
+export declare const match: {
+  <A, B>(options: { readonly onMillis: (millis: number) => A; readonly onNanos: (nanos: bigint) => B }): (
+    self: Duration
+  ) => A | B
+  <A, B>(
+    self: Duration,
+    options: { readonly onMillis: (millis: number) => A; readonly onNanos: (nanos: bigint) => B }
+  ): A | B
+}
+```
+
+Added in v1.0.0
+
+## matchWith
+
+**Signature**
+
+```ts
+export declare const matchWith: (<A, B>(
+  that: Duration,
+  options: { readonly onMillis: (self: number, that: number) => A; readonly onNanos: (self: bigint, that: bigint) => B }
+) => (self: Duration) => A | B) &
+  (<A, B>(
+    self: Duration,
+    that: Duration,
+    options: {
+      readonly onMillis: (self: number, that: number) => A
+      readonly onNanos: (self: bigint, that: bigint) => B
+    }
+  ) => A | B)
 ```
 
 Added in v1.0.0
@@ -407,6 +460,16 @@ export declare const clamp: {
   (minimum: Duration, maximum: Duration): (self: Duration) => Duration
   (self: Duration, minimum: Duration, maximum: Duration): Duration
 }
+```
+
+Added in v1.0.0
+
+## decode
+
+**Signature**
+
+```ts
+export declare const decode: (input: DurationInput) => Duration
 ```
 
 Added in v1.0.0

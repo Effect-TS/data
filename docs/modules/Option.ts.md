@@ -1,6 +1,6 @@
 ---
 title: Option.ts
-nav_order: 33
+nav_order: 32
 parent: Modules
 ---
 
@@ -15,20 +15,11 @@ Added in v1.0.0
 - [combining](#combining)
   - [all](#all)
   - [ap](#ap)
-  - [getFailureMonoid](#getfailuremonoid)
-  - [getFailureSemigroup](#getfailuresemigroup)
-  - [getFirstSomeSemigroup](#getfirstsomesemigroup)
-  - [sequence](#sequence)
-  - [struct](#struct)
-  - [traverse](#traverse)
-  - [traverseTap](#traversetap)
-  - [tuple](#tuple)
   - [zipWith](#zipwith)
 - [constructors](#constructors)
   - [none](#none)
   - [some](#some)
 - [conversions](#conversions)
-  - [fromEither](#fromeither)
   - [fromIterable](#fromiterable)
   - [fromNullable](#fromnullable)
   - [getLeft](#getleft)
@@ -38,20 +29,15 @@ Added in v1.0.0
   - [liftNullable](#liftnullable)
   - [liftThrowable](#liftthrowable)
   - [toArray](#toarray)
-  - [toEither](#toeither)
   - [toRefinement](#torefinement)
 - [debugging](#debugging)
   - [inspectNone](#inspectnone)
   - [inspectSome](#inspectsome)
 - [do notation](#do-notation)
   - [Do](#do)
-  - [appendElement](#appendelement)
   - [bind](#bind)
-  - [bindDiscard](#binddiscard)
   - [bindTo](#bindto)
   - [let](#let)
-  - [letDiscard](#letdiscard)
-  - [tupled](#tupled)
 - [equivalence](#equivalence)
   - [getEquivalence](#getequivalence)
 - [error handling](#error-handling)
@@ -64,8 +50,6 @@ Added in v1.0.0
   - [partitionMap](#partitionmap)
 - [folding](#folding)
   - [reduceCompact](#reducecompact)
-- [generators](#generators)
-  - [gen](#gen)
 - [getters](#getters)
   - [getOrElse](#getorelse)
   - [getOrNull](#getornull)
@@ -76,7 +60,6 @@ Added in v1.0.0
   - [isSome](#issome)
 - [lifting](#lifting)
   - [lift2](#lift2)
-  - [liftEither](#lifteither)
   - [liftPredicate](#liftpredicate)
 - [math](#math)
   - [divide](#divide)
@@ -91,7 +74,6 @@ Added in v1.0.0
   - [OptionUnify (interface)](#optionunify-interface)
   - [OptionUnifyBlacklist (interface)](#optionunifyblacklist-interface)
   - [Some (interface)](#some-interface)
-  - [TracedOption (interface)](#tracedoption-interface)
 - [pattern matching](#pattern-matching)
   - [match](#match)
 - [sorting](#sorting)
@@ -103,9 +85,7 @@ Added in v1.0.0
   - [as](#as)
   - [asUnit](#asunit)
   - [composeK](#composek)
-  - [flap](#flap)
   - [flatMap](#flatmap)
-  - [flatMapEither](#flatmapeither)
   - [flatMapNullable](#flatmapnullable)
   - [flatten](#flatten)
   - [map](#map)
@@ -115,26 +95,10 @@ Added in v1.0.0
 - [type lambdas](#type-lambdas)
   - [OptionTypeLambda (interface)](#optiontypelambda-interface)
 - [utils](#utils)
-  - [Alternative](#alternative)
-  - [Applicative](#applicative)
-  - [Chainable](#chainable)
-  - [Coproduct](#coproduct)
-  - [Covariant](#covariant)
-  - [Filterable](#filterable)
-  - [FlatMap](#flatmap)
-  - [Foldable](#foldable)
-  - [Invariant](#invariant)
-  - [Monad](#monad)
-  - [Pointed](#pointed)
-  - [Product](#product)
-  - [SemiAlternative](#semialternative)
-  - [SemiApplicative](#semiapplicative)
-  - [SemiCoproduct](#semicoproduct)
-  - [SemiProduct](#semiproduct)
-  - [Traversable](#traversable)
   - [contains](#contains)
   - [exists](#exists)
-  - [getOptionalMonoid](#getoptionalmonoid)
+  - [product](#product)
+  - [productMany](#productmany)
   - [unit](#unit)
 
 ---
@@ -143,19 +107,27 @@ Added in v1.0.0
 
 ## all
 
-Similar to `Promise.all` but operates on `Option`s.
+Takes a structure of `Option`s and returns an `Option` of values with the same structure.
 
-```
-Iterable<Option<A>> -> Option<A[]>
-```
-
-Flattens a collection of `Option`s into a single `Option` that contains a list of all the `Some` values.
-If there is a `None` value in the collection, it returns `None` as the result.
+- If a tuple is supplied, then the returned `Option` will contain a tuple with the same length.
+- If a struct is supplied, then the returned `Option` will contain a struct with the same keys.
+- If an iterable is supplied, then the returned `Option` will contain an array.
 
 **Signature**
 
 ```ts
-export declare const all: <A>(collection: Iterable<Option<A>>) => Option<A[]>
+export declare const all: {
+  <A extends readonly Option<any>[]>(elements: A): Option<{
+    -readonly [I in keyof A]: [A[I]] extends [Option<infer _A>] ? _A : never
+  }>
+  <A>(elements: Iterable<Option<A>>): Option<A[]>
+  <A extends readonly Option<any>[]>(...elements: A): Option<{
+    -readonly [I in keyof A]: [A[I]] extends [Option<infer A>] ? A : never
+  }>
+  <A extends Record<string, Option<any>>>(fields: A): Option<{
+    -readonly [K in keyof A]: [A[K]] extends [Option<infer A>] ? A : never
+  }>
+}
 ```
 
 **Example**
@@ -163,8 +135,10 @@ export declare const all: <A>(collection: Iterable<Option<A>>) => Option<A[]>
 ```ts
 import * as O from '@effect/data/Option'
 
-assert.deepStrictEqual(O.all([O.some(1), O.some(2), O.some(3)]), O.some([1, 2, 3]))
-assert.deepStrictEqual(O.all([O.some(1), O.none(), O.some(3)]), O.none())
+assert.deepStrictEqual(O.all({ a: O.some(1), b: O.some('hello') }), O.some({ a: 1, b: 'hello' }))
+assert.deepStrictEqual(O.all({ a: O.some(1), b: O.none() }), O.none())
+assert.deepStrictEqual(O.all(O.some(1), O.some('hello')), O.some([1, 'hello']))
+assert.deepStrictEqual(O.all([O.some(1), O.some(2)]), O.some([1, 2]))
 ```
 
 Added in v1.0.0
@@ -175,180 +149,9 @@ Added in v1.0.0
 
 ```ts
 export declare const ap: {
-  <A, B>(self: Option<(a: A) => B>, that: Option<A>): Option<B>
   <A>(that: Option<A>): <B>(self: Option<(a: A) => B>) => Option<B>
+  <A, B>(self: Option<(a: A) => B>, that: Option<A>): Option<B>
 }
-```
-
-Added in v1.0.0
-
-## getFailureMonoid
-
-Monoid that models the combination of computations that can fail, if at least one element is `None`
-then the resulting combination is `None`, otherwise if all elements are `Some` then the resulting combination
-is the combination of the wrapped elements using the provided `Monoid`.
-
-The `empty` value is `some(M.empty)`.
-
-See also `getFailureSemigroup` if you need a `Semigroup` instead of a `Monoid`.
-
-**Signature**
-
-```ts
-export declare const getFailureMonoid: <A>(M: Monoid<A>) => Monoid<Option<A>>
-```
-
-Added in v1.0.0
-
-## getFailureSemigroup
-
-Semigroup that models the combination of computations that can fail, if at least one element is `None`
-then the resulting combination is `None`, otherwise if all elements are `Some` then the resulting combination
-is the combination of the wrapped elements using the provided `Semigroup`.
-
-See also `getFailureMonoid` if you need a `Monoid` instead of a `Semigroup`.
-
-**Signature**
-
-```ts
-export declare const getFailureSemigroup: <A>(S: Semigroup<A>) => Semigroup<Option<A>>
-```
-
-Added in v1.0.0
-
-## getFirstSomeSemigroup
-
-Semigroup returning the first `Some` value encountered.
-
-**Signature**
-
-```ts
-export declare const getFirstSomeSemigroup: <A>() => Semigroup<Option<A>>
-```
-
-Added in v1.0.0
-
-## sequence
-
-Combines an `Option` of an `F`-structure to an `F`-structure of an `Option` with the same inner type.
-
-**Signature**
-
-```ts
-export declare const sequence: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => <R, O, E, A>(self: Option<Kind<F, R, O, E, A>>) => Kind<F, R, O, E, Option<A>>
-```
-
-**Example**
-
-```ts
-import * as O from '@effect/data/Option'
-import * as E from '@effect/data/Either'
-
-const sequence = O.sequence(E.Applicative)
-
-assert.deepStrictEqual(sequence(O.some(E.right(1))), E.right(O.some(1)))
-assert.deepStrictEqual(sequence(O.some(E.left('error'))), E.left('error'))
-assert.deepStrictEqual(sequence(O.none()), E.right(O.none()))
-```
-
-Added in v1.0.0
-
-## struct
-
-Takes a struct of `Option`s and returns an `Option` of a struct of values.
-
-**Signature**
-
-```ts
-export declare const struct: <R extends Record<string, Option<any>>>(
-  fields: R
-) => Option<{ [K in keyof R]: [R[K]] extends [Option<infer A>] ? A : never }>
-```
-
-**Example**
-
-```ts
-import * as O from '@effect/data/Option'
-
-assert.deepStrictEqual(O.struct({ a: O.some(1), b: O.some('hello') }), O.some({ a: 1, b: 'hello' }))
-assert.deepStrictEqual(O.struct({ a: O.some(1), b: O.none() }), O.none())
-```
-
-Added in v1.0.0
-
-## traverse
-
-Applies an `Option` value to an effectful function that returns an `F` value.
-
-**Signature**
-
-```ts
-export declare const traverse: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => {
-  <A, R, O, E, B>(f: (a: A) => Kind<F, R, O, E, B>): (self: Option<A>) => Kind<F, R, O, E, Option<B>>
-  <A, R, O, E, B>(self: Option<A>, f: (a: A) => Kind<F, R, O, E, B>): Kind<F, R, O, E, Option<B>>
-}
-```
-
-**Example**
-
-```ts
-import * as O from '@effect/data/Option'
-import * as E from '@effect/data/Either'
-
-const traverse = O.traverse(E.Applicative)
-const f = (n: number) => (n >= 0 ? E.right(1) : E.left('negative'))
-
-assert.deepStrictEqual(traverse(O.some(1), f), E.right(O.some(1)))
-assert.deepStrictEqual(traverse(O.some(-1), f), E.left('negative'))
-assert.deepStrictEqual(traverse(O.none(), f), E.right(O.none()))
-```
-
-Added in v1.0.0
-
-## traverseTap
-
-**Signature**
-
-```ts
-export declare const traverseTap: <F extends TypeLambda>(
-  F: applicative.Applicative<F>
-) => {
-  <A, R, O, E, B>(self: Option<A>, f: (a: A) => Kind<F, R, O, E, B>): Kind<F, R, O, E, Option<A>>
-  <A, R, O, E, B>(f: (a: A) => Kind<F, R, O, E, B>): (self: Option<A>) => Kind<F, R, O, E, Option<A>>
-}
-```
-
-Added in v1.0.0
-
-## tuple
-
-Similar to `Promise.all` but operates on `Option`s.
-
-```
-[Option<A>, Option<B>, ...] -> Option<[A, B, ...]>
-```
-
-Takes a tuple of `Option`s and returns an `Option` of a tuple of values.
-
-**Signature**
-
-```ts
-export declare const tuple: <T extends readonly Option<any>[]>(
-  ...elements: T
-) => Option<{ [I in keyof T]: [T[I]] extends [Option<infer A>] ? A : never }>
-```
-
-**Example**
-
-```ts
-import * as O from '@effect/data/Option'
-
-assert.deepStrictEqual(O.tuple(O.some(1), O.some('hello')), O.some([1, 'hello']))
-assert.deepStrictEqual(O.tuple(O.some(1), O.none()), O.none())
 ```
 
 Added in v1.0.0
@@ -361,8 +164,8 @@ Zips two `Option` values together using a provided function, returning a new `Op
 
 ```ts
 export declare const zipWith: {
-  <A, B, C>(self: Option<A>, that: Option<B>, f: (a: A, b: B) => C): Option<C>
   <B, A, C>(that: Option<B>, f: (a: A, b: B) => C): (self: Option<A>) => Option<C>
+  <A, B, C>(self: Option<A>, that: Option<B>, f: (a: A, b: B) => C): Option<C>
 }
 ```
 
@@ -412,28 +215,6 @@ export declare const some: <A>(value: A) => Option<A>
 Added in v1.0.0
 
 # conversions
-
-## fromEither
-
-Converts a `Either` to an `Option` discarding the error.
-
-**Signature**
-
-```ts
-export declare const fromEither: <E, A>(self: Either<E, A>) => Option<A>
-```
-
-**Example**
-
-```ts
-import * as O from '@effect/data/Option'
-import * as E from '@effect/data/Either'
-
-assert.deepStrictEqual(O.fromEither(E.right(1)), O.some(1))
-assert.deepStrictEqual(O.fromEither(E.left('error message')), O.none())
-```
-
-Added in v1.0.0
 
 ## fromIterable
 
@@ -497,7 +278,7 @@ import * as O from '@effect/data/Option'
 import * as E from '@effect/data/Either'
 
 assert.deepStrictEqual(O.getLeft(E.right('ok')), O.none())
-assert.deepStrictEqual(O.getLeft(E.left('error')), O.some('error'))
+assert.deepStrictEqual(O.getLeft(E.left('a')), O.some('a'))
 ```
 
 Added in v1.0.0
@@ -657,33 +438,6 @@ assert.deepStrictEqual(O.toArray(O.none()), [])
 
 Added in v1.0.0
 
-## toEither
-
-Converts an `Option` to an `Either`, allowing you to provide a value to be used in the case of a `None`.
-
-**Signature**
-
-```ts
-export declare const toEither: {
-  <A, E>(self: Option<A>, onNone: () => E): Either<E, A>
-  <E>(onNone: () => E): <A>(self: Option<A>) => Either<E, A>
-}
-```
-
-**Example**
-
-```ts
-import { pipe } from '@effect/data/Function'
-import * as O from '@effect/data/Option'
-import * as E from '@effect/data/Either'
-
-const onNone = () => 'error'
-assert.deepStrictEqual(pipe(O.some(1), O.toEither(onNone)), E.right(1))
-assert.deepStrictEqual(pipe(O.none(), O.toEither(onNone)), E.left('error'))
-```
-
-Added in v1.0.0
-
 ## toRefinement
 
 Returns a type guard from a `Option` returning function.
@@ -754,30 +508,6 @@ export declare const Do: () => Option<{}>
 
 Added in v1.0.0
 
-## appendElement
-
-Appends an element to the end of a tuple wrapped in an `Option` type.
-
-**Signature**
-
-```ts
-export declare const appendElement: {
-  <A extends readonly any[], B>(self: Option<A>, that: Option<B>): Option<[...A, B]>
-  <B>(that: Option<B>): <A extends readonly any[]>(self: Option<A>) => Option<[...A, B]>
-}
-```
-
-**Example**
-
-```ts
-import * as O from '@effect/data/Option'
-
-assert.deepStrictEqual(O.appendElement(O.some([1, 2]), O.some(3)), O.some([1, 2, 3]))
-assert.deepStrictEqual(O.appendElement(O.some([1, 2]), O.none()), O.none())
-```
-
-Added in v1.0.0
-
 ## bind
 
 **Signature**
@@ -788,25 +518,6 @@ export declare const bind: {
     self: Option<A>
   ) => Option<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
   <A extends object, N extends string, B>(self: Option<A>, name: Exclude<N, keyof A>, f: (a: A) => Option<B>): Option<{
-    [K in N | keyof A]: K extends keyof A ? A[K] : B
-  }>
-}
-```
-
-Added in v1.0.0
-
-## bindDiscard
-
-A variant of `bind` that sequentially ignores the scope.
-
-**Signature**
-
-```ts
-export declare const bindDiscard: {
-  <N extends string, A extends object, B>(name: Exclude<N, keyof A>, that: Option<B>): (
-    self: Option<A>
-  ) => Option<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-  <A extends object, N extends string, B>(self: Option<A>, name: Exclude<N, keyof A>, that: Option<B>): Option<{
     [K in N | keyof A]: K extends keyof A ? A[K] : B
   }>
 }
@@ -840,33 +551,6 @@ export declare const let: {
     [K in N | keyof A]: K extends keyof A ? A[K] : B
   }>
 }
-```
-
-Added in v1.0.0
-
-## letDiscard
-
-**Signature**
-
-```ts
-export declare const letDiscard: {
-  <N extends string, A extends object, B>(name: Exclude<N, keyof A>, b: B): (
-    self: Option<A>
-  ) => Option<{ [K in N | keyof A]: K extends keyof A ? A[K] : B }>
-  <A extends object, N extends string, B>(self: Option<A>, name: Exclude<N, keyof A>, b: B): Option<{
-    [K in N | keyof A]: K extends keyof A ? A[K] : B
-  }>
-}
-```
-
-Added in v1.0.0
-
-## tupled
-
-**Signature**
-
-```ts
-export declare const tupled: <A>(self: Option<A>) => Option<[A]>
 ```
 
 Added in v1.0.0
@@ -1000,10 +684,10 @@ If you need to change the type of the `Option` in addition to filtering, see `fi
 
 ```ts
 export declare const filter: {
-  <C extends A, B extends A, A = C>(self: Option<C>, refinement: (a: A) => a is B): Option<B>
-  <B extends A, A = B>(self: Option<B>, predicate: (a: A) => boolean): Option<B>
   <C extends A, B extends A, A = C>(refinement: (a: A) => a is B): (self: Option<C>) => Option<B>
   <B extends A, A = B>(predicate: (a: A) => boolean): (self: Option<B>) => Option<B>
+  <C extends A, B extends A, A = C>(self: Option<C>, refinement: (a: A) => a is B): Option<B>
+  <B extends A, A = B>(self: Option<B>, predicate: (a: A) => boolean): Option<B>
 }
 ```
 
@@ -1099,36 +783,6 @@ assert.deepStrictEqual(
     reduceCompact(0, (b, a) => b + a)
   ),
   3
-)
-```
-
-Added in v1.0.0
-
-# generators
-
-## gen
-
-The `gen` API is a helper function that provides a generator interface for the `Option` monad instance.
-It can be used to easily create complex `Option` computations in a readable and concise manner.
-
-**Signature**
-
-```ts
-export declare const gen: Gen.Gen<OptionTypeLambda, Gen.Adapter<OptionTypeLambda>>
-```
-
-**Example**
-
-```ts
-import * as O from '@effect/data/Option'
-
-assert.deepStrictEqual(
-  O.gen(function* ($) {
-    const a = yield* $(O.some(1))
-    const b = yield* $(O.some(2))
-    return a + b
-  }),
-  O.some(3)
 )
 ```
 
@@ -1292,35 +946,7 @@ Lifts a binary function into `Option`.
 ```ts
 export declare const lift2: <A, B, C>(
   f: (a: A, b: B) => C
-) => { (self: Option<A>, that: Option<B>): Option<C>; (that: Option<B>): (self: Option<A>) => Option<C> }
-```
-
-Added in v1.0.0
-
-## liftEither
-
-Lifts an `Either` function to an `Option` function.
-
-**Signature**
-
-```ts
-export declare const liftEither: <A extends readonly unknown[], E, B>(
-  f: (...a: A) => Either<E, B>
-) => (...a: A) => Option<B>
-```
-
-**Example**
-
-```ts
-import * as O from '@effect/data/Option'
-import * as E from '@effect/data/Either'
-
-const parse = (s: string) => (isNaN(+s) ? E.left(`Error: ${s} is not a number`) : E.right(+s))
-
-const parseNumber = O.liftEither(parse)
-
-assert.deepEqual(parseNumber('12'), O.some(12))
-assert.deepEqual(parseNumber('not a number'), O.none())
+) => { (that: Option<B>): (self: Option<A>) => Option<C>; (self: Option<A>, that: Option<B>): Option<C> }
 ```
 
 Added in v1.0.0
@@ -1455,12 +1081,11 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface None<A> extends Data.Case {
+export interface None<A> extends Data.Case, Pipeable<Option<A>> {
   readonly _tag: 'None'
   readonly [OptionTypeId]: {
     readonly _A: (_: never) => A
   }
-  traced(trace: Trace): Option<A> | TracedOption<A>
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: OptionUnify<this>
   [Unify.blacklistSymbol]?: OptionUnifyBlacklist
@@ -1506,31 +1131,15 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Some<A> extends Data.Case {
+export interface Some<A> extends Data.Case, Pipeable<Option<A>> {
   readonly _tag: 'Some'
   readonly value: A
   readonly [OptionTypeId]: {
     readonly _A: (_: never) => A
   }
-  traced(trace: Trace): Option<A> | TracedOption<A>
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: OptionUnify<this>
   [Unify.blacklistSymbol]?: OptionUnifyBlacklist
-}
-```
-
-Added in v1.0.0
-
-## TracedOption (interface)
-
-**Signature**
-
-```ts
-export interface TracedOption<A> {
-  readonly _tag: 'Traced'
-  readonly i0: Option<A> | TracedOption<A>
-  readonly trace: SourceLocation
-  traced(trace: Trace): TracedOption<A>
 }
 ```
 
@@ -1547,8 +1156,8 @@ function when passed the `Option`'s value.
 
 ```ts
 export declare const match: {
-  <B, A, C = B>(onNone: LazyArg<B>, onSome: (a: A) => C): (self: Option<A>) => B | C
-  <A, B, C = B>(self: Option<A>, onNone: LazyArg<B>, onSome: (a: A) => C): B | C
+  <B, A, C = B>(options: { readonly onNone: LazyArg<B>; readonly onSome: (a: A) => C }): (self: Option<A>) => B | C
+  <A, B, C = B>(self: Option<A>, options: { readonly onNone: LazyArg<B>; readonly onSome: (a: A) => C }): B | C
 }
 ```
 
@@ -1559,24 +1168,12 @@ import { some, none, match } from '@effect/data/Option'
 import { pipe } from '@effect/data/Function'
 
 assert.deepStrictEqual(
-  pipe(
-    some(1),
-    match(
-      () => 'a none',
-      (a) => `a some containing ${a}`
-    )
-  ),
+  pipe(some(1), match({ onNone: () => 'a none', onSome: (a) => `a some containing ${a}` })),
   'a some containing 1'
 )
 
 assert.deepStrictEqual(
-  pipe(
-    none(),
-    match(
-      () => 'a none',
-      (a) => `a some containing ${a}`
-    )
-  ),
+  pipe(none(), match({ onNone: () => 'a none', onSome: (a) => `a some containing ${a}` })),
   'a none'
 )
 ```
@@ -1607,11 +1204,11 @@ import * as N from '@effect/data/Number'
 import { pipe } from '@effect/data/Function'
 
 const O = getOrder(N.Order)
-assert.deepStrictEqual(O.compare(none(), none()), 0)
-assert.deepStrictEqual(O.compare(none(), some(1)), -1)
-assert.deepStrictEqual(O.compare(some(1), none()), 1)
-assert.deepStrictEqual(O.compare(some(1), some(2)), -1)
-assert.deepStrictEqual(O.compare(some(1), some(1)), 0)
+assert.deepStrictEqual(O(none(), none()), 0)
+assert.deepStrictEqual(O(none(), some(1)), -1)
+assert.deepStrictEqual(O(some(1), none()), 1)
+assert.deepStrictEqual(O(some(1), some(2)), -1)
+assert.deepStrictEqual(O(some(1), some(1)), 0)
 ```
 
 Added in v1.0.0
@@ -1647,7 +1244,7 @@ Maps the `Some` value of this `Option` to the specified constant value.
 **Signature**
 
 ```ts
-export declare const as: { <_, B>(self: Option<_>, b: B): Option<B>; <B>(b: B): <_>(self: Option<_>) => Option<B> }
+export declare const as: <B>(b: B) => <_>(self: Option<_>) => Option<B>
 ```
 
 Added in v1.0.0
@@ -1672,21 +1269,8 @@ Added in v1.0.0
 
 ```ts
 export declare const composeK: {
-  <A, B, C>(afb: (a: A) => Option<B>, bfc: (b: B) => Option<C>): (a: A) => Option<C>
   <B, C>(bfc: (b: B) => Option<C>): <A>(afb: (a: A) => Option<B>) => (a: A) => Option<C>
-}
-```
-
-Added in v1.0.0
-
-## flap
-
-**Signature**
-
-```ts
-export declare const flap: {
-  <A, B>(a: A, self: Option<(a: A) => B>): Option<B>
-  <A, B>(self: Option<(a: A) => B>): (a: A) => Option<B>
+  <A, B, C>(afb: (a: A) => Option<B>, bfc: (b: B) => Option<C>): (a: A) => Option<C>
 }
 ```
 
@@ -1703,34 +1287,6 @@ export declare const flatMap: {
   <A, B>(f: (a: A) => Option<B>): (self: Option<A>) => Option<B>
   <A, B>(self: Option<A>, f: (a: A) => Option<B>): Option<B>
 }
-```
-
-Added in v1.0.0
-
-## flatMapEither
-
-Applies a provided function that returns an `Either` to the contents of an `Option`, flattening the result into another `Option`.
-
-**Signature**
-
-```ts
-export declare const flatMapEither: {
-  <A, E, B>(f: (a: A) => Either<E, B>): (self: Option<A>) => Option<B>
-  <A, E, B>(self: Option<A>, f: (a: A) => Either<E, B>): Option<B>
-}
-```
-
-**Example**
-
-```ts
-import * as O from '@effect/data/Option'
-import * as E from '@effect/data/Either'
-import { pipe } from '@effect/data/Function'
-
-const f = (n: number) => (n > 2 ? E.left('Too big') : E.right(n + 1))
-
-assert.deepStrictEqual(pipe(O.some(1), O.flatMapEither(f)), O.some(2))
-assert.deepStrictEqual(pipe(O.some(3), O.flatMapEither(f)), O.none())
 ```
 
 Added in v1.0.0
@@ -1823,8 +1379,8 @@ This function is useful for performing additional computations on the value of t
 
 ```ts
 export declare const tap: {
-  <A, _>(self: Option<A>, f: (a: A) => Option<_>): Option<A>
   <A, _>(f: (a: A) => Option<_>): (self: Option<A>) => Option<A>
+  <A, _>(self: Option<A>, f: (a: A) => Option<_>): Option<A>
 }
 ```
 
@@ -1852,8 +1408,8 @@ It is useful when we want to chain multiple operations, but only care about the 
 
 ```ts
 export declare const zipLeft: {
-  <A, _>(self: Option<A>, that: Option<_>): Option<A>
   <_>(that: Option<_>): <A>(self: Option<A>) => Option<A>
+  <A, _>(self: Option<A>, that: Option<_>): Option<A>
 }
 ```
 
@@ -1865,8 +1421,8 @@ Added in v1.0.0
 
 ```ts
 export declare const zipRight: {
-  <_, B>(self: Option<_>, that: Option<B>): Option<B>
   <B>(that: Option<B>): <_>(self: Option<_>) => Option<B>
+  <_, B>(self: Option<_>, that: Option<B>): Option<B>
 }
 ```
 
@@ -1887,176 +1443,6 @@ export interface OptionTypeLambda extends TypeLambda {
 Added in v1.0.0
 
 # utils
-
-## Alternative
-
-**Signature**
-
-```ts
-export declare const Alternative: alternative.Alternative<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## Applicative
-
-**Signature**
-
-```ts
-export declare const Applicative: applicative.Applicative<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## Chainable
-
-**Signature**
-
-```ts
-export declare const Chainable: chainable.Chainable<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## Coproduct
-
-**Signature**
-
-```ts
-export declare const Coproduct: coproduct_.Coproduct<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## Covariant
-
-**Signature**
-
-```ts
-export declare const Covariant: covariant.Covariant<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## Filterable
-
-**Signature**
-
-```ts
-export declare const Filterable: filterable.Filterable<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## FlatMap
-
-**Signature**
-
-```ts
-export declare const FlatMap: flatMap_.FlatMap<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## Foldable
-
-**Signature**
-
-```ts
-export declare const Foldable: foldable.Foldable<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## Invariant
-
-**Signature**
-
-```ts
-export declare const Invariant: invariant.Invariant<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## Monad
-
-**Signature**
-
-```ts
-export declare const Monad: monad.Monad<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## Pointed
-
-**Signature**
-
-```ts
-export declare const Pointed: pointed.Pointed<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## Product
-
-**Signature**
-
-```ts
-export declare const Product: product_.Product<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## SemiAlternative
-
-**Signature**
-
-```ts
-export declare const SemiAlternative: semiAlternative.SemiAlternative<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## SemiApplicative
-
-**Signature**
-
-```ts
-export declare const SemiApplicative: semiApplicative.SemiApplicative<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## SemiCoproduct
-
-**Signature**
-
-```ts
-export declare const SemiCoproduct: semiCoproduct.SemiCoproduct<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## SemiProduct
-
-**Signature**
-
-```ts
-export declare const SemiProduct: semiProduct.SemiProduct<OptionTypeLambda>
-```
-
-Added in v1.0.0
-
-## Traversable
-
-**Signature**
-
-```ts
-export declare const Traversable: traversable.Traversable<OptionTypeLambda>
-```
-
-Added in v1.0.0
 
 ## contains
 
@@ -2113,32 +1499,22 @@ assert.deepStrictEqual(pipe(none(), exists(isEven)), false)
 
 Added in v1.0.0
 
-## getOptionalMonoid
-
-Monoid that models the combination of values that may be absent, elements that are `None` are ignored
-while elements that are `Some` are combined using the provided `Semigroup`.
-
-The `empty` value is `none()`.
+## product
 
 **Signature**
 
 ```ts
-export declare const getOptionalMonoid: <A>(Semigroup: Semigroup<A>) => Monoid<Option<A>>
+export declare const product: <A, B>(self: Option<A>, that: Option<B>) => Option<[A, B]>
 ```
 
-**Example**
+Added in v1.0.0
+
+## productMany
+
+**Signature**
 
 ```ts
-import * as O from '@effect/data/Option'
-import * as N from '@effect/data/Number'
-import { pipe } from '@effect/data/Function'
-
-const M = O.getOptionalMonoid(N.SemigroupSum)
-
-assert.deepStrictEqual(M.combine(O.none(), O.none()), O.none())
-assert.deepStrictEqual(M.combine(O.some(1), O.none()), O.some(1))
-assert.deepStrictEqual(M.combine(O.none(), O.some(1)), O.some(1))
-assert.deepStrictEqual(M.combine(O.some(1), O.some(2)), O.some(3))
+export declare const productMany: <A>(self: Option<A>, collection: Iterable<Option<A>>) => Option<[A, ...A[]]>
 ```
 
 Added in v1.0.0
@@ -2148,7 +1524,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const unit: () => Option<void>
+export declare const unit: Option<void>
 ```
 
 Added in v1.0.0

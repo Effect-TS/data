@@ -3,8 +3,6 @@
  */
 import type { LazyArg } from "@effect/data/Function"
 import { dual } from "@effect/data/Function"
-import * as monoid from "@effect/data/typeclass/Monoid"
-import * as semigroup from "@effect/data/typeclass/Semigroup"
 
 /**
  * @category model
@@ -40,11 +38,11 @@ export const reverse = (o: Ordering): Ordering => (o === -1 ? 1 : o === 1 ? -1 :
  * import { match } from "@effect/data/Ordering"
  * import { constant } from "@effect/data/Function"
  *
- * const toMessage = match(
- *   constant('less than'),
- *   constant('equal'),
- *   constant('greater than')
- * )
+ * const toMessage = match({
+ *   onLessThan: constant('less than'),
+ *   onEqual: constant('equal'),
+ *   onGreaterThan: constant('greater than')
+ * })
  *
  * assert.deepStrictEqual(toMessage(-1), "less than")
  * assert.deepStrictEqual(toMessage(0), "equal")
@@ -55,65 +53,57 @@ export const reverse = (o: Ordering): Ordering => (o === -1 ? 1 : o === 1 ? -1 :
  */
 export const match: {
   <A, B, C = B>(
-    onLessThan: LazyArg<A>,
-    onEqual: LazyArg<B>,
-    onGreaterThan: LazyArg<C>
+    options: {
+      readonly onLessThan: LazyArg<A>
+      readonly onEqual: LazyArg<B>
+      readonly onGreaterThan: LazyArg<C>
+    }
   ): (self: Ordering) => A | B | C
   <A, B, C = B>(
     o: Ordering,
-    onLessThan: LazyArg<A>,
-    onEqual: LazyArg<B>,
-    onGreaterThan: LazyArg<C>
+    options: {
+      readonly onLessThan: LazyArg<A>
+      readonly onEqual: LazyArg<B>
+      readonly onGreaterThan: LazyArg<C>
+    }
   ): A | B | C
-} = dual(4, <A, B, C = B>(
+} = dual(2, <A, B, C = B>(
   self: Ordering,
-  onLessThan: LazyArg<A>,
-  onEqual: LazyArg<B>,
-  onGreaterThan: LazyArg<C>
+  { onEqual, onGreaterThan, onLessThan }: {
+    readonly onLessThan: LazyArg<A>
+    readonly onEqual: LazyArg<B>
+    readonly onGreaterThan: LazyArg<C>
+  }
 ): A | B | C => self === -1 ? onLessThan() : self === 0 ? onEqual() : onGreaterThan())
 
 /**
- * `Semigroup` instance for `Ordering`, returns the left-most non-zero `Ordering`.
- *
- * @example
- * import { Semigroup } from "@effect/data/Ordering"
- *
- * assert.deepStrictEqual(Semigroup.combine(0, -1), -1)
- * assert.deepStrictEqual(Semigroup.combine(0, 1), 1)
- * assert.deepStrictEqual(Semigroup.combine(1, -1), 1)
- *
- * @category instances
  * @since 1.0.0
  */
-export const Semigroup: semigroup.Semigroup<Ordering> = semigroup.make(
-  (self, that) => self !== 0 ? self : that,
-  (self, collection) => {
-    let ordering = self
+export const combine: {
+  (that: Ordering): (self: Ordering) => Ordering
+  (self: Ordering, that: Ordering): Ordering
+} = dual(2, (self: Ordering, that: Ordering): Ordering => self !== 0 ? self : that)
+
+/**
+ * @since 1.0.0
+ */
+export const combineMany: {
+  (collection: Iterable<Ordering>): (self: Ordering) => Ordering
+  (self: Ordering, collection: Iterable<Ordering>): Ordering
+} = dual(2, (self: Ordering, collection: Iterable<Ordering>): Ordering => {
+  let ordering = self
+  if (ordering !== 0) {
+    return ordering
+  }
+  for (ordering of collection) {
     if (ordering !== 0) {
       return ordering
     }
-    for (ordering of collection) {
-      if (ordering !== 0) {
-        return ordering
-      }
-    }
-    return ordering
   }
-)
+  return ordering
+})
 
 /**
- * `Monoid` instance for `Ordering`, returns the left-most non-zero `Ordering`.
- *
- * The `empty` value is `0`.
- *
- * @example
- * import { Monoid } from "@effect/data/Ordering"
- *
- * assert.deepStrictEqual(Monoid.combine(Monoid.empty, -1), -1)
- * assert.deepStrictEqual(Monoid.combine(Monoid.empty, 1), 1)
- * assert.deepStrictEqual(Monoid.combine(1, -1), 1)
- *
- * @category instances
  * @since 1.0.0
  */
-export const Monoid: monoid.Monoid<Ordering> = monoid.fromSemigroup(Semigroup, 0)
+export const combineAll = (collection: Iterable<Ordering>): Ordering => combineMany(0, collection)
