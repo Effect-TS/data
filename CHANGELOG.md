@@ -1,5 +1,27 @@
 # @effect/data
 
+## 0.13.0
+
+### Minor Changes
+
+- [#378](https://github.com/Effect-TS/data/pull/378) [`95ce472`](https://github.com/Effect-TS/data/commit/95ce4729ab45a36995a99ab1bab1e6d354984aa4) Thanks [@gcanti](https://github.com/gcanti)! - Simplify Either data type to represent a simple disjoint union
+
+- [#378](https://github.com/Effect-TS/data/pull/378) [`95ce472`](https://github.com/Effect-TS/data/commit/95ce4729ab45a36995a99ab1bab1e6d354984aa4) Thanks [@gcanti](https://github.com/gcanti)! - remove Debug module
+
+- [#378](https://github.com/Effect-TS/data/pull/378) [`95ce472`](https://github.com/Effect-TS/data/commit/95ce4729ab45a36995a99ab1bab1e6d354984aa4) Thanks [@gcanti](https://github.com/gcanti)! - remove tuple Do notation
+
+- [#378](https://github.com/Effect-TS/data/pull/378) [`95ce472`](https://github.com/Effect-TS/data/commit/95ce4729ab45a36995a99ab1bab1e6d354984aa4) Thanks [@gcanti](https://github.com/gcanti)! - use object api for some functions
+
+- [#378](https://github.com/Effect-TS/data/pull/378) [`95ce472`](https://github.com/Effect-TS/data/commit/95ce4729ab45a36995a99ab1bab1e6d354984aa4) Thanks [@gcanti](https://github.com/gcanti)! - remove typeclasses
+
+- [#378](https://github.com/Effect-TS/data/pull/378) [`95ce472`](https://github.com/Effect-TS/data/commit/95ce4729ab45a36995a99ab1bab1e6d354984aa4) Thanks [@gcanti](https://github.com/gcanti)! - merge Option.all/struct/tuple
+
+### Patch Changes
+
+- [#389](https://github.com/Effect-TS/data/pull/389) [`a4304b2`](https://github.com/Effect-TS/data/commit/a4304b211e04b2caa8ca12f677c557fbd5e0e926) Thanks [@tim-smart](https://github.com/tim-smart)! - support nanosecond precision in Duration
+
+- [#378](https://github.com/Effect-TS/data/pull/378) [`95ce472`](https://github.com/Effect-TS/data/commit/95ce4729ab45a36995a99ab1bab1e6d354984aa4) Thanks [@gcanti](https://github.com/gcanti)! - add /Pipeable module and implement it for various data types
+
 ## 0.12.10
 
 ### Patch Changes
