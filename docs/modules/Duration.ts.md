@@ -20,7 +20,6 @@ Added in v1.0.0
   - [millis](#millis)
   - [minutes](#minutes)
   - [nanos](#nanos)
-  - [negativeInfinity](#negativeinfinity)
   - [seconds](#seconds)
   - [weeks](#weeks)
   - [zero](#zero)
@@ -28,13 +27,13 @@ Added in v1.0.0
   - [toHrTime](#tohrtime)
   - [toMillis](#tomillis)
   - [toNanos](#tonanos)
+  - [unsafeToNanos](#unsafetonanos)
 - [guards](#guards)
   - [isDuration](#isduration)
 - [instances](#instances)
   - [Equivalence](#equivalence)
   - [Order](#order)
 - [math](#math)
-  - [subtract](#subtract)
   - [sum](#sum)
   - [times](#times)
 - [models](#models)
@@ -133,16 +132,6 @@ export declare const nanos: (nanos: bigint) => Duration
 
 Added in v1.0.0
 
-## negativeInfinity
-
-**Signature**
-
-```ts
-export declare const negativeInfinity: Duration
-```
-
-Added in v1.0.0
-
 ## seconds
 
 **Signature**
@@ -199,12 +188,26 @@ Added in v1.0.0
 
 Get the duration in nanoseconds as a bigint.
 
-If the duration is infinite, returns -1n.
+If the duration is infinite, returns `Option.none()`
 
 **Signature**
 
 ```ts
-export declare const toNanos: (self: Duration) => bigint
+export declare const toNanos: (self: Duration) => Option.Option<bigint>
+```
+
+Added in v1.0.0
+
+## unsafeToNanos
+
+Get the duration in nanoseconds as a bigint.
+
+If the duration is infinite, it throws an error.
+
+**Signature**
+
+```ts
+export declare const unsafeToNanos: (self: Duration) => bigint
 ```
 
 Added in v1.0.0
@@ -244,19 +247,6 @@ export declare const Order: order.Order<Duration>
 Added in v1.0.0
 
 # math
-
-## subtract
-
-**Signature**
-
-```ts
-export declare const subtract: {
-  (that: Duration): (self: Duration) => Duration
-  (self: Duration, that: Duration): Duration
-}
-```
-
-Added in v1.0.0
 
 ## sum
 
@@ -319,11 +309,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export type DurationValue =
-  | { _tag: 'Millis'; millis: number }
-  | { _tag: 'Nanos'; nanos: bigint }
-  | { _tag: 'Infinity' }
-  | { _tag: '-Infinity' }
+export type DurationValue = { _tag: 'Millis'; millis: number } | { _tag: 'Nanos'; nanos: bigint } | { _tag: 'Infinity' }
 ```
 
 Added in v1.0.0
