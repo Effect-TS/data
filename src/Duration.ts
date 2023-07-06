@@ -56,7 +56,7 @@ export type DurationInput =
   | `${number} days`
   | `${number} weeks`
 
-const DURATION_REGEX = /^(\d+(?:\.\d+)?)\s+(nanos|micros|millis|seconds|minutes|hours|days|weeks)$/
+const DURATION_REGEX = /^(-?\d+(?:\.\d+)?)\s+(nanos|micros|millis|seconds|minutes|hours|days|weeks)$/
 
 /**
  * @since 1.0.0

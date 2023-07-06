@@ -24,6 +24,7 @@ describe.concurrent("Duration", () => {
     expect(D.decode("10 weeks")).toEqual(D.weeks(10))
 
     expect(D.decode("1.5 seconds")).toEqual(D.seconds(1.5))
+    expect(D.decode("-1.5 seconds")).toEqual(D.zero)
 
     expect(() => D.decode("1.5 secs" as any)).toThrowError(new Error("Invalid duration input"))
   })
