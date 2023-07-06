@@ -163,6 +163,12 @@ describe.concurrent("Duration", () => {
     expect(D.negativeInfinity.pipe(D.toMillis)).toBe(-Infinity)
   })
 
+  it("toNanos", () => {
+    expect(D.nanos(1n).pipe(D.toNanos)).toBe(1n)
+    expect(D.infinity.pipe(D.toNanos)).toBe(-1n)
+    expect(D.millis(1.0005).pipe(D.toNanos)).toBe(1_000_500n)
+  })
+
   it("toHrTime", () => {
     expect(D.millis(1).pipe(D.toHrTime)).toEqual([0, 1_000_000])
     expect(D.nanos(1n).pipe(D.toHrTime)).toEqual([0, 1])

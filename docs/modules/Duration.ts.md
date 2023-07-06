@@ -27,6 +27,7 @@ Added in v1.0.0
 - [getters](#getters)
   - [toHrTime](#tohrtime)
   - [toMillis](#tomillis)
+  - [toNanos](#tonanos)
 - [guards](#guards)
   - [isDuration](#isduration)
 - [instances](#instances)
@@ -190,6 +191,20 @@ Added in v1.0.0
 
 ```ts
 export declare const toMillis: (self: Duration) => number
+```
+
+Added in v1.0.0
+
+## toNanos
+
+Get the duration in nanoseconds as a bigint.
+
+If the duration is infinite, returns -1n.
+
+**Signature**
+
+```ts
+export declare const toNanos: (self: Duration) => bigint
 ```
 
 Added in v1.0.0

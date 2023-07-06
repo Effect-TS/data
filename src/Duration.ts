@@ -244,6 +244,27 @@ export const toMillis = (self: Duration): number => {
 }
 
 /**
+ * Get the duration in nanoseconds as a bigint.
+ *
+ * If the duration is infinite, returns -1n.
+ *
+ * @since 1.0.0
+ * @category getters
+ */
+export const toNanos = (self: Duration): bigint => {
+  switch (self.value._tag) {
+    case "Infinity":
+      return BigInt(-1)
+    case "-Infinity":
+      return BigInt(-1)
+    case "Nanos":
+      return self.value.nanos
+    case "Millis":
+      return BigInt(Math.round(self.value.millis * 1_000_000))
+  }
+}
+
+/**
  * @since 1.0.0
  * @category getters
  */
