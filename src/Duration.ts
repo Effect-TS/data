@@ -5,6 +5,7 @@ import * as Equal from "@effect/data/Equal"
 import type * as equivalence from "@effect/data/Equivalence"
 import { dual } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
+import * as Option from "@effect/data/Option"
 import * as order from "@effect/data/Order"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
@@ -37,7 +38,6 @@ export type DurationValue =
   | { _tag: "Millis"; millis: number }
   | { _tag: "Nanos"; nanos: bigint }
   | { _tag: "Infinity" }
-  | { _tag: "-Infinity" }
 
 /**
  * @since 1.0.0
@@ -56,7 +56,7 @@ export type DurationInput =
   | `${number} days`
   | `${number} weeks`
 
-const DURATION_REGEX = /^(\d+(?:\.\d+)?)\s+(nanos|micros|millis|seconds|minutes|hours|days|weeks)$/
+const DURATION_REGEX = /^(-?\d+(?:\.\d+)?)\s+(nanos|micros|millis|seconds|minutes|hours|days|weeks)$/
 
 /**
  * @since 1.0.0
@@ -97,20 +97,25 @@ export const decode = (input: DurationInput): Duration => {
   throw new Error("Invalid duration input")
 }
 
+const zeroValue: DurationValue = { _tag: "Millis", millis: 0 }
+const infinityValue: DurationValue = { _tag: "Infinity" }
+
 class DurationImpl implements Equal.Equal {
   readonly _id: TypeId = TypeId
   readonly value: DurationValue
   constructor(input: number | bigint) {
     if (typeof input === "number") {
-      if (isNaN(input)) {
-        this.value = { _tag: "Millis", millis: 0 }
+      if (isNaN(input) || input < 0) {
+        this.value = zeroValue
       } else if (!Number.isFinite(input)) {
-        this.value = input < 0 ? { _tag: "-Infinity" } : { _tag: "Infinity" }
+        this.value = infinityValue
       } else if (!Number.isInteger(input)) {
         this.value = { _tag: "Nanos", nanos: BigInt(Math.round(input * 1_000_000)) }
       } else {
         this.value = { _tag: "Millis", millis: input }
       }
+    } else if (input < BigInt(0)) {
+      this.value = zeroValue
     } else {
       this.value = { _tag: "Nanos", nanos: input }
     }
@@ -129,8 +134,6 @@ class DurationImpl implements Equal.Equal {
         return `Duration(Nanos, ${this.value.nanos})`
       case "Infinity":
         return `Duration(Infinity)`
-      case "-Infinity":
-        return `Duration(-Infinity)`
     }
   }
   toJSON() {
@@ -171,12 +174,6 @@ export const zero: Duration = new DurationImpl(0)
  * @category constructors
  */
 export const infinity: Duration = new DurationImpl(Infinity)
-
-/**
- * @since 1.0.0
- * @category constructors
- */
-export const negativeInfinity: Duration = new DurationImpl(-Infinity)
 
 /**
  * @since 1.0.0
@@ -234,12 +231,48 @@ export const toMillis = (self: Duration): number => {
   switch (self.value._tag) {
     case "Infinity":
       return Infinity
-    case "-Infinity":
-      return -Infinity
     case "Nanos":
       return Number(self.value.nanos) / 1_000_000
     case "Millis":
       return self.value.millis
+  }
+}
+
+/**
+ * Get the duration in nanoseconds as a bigint.
+ *
+ * If the duration is infinite, returns `Option.none()`
+ *
+ * @since 1.0.0
+ * @category getters
+ */
+export const toNanos = (self: Duration): Option.Option<bigint> => {
+  switch (self.value._tag) {
+    case "Infinity":
+      return Option.none()
+    case "Nanos":
+      return Option.some(self.value.nanos)
+    case "Millis":
+      return Option.some(BigInt(Math.round(self.value.millis * 1_000_000)))
+  }
+}
+
+/**
+ * Get the duration in nanoseconds as a bigint.
+ *
+ * If the duration is infinite, it throws an error.
+ *
+ * @since 1.0.0
+ * @category getters
+ */
+export const unsafeToNanos = (self: Duration): bigint => {
+  switch (self.value._tag) {
+    case "Infinity":
+      throw new Error("Cannot convert infinite duration to nanos")
+    case "Nanos":
+      return self.value.nanos
+    case "Millis":
+      return BigInt(Math.round(self.value.millis * 1_000_000))
   }
 }
 
@@ -251,8 +284,6 @@ export const toHrTime = (self: Duration): readonly [seconds: number, nanos: numb
   switch (self.value._tag) {
     case "Infinity":
       return [Infinity, 0]
-    case "-Infinity":
-      return [-Infinity, 0]
     case "Nanos":
       return [
         Number(self.value.nanos / bigint1e9),
@@ -299,8 +330,6 @@ export const match: {
       return onNanos(self.value.nanos)
     case "Infinity":
       return onMillis(Infinity)
-    case "-Infinity":
-      return onMillis(-Infinity)
     case "Millis":
       return onMillis(self.value.millis)
   }
@@ -331,12 +360,7 @@ export const matchWith = dual<
   that,
   { onMillis, onNanos }
 ) => {
-  if (
-    self.value._tag === "Infinity" ||
-    that.value._tag === "Infinity" ||
-    self.value._tag === "-Infinity" ||
-    that.value._tag === "-Infinity"
-  ) {
+  if (self.value._tag === "Infinity" || that.value._tag === "Infinity") {
     return onMillis(
       toMillis(self),
       toMillis(that)
@@ -451,25 +475,6 @@ export const sum: {
     matchWith(self, that, {
       onMillis: (self, that) => new DurationImpl(self + that),
       onNanos: (self, that) => new DurationImpl(self + that)
-    })
-)
-
-/**
- * @since 1.0.0
- * @category math
- */
-export const subtract: {
-  (that: Duration): (self: Duration) => Duration
-  (self: Duration, that: Duration): Duration
-} = dual<
-  (that: Duration) => (self: Duration) => Duration,
-  (self: Duration, that: Duration) => Duration
->(
-  2,
-  (self, that) =>
-    matchWith(self, that, {
-      onMillis: (self, that) => new DurationImpl(self - that),
-      onNanos: (self, that) => new DurationImpl(self - that)
     })
 )
 

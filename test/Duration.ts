@@ -1,6 +1,7 @@
 import * as D from "@effect/data/Duration"
 import * as Equal from "@effect/data/Equal"
 import { pipe } from "@effect/data/Function"
+import * as Option from "@effect/data/Option"
 import { deepStrictEqual } from "@effect/data/test/util"
 import { inspect } from "node:util"
 
@@ -23,6 +24,7 @@ describe.concurrent("Duration", () => {
     expect(D.decode("10 weeks")).toEqual(D.weeks(10))
 
     expect(D.decode("1.5 seconds")).toEqual(D.seconds(1.5))
+    expect(D.decode("-1.5 seconds")).toEqual(D.zero)
 
     expect(() => D.decode("1.5 secs" as any)).toThrowError(new Error("Invalid duration input"))
   })
@@ -120,15 +122,9 @@ describe.concurrent("Duration", () => {
     expect(JSON.stringify(D.infinity)).toEqual(
       JSON.stringify({ _tag: "Duration", value: { _tag: "Infinity" } })
     )
-    expect(JSON.stringify(D.negativeInfinity)).toEqual(
-      JSON.stringify({ _tag: "Duration", value: { _tag: "-Infinity" } })
-    )
   })
   it("sum/ Infinity", () => {
     expect(D.sum(D.seconds(1), D.infinity)).toEqual(D.infinity)
-  })
-  it("subtract/ Infinity", () => {
-    expect(D.subtract(D.seconds(1), D.infinity)).toEqual(D.nanos(-Infinity as any))
   })
   it("pipe", () => {
     expect(D.seconds(1).pipe(D.sum(D.seconds(1)))).toEqual(D.seconds(2))
@@ -160,7 +156,18 @@ describe.concurrent("Duration", () => {
     expect(D.millis(1).pipe(D.toMillis)).toBe(1)
     expect(D.nanos(1n).pipe(D.toMillis)).toBe(0.000001)
     expect(D.infinity.pipe(D.toMillis)).toBe(Infinity)
-    expect(D.negativeInfinity.pipe(D.toMillis)).toBe(-Infinity)
+  })
+
+  it("toNanos", () => {
+    expect(D.nanos(1n).pipe(D.toNanos)).toEqual(Option.some(1n))
+    expect(D.infinity.pipe(D.toNanos)).toEqual(Option.none())
+    expect(D.millis(1.0005).pipe(D.toNanos)).toEqual(Option.some(1_000_500n))
+  })
+
+  it("unsafeToNanos", () => {
+    expect(D.nanos(1n).pipe(D.unsafeToNanos)).toBe(1n)
+    expect(() => D.infinity.pipe(D.unsafeToNanos)).toThrow()
+    expect(D.millis(1.0005).pipe(D.unsafeToNanos)).toBe(1_000_500n)
   })
 
   it("toHrTime", () => {
@@ -169,6 +176,9 @@ describe.concurrent("Duration", () => {
     expect(D.nanos(1_000_000_001n).pipe(D.toHrTime)).toEqual([1, 1])
     expect(D.millis(1001).pipe(D.toHrTime)).toEqual([1, 1_000_000])
     expect(D.infinity.pipe(D.toHrTime)).toEqual([Infinity, 0])
-    expect(D.negativeInfinity.pipe(D.toHrTime)).toEqual([-Infinity, 0])
+  })
+
+  it("floor is 0", () => {
+    expect(D.millis(-1)).toEqual(D.zero)
   })
 })
