@@ -1,5 +1,13 @@
 # @effect/data
 
+## 0.13.3
+
+### Patch Changes
+
+- [#397](https://github.com/Effect-TS/data/pull/397) [`864f57c`](https://github.com/Effect-TS/data/commit/864f57c5778675b61588b090bd64fcb3bdb6333f) Thanks [@gcanti](https://github.com/gcanti)! - Duration: better toString()
+
+- [#397](https://github.com/Effect-TS/data/pull/397) [`864f57c`](https://github.com/Effect-TS/data/commit/864f57c5778675b61588b090bd64fcb3bdb6333f) Thanks [@gcanti](https://github.com/gcanti)! - Duration: add Unit type
+
 ## 0.13.2
 
 ### Patch Changes
