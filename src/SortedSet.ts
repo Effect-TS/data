@@ -137,14 +137,13 @@ export const difference: {
  * @category elements
  */
 export const every: {
+  <A, B extends A>(refinement: Refinement<A, B>): (self: SortedSet<A>) => self is SortedSet<B>
   <A>(predicate: Predicate<A>): (self: SortedSet<A>) => boolean
+  <A, B extends A>(self: SortedSet<A>, refinement: Refinement<A, B>): self is SortedSet<B>
   <A>(self: SortedSet<A>, predicate: Predicate<A>): boolean
-} = Dual.dual<
-  <A>(predicate: Predicate<A>) => (self: SortedSet<A>) => boolean,
-  <A>(self: SortedSet<A>, predicate: Predicate<A>) => boolean
->(2, (self, predicate) => {
+} = Dual.dual(2, <A, B extends A>(self: SortedSet<A>, refinement: Refinement<A, B>): self is SortedSet<B> => {
   for (const value of self) {
-    if (!predicate(value)) {
+    if (!refinement(value)) {
       return false
     }
   }

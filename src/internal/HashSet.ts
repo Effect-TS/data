@@ -104,10 +104,16 @@ export const some = Dual.dual<
 })
 
 /** @internal */
-export const every = Dual.dual<
-  <A>(f: Predicate<A>) => (self: HS.HashSet<A>) => boolean,
-  <A>(self: HS.HashSet<A>, f: Predicate<A>) => boolean
->(2, (self, f) => !some(self, (a) => !f(a)))
+export const every: {
+  <A, B extends A>(refinement: Refinement<A, B>): (self: HS.HashSet<A>) => self is HS.HashSet<B>
+  <A>(predicate: Predicate<A>): (self: HS.HashSet<A>) => boolean
+  <A, B extends A>(self: HS.HashSet<A>, refinement: Refinement<A, B>): self is HS.HashSet<B>
+  <A>(self: HS.HashSet<A>, predicate: Predicate<A>): boolean
+} = Dual.dual(
+  2,
+  <A, B extends A>(self: HS.HashSet<A>, refinement: Refinement<A, B>): self is HS.HashSet<B> =>
+    !some(self, (a) => !refinement(a))
+)
 
 /** @internal */
 export const isSubset = Dual.dual<

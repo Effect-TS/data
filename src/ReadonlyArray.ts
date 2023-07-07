@@ -1778,15 +1778,21 @@ export const liftEither = <A extends Array<unknown>, E, B>(
   }
 
 /**
- * Check if a predicate holds true for every `Iterable` member.
+ * Check if a predicate holds true for every `ReadonlyArray` member.
  *
  * @category predicates
  * @since 1.0.0
  */
 export const every: {
-  <A>(predicate: Predicate<A>): (self: Iterable<A>) => boolean
-  <A>(self: Iterable<A>, predicate: Predicate<A>): boolean
-} = dual(2, <A>(self: Iterable<A>, predicate: Predicate<A>): boolean => fromIterable(self).every(predicate))
+  <A, B extends A>(refinement: Refinement<A, B>): (self: ReadonlyArray<A>) => self is ReadonlyArray<B>
+  <A>(predicate: Predicate<A>): (self: ReadonlyArray<A>) => boolean
+  <A, B extends A>(self: ReadonlyArray<A>, refinement: Refinement<A, B>): self is ReadonlyArray<B>
+  <A>(self: ReadonlyArray<A>, predicate: Predicate<A>): boolean
+} = dual(
+  2,
+  <A, B extends A>(self: ReadonlyArray<A>, refinement: Refinement<A, B>): self is ReadonlyArray<B> =>
+    self.every(refinement)
+)
 
 /**
  * Check if a predicate holds true for some `ReadonlyArray` member.
