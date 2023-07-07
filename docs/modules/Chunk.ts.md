@@ -105,6 +105,7 @@ Added in v1.0.0
   - [remove](#remove)
   - [replace](#replace)
   - [replaceOption](#replaceoption)
+  - [some](#some)
   - [take](#take)
 
 ---
@@ -1199,6 +1200,19 @@ Added in v1.0.0
 export declare const replaceOption: {
   <B>(i: number, b: B): <A>(self: Chunk<A>) => Option<Chunk<B | A>>
   <A, B>(self: Chunk<A>, i: number, b: B): Option<Chunk<A | B>>
+}
+```
+
+Added in v1.0.0
+
+## some
+
+**Signature**
+
+```ts
+export declare const some: {
+  <A>(predicate: Predicate<A>): (self: Chunk<A>) => self is NonEmptyChunk<A>
+  <A>(self: Chunk<A>, predicate: Predicate<A>): self is NonEmptyChunk<A>
 }
 ```
 
