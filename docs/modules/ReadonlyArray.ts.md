@@ -1306,14 +1306,14 @@ Added in v1.0.0
 
 ## every
 
-Check if a predicate holds true for every `ReadonlyArray` member.
+Check if a predicate holds true for every `Iterable` member.
 
 **Signature**
 
 ```ts
 export declare const every: {
-  <A>(predicate: Predicate<A>): (self: readonly A[]) => boolean
-  <A>(self: readonly A[], predicate: Predicate<A>): boolean
+  <A>(predicate: Predicate<A>): (self: Iterable<A>) => boolean
+  <A>(self: Iterable<A>, predicate: Predicate<A>): boolean
 }
 ```
 
@@ -1327,8 +1327,8 @@ Check if a predicate holds true for some `ReadonlyArray` member.
 
 ```ts
 export declare const some: {
-  <A>(predicate: Predicate<A>): (self: Iterable<A>) => self is readonly [A, ...A[]]
-  <A>(self: Iterable<A>, predicate: Predicate<A>): self is readonly [A, ...A[]]
+  <A>(predicate: Predicate<A>): (self: readonly A[]) => self is readonly [A, ...A[]]
+  <A>(self: readonly A[], predicate: Predicate<A>): self is readonly [A, ...A[]]
 }
 ```
 

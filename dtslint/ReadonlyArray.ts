@@ -98,3 +98,11 @@ RA.groupBy([1, 2, 3], String)
 // should not return a struct (Record<'positive' | 'negative', ...>) when using string type literals
 // $ExpectType Record<string, [number, ...number[]]>
 RA.groupBy([1, 2, 3], n => n > 0 ? 'positive' as const : 'negative' as const)
+
+// -------------------------------------------------------------------------------------
+// some
+// -------------------------------------------------------------------------------------
+
+if (RA.some(as, () => true)) {
+  as // $ExpectType number[] & readonly [number, ...number[]]
+}
