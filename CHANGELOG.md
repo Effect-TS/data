@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.13.4
+
+### Patch Changes
+
+- [#399](https://github.com/Effect-TS/data/pull/399) [`f9d77a1`](https://github.com/Effect-TS/data/commit/f9d77a13574742e14b8e511fe810184dde5f8def) Thanks [@gcanti](https://github.com/gcanti)! - fix every signature in ReadonlyArray, Chunk, List, HashSet, SortedSet
+
 ## 0.13.3
 
 ### Patch Changes
