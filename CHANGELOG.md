@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.13.2
+
+### Patch Changes
+
+- [#395](https://github.com/Effect-TS/data/pull/395) [`15fce3d`](https://github.com/Effect-TS/data/commit/15fce3ddec20294c2cd0845d7f783e73bf566bd4) Thanks [@gcanti](https://github.com/gcanti)! - fix ReadonlyArray.some, ReadonlyArray.every, Chunk.every signatures
+
 ## 0.13.1
 
 ### Patch Changes
