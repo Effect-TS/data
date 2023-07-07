@@ -1306,14 +1306,16 @@ Added in v1.0.0
 
 ## every
 
-Check if a predicate holds true for every `Iterable` member.
+Check if a predicate holds true for every `ReadonlyArray` member.
 
 **Signature**
 
 ```ts
 export declare const every: {
-  <A>(predicate: Predicate<A>): (self: Iterable<A>) => boolean
-  <A>(self: Iterable<A>, predicate: Predicate<A>): boolean
+  <A, B extends A>(refinement: Refinement<A, B>): (self: readonly A[]) => self is readonly B[]
+  <A>(predicate: Predicate<A>): (self: readonly A[]) => boolean
+  <A, B extends A>(self: readonly A[], refinement: Refinement<A, B>): self is readonly B[]
+  <A>(self: readonly A[], predicate: Predicate<A>): boolean
 }
 ```
 

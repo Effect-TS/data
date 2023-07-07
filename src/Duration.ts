@@ -111,7 +111,7 @@ class DurationImpl implements Equal.Equal {
   readonly _id: TypeId = TypeId
   readonly value: DurationValue
   constructor(input: number | bigint) {
-    if (typeof input === "number") {
+    if (isNumber(input)) {
       if (isNaN(input) || input < 0) {
         this.value = zeroValue
       } else if (!Number.isFinite(input)) {

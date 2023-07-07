@@ -1216,9 +1216,15 @@ export const findLastIndex: {
  * @since 1.0.0
  */
 export const every: {
+  <A, B extends A>(refinement: Refinement<A, B>): (self: Chunk<A>) => self is Chunk<B>
   <A>(predicate: Predicate<A>): (self: Chunk<A>) => boolean
+  <A, B extends A>(self: Chunk<A>, refinement: Refinement<A, B>): self is Chunk<B>
   <A>(self: Chunk<A>, predicate: Predicate<A>): boolean
-} = RA.every
+} = dual(
+  2,
+  <A, B extends A>(self: Chunk<A>, refinement: Refinement<A, B>): self is Chunk<B> =>
+    RA.fromIterable(self).every(refinement)
+)
 
 /**
  * @since 1.0.0

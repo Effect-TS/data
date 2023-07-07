@@ -989,7 +989,9 @@ Added in v1.0.0
 
 ```ts
 export declare const every: {
+  <A, B extends A>(refinement: Refinement<A, B>): (self: Chunk<A>) => self is Chunk<B>
   <A>(predicate: Predicate<A>): (self: Chunk<A>) => boolean
+  <A, B extends A>(self: Chunk<A>, refinement: Refinement<A, B>): self is Chunk<B>
   <A>(self: Chunk<A>, predicate: Predicate<A>): boolean
 }
 ```

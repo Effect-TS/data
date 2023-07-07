@@ -104,8 +104,10 @@ predicate.
 
 ```ts
 export declare const every: {
-  <A>(f: Predicate<A>): (self: HashSet<A>) => boolean
-  <A>(self: HashSet<A>, f: Predicate<A>): boolean
+  <A, B extends A>(refinement: Refinement<A, B>): (self: HashSet<A>) => self is HashSet<B>
+  <A>(predicate: Predicate<A>): (self: HashSet<A>) => boolean
+  <A, B extends A>(self: HashSet<A>, refinement: Refinement<A, B>): self is HashSet<B>
+  <A>(self: HashSet<A>, predicate: Predicate<A>): boolean
 }
 ```
 
