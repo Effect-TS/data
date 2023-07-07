@@ -43,18 +43,25 @@ export type DurationValue =
  * @since 1.0.0
  * @category models
  */
+export type Unit =
+  | "nanos"
+  | "micros"
+  | "millis"
+  | "seconds"
+  | "minutes"
+  | "hours"
+  | "days"
+  | "weeks"
+
+/**
+ * @since 1.0.0
+ * @category models
+ */
 export type DurationInput =
   | Duration
   | number // millis
   | bigint // nanos
-  | `${number} nanos`
-  | `${number} micros`
-  | `${number} millis`
-  | `${number} seconds`
-  | `${number} minutes`
-  | `${number} hours`
-  | `${number} days`
-  | `${number} weeks`
+  | `${number} ${Unit}`
 
 const DURATION_REGEX = /^(-?\d+(?:\.\d+)?)\s+(nanos|micros|millis|seconds|minutes|hours|days|weeks)$/
 
