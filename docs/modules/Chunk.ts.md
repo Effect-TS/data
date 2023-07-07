@@ -989,8 +989,8 @@ Added in v1.0.0
 
 ```ts
 export declare const every: {
-  <A>(predicate: Predicate<A>): (self: readonly A[]) => boolean
-  <A>(self: readonly A[], predicate: Predicate<A>): boolean
+  <A>(predicate: Predicate<A>): (self: Chunk<A>) => boolean
+  <A>(self: Chunk<A>, predicate: Predicate<A>): boolean
 }
 ```
 

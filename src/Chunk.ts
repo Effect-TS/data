@@ -1216,9 +1216,20 @@ export const findLastIndex: {
  * @since 1.0.0
  */
 export const every: {
-  <A>(predicate: Predicate<A>): (self: ReadonlyArray<A>) => boolean
-  <A>(self: ReadonlyArray<A>, predicate: Predicate<A>): boolean
+  <A>(predicate: Predicate<A>): (self: Chunk<A>) => boolean
+  <A>(self: Chunk<A>, predicate: Predicate<A>): boolean
 } = RA.every
+
+/**
+ * @since 1.0.0
+ */
+export const some: {
+  <A>(predicate: Predicate<A>): (self: Chunk<A>) => self is NonEmptyChunk<A>
+  <A>(self: Chunk<A>, predicate: Predicate<A>): self is NonEmptyChunk<A>
+} = dual(
+  2,
+  <A>(self: Chunk<A>, predicate: Predicate<A>): self is NonEmptyChunk<A> => RA.fromIterable(self).some(predicate)
+)
 
 /**
  * @since 1.0.0
@@ -1243,11 +1254,3 @@ export const reduceRight: {
   <B, A>(b: B, f: (b: B, a: A, i: number) => B): (self: Chunk<A>) => B
   <A, B>(self: Chunk<A>, b: B, f: (b: B, a: A, i: number) => B): B
 } = RA.reduceRight
-
-/**
- * @since 1.0.0
- */
-export const some: {
-  <A>(predicate: Predicate<A>): (self: Chunk<A>) => self is NonEmptyChunk<A>
-  <A>(self: Chunk<A>, predicate: Predicate<A>): self is NonEmptyChunk<A>
-} = RA.some as any

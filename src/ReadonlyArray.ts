@@ -1778,15 +1778,15 @@ export const liftEither = <A extends Array<unknown>, E, B>(
   }
 
 /**
- * Check if a predicate holds true for every `ReadonlyArray` member.
+ * Check if a predicate holds true for every `Iterable` member.
  *
  * @category predicates
  * @since 1.0.0
  */
 export const every: {
-  <A>(predicate: Predicate<A>): (self: ReadonlyArray<A>) => boolean
-  <A>(self: ReadonlyArray<A>, predicate: Predicate<A>): boolean
-} = dual(2, <A>(self: ReadonlyArray<A>, predicate: Predicate<A>): boolean => self.every(predicate))
+  <A>(predicate: Predicate<A>): (self: Iterable<A>) => boolean
+  <A>(self: Iterable<A>, predicate: Predicate<A>): boolean
+} = dual(2, <A>(self: Iterable<A>, predicate: Predicate<A>): boolean => fromIterable(self).every(predicate))
 
 /**
  * Check if a predicate holds true for some `ReadonlyArray` member.
@@ -1795,12 +1795,11 @@ export const every: {
  * @since 1.0.0
  */
 export const some: {
-  <A>(predicate: Predicate<A>): (self: Iterable<A>) => self is NonEmptyReadonlyArray<A>
-  <A>(self: Iterable<A>, predicate: Predicate<A>): self is NonEmptyReadonlyArray<A>
+  <A>(predicate: Predicate<A>): (self: ReadonlyArray<A>) => self is NonEmptyReadonlyArray<A>
+  <A>(self: ReadonlyArray<A>, predicate: Predicate<A>): self is NonEmptyReadonlyArray<A>
 } = dual(
   2,
-  <A>(self: Iterable<A>, predicate: Predicate<A>): self is NonEmptyReadonlyArray<A> =>
-    fromIterable(self).some(predicate)
+  <A>(self: ReadonlyArray<A>, predicate: Predicate<A>): self is NonEmptyReadonlyArray<A> => self.some(predicate)
 )
 
 /**
