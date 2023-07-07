@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.13.1
+
+### Patch Changes
+
+- [#393](https://github.com/Effect-TS/data/pull/393) [`9de2273`](https://github.com/Effect-TS/data/commit/9de22735d2da6333f0bd18ece7d21779b8186252) Thanks [@tim-smart](https://github.com/tim-smart)! - add Chunk.some
+
 ## 0.13.0
 
 ### Minor Changes
