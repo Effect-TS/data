@@ -1795,11 +1795,12 @@ export const every: {
  * @since 1.0.0
  */
 export const some: {
-  <A>(predicate: Predicate<A>): (self: ReadonlyArray<A>) => self is NonEmptyReadonlyArray<A>
-  <A>(self: ReadonlyArray<A>, predicate: Predicate<A>): self is NonEmptyReadonlyArray<A>
+  <A>(predicate: Predicate<A>): (self: Iterable<A>) => self is NonEmptyReadonlyArray<A>
+  <A>(self: Iterable<A>, predicate: Predicate<A>): self is NonEmptyReadonlyArray<A>
 } = dual(
   2,
-  <A>(self: ReadonlyArray<A>, predicate: Predicate<A>): self is NonEmptyReadonlyArray<A> => self.some(predicate)
+  <A>(self: Iterable<A>, predicate: Predicate<A>): self is NonEmptyReadonlyArray<A> =>
+    fromIterable(self).some(predicate)
 )
 
 /**

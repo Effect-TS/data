@@ -1327,8 +1327,8 @@ Check if a predicate holds true for some `ReadonlyArray` member.
 
 ```ts
 export declare const some: {
-  <A>(predicate: Predicate<A>): (self: readonly A[]) => self is readonly [A, ...A[]]
-  <A>(self: readonly A[], predicate: Predicate<A>): self is readonly [A, ...A[]]
+  <A>(predicate: Predicate<A>): (self: Iterable<A>) => self is readonly [A, ...A[]]
+  <A>(self: Iterable<A>, predicate: Predicate<A>): self is readonly [A, ...A[]]
 }
 ```
 

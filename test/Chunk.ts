@@ -4,6 +4,7 @@ import * as E from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
 import { identity, pipe } from "@effect/data/Function"
 import * as Option from "@effect/data/Option"
+import type { Predicate } from "@effect/data/Predicate"
 import * as RA from "@effect/data/ReadonlyArray"
 import * as Util from "@effect/data/test/util"
 import * as fc from "fast-check"
@@ -22,6 +23,7 @@ describe.concurrent("Chunk", () => {
     expect(Chunk.join).exist
     expect(Chunk.reduce).exist
     expect(Chunk.reduceRight).exist
+    expect(Chunk.some).exist
     expect(Chunk.getEquivalence).exist
   })
 
@@ -807,5 +809,11 @@ describe.concurrent("Chunk", () => {
     // out of bound
     expect(Chunk.range(2, 1)).toEqual(Chunk.make(2))
     expect(Chunk.range(-1, -2)).toEqual(Chunk.make(-1))
+  })
+
+  it("some", () => {
+    const isPositive: Predicate<number> = (n) => n > 0
+    expect(Chunk.some(Chunk.make(-1, -2, 3), isPositive)).toEqual(true)
+    expect(Chunk.some(Chunk.make(-1, -2, -3), isPositive)).toEqual(false)
   })
 })
