@@ -40,6 +40,7 @@ Added in v1.0.0
   - [Duration (interface)](#duration-interface)
   - [DurationInput (type alias)](#durationinput-type-alias)
   - [DurationValue (type alias)](#durationvalue-type-alias)
+  - [Unit (type alias)](#unit-type-alias)
 - [pattern matching](#pattern-matching)
   - [match](#match)
   - [matchWith](#matchwith)
@@ -292,14 +293,7 @@ export type DurationInput =
   | Duration
   | number // millis
   | bigint // nanos
-  | `${number} nanos`
-  | `${number} micros`
-  | `${number} millis`
-  | `${number} seconds`
-  | `${number} minutes`
-  | `${number} hours`
-  | `${number} days`
-  | `${number} weeks`
+  | `${number} ${Unit}`
 ```
 
 Added in v1.0.0
@@ -310,6 +304,16 @@ Added in v1.0.0
 
 ```ts
 export type DurationValue = { _tag: 'Millis'; millis: number } | { _tag: 'Nanos'; nanos: bigint } | { _tag: 'Infinity' }
+```
+
+Added in v1.0.0
+
+## Unit (type alias)
+
+**Signature**
+
+```ts
+export type Unit = 'nanos' | 'micros' | 'millis' | 'seconds' | 'minutes' | 'hours' | 'days' | 'weeks'
 ```
 
 Added in v1.0.0

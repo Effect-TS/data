@@ -33,12 +33,20 @@ describe.concurrent("Duration", () => {
     deepStrictEqual(D.Order(D.millis(1), D.millis(2)), -1)
     deepStrictEqual(D.Order(D.millis(2), D.millis(1)), 1)
     deepStrictEqual(D.Order(D.millis(2), D.millis(2)), 0)
+
+    deepStrictEqual(D.Order(D.nanos(1n), D.nanos(2n)), -1)
+    deepStrictEqual(D.Order(D.nanos(2n), D.nanos(1n)), 1)
+    deepStrictEqual(D.Order(D.nanos(2n), D.nanos(2n)), 0)
   })
 
   it("Equivalence", () => {
     deepStrictEqual(D.Equivalence(D.millis(1), D.millis(1)), true)
     deepStrictEqual(D.Equivalence(D.millis(1), D.millis(2)), false)
     deepStrictEqual(D.Equivalence(D.millis(1), D.millis(2)), false)
+
+    deepStrictEqual(D.Equivalence(D.nanos(1n), D.nanos(1n)), true)
+    deepStrictEqual(D.Equivalence(D.nanos(1n), D.nanos(2n)), false)
+    deepStrictEqual(D.Equivalence(D.nanos(1n), D.nanos(2n)), false)
   })
 
   it("max", () => {
@@ -66,67 +74,103 @@ describe.concurrent("Duration", () => {
   })
 
   it("times", () => {
-    assert.isTrue(
-      pipe(D.minutes(1), D.equals(pipe(D.seconds(1), D.times(60))))
-    )
+    expect(D.times(D.seconds(1), 60)).toEqual(D.minutes(1))
+    expect(D.times(D.nanos(2n), 10)).toEqual(D.nanos(20n))
+    expect(D.times(D.seconds(Infinity), 60)).toEqual(D.seconds(Infinity))
   })
+
   it("sum", () => {
-    assert.isTrue(
-      pipe(D.minutes(1), D.equals(pipe(D.seconds(30), D.sum(D.seconds(30)))))
-    )
+    expect(D.sum(D.seconds(30), D.seconds(30))).toEqual(D.minutes(1))
+    expect(D.sum(D.nanos(30n), D.nanos(30n))).toEqual(D.nanos(60n))
+    expect(D.sum(D.seconds(Infinity), D.seconds(30))).toEqual(D.seconds(Infinity))
+    expect(D.sum(D.seconds(30), D.seconds(Infinity))).toEqual(D.seconds(Infinity))
   })
+
   it(">", () => {
     assert.isTrue(pipe(D.seconds(30), D.greaterThan(D.seconds(20))))
     assert.isFalse(pipe(D.seconds(30), D.greaterThan(D.seconds(30))))
-    assert.isFalse(pipe(D.seconds(30), D.greaterThan(D.minutes(1))))
+    assert.isFalse(pipe(D.seconds(30), D.greaterThan(D.seconds(60))))
+
+    assert.isTrue(pipe(D.nanos(30n), D.greaterThan(D.nanos(20n))))
+    assert.isFalse(pipe(D.nanos(30n), D.greaterThan(D.nanos(30n))))
+    assert.isFalse(pipe(D.nanos(30n), D.greaterThan(D.nanos(60n))))
+
+    assert.isTrue(pipe(D.millis(1), D.greaterThan(D.nanos(1n))))
   })
+
   it(">/ Infinity", () => {
     assert.isTrue(pipe(D.infinity, D.greaterThan(D.seconds(20))))
     assert.isFalse(pipe(D.seconds(-Infinity), D.greaterThan(D.infinity)))
     assert.isFalse(pipe(D.nanos(1n), D.greaterThan(D.infinity)))
   })
+
   it(">=", () => {
     assert.isTrue(pipe(D.seconds(30), D.greaterThanOrEqualTo(D.seconds(20))))
     assert.isTrue(pipe(D.seconds(30), D.greaterThanOrEqualTo(D.seconds(30))))
-    assert.isFalse(pipe(D.seconds(30), D.greaterThanOrEqualTo(D.minutes(1))))
+    assert.isFalse(pipe(D.seconds(30), D.greaterThanOrEqualTo(D.seconds(60))))
+
+    assert.isTrue(pipe(D.nanos(30n), D.greaterThanOrEqualTo(D.nanos(20n))))
+    assert.isTrue(pipe(D.nanos(30n), D.greaterThanOrEqualTo(D.nanos(30n))))
+    assert.isFalse(pipe(D.nanos(30n), D.greaterThanOrEqualTo(D.nanos(60n))))
   })
+
   it("<", () => {
     assert.isTrue(pipe(D.seconds(20), D.lessThan(D.seconds(30))))
     assert.isFalse(pipe(D.seconds(30), D.lessThan(D.seconds(30))))
-    assert.isFalse(pipe(D.minutes(1), D.lessThan(D.seconds(30))))
+    assert.isFalse(pipe(D.seconds(60), D.lessThan(D.seconds(30))))
+
+    assert.isTrue(pipe(D.nanos(20n), D.lessThan(D.nanos(30n))))
+    assert.isFalse(pipe(D.nanos(30n), D.lessThan(D.nanos(30n))))
+    assert.isFalse(pipe(D.nanos(60n), D.lessThan(D.nanos(30n))))
+
+    assert.isTrue(pipe(D.nanos(1n), D.lessThan(D.millis(1))))
   })
+
   it("<=", () => {
     assert.isTrue(pipe(D.seconds(20), D.lessThanOrEqualTo(D.seconds(30))))
     assert.isTrue(pipe(D.seconds(30), D.lessThanOrEqualTo(D.seconds(30))))
-    assert.isFalse(pipe(D.minutes(1), D.lessThanOrEqualTo(D.seconds(30))))
+    assert.isFalse(pipe(D.seconds(60), D.lessThanOrEqualTo(D.seconds(30))))
+
+    assert.isTrue(pipe(D.nanos(20n), D.lessThanOrEqualTo(D.nanos(30n))))
+    assert.isTrue(pipe(D.nanos(30n), D.lessThanOrEqualTo(D.nanos(30n))))
+    assert.isFalse(pipe(D.nanos(60n), D.lessThanOrEqualTo(D.nanos(30n))))
   })
+
   it("toString", () => {
-    expect(String(D.seconds(2))).toEqual("Duration(Millis, 2000)")
+    expect(String(D.seconds(2))).toEqual(`Duration("2000 millis")`)
+    expect(String(D.nanos(10n))).toEqual(`Duration("10 nanos")`)
+    expect(String(D.millis(Infinity))).toEqual("Duration(Infinity)")
   })
+
   it("toJSON", () => {
     expect(JSON.stringify(D.seconds(2))).toEqual(
       JSON.stringify({ _tag: "Duration", value: { _tag: "Millis", millis: 2000 } })
     )
   })
+
   it("toJSON/ non-integer millis", () => {
     expect(JSON.stringify(D.millis(1.5))).toEqual(
       JSON.stringify({ _tag: "Duration", value: { _tag: "Nanos", hrtime: [0, 1_500_000] } })
     )
   })
+
   it("toJSON/ nanos", () => {
     expect(JSON.stringify(D.nanos(5n))).toEqual(
       JSON.stringify({ _tag: "Duration", value: { _tag: "Nanos", hrtime: [0, 5] } })
     )
   })
+
   it("toJSON/ infinity", () => {
     expect(JSON.stringify(D.infinity)).toEqual(
       JSON.stringify({ _tag: "Duration", value: { _tag: "Infinity" } })
     )
   })
+
   it("sum/ Infinity", () => {
     expect(D.sum(D.seconds(1), D.infinity)).toEqual(D.infinity)
   })
-  it("pipe", () => {
+
+  it(".pipe()", () => {
     expect(D.seconds(1).pipe(D.sum(D.seconds(1)))).toEqual(D.seconds(2))
   })
 
@@ -162,12 +206,14 @@ describe.concurrent("Duration", () => {
     expect(D.nanos(1n).pipe(D.toNanos)).toEqual(Option.some(1n))
     expect(D.infinity.pipe(D.toNanos)).toEqual(Option.none())
     expect(D.millis(1.0005).pipe(D.toNanos)).toEqual(Option.some(1_000_500n))
+    expect(D.millis(100).pipe(D.toNanos)).toEqual(Option.some(100_000_000n))
   })
 
   it("unsafeToNanos", () => {
     expect(D.nanos(1n).pipe(D.unsafeToNanos)).toBe(1n)
     expect(() => D.infinity.pipe(D.unsafeToNanos)).toThrow()
     expect(D.millis(1.0005).pipe(D.unsafeToNanos)).toBe(1_000_500n)
+    expect(D.millis(100).pipe(D.unsafeToNanos)).toEqual(100_000_000n)
   })
 
   it("toHrTime", () => {
@@ -180,5 +226,16 @@ describe.concurrent("Duration", () => {
 
   it("floor is 0", () => {
     expect(D.millis(-1)).toEqual(D.zero)
+    expect(D.nanos(-1n)).toEqual(D.zero)
+  })
+
+  it("match", () => {
+    const match = D.match({
+      onMillis: () => "millis",
+      onNanos: () => "nanos"
+    })
+    expect(match(D.decode("100 millis"))).toEqual("millis")
+    expect(match(D.decode("10 nanos"))).toEqual("nanos")
+    expect(match(D.decode(Infinity))).toEqual("millis")
   })
 })
