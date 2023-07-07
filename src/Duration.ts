@@ -136,11 +136,11 @@ class DurationImpl implements Equal.Equal {
   toString() {
     switch (this.value._tag) {
       case "Millis":
-        return `Duration(Millis, ${this.value.millis})`
+        return `Duration("${this.value.millis} millis")`
       case "Nanos":
-        return `Duration(Nanos, ${this.value.nanos})`
+        return `Duration("${this.value.nanos} nanos")`
       case "Infinity":
-        return `Duration(Infinity)`
+        return "Duration(Infinity)"
     }
   }
   toJSON() {
