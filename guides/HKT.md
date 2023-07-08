@@ -1,7 +1,5 @@
 # FAQ
 
-## HKT implementation
-
 **What’s that second branch of conditional type in `Kind` type?**
 
 That's to enforce variance.
