@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.13.5
+
+### Patch Changes
+
+- [#401](https://github.com/Effect-TS/data/pull/401) [`7204ca0`](https://github.com/Effect-TS/data/commit/7204ca07a5eda490d3511a33955bbd830e2bc438) Thanks [@tim-smart](https://github.com/tim-smart)! - add PipeableOverride utility type
+
 ## 0.13.4
 
 ### Patch Changes
