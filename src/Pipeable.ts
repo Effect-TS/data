@@ -263,6 +263,12 @@ export interface Pipeable<A> {
 
 /**
  * @since 1.0.0
+ * @category models
+ */
+export type PipeableOverride<A, B> = Omit<A, keyof Pipeable<B>> & Pipeable<B>
+
+/**
+ * @since 1.0.0
  */
 export const pipeArguments = <A>(self: A, args: IArguments): unknown => {
   switch (args.length) {
