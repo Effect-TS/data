@@ -287,26 +287,17 @@ export const filter = Dual.dual<
 })
 
 /** @internal */
-export const partition = Dual.dual<
-  {
-    <A, B extends A>(
-      f: Refinement<A, B>
-    ): (self: HS.HashSet<A>) => readonly [HS.HashSet<A>, HS.HashSet<B>]
-    <A>(
-      f: Predicate<A>
-    ): (self: HS.HashSet<A>) => readonly [HS.HashSet<A>, HS.HashSet<A>]
-  },
-  {
-    <A, B extends A>(
-      self: HS.HashSet<A>,
-      f: Refinement<A, B>
-    ): readonly [HS.HashSet<A>, HS.HashSet<B>]
-    <A>(
-      self: HS.HashSet<A>,
-      f: Predicate<A>
-    ): readonly [HS.HashSet<A>, HS.HashSet<A>]
-  }
->(2, <A>(self: HS.HashSet<A>, f: Predicate<A>) => {
+export const partition: {
+  <C extends A, B extends A, A = C>(
+    refinement: Refinement<A, B>
+  ): (self: HS.HashSet<C>) => [HS.HashSet<Exclude<C, B>>, HS.HashSet<B>]
+  <B extends A, A = B>(predicate: (a: A) => boolean): (self: HS.HashSet<B>) => [HS.HashSet<B>, HS.HashSet<B>]
+  <C extends A, B extends A, A = C>(
+    self: HS.HashSet<C>,
+    refinement: Refinement<A, B>
+  ): [HS.HashSet<Exclude<C, B>>, HS.HashSet<B>]
+  <B extends A, A = B>(self: HS.HashSet<B>, predicate: (a: A) => boolean): [HS.HashSet<B>, HS.HashSet<B>]
+} = Dual.dual(2, <A>(self: HS.HashSet<A>, f: Predicate<A>) => {
   const iterator = values(self)
   let next: IteratorResult<A, any>
   const right = beginMutation(empty<A>())

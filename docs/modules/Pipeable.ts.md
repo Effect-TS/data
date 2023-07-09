@@ -14,6 +14,7 @@ Added in v1.0.0
 
 - [models](#models)
   - [Pipeable (interface)](#pipeable-interface)
+  - [PipeableOverride (type alias)](#pipeableoverride-type-alias)
 - [utils](#utils)
   - [pipeArguments](#pipearguments)
 
@@ -280,6 +281,16 @@ export interface Pipeable<A> {
     tu: (_: T) => U
   ): U
 }
+```
+
+Added in v1.0.0
+
+## PipeableOverride (type alias)
+
+**Signature**
+
+```ts
+export type PipeableOverride<A, B> = Omit<A, keyof Pipeable<B>> & Pipeable<B>
 ```
 
 Added in v1.0.0

@@ -14,3 +14,13 @@ if (HashSet.every(nss, Predicate.isString)) {
 if (HashSet.every(Predicate.isString)(nss)) {
   nss // $ExpectType HashSet<string>
 }
+
+// -------------------------------------------------------------------------------------
+// partition
+// -------------------------------------------------------------------------------------
+
+// $ExpectType [HashSet<number>, HashSet<string>]
+HashSet.partition(nss, Predicate.isString)
+
+// $ExpectType [HashSet<number>, HashSet<string>]
+nss.pipe(HashSet.partition(Predicate.isString))
