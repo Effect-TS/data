@@ -14,3 +14,13 @@ if (Chunk.every(nss, Predicate.isString)) {
 if (Chunk.every(Predicate.isString)(nss)) {
   nss // $ExpectType Chunk<string>
 }
+
+// -------------------------------------------------------------------------------------
+// partition
+// -------------------------------------------------------------------------------------
+
+// $ExpectType [Chunk<number>, Chunk<string>]
+Chunk.partition(nss, Predicate.isString)
+
+// $ExpectType [Chunk<number>, Chunk<string>]
+nss.pipe(Chunk.partition(Predicate.isString))

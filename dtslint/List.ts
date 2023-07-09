@@ -14,3 +14,13 @@ if (List.every(nss, Predicate.isString)) {
 if (List.every(Predicate.isString)(nss)) {
   nss // $ExpectType List<string>
 }
+
+// -------------------------------------------------------------------------------------
+// partition
+// -------------------------------------------------------------------------------------
+
+// $ExpectType [List<number>, List<string>]
+List.partition(nss, Predicate.isString)
+
+// $ExpectType [List<number>, List<string>]
+nss.pipe(List.partition(Predicate.isString))

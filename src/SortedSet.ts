@@ -282,25 +282,16 @@ export const map: {
  * @category filtering
  */
 export const partition: {
-  <A, B extends A>(refinement: Refinement<A, B>): (self: SortedSet<A>) => readonly [SortedSet<A>, SortedSet<B>]
-  <A>(predicate: Predicate<A>): (self: SortedSet<A>) => readonly [SortedSet<A>, SortedSet<A>]
-  <A, B extends A>(self: SortedSet<A>, refinement: Refinement<A, B>): readonly [SortedSet<A>, SortedSet<B>]
-  <A>(self: SortedSet<A>, predicate: Predicate<A>): readonly [SortedSet<A>, SortedSet<A>]
-} = Dual.dual<
-  {
-    <A, B extends A>(
-      refinement: Refinement<A, B>
-    ): (self: SortedSet<A>) => readonly [SortedSet<A>, SortedSet<B>]
-    <A>(predicate: Predicate<A>): (self: SortedSet<A>) => readonly [SortedSet<A>, SortedSet<A>]
-  },
-  {
-    <A, B extends A>(
-      self: SortedSet<A>,
-      refinement: Refinement<A, B>
-    ): readonly [SortedSet<A>, SortedSet<B>]
-    <A>(self: SortedSet<A>, predicate: Predicate<A>): readonly [SortedSet<A>, SortedSet<A>]
-  }
->(2, <A>(self: SortedSet<A>, predicate: Predicate<A>) => {
+  <C extends A, B extends A, A = C>(
+    refinement: Refinement<A, B>
+  ): (self: SortedSet<C>) => [SortedSet<Exclude<C, B>>, SortedSet<B>]
+  <B extends A, A = B>(predicate: (a: A) => boolean): (self: SortedSet<B>) => [SortedSet<B>, SortedSet<B>]
+  <C extends A, B extends A, A = C>(
+    self: SortedSet<C>,
+    refinement: Refinement<A, B>
+  ): [SortedSet<Exclude<C, B>>, SortedSet<B>]
+  <B extends A, A = B>(self: SortedSet<B>, predicate: (a: A) => boolean): [SortedSet<B>, SortedSet<B>]
+} = Dual.dual(2, <A>(self: SortedSet<A>, predicate: Predicate<A>) => {
   const ord = RBT.getOrder(self.keyTree)
   let right = empty(ord)
   let left = empty(ord)

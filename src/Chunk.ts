@@ -846,18 +846,13 @@ export const mapAccum: {
  * @since 1.0.0
  */
 export const partition: {
-  <C extends A, B extends A, A = C>(
-    refinement: (a: A, i: number) => a is B
-  ): (self: Chunk<C>) => [Chunk<C>, Chunk<B>]
-  <B extends A, A = B>(predicate: (a: A, i: number) => boolean): (self: Chunk<B>) => [Chunk<B>, Chunk<B>]
-  <C extends A, B extends A, A = C>(
-    self: Chunk<C>,
-    refinement: (a: A, i: number) => a is B
-  ): [Chunk<C>, Chunk<B>]
-  <B extends A, A = B>(self: Chunk<B>, predicate: (a: A, i: number) => boolean): [Chunk<B>, Chunk<B>]
+  <C extends A, B extends A, A = C>(refinement: Refinement<A, B>): (self: Chunk<C>) => [Chunk<Exclude<C, B>>, Chunk<B>]
+  <B extends A, A = B>(predicate: (a: A) => boolean): (self: Chunk<B>) => [Chunk<B>, Chunk<B>]
+  <C extends A, B extends A, A = C>(self: Chunk<C>, refinement: Refinement<A, B>): [Chunk<Exclude<C, B>>, Chunk<B>]
+  <B extends A, A = B>(self: Chunk<B>, predicate: (a: A) => boolean): [Chunk<B>, Chunk<B>]
 } = dual(
   2,
-  <B extends A, A = B>(self: Chunk<B>, predicate: (a: A, i: number) => boolean): [Chunk<B>, Chunk<B>] =>
+  <B extends A, A = B>(self: Chunk<B>, predicate: (a: A) => boolean): [Chunk<B>, Chunk<B>] =>
     pipe(
       RA.partition(toReadonlyArray(self), predicate),
       ([l, r]) => [unsafeFromArray(l), unsafeFromArray(r)]

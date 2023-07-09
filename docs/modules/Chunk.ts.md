@@ -624,10 +624,10 @@ Separate elements based on a predicate that also exposes the index of the elemen
 
 ```ts
 export declare const partition: {
-  <C extends A, B extends A, A = C>(refinement: (a: A, i: number) => a is B): (self: Chunk<C>) => [Chunk<C>, Chunk<B>]
-  <B extends A, A = B>(predicate: (a: A, i: number) => boolean): (self: Chunk<B>) => [Chunk<B>, Chunk<B>]
-  <C extends A, B extends A, A = C>(self: Chunk<C>, refinement: (a: A, i: number) => a is B): [Chunk<C>, Chunk<B>]
-  <B extends A, A = B>(self: Chunk<B>, predicate: (a: A, i: number) => boolean): [Chunk<B>, Chunk<B>]
+  <C extends A, B extends A, A = C>(refinement: Refinement<A, B>): (self: Chunk<C>) => [Chunk<Exclude<C, B>>, Chunk<B>]
+  <B extends A, A = B>(predicate: (a: A) => boolean): (self: Chunk<B>) => [Chunk<B>, Chunk<B>]
+  <C extends A, B extends A, A = C>(self: Chunk<C>, refinement: Refinement<A, B>): [Chunk<Exclude<C, B>>, Chunk<B>]
+  <B extends A, A = B>(self: Chunk<B>, predicate: (a: A) => boolean): [Chunk<B>, Chunk<B>]
 }
 ```
 
