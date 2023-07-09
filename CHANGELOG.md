@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.13.6
+
+### Patch Changes
+
+- [#404](https://github.com/Effect-TS/data/pull/404) [`b6a959c`](https://github.com/Effect-TS/data/commit/b6a959cfbe73742f4f82f5b7abb1d7901bb3e64c) Thanks [@gcanti](https://github.com/gcanti)! - partition: use Exclude on the left side
+
 ## 0.13.5
 
 ### Patch Changes
