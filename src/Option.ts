@@ -27,13 +27,13 @@ export type Option<A> = None<A> | Some<A>
  * @category symbols
  * @since 1.0.0
  */
-export const OptionTypeId = Symbol.for("@effect/data/Option")
+export const TypeId = Symbol.for("@effect/data/Option")
 
 /**
  * @category symbols
  * @since 1.0.0
  */
-export type OptionTypeId = typeof OptionTypeId
+export type TypeId = typeof TypeId
 
 /**
  * @category models
@@ -41,7 +41,7 @@ export type OptionTypeId = typeof OptionTypeId
  */
 export interface None<A> extends Data.Case, Pipeable {
   readonly _tag: "None"
-  readonly [OptionTypeId]: {
+  readonly [TypeId]: {
     readonly _A: (_: never) => A
   }
   [Unify.typeSymbol]?: unknown
@@ -56,7 +56,7 @@ export interface None<A> extends Data.Case, Pipeable {
 export interface Some<A> extends Data.Case, Pipeable {
   readonly _tag: "Some"
   readonly value: A
-  readonly [OptionTypeId]: {
+  readonly [TypeId]: {
     readonly _A: (_: never) => A
   }
   [Unify.typeSymbol]?: unknown
