@@ -16,8 +16,7 @@ export class TagImpl<Identifier, Service> implements C.Tag<Identifier, Service> 
   readonly _tag = "Tag"
   public i0: any | undefined = undefined
   public i1 = undefined
-  public i2 = undefined
-  public trace = undefined;
+  public i2 = undefined;
   [EffectTypeId] = effectVariance;
   [Equal.symbol](this: {}, that: unknown) {
     return this === that
