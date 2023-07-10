@@ -598,7 +598,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Cons<A> extends List.Variance<A>, Iterable<A>, Equal.Equal, Pipeable {
+export interface Cons<A> extends Iterable<A>, Equal.Equal, Pipeable {
   readonly _tag: 'Cons'
   readonly head: A
   readonly tail: List<A>
@@ -628,7 +628,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Nil<A> extends List.Variance<A>, Iterable<A>, Equal.Equal, Pipeable {
+export interface Nil<A> extends Iterable<A>, Equal.Equal, Pipeable {
   readonly _tag: 'Nil'
 }
 ```

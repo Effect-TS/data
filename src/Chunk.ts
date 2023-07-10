@@ -27,12 +27,6 @@ const TypeId: unique symbol = Symbol.for("@effect/data/Chunk") as TypeId
 export type TypeId = typeof TypeId
 
 /**
- * @category model
- * @since 1.0.0
- */
-export interface NonEmptyChunk<A> extends Chunk<A>, NonEmptyIterable<A> {}
-
-/**
  * @category models
  * @since 1.0.0
  */
@@ -50,6 +44,12 @@ export interface Chunk<A> extends Iterable<A>, Equal.Equal, Pipeable {
   /** @internal */
   depth: number
 }
+
+/**
+ * @category model
+ * @since 1.0.0
+ */
+export interface NonEmptyChunk<A> extends Chunk<A>, NonEmptyIterable<A> {}
 
 /**
  * @category type lambdas
