@@ -97,8 +97,7 @@ Added in v1.0.0
 
 ## every
 
-Returns `true` only if all values in the `HashSet` match the specified
-predicate.
+Check if a predicate holds true for every `HashSet` element.
 
 **Signature**
 
@@ -145,7 +144,7 @@ Added in v1.0.0
 
 ## some
 
-Returns `true` if any value in the `HashSet` matches the specified predicate.
+Check if a predicate holds true for some `HashSet` element.
 
 **Signature**
 

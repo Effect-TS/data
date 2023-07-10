@@ -16,7 +16,7 @@
 
 ### Patch Changes
 
-- [#399](https://github.com/Effect-TS/data/pull/399) [`f9d77a1`](https://github.com/Effect-TS/data/commit/f9d77a13574742e14b8e511fe810184dde5f8def) Thanks [@gcanti](https://github.com/gcanti)! - fix every signature in ReadonlyArray, Chunk, List, HashSet, SortedSet
+- [#399](https://github.com/Effect-TS/data/pull/399) [`f9d77a1`](https://github.com/Effect-TS/data/commit/f9d77a13574742e14b8e511fe810184dde5f8def) Thanks [@gcanti](https://github.com/gcanti)! - fix `every` signature in ReadonlyArray, Chunk, List, HashSet, SortedSet
 
 ## 0.13.3
 
@@ -39,6 +39,75 @@
 - [#393](https://github.com/Effect-TS/data/pull/393) [`9de2273`](https://github.com/Effect-TS/data/commit/9de22735d2da6333f0bd18ece7d21779b8186252) Thanks [@tim-smart](https://github.com/tim-smart)! - add Chunk.some
 
 ## 0.13.0
+
+**New Features**
+
+- add `Pipeable` module
+- Data types now have a `.pipe()` method.
+- `Chunk`
+  - add `getEquivalence`
+  - add `prependAll`
+  - add `flatMapNonEmpty`
+  - add `flattenNonEmpty`
+  - add `unsafeFromNonEmptyArray`
+  - add `appendAllNonEmpty`
+- `Duration`
+  - Nanoseconds support has been added.
+  - The `decode` function has been added to parse durations from strings.
+- `List`
+  - add `append`
+- `Option`
+  - add `product`
+  - add `productMany`
+- `Order`
+  - add `all`
+  - add `combine`
+  - add `combineAll`
+  - add `combineMany`
+  - add `empty`
+  - add `product`
+  - add `productMany`
+
+**Breaking Changes**
+
+- Typeclasses (and related instances) have been removed, except for:
+  - `Equivalence`
+  - `Order` (changed from an object to a simple function)
+- The `Debug` module has been removed.
+- The `Identity` module has been removed.
+- The `match` functions no longer use positional arguments. Instead, they use an object with named properties (e.g., `{ onNone: callback, onSome: callback }` for `Option`).
+- The `*WithIndex` functions have been removed in favor of adding an `index` argument to the corresponding base function.
+- `Chunk`
+  - The `concat` function has been renamed to `appendAll`.
+  - The `elem` function has been renamed to `contains`.
+  - remove `cross`
+  - remove `crossWith`
+  - remove `correspondsTo` in favour of `getEquivalence`
+  - remove `forEach`
+  - remove `unfold`
+  - remove `zipAll`
+  - remove `zipAllWith`
+  - remove `zipWithIndexOffset`
+- `Either`
+  - the data type represents now a simple disjoint union
+- `Function`
+  - The `flow` function has been removed.
+- `List`
+  - The `length` function has been renamed to `size`.
+  - The `concat` function has been renamed to `appendAll`.
+  - The `equalsWith` function has been replaced with the `getEquivalence` function.
+- `Option`
+  - remove `fromEither` (use `getRight` instead)
+  - remove `struct` (use `all` instead)
+  - remove `tuple` (use `all` instead)
+  - remove `toEither`
+  - remove `appendElement`
+  - remove `bindDiscard`
+  - remove `letDiscard`
+  - remove `tupled`
+  - remove `liftEither`
+- `ReadonlyArray`
+  - The `uniq` function has been renamed to `dedupe`.
 
 ### Minor Changes
 

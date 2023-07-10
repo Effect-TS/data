@@ -21,6 +21,13 @@ Added in v1.0.0
   - [contramap](#contramap)
   - [struct](#struct)
   - [tuple](#tuple)
+- [combining](#combining)
+  - [all](#all)
+  - [combine](#combine)
+  - [combineAll](#combineall)
+  - [combineMany](#combinemany)
+  - [product](#product)
+  - [productMany](#productmany)
 - [constructors](#constructors)
   - [make](#make)
   - [strict](#strict)
@@ -34,13 +41,6 @@ Added in v1.0.0
   - [Equivalence (interface)](#equivalence-interface)
 - [type lambdas](#type-lambdas)
   - [EquivalenceTypeLambda (interface)](#equivalencetypelambda-interface)
-- [utils](#utils)
-  - [all](#all)
-  - [combine](#combine)
-  - [combineAll](#combineall)
-  - [combineMany](#combinemany)
-  - [product](#product)
-  - [productMany](#productmany)
 
 ---
 
@@ -103,6 +103,80 @@ by applying each `Equivalence` to the corresponding element of the tuple.
 export declare const tuple: <T extends readonly Equivalence<any>[]>(
   ...elements: T
 ) => Equivalence<Readonly<{ [I in keyof T]: [T[I]] extends [Equivalence<infer A>] ? A : never }>>
+```
+
+Added in v1.0.0
+
+# combining
+
+## all
+
+**Signature**
+
+```ts
+export declare const all: <A>(collection: Iterable<Equivalence<A>>) => Equivalence<A[]>
+```
+
+Added in v1.0.0
+
+## combine
+
+**Signature**
+
+```ts
+export declare const combine: {
+  <A>(that: Equivalence<A>): (self: Equivalence<A>) => Equivalence<A>
+  <A>(self: Equivalence<A>, that: Equivalence<A>): Equivalence<A>
+}
+```
+
+Added in v1.0.0
+
+## combineAll
+
+**Signature**
+
+```ts
+export declare const combineAll: <A>(collection: Iterable<Equivalence<A>>) => Equivalence<A>
+```
+
+Added in v1.0.0
+
+## combineMany
+
+**Signature**
+
+```ts
+export declare const combineMany: {
+  <A>(collection: Iterable<Equivalence<A>>): (self: Equivalence<A>) => Equivalence<A>
+  <A>(self: Equivalence<A>, collection: Iterable<Equivalence<A>>): Equivalence<A>
+}
+```
+
+Added in v1.0.0
+
+## product
+
+**Signature**
+
+```ts
+export declare const product: {
+  <B>(that: Equivalence<B>): <A>(self: Equivalence<A>) => Equivalence<[A, B]>
+  <A, B>(self: Equivalence<A>, that: Equivalence<B>): Equivalence<[A, B]>
+}
+```
+
+Added in v1.0.0
+
+## productMany
+
+**Signature**
+
+```ts
+export declare const productMany: <A>(
+  self: Equivalence<A>,
+  collection: Iterable<Equivalence<A>>
+) => Equivalence<[A, ...A[]]>
 ```
 
 Added in v1.0.0
@@ -207,80 +281,6 @@ Added in v1.0.0
 export interface EquivalenceTypeLambda extends TypeLambda {
   readonly type: Equivalence<this['Target']>
 }
-```
-
-Added in v1.0.0
-
-# utils
-
-## all
-
-**Signature**
-
-```ts
-export declare const all: <A>(collection: Iterable<Equivalence<A>>) => Equivalence<A[]>
-```
-
-Added in v1.0.0
-
-## combine
-
-**Signature**
-
-```ts
-export declare const combine: {
-  <A>(that: Equivalence<A>): (self: Equivalence<A>) => Equivalence<A>
-  <A>(self: Equivalence<A>, that: Equivalence<A>): Equivalence<A>
-}
-```
-
-Added in v1.0.0
-
-## combineAll
-
-**Signature**
-
-```ts
-export declare const combineAll: <A>(collection: Iterable<Equivalence<A>>) => Equivalence<A>
-```
-
-Added in v1.0.0
-
-## combineMany
-
-**Signature**
-
-```ts
-export declare const combineMany: {
-  <A>(collection: Iterable<Equivalence<A>>): (self: Equivalence<A>) => Equivalence<A>
-  <A>(self: Equivalence<A>, collection: Iterable<Equivalence<A>>): Equivalence<A>
-}
-```
-
-Added in v1.0.0
-
-## product
-
-**Signature**
-
-```ts
-export declare const product: {
-  <B>(that: Equivalence<B>): <A>(self: Equivalence<A>) => Equivalence<[A, B]>
-  <A, B>(self: Equivalence<A>, that: Equivalence<B>): Equivalence<[A, B]>
-}
-```
-
-Added in v1.0.0
-
-## productMany
-
-**Signature**
-
-```ts
-export declare const productMany: <A>(
-  self: Equivalence<A>,
-  collection: Iterable<Equivalence<A>>
-) => Equivalence<[A, ...A[]]>
 ```
 
 Added in v1.0.0

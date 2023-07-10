@@ -17,6 +17,8 @@ Added in v1.0.0
 - [combinators](#combinators)
   - [getEquivalence](#getequivalence)
   - [getOrder](#getorder)
+- [concatenating](#concatenating)
+  - [appendElement](#appendelement)
 - [constructors](#constructors)
   - [tuple](#tuple)
 - [getters](#getters)
@@ -29,7 +31,6 @@ Added in v1.0.0
 - [type lambdas](#type-lambdas)
   - [TupleTypeLambda (interface)](#tupletypelambda-interface)
 - [utils](#utils)
-  - [appendElement](#appendelement)
   - [swap](#swap)
 
 ---
@@ -66,6 +67,23 @@ of the tuple.
 export declare const getOrder: <T extends readonly order.Order<any>[]>(
   ...elements: T
 ) => order.Order<{ [I in keyof T]: [T[I]] extends [order.Order<infer A>] ? A : never }>
+```
+
+Added in v1.0.0
+
+# concatenating
+
+## appendElement
+
+Appends an element to the end of a tuple.
+
+**Signature**
+
+```ts
+export declare const appendElement: {
+  <B>(that: B): <A extends readonly unknown[]>(self: A) => [...A, B]
+  <A extends readonly unknown[], B>(self: A, that: B): [...A, B]
+}
 ```
 
 Added in v1.0.0
@@ -234,21 +252,6 @@ export interface TupleTypeLambda extends TypeLambda {
 Added in v1.0.0
 
 # utils
-
-## appendElement
-
-Appends an element to the end of a tuple.
-
-**Signature**
-
-```ts
-export declare const appendElement: {
-  <B>(that: B): <A extends readonly unknown[]>(self: A) => [...A, B]
-  <A extends readonly unknown[], B>(self: A, that: B): [...A, B]
-}
-```
-
-Added in v1.0.0
 
 ## swap
 

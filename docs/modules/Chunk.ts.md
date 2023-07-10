@@ -12,6 +12,13 @@ Added in v1.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
+- [concatenating](#concatenating)
+  - [append](#append)
+  - [appendAll](#appendall)
+  - [appendAllNonEmpty](#appendallnonempty)
+  - [prepend](#prepend)
+  - [prependAll](#prependall)
+  - [prependAllNonEmpty](#prependallnonempty)
 - [constructors](#constructors)
   - [empty](#empty)
   - [isChunk](#ischunk)
@@ -24,7 +31,14 @@ Added in v1.0.0
   - [toReadonlyArray](#toreadonlyarray)
 - [elements](#elements)
   - [chunksOf](#chunksof)
+  - [contains](#contains)
+  - [containsWith](#containswith)
   - [dedupe](#dedupe)
+  - [every](#every)
+  - [findFirst](#findfirst)
+  - [findFirstIndex](#findfirstindex)
+  - [findLast](#findlast)
+  - [findLastIndex](#findlastindex)
   - [get](#get)
   - [head](#head)
   - [headNonEmpty](#headnonempty)
@@ -34,6 +48,7 @@ Added in v1.0.0
   - [last](#last)
   - [reverse](#reverse)
   - [size](#size)
+  - [some](#some)
   - [sort](#sort)
   - [split](#split)
   - [splitAt](#splitat)
@@ -58,7 +73,10 @@ Added in v1.0.0
   - [partitionMap](#partitionmap)
   - [separate](#separate)
 - [folding](#folding)
+  - [join](#join)
   - [mapAccum](#mapaccum)
+  - [reduce](#reduce)
+  - [reduceRight](#reduceright)
 - [mapping](#mapping)
   - [map](#map)
 - [model](#model)
@@ -81,34 +99,107 @@ Added in v1.0.0
   - [unsafeHead](#unsafehead)
   - [unsafeLast](#unsafelast)
 - [utils](#utils)
-  - [append](#append)
-  - [appendAll](#appendall)
-  - [appendAllNonEmpty](#appendallnonempty)
-  - [contains](#contains)
-  - [containsWith](#containswith)
   - [drop](#drop)
   - [dropRight](#dropright)
   - [dropWhile](#dropwhile)
-  - [every](#every)
-  - [findFirst](#findfirst)
-  - [findFirstIndex](#findfirstindex)
-  - [findLast](#findlast)
-  - [findLastIndex](#findlastindex)
-  - [join](#join)
   - [modify](#modify)
   - [modifyOption](#modifyoption)
-  - [prepend](#prepend)
-  - [prependAll](#prependall)
-  - [prependAllNonEmpty](#prependallnonempty)
-  - [reduce](#reduce)
-  - [reduceRight](#reduceright)
   - [remove](#remove)
   - [replace](#replace)
   - [replaceOption](#replaceoption)
-  - [some](#some)
   - [take](#take)
 
 ---
+
+# concatenating
+
+## append
+
+Appends the specified element to the end of the `Chunk`.
+
+**Signature**
+
+```ts
+export declare const append: {
+  <A2>(a: A2): <A>(self: Chunk<A>) => Chunk<A2 | A>
+  <A, A2>(self: Chunk<A>, a: A2): Chunk<A | A2>
+}
+```
+
+Added in v1.0.0
+
+## appendAll
+
+Concatenates the two chunks
+
+**Signature**
+
+```ts
+export declare const appendAll: {
+  <B>(that: Chunk<B>): <A>(self: Chunk<A>) => Chunk<B | A>
+  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<A | B>
+}
+```
+
+Added in v1.0.0
+
+## appendAllNonEmpty
+
+**Signature**
+
+```ts
+export declare const appendAllNonEmpty: {
+  <B>(that: NonEmptyChunk<B>): <A>(self: Chunk<A>) => NonEmptyChunk<B | A>
+  <B>(that: Chunk<B>): <A>(self: NonEmptyChunk<A>) => NonEmptyChunk<B | A>
+  <A, B>(self: Chunk<A>, that: NonEmptyChunk<B>): NonEmptyChunk<A | B>
+  <A, B>(self: NonEmptyChunk<A>, that: Chunk<B>): NonEmptyChunk<A | B>
+}
+```
+
+Added in v1.0.0
+
+## prepend
+
+Prepend an element to the front of a `Chunk`, creating a new `NonEmptyChunk`.
+
+**Signature**
+
+```ts
+export declare const prepend: {
+  <B>(elem: B): <A>(self: Chunk<A>) => Chunk<B | A>
+  <A, B>(self: Chunk<A>, elem: B): Chunk<A | B>
+}
+```
+
+Added in v1.0.0
+
+## prependAll
+
+**Signature**
+
+```ts
+export declare const prependAll: {
+  <B>(that: Chunk<B>): <A>(self: Chunk<A>) => Chunk<B | A>
+  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<A | B>
+}
+```
+
+Added in v1.0.0
+
+## prependAllNonEmpty
+
+**Signature**
+
+```ts
+export declare const prependAllNonEmpty: {
+  <B>(that: NonEmptyChunk<B>): <A>(self: Chunk<A>) => NonEmptyChunk<B | A>
+  <B>(that: Chunk<B>): <A>(self: NonEmptyChunk<A>) => NonEmptyChunk<B | A>
+  <A, B>(self: Chunk<A>, that: NonEmptyChunk<B>): NonEmptyChunk<A | B>
+  <A, B>(self: NonEmptyChunk<A>, that: Chunk<B>): NonEmptyChunk<A | B>
+}
+```
+
+Added in v1.0.0
 
 # constructors
 
@@ -230,6 +321,33 @@ export declare const chunksOf: {
 
 Added in v1.0.0
 
+## contains
+
+Returns a function that checks if a `Chunk` contains a given value using the default `Equivalence`.
+
+**Signature**
+
+```ts
+export declare const contains: { <A>(a: A): (self: Chunk<A>) => boolean; <A>(self: Chunk<A>, a: A): boolean }
+```
+
+Added in v1.0.0
+
+## containsWith
+
+Returns a function that checks if a `Chunk` contains a given value using a provided `isEquivalent` function.
+
+**Signature**
+
+```ts
+export declare const containsWith: <A>(isEquivalent: (self: A, that: A) => boolean) => {
+  (a: A): (self: Chunk<A>) => boolean
+  (self: Chunk<A>, a: A): boolean
+}
+```
+
+Added in v1.0.0
+
 ## dedupe
 
 Remove duplicates from an array, keeping the first occurrence of an element.
@@ -238,6 +356,88 @@ Remove duplicates from an array, keeping the first occurrence of an element.
 
 ```ts
 export declare const dedupe: <A>(self: Chunk<A>) => Chunk<A>
+```
+
+Added in v1.0.0
+
+## every
+
+Check if a predicate holds true for every `Chunk` element.
+
+**Signature**
+
+```ts
+export declare const every: {
+  <A, B extends A>(refinement: Refinement<A, B>): (self: Chunk<A>) => self is Chunk<B>
+  <A>(predicate: Predicate<A>): (self: Chunk<A>) => boolean
+  <A, B extends A>(self: Chunk<A>, refinement: Refinement<A, B>): self is Chunk<B>
+  <A>(self: Chunk<A>, predicate: Predicate<A>): boolean
+}
+```
+
+Added in v1.0.0
+
+## findFirst
+
+Returns the first element that satisfies the specified
+predicate, or `None` if no such element exists.
+
+**Signature**
+
+```ts
+export declare const findFirst: {
+  <A, B extends A>(refinement: Refinement<A, B>): (self: Chunk<A>) => Option<B>
+  <A>(predicate: Predicate<A>): <B extends A>(self: Chunk<B>) => Option<B>
+  <A, B extends A>(self: Chunk<A>, refinement: Refinement<A, B>): Option<B>
+  <B extends A, A>(self: Chunk<B>, predicate: Predicate<A>): Option<B>
+}
+```
+
+Added in v1.0.0
+
+## findFirstIndex
+
+Return the first index for which a predicate holds.
+
+**Signature**
+
+```ts
+export declare const findFirstIndex: {
+  <A>(predicate: Predicate<A>): (self: Chunk<A>) => Option<number>
+  <A>(self: Chunk<A>, predicate: Predicate<A>): Option<number>
+}
+```
+
+Added in v1.0.0
+
+## findLast
+
+Find the last element for which a predicate holds.
+
+**Signature**
+
+```ts
+export declare const findLast: {
+  <A, B extends A>(refinement: Refinement<A, B>): (self: Chunk<A>) => Option<B>
+  <A>(predicate: Predicate<A>): <B extends A>(self: Chunk<B>) => Option<B>
+  <A, B extends A>(self: Chunk<A>, refinement: Refinement<A, B>): Option<B>
+  <B extends A, A>(self: Chunk<B>, predicate: Predicate<A>): Option<B>
+}
+```
+
+Added in v1.0.0
+
+## findLastIndex
+
+Return the last index for which a predicate holds.
+
+**Signature**
+
+```ts
+export declare const findLastIndex: {
+  <A>(predicate: Predicate<A>): (self: Chunk<A>) => Option<number>
+  <A>(self: Chunk<A>, predicate: Predicate<A>): Option<number>
+}
 ```
 
 Added in v1.0.0
@@ -352,6 +552,21 @@ Retireves the size of the chunk
 
 ```ts
 export declare const size: <A>(self: Chunk<A>) => number
+```
+
+Added in v1.0.0
+
+## some
+
+Check if a predicate holds true for some `Chunk` element.
+
+**Signature**
+
+```ts
+export declare const some: {
+  <A>(predicate: Predicate<A>): (self: Chunk<A>) => self is NonEmptyChunk<A>
+  <A>(self: Chunk<A>, predicate: Predicate<A>): self is NonEmptyChunk<A>
+}
 ```
 
 Added in v1.0.0
@@ -662,6 +877,21 @@ Added in v1.0.0
 
 # folding
 
+## join
+
+Joins the elements together with "sep" in the middle.
+
+**Signature**
+
+```ts
+export declare const join: {
+  (sep: string): (self: Chunk<string>) => string
+  (self: Chunk<string>, sep: string): string
+}
+```
+
+Added in v1.0.0
+
 ## mapAccum
 
 Statefully maps over the chunk, producing new elements of type `B`.
@@ -672,6 +902,32 @@ Statefully maps over the chunk, producing new elements of type `B`.
 export declare const mapAccum: {
   <S, A, B>(s: S, f: (s: S, a: A) => readonly [S, B]): (self: Chunk<A>) => [S, Chunk<B>]
   <S, A, B>(self: Chunk<A>, s: S, f: (s: S, a: A) => readonly [S, B]): [S, Chunk<B>]
+}
+```
+
+Added in v1.0.0
+
+## reduce
+
+**Signature**
+
+```ts
+export declare const reduce: {
+  <B, A>(b: B, f: (b: B, a: A, i: number) => B): (self: Chunk<A>) => B
+  <A, B>(self: Chunk<A>, b: B, f: (b: B, a: A, i: number) => B): B
+}
+```
+
+Added in v1.0.0
+
+## reduceRight
+
+**Signature**
+
+```ts
+export declare const reduceRight: {
+  <B, A>(b: B, f: (b: B, a: A, i: number) => B): (self: Chunk<A>) => B
+  <A, B>(self: Chunk<A>, b: B, f: (b: B, a: A, i: number) => B): B
 }
 ```
 
@@ -873,74 +1129,6 @@ Added in v1.0.0
 
 # utils
 
-## append
-
-Appends the value to the chunk
-
-**Signature**
-
-```ts
-export declare const append: {
-  <A2>(a: A2): <A>(self: Chunk<A>) => Chunk<A2 | A>
-  <A, A2>(self: Chunk<A>, a: A2): Chunk<A | A2>
-}
-```
-
-Added in v1.0.0
-
-## appendAll
-
-Concatenates the two chunks
-
-**Signature**
-
-```ts
-export declare const appendAll: {
-  <B>(that: Chunk<B>): <A>(self: Chunk<A>) => Chunk<B | A>
-  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<A | B>
-}
-```
-
-Added in v1.0.0
-
-## appendAllNonEmpty
-
-**Signature**
-
-```ts
-export declare const appendAllNonEmpty: {
-  <B>(that: NonEmptyChunk<B>): <A>(self: Chunk<A>) => NonEmptyChunk<B | A>
-  <B>(that: Chunk<B>): <A>(self: NonEmptyChunk<A>) => NonEmptyChunk<B | A>
-  <A, B>(self: Chunk<A>, that: NonEmptyChunk<B>): NonEmptyChunk<A | B>
-  <A, B>(self: NonEmptyChunk<A>, that: Chunk<B>): NonEmptyChunk<A | B>
-}
-```
-
-Added in v1.0.0
-
-## contains
-
-**Signature**
-
-```ts
-export declare const contains: { <A>(a: A): (self: Chunk<A>) => boolean; <A>(self: Chunk<A>, a: A): boolean }
-```
-
-Added in v1.0.0
-
-## containsWith
-
-**Signature**
-
-```ts
-export declare const containsWith: <A>(isEquivalent: (self: A, that: A) => boolean) => {
-  (a: A): (self: Chunk<A>) => boolean
-  (self: Chunk<A>, a: A): boolean
-}
-```
-
-Added in v1.0.0
-
 ## drop
 
 Drops the first up to `n` elements from the chunk
@@ -983,90 +1171,6 @@ export declare const dropWhile: {
 
 Added in v1.0.0
 
-## every
-
-**Signature**
-
-```ts
-export declare const every: {
-  <A, B extends A>(refinement: Refinement<A, B>): (self: Chunk<A>) => self is Chunk<B>
-  <A>(predicate: Predicate<A>): (self: Chunk<A>) => boolean
-  <A, B extends A>(self: Chunk<A>, refinement: Refinement<A, B>): self is Chunk<B>
-  <A>(self: Chunk<A>, predicate: Predicate<A>): boolean
-}
-```
-
-Added in v1.0.0
-
-## findFirst
-
-**Signature**
-
-```ts
-export declare const findFirst: {
-  <A, B extends A>(refinement: Refinement<A, B>): (self: Chunk<A>) => Option<B>
-  <A>(predicate: Predicate<A>): <B extends A>(self: Chunk<B>) => Option<B>
-  <A, B extends A>(self: Chunk<A>, refinement: Refinement<A, B>): Option<B>
-  <B extends A, A>(self: Chunk<B>, predicate: Predicate<A>): Option<B>
-}
-```
-
-Added in v1.0.0
-
-## findFirstIndex
-
-**Signature**
-
-```ts
-export declare const findFirstIndex: {
-  <A>(predicate: Predicate<A>): (self: Chunk<A>) => Option<number>
-  <A>(self: Chunk<A>, predicate: Predicate<A>): Option<number>
-}
-```
-
-Added in v1.0.0
-
-## findLast
-
-**Signature**
-
-```ts
-export declare const findLast: {
-  <A, B extends A>(refinement: Refinement<A, B>): (self: Chunk<A>) => Option<B>
-  <A>(predicate: Predicate<A>): <B extends A>(self: Chunk<B>) => Option<B>
-  <A, B extends A>(self: Chunk<A>, refinement: Refinement<A, B>): Option<B>
-  <B extends A, A>(self: Chunk<B>, predicate: Predicate<A>): Option<B>
-}
-```
-
-Added in v1.0.0
-
-## findLastIndex
-
-**Signature**
-
-```ts
-export declare const findLastIndex: {
-  <A>(predicate: Predicate<A>): (self: Chunk<A>) => Option<number>
-  <A>(self: Chunk<A>, predicate: Predicate<A>): Option<number>
-}
-```
-
-Added in v1.0.0
-
-## join
-
-**Signature**
-
-```ts
-export declare const join: {
-  (sep: string): (self: Chunk<string>) => string
-  (self: Chunk<string>, sep: string): string
-}
-```
-
-Added in v1.0.0
-
 ## modify
 
 Apply a function to the element at the specified index, creating a new `Chunk`,
@@ -1091,75 +1195,6 @@ Added in v1.0.0
 export declare const modifyOption: {
   <A, B>(i: number, f: (a: A) => B): (self: Chunk<A>) => Option<Chunk<A | B>>
   <A, B>(self: Chunk<A>, i: number, f: (a: A) => B): Option<Chunk<A | B>>
-}
-```
-
-Added in v1.0.0
-
-## prepend
-
-Prepends the value to the chunk
-
-**Signature**
-
-```ts
-export declare const prepend: {
-  <B>(elem: B): <A>(self: Chunk<A>) => Chunk<B | A>
-  <A, B>(self: Chunk<A>, elem: B): Chunk<A | B>
-}
-```
-
-Added in v1.0.0
-
-## prependAll
-
-**Signature**
-
-```ts
-export declare const prependAll: {
-  <B>(that: Chunk<B>): <A>(self: Chunk<A>) => Chunk<B | A>
-  <A, B>(self: Chunk<A>, that: Chunk<B>): Chunk<A | B>
-}
-```
-
-Added in v1.0.0
-
-## prependAllNonEmpty
-
-**Signature**
-
-```ts
-export declare const prependAllNonEmpty: {
-  <B>(that: NonEmptyChunk<B>): <A>(self: Chunk<A>) => NonEmptyChunk<B | A>
-  <B>(that: Chunk<B>): <A>(self: NonEmptyChunk<A>) => NonEmptyChunk<B | A>
-  <A, B>(self: Chunk<A>, that: NonEmptyChunk<B>): NonEmptyChunk<A | B>
-  <A, B>(self: NonEmptyChunk<A>, that: Chunk<B>): NonEmptyChunk<A | B>
-}
-```
-
-Added in v1.0.0
-
-## reduce
-
-**Signature**
-
-```ts
-export declare const reduce: {
-  <B, A>(b: B, f: (b: B, a: A, i: number) => B): (self: Chunk<A>) => B
-  <A, B>(self: Chunk<A>, b: B, f: (b: B, a: A, i: number) => B): B
-}
-```
-
-Added in v1.0.0
-
-## reduceRight
-
-**Signature**
-
-```ts
-export declare const reduceRight: {
-  <B, A>(b: B, f: (b: B, a: A, i: number) => B): (self: Chunk<A>) => B
-  <A, B>(self: Chunk<A>, b: B, f: (b: B, a: A, i: number) => B): B
 }
 ```
 
@@ -1202,19 +1237,6 @@ Added in v1.0.0
 export declare const replaceOption: {
   <B>(i: number, b: B): <A>(self: Chunk<A>) => Option<Chunk<B | A>>
   <A, B>(self: Chunk<A>, i: number, b: B): Option<Chunk<A | B>>
-}
-```
-
-Added in v1.0.0
-
-## some
-
-**Signature**
-
-```ts
-export declare const some: {
-  <A>(predicate: Predicate<A>): (self: Chunk<A>) => self is NonEmptyChunk<A>
-  <A>(self: Chunk<A>, predicate: Predicate<A>): self is NonEmptyChunk<A>
 }
 ```
 

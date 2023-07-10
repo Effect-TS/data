@@ -116,7 +116,6 @@ export const add: {
 
 /**
  * @since 1.0.0
- * @category utils
  */
 export const difference: {
   <A, B extends A>(that: Iterable<B>): (self: SortedSet<A>) => SortedSet<A>
@@ -133,6 +132,8 @@ export const difference: {
 })
 
 /**
+ * Check if a predicate holds true for every `SortedSet` element.
+ *
  * @since 1.0.0
  * @category elements
  */
@@ -225,7 +226,6 @@ export const has: {
 
 /**
  * @since 1.0.0
- * @category utils
  */
 export const intersection: {
   <A>(that: Iterable<A>): (self: SortedSet<A>) => SortedSet<A>
@@ -324,6 +324,8 @@ export const remove: {
 export const size = <A>(self: SortedSet<A>): number => RBT.size(self.keyTree)
 
 /**
+ * Check if a predicate holds true for some `SortedSet` element.
+ *
  * @since 1.0.0
  * @category elements
  */
@@ -356,7 +358,6 @@ export const toggle: {
 
 /**
  * @since 1.0.0
- * @category utils
  */
 export const union: {
   <A>(that: Iterable<A>): (self: SortedSet<A>) => SortedSet<A>

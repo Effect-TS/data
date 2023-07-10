@@ -434,12 +434,14 @@ export const compose: {
 )
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const product = <A, B>(self: Predicate<A>, that: Predicate<B>): Predicate<readonly [A, B]> =>
   ([a, b]) => self(a) && that(b)
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const all = <A>(
@@ -461,6 +463,7 @@ export const all = <A>(
 }
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const productMany = <A>(
@@ -628,6 +631,7 @@ export const nand: {
 )
 
 /**
+ * @category elements
  * @since 1.0.0
  */
 export const every = <A>(collection: Iterable<Predicate<A>>): Predicate<A> =>
@@ -641,6 +645,7 @@ export const every = <A>(collection: Iterable<Predicate<A>>): Predicate<A> =>
   }
 
 /**
+ * @category elements
  * @since 1.0.0
  */
 export const some = <A>(collection: Iterable<Predicate<A>>): Predicate<A> =>

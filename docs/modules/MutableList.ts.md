@@ -12,6 +12,9 @@ Added in v1.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
+- [concatenating](#concatenating)
+  - [append](#append)
+  - [prepend](#prepend)
 - [constructors](#constructors)
   - [empty](#empty)
   - [fromIterable](#fromiterable)
@@ -28,13 +31,43 @@ Added in v1.0.0
 - [traversing](#traversing)
   - [forEach](#foreach)
 - [utils](#utils)
-  - [append](#append)
   - [pop](#pop)
-  - [prepend](#prepend)
   - [reset](#reset)
   - [shift](#shift)
 
 ---
+
+# concatenating
+
+## append
+
+Appends the specified element to the end of the `MutableList`.
+
+**Signature**
+
+```ts
+export declare const append: {
+  <A>(value: A): (self: MutableList<A>) => MutableList<A>
+  <A>(self: MutableList<A>, value: A): MutableList<A>
+}
+```
+
+Added in v1.0.0
+
+## prepend
+
+Prepends the specified value to the beginning of the list.
+
+**Signature**
+
+```ts
+export declare const prepend: {
+  <A>(value: A): (self: MutableList<A>) => MutableList<A>
+  <A>(self: MutableList<A>, value: A): MutableList<A>
+}
+```
+
+Added in v1.0.0
 
 # constructors
 
@@ -174,21 +207,6 @@ Added in v1.0.0
 
 # utils
 
-## append
-
-Appends the specified value to the end of the list.
-
-**Signature**
-
-```ts
-export declare const append: {
-  <A>(value: A): (self: MutableList<A>) => MutableList<A>
-  <A>(self: MutableList<A>, value: A): MutableList<A>
-}
-```
-
-Added in v1.0.0
-
 ## pop
 
 Removes the last value from the list and returns it, if it exists.
@@ -200,21 +218,6 @@ export declare const pop: <A>(self: MutableList<A>) => A | undefined
 ```
 
 Added in v0.0.1
-
-## prepend
-
-Prepends the specified value to the beginning of the list.
-
-**Signature**
-
-```ts
-export declare const prepend: {
-  <A>(value: A): (self: MutableList<A>) => MutableList<A>
-  <A>(self: MutableList<A>, value: A): MutableList<A>
-}
-```
-
-Added in v1.0.0
 
 ## reset
 

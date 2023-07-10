@@ -15,6 +15,8 @@ Added in v1.0.0
 - [combining](#combining)
   - [all](#all)
   - [ap](#ap)
+  - [product](#product)
+  - [productMany](#productmany)
   - [zipWith](#zipwith)
 - [constructors](#constructors)
   - [none](#none)
@@ -38,6 +40,8 @@ Added in v1.0.0
   - [bind](#bind)
   - [bindTo](#bindto)
   - [let](#let)
+- [elements](#elements)
+  - [contains](#contains)
 - [equivalence](#equivalence)
   - [getEquivalence](#getequivalence)
 - [error handling](#error-handling)
@@ -95,10 +99,7 @@ Added in v1.0.0
 - [type lambdas](#type-lambdas)
   - [OptionTypeLambda (interface)](#optiontypelambda-interface)
 - [utils](#utils)
-  - [contains](#contains)
   - [exists](#exists)
-  - [product](#product)
-  - [productMany](#productmany)
   - [unit](#unit)
 
 ---
@@ -152,6 +153,26 @@ export declare const ap: {
   <A>(that: Option<A>): <B>(self: Option<(a: A) => B>) => Option<B>
   <A, B>(self: Option<(a: A) => B>, that: Option<A>): Option<B>
 }
+```
+
+Added in v1.0.0
+
+## product
+
+**Signature**
+
+```ts
+export declare const product: <A, B>(self: Option<A>, that: Option<B>) => Option<[A, B]>
+```
+
+Added in v1.0.0
+
+## productMany
+
+**Signature**
+
+```ts
+export declare const productMany: <A>(self: Option<A>, collection: Iterable<Option<A>>) => Option<[A, ...A[]]>
 ```
 
 Added in v1.0.0
@@ -551,6 +572,35 @@ export declare const let: {
     [K in N | keyof A]: K extends keyof A ? A[K] : B
   }>
 }
+```
+
+Added in v1.0.0
+
+# elements
+
+## contains
+
+Returns a function that checks if a `Option` contains a given value using a provided `isEquivalent` function.
+
+**Signature**
+
+```ts
+export declare const contains: <A>(isEquivalent: (self: A, that: A) => boolean) => {
+  (a: A): (self: Option<A>) => boolean
+  (self: Option<A>, a: A): boolean
+}
+```
+
+**Example**
+
+```ts
+import { some, none, contains } from '@effect/data/Option'
+import { Equivalence } from '@effect/data/Number'
+import { pipe } from '@effect/data/Function'
+
+assert.deepStrictEqual(pipe(some(2), contains(Equivalence)(2)), true)
+assert.deepStrictEqual(pipe(some(1), contains(Equivalence)(2)), false)
+assert.deepStrictEqual(pipe(none(), contains(Equivalence)(2)), false)
 ```
 
 Added in v1.0.0
@@ -1444,33 +1494,6 @@ Added in v1.0.0
 
 # utils
 
-## contains
-
-Returns a function that checks if an `Option` contains a given value using a provided `Equivalence` instance.
-
-**Signature**
-
-```ts
-export declare const contains: <A>(isEquivalent: (self: A, that: A) => boolean) => {
-  (a: A): (self: Option<A>) => boolean
-  (self: Option<A>, a: A): boolean
-}
-```
-
-**Example**
-
-```ts
-import { some, none, contains } from '@effect/data/Option'
-import { Equivalence } from '@effect/data/Number'
-import { pipe } from '@effect/data/Function'
-
-assert.deepStrictEqual(pipe(some(2), contains(Equivalence)(2)), true)
-assert.deepStrictEqual(pipe(some(1), contains(Equivalence)(2)), false)
-assert.deepStrictEqual(pipe(none(), contains(Equivalence)(2)), false)
-```
-
-Added in v1.0.0
-
 ## exists
 
 Check if a value in an `Option` type meets a certain predicate.
@@ -1495,26 +1518,6 @@ const isEven = (n: number) => n % 2 === 0
 assert.deepStrictEqual(pipe(some(2), exists(isEven)), true)
 assert.deepStrictEqual(pipe(some(1), exists(isEven)), false)
 assert.deepStrictEqual(pipe(none(), exists(isEven)), false)
-```
-
-Added in v1.0.0
-
-## product
-
-**Signature**
-
-```ts
-export declare const product: <A, B>(self: Option<A>, that: Option<B>) => Option<[A, B]>
-```
-
-Added in v1.0.0
-
-## productMany
-
-**Signature**
-
-```ts
-export declare const productMany: <A>(self: Option<A>, collection: Iterable<Option<A>>) => Option<[A, ...A[]]>
 ```
 
 Added in v1.0.0

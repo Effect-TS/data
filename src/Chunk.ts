@@ -402,8 +402,9 @@ export const unsafeGet: {
 })
 
 /**
- * Appends the value to the chunk
+ * Appends the specified element to the end of the `Chunk`.
  *
+ * @category concatenating
  * @since 1.0.0
  */
 export const append: {
@@ -412,8 +413,9 @@ export const append: {
 } = dual(2, <A, A2>(self: Chunk<A>, a: A2): Chunk<A | A2> => appendAll(self, of(a)))
 
 /**
- * Prepends the value to the chunk
+ * Prepend an element to the front of a `Chunk`, creating a new `NonEmptyChunk`.
  *
+ * @category concatenating
  * @since 1.0.0
  */
 export const prepend: {
@@ -541,6 +543,7 @@ export const dropWhile: {
 })
 
 /**
+ * @category concatenating
  * @since 1.0.0
  */
 export const prependAll: {
@@ -549,6 +552,7 @@ export const prependAll: {
 } = dual(2, <A, B>(self: NonEmptyChunk<A>, that: Chunk<B>): Chunk<A | B> => appendAll(that, self))
 
 /**
+ * @category concatenating
  * @since 1.0.0
  */
 export const prependAllNonEmpty: {
@@ -561,6 +565,7 @@ export const prependAllNonEmpty: {
 /**
  * Concatenates the two chunks
  *
+ * @category concatenating
  * @since 1.0.0
  */
 export const appendAll: {
@@ -608,6 +613,7 @@ export const appendAll: {
 })
 
 /**
+ * @category concatenating
  * @since 1.0.0
  */
 export const appendAllNonEmpty: {
@@ -1157,6 +1163,9 @@ export const range = (start: number, end: number): NonEmptyChunk<number> =>
 // -------------------------------------------------------------------------------------
 
 /**
+ * Returns a function that checks if a `Chunk` contains a given value using the default `Equivalence`.
+ *
+ * @category elements
  * @since 1.0.0
  */
 export const contains: {
@@ -1165,6 +1174,9 @@ export const contains: {
 } = RA.contains
 
 /**
+ * Returns a function that checks if a `Chunk` contains a given value using a provided `isEquivalent` function.
+ *
+ * @category elements
  * @since 1.0.0
  */
 export const containsWith: <A>(
@@ -1172,6 +1184,10 @@ export const containsWith: <A>(
 ) => { (a: A): (self: Chunk<A>) => boolean; (self: Chunk<A>, a: A): boolean } = RA.containsWith
 
 /**
+ * Returns the first element that satisfies the specified
+ * predicate, or `None` if no such element exists.
+ *
+ * @category elements
  * @since 1.0.0
  */
 export const findFirst: {
@@ -1182,6 +1198,9 @@ export const findFirst: {
 } = RA.findFirst
 
 /**
+ * Return the first index for which a predicate holds.
+ *
+ * @category elements
  * @since 1.0.0
  */
 export const findFirstIndex: {
@@ -1190,6 +1209,9 @@ export const findFirstIndex: {
 } = RA.findFirstIndex
 
 /**
+ * Find the last element for which a predicate holds.
+ *
+ * @category elements
  * @since 1.0.0
  */
 export const findLast: {
@@ -1200,6 +1222,9 @@ export const findLast: {
 } = RA.findLast
 
 /**
+ * Return the last index for which a predicate holds.
+ *
+ * @category elements
  * @since 1.0.0
  */
 export const findLastIndex: {
@@ -1208,6 +1233,9 @@ export const findLastIndex: {
 } = RA.findLastIndex
 
 /**
+ * Check if a predicate holds true for every `Chunk` element.
+ *
+ * @category elements
  * @since 1.0.0
  */
 export const every: {
@@ -1222,6 +1250,9 @@ export const every: {
 )
 
 /**
+ * Check if a predicate holds true for some `Chunk` element.
+ *
+ * @category elements
  * @since 1.0.0
  */
 export const some: {
@@ -1233,6 +1264,9 @@ export const some: {
 )
 
 /**
+ * Joins the elements together with "sep" in the middle.
+ *
+ * @category folding
  * @since 1.0.0
  */
 export const join: {
@@ -1241,6 +1275,7 @@ export const join: {
 } = RA.join
 
 /**
+ * @category folding
  * @since 1.0.0
  */
 export const reduce: {
@@ -1249,6 +1284,7 @@ export const reduce: {
 } = RA.reduce
 
 /**
+ * @category folding
  * @since 1.0.0
  */
 export const reduceRight: {

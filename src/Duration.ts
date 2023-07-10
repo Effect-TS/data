@@ -421,7 +421,6 @@ export const Equivalence: equivalence.Equivalence<Duration> = (self, that) =>
   })
 
 /**
- * @category utils
  * @since 1.0.0
  */
 export const min: {
@@ -430,7 +429,6 @@ export const min: {
 } = order.min(Order)
 
 /**
- * @category utils
  * @since 1.0.0
  */
 export const max: {
@@ -439,7 +437,6 @@ export const max: {
 } = order.max(Order)
 
 /**
- * @category utils
  * @since 1.0.0
  */
 export const clamp: {

@@ -186,6 +186,7 @@ export const getOrder: <T extends ReadonlyArray<order.Order<any>>>(
 /**
  * Appends an element to the end of a tuple.
  *
+ * @category concatenating
  * @since 1.0.0
  */
 export const appendElement: {

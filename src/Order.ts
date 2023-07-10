@@ -58,6 +58,7 @@ export const bigint: Order<bigint> = make((self, that) => self < that ? -1 : 1)
 export const reverse = <A>(O: Order<A>): Order<A> => make((self, that) => O(that, self))
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const combine: {
@@ -73,6 +74,7 @@ export const combine: {
   }))
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const combineMany: {
@@ -99,6 +101,7 @@ export const combineMany: {
 export const empty = <A>(): Order<A> => make(() => 0)
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const combineAll = <A>(collection: Iterable<Order<A>>): Order<A> => combineMany(empty(), collection)
@@ -116,6 +119,7 @@ export const contramap: {
 )
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const product: {
@@ -128,6 +132,7 @@ export const product: {
   }))
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const all = <A>(collection: Iterable<Order<A>>): Order<Array<A>> => {
@@ -149,6 +154,7 @@ export const all = <A>(collection: Iterable<Order<A>>): Order<Array<A>> => {
 }
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const productMany: {

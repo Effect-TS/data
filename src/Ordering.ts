@@ -77,6 +77,7 @@ export const match: {
 ): A | B | C => self === -1 ? onLessThan() : self === 0 ? onEqual() : onGreaterThan())
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const combine: {
@@ -85,6 +86,7 @@ export const combine: {
 } = dual(2, (self: Ordering, that: Ordering): Ordering => self !== 0 ? self : that)
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const combineMany: {
@@ -104,6 +106,7 @@ export const combineMany: {
 })
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const combineAll = (collection: Iterable<Ordering>): Ordering => combineMany(0, collection)

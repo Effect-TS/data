@@ -49,7 +49,6 @@ export const diff: <Value>(
  * applying their changes sequentially.
  *
  * @since 1.0.0
- * @category utils
  */
 export const combine: {
   <Value>(that: HashSetPatch<Value>): (self: HashSetPatch<Value>) => HashSetPatch<Value>
