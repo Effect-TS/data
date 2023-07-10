@@ -34,20 +34,6 @@ import type { Predicate, Refinement } from "@effect/data/Predicate"
 import { isObject } from "@effect/data/Predicate"
 import * as ReadonlyArray from "@effect/data/ReadonlyArray"
 
-const ListSymbolKey = "@effect/data/List"
-
-/**
- * @since 1.0.0
- * @category symbol
- */
-export const ListTypeId: unique symbol = Symbol.for(ListSymbolKey)
-
-/**
- * @since 1.0.0
- * @category symbol
- */
-export type ListTypeId = typeof ListTypeId
-
 /**
  * Represents an immutable linked list of elements of type `A`.
  *
@@ -62,61 +48,41 @@ export type List<A> = Cons<A> | Nil<A>
 
 /**
  * @since 1.0.0
+ * @category symbol
+ */
+export const TypeId: unique symbol = Symbol.for("@effect/data/List")
+
+/**
+ * @since 1.0.0
+ * @category symbol
+ */
+export type TypeId = typeof TypeId
+
+/**
+ * @since 1.0.0
  * @category models
  */
-export interface Cons<A> extends List.Variance<A>, Iterable<A>, Equal.Equal, Pipeable {
+export interface Nil<A> extends Iterable<A>, Equal.Equal, Pipeable {
+  readonly _id: TypeId
+  readonly _tag: "Nil"
+}
+
+/**
+ * @since 1.0.0
+ * @category models
+ */
+export interface Cons<A> extends Iterable<A>, Equal.Equal, Pipeable {
+  readonly _id: TypeId
   readonly _tag: "Cons"
   readonly head: A
   readonly tail: List<A>
 }
 
 /**
- * @since 1.0.0
- * @category models
- */
-export interface Nil<A> extends List.Variance<A>, Iterable<A>, Equal.Equal, Pipeable {
-  readonly _tag: "Nil"
-}
-
-type ConsNS<A> = Cons<A>
-type NilNS<A> = Nil<A>
-
-/**
- * @since 1.0.0
- */
-export declare namespace List {
-  /**
-   * @since 1.0.0
-   * @category models
-   */
-  export interface Variance<A> {
-    readonly [ListTypeId]: {
-      readonly _A: (_: never) => A
-    }
-  }
-
-  /**
-   * @since 1.0.0
-   * @category models
-   */
-  export type Cons<A> = ConsNS<A>
-
-  /**
-   * @since 1.0.0
-   * @category models
-   */
-  export type Nil<A> = NilNS<A>
-}
-
-const listVariance = {
-  _A: (_: never) => _
-}
-
-/**
- * Converts the specified list to a `ReadonlyArray`.
+ * Converts the specified `List` to a `ReadonlyArray`.
  *
- * @since 1.0.0
  * @category conversions
+ * @since 1.0.0
  */
 export const toReadonlyArray = <A>(self: List<A>): ReadonlyArray<A> => Array.from(self)
 
@@ -129,9 +95,9 @@ export const getEquivalence = <A>(isEquivalent: Equivalence.Equivalence<A>): Equ
 
 const _equivalence = getEquivalence(Equal.equals)
 
-class ConsImpl<A> implements List.Cons<A> {
+class ConsImpl<A> implements Cons<A> {
   readonly _tag = "Cons"
-  readonly [ListTypeId] = listVariance
+  readonly _id: typeof TypeId = TypeId
   constructor(readonly head: A, public tail: List<A>) {}
   toString() {
     return `List.Cons(${toReadonlyArray(this).map(String).join(", ")})`
@@ -151,7 +117,7 @@ class ConsImpl<A> implements List.Cons<A> {
       _equivalence(this, that)
   }
   [Hash.symbol](): number {
-    return Hash.string(ListSymbolKey)
+    return Hash.array(toReadonlyArray(this))
   }
   [Symbol.iterator](): Iterator<A> {
     let done = false
@@ -183,9 +149,9 @@ class ConsImpl<A> implements List.Cons<A> {
   }
 }
 
-class NilImpl<A> implements List.Nil<A> {
+class NilImpl<A> implements Nil<A> {
   readonly _tag = "Nil"
-  readonly [ListTypeId] = listVariance
+  readonly _id: typeof TypeId = TypeId
   toString() {
     return `List.Nil`
   }
@@ -198,7 +164,7 @@ class NilImpl<A> implements List.Nil<A> {
     return this.toJSON()
   }
   [Hash.symbol](): number {
-    return Hash.array(Array.from(this))
+    return Hash.array(toReadonlyArray(this))
   }
   [Equal.symbol](that: unknown): boolean {
     return isList(that) && this._tag === that._tag
@@ -224,7 +190,7 @@ class NilImpl<A> implements List.Nil<A> {
 export const isList: {
   <A>(u: Iterable<A>): u is List<A>
   (u: unknown): u is List<unknown>
-} = (u: unknown): u is List<unknown> => isObject(u) && ListTypeId in u
+} = (u: unknown): u is List<unknown> => isObject(u) && "_id" in u && u["_id"] === TypeId
 
 /**
  * Returns `true` if the specified value is a `List.Nil<A>`, `false` otherwise.
@@ -261,12 +227,12 @@ export const size = <A>(self: List<A>): number => {
 const _Nil = new NilImpl<never>()
 
 /**
- * Constructs a new `List.Nil<A>`.
+ * Constructs a new empty `List<A>`.
  *
  * @since 1.0.0
  * @category constructors
  */
-export const nil = <A = never>(): List.Nil<A> => _Nil
+export const nil = <A = never>(): List<A> => _Nil
 
 /**
  * Constructs a new `List.Cons<A>` from the specified `head` and `tail` values.
@@ -274,15 +240,17 @@ export const nil = <A = never>(): List.Nil<A> => _Nil
  * @since 1.0.0
  * @category constructors
  */
-export const cons = <A>(head: A, tail: List<A>): List.Cons<A> => new ConsImpl(head, tail)
+export const cons = <A>(head: A, tail: List<A>): Cons<A> => new ConsImpl(head, tail)
 
 /**
  * Constructs a new empty `List<A>`.
  *
+ * Alias of {@link nil}.
+ *
  * @since 1.0.0
  * @category constructors
  */
-export const empty = <A = never>(): List<A> => _Nil
+export const empty = nil
 
 /**
  * Constructs a new `List<A>` from the specified value.
@@ -290,7 +258,7 @@ export const empty = <A = never>(): List<A> => _Nil
  * @since 1.0.0
  * @category constructors
  */
-export const of = <A>(value: A): List<A> => new ConsImpl(value, _Nil)
+export const of = <A>(value: A): Cons<A> => new ConsImpl(value, _Nil)
 
 /**
  * Constructs a new `List<A>` from the specified `Iterable<A>`.
@@ -323,18 +291,10 @@ export const fromIterable = <A>(prefix: Iterable<A>): List<A> => {
  */
 export const make = <Elements extends readonly [any, ...Array<any>]>(
   ...elements: Elements
-): List<Elements[number]> => fromIterable(elements)
+): Cons<Elements[number]> => fromIterable(elements) as any
 
 /**
- * Removes all `None` values from the specified list.
- *
- * @since 1.0.0
- * @category combinators
- */
-export const compact = <A>(self: Iterable<Option.Option<A>>): List<A> => filterMap(self, identity)
-
-/**
- * Appends the specified element to the end of the `List`.
+ * Appends the specified element to the end of the `List`, creating a new `Cons`.
  *
  * @category concatenating
  * @since 1.0.0
@@ -342,7 +302,7 @@ export const compact = <A>(self: Iterable<Option.Option<A>>): List<A> => filterM
 export const append: {
   <B>(element: B): <A>(self: List<A>) => Cons<A | B>
   <A, B>(self: List<A>, element: B): Cons<A | B>
-} = dual(2, <A, B>(self: List<A>, element: B) => appendAll(self, of(element)))
+} = dual(2, <A, B>(self: List<A>, element: B): Cons<A | B> => appendAllNonEmpty(self, of(element)))
 
 /**
  * Concatentates the specified lists together.
@@ -354,6 +314,87 @@ export const appendAll: {
   <B>(that: List<B>): <A>(self: List<A>) => List<A | B>
   <A, B>(self: List<A>, that: List<B>): List<A | B>
 } = dual(2, <A, B>(self: List<A>, that: List<B>): List<A | B> => prependAll(that, self))
+
+/**
+ * @category concatenating
+ * @since 1.0.0
+ */
+export const appendAllNonEmpty: {
+  <B>(that: Cons<B>): <A>(self: List<A>) => Cons<B | A>
+  <B>(that: List<B>): <A>(self: Cons<A>) => Cons<B | A>
+  <A, B>(self: List<A>, that: Cons<B>): Cons<A | B>
+  <A, B>(self: Cons<A>, that: List<B>): Cons<A | B>
+} = dual(2, <A, B>(self: Cons<A>, that: List<B>): Cons<A | B> => appendAll(self, that) as any)
+
+/**
+ * Prepends the specified element to the beginning of the list.
+ *
+ * @category concatenating
+ * @since 1.0.0
+ */
+export const prepend: {
+  <B>(element: B): <A>(self: List<A>) => Cons<A | B>
+  <A, B>(self: List<A>, element: B): Cons<A | B>
+} = dual(2, <A, B>(self: List<A>, element: B): Cons<A | B> => cons<A | B>(element, self))
+
+/**
+ * Prepends the specified prefix list to the beginning of the specified list.
+ *
+ * @category concatenating
+ * @since 1.0.0
+ */
+export const prependAll: {
+  <B>(prefix: List<B>): <A>(self: List<A>) => List<A | B>
+  <A, B>(self: List<A>, prefix: List<B>): List<A | B>
+} = dual(2, <A, B>(self: List<A>, prefix: List<B>): List<A | B> => {
+  if (isNil(self)) {
+    return prefix
+  } else if (isNil(prefix)) {
+    return self
+  } else {
+    const result = new ConsImpl<A | B>(prefix.head, self)
+    let curr = result
+    let that = prefix.tail
+    while (!isNil(that)) {
+      const temp = new ConsImpl<A | B>(that.head, self)
+      curr.tail = temp
+      curr = temp
+      that = that.tail
+    }
+    return result
+  }
+})
+
+/**
+ * @category concatenating
+ * @since 1.0.0
+ */
+export const prependAllNonEmpty: {
+  <B>(that: Cons<B>): <A>(self: List<A>) => Cons<B | A>
+  <B>(that: List<B>): <A>(self: Cons<A>) => Cons<B | A>
+  <A, B>(self: List<A>, that: Cons<B>): Cons<A | B>
+  <A, B>(self: Cons<A>, that: List<B>): Cons<A | B>
+} = dual(2, <A, B>(self: Cons<A>, that: List<B>): Cons<A | B> => prependAll(self, that) as any)
+
+/**
+ * Prepends the specified prefix list (in reverse order) to the beginning of the
+ * specified list.
+ *
+ * @category concatenating
+ * @since 1.0.0
+ */
+export const prependAllReversed: {
+  <B>(prefix: List<B>): <A>(self: List<A>) => List<A | B>
+  <A, B>(self: List<A>, prefix: List<B>): List<A | B>
+} = dual(2, <A, B>(self: List<A>, prefix: List<B>): List<A | B> => {
+  let out: List<A | B> = self
+  let pres = prefix
+  while (isCons(pres)) {
+    out = new ConsImpl(pres.head, out)
+    pres = pres.tail
+  }
+  return out
+})
 
 /**
  * Drops the first `n` elements from the specified list.
@@ -407,9 +448,9 @@ export const every: {
  * @category elements
  */
 export const some: {
-  <A>(predicate: Predicate<A>): (self: List<A>) => boolean
-  <A>(self: List<A>, predicate: Predicate<A>): boolean
-} = dual(2, <A>(self: List<A>, predicate: Predicate<A>): boolean => {
+  <A>(predicate: Predicate<A>): <B extends A>(self: List<B>) => self is Cons<B>
+  <B extends A, A = B>(self: List<B>, predicate: Predicate<A>): self is Cons<B>
+} = dual(2, <B extends A, A = B>(self: List<B>, predicate: Predicate<A>): self is Cons<B> => {
   let these = self
   while (!isNil(these)) {
     if (predicate(these.head)) {
@@ -427,11 +468,11 @@ export const some: {
  * @category combinators
  */
 export const filter: {
-  <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => List<B>
-  <A>(predicate: Predicate<A>): (self: List<A>) => List<A>
-  <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): List<B>
-  <A>(self: List<A>, predicate: Predicate<A>): List<A>
-} = dual(2, <A>(self: List<A>, predicate: Predicate<A>) => noneIn(self, predicate, false))
+  <C extends A, B extends A, A = C>(refinement: Refinement<A, B>): (self: List<C>) => List<B>
+  <B extends A, A = B>(predicate: Predicate<A>): (self: List<B>) => List<B>
+  <C extends A, B extends A, A = C>(self: List<C>, refinement: Refinement<A, B>): List<B>
+  <B extends A, A = B>(self: List<B>, predicate: Predicate<A>): List<B>
+} = dual(2, <B extends A, A = B>(self: List<B>, predicate: Predicate<A>): List<B> => noneIn(self, predicate, false))
 
 // everything seen so far is not included
 const noneIn = <A>(
@@ -483,7 +524,7 @@ const partialFill = <A>(
   isFlipped: boolean
 ): List<A> => {
   const newHead = new ConsImpl<A>(unsafeHead(origStart)!, _Nil)
-  let toProcess = unsafeTail(origStart)! as List.Cons<A>
+  let toProcess = unsafeTail(origStart)! as Cons<A>
   let currentLast = newHead
 
   // we know that all elements are :: until at least firstMiss.tail
@@ -499,7 +540,7 @@ const partialFill = <A>(
 
   // now we are going to try and share as much of the tail as we can, only moving elements across when we have to.
   let next = firstMiss.tail
-  let nextToCopy: List.Cons<A> = unsafeCoerce(next) // the next element we would need to copy to our list if we cant share.
+  let nextToCopy: Cons<A> = unsafeCoerce(next) // the next element we would need to copy to our list if we cant share.
   while (!isNil(next)) {
     // generally recommended is next.isNonEmpty but this incurs an extra method call.
     const head = unsafeHead(next)!
@@ -534,18 +575,26 @@ const partialFill = <A>(
  * @category combinators
  */
 export const filterMap: {
-  <A, B>(pf: (a: A) => Option.Option<B>): (self: Iterable<A>) => List<B>
-  <A, B>(self: Iterable<A>, pf: (a: A) => Option.Option<B>): List<B>
-} = dual(2, <A, B>(self: Iterable<A>, pf: (a: A) => Option.Option<B>) => {
+  <A, B>(f: (a: A) => Option.Option<B>): (self: List<A>) => List<B>
+  <A, B>(self: List<A>, f: (a: A) => Option.Option<B>): List<B>
+} = dual(2, <A, B>(self: List<A>, f: (a: A) => Option.Option<B>): List<B> => {
   const bs: Array<B> = []
   for (const a of self) {
-    const oa = pf(a)
+    const oa = f(a)
     if (Option.isSome(oa)) {
       bs.push(oa.value)
     }
   }
   return fromIterable(bs)
 })
+
+/**
+ * Removes all `None` values from the specified list.
+ *
+ * @since 1.0.0
+ * @category combinators
+ */
+export const compact = <A>(self: List<Option.Option<A>>): List<A> => filterMap(self, identity)
 
 /**
  * Returns the first element that satisfies the specified
@@ -559,7 +608,7 @@ export const findFirst: {
   <A>(predicate: Predicate<A>): (self: List<A>) => Option.Option<A>
   <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): Option.Option<B>
   <A>(self: List<A>, predicate: Predicate<A>): Option.Option<A>
-} = dual(2, <A>(self: List<A>, predicate: Predicate<A>) => {
+} = dual(2, <A>(self: List<A>, predicate: Predicate<A>): Option.Option<A> => {
   let these = self
   while (!isNil(these)) {
     if (predicate(these.head)) {
@@ -574,12 +623,12 @@ export const findFirst: {
  * Flat maps a list using the specified function.
  *
  * @since 1.0.0
- * @category combinators
+ * @category sequencing
  */
 export const flatMap: {
   <A, B>(f: (a: A) => List<B>): (self: List<A>) => List<B>
   <A, B>(self: List<A>, f: (a: A) => List<B>): List<B>
-} = dual(2, <A, B>(self: List<A>, f: (a: A) => List<B>) => {
+} = dual(2, <A, B>(self: List<A>, f: (a: A) => List<B>): List<B> => {
   let rest = self
   let head: ConsImpl<B> | undefined = undefined
   let tail: ConsImpl<B> | undefined = undefined
@@ -602,6 +651,15 @@ export const flatMap: {
   }
   return head
 })
+
+/**
+ * @category sequencing
+ * @since 1.0.0
+ */
+export const flatMapNonEmpty: {
+  <A, B>(f: (a: A, i: number) => Cons<B>): (self: Cons<A>) => Cons<B>
+  <A, B>(self: Cons<A>, f: (a: A, i: number) => Cons<B>): Cons<B>
+} = flatMap as any
 
 /**
  * Applies the specified function to each element of the list.
@@ -647,7 +705,7 @@ export const last = <A>(self: List<A>): Option.Option<A> => isNil(self) ? Option
 export const map: {
   <A, B>(f: (a: A) => B): (self: List<A>) => List<B>
   <A, B>(self: List<A>, f: (a: A) => B): List<B>
-} = dual(2, <A, B>(self: List<A>, f: (a: A) => B) => {
+} = dual(2, <A, B>(self: List<A>, f: (a: A) => B): List<B> => {
   if (isNil(self)) {
     return self as unknown as List<B>
   } else {
@@ -677,9 +735,9 @@ export const partition: {
   <B extends A, A = B>(predicate: (a: A) => boolean): (self: List<B>) => [List<B>, List<B>]
   <C extends A, B extends A, A = C>(self: List<C>, refinement: Refinement<A, B>): [List<Exclude<C, B>>, List<B>]
   <B extends A, A = B>(self: List<B>, predicate: (a: A) => boolean): [List<B>, List<B>]
-} = dual(2, <A>(self: List<A>, predicate: Predicate<A>) => {
-  const left: Array<A> = []
-  const right: Array<A> = []
+} = dual(2, <B extends A, A = B>(self: List<B>, predicate: (a: A) => boolean): [List<B>, List<B>] => {
+  const left: Array<B> = []
+  const right: Array<B> = []
   for (const a of self) {
     if (predicate(a)) {
       right.push(a)
@@ -701,7 +759,7 @@ export const partition: {
 export const partitionMap: {
   <A, B, C>(f: (a: A) => Either.Either<B, C>): (self: List<A>) => readonly [List<B>, List<C>]
   <A, B, C>(self: List<A>, f: (a: A) => Either.Either<B, C>): readonly [List<B>, List<C>]
-} = dual(2, <A, B, C>(self: List<A>, f: (a: A) => Either.Either<B, C>) => {
+} = dual(2, <A, B, C>(self: List<A>, f: (a: A) => Either.Either<B, C>): readonly [List<B>, List<C>] => {
   const left: Array<B> = []
   const right: Array<C> = []
   for (const a of self) {
@@ -713,65 +771,6 @@ export const partitionMap: {
     }
   }
   return [fromIterable(left), fromIterable(right)]
-})
-
-/**
- * Prepends the specified element to the beginning of the list.
- *
- * @category concatenating
- * @since 1.0.0
- */
-export const prepend: {
-  <B>(element: B): <A>(self: List<A>) => Cons<A | B>
-  <A, B>(self: List<A>, element: B): Cons<A | B>
-} = dual(2, <A, B>(self: List<A>, element: B) => cons<A | B>(element, self))
-
-/**
- * Prepends the specified prefix list to the beginning of the specified list.
- *
- * @category concatenating
- * @since 1.0.0
- */
-export const prependAll: {
-  <B>(prefix: List<B>): <A>(self: List<A>) => List<A | B>
-  <A, B>(self: List<A>, prefix: List<B>): List<A | B>
-} = dual(2, <A, B>(self: List<A>, prefix: List<B>) => {
-  if (isNil(self)) {
-    return prefix
-  } else if (isNil(prefix)) {
-    return self
-  } else {
-    const result = new ConsImpl<A | B>(prefix.head, self)
-    let curr = result
-    let that = prefix.tail
-    while (!isNil(that)) {
-      const temp = new ConsImpl<A | B>(that.head, self)
-      curr.tail = temp
-      curr = temp
-      that = that.tail
-    }
-    return result
-  }
-})
-
-/**
- * Prepends the specified prefix list (in reverse order) to the beginning of the
- * specified list.
- *
- * @category concatenating
- * @since 1.0.0
- */
-export const prependAllReversed: {
-  <B>(prefix: List<B>): <A>(self: List<A>) => List<A | B>
-  <A, B>(self: List<A>, prefix: List<B>): List<A | B>
-} = dual(2, <A, B>(self: List<A>, prefix: List<B>) => {
-  let out: List<A | B> = self
-  let pres = prefix
-  while (isCons(pres)) {
-    out = new ConsImpl(pres.head, out)
-    pres = pres.tail
-  }
-  return out
 })
 
 /**
@@ -876,7 +875,7 @@ export const take: {
 })
 
 /**
- * Converts the specified list to a `Chunk`.
+ * Converts the specified `List` to a `Chunk`.
  *
  * @since 1.0.0
  * @category conversions

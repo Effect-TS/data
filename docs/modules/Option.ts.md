@@ -612,7 +612,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getEquivalence: <A>(E: Equivalence<A>) => Equivalence<Option<A>>
+export declare const getEquivalence: <A>(isEquivalent: Equivalence.Equivalence<A>) => Equivalence.Equivalence<Option<A>>
 ```
 
 **Example**

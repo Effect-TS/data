@@ -26,7 +26,6 @@ Added in v1.0.0
   - [drop](#drop)
   - [filter](#filter)
   - [filterMap](#filtermap)
-  - [flatMap](#flatmap)
   - [forEach](#foreach)
   - [map](#map)
   - [partition](#partition)
@@ -36,8 +35,10 @@ Added in v1.0.0
 - [concatenating](#concatenating)
   - [append](#append)
   - [appendAll](#appendall)
+  - [appendAllNonEmpty](#appendallnonempty)
   - [prepend](#prepend)
   - [prependAll](#prependall)
+  - [prependAllNonEmpty](#prependallnonempty)
   - [prependAllReversed](#prependallreversed)
 - [constructors](#constructors)
   - [cons](#cons)
@@ -72,9 +73,12 @@ Added in v1.0.0
   - [isCons](#iscons)
   - [isList](#islist)
   - [isNil](#isnil)
+- [sequencing](#sequencing)
+  - [flatMap](#flatmap)
+  - [flatMapNonEmpty](#flatmapnonempty)
 - [symbol](#symbol)
-  - [ListTypeId](#listtypeid)
-  - [ListTypeId (type alias)](#listtypeid-type-alias)
+  - [TypeId](#typeid)
+  - [TypeId (type alias)](#typeid-type-alias)
 - [unsafe](#unsafe)
   - [unsafeHead](#unsafehead)
   - [unsafeLast](#unsafelast)
@@ -91,7 +95,7 @@ Removes all `None` values from the specified list.
 **Signature**
 
 ```ts
-export declare const compact: <A>(self: Iterable<Option.Option<A>>) => List<A>
+export declare const compact: <A>(self: List<Option.Option<A>>) => List<A>
 ```
 
 Added in v1.0.0
@@ -116,10 +120,10 @@ Filters a list using the specified predicate.
 
 ```ts
 export declare const filter: {
-  <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => List<B>
-  <A>(predicate: Predicate<A>): (self: List<A>) => List<A>
-  <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): List<B>
-  <A>(self: List<A>, predicate: Predicate<A>): List<A>
+  <C extends A, B extends A, A = C>(refinement: Refinement<A, B>): (self: List<C>) => List<B>
+  <B extends A, A = B>(predicate: Predicate<A>): (self: List<B>) => List<B>
+  <C extends A, B extends A, A = C>(self: List<C>, refinement: Refinement<A, B>): List<B>
+  <B extends A, A = B>(self: List<B>, predicate: Predicate<A>): List<B>
 }
 ```
 
@@ -135,23 +139,8 @@ function not being defined for some elements.
 
 ```ts
 export declare const filterMap: {
-  <A, B>(pf: (a: A) => Option.Option<B>): (self: Iterable<A>) => List<B>
-  <A, B>(self: Iterable<A>, pf: (a: A) => Option.Option<B>): List<B>
-}
-```
-
-Added in v1.0.0
-
-## flatMap
-
-Flat maps a list using the specified function.
-
-**Signature**
-
-```ts
-export declare const flatMap: {
-  <A, B>(f: (a: A) => List<B>): (self: List<A>) => List<B>
-  <A, B>(self: List<A>, f: (a: A) => List<B>): List<B>
+  <A, B>(f: (a: A) => Option.Option<B>): (self: List<A>) => List<B>
+  <A, B>(self: List<A>, f: (a: A) => Option.Option<B>): List<B>
 }
 ```
 
@@ -255,7 +244,7 @@ Added in v1.0.0
 
 ## append
 
-Appends the specified element to the end of the `List`.
+Appends the specified element to the end of the `List`, creating a new `Cons`.
 
 **Signature**
 
@@ -278,6 +267,21 @@ Concatentates the specified lists together.
 export declare const appendAll: {
   <B>(that: List<B>): <A>(self: List<A>) => List<B | A>
   <A, B>(self: List<A>, that: List<B>): List<A | B>
+}
+```
+
+Added in v1.0.0
+
+## appendAllNonEmpty
+
+**Signature**
+
+```ts
+export declare const appendAllNonEmpty: {
+  <B>(that: Cons<B>): <A>(self: List<A>) => Cons<B | A>
+  <B>(that: List<B>): <A>(self: Cons<A>) => Cons<B | A>
+  <A, B>(self: List<A>, that: Cons<B>): Cons<A | B>
+  <A, B>(self: Cons<A>, that: List<B>): Cons<A | B>
 }
 ```
 
@@ -313,6 +317,21 @@ export declare const prependAll: {
 
 Added in v1.0.0
 
+## prependAllNonEmpty
+
+**Signature**
+
+```ts
+export declare const prependAllNonEmpty: {
+  <B>(that: Cons<B>): <A>(self: List<A>) => Cons<B | A>
+  <B>(that: List<B>): <A>(self: Cons<A>) => Cons<B | A>
+  <A, B>(self: List<A>, that: Cons<B>): Cons<A | B>
+  <A, B>(self: Cons<A>, that: List<B>): Cons<A | B>
+}
+```
+
+Added in v1.0.0
+
 ## prependAllReversed
 
 Prepends the specified prefix list (in reverse order) to the beginning of the
@@ -338,7 +357,7 @@ Constructs a new `List.Cons<A>` from the specified `head` and `tail` values.
 **Signature**
 
 ```ts
-export declare const cons: <A>(head: A, tail: List<A>) => List.Cons<A>
+export declare const cons: <A>(head: A, tail: List<A>) => Cons<A>
 ```
 
 Added in v1.0.0
@@ -346,6 +365,8 @@ Added in v1.0.0
 ## empty
 
 Constructs a new empty `List<A>`.
+
+Alias of {@link nil}.
 
 **Signature**
 
@@ -374,19 +395,19 @@ Constructs a new `List<A>` from the specified values.
 **Signature**
 
 ```ts
-export declare const make: <Elements extends readonly [any, ...any[]]>(...elements: Elements) => List<Elements[number]>
+export declare const make: <Elements extends readonly [any, ...any[]]>(...elements: Elements) => Cons<Elements[number]>
 ```
 
 Added in v1.0.0
 
 ## nil
 
-Constructs a new `List.Nil<A>`.
+Constructs a new empty `List<A>`.
 
 **Signature**
 
 ```ts
-export declare const nil: <A = never>() => List.Nil<A>
+export declare const nil: <A = never>() => List<A>
 ```
 
 Added in v1.0.0
@@ -398,7 +419,7 @@ Constructs a new `List<A>` from the specified value.
 **Signature**
 
 ```ts
-export declare const of: <A>(value: A) => List<A>
+export declare const of: <A>(value: A) => Cons<A>
 ```
 
 Added in v1.0.0
@@ -407,7 +428,7 @@ Added in v1.0.0
 
 ## toChunk
 
-Converts the specified list to a `Chunk`.
+Converts the specified `List` to a `Chunk`.
 
 **Signature**
 
@@ -419,7 +440,7 @@ Added in v1.0.0
 
 ## toReadonlyArray
 
-Converts the specified list to a `ReadonlyArray`.
+Converts the specified `List` to a `ReadonlyArray`.
 
 **Signature**
 
@@ -486,8 +507,8 @@ Check if a predicate holds true for some `List` element.
 
 ```ts
 export declare const some: {
-  <A>(predicate: Predicate<A>): (self: List<A>) => boolean
-  <A>(self: List<A>, predicate: Predicate<A>): boolean
+  <A>(predicate: Predicate<A>): <B extends A>(self: List<B>) => self is Cons<B>
+  <B extends A, A = B>(self: List<B>, predicate: Predicate<A>): self is Cons<B>
 }
 ```
 
@@ -598,7 +619,8 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Cons<A> extends List.Variance<A>, Iterable<A>, Equal.Equal, Pipeable {
+export interface Cons<A> extends Iterable<A>, Equal.Equal, Pipeable {
+  readonly _id: TypeId
   readonly _tag: 'Cons'
   readonly head: A
   readonly tail: List<A>
@@ -628,7 +650,8 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Nil<A> extends List.Variance<A>, Iterable<A>, Equal.Equal, Pipeable {
+export interface Nil<A> extends Iterable<A>, Equal.Equal, Pipeable {
+  readonly _id: TypeId
   readonly _tag: 'Nil'
 }
 ```
@@ -673,24 +696,54 @@ export declare const isNil: <A>(self: List<A>) => self is Nil<A>
 
 Added in v1.0.0
 
-# symbol
+# sequencing
 
-## ListTypeId
+## flatMap
+
+Flat maps a list using the specified function.
 
 **Signature**
 
 ```ts
-export declare const ListTypeId: typeof ListTypeId
+export declare const flatMap: {
+  <A, B>(f: (a: A) => List<B>): (self: List<A>) => List<B>
+  <A, B>(self: List<A>, f: (a: A) => List<B>): List<B>
+}
 ```
 
 Added in v1.0.0
 
-## ListTypeId (type alias)
+## flatMapNonEmpty
 
 **Signature**
 
 ```ts
-export type ListTypeId = typeof ListTypeId
+export declare const flatMapNonEmpty: {
+  <A, B>(f: (a: A, i: number) => Cons<B>): (self: Cons<A>) => Cons<B>
+  <A, B>(self: Cons<A>, f: (a: A, i: number) => Cons<B>): Cons<B>
+}
+```
+
+Added in v1.0.0
+
+# symbol
+
+## TypeId
+
+**Signature**
+
+```ts
+export declare const TypeId: typeof TypeId
+```
+
+Added in v1.0.0
+
+## TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof TypeId
 ```
 
 Added in v1.0.0

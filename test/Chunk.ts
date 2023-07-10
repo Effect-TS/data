@@ -140,7 +140,7 @@ describe.concurrent("Chunk", () => {
     })
   })
 
-  describe.concurrent("is", () => {
+  describe.concurrent("isChunk", () => {
     describe.concurrent("Given a chunk", () => {
       const chunk = Chunk.make(0, 1)
       it("should be true", () => {

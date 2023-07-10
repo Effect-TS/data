@@ -294,7 +294,7 @@ Added in v1.0.0
 
 ## toReadonlyArray
 
-Converts to a `ReadonlyArray<A>`
+Converts the specified `Chunk` to a `ReadonlyArray`.
 
 **Signature**
 
@@ -564,8 +564,8 @@ Check if a predicate holds true for some `Chunk` element.
 
 ```ts
 export declare const some: {
-  <A>(predicate: Predicate<A>): (self: Chunk<A>) => self is NonEmptyChunk<A>
-  <A>(self: Chunk<A>, predicate: Predicate<A>): self is NonEmptyChunk<A>
+  <A>(predicate: Predicate<A>): <B extends A>(self: Chunk<B>) => self is NonEmptyChunk<B>
+  <B extends A, A = B>(self: Chunk<B>, predicate: Predicate<A>): self is NonEmptyChunk<B>
 }
 ```
 

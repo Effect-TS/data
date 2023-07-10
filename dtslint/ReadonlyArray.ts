@@ -105,8 +105,12 @@ RA.groupBy([1, 2, 3], n => n > 0 ? 'positive' as const : 'negative' as const)
 // some
 // -------------------------------------------------------------------------------------
 
-if (RA.some(ns, () => true)) {
-  ns // $ExpectType number[] & readonly [number, ...number[]]
+if (RA.some(nss, Predicate.isString)) {
+  nss // $ExpectType (string | number)[] & readonly [string | number, ...(string | number)[]]
+}
+
+if (RA.some(Predicate.isString)(nss)) {
+  nss // $ExpectType (string | number)[] & readonly [string | number, ...(string | number)[]]
 }
 
 // -------------------------------------------------------------------------------------

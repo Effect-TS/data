@@ -4,8 +4,7 @@
 import type * as Data from "@effect/data/Data"
 import type { Either } from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
-import type { Equivalence } from "@effect/data/Equivalence"
-import * as equivalence from "@effect/data/Equivalence"
+import * as Equivalence from "@effect/data/Equivalence"
 import type { LazyArg } from "@effect/data/Function"
 import { constNull, constUndefined, dual, identity } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
@@ -1040,8 +1039,8 @@ export const filter: {
  * @category equivalence
  * @since 1.0.0
  */
-export const getEquivalence = <A>(E: Equivalence<A>): Equivalence<Option<A>> =>
-  equivalence.make((x, y) => x === y || (isNone(x) ? isNone(y) : isNone(y) ? false : E(x.value, y.value)))
+export const getEquivalence = <A>(isEquivalent: Equivalence.Equivalence<A>): Equivalence.Equivalence<Option<A>> =>
+  Equivalence.make((x, y) => x === y || (isNone(x) ? isNone(y) : isNone(y) ? false : isEquivalent(x.value, y.value)))
 
 /**
  * The `Order` instance allows `Option` values to be compared with

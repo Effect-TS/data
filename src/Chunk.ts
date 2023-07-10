@@ -27,12 +27,6 @@ const TypeId: unique symbol = Symbol.for("@effect/data/Chunk") as TypeId
 export type TypeId = typeof TypeId
 
 /**
- * @category model
- * @since 1.0.0
- */
-export interface NonEmptyChunk<A> extends Chunk<A>, NonEmptyIterable<A> {}
-
-/**
  * @category models
  * @since 1.0.0
  */
@@ -50,6 +44,12 @@ export interface Chunk<A> extends Iterable<A>, Equal.Equal, Pipeable {
   /** @internal */
   depth: number
 }
+
+/**
+ * @category model
+ * @since 1.0.0
+ */
+export interface NonEmptyChunk<A> extends Chunk<A>, NonEmptyIterable<A> {}
 
 /**
  * @category type lambdas
@@ -284,7 +284,7 @@ const copyToArray = <A>(self: Chunk<A>, array: Array<any>, initial: number): voi
 }
 
 /**
- * Converts to a `ReadonlyArray<A>`
+ * Converts the specified `Chunk` to a `ReadonlyArray`.
  *
  * @category conversions
  * @since 1.0.0
@@ -1256,11 +1256,12 @@ export const every: {
  * @since 1.0.0
  */
 export const some: {
-  <A>(predicate: Predicate<A>): (self: Chunk<A>) => self is NonEmptyChunk<A>
-  <A>(self: Chunk<A>, predicate: Predicate<A>): self is NonEmptyChunk<A>
+  <A>(predicate: Predicate<A>): <B extends A>(self: Chunk<B>) => self is NonEmptyChunk<B>
+  <B extends A, A = B>(self: Chunk<B>, predicate: Predicate<A>): self is NonEmptyChunk<B>
 } = dual(
   2,
-  <A>(self: Chunk<A>, predicate: Predicate<A>): self is NonEmptyChunk<A> => RA.fromIterable(self).some(predicate)
+  <B extends A, A = B>(self: Chunk<B>, predicate: Predicate<A>): self is NonEmptyChunk<B> =>
+    RA.fromIterable(self).some(predicate)
 )
 
 /**

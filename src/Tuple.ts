@@ -3,7 +3,7 @@
  *
  * @since 1.0.0
  */
-import * as equivalence from "@effect/data/Equivalence"
+import * as Equivalence from "@effect/data/Equivalence"
 import { dual } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
 import * as order from "@effect/data/Order"
@@ -164,11 +164,11 @@ export const swap = <L, R>(self: readonly [L, R]): [R, L] => [self[1], self[0]]
  * @category combinators
  * @since 1.0.0
  */
-export const getEquivalence: <T extends ReadonlyArray<equivalence.Equivalence<any>>>(
-  ...predicates: T
-) => equivalence.Equivalence<
-  Readonly<{ [I in keyof T]: [T[I]] extends [equivalence.Equivalence<infer A>] ? A : never }>
-> = equivalence.tuple
+export const getEquivalence: <T extends ReadonlyArray<Equivalence.Equivalence<any>>>(
+  ...isEquivalents: T
+) => Equivalence.Equivalence<
+  Readonly<{ [I in keyof T]: [T[I]] extends [Equivalence.Equivalence<infer A>] ? A : never }>
+> = Equivalence.tuple
 
 /**
  * This function creates and returns a new `Order` for a tuple of values based on the given `Order`s for each element in the tuple.

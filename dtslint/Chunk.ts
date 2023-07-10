@@ -16,6 +16,18 @@ if (Chunk.every(Predicate.isString)(nss)) {
 }
 
 // -------------------------------------------------------------------------------------
+// some
+// -------------------------------------------------------------------------------------
+
+if (Chunk.some(nss, Predicate.isString)) {
+  nss // $ExpectType NonEmptyChunk<string | number>
+}
+
+if (Chunk.some(Predicate.isString)(nss)) {
+  nss // $ExpectType NonEmptyChunk<string | number>
+}
+
+// -------------------------------------------------------------------------------------
 // partition
 // -------------------------------------------------------------------------------------
 

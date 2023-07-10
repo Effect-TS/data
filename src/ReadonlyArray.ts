@@ -7,8 +7,7 @@
 import type { Either } from "@effect/data/Either"
 import * as E from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
-import * as equivalence from "@effect/data/Equivalence"
-import type { Equivalence } from "@effect/data/Equivalence"
+import * as Equivalence from "@effect/data/Equivalence"
 import { dual, identity } from "@effect/data/Function"
 import type { LazyArg } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
@@ -1812,8 +1811,8 @@ export const every: {
  * @since 1.0.0
  */
 export const some: {
-  <A>(predicate: Predicate<A>): (self: ReadonlyArray<A>) => self is NonEmptyReadonlyArray<A>
-  <A>(self: ReadonlyArray<A>, predicate: Predicate<A>): self is NonEmptyReadonlyArray<A>
+  <A>(predicate: Predicate<A>): <B extends A>(self: ReadonlyArray<B>) => self is NonEmptyReadonlyArray<B>
+  <B extends A, A = B>(self: ReadonlyArray<B>, predicate: Predicate<A>): self is NonEmptyReadonlyArray<B>
 } = dual(
   2,
   <A>(self: ReadonlyArray<A>, predicate: Predicate<A>): self is NonEmptyReadonlyArray<A> => self.some(predicate)
@@ -1877,7 +1876,9 @@ export const getOrder: <A>(O: Order<A>) => Order<ReadonlyArray<A>> = order.array
  * @category instances
  * @since 1.0.0
  */
-export const getEquivalence: <A>(O: Equivalence<A>) => Equivalence<ReadonlyArray<A>> = equivalence.array
+export const getEquivalence: <A>(
+  isEquivalent: Equivalence.Equivalence<A>
+) => Equivalence.Equivalence<ReadonlyArray<A>> = Equivalence.array
 
 /**
  * Iterate over the `Iterable` applying `f`.

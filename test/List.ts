@@ -23,10 +23,19 @@ describe.concurrent("List", () => {
     expect(List.size).exist
     expect(List.filter).exist
     expect(List.filterMap).exist
+    expect(List.appendAllNonEmpty).exist
+    expect(List.prependAllNonEmpty).exist
   })
 
   it("is an iterable", () => {
     expect(Array.from(List.make(0, 1, 2, 3))).toEqual([0, 1, 2, 3])
+  })
+
+  it("isList", () => {
+    expect(List.isList(List.empty())).toEqual(true)
+    expect(List.isList(List.make(1))).toEqual(true)
+    expect(List.isList(null)).toEqual(false)
+    expect(List.isList({})).toEqual(false)
   })
 
   it("append", () => {
@@ -59,11 +68,20 @@ describe.concurrent("List", () => {
   })
 
   it("flatMap", () => {
+    expect(List.flatMap(List.empty(), (n) => List.make(n - 1, n + 1))).toEqual(
+      List.empty()
+    )
     expect(List.flatMap(List.make(1, 2, 3, 4), (n) => List.make(n - 1, n + 1))).toEqual(
       List.make(0, 2, 1, 3, 2, 4, 3, 5)
     )
     expect(List.flatMap(List.make(1, 2, 3, 4), () => List.empty())).toEqual(
       List.empty()
+    )
+  })
+
+  it("flatMapNonEmpty", () => {
+    expect(List.flatMapNonEmpty(List.make(1, 2, 3, 4), (n) => List.make(n - 1, n + 1))).toEqual(
+      List.make(0, 2, 1, 3, 2, 4, 3, 5)
     )
   })
 
@@ -243,9 +261,9 @@ describe.concurrent("List", () => {
   })
 
   it("compact", () => {
-    expect(List.compact([])).toEqual(List.empty())
-    expect(List.compact([Option.some(1), Option.some(2), Option.some(3)])).toEqual(List.make(1, 2, 3))
-    expect(List.compact([Option.some(1), Option.none(), Option.some(3)])).toEqual(List.make(1, 3))
+    expect(List.compact(List.empty())).toEqual(List.empty())
+    expect(List.compact(List.make(Option.some(1), Option.some(2), Option.some(3)))).toEqual(List.make(1, 2, 3))
+    expect(List.compact(List.make(Option.some(1), Option.none(), Option.some(3)))).toEqual(List.make(1, 3))
   })
 
   it("last", () => {
