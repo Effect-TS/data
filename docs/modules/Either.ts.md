@@ -38,8 +38,8 @@ Added in v1.0.0
 - [pattern matching](#pattern-matching)
   - [match](#match)
 - [symbols](#symbols)
-  - [EitherTypeId](#eithertypeid)
-  - [EitherTypeId (type alias)](#eithertypeid-type-alias)
+  - [TypeId](#typeid)
+  - [TypeId (type alias)](#typeid-type-alias)
 - [type lambdas](#type-lambdas)
   - [EitherTypeLambda (interface)](#eithertypelambda-interface)
 - [utils](#utils)
@@ -306,7 +306,7 @@ Added in v1.0.0
 ```ts
 export interface Left<E, A> extends Data.Case, Pipeable {
   readonly _tag: 'Left'
-  readonly [EitherTypeId]: {
+  readonly [TypeId]: {
     readonly _A: (_: never) => A
     readonly _E: (_: never) => E
   }
@@ -327,7 +327,7 @@ Added in v1.0.0
 export interface Right<E, A> extends Data.Case, Pipeable {
   readonly _tag: 'Right'
   get right(): A
-  readonly [EitherTypeId]: {
+  readonly [TypeId]: {
     readonly _A: (_: never) => A
     readonly _E: (_: never) => E
   }
@@ -378,22 +378,22 @@ Added in v1.0.0
 
 # symbols
 
-## EitherTypeId
+## TypeId
 
 **Signature**
 
 ```ts
-export declare const EitherTypeId: typeof EitherTypeId
+export declare const TypeId: typeof TypeId
 ```
 
 Added in v1.0.0
 
-## EitherTypeId (type alias)
+## TypeId (type alias)
 
 **Signature**
 
 ```ts
-export type EitherTypeId = typeof EitherTypeId
+export type TypeId = typeof TypeId
 ```
 
 Added in v1.0.0

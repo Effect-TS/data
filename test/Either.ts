@@ -8,7 +8,7 @@ import { inspect } from "node:util"
 
 describe.concurrent("Either", () => {
   it("exports", () => {
-    expect(Either.EitherTypeId).exist
+    expect(Either.TypeId).exist
     expect(Either.map).exist
   })
 

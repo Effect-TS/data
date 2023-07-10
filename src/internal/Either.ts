@@ -10,7 +10,7 @@ import * as option from "@effect/data/internal/Option"
 import type { Option } from "@effect/data/Option"
 import { pipeArguments } from "@effect/data/Pipeable"
 
-const EitherTypeId: Either.EitherTypeId = Symbol.for("@effect/data/Either") as Either.EitherTypeId
+const EitherTypeId: Either.TypeId = Symbol.for("@effect/data/Either") as Either.TypeId
 
 /** @internal */
 export class Right<E, A> implements Either.Right<E, A> {

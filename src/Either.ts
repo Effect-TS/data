@@ -22,13 +22,13 @@ export type Either<E, A> = Left<E, A> | Right<E, A>
  * @category symbols
  * @since 1.0.0
  */
-export const EitherTypeId = Symbol.for("@effect/data/Either")
+export const TypeId = Symbol.for("@effect/data/Either")
 
 /**
  * @category symbols
  * @since 1.0.0
  */
-export type EitherTypeId = typeof EitherTypeId
+export type TypeId = typeof TypeId
 
 /**
  * @category models
@@ -36,7 +36,7 @@ export type EitherTypeId = typeof EitherTypeId
  */
 export interface Left<E, A> extends Data.Case, Pipeable {
   readonly _tag: "Left"
-  readonly [EitherTypeId]: {
+  readonly [TypeId]: {
     readonly _A: (_: never) => A
     readonly _E: (_: never) => E
   }
@@ -53,7 +53,7 @@ export interface Left<E, A> extends Data.Case, Pipeable {
 export interface Right<E, A> extends Data.Case, Pipeable {
   readonly _tag: "Right"
   get right(): A
-  readonly [EitherTypeId]: {
+  readonly [TypeId]: {
     readonly _A: (_: never) => A
     readonly _E: (_: never) => E
   }
