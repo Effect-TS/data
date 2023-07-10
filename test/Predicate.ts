@@ -16,6 +16,10 @@ type NonEmptyString = string & NonEmptyStringBrand
 const isNonEmptyString: _.Refinement<string, NonEmptyString> = (s): s is NonEmptyString => s.length > 0
 
 describe.concurrent("Predicate", () => {
+  it("exports", () => {
+    expect(_.contramap).exist
+  })
+
   it("compose", () => {
     const refinement = pipe(isString, _.compose(isNonEmptyString))
     deepStrictEqual(refinement("a"), true)
@@ -23,13 +27,13 @@ describe.concurrent("Predicate", () => {
     deepStrictEqual(refinement(""), false)
   })
 
-  it("contramap", () => {
+  it("mapInput", () => {
     type A = {
       readonly a: number
     }
     const predicate = pipe(
       isPositive,
-      _.contramap((a: A) => a.a)
+      _.mapInput((a: A) => a.a)
     )
     deepStrictEqual(predicate({ a: -1 }), false)
     deepStrictEqual(predicate({ a: 0 }), false)

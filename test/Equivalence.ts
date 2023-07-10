@@ -2,6 +2,10 @@ import * as _ from "@effect/data/Equivalence"
 import { pipe } from "@effect/data/Function"
 
 describe.concurrent("Equivalence", () => {
+  it("exports", () => {
+    expect(_.contramap).exist
+  })
+
   it("array", () => {
     const eq = _.array(_.number)
 
@@ -18,12 +22,12 @@ describe.concurrent("Equivalence", () => {
     expect(eq({ a: 1 }, { a: 1 })).toBe(false)
   })
 
-  it("contramap", () => {
+  it("mapInput", () => {
     interface Person {
       readonly name: string
       readonly age: number
     }
-    const eqPerson = pipe(_.string, _.contramap((p: Person) => p.name))
+    const eqPerson = pipe(_.string, _.mapInput((p: Person) => p.name))
     expect(eqPerson({ name: "a", age: 1 }, { name: "a", age: 2 })).toEqual(true)
     expect(eqPerson({ name: "a", age: 1 }, { name: "a", age: 1 })).toEqual(true)
     expect(eqPerson({ name: "a", age: 1 }, { name: "b", age: 1 })).toEqual(false)
@@ -61,8 +65,8 @@ describe.concurrent("Equivalence", () => {
 
   it("combine", () => {
     type T = readonly [string, number, boolean]
-    const E0: _.Equivalence<T> = _.contramap((x: T) => x[0])(_.string)
-    const E1: _.Equivalence<T> = _.contramap((x: T) => x[1])(_.number)
+    const E0: _.Equivalence<T> = _.mapInput((x: T) => x[0])(_.string)
+    const E1: _.Equivalence<T> = _.mapInput((x: T) => x[1])(_.number)
     const eqE0E1 = _.combine(E0, E1)
     expect(eqE0E1(["a", 1, true], ["a", 1, true])).toEqual(true)
     expect(eqE0E1(["a", 1, true], ["a", 1, false])).toEqual(true)
@@ -72,9 +76,9 @@ describe.concurrent("Equivalence", () => {
 
   it("combineMany", () => {
     type T = readonly [string, number, boolean]
-    const E0: _.Equivalence<T> = _.contramap((x: T) => x[0])(_.string)
-    const E1: _.Equivalence<T> = _.contramap((x: T) => x[1])(_.number)
-    const E2: _.Equivalence<T> = _.contramap((x: T) => x[2])(_.boolean)
+    const E0: _.Equivalence<T> = _.mapInput((x: T) => x[0])(_.string)
+    const E1: _.Equivalence<T> = _.mapInput((x: T) => x[1])(_.number)
+    const E2: _.Equivalence<T> = _.mapInput((x: T) => x[2])(_.boolean)
     const eqE0E1E2 = _.combineMany(E0, [E1, E2])
     expect(eqE0E1E2(["a", 1, true], ["a", 1, true])).toEqual(true)
     expect(eqE0E1E2(["a", 1, true], ["b", 1, true])).toEqual(false)
@@ -84,9 +88,9 @@ describe.concurrent("Equivalence", () => {
 
   it("combineAll", () => {
     type T = readonly [string, number, boolean]
-    const E0: _.Equivalence<T> = _.contramap((x: T) => x[0])(_.string)
-    const E1: _.Equivalence<T> = _.contramap((x: T) => x[1])(_.number)
-    const E2: _.Equivalence<T> = _.contramap((x: T) => x[2])(_.boolean)
+    const E0: _.Equivalence<T> = _.mapInput((x: T) => x[0])(_.string)
+    const E1: _.Equivalence<T> = _.mapInput((x: T) => x[1])(_.number)
+    const E2: _.Equivalence<T> = _.mapInput((x: T) => x[2])(_.boolean)
     const eqE0E1E2 = _.combineAll([E0, E1, E2])
     expect(eqE0E1E2(["a", 1, true], ["a", 1, true])).toEqual(true)
     expect(eqE0E1E2(["a", 1, true], ["b", 1, true])).toEqual(false)

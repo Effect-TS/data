@@ -110,13 +110,22 @@ export const combineAll = <A>(collection: Iterable<Order<A>>): Order<A> => combi
  * @category combinators
  * @since 1.0.0
  */
-export const contramap: {
+export const mapInput: {
   <B, A>(f: (b: B) => A): (self: Order<A>) => Order<B>
   <A, B>(self: Order<A>, f: (b: B) => A): Order<B>
 } = dual(
   2,
   <A, B>(self: Order<A>, f: (b: B) => A): Order<B> => make((b1, b2) => self(f(b1), f(b2)))
 )
+
+/**
+ * Use `mapInput` instead.
+ *
+ * @category combinators
+ * @since 1.0.0
+ * @deprecated
+ */
+export const contramap = mapInput
 
 /**
  * @category combining

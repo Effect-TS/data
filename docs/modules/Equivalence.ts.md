@@ -18,7 +18,8 @@ Added in v1.0.0
 
 - [combinators](#combinators)
   - [array](#array)
-  - [contramap](#contramap)
+  - [~~contramap~~](#contramap)
+  - [mapInput](#mapinput)
   - [struct](#struct)
   - [tuple](#tuple)
 - [combining](#combining)
@@ -58,12 +59,27 @@ export declare const array: <A>(item: Equivalence<A>) => Equivalence<readonly A[
 
 Added in v1.0.0
 
-## contramap
+## ~~contramap~~
+
+Use `mapInput` instead.
 
 **Signature**
 
 ```ts
 export declare const contramap: {
+  <B, A>(f: (b: B) => A): (self: Equivalence<A>) => Equivalence<B>
+  <A, B>(self: Equivalence<A>, f: (b: B) => A): Equivalence<B>
+}
+```
+
+Added in v1.0.0
+
+## mapInput
+
+**Signature**
+
+```ts
+export declare const mapInput: {
   <B, A>(f: (b: B) => A): (self: Equivalence<A>) => Equivalence<B>
   <A, B>(self: Equivalence<A>, f: (b: B) => A): Equivalence<B>
 }

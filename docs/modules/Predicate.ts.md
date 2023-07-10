@@ -14,8 +14,10 @@ Added in v1.0.0
 
 - [combinators](#combinators)
   - [and](#and)
+  - [~~contramap~~](#contramap)
   - [eqv](#eqv)
   - [implies](#implies)
+  - [mapInput](#mapinput)
   - [nand](#nand)
   - [nor](#nor)
   - [not](#not)
@@ -25,8 +27,6 @@ Added in v1.0.0
   - [all](#all)
   - [product](#product)
   - [productMany](#productmany)
-- [constructors](#constructors)
-  - [contramap](#contramap)
 - [elements](#elements)
   - [every](#every)
   - [some](#some)
@@ -97,6 +97,21 @@ assert.deepStrictEqual(length(2)('aaa'), false)
 
 Added in v1.0.0
 
+## ~~contramap~~
+
+Use `mapInput` instead.
+
+**Signature**
+
+```ts
+export declare const contramap: {
+  <B, A>(f: (b: B) => A): (self: Predicate<A>) => Predicate<B>
+  <A, B>(self: Predicate<A>, f: (b: B) => A): Predicate<B>
+}
+```
+
+Added in v1.0.0
+
 ## eqv
 
 **Signature**
@@ -119,6 +134,35 @@ export declare const implies: {
   <A>(that: Predicate<A>): (self: Predicate<A>) => Predicate<A>
   <A>(self: Predicate<A>, that: Predicate<A>): Predicate<A>
 }
+```
+
+Added in v1.0.0
+
+## mapInput
+
+Given a `Predicate<A>` returns a `Predicate<B>`
+
+**Signature**
+
+```ts
+export declare const mapInput: {
+  <B, A>(f: (b: B) => A): (self: Predicate<A>) => Predicate<B>
+  <A, B>(self: Predicate<A>, f: (b: B) => A): Predicate<B>
+}
+```
+
+**Example**
+
+```ts
+import * as P from '@effect/data/Predicate'
+import * as N from '@effect/data/Number'
+
+const minLength3 = P.mapInput(N.greaterThan(2), (s: string) => s.length)
+
+assert.deepStrictEqual(minLength3('a'), false)
+assert.deepStrictEqual(minLength3('aa'), false)
+assert.deepStrictEqual(minLength3('aaa'), true)
+assert.deepStrictEqual(minLength3('aaaa'), true)
 ```
 
 Added in v1.0.0
@@ -246,37 +290,6 @@ export declare const productMany: <A>(
   self: Predicate<A>,
   collection: Iterable<Predicate<A>>
 ) => Predicate<readonly [A, ...A[]]>
-```
-
-Added in v1.0.0
-
-# constructors
-
-## contramap
-
-Given a `Predicate<A>` returns a `Predicate<B>`
-
-**Signature**
-
-```ts
-export declare const contramap: {
-  <B, A>(f: (b: B) => A): (self: Predicate<A>) => Predicate<B>
-  <A, B>(self: Predicate<A>, f: (b: B) => A): Predicate<B>
-}
-```
-
-**Example**
-
-```ts
-import * as P from '@effect/data/Predicate'
-import * as N from '@effect/data/Number'
-
-const minLength3 = P.contramap(N.greaterThan(2), (s: string) => s.length)
-
-assert.deepStrictEqual(minLength3('a'), false)
-assert.deepStrictEqual(minLength3('aa'), false)
-assert.deepStrictEqual(minLength3('aaa'), true)
-assert.deepStrictEqual(minLength3('aaaa'), true)
 ```
 
 Added in v1.0.0

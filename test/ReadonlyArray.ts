@@ -997,12 +997,12 @@ describe.concurrent("ReadonlyArray", () => {
 
     const byName = pipe(
       String.Order,
-      Order.contramap((p: { readonly a: string; readonly b: number }) => p.a)
+      Order.mapInput((p: { readonly a: string; readonly b: number }) => p.a)
     )
 
     const byAge = pipe(
       Number.Order,
-      Order.contramap((p: { readonly a: string; readonly b: number }) => p.b)
+      Order.mapInput((p: { readonly a: string; readonly b: number }) => p.b)
     )
 
     const sortByNameByAge = RA.sortBy(byName, byAge)
