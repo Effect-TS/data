@@ -17,8 +17,7 @@ export class Right<E, A> implements Either.Right<E, A> {
   readonly _tag = "Right"
   readonly _id: typeof TypeId = TypeId
   public i1 = undefined
-  public i2 = undefined
-  public trace = undefined;
+  public i2 = undefined;
   [EffectTypeId] = effectVariance;
   [Equal.symbol](this: this, that: unknown) {
     return isEither(that) && isRight(that) && Equal.equals((that as unknown as Right<E, A>).i0, this.i0)
@@ -59,8 +58,7 @@ export class Left<E, A> implements Either.Left<E, A> {
   readonly _tag = "Left"
   readonly _id: typeof TypeId = TypeId
   public i1 = undefined
-  public i2 = undefined
-  public trace = undefined;
+  public i2 = undefined;
   [EffectTypeId] = effectVariance;
   [Equal.symbol](this: this, that: unknown) {
     return isEither(that) && isLeft(that) && Equal.equals((that as unknown as Left<E, A>).i0, this.i0)

@@ -15,8 +15,7 @@ export class Some<A> implements Option.Some<A> {
   readonly _tag = "Some"
   readonly _id: typeof TypeId = TypeId
   public i1 = undefined
-  public i2 = undefined
-  public trace = undefined;
+  public i2 = undefined;
   [EffectTypeId] = effectVariance;
   [Equal.symbol](this: this, that: unknown): boolean {
     return isOption(that) && isSome(that) && Equal.equals((that as Some<A>).i0, this.i0)
@@ -57,8 +56,7 @@ export class None<A> implements Option.None<A> {
   readonly _id: typeof TypeId = TypeId
   public i0 = undefined
   public i1 = undefined
-  public i2 = undefined
-  public trace = undefined;
+  public i2 = undefined;
   [EffectTypeId] = effectVariance;
   [Equal.symbol](this: this, that: unknown): boolean {
     return isOption(that) && isNone(that)
