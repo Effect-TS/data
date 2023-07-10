@@ -338,7 +338,7 @@ Constructs a new `List.Cons<A>` from the specified `head` and `tail` values.
 **Signature**
 
 ```ts
-export declare const cons: <A>(head: A, tail: List<A>) => List.Cons<A>
+export declare const cons: <A>(head: A, tail: List<A>) => List<A>
 ```
 
 Added in v1.0.0
@@ -386,7 +386,7 @@ Constructs a new `List.Nil<A>`.
 **Signature**
 
 ```ts
-export declare const nil: <A = never>() => List.Nil<A>
+export declare const nil: <A = never>() => List<A>
 ```
 
 Added in v1.0.0

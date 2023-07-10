@@ -35,18 +35,6 @@ import { isObject } from "@effect/data/Predicate"
 import * as ReadonlyArray from "@effect/data/ReadonlyArray"
 
 /**
- * @since 1.0.0
- * @category symbol
- */
-export const TypeId: unique symbol = Symbol.for("@effect/data/List")
-
-/**
- * @since 1.0.0
- * @category symbol
- */
-export type TypeId = typeof TypeId
-
-/**
  * Represents an immutable linked list of elements of type `A`.
  *
  * A `List` is optimal for last-in-first-out (LIFO), stack-like access patterns.
@@ -60,13 +48,15 @@ export type List<A> = Cons<A> | Nil<A>
 
 /**
  * @since 1.0.0
- * @category models
+ * @category symbol
  */
-export interface Cons<A> extends Iterable<A>, Equal.Equal, Pipeable {
-  readonly _tag: "Cons"
-  readonly head: A
-  readonly tail: List<A>
-}
+export const TypeId: unique symbol = Symbol.for("@effect/data/List")
+
+/**
+ * @since 1.0.0
+ * @category symbol
+ */
+export type TypeId = typeof TypeId
 
 /**
  * @since 1.0.0
@@ -76,24 +66,14 @@ export interface Nil<A> extends Iterable<A>, Equal.Equal, Pipeable {
   readonly _tag: "Nil"
 }
 
-type ConsNS<A> = Cons<A>
-type NilNS<A> = Nil<A>
-
 /**
  * @since 1.0.0
+ * @category models
  */
-export declare namespace List {
-  /**
-   * @since 1.0.0
-   * @category models
-   */
-  export type Cons<A> = ConsNS<A>
-
-  /**
-   * @since 1.0.0
-   * @category models
-   */
-  export type Nil<A> = NilNS<A>
+export interface Cons<A> extends Iterable<A>, Equal.Equal, Pipeable {
+  readonly _tag: "Cons"
+  readonly head: A
+  readonly tail: List<A>
 }
 
 const listVariance = {
@@ -117,7 +97,7 @@ export const getEquivalence = <A>(isEquivalent: Equivalence.Equivalence<A>): Equ
 
 const _equivalence = getEquivalence(Equal.equals)
 
-class ConsImpl<A> implements List.Cons<A> {
+class ConsImpl<A> implements Cons<A> {
   readonly _tag = "Cons"
   readonly [TypeId] = listVariance
   constructor(readonly head: A, public tail: List<A>) {}
@@ -171,7 +151,7 @@ class ConsImpl<A> implements List.Cons<A> {
   }
 }
 
-class NilImpl<A> implements List.Nil<A> {
+class NilImpl<A> implements Nil<A> {
   readonly _tag = "Nil"
   readonly [TypeId] = listVariance
   toString() {
@@ -254,7 +234,7 @@ const _Nil = new NilImpl<never>()
  * @since 1.0.0
  * @category constructors
  */
-export const nil = <A = never>(): List.Nil<A> => _Nil
+export const nil = <A = never>(): List<A> => _Nil
 
 /**
  * Constructs a new `List.Cons<A>` from the specified `head` and `tail` values.
@@ -262,7 +242,7 @@ export const nil = <A = never>(): List.Nil<A> => _Nil
  * @since 1.0.0
  * @category constructors
  */
-export const cons = <A>(head: A, tail: List<A>): List.Cons<A> => new ConsImpl(head, tail)
+export const cons = <A>(head: A, tail: List<A>): List<A> => new ConsImpl(head, tail)
 
 /**
  * Constructs a new empty `List<A>`.
@@ -471,7 +451,7 @@ const partialFill = <A>(
   isFlipped: boolean
 ): List<A> => {
   const newHead = new ConsImpl<A>(unsafeHead(origStart)!, _Nil)
-  let toProcess = unsafeTail(origStart)! as List.Cons<A>
+  let toProcess = unsafeTail(origStart)! as Cons<A>
   let currentLast = newHead
 
   // we know that all elements are :: until at least firstMiss.tail
@@ -487,7 +467,7 @@ const partialFill = <A>(
 
   // now we are going to try and share as much of the tail as we can, only moving elements across when we have to.
   let next = firstMiss.tail
-  let nextToCopy: List.Cons<A> = unsafeCoerce(next) // the next element we would need to copy to our list if we cant share.
+  let nextToCopy: Cons<A> = unsafeCoerce(next) // the next element we would need to copy to our list if we cant share.
   while (!isNil(next)) {
     // generally recommended is next.isNonEmpty but this incurs an extra method call.
     const head = unsafeHead(next)!
