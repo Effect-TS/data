@@ -306,6 +306,7 @@ Added in v1.0.0
 ```ts
 export interface Left<E, A> extends Data.Case, Pipeable {
   readonly _tag: 'Left'
+  readonly _id: TypeId
   readonly [TypeId]: {
     readonly _A: (_: never) => A
     readonly _E: (_: never) => E
@@ -326,6 +327,7 @@ Added in v1.0.0
 ```ts
 export interface Right<E, A> extends Data.Case, Pipeable {
   readonly _tag: 'Right'
+  readonly _id: TypeId
   get right(): A
   readonly [TypeId]: {
     readonly _A: (_: never) => A

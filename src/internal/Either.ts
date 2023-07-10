@@ -10,11 +10,12 @@ import * as option from "@effect/data/internal/Option"
 import type { Option } from "@effect/data/Option"
 import { pipeArguments } from "@effect/data/Pipeable"
 
-const EitherTypeId: Either.TypeId = Symbol.for("@effect/data/Either") as Either.TypeId
+const TypeId: Either.TypeId = Symbol.for("@effect/data/Either") as Either.TypeId
 
 /** @internal */
 export class Right<E, A> implements Either.Right<E, A> {
   readonly _tag = "Right"
+  readonly _id: typeof TypeId = TypeId
   public i1 = undefined
   public i2 = undefined
   public trace = undefined;
@@ -30,7 +31,7 @@ export class Right<E, A> implements Either.Right<E, A> {
   }
   constructor(readonly i0: A) {
   }
-  get [EitherTypeId]() {
+  get [TypeId]() {
     return {
       _E: (_: never) => _,
       _A: (_: never) => _
@@ -56,6 +57,7 @@ export class Right<E, A> implements Either.Right<E, A> {
 /** @internal */
 export class Left<E, A> implements Either.Left<E, A> {
   readonly _tag = "Left"
+  readonly _id: typeof TypeId = TypeId
   public i1 = undefined
   public i2 = undefined
   public trace = undefined;
@@ -66,7 +68,7 @@ export class Left<E, A> implements Either.Left<E, A> {
   [Hash.symbol](this: this) {
     return Hash.hash(this.i0)
   }
-  get [EitherTypeId]() {
+  get [TypeId]() {
     return {
       _E: (_: never) => _,
       _A: (_: never) => _

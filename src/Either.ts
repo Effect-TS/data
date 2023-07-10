@@ -3,13 +3,13 @@
  */
 
 import type * as Data from "@effect/data/Data"
-import * as Equal from "@effect/data/Equal"
 import * as Equivalence from "@effect/data/Equivalence"
 import { dual, identity } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
 import * as either from "@effect/data/internal/Either"
 import type { Option } from "@effect/data/Option"
 import type { Pipeable } from "@effect/data/Pipeable"
+import { isObject } from "@effect/data/Predicate"
 import type * as Unify from "@effect/data/Unify"
 
 /**
@@ -36,6 +36,7 @@ export type TypeId = typeof TypeId
  */
 export interface Left<E, A> extends Data.Case, Pipeable {
   readonly _tag: "Left"
+  readonly _id: TypeId
   readonly [TypeId]: {
     readonly _A: (_: never) => A
     readonly _E: (_: never) => E
@@ -52,6 +53,7 @@ export interface Left<E, A> extends Data.Case, Pipeable {
  */
 export interface Right<E, A> extends Data.Case, Pipeable {
   readonly _tag: "Right"
+  readonly _id: TypeId
   get right(): A
   readonly [TypeId]: {
     readonly _A: (_: never) => A
@@ -118,8 +120,7 @@ export const left: <E>(e: E) => Either<E, never> = either.left
  * @since 1.0.0
  */
 export const isEither = (input: unknown): input is Either<unknown, unknown> =>
-  typeof input === "object" && input != null && "_tag" in input &&
-  (input["_tag"] === "Left" || input["_tag"] === "Right") && Equal.isEqual(input)
+  isObject(input) && "_id" in input && input["_id"] === TypeId
 
 /**
  * Determine if a `Either` is a `Left`.
