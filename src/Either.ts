@@ -246,13 +246,22 @@ export const mapLeft: {
  * @category mapping
  * @since 1.0.0
  */
-export const map: {
+export const mapRight: {
   <A, B>(f: (a: A) => B): <E>(self: Either<E, A>) => Either<E, B>
   <E, A, B>(self: Either<E, A>, f: (a: A) => B): Either<E, B>
 } = dual(
   2,
   <E, A, B>(self: Either<E, A>, f: (a: A) => B): Either<E, B> => isRight(self) ? right(f(self.right)) : left(self.left)
 )
+
+/**
+ * Use `mapRight` instead.
+ *
+ * @category mapping
+ * @since 1.0.0
+ * @deprecated
+ */
+export const map = mapRight
 
 /**
  * Takes two functions and an `Either` value, if the value is a `Left` the inner value is applied to the `onLeft function,

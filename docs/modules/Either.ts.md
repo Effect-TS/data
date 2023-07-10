@@ -26,8 +26,9 @@ Added in v1.0.0
   - [isLeft](#isleft)
   - [isRight](#isright)
 - [mapping](#mapping)
-  - [map](#map)
+  - [~~map~~](#map)
   - [mapBoth](#mapboth)
+  - [mapRight](#mapright)
 - [models](#models)
   - [Either (type alias)](#either-type-alias)
   - [EitherUnify (interface)](#eitherunify-interface)
@@ -216,9 +217,9 @@ Added in v1.0.0
 
 # mapping
 
-## map
+## ~~map~~
 
-Maps the `Right` side of an `Either` value to a new `Either` value.
+Use `mapRight` instead.
 
 **Signature**
 
@@ -244,6 +245,21 @@ export declare const mapBoth: {
     self: Either<E1, A>,
     options: { readonly onLeft: (e: E1) => E2; readonly onRight: (a: A) => B }
   ): Either<E2, B>
+}
+```
+
+Added in v1.0.0
+
+## mapRight
+
+Maps the `Right` side of an `Either` value to a new `Either` value.
+
+**Signature**
+
+```ts
+export declare const mapRight: {
+  <A, B>(f: (a: A) => B): <E>(self: Either<E, A>) => Either<E, B>
+  <E, A, B>(self: Either<E, A>, f: (a: A) => B): Either<E, B>
 }
 ```
 

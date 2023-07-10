@@ -9,6 +9,7 @@ import { inspect } from "node:util"
 describe.concurrent("Either", () => {
   it("exports", () => {
     expect(Either.EitherTypeId).exist
+    expect(Either.map).exist
   })
 
   it("toString", () => {
@@ -46,8 +47,8 @@ describe.concurrent("Either", () => {
     Util.deepStrictEqual(pipe(Either.left("e"), Either.getLeft), O.some("e"))
   })
 
-  it("map", () => {
-    const f = Either.map(S.length)
+  it("mapRight", () => {
+    const f = Either.mapRight(S.length)
     Util.deepStrictEqual(pipe(Either.right("abc"), f), Either.right(3))
     Util.deepStrictEqual(pipe(Either.left("s"), f), Either.left("s"))
   })
