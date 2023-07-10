@@ -8,11 +8,12 @@ import { EffectTypeId, effectVariance } from "@effect/data/internal/Effect"
 import type * as Option from "@effect/data/Option"
 import { pipeArguments } from "@effect/data/Pipeable"
 
-const OptionTypeId: Option.OptionTypeId = Symbol.for("@effect/io/Option") as Option.OptionTypeId
+const TypeId: Option.TypeId = Symbol.for("@effect/data/Option") as Option.TypeId
 
 /** @internal */
 export class Some<A> implements Option.Some<A> {
   readonly _tag = "Some"
+  readonly _id: typeof TypeId = TypeId
   public i1 = undefined
   public i2 = undefined
   public trace = undefined;
@@ -35,7 +36,7 @@ export class Some<A> implements Option.Some<A> {
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
   }
-  get [OptionTypeId]() {
+  get [TypeId]() {
     return {
       _A: (_: never) => _
     }
@@ -53,6 +54,7 @@ export class Some<A> implements Option.Some<A> {
 /** @internal */
 export class None<A> implements Option.None<A> {
   readonly _tag = "None"
+  readonly _id: typeof TypeId = TypeId
   public i0 = undefined
   public i1 = undefined
   public i2 = undefined
@@ -75,7 +77,7 @@ export class None<A> implements Option.None<A> {
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
   }
-  get [OptionTypeId]() {
+  get [TypeId]() {
     return {
       _A: (_: never) => _
     }

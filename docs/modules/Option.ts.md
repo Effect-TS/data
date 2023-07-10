@@ -83,8 +83,8 @@ Added in v1.0.0
 - [sorting](#sorting)
   - [getOrder](#getorder)
 - [symbols](#symbols)
-  - [OptionTypeId](#optiontypeid)
-  - [OptionTypeId (type alias)](#optiontypeid-type-alias)
+  - [TypeId](#typeid)
+  - [TypeId (type alias)](#typeid-type-alias)
 - [transforming](#transforming)
   - [as](#as)
   - [asUnit](#asunit)
@@ -1133,7 +1133,8 @@ Added in v1.0.0
 ```ts
 export interface None<A> extends Data.Case, Pipeable {
   readonly _tag: 'None'
-  readonly [OptionTypeId]: {
+  readonly _id: TypeId
+  readonly [TypeId]: {
     readonly _A: (_: never) => A
   }
   [Unify.typeSymbol]?: unknown
@@ -1183,8 +1184,9 @@ Added in v1.0.0
 ```ts
 export interface Some<A> extends Data.Case, Pipeable {
   readonly _tag: 'Some'
+  readonly _id: TypeId
   readonly value: A
-  readonly [OptionTypeId]: {
+  readonly [TypeId]: {
     readonly _A: (_: never) => A
   }
   [Unify.typeSymbol]?: unknown
@@ -1265,22 +1267,22 @@ Added in v1.0.0
 
 # symbols
 
-## OptionTypeId
+## TypeId
 
 **Signature**
 
 ```ts
-export declare const OptionTypeId: typeof OptionTypeId
+export declare const TypeId: typeof TypeId
 ```
 
 Added in v1.0.0
 
-## OptionTypeId (type alias)
+## TypeId (type alias)
 
 **Signature**
 
 ```ts
-export type OptionTypeId = typeof OptionTypeId
+export type TypeId = typeof TypeId
 ```
 
 Added in v1.0.0

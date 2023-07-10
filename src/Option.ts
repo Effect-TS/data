@@ -3,7 +3,6 @@
  */
 import type * as Data from "@effect/data/Data"
 import type { Either } from "@effect/data/Either"
-import * as Equal from "@effect/data/Equal"
 import * as Equivalence from "@effect/data/Equivalence"
 import type { LazyArg } from "@effect/data/Function"
 import { constNull, constUndefined, dual, identity } from "@effect/data/Function"
@@ -15,6 +14,7 @@ import type { Order } from "@effect/data/Order"
 import * as order from "@effect/data/Order"
 import type { Pipeable } from "@effect/data/Pipeable"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
+import { isObject } from "@effect/data/Predicate"
 import type * as Unify from "@effect/data/Unify"
 
 /**
@@ -27,13 +27,13 @@ export type Option<A> = None<A> | Some<A>
  * @category symbols
  * @since 1.0.0
  */
-export const OptionTypeId = Symbol.for("@effect/data/Option")
+export const TypeId = Symbol.for("@effect/data/Option")
 
 /**
  * @category symbols
  * @since 1.0.0
  */
-export type OptionTypeId = typeof OptionTypeId
+export type TypeId = typeof TypeId
 
 /**
  * @category models
@@ -41,7 +41,8 @@ export type OptionTypeId = typeof OptionTypeId
  */
 export interface None<A> extends Data.Case, Pipeable {
   readonly _tag: "None"
-  readonly [OptionTypeId]: {
+  readonly _id: TypeId
+  readonly [TypeId]: {
     readonly _A: (_: never) => A
   }
   [Unify.typeSymbol]?: unknown
@@ -55,8 +56,9 @@ export interface None<A> extends Data.Case, Pipeable {
  */
 export interface Some<A> extends Data.Case, Pipeable {
   readonly _tag: "Some"
+  readonly _id: TypeId
   readonly value: A
-  readonly [OptionTypeId]: {
+  readonly [TypeId]: {
     readonly _A: (_: never) => A
   }
   [Unify.typeSymbol]?: unknown
@@ -120,8 +122,7 @@ export const some: <A>(value: A) => Option<A> = option.some
  * @since 1.0.0
  */
 export const isOption = (input: unknown): input is Option<unknown> =>
-  typeof input === "object" && input != null && "_tag" in input &&
-  (input["_tag"] === "None" || input["_tag"] === "Some") && Equal.isEqual(input)
+  isObject(input) && "_id" in input && input["_id"] === TypeId
 
 /**
  * Determine if a `Option` is a `None`.
