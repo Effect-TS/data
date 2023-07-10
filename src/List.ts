@@ -34,19 +34,17 @@ import type { Predicate, Refinement } from "@effect/data/Predicate"
 import { isObject } from "@effect/data/Predicate"
 import * as ReadonlyArray from "@effect/data/ReadonlyArray"
 
-const ListSymbolKey = "@effect/data/List"
+/**
+ * @since 1.0.0
+ * @category symbol
+ */
+export const TypeId: unique symbol = Symbol.for("@effect/data/List")
 
 /**
  * @since 1.0.0
  * @category symbol
  */
-export const ListTypeId: unique symbol = Symbol.for(ListSymbolKey)
-
-/**
- * @since 1.0.0
- * @category symbol
- */
-export type ListTypeId = typeof ListTypeId
+export type TypeId = typeof TypeId
 
 /**
  * Represents an immutable linked list of elements of type `A`.
@@ -121,7 +119,7 @@ const _equivalence = getEquivalence(Equal.equals)
 
 class ConsImpl<A> implements List.Cons<A> {
   readonly _tag = "Cons"
-  readonly [ListTypeId] = listVariance
+  readonly [TypeId] = listVariance
   constructor(readonly head: A, public tail: List<A>) {}
   toString() {
     return `List.Cons(${toReadonlyArray(this).map(String).join(", ")})`
@@ -141,7 +139,7 @@ class ConsImpl<A> implements List.Cons<A> {
       _equivalence(this, that)
   }
   [Hash.symbol](): number {
-    return Hash.string(ListSymbolKey)
+    return Hash.array(toReadonlyArray(this))
   }
   [Symbol.iterator](): Iterator<A> {
     let done = false
@@ -175,7 +173,7 @@ class ConsImpl<A> implements List.Cons<A> {
 
 class NilImpl<A> implements List.Nil<A> {
   readonly _tag = "Nil"
-  readonly [ListTypeId] = listVariance
+  readonly [TypeId] = listVariance
   toString() {
     return `List.Nil`
   }
@@ -188,7 +186,7 @@ class NilImpl<A> implements List.Nil<A> {
     return this.toJSON()
   }
   [Hash.symbol](): number {
-    return Hash.array(Array.from(this))
+    return Hash.array(toReadonlyArray(this))
   }
   [Equal.symbol](that: unknown): boolean {
     return isList(that) && this._tag === that._tag
@@ -214,7 +212,7 @@ class NilImpl<A> implements List.Nil<A> {
 export const isList: {
   <A>(u: Iterable<A>): u is List<A>
   (u: unknown): u is List<unknown>
-} = (u: unknown): u is List<unknown> => isObject(u) && ListTypeId in u
+} = (u: unknown): u is List<unknown> => isObject(u) && TypeId in u
 
 /**
  * Returns `true` if the specified value is a `List.Nil<A>`, `false` otherwise.

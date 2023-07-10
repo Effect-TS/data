@@ -73,8 +73,8 @@ Added in v1.0.0
   - [isList](#islist)
   - [isNil](#isnil)
 - [symbol](#symbol)
-  - [ListTypeId](#listtypeid)
-  - [ListTypeId (type alias)](#listtypeid-type-alias)
+  - [TypeId](#typeid)
+  - [TypeId (type alias)](#typeid-type-alias)
 - [unsafe](#unsafe)
   - [unsafeHead](#unsafehead)
   - [unsafeLast](#unsafelast)
@@ -675,22 +675,22 @@ Added in v1.0.0
 
 # symbol
 
-## ListTypeId
+## TypeId
 
 **Signature**
 
 ```ts
-export declare const ListTypeId: typeof ListTypeId
+export declare const TypeId: typeof TypeId
 ```
 
 Added in v1.0.0
 
-## ListTypeId (type alias)
+## TypeId (type alias)
 
 **Signature**
 
 ```ts
-export type ListTypeId = typeof ListTypeId
+export type TypeId = typeof TypeId
 ```
 
 Added in v1.0.0
