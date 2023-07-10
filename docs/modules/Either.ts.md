@@ -82,7 +82,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getEquivalence: <E, A>(EE: Equivalence<E>, EA: Equivalence<A>) => Equivalence<Either<E, A>>
+export declare const getEquivalence: <E, A>(
+  EE: Equivalence.Equivalence<E>,
+  EA: Equivalence.Equivalence<A>
+) => Equivalence.Equivalence<Either<E, A>>
 ```
 
 Added in v1.0.0

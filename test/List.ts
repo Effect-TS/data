@@ -23,6 +23,8 @@ describe.concurrent("List", () => {
     expect(List.size).exist
     expect(List.filter).exist
     expect(List.filterMap).exist
+    expect(List.appendAllNonEmpty).exist
+    expect(List.prependAllNonEmpty).exist
   })
 
   it("is an iterable", () => {
@@ -250,9 +252,9 @@ describe.concurrent("List", () => {
   })
 
   it("compact", () => {
-    expect(List.compact([])).toEqual(List.empty())
-    expect(List.compact([Option.some(1), Option.some(2), Option.some(3)])).toEqual(List.make(1, 2, 3))
-    expect(List.compact([Option.some(1), Option.none(), Option.some(3)])).toEqual(List.make(1, 3))
+    expect(List.compact(List.empty())).toEqual(List.empty())
+    expect(List.compact(List.make(Option.some(1), Option.some(2), Option.some(3)))).toEqual(List.make(1, 2, 3))
+    expect(List.compact(List.make(Option.some(1), Option.none(), Option.some(3)))).toEqual(List.make(1, 3))
   })
 
   it("last", () => {

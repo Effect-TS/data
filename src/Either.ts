@@ -4,8 +4,7 @@
 
 import type * as Data from "@effect/data/Data"
 import * as Equal from "@effect/data/Equal"
-import type { Equivalence } from "@effect/data/Equivalence"
-import * as equivalence from "@effect/data/Equivalence"
+import * as Equivalence from "@effect/data/Equivalence"
 import { dual, identity } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
 import * as either from "@effect/data/internal/Either"
@@ -191,10 +190,10 @@ export const getLeft: <E, A>(self: Either<E, A>) => Option<E> = either.getLeft
  * @since 1.0.0
  */
 export const getEquivalence = <E, A>(
-  EE: Equivalence<E>,
-  EA: Equivalence<A>
-): Equivalence<Either<E, A>> =>
-  equivalence.make((x, y) =>
+  EE: Equivalence.Equivalence<E>,
+  EA: Equivalence.Equivalence<A>
+): Equivalence.Equivalence<Either<E, A>> =>
+  Equivalence.make((x, y) =>
     x === y ||
     (isLeft(x) ?
       isLeft(y) && EE(x.left, y.left) :

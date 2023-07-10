@@ -4,7 +4,7 @@
  * @since 1.0.0
  */
 
-import * as equivalence from "@effect/data/Equivalence"
+import * as Equivalence from "@effect/data/Equivalence"
 import { dual } from "@effect/data/Function"
 import * as order from "@effect/data/Order"
 
@@ -56,7 +56,7 @@ export const omit = <S, Keys extends readonly [keyof S, ...Array<keyof S>]>(
  * Given a struct of `Equivalence`s returns a new `Equivalence` that compares values of a struct
  * by applying each `Equivalence` to the corresponding property of the struct.
  *
- * Alias of {@link equivalence.struct}.
+ * Alias of {@link Equivalence.struct}.
  *
  * @example
  * import { getEquivalence } from "@effect/data/Struct"
@@ -80,11 +80,11 @@ export const omit = <S, Keys extends readonly [keyof S, ...Array<keyof S>]>(
  * @category combinators
  * @since 1.0.0
  */
-export const getEquivalence: <R extends Record<string, equivalence.Equivalence<any>>>(
-  predicates: R
-) => equivalence.Equivalence<
-  { readonly [K in keyof R]: [R[K]] extends [equivalence.Equivalence<infer A>] ? A : never }
-> = equivalence.struct
+export const getEquivalence: <R extends Record<string, Equivalence.Equivalence<any>>>(
+  isEquivalents: R
+) => Equivalence.Equivalence<
+  { readonly [K in keyof R]: [R[K]] extends [Equivalence.Equivalence<infer A>] ? A : never }
+> = Equivalence.struct
 
 /**
  * This function creates and returns a new `Order` for a struct of values based on the given `Order`s

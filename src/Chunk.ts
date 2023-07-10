@@ -1256,11 +1256,12 @@ export const every: {
  * @since 1.0.0
  */
 export const some: {
-  <A>(predicate: Predicate<A>): (self: Chunk<A>) => self is NonEmptyChunk<A>
-  <A>(self: Chunk<A>, predicate: Predicate<A>): self is NonEmptyChunk<A>
+  <A>(predicate: Predicate<A>): <B extends A>(self: Chunk<B>) => self is NonEmptyChunk<B>
+  <B extends A, A = B>(self: Chunk<B>, predicate: Predicate<A>): self is NonEmptyChunk<B>
 } = dual(
   2,
-  <A>(self: Chunk<A>, predicate: Predicate<A>): self is NonEmptyChunk<A> => RA.fromIterable(self).some(predicate)
+  <B extends A, A = B>(self: Chunk<B>, predicate: Predicate<A>): self is NonEmptyChunk<B> =>
+    RA.fromIterable(self).some(predicate)
 )
 
 /**

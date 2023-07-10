@@ -620,8 +620,8 @@ Check if a predicate holds true for some `ReadonlyArray` element.
 
 ```ts
 export declare const some: {
-  <A>(predicate: Predicate<A>): (self: readonly A[]) => self is readonly [A, ...A[]]
-  <A>(self: readonly A[], predicate: Predicate<A>): self is readonly [A, ...A[]]
+  <A>(predicate: Predicate<A>): <B extends A>(self: readonly B[]) => self is readonly [B, ...B[]]
+  <B extends A, A = B>(self: readonly B[], predicate: Predicate<A>): self is readonly [B, ...B[]]
 }
 ```
 
@@ -1272,7 +1272,9 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const getEquivalence: <A>(O: equivalence.Equivalence<A>) => equivalence.Equivalence<readonly A[]>
+export declare const getEquivalence: <A>(
+  isEquivalent: Equivalence.Equivalence<A>
+) => Equivalence.Equivalence<readonly A[]>
 ```
 
 Added in v1.0.0
