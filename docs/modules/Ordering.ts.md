@@ -12,17 +12,56 @@ Added in v1.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
+- [combining](#combining)
+  - [combine](#combine)
+  - [combineAll](#combineall)
+  - [combineMany](#combinemany)
 - [model](#model)
   - [Ordering (type alias)](#ordering-type-alias)
 - [pattern matching](#pattern-matching)
   - [match](#match)
 - [utils](#utils)
-  - [combine](#combine)
-  - [combineAll](#combineall)
-  - [combineMany](#combinemany)
   - [reverse](#reverse)
 
 ---
+
+# combining
+
+## combine
+
+**Signature**
+
+```ts
+export declare const combine: {
+  (that: Ordering): (self: Ordering) => Ordering
+  (self: Ordering, that: Ordering): Ordering
+}
+```
+
+Added in v1.0.0
+
+## combineAll
+
+**Signature**
+
+```ts
+export declare const combineAll: (collection: Iterable<Ordering>) => Ordering
+```
+
+Added in v1.0.0
+
+## combineMany
+
+**Signature**
+
+```ts
+export declare const combineMany: {
+  (collection: Iterable<Ordering>): (self: Ordering) => Ordering
+  (self: Ordering, collection: Iterable<Ordering>): Ordering
+}
+```
+
+Added in v1.0.0
 
 # model
 
@@ -78,42 +117,6 @@ assert.deepStrictEqual(toMessage(1), 'greater than')
 Added in v1.0.0
 
 # utils
-
-## combine
-
-**Signature**
-
-```ts
-export declare const combine: {
-  (that: Ordering): (self: Ordering) => Ordering
-  (self: Ordering, that: Ordering): Ordering
-}
-```
-
-Added in v1.0.0
-
-## combineAll
-
-**Signature**
-
-```ts
-export declare const combineAll: (collection: Iterable<Ordering>) => Ordering
-```
-
-Added in v1.0.0
-
-## combineMany
-
-**Signature**
-
-```ts
-export declare const combineMany: {
-  (collection: Iterable<Ordering>): (self: Ordering) => Ordering
-  (self: Ordering, collection: Iterable<Ordering>): Ordering
-}
-```
-
-Added in v1.0.0
 
 ## reverse
 

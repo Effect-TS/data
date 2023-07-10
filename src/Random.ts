@@ -125,7 +125,6 @@ export class PCGRandom {
   /**
    * Restore state previously retrieved using `getState()`.
    *
-   * @category utils
    * @since 1.0.0
    */
   setState(state: PCGRandomState) {

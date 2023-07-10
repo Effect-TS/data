@@ -22,28 +22,23 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [combinators](#combinators)
-  - [append](#append)
-  - [appendAll](#appendall)
   - [compact](#compact)
   - [drop](#drop)
-  - [every](#every)
   - [filter](#filter)
   - [filterMap](#filtermap)
-  - [findFirst](#findfirst)
   - [flatMap](#flatmap)
   - [forEach](#foreach)
   - [map](#map)
   - [partition](#partition)
   - [partitionMap](#partitionmap)
+  - [splitAt](#splitat)
+  - [take](#take)
+- [concatenating](#concatenating)
+  - [append](#append)
+  - [appendAll](#appendall)
   - [prepend](#prepend)
   - [prependAll](#prependall)
   - [prependAllReversed](#prependallreversed)
-  - [reduce](#reduce)
-  - [reduceRight](#reduceright)
-  - [reverse](#reverse)
-  - [some](#some)
-  - [splitAt](#splitat)
-  - [take](#take)
 - [constructors](#constructors)
   - [cons](#cons)
   - [empty](#empty)
@@ -54,8 +49,16 @@ Added in v1.0.0
 - [conversions](#conversions)
   - [toChunk](#tochunk)
   - [toReadonlyArray](#toreadonlyarray)
+- [elements](#elements)
+  - [every](#every)
+  - [findFirst](#findfirst)
+  - [reverse](#reverse)
+  - [some](#some)
 - [equivalence](#equivalence)
   - [getEquivalence](#getequivalence)
+- [folding](#folding)
+  - [reduce](#reduce)
+  - [reduceRight](#reduceright)
 - [getters](#getters)
   - [head](#head)
   - [last](#last)
@@ -81,36 +84,6 @@ Added in v1.0.0
 
 # combinators
 
-## append
-
-Appends the specified element to the end of the list.
-
-**Signature**
-
-```ts
-export declare const append: {
-  <B>(element: B): <A>(self: List<A>) => Cons<B | A>
-  <A, B>(self: List<A>, element: B): Cons<A | B>
-}
-```
-
-Added in v1.0.0
-
-## appendAll
-
-Concatentates the specified lists together.
-
-**Signature**
-
-```ts
-export declare const appendAll: {
-  <B>(that: List<B>): <A>(self: List<A>) => List<B | A>
-  <A, B>(self: List<A>, that: List<B>): List<A | B>
-}
-```
-
-Added in v1.0.0
-
 ## compact
 
 Removes all `None` values from the specified list.
@@ -131,24 +104,6 @@ Drops the first `n` elements from the specified list.
 
 ```ts
 export declare const drop: { (n: number): <A>(self: List<A>) => List<A>; <A>(self: List<A>, n: number): List<A> }
-```
-
-Added in v1.0.0
-
-## every
-
-Returns `true` if all elements of the specified list satisfy the specified
-predicate, `false` otherwise.
-
-**Signature**
-
-```ts
-export declare const every: {
-  <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => self is List<B>
-  <A>(predicate: Predicate<A>): (self: List<A>) => boolean
-  <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): self is List<B>
-  <A>(self: List<A>, predicate: Predicate<A>): boolean
-}
 ```
 
 Added in v1.0.0
@@ -182,24 +137,6 @@ function not being defined for some elements.
 export declare const filterMap: {
   <A, B>(pf: (a: A) => Option.Option<B>): (self: Iterable<A>) => List<B>
   <A, B>(self: Iterable<A>, pf: (a: A) => Option.Option<B>): List<B>
-}
-```
-
-Added in v1.0.0
-
-## findFirst
-
-Returns the first element of the specified list that satisfies the specified
-predicate, or `None` if no such element exists.
-
-**Signature**
-
-```ts
-export declare const findFirst: {
-  <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => Option.Option<B>
-  <A>(predicate: Predicate<A>): (self: List<A>) => Option.Option<A>
-  <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): Option.Option<B>
-  <A>(self: List<A>, predicate: Predicate<A>): Option.Option<A>
 }
 ```
 
@@ -286,6 +223,66 @@ export declare const partitionMap: {
 
 Added in v1.0.0
 
+## splitAt
+
+Splits the specified list into two lists at the specified index.
+
+**Signature**
+
+```ts
+export declare const splitAt: {
+  (n: number): <A>(self: List<A>) => readonly [List<A>, List<A>]
+  <A>(self: List<A>, n: number): readonly [List<A>, List<A>]
+}
+```
+
+Added in v1.0.0
+
+## take
+
+Takes the specified number of elements from the beginning of the specified
+list.
+
+**Signature**
+
+```ts
+export declare const take: { (n: number): <A>(self: List<A>) => List<A>; <A>(self: List<A>, n: number): List<A> }
+```
+
+Added in v1.0.0
+
+# concatenating
+
+## append
+
+Appends the specified element to the end of the `List`.
+
+**Signature**
+
+```ts
+export declare const append: {
+  <B>(element: B): <A>(self: List<A>) => Cons<B | A>
+  <A, B>(self: List<A>, element: B): Cons<A | B>
+}
+```
+
+Added in v1.0.0
+
+## appendAll
+
+Concatentates the specified lists together.
+
+**Signature**
+
+```ts
+export declare const appendAll: {
+  <B>(that: List<B>): <A>(self: List<A>) => List<B | A>
+  <A, B>(self: List<A>, that: List<B>): List<A | B>
+}
+```
+
+Added in v1.0.0
+
 ## prepend
 
 Prepends the specified element to the beginning of the list.
@@ -328,94 +325,6 @@ export declare const prependAllReversed: {
   <B>(prefix: List<B>): <A>(self: List<A>) => List<B | A>
   <A, B>(self: List<A>, prefix: List<B>): List<A | B>
 }
-```
-
-Added in v1.0.0
-
-## reduce
-
-Folds over the elements of the list using the specified function, using the
-specified initial value.
-
-**Signature**
-
-```ts
-export declare const reduce: {
-  <Z, A>(zero: Z, f: (b: Z, a: A) => Z): (self: List<A>) => Z
-  <A, Z>(self: List<A>, zero: Z, f: (b: Z, a: A) => Z): Z
-}
-```
-
-Added in v1.0.0
-
-## reduceRight
-
-Folds over the elements of the list using the specified function, beginning
-with the last element of the list, using the specified initial value.
-
-**Signature**
-
-```ts
-export declare const reduceRight: {
-  <Z, A>(zero: Z, f: (accumulator: Z, value: A) => Z): (self: List<A>) => Z
-  <Z, A>(self: List<A>, zero: Z, f: (accumulator: Z, value: A) => Z): Z
-}
-```
-
-Added in v1.0.0
-
-## reverse
-
-Returns a new list with the elements of the specified list in reverse order.
-
-**Signature**
-
-```ts
-export declare const reverse: <A>(self: List<A>) => List<A>
-```
-
-Added in v1.0.0
-
-## some
-
-Returns `true` if any element of the specified list satisfies the specified
-predicate, `false` otherwise.
-
-**Signature**
-
-```ts
-export declare const some: {
-  <A>(predicate: Predicate<A>): (self: List<A>) => boolean
-  <A>(self: List<A>, predicate: Predicate<A>): boolean
-}
-```
-
-Added in v1.0.0
-
-## splitAt
-
-Splits the specified list into two lists at the specified index.
-
-**Signature**
-
-```ts
-export declare const splitAt: {
-  (n: number): <A>(self: List<A>) => readonly [List<A>, List<A>]
-  <A>(self: List<A>, n: number): readonly [List<A>, List<A>]
-}
-```
-
-Added in v1.0.0
-
-## take
-
-Takes the specified number of elements from the beginning of the specified
-list.
-
-**Signature**
-
-```ts
-export declare const take: { (n: number): <A>(self: List<A>) => List<A>; <A>(self: List<A>, n: number): List<A> }
 ```
 
 Added in v1.0.0
@@ -520,6 +429,70 @@ export declare const toReadonlyArray: <A>(self: List<A>) => readonly A[]
 
 Added in v1.0.0
 
+# elements
+
+## every
+
+Check if a predicate holds true for every `List` element.
+
+**Signature**
+
+```ts
+export declare const every: {
+  <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => self is List<B>
+  <A>(predicate: Predicate<A>): (self: List<A>) => boolean
+  <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): self is List<B>
+  <A>(self: List<A>, predicate: Predicate<A>): boolean
+}
+```
+
+Added in v1.0.0
+
+## findFirst
+
+Returns the first element that satisfies the specified
+predicate, or `None` if no such element exists.
+
+**Signature**
+
+```ts
+export declare const findFirst: {
+  <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => Option.Option<B>
+  <A>(predicate: Predicate<A>): (self: List<A>) => Option.Option<A>
+  <A, B extends A>(self: List<A>, refinement: Refinement<A, B>): Option.Option<B>
+  <A>(self: List<A>, predicate: Predicate<A>): Option.Option<A>
+}
+```
+
+Added in v1.0.0
+
+## reverse
+
+Returns a new list with the elements of the specified list in reverse order.
+
+**Signature**
+
+```ts
+export declare const reverse: <A>(self: List<A>) => List<A>
+```
+
+Added in v1.0.0
+
+## some
+
+Check if a predicate holds true for some `List` element.
+
+**Signature**
+
+```ts
+export declare const some: {
+  <A>(predicate: Predicate<A>): (self: List<A>) => boolean
+  <A>(self: List<A>, predicate: Predicate<A>): boolean
+}
+```
+
+Added in v1.0.0
+
 # equivalence
 
 ## getEquivalence
@@ -528,6 +501,40 @@ Added in v1.0.0
 
 ```ts
 export declare const getEquivalence: <A>(isEquivalent: Equivalence.Equivalence<A>) => Equivalence.Equivalence<List<A>>
+```
+
+Added in v1.0.0
+
+# folding
+
+## reduce
+
+Folds over the elements of the list using the specified function, using the
+specified initial value.
+
+**Signature**
+
+```ts
+export declare const reduce: {
+  <Z, A>(zero: Z, f: (b: Z, a: A) => Z): (self: List<A>) => Z
+  <A, Z>(self: List<A>, zero: Z, f: (b: Z, a: A) => Z): Z
+}
+```
+
+Added in v1.0.0
+
+## reduceRight
+
+Folds over the elements of the list using the specified function, beginning
+with the last element of the list, using the specified initial value.
+
+**Signature**
+
+```ts
+export declare const reduceRight: {
+  <Z, A>(zero: Z, f: (accumulator: Z, value: A) => Z): (self: List<A>) => Z
+  <Z, A>(self: List<A>, zero: Z, f: (accumulator: Z, value: A) => Z): Z
+}
 ```
 
 Added in v1.0.0

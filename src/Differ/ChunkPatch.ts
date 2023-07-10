@@ -55,7 +55,6 @@ export const diff: <Value, Patch>(
  * applying their changes sequentially.
  *
  * @since 1.0.0
- * @category utils
  */
 export const combine: {
   <Value, Patch>(that: ChunkPatch<Value, Patch>): (self: ChunkPatch<Value, Patch>) => ChunkPatch<Value, Patch>

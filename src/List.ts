@@ -334,10 +334,10 @@ export const make = <Elements extends readonly [any, ...Array<any>]>(
 export const compact = <A>(self: Iterable<Option.Option<A>>): List<A> => filterMap(self, identity)
 
 /**
- * Appends the specified element to the end of the list.
+ * Appends the specified element to the end of the `List`.
  *
+ * @category concatenating
  * @since 1.0.0
- * @category combinators
  */
 export const append: {
   <B>(element: B): <A>(self: List<A>) => Cons<A | B>
@@ -347,8 +347,8 @@ export const append: {
 /**
  * Concatentates the specified lists together.
  *
+ * @category concatenating
  * @since 1.0.0
- * @category combinators
  */
 export const appendAll: {
   <B>(that: List<B>): <A>(self: List<A>) => List<A | B>
@@ -381,11 +381,10 @@ export const drop: {
 })
 
 /**
- * Returns `true` if all elements of the specified list satisfy the specified
- * predicate, `false` otherwise.
+ * Check if a predicate holds true for every `List` element.
  *
  * @since 1.0.0
- * @category combinators
+ * @category elements
  */
 export const every: {
   <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => self is List<B>
@@ -402,11 +401,10 @@ export const every: {
 })
 
 /**
- * Returns `true` if any element of the specified list satisfies the specified
- * predicate, `false` otherwise.
+ * Check if a predicate holds true for some `List` element.
  *
  * @since 1.0.0
- * @category combinators
+ * @category elements
  */
 export const some: {
   <A>(predicate: Predicate<A>): (self: List<A>) => boolean
@@ -550,11 +548,11 @@ export const filterMap: {
 })
 
 /**
- * Returns the first element of the specified list that satisfies the specified
+ * Returns the first element that satisfies the specified
  * predicate, or `None` if no such element exists.
  *
+ * @category elements
  * @since 1.0.0
- * @category combinators
  */
 export const findFirst: {
   <A, B extends A>(refinement: Refinement<A, B>): (self: List<A>) => Option.Option<B>
@@ -720,8 +718,8 @@ export const partitionMap: {
 /**
  * Prepends the specified element to the beginning of the list.
  *
+ * @category concatenating
  * @since 1.0.0
- * @category combinators
  */
 export const prepend: {
   <B>(element: B): <A>(self: List<A>) => Cons<A | B>
@@ -731,8 +729,8 @@ export const prepend: {
 /**
  * Prepends the specified prefix list to the beginning of the specified list.
  *
+ * @category concatenating
  * @since 1.0.0
- * @category combinators
  */
 export const prependAll: {
   <B>(prefix: List<B>): <A>(self: List<A>) => List<A | B>
@@ -760,8 +758,8 @@ export const prependAll: {
  * Prepends the specified prefix list (in reverse order) to the beginning of the
  * specified list.
  *
+ * @category concatenating
  * @since 1.0.0
- * @category combinators
  */
 export const prependAllReversed: {
   <B>(prefix: List<B>): <A>(self: List<A>) => List<A | B>
@@ -781,7 +779,7 @@ export const prependAllReversed: {
  * specified initial value.
  *
  * @since 1.0.0
- * @category combinators
+ * @category folding
  */
 export const reduce: {
   <Z, A>(zero: Z, f: (b: Z, a: A) => Z): (self: List<A>) => Z
@@ -801,7 +799,7 @@ export const reduce: {
  * with the last element of the list, using the specified initial value.
  *
  * @since 1.0.0
- * @category combinators
+ * @category folding
  */
 export const reduceRight: {
   <Z, A>(zero: Z, f: (accumulator: Z, value: A) => Z): (self: List<A>) => Z
@@ -820,7 +818,7 @@ export const reduceRight: {
  * Returns a new list with the elements of the specified list in reverse order.
  *
  * @since 1.0.0
- * @category combinators
+ * @category elements
  */
 export const reverse = <A>(self: List<A>): List<A> => {
   let result = empty<A>()

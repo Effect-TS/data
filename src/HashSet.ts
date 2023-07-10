@@ -68,7 +68,7 @@ export const has: {
 } = HS.has
 
 /**
- * Returns `true` if any value in the `HashSet` matches the specified predicate.
+ * Check if a predicate holds true for some `HashSet` element.
  *
  * @since 1.0.0
  * @category elements
@@ -79,8 +79,7 @@ export const some: {
 } = HS.some
 
 /**
- * Returns `true` only if all values in the `HashSet` match the specified
- * predicate.
+ * Check if a predicate holds true for every `HashSet` element.
  *
  * @since 1.0.0
  * @category elements
@@ -126,7 +125,6 @@ export const size: <A>(self: HashSet<A>) => number = HS.size
  * Marks the `HashSet` as mutable.
  *
  * @since 1.0.0
- * @category utils
  */
 export const beginMutation: <A>(self: HashSet<A>) => HashSet<A> = HS.beginMutation
 
@@ -134,7 +132,6 @@ export const beginMutation: <A>(self: HashSet<A>) => HashSet<A> = HS.beginMutati
  * Marks the `HashSet` as immutable.
  *
  * @since 1.0.0
- * @category utils
  */
 export const endMutation: <A>(self: HashSet<A>) => HashSet<A> = HS.endMutation
 
@@ -142,7 +139,6 @@ export const endMutation: <A>(self: HashSet<A>) => HashSet<A> = HS.endMutation
  * Mutates the `HashSet` within the context of the provided function.
  *
  * @since 1.0.0
- * @category utils
  */
 export const mutate: {
   <A>(f: (set: HashSet<A>) => void): (self: HashSet<A>) => HashSet<A>
@@ -153,7 +149,6 @@ export const mutate: {
  * Adds a value to the `HashSet`.
  *
  * @since 1.0.0
- * @category utils
  */
 export const add: {
   <A>(value: A): (self: HashSet<A>) => HashSet<A>
@@ -164,7 +159,6 @@ export const add: {
  * Removes a value from the `HashSet`.
  *
  * @since 1.0.0
- * @category utils
  */
 export const remove: {
   <A>(value: A): (self: HashSet<A>) => HashSet<A>
@@ -179,7 +173,6 @@ export const remove: {
  * must be the same.
  *
  * @since 1.0.0
- * @category utils
  */
 export const difference: {
   <A>(that: Iterable<A>): (self: HashSet<A>) => HashSet<A>
@@ -194,7 +187,6 @@ export const difference: {
  * must be the same.
  *
  * @since 1.0.0
- * @category utils
  */
 export const intersection: {
   <A>(that: Iterable<A>): (self: HashSet<A>) => HashSet<A>
@@ -209,7 +201,6 @@ export const intersection: {
  * must be the same.
  *
  * @since 1.0.0
- * @category utils
  */
 export const union: {
   <A>(that: Iterable<A>): (self: HashSet<A>) => HashSet<A>
@@ -222,7 +213,6 @@ export const union: {
  * `HashSet`.
  *
  * @since 1.0.0
- * @category utils
  */
 export const toggle: {
   <A>(value: A): (self: HashSet<A>) => HashSet<A>

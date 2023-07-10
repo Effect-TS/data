@@ -17,6 +17,13 @@ Added in v1.0.0
   - [contramap](#contramap)
   - [struct](#struct)
   - [tuple](#tuple)
+- [combining](#combining)
+  - [all](#all)
+  - [combine](#combine)
+  - [combineAll](#combineall)
+  - [combineMany](#combinemany)
+  - [product](#product)
+  - [productMany](#productmany)
 - [constructors](#constructors)
   - [make](#make)
 - [instances](#instances)
@@ -29,12 +36,8 @@ Added in v1.0.0
 - [type lambdas](#type-lambdas)
   - [OrderTypeLambda (interface)](#ordertypelambda-interface)
 - [utils](#utils)
-  - [all](#all)
   - [between](#between)
   - [clamp](#clamp)
-  - [combine](#combine)
-  - [combineAll](#combineall)
-  - [combineMany](#combinemany)
   - [empty](#empty)
   - [greaterThan](#greaterthan)
   - [greaterThanOrEqualTo](#greaterthanorequalto)
@@ -42,8 +45,6 @@ Added in v1.0.0
   - [lessThanOrEqualTo](#lessthanorequalto)
   - [max](#max)
   - [min](#min)
-  - [product](#product)
-  - [productMany](#productmany)
   - [reverse](#reverse)
 
 ---
@@ -112,6 +113,80 @@ of the tuple.
 export declare const tuple: <T extends readonly Order<any>[]>(
   ...elements: T
 ) => Order<{ [I in keyof T]: [T[I]] extends [Order<infer A>] ? A : never }>
+```
+
+Added in v1.0.0
+
+# combining
+
+## all
+
+**Signature**
+
+```ts
+export declare const all: <A>(collection: Iterable<Order<A>>) => Order<A[]>
+```
+
+Added in v1.0.0
+
+## combine
+
+**Signature**
+
+```ts
+export declare const combine: {
+  <A>(that: Order<A>): (self: Order<A>) => Order<A>
+  <A>(self: Order<A>, that: Order<A>): Order<A>
+}
+```
+
+Added in v1.0.0
+
+## combineAll
+
+**Signature**
+
+```ts
+export declare const combineAll: <A>(collection: Iterable<Order<A>>) => Order<A>
+```
+
+Added in v1.0.0
+
+## combineMany
+
+**Signature**
+
+```ts
+export declare const combineMany: {
+  <A>(collection: Iterable<Order<A>>): (self: Order<A>) => Order<A>
+  <A>(self: Order<A>, collection: Iterable<Order<A>>): Order<A>
+}
+```
+
+Added in v1.0.0
+
+## product
+
+**Signature**
+
+```ts
+export declare const product: {
+  <B>(that: Order<B>): <A>(self: Order<A>) => Order<[A, B]>
+  <A, B>(self: Order<A>, that: Order<B>): Order<[A, B]>
+}
+```
+
+Added in v1.0.0
+
+## productMany
+
+**Signature**
+
+```ts
+export declare const productMany: {
+  <A>(collection: Iterable<Order<A>>): (self: Order<A>) => Order<[A, ...A[]]>
+  <A>(self: Order<A>, collection: Iterable<Order<A>>): Order<[A, ...A[]]>
+}
 ```
 
 Added in v1.0.0
@@ -200,16 +275,6 @@ Added in v1.0.0
 
 # utils
 
-## all
-
-**Signature**
-
-```ts
-export declare const all: <A>(collection: Iterable<Order<A>>) => Order<A[]>
-```
-
-Added in v1.0.0
-
 ## between
 
 Test whether a value is between a minimum and a maximum (inclusive).
@@ -235,42 +300,6 @@ Clamp a value between a minimum and a maximum.
 export declare const clamp: <A>(O: Order<A>) => {
   (minimum: A, maximum: A): (self: A) => A
   (self: A, minimum: A, maximum: A): A
-}
-```
-
-Added in v1.0.0
-
-## combine
-
-**Signature**
-
-```ts
-export declare const combine: {
-  <A>(that: Order<A>): (self: Order<A>) => Order<A>
-  <A>(self: Order<A>, that: Order<A>): Order<A>
-}
-```
-
-Added in v1.0.0
-
-## combineAll
-
-**Signature**
-
-```ts
-export declare const combineAll: <A>(collection: Iterable<Order<A>>) => Order<A>
-```
-
-Added in v1.0.0
-
-## combineMany
-
-**Signature**
-
-```ts
-export declare const combineMany: {
-  <A>(collection: Iterable<Order<A>>): (self: Order<A>) => Order<A>
-  <A>(self: Order<A>, collection: Iterable<Order<A>>): Order<A>
 }
 ```
 
@@ -360,32 +389,6 @@ Take the minimum of two values. If they are considered equal, the first argument
 
 ```ts
 export declare const min: <A>(O: Order<A>) => { (that: A): (self: A) => A; (self: A, that: A): A }
-```
-
-Added in v1.0.0
-
-## product
-
-**Signature**
-
-```ts
-export declare const product: {
-  <B>(that: Order<B>): <A>(self: Order<A>) => Order<[A, B]>
-  <A, B>(self: Order<A>, that: Order<B>): Order<[A, B]>
-}
-```
-
-Added in v1.0.0
-
-## productMany
-
-**Signature**
-
-```ts
-export declare const productMany: {
-  <A>(collection: Iterable<Order<A>>): (self: Order<A>) => Order<[A, ...A[]]>
-  <A>(self: Order<A>, collection: Iterable<Order<A>>): Order<[A, ...A[]]>
-}
 ```
 
 Added in v1.0.0

@@ -50,7 +50,6 @@ export const diff: <Input, Output>(
  * updates from this patch and then the updates from the specified patch.
  *
  * @since 1.0.0
- * @category utils
  */
 export const combine: {
   <Output, Output2>(

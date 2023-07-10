@@ -217,6 +217,7 @@ export const matchRight: {
 /**
  * Prepend an element to the front of an `Iterable`, creating a new `NonEmptyArray`.
  *
+ * @category concatenating
  * @since 1.0.0
  */
 export const prepend: {
@@ -225,6 +226,7 @@ export const prepend: {
 } = dual(2, <A, B>(self: Iterable<A>, head: B): NonEmptyArray<A | B> => [head, ...self])
 
 /**
+ * @category concatenating
  * @since 1.0.0
  */
 export const prependAll: {
@@ -236,6 +238,7 @@ export const prependAll: {
 )
 
 /**
+ * @category concatenating
  * @since 1.0.0
  */
 export const prependAllNonEmpty: {
@@ -251,6 +254,7 @@ export const prependAllNonEmpty: {
 /**
  * Append an element to the end of an `Iterable`, creating a new `NonEmptyArray`.
  *
+ * @category concatenating
  * @since 1.0.0
  */
 export const append: {
@@ -259,6 +263,7 @@ export const append: {
 } = dual(2, <A, B>(self: Iterable<A>, last: B): Array<A | B> => [...self, last])
 
 /**
+ * @category concatenating
  * @since 1.0.0
  */
 export const appendAll: {
@@ -270,6 +275,7 @@ export const appendAll: {
 )
 
 /**
+ * @category concatenating
  * @since 1.0.0
  */
 export const appendAllNonEmpty: {
@@ -660,7 +666,7 @@ export const dropWhile: {
 /**
  * Return the first index for which a predicate holds.
  *
- * @category getters
+ * @category elements
  * @since 1.0.0
  */
 export const findFirstIndex: {
@@ -680,7 +686,7 @@ export const findFirstIndex: {
 /**
  * Return the last index for which a predicate holds.
  *
- * @category getters
+ * @category elements
  * @since 1.0.0
  */
 export const findLastIndex: {
@@ -697,9 +703,10 @@ export const findLastIndex: {
 })
 
 /**
- * Find the first element for which a predicate holds.
+ * Returns the first element that satisfies the specified
+ * predicate, or `None` if no such element exists.
  *
- * @category getters
+ * @category elements
  * @since 1.0.0
  */
 export const findFirst: {
@@ -720,7 +727,7 @@ export const findFirst: {
 /**
  * Find the last element for which a predicate holds.
  *
- * @category getters
+ * @category elements
  * @since 1.0.0
  */
 export const findLast: {
@@ -835,11 +842,13 @@ export const remove: {
 /**
  * Reverse an `Iterable`, creating a new `Array`.
  *
+ * @category elements
  * @since 1.0.0
  */
 export const reverse = <A>(self: Iterable<A>): Array<A> => Array.from(self).reverse()
 
 /**
+ * @category elements
  * @since 1.0.0
  */
 export const reverseNonEmpty = <A>(
@@ -1113,7 +1122,7 @@ export const rotateNonEmpty: {
 /**
  * Returns a function that checks if a `ReadonlyArray` contains a given value using a provided `isEquivalent` function.
  *
- * @category predicates
+ * @category elements
  * @since 1.0.0
  */
 export const containsWith = <A>(isEquivalent: (self: A, that: A) => boolean): {
@@ -1129,16 +1138,18 @@ export const containsWith = <A>(isEquivalent: (self: A, that: A) => boolean): {
     return false
   })
 
+const _equivalence = Equal.equivalence()
+
 /**
- * Returns a function that checks if a `ReadonlyArray` contains a given value using the provided `isEquivalent` function.
+ * Returns a function that checks if a `ReadonlyArray` contains a given value using the default `Equivalence`.
  *
- * @category predicates
+ * @category elements
  * @since 1.0.0
  */
 export const contains: {
   <A>(a: A): (self: Iterable<A>) => boolean
   <A>(self: Iterable<A>, a: A): boolean
-} = containsWith(Equal.equivalence())
+} = containsWith(_equivalence)
 
 /**
  * Remove duplicates from a `NonEmptyReadonlyArray`, keeping the first occurrence of an element using the provided `isEquivalent` function.
@@ -1385,7 +1396,7 @@ export const unionWith = <A>(isEquivalent: (self: A, that: A) => boolean): {
 export const union: {
   <B>(that: Iterable<B>): <A>(self: Iterable<A>) => Array<A | B>
   <A, B>(self: Iterable<A>, that: Iterable<B>): Array<A | B>
-} = unionWith(Equal.equivalence())
+} = unionWith(_equivalence)
 
 /**
  * @since 1.0.0
@@ -1411,7 +1422,7 @@ export const unionNonEmpty: {
   <A>(that: ReadonlyArray<A>): (self: NonEmptyReadonlyArray<A>) => NonEmptyArray<A>
   <A>(self: ReadonlyArray<A>, that: NonEmptyReadonlyArray<A>): NonEmptyArray<A>
   <A>(self: NonEmptyReadonlyArray<A>, that: ReadonlyArray<A>): NonEmptyArray<A>
-} = unionNonEmptyWith(Equal.equivalence())
+} = unionNonEmptyWith(_equivalence)
 
 /**
  * Creates an `Array` of unique values that are included in all given `Iterable`s using the provided `isEquivalent` function.
@@ -1439,7 +1450,7 @@ export const intersectionWith = <A>(isEquivalent: (self: A, that: A) => boolean)
 export const intersection: {
   <B>(that: Iterable<B>): <A>(self: Iterable<A>) => Array<A & B>
   <A, B>(self: Iterable<A>, that: Iterable<B>): Array<A & B>
-} = intersectionWith(Equal.equivalence())
+} = intersectionWith(_equivalence)
 
 /**
  * Creates a `Array` of values not included in the other given `Iterable` using the provided `isEquivalent` function.
@@ -1467,7 +1478,7 @@ export const differenceWith = <A>(isEquivalent: (self: A, that: A) => boolean): 
 export const difference: {
   <A>(that: Iterable<A>): (self: Iterable<A>) => Array<A>
   <A>(self: Iterable<A>, that: Iterable<A>): Array<A>
-} = differenceWith(Equal.equivalence())
+} = differenceWith(_equivalence)
 
 /**
  * @category constructors
@@ -1778,9 +1789,9 @@ export const liftEither = <A extends Array<unknown>, E, B>(
   }
 
 /**
- * Check if a predicate holds true for every `ReadonlyArray` member.
+ * Check if a predicate holds true for every `ReadonlyArray` element.
  *
- * @category predicates
+ * @category elements
  * @since 1.0.0
  */
 export const every: {
@@ -1795,9 +1806,9 @@ export const every: {
 )
 
 /**
- * Check if a predicate holds true for some `ReadonlyArray` member.
+ * Check if a predicate holds true for some `ReadonlyArray` element.
  *
- * @category predicates
+ * @category elements
  * @since 1.0.0
  */
 export const some: {

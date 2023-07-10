@@ -132,7 +132,6 @@ export const capacity = <A>(self: MutableQueue<A>): number => self.capacity === 
  * Returns whether the enqueue was successful or not.
  *
  * @since 1.0.0
- * @category utils
  */
 export const offer: {
   <A>(self: MutableQueue<A>, value: A): boolean
@@ -155,7 +154,6 @@ export const offer: {
  * Returns a `Chunk` of the values that were **not** able to be enqueued.
  *
  * @since 1.0.0
- * @category utils
  */
 export const offerAll: {
   <A>(values: Iterable<A>): (self: MutableQueue<A>) => Chunk.Chunk<A>
@@ -187,7 +185,6 @@ export const offerAll: {
  * use `poll(MutableQueue.EmptyMutableQueue)`.
  *
  * @since 1.0.0
- * @category utils
  */
 export const poll: {
   <D>(def: D): <A>(self: MutableQueue<A>) => D | A
@@ -208,7 +205,6 @@ export const poll: {
  * Returns a `List` of up to `n` elements.
  *
  * @since 1.0.0
- * @category utils
  */
 export const pollUpTo: {
   (n: number): <A>(self: MutableQueue<A>) => Chunk.Chunk<A>

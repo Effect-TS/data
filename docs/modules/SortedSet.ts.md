@@ -100,6 +100,8 @@ Added in v1.0.0
 
 ## every
 
+Check if a predicate holds true for every `SortedSet` element.
+
 **Signature**
 
 ```ts
@@ -150,6 +152,8 @@ export declare const remove: {
 Added in v1.0.0
 
 ## some
+
+Check if a predicate holds true for some `SortedSet` element.
 
 **Signature**
 

@@ -173,7 +173,6 @@ export const forEach: {
  * Removes all elements from the doubly-linked list.
  *
  * @since 1.0.0
- * @category utils
  */
 export const reset = <A>(self: MutableList<A>): MutableList<A> => {
   ;(self as MutableListImpl<A>)._length = 0
@@ -183,10 +182,10 @@ export const reset = <A>(self: MutableList<A>): MutableList<A> => {
 }
 
 /**
- * Appends the specified value to the end of the list.
+ * Appends the specified element to the end of the `MutableList`.
  *
+ * @category concatenating
  * @since 1.0.0
- * @category utils
  */
 export const append: {
   <A>(value: A): (self: MutableList<A>) => MutableList<A>
@@ -214,7 +213,6 @@ export const append: {
  * Removes the first value from the list and returns it, if it exists.
  *
  * @since 0.0.1
- * @category utils
  */
 export const shift = <A>(self: MutableList<A>): A | undefined => {
   const head = self.head
@@ -229,7 +227,6 @@ export const shift = <A>(self: MutableList<A>): A | undefined => {
  * Removes the last value from the list and returns it, if it exists.
  *
  * @since 0.0.1
- * @category utils
  */
 export const pop = <A>(self: MutableList<A>): A | undefined => {
   const tail = self.tail
@@ -243,8 +240,8 @@ export const pop = <A>(self: MutableList<A>): A | undefined => {
 /**
  * Prepends the specified value to the beginning of the list.
  *
+ * @category concatenating
  * @since 1.0.0
- * @category utils
  */
 export const prepend: {
   <A>(value: A): (self: MutableList<A>) => MutableList<A>

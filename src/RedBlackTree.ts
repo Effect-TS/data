@@ -124,8 +124,8 @@ export const find: {
 /**
  * Finds the value in the tree associated with the specified key, if it exists.
  *
- * @since 1.0.0
  * @category elements
+ * @since 1.0.0
  */
 export const findFirst: {
   <K>(key: K): <V>(self: RedBlackTree<K, V>) => Option<V>
@@ -223,7 +223,6 @@ export const has: {
  * Insert a new item into the tree.
  *
  * @since 1.0.0
- * @category utils
  */
 export const insert: {
   <K, V>(key: K, value: V): (self: RedBlackTree<K, V>) => RedBlackTree<K, V>
@@ -386,7 +385,6 @@ export const reduceWithIndex: {
  * Removes the entry with the specified key, if it exists.
  *
  * @since 1.0.0
- * @category utils
  */
 export const removeFirst: {
   <K>(key: K): <V>(self: RedBlackTree<K, V>) => RedBlackTree<K, V>

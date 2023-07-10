@@ -756,12 +756,14 @@ export const inspectNone: {
 })
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const product = <A, B>(self: Option<A>, that: Option<B>): Option<[A, B]> =>
   isSome(self) && isSome(that) ? some([self.value, that.value]) : none()
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const productMany = <A>(
@@ -1102,7 +1104,7 @@ export const liftPredicate: {
 } = <B extends A, A = B>(predicate: Predicate<A>) => (b: B) => predicate(b) ? some(b) : none()
 
 /**
- * Returns a function that checks if an `Option` contains a given value using a provided `Equivalence` instance.
+ * Returns a function that checks if a `Option` contains a given value using a provided `isEquivalent` function.
  *
  * @param equivalent - An `Equivalence` instance to compare values of the `Option`.
  * @param self - The `Option` to apply the comparison to.
@@ -1117,6 +1119,7 @@ export const liftPredicate: {
  * assert.deepStrictEqual(pipe(some(1), contains(Equivalence)(2)), false)
  * assert.deepStrictEqual(pipe(none(), contains(Equivalence)(2)), false)
  *
+ * @category elements
  * @since 1.0.0
  */
 export const contains = <A>(isEquivalent: (self: A, that: A) => boolean): {

@@ -72,6 +72,7 @@ export const bigint: Equivalence<bigint> = strict()
 export const symbol: Equivalence<symbol> = strict()
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const combine: {
@@ -80,6 +81,7 @@ export const combine: {
 } = dual(2, <A>(self: Equivalence<A>, that: Equivalence<A>): Equivalence<A> => make((x, y) => self(x, y) && that(x, y)))
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const combineMany: {
@@ -101,6 +103,7 @@ export const combineMany: {
 const isAlwaysEquivalent: Equivalence<unknown> = (_x, _y) => true
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const combineAll = <A>(collection: Iterable<Equivalence<A>>): Equivalence<A> =>
@@ -119,6 +122,7 @@ export const contramap: {
 )
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const product: {
@@ -131,6 +135,7 @@ export const product: {
 )
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const all = <A>(collection: Iterable<Equivalence<A>>): Equivalence<Array<A>> => {
@@ -152,6 +157,7 @@ export const all = <A>(collection: Iterable<Equivalence<A>>): Equivalence<Array<
 }
 
 /**
+ * @category combining
  * @since 1.0.0
  */
 export const productMany = <A>(

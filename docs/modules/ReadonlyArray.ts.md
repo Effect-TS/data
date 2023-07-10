@@ -16,6 +16,13 @@ Added in v1.0.0
 
 - [combining](#combining)
   - [flatMapNullable](#flatmapnullable)
+- [concatenating](#concatenating)
+  - [append](#append)
+  - [appendAll](#appendall)
+  - [appendAllNonEmpty](#appendallnonempty)
+  - [prepend](#prepend)
+  - [prependAll](#prependall)
+  - [prependAllNonEmpty](#prependallnonempty)
 - [constructors](#constructors)
   - [empty](#empty)
   - [make](#make)
@@ -32,6 +39,16 @@ Added in v1.0.0
 - [elements](#elements)
   - [cartesian](#cartesian)
   - [cartesianWith](#cartesianwith)
+  - [contains](#contains)
+  - [containsWith](#containswith)
+  - [every](#every)
+  - [findFirst](#findfirst)
+  - [findFirstIndex](#findfirstindex)
+  - [findLast](#findlast)
+  - [findLastIndex](#findlastindex)
+  - [reverse](#reverse)
+  - [reverseNonEmpty](#reversenonempty)
+  - [some](#some)
 - [filtering](#filtering)
   - [compact](#compact)
   - [filter](#filter)
@@ -54,10 +71,6 @@ Added in v1.0.0
   - [drop](#drop)
   - [dropRight](#dropright)
   - [dropWhile](#dropwhile)
-  - [findFirst](#findfirst)
-  - [findFirstIndex](#findfirstindex)
-  - [findLast](#findlast)
-  - [findLastIndex](#findlastindex)
   - [get](#get)
   - [head](#head)
   - [headNonEmpty](#headnonempty)
@@ -102,11 +115,6 @@ Added in v1.0.0
   - [match](#match)
   - [matchLeft](#matchleft)
   - [matchRight](#matchright)
-- [predicates](#predicates)
-  - [contains](#contains)
-  - [containsWith](#containswith)
-  - [every](#every)
-  - [some](#some)
 - [sequencing](#sequencing)
   - [flatMap](#flatmap)
   - [flatMapNonEmpty](#flatmapnonempty)
@@ -122,9 +130,6 @@ Added in v1.0.0
 - [unsafe](#unsafe)
   - [unsafeGet](#unsafeget)
 - [utils](#utils)
-  - [append](#append)
-  - [appendAll](#appendall)
-  - [appendAllNonEmpty](#appendallnonempty)
   - [chop](#chop)
   - [chopNonEmpty](#chopnonempty)
   - [copy](#copy)
@@ -149,14 +154,9 @@ Added in v1.0.0
   - [modifyNonEmptyHead](#modifynonemptyhead)
   - [modifyNonEmptyLast](#modifynonemptylast)
   - [modifyOption](#modifyoption)
-  - [prepend](#prepend)
-  - [prependAll](#prependall)
-  - [prependAllNonEmpty](#prependallnonempty)
   - [remove](#remove)
   - [replace](#replace)
   - [replaceOption](#replaceoption)
-  - [reverse](#reverse)
-  - [reverseNonEmpty](#reversenonempty)
   - [rotate](#rotate)
   - [rotateNonEmpty](#rotatenonempty)
   - [setNonEmptyHead](#setnonemptyhead)
@@ -184,6 +184,94 @@ Added in v1.0.0
 export declare const flatMapNullable: {
   <A, B>(f: (a: A) => B | null | undefined): (self: readonly A[]) => NonNullable<B>[]
   <A, B>(self: readonly A[], f: (a: A) => B | null | undefined): NonNullable<B>[]
+}
+```
+
+Added in v1.0.0
+
+# concatenating
+
+## append
+
+Append an element to the end of an `Iterable`, creating a new `NonEmptyArray`.
+
+**Signature**
+
+```ts
+export declare const append: {
+  <B>(last: B): <A>(self: Iterable<A>) => [B | A, ...(B | A)[]]
+  <A, B>(self: Iterable<A>, last: B): [A | B, ...(A | B)[]]
+}
+```
+
+Added in v1.0.0
+
+## appendAll
+
+**Signature**
+
+```ts
+export declare const appendAll: {
+  <B>(that: Iterable<B>): <A>(self: Iterable<A>) => (B | A)[]
+  <A, B>(self: Iterable<A>, that: Iterable<B>): (A | B)[]
+}
+```
+
+Added in v1.0.0
+
+## appendAllNonEmpty
+
+**Signature**
+
+```ts
+export declare const appendAllNonEmpty: {
+  <B>(that: readonly [B, ...B[]]): <A>(self: Iterable<A>) => [B | A, ...(B | A)[]]
+  <B>(that: Iterable<B>): <A>(self: readonly [A, ...A[]]) => [B | A, ...(B | A)[]]
+  <A, B>(self: Iterable<A>, that: readonly [B, ...B[]]): [A | B, ...(A | B)[]]
+  <A, B>(self: readonly [A, ...A[]], that: Iterable<B>): [A | B, ...(A | B)[]]
+}
+```
+
+Added in v1.0.0
+
+## prepend
+
+Prepend an element to the front of an `Iterable`, creating a new `NonEmptyArray`.
+
+**Signature**
+
+```ts
+export declare const prepend: {
+  <B>(head: B): <A>(self: Iterable<A>) => [B | A, ...(B | A)[]]
+  <A, B>(self: Iterable<A>, head: B): [A | B, ...(A | B)[]]
+}
+```
+
+Added in v1.0.0
+
+## prependAll
+
+**Signature**
+
+```ts
+export declare const prependAll: {
+  <B>(that: Iterable<B>): <A>(self: Iterable<A>) => (B | A)[]
+  <A, B>(self: Iterable<A>, that: Iterable<B>): (A | B)[]
+}
+```
+
+Added in v1.0.0
+
+## prependAllNonEmpty
+
+**Signature**
+
+```ts
+export declare const prependAllNonEmpty: {
+  <B>(that: readonly [B, ...B[]]): <A>(self: Iterable<A>) => [B | A, ...(B | A)[]]
+  <B>(that: Iterable<B>): <A>(self: readonly [A, ...A[]]) => [B | A, ...(B | A)[]]
+  <A, B>(self: Iterable<A>, that: readonly [B, ...B[]]): [A | B, ...(A | B)[]]
+  <A, B>(self: readonly [A, ...A[]], that: Iterable<B>): [A | B, ...(A | B)[]]
 }
 ```
 
@@ -388,6 +476,152 @@ Zips this chunk crosswise with the specified chunk using the specified combiner.
 export declare const cartesianWith: {
   <A, B, C>(that: readonly B[], f: (a: A, b: B) => C): (self: readonly A[]) => C[]
   <A, B, C>(self: readonly A[], that: readonly B[], f: (a: A, b: B) => C): C[]
+}
+```
+
+Added in v1.0.0
+
+## contains
+
+Returns a function that checks if a `ReadonlyArray` contains a given value using the default `Equivalence`.
+
+**Signature**
+
+```ts
+export declare const contains: { <A>(a: A): (self: Iterable<A>) => boolean; <A>(self: Iterable<A>, a: A): boolean }
+```
+
+Added in v1.0.0
+
+## containsWith
+
+Returns a function that checks if a `ReadonlyArray` contains a given value using a provided `isEquivalent` function.
+
+**Signature**
+
+```ts
+export declare const containsWith: <A>(isEquivalent: (self: A, that: A) => boolean) => {
+  (a: A): (self: Iterable<A>) => boolean
+  (self: Iterable<A>, a: A): boolean
+}
+```
+
+Added in v1.0.0
+
+## every
+
+Check if a predicate holds true for every `ReadonlyArray` element.
+
+**Signature**
+
+```ts
+export declare const every: {
+  <A, B extends A>(refinement: Refinement<A, B>): (self: readonly A[]) => self is readonly B[]
+  <A>(predicate: Predicate<A>): (self: readonly A[]) => boolean
+  <A, B extends A>(self: readonly A[], refinement: Refinement<A, B>): self is readonly B[]
+  <A>(self: readonly A[], predicate: Predicate<A>): boolean
+}
+```
+
+Added in v1.0.0
+
+## findFirst
+
+Returns the first element that satisfies the specified
+predicate, or `None` if no such element exists.
+
+**Signature**
+
+```ts
+export declare const findFirst: {
+  <A, B extends A>(refinement: Refinement<A, B>): (self: Iterable<A>) => Option<B>
+  <A>(predicate: Predicate<A>): <B extends A>(self: Iterable<B>) => Option<B>
+  <A, B extends A>(self: Iterable<A>, refinement: Refinement<A, B>): Option<B>
+  <B extends A, A>(self: Iterable<B>, predicate: Predicate<A>): Option<B>
+}
+```
+
+Added in v1.0.0
+
+## findFirstIndex
+
+Return the first index for which a predicate holds.
+
+**Signature**
+
+```ts
+export declare const findFirstIndex: {
+  <A>(predicate: Predicate<A>): (self: Iterable<A>) => Option<number>
+  <A>(self: Iterable<A>, predicate: Predicate<A>): Option<number>
+}
+```
+
+Added in v1.0.0
+
+## findLast
+
+Find the last element for which a predicate holds.
+
+**Signature**
+
+```ts
+export declare const findLast: {
+  <A, B extends A>(refinement: Refinement<A, B>): (self: Iterable<A>) => Option<B>
+  <A>(predicate: Predicate<A>): <B extends A>(self: Iterable<B>) => Option<B>
+  <A, B extends A>(self: Iterable<A>, refinement: Refinement<A, B>): Option<B>
+  <B extends A, A>(self: Iterable<B>, predicate: Predicate<A>): Option<B>
+}
+```
+
+Added in v1.0.0
+
+## findLastIndex
+
+Return the last index for which a predicate holds.
+
+**Signature**
+
+```ts
+export declare const findLastIndex: {
+  <A>(predicate: Predicate<A>): (self: Iterable<A>) => Option<number>
+  <A>(self: Iterable<A>, predicate: Predicate<A>): Option<number>
+}
+```
+
+Added in v1.0.0
+
+## reverse
+
+Reverse an `Iterable`, creating a new `Array`.
+
+**Signature**
+
+```ts
+export declare const reverse: <A>(self: Iterable<A>) => A[]
+```
+
+Added in v1.0.0
+
+## reverseNonEmpty
+
+**Signature**
+
+```ts
+export declare const reverseNonEmpty: <A>(self: readonly [A, ...A[]]) => [A, ...A[]]
+```
+
+Added in v1.0.0
+
+## some
+
+Check if a predicate holds true for some `ReadonlyArray` element.
+
+**Signature**
+
+```ts
+export declare const some: {
+  <A>(predicate: Predicate<A>): (self: readonly A[]) => self is readonly [A, ...A[]]
+  <A>(self: readonly A[], predicate: Predicate<A>): self is readonly [A, ...A[]]
 }
 ```
 
@@ -675,70 +909,6 @@ export declare const dropWhile: {
   <A>(predicate: Predicate<A>): <B extends A>(self: Iterable<B>) => B[]
   <A, B extends A>(self: Iterable<A>, refinement: Refinement<A, B>): B[]
   <B extends A, A>(self: Iterable<B>, predicate: Predicate<A>): B[]
-}
-```
-
-Added in v1.0.0
-
-## findFirst
-
-Find the first element for which a predicate holds.
-
-**Signature**
-
-```ts
-export declare const findFirst: {
-  <A, B extends A>(refinement: Refinement<A, B>): (self: Iterable<A>) => Option<B>
-  <A>(predicate: Predicate<A>): <B extends A>(self: Iterable<B>) => Option<B>
-  <A, B extends A>(self: Iterable<A>, refinement: Refinement<A, B>): Option<B>
-  <B extends A, A>(self: Iterable<B>, predicate: Predicate<A>): Option<B>
-}
-```
-
-Added in v1.0.0
-
-## findFirstIndex
-
-Return the first index for which a predicate holds.
-
-**Signature**
-
-```ts
-export declare const findFirstIndex: {
-  <A>(predicate: Predicate<A>): (self: Iterable<A>) => Option<number>
-  <A>(self: Iterable<A>, predicate: Predicate<A>): Option<number>
-}
-```
-
-Added in v1.0.0
-
-## findLast
-
-Find the last element for which a predicate holds.
-
-**Signature**
-
-```ts
-export declare const findLast: {
-  <A, B extends A>(refinement: Refinement<A, B>): (self: Iterable<A>) => Option<B>
-  <A>(predicate: Predicate<A>): <B extends A>(self: Iterable<B>) => Option<B>
-  <A, B extends A>(self: Iterable<A>, refinement: Refinement<A, B>): Option<B>
-  <B extends A, A>(self: Iterable<B>, predicate: Predicate<A>): Option<B>
-}
-```
-
-Added in v1.0.0
-
-## findLastIndex
-
-Return the last index for which a predicate holds.
-
-**Signature**
-
-```ts
-export declare const findLastIndex: {
-  <A>(predicate: Predicate<A>): (self: Iterable<A>) => Option<number>
-  <A>(self: Iterable<A>, predicate: Predicate<A>): Option<number>
 }
 ```
 
@@ -1275,67 +1445,6 @@ export declare const matchRight: {
 
 Added in v1.0.0
 
-# predicates
-
-## contains
-
-Returns a function that checks if a `ReadonlyArray` contains a given value using the provided `isEquivalent` function.
-
-**Signature**
-
-```ts
-export declare const contains: { <A>(a: A): (self: Iterable<A>) => boolean; <A>(self: Iterable<A>, a: A): boolean }
-```
-
-Added in v1.0.0
-
-## containsWith
-
-Returns a function that checks if a `ReadonlyArray` contains a given value using a provided `isEquivalent` function.
-
-**Signature**
-
-```ts
-export declare const containsWith: <A>(isEquivalent: (self: A, that: A) => boolean) => {
-  (a: A): (self: Iterable<A>) => boolean
-  (self: Iterable<A>, a: A): boolean
-}
-```
-
-Added in v1.0.0
-
-## every
-
-Check if a predicate holds true for every `ReadonlyArray` member.
-
-**Signature**
-
-```ts
-export declare const every: {
-  <A, B extends A>(refinement: Refinement<A, B>): (self: readonly A[]) => self is readonly B[]
-  <A>(predicate: Predicate<A>): (self: readonly A[]) => boolean
-  <A, B extends A>(self: readonly A[], refinement: Refinement<A, B>): self is readonly B[]
-  <A>(self: readonly A[], predicate: Predicate<A>): boolean
-}
-```
-
-Added in v1.0.0
-
-## some
-
-Check if a predicate holds true for some `ReadonlyArray` member.
-
-**Signature**
-
-```ts
-export declare const some: {
-  <A>(predicate: Predicate<A>): (self: readonly A[]) => self is readonly [A, ...A[]]
-  <A>(self: readonly A[], predicate: Predicate<A>): self is readonly [A, ...A[]]
-}
-```
-
-Added in v1.0.0
-
 # sequencing
 
 ## flatMap
@@ -1475,49 +1584,6 @@ export declare const unsafeGet: {
 Added in v1.0.0
 
 # utils
-
-## append
-
-Append an element to the end of an `Iterable`, creating a new `NonEmptyArray`.
-
-**Signature**
-
-```ts
-export declare const append: {
-  <B>(last: B): <A>(self: Iterable<A>) => [B | A, ...(B | A)[]]
-  <A, B>(self: Iterable<A>, last: B): [A | B, ...(A | B)[]]
-}
-```
-
-Added in v1.0.0
-
-## appendAll
-
-**Signature**
-
-```ts
-export declare const appendAll: {
-  <B>(that: Iterable<B>): <A>(self: Iterable<A>) => (B | A)[]
-  <A, B>(self: Iterable<A>, that: Iterable<B>): (A | B)[]
-}
-```
-
-Added in v1.0.0
-
-## appendAllNonEmpty
-
-**Signature**
-
-```ts
-export declare const appendAllNonEmpty: {
-  <B>(that: readonly [B, ...B[]]): <A>(self: Iterable<A>) => [B | A, ...(B | A)[]]
-  <B>(that: Iterable<B>): <A>(self: readonly [A, ...A[]]) => [B | A, ...(B | A)[]]
-  <A, B>(self: Iterable<A>, that: readonly [B, ...B[]]): [A | B, ...(A | B)[]]
-  <A, B>(self: readonly [A, ...A[]], that: Iterable<B>): [A | B, ...(A | B)[]]
-}
-```
-
-Added in v1.0.0
 
 ## chop
 
@@ -1870,49 +1936,6 @@ export declare const modifyOption: {
 
 Added in v1.0.0
 
-## prepend
-
-Prepend an element to the front of an `Iterable`, creating a new `NonEmptyArray`.
-
-**Signature**
-
-```ts
-export declare const prepend: {
-  <B>(head: B): <A>(self: Iterable<A>) => [B | A, ...(B | A)[]]
-  <A, B>(self: Iterable<A>, head: B): [A | B, ...(A | B)[]]
-}
-```
-
-Added in v1.0.0
-
-## prependAll
-
-**Signature**
-
-```ts
-export declare const prependAll: {
-  <B>(that: Iterable<B>): <A>(self: Iterable<A>) => (B | A)[]
-  <A, B>(self: Iterable<A>, that: Iterable<B>): (A | B)[]
-}
-```
-
-Added in v1.0.0
-
-## prependAllNonEmpty
-
-**Signature**
-
-```ts
-export declare const prependAllNonEmpty: {
-  <B>(that: readonly [B, ...B[]]): <A>(self: Iterable<A>) => [B | A, ...(B | A)[]]
-  <B>(that: Iterable<B>): <A>(self: readonly [A, ...A[]]) => [B | A, ...(B | A)[]]
-  <A, B>(self: Iterable<A>, that: readonly [B, ...B[]]): [A | B, ...(A | B)[]]
-  <A, B>(self: readonly [A, ...A[]], that: Iterable<B>): [A | B, ...(A | B)[]]
-}
-```
-
-Added in v1.0.0
-
 ## remove
 
 Delete the element at the specified index, creating a new `Array`,
@@ -1951,28 +1974,6 @@ export declare const replaceOption: {
   <B>(i: number, b: B): <A>(self: Iterable<A>) => Option<(B | A)[]>
   <A, B>(self: Iterable<A>, i: number, b: B): Option<(A | B)[]>
 }
-```
-
-Added in v1.0.0
-
-## reverse
-
-Reverse an `Iterable`, creating a new `Array`.
-
-**Signature**
-
-```ts
-export declare const reverse: <A>(self: Iterable<A>) => A[]
-```
-
-Added in v1.0.0
-
-## reverseNonEmpty
-
-**Signature**
-
-```ts
-export declare const reverseNonEmpty: <A>(self: readonly [A, ...A[]]) => [A, ...A[]]
 ```
 
 Added in v1.0.0

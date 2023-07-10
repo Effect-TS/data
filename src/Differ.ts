@@ -190,7 +190,6 @@ export const hashSet: <Value>() => Differ<HashSet<Value>, HashSetPatch<Value>> =
  * knows how to diff the sum of their values.
  *
  * @since 1.0.0
- * @category utils
  */
 export const orElseResult: {
   <Value2, Patch2>(
@@ -207,7 +206,6 @@ export const orElseResult: {
  * the specified functions that map the new and old value types to each other.
  *
  * @since 1.0.0
- * @category utils
  */
 export const transform: {
   <Value, Value2>(
@@ -232,7 +230,6 @@ export const transform: {
  * there is no compositional way to update them.
  *
  * @since 1.0.0
- * @category utils
  */
 export const update: <A>() => Differ<A, (a: A) => A> = D.update
 
@@ -241,7 +238,6 @@ export const update: <A>() => Differ<A, (a: A) => A> = D.update
  * to combine old values with new values.
  *
  * @since 1.0.0
- * @category utils
  */
 export const updateWith: <A>(f: (x: A, y: A) => A) => Differ<A, (a: A) => A> = D.updateWith
 
@@ -250,7 +246,6 @@ export const updateWith: <A>(f: (x: A, y: A) => A) => Differ<A, (a: A) => A> = D
  * knows how to diff the product of their values.
  *
  * @since 1.0.0
- * @category utils
  */
 export const zip: {
   <Value2, Patch2>(
