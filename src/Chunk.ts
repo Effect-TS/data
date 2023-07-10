@@ -408,9 +408,9 @@ export const unsafeGet: {
  * @since 1.0.0
  */
 export const append: {
-  <A2>(a: A2): <A>(self: Chunk<A>) => Chunk<A2 | A>
-  <A, A2>(self: Chunk<A>, a: A2): Chunk<A | A2>
-} = dual(2, <A, A2>(self: Chunk<A>, a: A2): Chunk<A | A2> => appendAll(self, of(a)))
+  <A2>(a: A2): <A>(self: Chunk<A>) => NonEmptyChunk<A2 | A>
+  <A, A2>(self: Chunk<A>, a: A2): NonEmptyChunk<A | A2>
+} = dual(2, <A, A2>(self: Chunk<A>, a: A2): NonEmptyChunk<A | A2> => appendAllNonEmpty(self, of(a)))
 
 /**
  * Prepend an element to the front of a `Chunk`, creating a new `NonEmptyChunk`.

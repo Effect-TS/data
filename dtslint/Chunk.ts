@@ -2,6 +2,7 @@ import * as Chunk from '@effect/data/Chunk'
 import * as Predicate from '@effect/data/Predicate'
 
 declare const nss: Chunk.Chunk<number | string>
+declare const nonEmptynss: Chunk.NonEmptyChunk<number | string>
 
 // -------------------------------------------------------------------------------------
 // every
@@ -36,3 +37,29 @@ Chunk.partition(nss, Predicate.isString)
 
 // $ExpectType [Chunk<number>, Chunk<string>]
 nss.pipe(Chunk.partition(Predicate.isString))
+
+// -------------------------------------------------------------------------------------
+// append
+// -------------------------------------------------------------------------------------
+
+// $ExpectType NonEmptyChunk<string | number | boolean>
+Chunk.append(nss, true)
+
+// $ExpectType NonEmptyChunk<string | number | boolean>
+Chunk.append(true)(nss)
+
+// -------------------------------------------------------------------------------------
+// appendAllNonEmpty
+// -------------------------------------------------------------------------------------
+
+// $ExpectType NonEmptyChunk<string | number>
+Chunk.appendAllNonEmpty(nss, nonEmptynss)
+
+// $ExpectType NonEmptyChunk<string | number>
+Chunk.appendAllNonEmpty(nss)(nonEmptynss)
+
+// $ExpectType NonEmptyChunk<string | number>
+Chunk.appendAllNonEmpty(nonEmptynss, nss)
+
+// $ExpectType NonEmptyChunk<string | number>
+Chunk.appendAllNonEmpty(nonEmptynss)(nss)
