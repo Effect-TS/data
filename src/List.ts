@@ -91,7 +91,7 @@ export const toReadonlyArray = <A>(self: List<A>): ReadonlyArray<A> => Array.fro
  * @since 1.0.0
  */
 export const getEquivalence = <A>(isEquivalent: Equivalence.Equivalence<A>): Equivalence.Equivalence<List<A>> =>
-  Equivalence.contramap(ReadonlyArray.getEquivalence(isEquivalent), toReadonlyArray<A>)
+  Equivalence.mapInput(ReadonlyArray.getEquivalence(isEquivalent), toReadonlyArray<A>)
 
 const _equivalence = getEquivalence(Equal.equals)
 

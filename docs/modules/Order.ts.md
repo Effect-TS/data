@@ -14,7 +14,8 @@ Added in v1.0.0
 
 - [combinators](#combinators)
   - [array](#array)
-  - [contramap](#contramap)
+  - [~~contramap~~](#contramap)
+  - [mapInput](#mapinput)
   - [struct](#struct)
   - [tuple](#tuple)
 - [combining](#combining)
@@ -66,12 +67,27 @@ export declare const array: <A>(O: Order<A>) => Order<readonly A[]>
 
 Added in v1.0.0
 
-## contramap
+## ~~contramap~~
+
+Use `mapInput` instead.
 
 **Signature**
 
 ```ts
 export declare const contramap: {
+  <B, A>(f: (b: B) => A): (self: Order<A>) => Order<B>
+  <A, B>(self: Order<A>, f: (b: B) => A): Order<B>
+}
+```
+
+Added in v1.0.0
+
+## mapInput
+
+**Signature**
+
+```ts
+export declare const mapInput: {
   <B, A>(f: (b: B) => A): (self: Order<A>) => Order<B>
   <A, B>(self: Order<A>, f: (b: B) => A): Order<B>
 }

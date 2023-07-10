@@ -4,6 +4,10 @@ import { sort } from "@effect/data/ReadonlyArray"
 import * as U from "./util"
 
 describe.concurrent("Order", () => {
+  it("exports", () => {
+    expect(_.contramap).exist
+  })
+
   it("struct", () => {
     const O = _.struct({ a: _.string, b: _.string })
     U.deepStrictEqual(O({ a: "a", b: "b" }, { a: "a", b: "c" }), -1)
@@ -30,8 +34,8 @@ describe.concurrent("Order", () => {
     U.deepStrictEqual(O(["a", "b"], ["b", "a"]), -1)
   })
 
-  it("contramap", () => {
-    const O = _.contramap(_.number, (s: string) => s.length)
+  it("mapInput", () => {
+    const O = _.mapInput(_.number, (s: string) => s.length)
     U.deepStrictEqual(O("a", "b"), 0)
     U.deepStrictEqual(O("a", "bb"), -1)
     U.deepStrictEqual(O("aa", "b"), 1)
@@ -95,7 +99,7 @@ describe.concurrent("Order", () => {
     const min = _.min(
       pipe(
         _.number,
-        _.contramap((a: A) => a.a)
+        _.mapInput((a: A) => a.a)
       )
     )
     U.deepStrictEqual(min({ a: 1 }, { a: 2 }), { a: 1 })
@@ -110,7 +114,7 @@ describe.concurrent("Order", () => {
     const max = _.max(
       pipe(
         _.number,
-        _.contramap((a: A) => a.a)
+        _.mapInput((a: A) => a.a)
       )
     )
     U.deepStrictEqual(max({ a: 1 }, { a: 2 }), { a: 2 })
@@ -146,11 +150,11 @@ describe.concurrent("Order", () => {
     ]
     const sortByFst = pipe(
       _.number,
-      _.contramap((x: T) => x[0])
+      _.mapInput((x: T) => x[0])
     )
     const sortBySnd = pipe(
       _.string,
-      _.contramap((x: T) => x[1])
+      _.mapInput((x: T) => x[1])
     )
     U.deepStrictEqual(sort(_.combine(sortByFst, sortBySnd))(tuples), [
       [1, "b"],

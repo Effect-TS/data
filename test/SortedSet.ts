@@ -18,7 +18,7 @@ class Member implements Eq.Equal {
   }
 }
 
-const OrdMember: Order.Order<Member> = pipe(Str.Order, Order.contramap((member) => member.id))
+const OrdMember: Order.Order<Member> = pipe(Str.Order, Order.mapInput((member) => member.id))
 
 function makeNumericSortedSet(
   ...numbers: Array<number>

@@ -354,7 +354,7 @@ describe.concurrent("RedBlackTree", () => {
       }
     }
 
-    const ord = pipe(number.Order, Order.contramap((key: Key) => key.n))
+    const ord = pipe(number.Order, Order.mapInput((key: Key) => key.n))
 
     const tree = pipe(
       RedBlackTree.empty<Key, string>(ord),

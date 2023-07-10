@@ -113,13 +113,22 @@ export const combineAll = <A>(collection: Iterable<Equivalence<A>>): Equivalence
  * @category combinators
  * @since 1.0.0
  */
-export const contramap: {
+export const mapInput: {
   <B, A>(f: (b: B) => A): (self: Equivalence<A>) => Equivalence<B>
   <A, B>(self: Equivalence<A>, f: (b: B) => A): Equivalence<B>
 } = dual(
   2,
   <A, B>(self: Equivalence<A>, f: (b: B) => A): Equivalence<B> => make((x, y) => self(f(x), f(y)))
 )
+
+/**
+ * Use `mapInput` instead.
+ *
+ * @category combinators
+ * @since 1.0.0
+ * @deprecated
+ */
+export const contramap = mapInput
 
 /**
  * @category combining
