@@ -704,6 +704,17 @@ export const flatMapNonEmpty: {
 } = flatMap as any
 
 /**
+ * Applies the specified function to each element of the `List`.
+ *
+ * @since 1.0.0
+ * @category combinators
+ */
+export const forEach: {
+  <A, B>(f: (a: A) => B): (self: Chunk<A>) => void
+  <A, B>(self: Chunk<A>, f: (a: A) => B): void
+} = dual(2, <A, B>(self: Chunk<A>, f: (a: A) => B): void => toReadonlyArray(self).forEach(f))
+
+/**
  * Flattens a chunk of chunks into a single chunk by concatenating all chunks.
  *
  * @since 1.0.0

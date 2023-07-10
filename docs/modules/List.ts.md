@@ -148,7 +148,7 @@ Added in v1.0.0
 
 ## forEach
 
-Applies the specified function to each element of the list.
+Applies the specified function to each element of the `List`.
 
 **Signature**
 

@@ -662,7 +662,7 @@ export const flatMapNonEmpty: {
 } = flatMap as any
 
 /**
- * Applies the specified function to each element of the list.
+ * Applies the specified function to each element of the `List`.
  *
  * @since 1.0.0
  * @category combinators

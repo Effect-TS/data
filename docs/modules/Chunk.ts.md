@@ -12,6 +12,8 @@ Added in v1.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
+- [combinators](#combinators)
+  - [forEach](#foreach)
 - [concatenating](#concatenating)
   - [append](#append)
   - [appendAll](#appendall)
@@ -110,6 +112,23 @@ Added in v1.0.0
   - [take](#take)
 
 ---
+
+# combinators
+
+## forEach
+
+Applies the specified function to each element of the `List`.
+
+**Signature**
+
+```ts
+export declare const forEach: {
+  <A, B>(f: (a: A) => B): (self: Chunk<A>) => void
+  <A, B>(self: Chunk<A>, f: (a: A) => B): void
+}
+```
+
+Added in v1.0.0
 
 # concatenating
 

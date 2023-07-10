@@ -814,4 +814,10 @@ describe.concurrent("Chunk", () => {
     expect(Chunk.some(Chunk.make(-1, -2, 3), isPositive)).toEqual(true)
     expect(Chunk.some(Chunk.make(-1, -2, -3), isPositive)).toEqual(false)
   })
+
+  it("forEach", () => {
+    const as: Array<number> = []
+    Chunk.forEach(Chunk.make(1, 2, 3, 4), (n) => as.push(n))
+    expect(as).toEqual([1, 2, 3, 4])
+  })
 })
