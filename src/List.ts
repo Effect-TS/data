@@ -63,6 +63,7 @@ export type TypeId = typeof TypeId
  * @category models
  */
 export interface Nil<A> extends Iterable<A>, Equal.Equal, Pipeable {
+  readonly _id: TypeId
   readonly _tag: "Nil"
 }
 
@@ -71,13 +72,10 @@ export interface Nil<A> extends Iterable<A>, Equal.Equal, Pipeable {
  * @category models
  */
 export interface Cons<A> extends Iterable<A>, Equal.Equal, Pipeable {
+  readonly _id: TypeId
   readonly _tag: "Cons"
   readonly head: A
   readonly tail: List<A>
-}
-
-const listVariance = {
-  _A: (_: never) => _
 }
 
 /**
@@ -99,7 +97,7 @@ const _equivalence = getEquivalence(Equal.equals)
 
 class ConsImpl<A> implements Cons<A> {
   readonly _tag = "Cons"
-  readonly [TypeId] = listVariance
+  readonly _id: typeof TypeId = TypeId
   constructor(readonly head: A, public tail: List<A>) {}
   toString() {
     return `List.Cons(${toReadonlyArray(this).map(String).join(", ")})`
@@ -153,7 +151,7 @@ class ConsImpl<A> implements Cons<A> {
 
 class NilImpl<A> implements Nil<A> {
   readonly _tag = "Nil"
-  readonly [TypeId] = listVariance
+  readonly _id: typeof TypeId = TypeId
   toString() {
     return `List.Nil`
   }
@@ -192,7 +190,7 @@ class NilImpl<A> implements Nil<A> {
 export const isList: {
   <A>(u: Iterable<A>): u is List<A>
   (u: unknown): u is List<unknown>
-} = (u: unknown): u is List<unknown> => isObject(u) && TypeId in u
+} = (u: unknown): u is List<unknown> => isObject(u) && "_id" in u && u["_id"] === TypeId
 
 /**
  * Returns `true` if the specified value is a `List.Nil<A>`, `false` otherwise.

@@ -29,6 +29,13 @@ describe.concurrent("List", () => {
     expect(Array.from(List.make(0, 1, 2, 3))).toEqual([0, 1, 2, 3])
   })
 
+  it("isList", () => {
+    expect(List.isList(List.empty())).toEqual(true)
+    expect(List.isList(List.make(1))).toEqual(true)
+    expect(List.isList(null)).toEqual(false)
+    expect(List.isList({})).toEqual(false)
+  })
+
   it("append", () => {
     expect(List.append(List.make(1, 2), 3)).toEqual(List.make(1, 2, 3))
   })

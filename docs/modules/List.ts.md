@@ -599,6 +599,7 @@ Added in v1.0.0
 
 ```ts
 export interface Cons<A> extends Iterable<A>, Equal.Equal, Pipeable {
+  readonly _id: TypeId
   readonly _tag: 'Cons'
   readonly head: A
   readonly tail: List<A>
@@ -629,6 +630,7 @@ Added in v1.0.0
 
 ```ts
 export interface Nil<A> extends Iterable<A>, Equal.Equal, Pipeable {
+  readonly _id: TypeId
   readonly _tag: 'Nil'
 }
 ```
