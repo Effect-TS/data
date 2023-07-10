@@ -260,7 +260,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface SortedSet<A> extends Iterable<A>, Equal.Equal, Pipeable<SortedSet<A>> {
+export interface SortedSet<A> extends Iterable<A>, Equal.Equal, Pipeable {
   readonly _id: TypeId
   /** @internal */
   readonly keyTree: RBT.RedBlackTree<A, boolean>

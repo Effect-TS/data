@@ -64,7 +64,7 @@ export type List<A> = Cons<A> | Nil<A>
  * @since 1.0.0
  * @category models
  */
-export interface Cons<A> extends List.Variance<A>, Iterable<A>, Equal.Equal, Pipeable<List<A>> {
+export interface Cons<A> extends List.Variance<A>, Iterable<A>, Equal.Equal, Pipeable {
   readonly _tag: "Cons"
   readonly head: A
   readonly tail: List<A>
@@ -74,7 +74,7 @@ export interface Cons<A> extends List.Variance<A>, Iterable<A>, Equal.Equal, Pip
  * @since 1.0.0
  * @category models
  */
-export interface Nil<A> extends List.Variance<A>, Iterable<A>, Equal.Equal, Pipeable<List<A>> {
+export interface Nil<A> extends List.Variance<A>, Iterable<A>, Equal.Equal, Pipeable {
   readonly _tag: "Nil"
 }
 

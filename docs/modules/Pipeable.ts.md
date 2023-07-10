@@ -14,7 +14,6 @@ Added in v1.0.0
 
 - [models](#models)
   - [Pipeable (interface)](#pipeable-interface)
-  - [PipeableOverride (type alias)](#pipeableoverride-type-alias)
 - [utils](#utils)
   - [pipeArguments](#pipearguments)
 
@@ -27,13 +26,21 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Pipeable<A> {
-  pipe<B>(ab: (_: A) => B): B
-  pipe<B, C>(ab: (_: A) => B, bc: (_: B) => C): C
-  pipe<B, C, D>(ab: (_: A) => B, bc: (_: B) => C, cd: (_: C) => D): D
-  pipe<B, C, D, E>(ab: (_: A) => B, bc: (_: B) => C, cd: (_: C) => D, de: (_: D) => E): E
-  pipe<B, C, D, E, F>(ab: (_: A) => B, bc: (_: B) => C, cd: (_: C) => D, de: (_: D) => E, ef: (_: E) => F): F
-  pipe<B, C, D, E, F, G>(
+export interface Pipeable {
+  pipe<A, B>(this: A, ab: (_: A) => B): B
+  pipe<A, B, C>(this: A, ab: (_: A) => B, bc: (_: B) => C): C
+  pipe<A, B, C, D>(this: A, ab: (_: A) => B, bc: (_: B) => C, cd: (_: C) => D): D
+  pipe<A, B, C, D, E>(this: A, ab: (_: A) => B, bc: (_: B) => C, cd: (_: C) => D, de: (_: D) => E): E
+  pipe<A, B, C, D, E, F>(
+    this: A,
+    ab: (_: A) => B,
+    bc: (_: B) => C,
+    cd: (_: C) => D,
+    de: (_: D) => E,
+    ef: (_: E) => F
+  ): F
+  pipe<A, B, C, D, E, F, G>(
+    this: A,
     ab: (_: A) => B,
     bc: (_: B) => C,
     cd: (_: C) => D,
@@ -41,7 +48,8 @@ export interface Pipeable<A> {
     ef: (_: E) => F,
     fg: (_: F) => G
   ): G
-  pipe<B, C, D, E, F, G, H>(
+  pipe<A, B, C, D, E, F, G, H>(
+    this: A,
     ab: (_: A) => B,
     bc: (_: B) => C,
     cd: (_: C) => D,
@@ -50,7 +58,8 @@ export interface Pipeable<A> {
     fg: (_: F) => G,
     gh: (_: G) => H
   ): H
-  pipe<B, C, D, E, F, G, H, I>(
+  pipe<A, B, C, D, E, F, G, H, I>(
+    this: A,
     ab: (_: A) => B,
     bc: (_: B) => C,
     cd: (_: C) => D,
@@ -60,7 +69,8 @@ export interface Pipeable<A> {
     gh: (_: G) => H,
     hi: (_: H) => I
   ): I
-  pipe<B, C, D, E, F, G, H, I, J>(
+  pipe<A, B, C, D, E, F, G, H, I, J>(
+    this: A,
     ab: (_: A) => B,
     bc: (_: B) => C,
     cd: (_: C) => D,
@@ -71,7 +81,8 @@ export interface Pipeable<A> {
     hi: (_: H) => I,
     ij: (_: I) => J
   ): J
-  pipe<B, C, D, E, F, G, H, I, J, K>(
+  pipe<A, B, C, D, E, F, G, H, I, J, K>(
+    this: A,
     ab: (_: A) => B,
     bc: (_: B) => C,
     cd: (_: C) => D,
@@ -83,7 +94,8 @@ export interface Pipeable<A> {
     ij: (_: I) => J,
     jk: (_: J) => K
   ): K
-  pipe<B, C, D, E, F, G, H, I, J, K, L>(
+  pipe<A, B, C, D, E, F, G, H, I, J, K, L>(
+    this: A,
     ab: (_: A) => B,
     bc: (_: B) => C,
     cd: (_: C) => D,
@@ -96,7 +108,8 @@ export interface Pipeable<A> {
     jk: (_: J) => K,
     kl: (_: K) => L
   ): L
-  pipe<B, C, D, E, F, G, H, I, J, K, L, M>(
+  pipe<A, B, C, D, E, F, G, H, I, J, K, L, M>(
+    this: A,
     ab: (_: A) => B,
     bc: (_: B) => C,
     cd: (_: C) => D,
@@ -110,7 +123,8 @@ export interface Pipeable<A> {
     kl: (_: K) => L,
     lm: (_: L) => M
   ): M
-  pipe<B, C, D, E, F, G, H, I, J, K, L, M, N>(
+  pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N>(
+    this: A,
     ab: (_: A) => B,
     bc: (_: B) => C,
     cd: (_: C) => D,
@@ -125,7 +139,8 @@ export interface Pipeable<A> {
     lm: (_: L) => M,
     mn: (_: M) => N
   ): N
-  pipe<B, C, D, E, F, G, H, I, J, K, L, M, N, O>(
+  pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>(
+    this: A,
     ab: (_: A) => B,
     bc: (_: B) => C,
     cd: (_: C) => D,
@@ -141,7 +156,8 @@ export interface Pipeable<A> {
     mn: (_: M) => N,
     no: (_: N) => O
   ): O
-  pipe<B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>(
+  pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>(
+    this: A,
     ab: (_: A) => B,
     bc: (_: B) => C,
     cd: (_: C) => D,
@@ -158,7 +174,8 @@ export interface Pipeable<A> {
     no: (_: N) => O,
     op: (_: O) => P
   ): P
-  pipe<B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>(
+  pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q>(
+    this: A,
     ab: (_: A) => B,
     bc: (_: B) => C,
     cd: (_: C) => D,
@@ -176,7 +193,8 @@ export interface Pipeable<A> {
     op: (_: O) => P,
     pq: (_: P) => Q
   ): Q
-  pipe<B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>(
+  pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>(
+    this: A,
     ab: (_: A) => B,
     bc: (_: B) => C,
     cd: (_: C) => D,
@@ -195,7 +213,8 @@ export interface Pipeable<A> {
     pq: (_: P) => Q,
     qr: (_: Q) => R
   ): R
-  pipe<B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>(
+  pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>(
+    this: A,
     ab: (_: A) => B,
     bc: (_: B) => C,
     cd: (_: C) => D,
@@ -215,7 +234,8 @@ export interface Pipeable<A> {
     qr: (_: Q) => R,
     rs: (_: R) => S
   ): S
-  pipe<B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>(
+  pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T>(
+    this: A,
     ab: (_: A) => B,
     bc: (_: B) => C,
     cd: (_: C) => D,
@@ -236,7 +256,8 @@ export interface Pipeable<A> {
     rs: (_: R) => S,
     st: (_: S) => T
   ): T
-  pipe<B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>(
+  pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>(
+    this: A,
     ab: (_: A) => B,
     bc: (_: B) => C,
     cd: (_: C) => D,
@@ -258,7 +279,8 @@ export interface Pipeable<A> {
     st: (_: S) => T,
     tu: (_: T) => U
   ): U
-  pipe<B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>(
+  pipe<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U>(
+    this: A,
     ab: (_: A) => B,
     bc: (_: B) => C,
     cd: (_: C) => D,
@@ -281,16 +303,6 @@ export interface Pipeable<A> {
     tu: (_: T) => U
   ): U
 }
-```
-
-Added in v1.0.0
-
-## PipeableOverride (type alias)
-
-**Signature**
-
-```ts
-export type PipeableOverride<A, B> = Omit<A, keyof Pipeable<B>> & Pipeable<B>
 ```
 
 Added in v1.0.0

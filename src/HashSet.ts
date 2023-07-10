@@ -19,7 +19,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface HashSet<A> extends Iterable<A>, Equal, Pipeable<HashSet<A>> {
+export interface HashSet<A> extends Iterable<A>, Equal, Pipeable {
   readonly _id: TypeId
 }
 

@@ -40,7 +40,7 @@ export type OptionTypeId = typeof OptionTypeId
  * @category models
  * @since 1.0.0
  */
-export interface None<A> extends Data.Case, Pipeable<Option<A>> {
+export interface None<A> extends Data.Case, Pipeable {
   readonly _tag: "None"
   readonly [OptionTypeId]: {
     readonly _A: (_: never) => A
@@ -54,7 +54,7 @@ export interface None<A> extends Data.Case, Pipeable<Option<A>> {
  * @category models
  * @since 1.0.0
  */
-export interface Some<A> extends Data.Case, Pipeable<Option<A>> {
+export interface Some<A> extends Data.Case, Pipeable {
   readonly _tag: "Some"
   readonly value: A
   readonly [OptionTypeId]: {

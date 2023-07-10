@@ -319,10 +319,7 @@ A Red-Black Tree.
 **Signature**
 
 ```ts
-export interface RedBlackTree<Key, Value>
-  extends Iterable<readonly [Key, Value]>,
-    Equal,
-    Pipeable<RedBlackTree<Key, Value>> {
+export interface RedBlackTree<Key, Value> extends Iterable<readonly [Key, Value]>, Equal, Pipeable {
   readonly _id: TypeId
 }
 ```

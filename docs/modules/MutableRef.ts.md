@@ -167,7 +167,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface MutableRef<T> extends Pipeable<MutableRef<T>> {
+export interface MutableRef<T> extends Pipeable {
   readonly _id: TypeId
   readonly _T: (_: never) => T
 

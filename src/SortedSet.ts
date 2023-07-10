@@ -24,14 +24,14 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface SortedSet<A> extends Iterable<A>, Equal.Equal, Pipeable<SortedSet<A>> {
+export interface SortedSet<A> extends Iterable<A>, Equal.Equal, Pipeable {
   readonly _id: TypeId
   /** @internal */
   readonly keyTree: RBT.RedBlackTree<A, boolean>
 }
 
 /** @internal */
-class SortedSetImpl<A> implements Iterable<A>, Equal.Equal, Pipeable<SortedSet<A>> {
+class SortedSetImpl<A> implements Iterable<A>, Equal.Equal, Pipeable {
   readonly _id: TypeId = TypeId
 
   constructor(readonly keyTree: RBT.RedBlackTree<A, boolean>) {}

@@ -231,7 +231,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Context<Services> extends Equal, Pipeable<Context<Services>> {
+export interface Context<Services> extends Equal, Pipeable {
   readonly _id: TypeId
   readonly _S: (_: Services) => unknown
   /** @internal */
@@ -246,7 +246,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Tag<Identifier, Service> extends Pipeable<Tag<Identifier, Service>> {
+export interface Tag<Identifier, Service> extends Pipeable {
   readonly _tag: 'Tag'
   readonly [TagTypeId]: { readonly _S: (_: Service) => Service; readonly _I: (_: Identifier) => Identifier }
   of(self: Service): Service
