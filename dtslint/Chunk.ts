@@ -63,3 +63,29 @@ Chunk.appendAllNonEmpty(nonEmptynss, nss)
 
 // $ExpectType NonEmptyChunk<string | number>
 Chunk.appendAllNonEmpty(nonEmptynss)(nss)
+
+// -------------------------------------------------------------------------------------
+// prepend
+// -------------------------------------------------------------------------------------
+
+// $ExpectType NonEmptyChunk<string | number | boolean>
+Chunk.prepend(nss, true)
+
+// $ExpectType NonEmptyChunk<string | number | boolean>
+Chunk.prepend(true)(nss)
+
+// -------------------------------------------------------------------------------------
+// prependAllNonEmpty
+// -------------------------------------------------------------------------------------
+
+// $ExpectType NonEmptyChunk<string | number>
+Chunk.prependAllNonEmpty(nss, nonEmptynss)
+
+// $ExpectType NonEmptyChunk<string | number>
+Chunk.prependAllNonEmpty(nss)(nonEmptynss)
+
+// $ExpectType NonEmptyChunk<string | number>
+Chunk.prependAllNonEmpty(nonEmptynss, nss)
+
+// $ExpectType NonEmptyChunk<string | number>
+Chunk.prependAllNonEmpty(nonEmptynss)(nss)

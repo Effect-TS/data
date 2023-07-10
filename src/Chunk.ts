@@ -419,9 +419,9 @@ export const append: {
  * @since 1.0.0
  */
 export const prepend: {
-  <B>(elem: B): <A>(self: Chunk<A>) => Chunk<B | A>
-  <A, B>(self: Chunk<A>, elem: B): Chunk<A | B>
-} = dual(2, <A, B>(self: Chunk<A>, elem: B): Chunk<A | B> => appendAll(of(elem), self))
+  <B>(elem: B): <A>(self: Chunk<A>) => NonEmptyChunk<B | A>
+  <A, B>(self: Chunk<A>, elem: B): NonEmptyChunk<A | B>
+} = dual(2, <A, B>(self: Chunk<A>, elem: B): NonEmptyChunk<A | B> => appendAllNonEmpty(of(elem), self))
 
 /**
  * Takes the first up to `n` elements from the chunk

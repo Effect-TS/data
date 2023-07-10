@@ -151,3 +151,29 @@ RA.appendAllNonEmpty(nonEmptynss, nss)
 
 // $ExpectType [string | number, ...(string | number)[]]
 RA.appendAllNonEmpty(nonEmptynss)(nss)
+
+// -------------------------------------------------------------------------------------
+// prepend
+// -------------------------------------------------------------------------------------
+
+// $ExpectType [string | number | boolean, ...(string | number | boolean)[]]
+RA.prepend(nss, true)
+
+// $ExpectType [string | number | boolean, ...(string | number | boolean)[]]
+RA.prepend(true)(nss)
+
+// -------------------------------------------------------------------------------------
+// prependAllNonEmpty
+// -------------------------------------------------------------------------------------
+
+// $ExpectType [string | number, ...(string | number)[]]
+RA.prependAllNonEmpty(nss, nonEmptynss)
+
+// $ExpectType [string | number, ...(string | number)[]]
+RA.prependAllNonEmpty(nss)(nonEmptynss)
+
+// $ExpectType [string | number, ...(string | number)[]]
+RA.prependAllNonEmpty(nonEmptynss, nss)
+
+// $ExpectType [string | number, ...(string | number)[]]
+RA.prependAllNonEmpty(nonEmptynss)(nss)

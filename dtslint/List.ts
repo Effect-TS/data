@@ -63,3 +63,29 @@ List.appendAllNonEmpty(nonEmptynss, nss)
 
 // $ExpectType Cons<string | number>
 List.appendAllNonEmpty(nonEmptynss)(nss)
+
+// -------------------------------------------------------------------------------------
+// prepend
+// -------------------------------------------------------------------------------------
+
+// $ExpectType Cons<string | number | boolean>
+List.prepend(nss, true)
+
+// $ExpectType Cons<string | number | boolean>
+List.prepend(true)(nss)
+
+// -------------------------------------------------------------------------------------
+// prependAllNonEmpty
+// -------------------------------------------------------------------------------------
+
+// $ExpectType Cons<string | number>
+List.prependAllNonEmpty(nss, nonEmptynss)
+
+// $ExpectType Cons<string | number>
+List.prependAllNonEmpty(nss)(nonEmptynss)
+
+// $ExpectType Cons<string | number>
+List.prependAllNonEmpty(nonEmptynss, nss)
+
+// $ExpectType Cons<string | number>
+List.prependAllNonEmpty(nonEmptynss)(nss)
