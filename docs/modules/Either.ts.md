@@ -26,8 +26,9 @@ Added in v1.0.0
   - [isLeft](#isleft)
   - [isRight](#isright)
 - [mapping](#mapping)
-  - [map](#map)
+  - [~~map~~](#map)
   - [mapBoth](#mapboth)
+  - [mapRight](#mapright)
 - [models](#models)
   - [Either (type alias)](#either-type-alias)
   - [EitherUnify (interface)](#eitherunify-interface)
@@ -37,8 +38,8 @@ Added in v1.0.0
 - [pattern matching](#pattern-matching)
   - [match](#match)
 - [symbols](#symbols)
-  - [EitherTypeId](#eithertypeid)
-  - [EitherTypeId (type alias)](#eithertypeid-type-alias)
+  - [TypeId](#typeid)
+  - [TypeId (type alias)](#typeid-type-alias)
 - [type lambdas](#type-lambdas)
   - [EitherTypeLambda (interface)](#eithertypelambda-interface)
 - [utils](#utils)
@@ -216,9 +217,9 @@ Added in v1.0.0
 
 # mapping
 
-## map
+## ~~map~~
 
-Maps the `Right` side of an `Either` value to a new `Either` value.
+Use `mapRight` instead.
 
 **Signature**
 
@@ -244,6 +245,21 @@ export declare const mapBoth: {
     self: Either<E1, A>,
     options: { readonly onLeft: (e: E1) => E2; readonly onRight: (a: A) => B }
   ): Either<E2, B>
+}
+```
+
+Added in v1.0.0
+
+## mapRight
+
+Maps the `Right` side of an `Either` value to a new `Either` value.
+
+**Signature**
+
+```ts
+export declare const mapRight: {
+  <A, B>(f: (a: A) => B): <E>(self: Either<E, A>) => Either<E, B>
+  <E, A, B>(self: Either<E, A>, f: (a: A) => B): Either<E, B>
 }
 ```
 
@@ -290,7 +306,8 @@ Added in v1.0.0
 ```ts
 export interface Left<E, A> extends Data.Case, Pipeable {
   readonly _tag: 'Left'
-  readonly [EitherTypeId]: {
+  readonly _id: TypeId
+  readonly [TypeId]: {
     readonly _A: (_: never) => A
     readonly _E: (_: never) => E
   }
@@ -310,8 +327,9 @@ Added in v1.0.0
 ```ts
 export interface Right<E, A> extends Data.Case, Pipeable {
   readonly _tag: 'Right'
+  readonly _id: TypeId
   get right(): A
-  readonly [EitherTypeId]: {
+  readonly [TypeId]: {
     readonly _A: (_: never) => A
     readonly _E: (_: never) => E
   }
@@ -362,22 +380,22 @@ Added in v1.0.0
 
 # symbols
 
-## EitherTypeId
+## TypeId
 
 **Signature**
 
 ```ts
-export declare const EitherTypeId: typeof EitherTypeId
+export declare const TypeId: typeof TypeId
 ```
 
 Added in v1.0.0
 
-## EitherTypeId (type alias)
+## TypeId (type alias)
 
 **Signature**
 
 ```ts
-export type EitherTypeId = typeof EitherTypeId
+export type TypeId = typeof TypeId
 ```
 
 Added in v1.0.0
