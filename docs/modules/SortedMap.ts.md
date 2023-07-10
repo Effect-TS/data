@@ -263,7 +263,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface SortedMap<K, V> extends Iterable<readonly [K, V]>, Equal.Equal, Pipeable<SortedMap<K, V>> {
+export interface SortedMap<K, V> extends Iterable<readonly [K, V]>, Equal.Equal, Pipeable {
   readonly _id: TypeId
   /** @internal */
   readonly tree: RBT.RedBlackTree<K, V>

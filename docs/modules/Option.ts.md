@@ -1131,7 +1131,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface None<A> extends Data.Case, Pipeable<Option<A>> {
+export interface None<A> extends Data.Case, Pipeable {
   readonly _tag: 'None'
   readonly [OptionTypeId]: {
     readonly _A: (_: never) => A
@@ -1181,7 +1181,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Some<A> extends Data.Case, Pipeable<Option<A>> {
+export interface Some<A> extends Data.Case, Pipeable {
   readonly _tag: 'Some'
   readonly value: A
   readonly [OptionTypeId]: {

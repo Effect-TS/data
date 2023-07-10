@@ -26,7 +26,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface Duration extends Equal.Equal, Pipeable<Duration> {
+export interface Duration extends Equal.Equal, Pipeable {
   readonly _id: TypeId
   readonly value: DurationValue
 }

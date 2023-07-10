@@ -285,7 +285,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Left<E, A> extends Data.Case, Pipeable<Either<E, A>> {
+export interface Left<E, A> extends Data.Case, Pipeable {
   readonly _tag: 'Left'
   readonly [EitherTypeId]: {
     readonly _A: (_: never) => A
@@ -305,7 +305,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Right<E, A> extends Data.Case, Pipeable<Either<E, A>> {
+export interface Right<E, A> extends Data.Case, Pipeable {
   readonly _tag: 'Right'
   get right(): A
   readonly [EitherTypeId]: {

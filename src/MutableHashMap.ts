@@ -20,7 +20,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, Pipeable<MutableHashMap<K, V>> {
+export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, Pipeable {
   readonly _id: TypeId
 
   /** @internal */

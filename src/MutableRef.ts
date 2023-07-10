@@ -18,7 +18,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface MutableRef<T> extends Pipeable<MutableRef<T>> {
+export interface MutableRef<T> extends Pipeable {
   readonly _id: TypeId
   readonly _T: (_: never) => T
 

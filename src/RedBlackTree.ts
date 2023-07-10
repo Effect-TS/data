@@ -29,9 +29,7 @@ export const Direction = RBTI.Direction
  * @since 1.0.0
  * @category models
  */
-export interface RedBlackTree<Key, Value>
-  extends Iterable<readonly [Key, Value]>, Equal, Pipeable<RedBlackTree<Key, Value>>
-{
+export interface RedBlackTree<Key, Value> extends Iterable<readonly [Key, Value]>, Equal, Pipeable {
   readonly _id: TypeId
 }
 

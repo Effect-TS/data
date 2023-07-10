@@ -119,7 +119,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface MutableQueue<A> extends Iterable<A>, Pipeable<MutableQueue<A>> {
+export interface MutableQueue<A> extends Iterable<A>, Pipeable {
   readonly _id: TypeId
 
   /** @internal */

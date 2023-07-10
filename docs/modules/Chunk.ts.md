@@ -969,7 +969,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Chunk<A> extends Iterable<A>, Equal.Equal, Pipeable<Chunk<A>> {
+export interface Chunk<A> extends Iterable<A>, Equal.Equal, Pipeable {
   readonly _id: TypeId
 
   readonly length: number

@@ -17,7 +17,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category model
  */
-export interface MutableList<A> extends Iterable<A>, Pipeable<MutableList<A>> {
+export interface MutableList<A> extends Iterable<A>, Pipeable {
   readonly _id: TypeId
 
   /** @internal */

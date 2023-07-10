@@ -25,7 +25,7 @@ export const EmptyMutableQueue = Symbol.for("@effect/data/mutable/MutableQueue/E
  * @since 1.0.0
  * @category model
  */
-export interface MutableQueue<A> extends Iterable<A>, Pipeable<MutableQueue<A>> {
+export interface MutableQueue<A> extends Iterable<A>, Pipeable {
   readonly _id: TypeId
 
   /** @internal */
