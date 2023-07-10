@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.14.0
+
+### Minor Changes
+
+- [#407](https://github.com/Effect-TS/data/pull/407) [`d0397ad`](https://github.com/Effect-TS/data/commit/d0397ad0eaadebb512b4c45221b673ebe9bd5429) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Fix Pipeable Trait so that it doesn't prevent extensions
+
 ## 0.13.6
 
 ### Patch Changes
