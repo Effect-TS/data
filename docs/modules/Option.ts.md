@@ -1133,6 +1133,7 @@ Added in v1.0.0
 ```ts
 export interface None<A> extends Data.Case, Pipeable {
   readonly _tag: 'None'
+  readonly _id: TypeId
   readonly [TypeId]: {
     readonly _A: (_: never) => A
   }
@@ -1183,6 +1184,7 @@ Added in v1.0.0
 ```ts
 export interface Some<A> extends Data.Case, Pipeable {
   readonly _tag: 'Some'
+  readonly _id: TypeId
   readonly value: A
   readonly [TypeId]: {
     readonly _A: (_: never) => A
