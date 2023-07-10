@@ -103,10 +103,10 @@ const listVariance = {
 }
 
 /**
- * Converts the specified list to a `ReadonlyArray`.
+ * Converts the specified `List` to a `ReadonlyArray`.
  *
- * @since 1.0.0
  * @category conversions
+ * @since 1.0.0
  */
 export const toReadonlyArray = <A>(self: List<A>): ReadonlyArray<A> => Array.from(self)
 

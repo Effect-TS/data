@@ -294,7 +294,7 @@ Added in v1.0.0
 
 ## toReadonlyArray
 
-Converts to a `ReadonlyArray<A>`
+Converts the specified `Chunk` to a `ReadonlyArray`.
 
 **Signature**
 

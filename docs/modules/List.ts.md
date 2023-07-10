@@ -419,7 +419,7 @@ Added in v1.0.0
 
 ## toReadonlyArray
 
-Converts the specified list to a `ReadonlyArray`.
+Converts the specified `List` to a `ReadonlyArray`.
 
 **Signature**
 
