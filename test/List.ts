@@ -68,11 +68,20 @@ describe.concurrent("List", () => {
   })
 
   it("flatMap", () => {
+    expect(List.flatMap(List.empty(), (n) => List.make(n - 1, n + 1))).toEqual(
+      List.empty()
+    )
     expect(List.flatMap(List.make(1, 2, 3, 4), (n) => List.make(n - 1, n + 1))).toEqual(
       List.make(0, 2, 1, 3, 2, 4, 3, 5)
     )
     expect(List.flatMap(List.make(1, 2, 3, 4), () => List.empty())).toEqual(
       List.empty()
+    )
+  })
+
+  it("flatMapNonEmpty", () => {
+    expect(List.flatMapNonEmpty(List.make(1, 2, 3, 4), (n) => List.make(n - 1, n + 1))).toEqual(
+      List.make(0, 2, 1, 3, 2, 4, 3, 5)
     )
   })
 

@@ -623,7 +623,7 @@ export const findFirst: {
  * Flat maps a list using the specified function.
  *
  * @since 1.0.0
- * @category combinators
+ * @category sequencing
  */
 export const flatMap: {
   <A, B>(f: (a: A) => List<B>): (self: List<A>) => List<B>
@@ -651,6 +651,15 @@ export const flatMap: {
   }
   return head
 })
+
+/**
+ * @category sequencing
+ * @since 1.0.0
+ */
+export const flatMapNonEmpty: {
+  <A, B>(f: (a: A, i: number) => Cons<B>): (self: Cons<A>) => Cons<B>
+  <A, B>(self: Cons<A>, f: (a: A, i: number) => Cons<B>): Cons<B>
+} = flatMap as any
 
 /**
  * Applies the specified function to each element of the list.

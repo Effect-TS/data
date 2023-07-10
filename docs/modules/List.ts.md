@@ -26,7 +26,6 @@ Added in v1.0.0
   - [drop](#drop)
   - [filter](#filter)
   - [filterMap](#filtermap)
-  - [flatMap](#flatmap)
   - [forEach](#foreach)
   - [map](#map)
   - [partition](#partition)
@@ -74,6 +73,9 @@ Added in v1.0.0
   - [isCons](#iscons)
   - [isList](#islist)
   - [isNil](#isnil)
+- [sequencing](#sequencing)
+  - [flatMap](#flatmap)
+  - [flatMapNonEmpty](#flatmapnonempty)
 - [symbol](#symbol)
   - [TypeId](#typeid)
   - [TypeId (type alias)](#typeid-type-alias)
@@ -139,21 +141,6 @@ function not being defined for some elements.
 export declare const filterMap: {
   <A, B>(f: (a: A) => Option.Option<B>): (self: List<A>) => List<B>
   <A, B>(self: List<A>, f: (a: A) => Option.Option<B>): List<B>
-}
-```
-
-Added in v1.0.0
-
-## flatMap
-
-Flat maps a list using the specified function.
-
-**Signature**
-
-```ts
-export declare const flatMap: {
-  <A, B>(f: (a: A) => List<B>): (self: List<A>) => List<B>
-  <A, B>(self: List<A>, f: (a: A) => List<B>): List<B>
 }
 ```
 
@@ -705,6 +692,36 @@ Returns `true` if the specified value is a `List.Nil<A>`, `false` otherwise.
 
 ```ts
 export declare const isNil: <A>(self: List<A>) => self is Nil<A>
+```
+
+Added in v1.0.0
+
+# sequencing
+
+## flatMap
+
+Flat maps a list using the specified function.
+
+**Signature**
+
+```ts
+export declare const flatMap: {
+  <A, B>(f: (a: A) => List<B>): (self: List<A>) => List<B>
+  <A, B>(self: List<A>, f: (a: A) => List<B>): List<B>
+}
+```
+
+Added in v1.0.0
+
+## flatMapNonEmpty
+
+**Signature**
+
+```ts
+export declare const flatMapNonEmpty: {
+  <A, B>(f: (a: A, i: number) => Cons<B>): (self: Cons<A>) => Cons<B>
+  <A, B>(self: Cons<A>, f: (a: A, i: number) => Cons<B>): Cons<B>
+}
 ```
 
 Added in v1.0.0
