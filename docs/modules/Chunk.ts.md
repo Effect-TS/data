@@ -12,6 +12,8 @@ Added in v1.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
+- [combinators](#combinators)
+  - [forEach](#foreach)
 - [concatenating](#concatenating)
   - [append](#append)
   - [appendAll](#appendall)
@@ -111,6 +113,23 @@ Added in v1.0.0
 
 ---
 
+# combinators
+
+## forEach
+
+Applies the specified function to each element of the `List`.
+
+**Signature**
+
+```ts
+export declare const forEach: {
+  <A, B>(f: (a: A) => B): (self: Chunk<A>) => void
+  <A, B>(self: Chunk<A>, f: (a: A) => B): void
+}
+```
+
+Added in v1.0.0
+
 # concatenating
 
 ## append
@@ -121,8 +140,8 @@ Appends the specified element to the end of the `Chunk`.
 
 ```ts
 export declare const append: {
-  <A2>(a: A2): <A>(self: Chunk<A>) => Chunk<A2 | A>
-  <A, A2>(self: Chunk<A>, a: A2): Chunk<A | A2>
+  <A2>(a: A2): <A>(self: Chunk<A>) => NonEmptyChunk<A2 | A>
+  <A, A2>(self: Chunk<A>, a: A2): NonEmptyChunk<A | A2>
 }
 ```
 
@@ -166,8 +185,8 @@ Prepend an element to the front of a `Chunk`, creating a new `NonEmptyChunk`.
 
 ```ts
 export declare const prepend: {
-  <B>(elem: B): <A>(self: Chunk<A>) => Chunk<B | A>
-  <A, B>(self: Chunk<A>, elem: B): Chunk<A | B>
+  <B>(elem: B): <A>(self: Chunk<A>) => NonEmptyChunk<B | A>
+  <A, B>(self: Chunk<A>, elem: B): NonEmptyChunk<A | B>
 }
 ```
 

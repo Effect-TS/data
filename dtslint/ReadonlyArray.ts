@@ -8,6 +8,7 @@ declare const nens: RA.NonEmptyArray<number>
 declare const rns: ReadonlyArray<number>
 declare const ns: Array<number>
 declare const nss: Array<number | string>
+declare const nonEmptynss: RA.NonEmptyReadonlyArray<number | string>
 
 // -------------------------------------------------------------------------------------
 // isEmptyReadonlyArray
@@ -124,3 +125,55 @@ if (RA.every(nss, Predicate.isString)) {
 if (RA.every(Predicate.isString)(nss)) {
   nss // $ExpectType (string | number)[] & readonly string[]
 }
+
+// -------------------------------------------------------------------------------------
+// append
+// -------------------------------------------------------------------------------------
+
+// $ExpectType [string | number | boolean, ...(string | number | boolean)[]]
+RA.append(nss, true)
+
+// $ExpectType [string | number | boolean, ...(string | number | boolean)[]]
+RA.append(true)(nss)
+
+// -------------------------------------------------------------------------------------
+// appendAllNonEmpty
+// -------------------------------------------------------------------------------------
+
+// $ExpectType [string | number, ...(string | number)[]]
+RA.appendAllNonEmpty(nss, nonEmptynss)
+
+// $ExpectType [string | number, ...(string | number)[]]
+RA.appendAllNonEmpty(nss)(nonEmptynss)
+
+// $ExpectType [string | number, ...(string | number)[]]
+RA.appendAllNonEmpty(nonEmptynss, nss)
+
+// $ExpectType [string | number, ...(string | number)[]]
+RA.appendAllNonEmpty(nonEmptynss)(nss)
+
+// -------------------------------------------------------------------------------------
+// prepend
+// -------------------------------------------------------------------------------------
+
+// $ExpectType [string | number | boolean, ...(string | number | boolean)[]]
+RA.prepend(nss, true)
+
+// $ExpectType [string | number | boolean, ...(string | number | boolean)[]]
+RA.prepend(true)(nss)
+
+// -------------------------------------------------------------------------------------
+// prependAllNonEmpty
+// -------------------------------------------------------------------------------------
+
+// $ExpectType [string | number, ...(string | number)[]]
+RA.prependAllNonEmpty(nss, nonEmptynss)
+
+// $ExpectType [string | number, ...(string | number)[]]
+RA.prependAllNonEmpty(nss)(nonEmptynss)
+
+// $ExpectType [string | number, ...(string | number)[]]
+RA.prependAllNonEmpty(nonEmptynss, nss)
+
+// $ExpectType [string | number, ...(string | number)[]]
+RA.prependAllNonEmpty(nonEmptynss)(nss)

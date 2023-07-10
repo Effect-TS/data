@@ -46,4 +46,5 @@ jobs:
       - run: pnpm run circular
       - run: pnpm run test --coverage
       - run: pnpm run lint
+      - run: pnpm run dtslint
       - run: pnpm run docs

@@ -408,9 +408,9 @@ export const unsafeGet: {
  * @since 1.0.0
  */
 export const append: {
-  <A2>(a: A2): <A>(self: Chunk<A>) => Chunk<A2 | A>
-  <A, A2>(self: Chunk<A>, a: A2): Chunk<A | A2>
-} = dual(2, <A, A2>(self: Chunk<A>, a: A2): Chunk<A | A2> => appendAll(self, of(a)))
+  <A2>(a: A2): <A>(self: Chunk<A>) => NonEmptyChunk<A2 | A>
+  <A, A2>(self: Chunk<A>, a: A2): NonEmptyChunk<A | A2>
+} = dual(2, <A, A2>(self: Chunk<A>, a: A2): NonEmptyChunk<A | A2> => appendAllNonEmpty(self, of(a)))
 
 /**
  * Prepend an element to the front of a `Chunk`, creating a new `NonEmptyChunk`.
@@ -419,9 +419,9 @@ export const append: {
  * @since 1.0.0
  */
 export const prepend: {
-  <B>(elem: B): <A>(self: Chunk<A>) => Chunk<B | A>
-  <A, B>(self: Chunk<A>, elem: B): Chunk<A | B>
-} = dual(2, <A, B>(self: Chunk<A>, elem: B): Chunk<A | B> => appendAll(of(elem), self))
+  <B>(elem: B): <A>(self: Chunk<A>) => NonEmptyChunk<B | A>
+  <A, B>(self: Chunk<A>, elem: B): NonEmptyChunk<A | B>
+} = dual(2, <A, B>(self: Chunk<A>, elem: B): NonEmptyChunk<A | B> => appendAllNonEmpty(of(elem), self))
 
 /**
  * Takes the first up to `n` elements from the chunk
@@ -702,6 +702,17 @@ export const flatMapNonEmpty: {
   <A, B>(f: (a: A, i: number) => NonEmptyChunk<B>): (self: NonEmptyChunk<A>) => NonEmptyChunk<B>
   <A, B>(self: NonEmptyChunk<A>, f: (a: A, i: number) => NonEmptyChunk<B>): NonEmptyChunk<B>
 } = flatMap as any
+
+/**
+ * Applies the specified function to each element of the `List`.
+ *
+ * @since 1.0.0
+ * @category combinators
+ */
+export const forEach: {
+  <A, B>(f: (a: A) => B): (self: Chunk<A>) => void
+  <A, B>(self: Chunk<A>, f: (a: A) => B): void
+} = dual(2, <A, B>(self: Chunk<A>, f: (a: A) => B): void => toReadonlyArray(self).forEach(f))
 
 /**
  * Flattens a chunk of chunks into a single chunk by concatenating all chunks.
