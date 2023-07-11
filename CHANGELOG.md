@@ -1,5 +1,41 @@
 # @effect/data
 
+## 0.14.1
+
+### Patch Changes
+
+- [#409](https://github.com/Effect-TS/data/pull/409) [`635407e`](https://github.com/Effect-TS/data/commit/635407e67eb33e583846705c754036f3344de4f5) Thanks [@gcanti](https://github.com/gcanti)! - List: add flatMapNonEmpty
+
+- [#409](https://github.com/Effect-TS/data/pull/409) [`635407e`](https://github.com/Effect-TS/data/commit/635407e67eb33e583846705c754036f3344de4f5) Thanks [@gcanti](https://github.com/gcanti)! - List: remove namespace
+
+- [#409](https://github.com/Effect-TS/data/pull/409) [`635407e`](https://github.com/Effect-TS/data/commit/635407e67eb33e583846705c754036f3344de4f5) Thanks [@gcanti](https://github.com/gcanti)! - List: remove useless Variance (already extends Iterable)
+
+- [#415](https://github.com/Effect-TS/data/pull/415) [`b4fb9c9`](https://github.com/Effect-TS/data/commit/b4fb9c904077f907b2a8e6fb80872e6f84c1a670) Thanks [@gcanti](https://github.com/gcanti)! - Either: rename EitherTypeId to TypeId
+
+- [#414](https://github.com/Effect-TS/data/pull/414) [`12d1253`](https://github.com/Effect-TS/data/commit/12d1253722ce88c7833c40d95b955f007b703cb7) Thanks [@gcanti](https://github.com/gcanti)! - rename contramap to mapInput, closes #410
+
+- [#415](https://github.com/Effect-TS/data/pull/415) [`b4fb9c9`](https://github.com/Effect-TS/data/commit/b4fb9c904077f907b2a8e6fb80872e6f84c1a670) Thanks [@gcanti](https://github.com/gcanti)! - Either: add \_id field (and refactor isEither)
+
+- [#409](https://github.com/Effect-TS/data/pull/409) [`635407e`](https://github.com/Effect-TS/data/commit/635407e67eb33e583846705c754036f3344de4f5) Thanks [@gcanti](https://github.com/gcanti)! - List: fix TypeId name
+
+- [#413](https://github.com/Effect-TS/data/pull/413) [`37f22c3`](https://github.com/Effect-TS/data/commit/37f22c3664dc8e2eff324482dffe2545ad0c77eb) Thanks [@gcanti](https://github.com/gcanti)! - Chunk: add forEach
+
+- [#416](https://github.com/Effect-TS/data/pull/416) [`1a133d8`](https://github.com/Effect-TS/data/commit/1a133d893052f0f29958996fb68482c88954a2be) Thanks [@gcanti](https://github.com/gcanti)! - Option: rename OptionTypeId to TypeId
+
+- [#415](https://github.com/Effect-TS/data/pull/415) [`b4fb9c9`](https://github.com/Effect-TS/data/commit/b4fb9c904077f907b2a8e6fb80872e6f84c1a670) Thanks [@gcanti](https://github.com/gcanti)! - Either: rename map to mapRight, closes #411
+
+- [#409](https://github.com/Effect-TS/data/pull/409) [`635407e`](https://github.com/Effect-TS/data/commit/635407e67eb33e583846705c754036f3344de4f5) Thanks [@gcanti](https://github.com/gcanti)! - List: add appendAllNonEmpty, prependAllNonEmpty, return Cons when the result is non empty, remove Iterable inputs
+
+- [#413](https://github.com/Effect-TS/data/pull/413) [`37f22c3`](https://github.com/Effect-TS/data/commit/37f22c3664dc8e2eff324482dffe2545ad0c77eb) Thanks [@gcanti](https://github.com/gcanti)! - Chunk: append should return NonEmptyChunk
+
+- [#416](https://github.com/Effect-TS/data/pull/416) [`1a133d8`](https://github.com/Effect-TS/data/commit/1a133d893052f0f29958996fb68482c88954a2be) Thanks [@gcanti](https://github.com/gcanti)! - Option: add \_id field (and refactor isOption)
+
+- [#409](https://github.com/Effect-TS/data/pull/409) [`635407e`](https://github.com/Effect-TS/data/commit/635407e67eb33e583846705c754036f3344de4f5) Thanks [@gcanti](https://github.com/gcanti)! - List: add \_id field
+
+- [#413](https://github.com/Effect-TS/data/pull/413) [`37f22c3`](https://github.com/Effect-TS/data/commit/37f22c3664dc8e2eff324482dffe2545ad0c77eb) Thanks [@gcanti](https://github.com/gcanti)! - Chunk: prepend should return NonEmptyChunk
+
+- [#417](https://github.com/Effect-TS/data/pull/417) [`a24ba78`](https://github.com/Effect-TS/data/commit/a24ba784f0c8da649ae7aebb4ca0dfe999e466d8) Thanks [@gcanti](https://github.com/gcanti)! - remove unused trace field from Context, Option and Either
+
 ## 0.14.0
 
 ### Minor Changes
