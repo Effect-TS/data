@@ -28,7 +28,8 @@ Added in v1.0.0
 - [symbol](#symbol)
   - [TypeId (type alias)](#typeid-type-alias)
 - [utils](#utils)
-  - [orElseResult](#orelseresult)
+  - [orElseEither](#orelseeither)
+  - [~~orElseResult~~](#orelseresult)
   - [transform](#transform)
   - [update](#update)
   - [updateWith](#updatewith)
@@ -171,14 +172,12 @@ Added in v1.0.0
 
 ## diff
 
-An empty patch that describes no changes.
-
 **Signature**
 
 ```ts
 export declare const diff: {
-  <Value>(oldValue: Value, newValue: Value): <Patch>(differ: Differ<Value, Patch>) => Patch
-  <Value, Patch>(differ: Differ<Value, Patch>, oldValue: Value, newValue: Value): Patch
+  <Value>(oldValue: Value, newValue: Value): <Patch>(self: Differ<Value, Patch>) => Patch
+  <Value, Patch>(self: Differ<Value, Patch>, oldValue: Value, newValue: Value): Patch
 }
 ```
 
@@ -226,10 +225,30 @@ Added in v1.0.0
 
 # utils
 
-## orElseResult
+## orElseEither
 
 Combines this differ and the specified differ to produce a differ that
 knows how to diff the sum of their values.
+
+**Signature**
+
+```ts
+export declare const orElseEither: {
+  <Value2, Patch2>(that: Differ<Value2, Patch2>): <Value, Patch>(
+    self: Differ<Value, Patch>
+  ) => Differ<Either<Value, Value2>, OrPatch<Value, Value2, Patch, Patch2>>
+  <Value, Patch, Value2, Patch2>(self: Differ<Value, Patch>, that: Differ<Value2, Patch2>): Differ<
+    Either<Value, Value2>,
+    OrPatch<Value, Value2, Patch, Patch2>
+  >
+}
+```
+
+Added in v1.0.0
+
+## ~~orElseResult~~
+
+Use `orElseEither` instead.
 
 **Signature**
 
