@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.14.2
+
+### Patch Changes
+
+- [#418](https://github.com/Effect-TS/data/pull/418) [`63228da`](https://github.com/Effect-TS/data/commit/63228dac81002201ba79fff17f4fdc4b85f1c61c) Thanks [@gcanti](https://github.com/gcanti)! - Differ: deprecate orElseResult in favour of orElseEither
+
 ## 0.14.1
 
 ### Patch Changes
