@@ -87,7 +87,7 @@ export const hashSet = <Value>(): D.Differ<HashSet<Value>, HashSetPatch.HashSetP
   })
 
 /** @internal */
-export const orElseResult = Dual.dual<
+export const orElseEither = Dual.dual<
   <Value2, Patch2>(that: D.Differ<Value2, Patch2>) => <Value, Patch>(
     self: D.Differ<Value, Patch>
   ) => D.Differ<Either<Value, Value2>, OrPatch.OrPatch<Value, Value2, Patch, Patch2>>,

@@ -191,7 +191,7 @@ export const hashSet: <Value>() => Differ<HashSet<Value>, HashSetPatch<Value>> =
  *
  * @since 1.0.0
  */
-export const orElseResult: {
+export const orElseEither: {
   <Value2, Patch2>(
     that: Differ<Value2, Patch2>
   ): <Value, Patch>(self: Differ<Value, Patch>) => Differ<Either<Value, Value2>, OrPatch<Value, Value2, Patch, Patch2>>
@@ -199,7 +199,15 @@ export const orElseResult: {
     self: Differ<Value, Patch>,
     that: Differ<Value2, Patch2>
   ): Differ<Either<Value, Value2>, OrPatch<Value, Value2, Patch, Patch2>>
-} = D.orElseResult
+} = D.orElseEither
+
+/**
+ * Use `orElseEither` instead.
+ *
+ * @since 1.0.0
+ * @deprecated
+ */
+export const orElseResult = orElseEither
 
 /**
  * Transforms the type of values that this differ knows how to differ using
