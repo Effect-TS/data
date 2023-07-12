@@ -172,14 +172,12 @@ Added in v1.0.0
 
 ## diff
 
-An empty patch that describes no changes.
-
 **Signature**
 
 ```ts
 export declare const diff: {
-  <Value>(oldValue: Value, newValue: Value): <Patch>(differ: Differ<Value, Patch>) => Patch
-  <Value, Patch>(differ: Differ<Value, Patch>, oldValue: Value, newValue: Value): Patch
+  <Value>(oldValue: Value, newValue: Value): <Patch>(self: Differ<Value, Patch>) => Patch
+  <Value, Patch>(self: Differ<Value, Patch>, oldValue: Value, newValue: Value): Patch
 }
 ```
 

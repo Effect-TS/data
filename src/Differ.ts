@@ -86,18 +86,16 @@ export declare namespace Differ {
 export const empty: <Value, Patch>(self: Differ<Value, Patch>) => Patch = (self) => self.empty
 
 /**
- * An empty patch that describes no changes.
- *
  * @since 1.0.0
  * @category patch
  */
 export const diff: {
-  <Value>(oldValue: Value, newValue: Value): <Patch>(differ: Differ<Value, Patch>) => Patch
-  <Value, Patch>(differ: Differ<Value, Patch>, oldValue: Value, newValue: Value): Patch
-} = Dual.dual<
-  <Value>(oldValue: Value, newValue: Value) => <Patch>(differ: Differ<Value, Patch>) => Patch,
-  <Value, Patch>(differ: Differ<Value, Patch>, oldValue: Value, newValue: Value) => Patch
->(3, (self, oldValue, newValue) => self.diff(oldValue, newValue))
+  <Value>(oldValue: Value, newValue: Value): <Patch>(self: Differ<Value, Patch>) => Patch
+  <Value, Patch>(self: Differ<Value, Patch>, oldValue: Value, newValue: Value): Patch
+} = Dual.dual(
+  3,
+  <Value, Patch>(self: Differ<Value, Patch>, oldValue: Value, newValue: Value): Patch => self.diff(oldValue, newValue)
+)
 
 /**
  * Combines two patches to produce a new patch that describes the updates of
@@ -112,10 +110,10 @@ export const diff: {
 export const combine: {
   <Patch>(first: Patch, second: Patch): <Value>(self: Differ<Value, Patch>) => Patch
   <Value, Patch>(self: Differ<Value, Patch>, first: Patch, second: Patch): Patch
-} = Dual.dual<
-  <Patch>(first: Patch, second: Patch) => <Value>(self: Differ<Value, Patch>) => Patch,
-  <Value, Patch>(self: Differ<Value, Patch>, first: Patch, second: Patch) => Patch
->(3, (self, first, second) => self.combine(first, second))
+} = Dual.dual(
+  3,
+  <Value, Patch>(self: Differ<Value, Patch>, first: Patch, second: Patch): Patch => self.combine(first, second)
+)
 
 /**
  * Applies a patch to an old value to produce a new value that is equal to the
@@ -127,10 +125,10 @@ export const combine: {
 export const patch: {
   <Patch, Value>(patch: Patch, oldValue: Value): (self: Differ<Value, Patch>) => Value
   <Patch, Value>(self: Differ<Value, Patch>, patch: Patch, oldValue: Value): Value
-} = Dual.dual<
-  <Patch, Value>(patch: Patch, oldValue: Value) => (self: Differ<Value, Patch>) => Value,
-  <Patch, Value>(self: Differ<Value, Patch>, patch: Patch, oldValue: Value) => Value
->(3, (self, patch, oldValue) => self.patch(patch, oldValue))
+} = Dual.dual(
+  3,
+  <Patch, Value>(self: Differ<Value, Patch>, patch: Patch, oldValue: Value): Value => self.patch(patch, oldValue)
+)
 
 /**
  * Constructs a new `Differ`.
