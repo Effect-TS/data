@@ -195,31 +195,16 @@ export const includes = (searchString: string, position?: number) =>
   (self: string): boolean => self.includes(searchString, position)
 
 /**
- * @example
- * import * as S from '@effect/data/String'
- *
  * @since 1.0.0
  */
 export const startsWith = (searchString: string, position?: number) =>
   (self: string): boolean => self.startsWith(searchString, position)
 
 /**
- * @example
- * import * as S from '@effect/data/String'
- *
- * assert.deepStrictEqual(S.endsWith("abc", { searchString: "b", position: 2 }), true)
- * assert.deepStrictEqual(S.endsWith("abc", { searchString: "c", position: 2 }), false)
- *
  * @since 1.0.0
  */
-export const endsWith: {
-  (options: { searchString: string; position?: number }): (self: string) => boolean
-  (self: string, options: { searchString: string; position?: number }): boolean
-} = dual(
-  2,
-  (self: string, options: { searchString: string; position?: number }): boolean =>
-    self.endsWith(options.searchString, options.position)
-)
+export const endsWith = (searchString: string, position?: number) =>
+  (self: string): boolean => self.endsWith(searchString, position)
 
 /**
  * @example

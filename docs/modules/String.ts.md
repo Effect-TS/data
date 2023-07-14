@@ -233,19 +233,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const endsWith: {
-  (options: { searchString: string; position?: number }): (self: string) => boolean
-  (self: string, options: { searchString: string; position?: number }): boolean
-}
-```
-
-**Example**
-
-```ts
-import * as S from '@effect/data/String'
-
-assert.deepStrictEqual(S.endsWith('abc', { searchString: 'b', position: 2 }), true)
-assert.deepStrictEqual(S.endsWith('abc', { searchString: 'c', position: 2 }), false)
+export declare const endsWith: (searchString: string, position?: number) => (self: string) => boolean
 ```
 
 Added in v1.0.0
@@ -611,12 +599,6 @@ Added in v1.0.0
 
 ```ts
 export declare const startsWith: (searchString: string, position?: number) => (self: string) => boolean
-```
-
-**Example**
-
-```ts
-import * as S from '@effect/data/String'
 ```
 
 Added in v1.0.0

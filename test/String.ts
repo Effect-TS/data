@@ -95,10 +95,10 @@ describe.concurrent("String", () => {
   })
 
   it("endsWith", () => {
-    expect(S.endsWith("abc", { searchString: "c" })).toBe(true)
-    expect(S.endsWith("ab", { searchString: "c" })).toBe(false)
-    expect(S.endsWith("abc", { searchString: "b", position: 2 })).toBe(true)
-    expect(S.endsWith("abc", { searchString: "c", position: 2 })).toBe(false)
+    expect(pipe("abc", S.endsWith("c"))).toBe(true)
+    expect(pipe("ab", S.endsWith("c"))).toBe(false)
+    expect(pipe("abc", S.endsWith("b", 2))).toBe(true)
+    expect(pipe("abc", S.endsWith("c", 2))).toBe(false)
   })
 
   it("slice", () => {
