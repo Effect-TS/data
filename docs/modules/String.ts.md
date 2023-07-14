@@ -116,7 +116,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const at: (index: number) => (self: string) => Option.Option<string>
+export declare const at: {
+  (index: number): (self: string) => Option.Option<string>
+  (self: string, index: number): Option.Option<string>
+}
 ```
 
 **Example**

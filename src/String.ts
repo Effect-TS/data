@@ -293,7 +293,10 @@ export const substring = (start: number, end?: number) => (self: string): string
  *
  * @since 1.0.0
  */
-export const at = (index: number) => (self: string): Option.Option<string> => Option.fromNullable(self.at(index))
+export const at: {
+  (index: number): (self: string) => Option.Option<string>
+  (self: string, index: number): Option.Option<string>
+} = dual(2, (self: string, index: number): Option.Option<string> => Option.fromNullable(self.at(index)))
 
 /**
  * @example
