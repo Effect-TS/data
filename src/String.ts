@@ -200,17 +200,18 @@ export const split: {
  * @example
  * import * as S from '@effect/data/String'
  *
- * assert.deepStrictEqual(S.includes("abc", "b", 1), true)
- * assert.deepStrictEqual(S.includes("abc", "a", 1), false)
+ * assert.deepStrictEqual(S.includes("abc", { searchString: "b", position: 1 }), true)
+ * assert.deepStrictEqual(S.includes("abc", { searchString: "a", position: 1 }), false)
  *
  * @since 1.0.0
  */
 export const includes: {
-  (searchString: string, position: number): (self: string) => boolean
-  (self: string, searchString: string, position: number): boolean
+  (options: { searchString: string; position?: number }): (self: string) => boolean
+  (self: string, options: { searchString: string; position?: number }): boolean
 } = dual(
-  3,
-  (self: string, searchString: string, position: number): boolean => self.includes(searchString, position)
+  2,
+  (self: string, options: { searchString: string; position?: number }): boolean =>
+    self.includes(options.searchString, options.position)
 )
 
 /**
