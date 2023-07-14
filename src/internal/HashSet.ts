@@ -257,7 +257,7 @@ export const reduce = Dual.dual<
   <A, Z>(zero: Z, f: (accumulator: Z, value: A) => Z) => (self: HS.HashSet<A>) => Z,
   <A, Z>(self: HS.HashSet<A>, zero: Z, f: (accumulator: Z, value: A) => Z) => Z
 >(3, <A, Z>(self: HS.HashSet<A>, zero: Z, f: (accumulator: Z, value: A) => Z) =>
-  HM.reduceWithIndex(
+  HM.reduce(
     (self as HashSetImpl<A>)._keyMap,
     zero,
     (z, _, a) => f(z, a)

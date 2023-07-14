@@ -52,6 +52,7 @@ Added in v1.0.0
   - [size](#size)
   - [some](#some)
   - [sort](#sort)
+  - [sortWith](#sortwith)
   - [split](#split)
   - [splitAt](#splitat)
   - [splitWhere](#splitwhere)
@@ -598,8 +599,21 @@ Sort the elements of a Chunk in increasing order, creating a new Chunk.
 
 ```ts
 export declare const sort: {
-  <B>(O: Order<B>): <A extends B>(self: Chunk<A>) => Chunk<A>
-  <A extends B, B>(self: Chunk<A>, O: Order<B>): Chunk<A>
+  <B>(O: Order.Order<B>): <A extends B>(self: Chunk<A>) => Chunk<A>
+  <A extends B, B>(self: Chunk<A>, O: Order.Order<B>): Chunk<A>
+}
+```
+
+Added in v1.0.0
+
+## sortWith
+
+**Signature**
+
+```ts
+export declare const sortWith: {
+  <A, B>(f: (a: A) => B, order: Order.Order<B>): (self: Chunk<A>) => Chunk<A>
+  <A, B>(self: Chunk<A>, f: (a: A) => B, order: Order.Order<B>): Chunk<A>
 }
 ```
 

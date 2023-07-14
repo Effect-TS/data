@@ -302,23 +302,21 @@ describe.concurrent("HashMap", () => {
   })
 
   it("reduce", () => {
-    const map = HM.make([key(0), value("a")], [key(1), value("b")])
-    const result = pipe(map, HM.reduce("", (acc, { s }) => acc.length > 0 ? `${acc},${s}` : s))
+    const map1 = HM.make([key(0), value("a")], [key(1), value("b")])
+    const result1 = pipe(map1, HM.reduce("", (acc, { s }) => acc.length > 0 ? `${acc},${s}` : s))
 
-    assert.strictEqual(result, "a,b")
-  })
+    assert.strictEqual(result1, "a,b")
 
-  it("reduceWithIndex", () => {
-    const map = HM.make([key(0), value("a")], [key(1), value("b")])
-    const result = pipe(
-      map,
-      HM.reduceWithIndex(
+    const map2 = HM.make([key(0), value("a")], [key(1), value("b")])
+    const result2 = pipe(
+      map2,
+      HM.reduce(
         "",
         (acc, { s }, { n }) => acc.length > 0 ? `${acc},${n}:${s}` : `${n}:${s}`
       )
     )
 
-    assert.strictEqual(result, "0:a,1:b")
+    assert.strictEqual(result2, "0:a,1:b")
   })
 
   it("remove", () => {

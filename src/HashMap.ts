@@ -352,26 +352,15 @@ export const forEachWithIndex: {
 } = HM.forEachWithIndex
 
 /**
- * Reduces the specified state over the values of the `HashMap`.
- *
- * @since 1.0.0
- * @category folding
- */
-export const reduce: {
-  <V, Z>(z: Z, f: (z: Z, v: V) => Z): <K>(self: HashMap<K, V>) => Z
-  <K, V, Z>(self: HashMap<K, V>, z: Z, f: (z: Z, v: V) => Z): Z
-} = HM.reduce
-
-/**
  * Reduces the specified state over the entries of the `HashMap`.
  *
  * @since 1.0.0
  * @category folding
  */
-export const reduceWithIndex: {
+export const reduce: {
   <Z, V, K>(zero: Z, f: (accumulator: Z, value: V, key: K) => Z): (self: HashMap<K, V>) => Z
   <Z, V, K>(self: HashMap<K, V>, zero: Z, f: (accumulator: Z, value: V, key: K) => Z): Z
-} = HM.reduceWithIndex
+} = HM.reduce
 
 /**
  * Filters entries out of a `HashMap` using the specified predicate.

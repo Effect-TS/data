@@ -30,7 +30,6 @@ Added in v1.0.0
   - [filterWithIndex](#filterwithindex)
 - [folding](#folding)
   - [reduce](#reduce)
-  - [reduceWithIndex](#reducewithindex)
 - [getter](#getter)
   - [keySet](#keyset)
 - [getters](#getters)
@@ -271,27 +270,12 @@ Added in v1.0.0
 
 ## reduce
 
-Reduces the specified state over the values of the `HashMap`.
-
-**Signature**
-
-```ts
-export declare const reduce: {
-  <V, Z>(z: Z, f: (z: Z, v: V) => Z): <K>(self: HashMap<K, V>) => Z
-  <K, V, Z>(self: HashMap<K, V>, z: Z, f: (z: Z, v: V) => Z): Z
-}
-```
-
-Added in v1.0.0
-
-## reduceWithIndex
-
 Reduces the specified state over the entries of the `HashMap`.
 
 **Signature**
 
 ```ts
-export declare const reduceWithIndex: {
+export declare const reduce: {
   <Z, V, K>(zero: Z, f: (accumulator: Z, value: V, key: K) => Z): (self: HashMap<K, V>) => Z
   <Z, V, K>(self: HashMap<K, V>, zero: Z, f: (accumulator: Z, value: V, key: K) => Z): Z
 }

@@ -416,7 +416,7 @@ export const mapWithIndex = Dual.dual<
   <A, V, K>(f: (value: V, key: K) => A) => (self: HM.HashMap<K, V>) => HM.HashMap<K, A>,
   <K, V, A>(self: HM.HashMap<K, V>, f: (value: V, key: K) => A) => HM.HashMap<K, A>
 >(2, (self, f) =>
-  reduceWithIndex(
+  reduce(
     self,
     empty(),
     (map, value, key) => set(map, key, f(value, key))
@@ -437,7 +437,7 @@ export const flatMapWithIndex = Dual.dual<
 >(
   2,
   (self, f) =>
-    reduceWithIndex(self, empty(), (zero, value, key) =>
+    reduce(self, empty(), (zero, value, key) =>
       mutate(
         zero,
         (map) => forEachWithIndex(f(value, key), (value, key) => set(map, key, value))
@@ -454,16 +454,10 @@ export const forEach = Dual.dual<
 export const forEachWithIndex = Dual.dual<
   <V, K>(f: (value: V, key: K) => void) => (self: HM.HashMap<K, V>) => void,
   <V, K>(self: HM.HashMap<K, V>, f: (value: V, key: K) => void) => void
->(2, (self, f) => reduceWithIndex(self, void 0 as void, (_, value, key) => f(value, key)))
+>(2, (self, f) => reduce(self, void 0 as void, (_, value, key) => f(value, key)))
 
 /** @internal */
 export const reduce = Dual.dual<
-  <V, Z>(z: Z, f: (z: Z, v: V) => Z) => <K>(self: HM.HashMap<K, V>) => Z,
-  <K, V, Z>(self: HM.HashMap<K, V>, z: Z, f: (z: Z, v: V) => Z) => Z
->(3, (self, z, f) => reduceWithIndex(self, z, (acc, v) => f(acc, v)))
-
-/** @internal */
-export const reduceWithIndex = Dual.dual<
   <Z, V, K>(zero: Z, f: (accumulator: Z, value: V, key: K) => Z) => (self: HM.HashMap<K, V>) => Z,
   <Z, V, K>(self: HM.HashMap<K, V>, zero: Z, f: (accumulator: Z, value: V, key: K) => Z) => Z
 >(3, <Z, V, K>(self: HM.HashMap<K, V>, zero: Z, f: (accumulator: Z, value: V, key: K) => Z) => {
