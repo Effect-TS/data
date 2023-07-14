@@ -379,7 +379,7 @@ export const union = Dual.dual<
   ) => HM.HashMap<K0 | K1, V0 | V1>
 >(2, <K0, V0, K1, V1>(self: HM.HashMap<K0, V0>, that: HM.HashMap<K1, V1>) => {
   const result: HM.HashMap<K0 | K1, V0 | V1> = beginMutation(self)
-  forEachWithIndex(that, (v, k) => set(result, k, v))
+  forEach(that, (v, k) => set(result, k, v))
   return endMutation(result)
 })
 
@@ -428,18 +428,12 @@ export const flatMap = Dual.dual<
     reduce(self, empty(), (zero, value, key) =>
       mutate(
         zero,
-        (map) => forEachWithIndex(f(value, key), (value, key) => set(map, key, value))
+        (map) => forEach(f(value, key), (value, key) => set(map, key, value))
       ))
 )
 
 /** @internal */
 export const forEach = Dual.dual<
-  <V>(f: (value: V) => void) => <K>(self: HM.HashMap<K, V>) => void,
-  <K, V>(self: HM.HashMap<K, V>, f: (value: V) => void) => void
->(2, (self, f) => forEachWithIndex(self, (value) => f(value)))
-
-/** @internal */
-export const forEachWithIndex = Dual.dual<
   <V, K>(f: (value: V, key: K) => void) => (self: HM.HashMap<K, V>) => void,
   <V, K>(self: HM.HashMap<K, V>, f: (value: V, key: K) => void) => void
 >(2, (self, f) => reduce(self, void 0 as void, (_, value, key) => f(value, key)))

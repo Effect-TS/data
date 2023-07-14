@@ -247,7 +247,7 @@ export const forEach = Dual.dual<
   <A>(f: (value: A) => void) => (self: HS.HashSet<A>) => void,
   <A>(self: HS.HashSet<A>, f: (value: A) => void) => void
 >(2, <A>(self: HS.HashSet<A>, f: (value: A) => void) =>
-  HM.forEachWithIndex(
+  HM.forEach(
     (self as HashSetImpl<A>)._keyMap,
     (_, k) => f(k)
   ))

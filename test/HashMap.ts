@@ -194,29 +194,27 @@ describe.concurrent("HashMap", () => {
   })
 
   it("forEach", () => {
-    const map = HM.make([key(0), value("a")], [key(1), value("b")])
-    const result: Array<string> = []
+    const map1 = HM.make([key(0), value("a")], [key(1), value("b")])
+    const result1: Array<string> = []
     pipe(
-      map,
+      map1,
       HM.forEach((v) => {
-        result.push(v.s)
+        result1.push(v.s)
       })
     )
 
-    deepStrictEqual(result, ["a", "b"])
-  })
+    deepStrictEqual(result1, ["a", "b"])
 
-  it("forEachWithIndex", () => {
-    const map = HM.make([key(0), value("a")], [key(1), value("b")])
-    const result: Array<readonly [number, string]> = []
+    const map2 = HM.make([key(0), value("a")], [key(1), value("b")])
+    const result2: Array<readonly [number, string]> = []
     pipe(
-      map,
-      HM.forEachWithIndex(({ s }, { n }) => {
-        result.push([n, s])
+      map2,
+      HM.forEach(({ s }, { n }) => {
+        result2.push([n, s])
       })
     )
 
-    deepStrictEqual(result, [[0, "a"], [1, "b"]])
+    deepStrictEqual(result2, [[0, "a"], [1, "b"]])
   })
 
   it("isEmpty", () => {

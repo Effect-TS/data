@@ -48,7 +48,6 @@ Added in v1.0.0
   - [TypeId (type alias)](#typeid-type-alias)
 - [traversing](#traversing)
   - [forEach](#foreach)
-  - [forEachWithIndex](#foreachwithindex)
 - [unsafe](#unsafe)
   - [unsafeGet](#unsafeget)
 - [utils](#utils)
@@ -414,27 +413,12 @@ Added in v1.0.0
 
 ## forEach
 
-Applies the specified function to the values of the `HashMap`.
-
-**Signature**
-
-```ts
-export declare const forEach: {
-  <V>(f: (value: V) => void): <K>(self: HashMap<K, V>) => void
-  <K, V>(self: HashMap<K, V>, f: (value: V) => void): void
-}
-```
-
-Added in v1.0.0
-
-## forEachWithIndex
-
 Applies the specified function to the entries of the `HashMap`.
 
 **Signature**
 
 ```ts
-export declare const forEachWithIndex: {
+export declare const forEach: {
   <V, K>(f: (value: V, key: K) => void): (self: HashMap<K, V>) => void
   <V, K>(self: HashMap<K, V>, f: (value: V, key: K) => void): void
 }

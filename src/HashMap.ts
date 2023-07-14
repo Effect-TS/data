@@ -306,26 +306,15 @@ export const flatMap: {
 } = HM.flatMap
 
 /**
- * Applies the specified function to the values of the `HashMap`.
- *
- * @since 1.0.0
- * @category traversing
- */
-export const forEach: {
-  <V>(f: (value: V) => void): <K>(self: HashMap<K, V>) => void
-  <K, V>(self: HashMap<K, V>, f: (value: V) => void): void
-} = HM.forEach
-
-/**
  * Applies the specified function to the entries of the `HashMap`.
  *
  * @since 1.0.0
  * @category traversing
  */
-export const forEachWithIndex: {
+export const forEach: {
   <V, K>(f: (value: V, key: K) => void): (self: HashMap<K, V>) => void
   <V, K>(self: HashMap<K, V>, f: (value: V, key: K) => void): void
-} = HM.forEachWithIndex
+} = HM.forEach
 
 /**
  * Reduces the specified state over the entries of the `HashMap`.
