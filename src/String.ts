@@ -424,9 +424,14 @@ export const replaceAll = (searchValue: string | RegExp, replaceValue: string) =
  *
  * @since 1.0.0
  */
-export const search = (regexp: RegExp | string) =>
-  (self: string): Option.Option<number> =>
+export const search: {
+  (regexp: RegExp | string): (self: string) => Option.Option<number>
+  (self: string, regexp: RegExp | string): Option.Option<number>
+} = dual(
+  2,
+  (self: string, regexp: RegExp | string): Option.Option<number> =>
     Option.filter(Option.some(self.search(regexp)), number.greaterThanOrEqualTo(0))
+)
 
 /**
  * @example

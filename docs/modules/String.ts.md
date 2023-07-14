@@ -534,7 +534,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const search: (regexp: RegExp | string) => (self: string) => Option.Option<number>
+export declare const search: {
+  (regexp: RegExp | string): (self: string) => Option.Option<number>
+  (self: string, regexp: RegExp | string): Option.Option<number>
+}
 ```
 
 **Example**
