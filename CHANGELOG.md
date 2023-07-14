@@ -1,5 +1,61 @@
 # @effect/data
 
+## 0.15.0
+
+### Minor Changes
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - SortedMap: remove mapWithIndex in favour of map
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - String: remove dual from replace
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - String: remove startsWithPosition in favour of pipeable startsWith
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - String: remove endsWithPosition in favour of pipeable endsWith
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - Option: remove inspectNone, inspectSome
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - HashMap: remove mapWithIndex in favour of map
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - HashMap: remove filterMapWithIndex in favour of filterMap
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - RedBlackTree: remove reduceWithIndex in favour of reduce
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - HashMap: remove filterWithIndex in favour of filter
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - HashMap: remove reduceWithIndex in favour of reduce
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - SortedMap: remove reduceWithIndex in favour of reduce
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - String: remove includesWithPosition in favour of pipeable includes
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - String: remove dual from slice
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - Random module: rename to DeterministicRandom (to align with the effect package export)
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - remove deprecated APIs
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - HashMap: remove flatMapWithIndex in favour of flatMap
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - Option: rename contains to containsWith (and re-add contains with a different signature)
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - RedBlackTree: rename find to findAll
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - HashMap: remove forEachWithIndex in favour of forEach
+
+### Patch Changes
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - String: make search dual
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - add sortWith to Chunk / ReadonlyArray
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - String: make charCodeAt dual
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - String: make charAt dual
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - String: make codePointAt dual
+
+- [#423](https://github.com/Effect-TS/data/pull/423) [`2be75e8`](https://github.com/Effect-TS/data/commit/2be75e8765163cedadcc26fda992a5721474e969) Thanks [@gcanti](https://github.com/gcanti)! - String: make at dual
+
 ## 0.14.3
 
 ### Patch Changes
