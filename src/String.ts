@@ -327,8 +327,10 @@ export const charAt: {
  *
  * @since 1.0.0
  */
-export const codePointAt = (index: number) =>
-  (self: string): Option.Option<number> => Option.fromNullable(self.codePointAt(index))
+export const codePointAt: {
+  (index: number): (self: string) => Option.Option<number>
+  (self: string, index: number): Option.Option<number>
+} = dual(2, (self: string, index: number): Option.Option<number> => Option.fromNullable(self.codePointAt(index)))
 
 /**
  * @example
