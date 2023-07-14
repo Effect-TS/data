@@ -610,19 +610,13 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const startsWith: {
-  (options: { searchString: string; position?: number }): (self: string) => boolean
-  (self: string, options: { searchString: string; position?: number }): boolean
-}
+export declare const startsWith: (searchString: string, position?: number) => (self: string) => boolean
 ```
 
 **Example**
 
 ```ts
 import * as S from '@effect/data/String'
-
-assert.deepStrictEqual(S.startsWith('abc', { searchString: 'b', position: 1 }), true)
-assert.deepStrictEqual(S.startsWith('bc', { searchString: 'a', position: 1 }), false)
 ```
 
 Added in v1.0.0
