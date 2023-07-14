@@ -532,10 +532,10 @@ export const linesWithSeparators = (s: string): LinesIterator => linesSeparated(
  *
  * @since 1.0.0
  */
-export const stripMarginWith = dual<
-  (marginChar: string) => (self: string) => string,
-  (self: string, marginChar: string) => string
->(2, (self, marginChar) => {
+export const stripMarginWith: {
+  (marginChar: string): (self: string) => string
+  (self: string, marginChar: string): string
+} = dual(2, (self: string, marginChar: string): string => {
   let out = ""
 
   for (const line of linesWithSeparators(self)) {
@@ -561,7 +561,7 @@ export const stripMarginWith = dual<
  *
  * @since 1.0.0
  */
-export const stripMargin = (self: string): string => stripMarginWith("|")(self)
+export const stripMargin = (self: string): string => stripMarginWith(self, "|")
 
 class LinesIterator implements IterableIterator<string> {
   private index: number

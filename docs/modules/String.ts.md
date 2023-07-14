@@ -628,8 +628,10 @@ from the line.
 **Signature**
 
 ```ts
-export declare const stripMarginWith: ((marginChar: string) => (self: string) => string) &
-  ((self: string, marginChar: string) => string)
+export declare const stripMarginWith: {
+  (marginChar: string): (self: string) => string
+  (self: string, marginChar: string): string
+}
 ```
 
 Added in v1.0.0
