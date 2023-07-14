@@ -8,7 +8,6 @@ import * as HM from "@effect/data/internal/HashMap"
 import * as _keySet from "@effect/data/internal/HashMap/keySet"
 import type { Option } from "@effect/data/Option"
 import type { Pipeable } from "@effect/data/Pipeable"
-import type { Predicate, Refinement } from "@effect/data/Predicate"
 
 const TypeId: unique symbol = HM.HashMapTypeId as TypeId
 
@@ -334,24 +333,11 @@ export const reduce: {
  * @category filtering
  */
 export const filter: {
-  <A, B extends A>(f: Refinement<A, B>): <K>(self: HashMap<K, A>) => HashMap<K, B>
-  <A>(f: Predicate<A>): <K>(self: HashMap<K, A>) => HashMap<K, A>
-  <K, A, B extends A>(self: HashMap<K, A>, f: Refinement<A, B>): HashMap<K, B>
-  <K, A>(self: HashMap<K, A>, f: Predicate<A>): HashMap<K, A>
-} = HM.filter
-
-/**
- * Filters entries out of a `HashMap` using the specified predicate.
- *
- * @since 1.0.0
- * @category filtering
- */
-export const filterWithIndex: {
   <K, A, B extends A>(f: (a: A, k: K) => a is B): (self: HashMap<K, A>) => HashMap<K, B>
   <K, A>(f: (a: A, k: K) => boolean): (self: HashMap<K, A>) => HashMap<K, A>
   <K, A, B extends A>(self: HashMap<K, A>, f: (a: A, k: K) => a is B): HashMap<K, B>
   <K, A>(self: HashMap<K, A>, f: (a: A, k: K) => boolean): HashMap<K, A>
-} = HM.filterWithIndex
+} = HM.filter
 
 /**
  * Filters out `None` values from a `HashMap` of `Options`s.

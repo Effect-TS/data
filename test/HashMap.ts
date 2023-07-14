@@ -178,19 +178,17 @@ describe.concurrent("HashMap", () => {
   })
 
   it("filter", () => {
-    const map = HM.make([key(0), value("a")], [key(1), value("bb")])
-    const result = pipe(map, HM.filter(({ s }) => s.length > 1))
+    const map1 = HM.make([key(0), value("a")], [key(1), value("bb")])
+    const result1 = pipe(map1, HM.filter(({ s }) => s.length > 1))
 
-    deepStrictEqual(HM.get(key(0))(result), Option.none())
-    deepStrictEqual(HM.get(key(1))(result), Option.some(value("bb")))
-  })
+    deepStrictEqual(HM.get(key(0))(result1), Option.none())
+    deepStrictEqual(HM.get(key(1))(result1), Option.some(value("bb")))
 
-  it("filterWithIndex", () => {
-    const map = HM.make([key(0), value("a")], [key(1), value("bb")])
-    const result = pipe(map, HM.filterWithIndex(({ s }, { n }) => n > 0 && s.length > 0))
+    const map2 = HM.make([key(0), value("a")], [key(1), value("bb")])
+    const result2 = pipe(map2, HM.filter(({ s }, { n }) => n > 0 && s.length > 0))
 
-    deepStrictEqual(HM.get(key(0))(result), Option.none())
-    deepStrictEqual(HM.get(key(1))(result), Option.some(value("bb")))
+    deepStrictEqual(HM.get(key(0))(result2), Option.none())
+    deepStrictEqual(HM.get(key(1))(result2), Option.some(value("bb")))
   })
 
   it("forEach", () => {

@@ -8,7 +8,6 @@ import { SIZE } from "@effect/data/internal/HashMap/config"
 import * as Node from "@effect/data/internal/HashMap/node"
 import * as Option from "@effect/data/Option"
 import { pipeArguments } from "@effect/data/Pipeable"
-import type { Predicate, Refinement } from "@effect/data/Predicate"
 import { isObject } from "@effect/data/Predicate"
 
 /** @internal */
@@ -471,18 +470,6 @@ export const reduce = Dual.dual<
 
 /** @internal */
 export const filter = Dual.dual<
-  {
-    <A, B extends A>(f: Refinement<A, B>): <K>(self: HM.HashMap<K, A>) => HM.HashMap<K, B>
-    <A>(f: Predicate<A>): <K>(self: HM.HashMap<K, A>) => HM.HashMap<K, A>
-  },
-  {
-    <K, A, B extends A>(self: HM.HashMap<K, A>, f: Refinement<A, B>): HM.HashMap<K, B>
-    <K, A>(self: HM.HashMap<K, A>, f: Predicate<A>): HM.HashMap<K, A>
-  }
->(2, <K, A>(self: HM.HashMap<K, A>, f: Predicate<A>) => filterWithIndex(self, f))
-
-/** @internal */
-export const filterWithIndex = Dual.dual<
   {
     <K, A, B extends A>(f: (a: A, k: K) => a is B): (self: HM.HashMap<K, A>) => HM.HashMap<K, B>
     <K, A>(f: (a: A, k: K) => boolean): (self: HM.HashMap<K, A>) => HM.HashMap<K, A>
