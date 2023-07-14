@@ -201,7 +201,7 @@ export const reduce: {
 } = Dual.dual<
   <B, A, K>(zero: B, f: (acc: B, value: A, key: K) => B) => (self: SortedMap<K, A>) => B,
   <K, A, B>(self: SortedMap<K, A>, zero: B, f: (acc: B, value: A, key: K) => B) => B
->(3, (self, zero, f) => RBT.reduceWithIndex(self.tree, zero, f))
+>(3, (self, zero, f) => RBT.reduce(self.tree, zero, f))
 
 /**
  * @since 1.0.0

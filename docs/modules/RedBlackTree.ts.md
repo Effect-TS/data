@@ -25,7 +25,6 @@ Added in v1.0.0
   - [has](#has)
 - [folding](#folding)
   - [reduce](#reduce)
-  - [reduceWithIndex](#reducewithindex)
 - [getters](#getters)
   - [first](#first)
   - [getOrder](#getorder)
@@ -184,27 +183,12 @@ Added in v1.0.0
 
 ## reduce
 
-Reduce a state over the map entries.
-
-**Signature**
-
-```ts
-export declare const reduce: {
-  <Z, V>(zero: Z, f: (accumulator: Z, value: V) => Z): <K>(self: RedBlackTree<K, V>) => Z
-  <Z, K, V>(self: RedBlackTree<K, V>, zero: Z, f: (accumulator: Z, value: V) => Z): Z
-}
-```
-
-Added in v1.0.0
-
-## reduceWithIndex
-
 Reduce a state over the entries of the tree.
 
 **Signature**
 
 ```ts
-export declare const reduceWithIndex: {
+export declare const reduce: {
   <Z, V, K>(zero: Z, f: (accumulator: Z, value: V, key: K) => Z): (self: RedBlackTree<K, V>) => Z
   <Z, V, K>(self: RedBlackTree<K, V>, zero: Z, f: (accumulator: Z, value: V, key: K) => Z): Z
 }

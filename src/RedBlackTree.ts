@@ -358,26 +358,15 @@ export const forEachBetween: {
 } = RBT.forEachBetween
 
 /**
- * Reduce a state over the map entries.
- *
- * @since 1.0.0
- * @category folding
- */
-export const reduce: {
-  <Z, V>(zero: Z, f: (accumulator: Z, value: V) => Z): <K>(self: RedBlackTree<K, V>) => Z
-  <Z, K, V>(self: RedBlackTree<K, V>, zero: Z, f: (accumulator: Z, value: V) => Z): Z
-} = RBT.reduce
-
-/**
  * Reduce a state over the entries of the tree.
  *
  * @since 1.0.0
  * @category folding
  */
-export const reduceWithIndex: {
+export const reduce: {
   <Z, V, K>(zero: Z, f: (accumulator: Z, value: V, key: K) => Z): (self: RedBlackTree<K, V>) => Z
   <Z, V, K>(self: RedBlackTree<K, V>, zero: Z, f: (accumulator: Z, value: V, key: K) => Z): Z
-} = RBT.reduceWithIndex
+} = RBT.reduce
 
 /**
  * Removes the entry with the specified key, if it exists.

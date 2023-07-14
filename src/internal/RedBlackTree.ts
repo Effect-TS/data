@@ -720,17 +720,6 @@ export const forEachBetween = Dual.dual<
 
 /** @internal */
 export const reduce = Dual.dual<
-  <Z, V>(zero: Z, f: (accumulator: Z, value: V) => Z) => <K>(self: RBT.RedBlackTree<K, V>) => Z,
-  <Z, K, V>(self: RBT.RedBlackTree<K, V>, zero: Z, f: (accumulator: Z, value: V) => Z) => Z
->(3, (self, zero, f) =>
-  reduceWithIndex(
-    self,
-    zero,
-    (accumulator, value) => f(accumulator, value)
-  ))
-
-/** @internal */
-export const reduceWithIndex = Dual.dual<
   <Z, V, K>(
     zero: Z,
     f: (accumulator: Z, value: V, key: K) => Z
