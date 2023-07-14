@@ -81,33 +81,24 @@ describe.concurrent("String", () => {
   })
 
   it("includes", () => {
-    expect(S.includes("abc", "b")).toBe(true)
-    expect(S.includes("abc", "d")).toBe(false)
-  })
-
-  it("includesWithPosition", () => {
-    expect(S.includesWithPosition("abc", "b", 1)).toBe(true)
-    expect(S.includesWithPosition("abc", "a", 1)).toBe(false)
+    expect(pipe("abc", S.includes("b"))).toBe(true)
+    expect(pipe("abc", S.includes("d"))).toBe(false)
+    expect(pipe("abc", S.includes("b", 1))).toBe(true)
+    expect(pipe("abc", S.includes("a", 1))).toBe(false)
   })
 
   it("startsWith", () => {
-    expect(S.startsWith("abc", "a")).toBe(true)
-    expect(S.startsWith("bc", "a")).toBe(false)
-  })
-
-  it("startsWithPosition", () => {
-    expect(S.startsWithPosition("abc", "b", 1)).toBe(true)
-    expect(S.startsWithPosition("bc", "a", 1)).toBe(false)
+    expect(pipe("abc", S.startsWith("a"))).toBe(true)
+    expect(pipe("bc", S.startsWith("a"))).toBe(false)
+    expect(pipe("abc", S.startsWith("b", 1))).toBe(true)
+    expect(pipe("bc", S.startsWith("a", 1))).toBe(false)
   })
 
   it("endsWith", () => {
-    expect(S.endsWith("abc", "c")).toBe(true)
-    expect(S.endsWith("ab", "c")).toBe(false)
-  })
-
-  it("endsWithPosition", () => {
-    expect(S.endsWithPosition("abc", "b", 2)).toBe(true)
-    expect(S.endsWithPosition("abc", "c", 2)).toBe(false)
+    expect(pipe("abc", S.endsWith("c"))).toBe(true)
+    expect(pipe("ab", S.endsWith("c"))).toBe(false)
+    expect(pipe("abc", S.endsWith("b", 2))).toBe(true)
+    expect(pipe("abc", S.endsWith("c", 2))).toBe(false)
   })
 
   it("slice", () => {

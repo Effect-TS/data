@@ -1,6 +1,6 @@
 ---
 title: Option.ts
-nav_order: 32
+nav_order: 33
 parent: Modules
 ---
 
@@ -32,9 +32,6 @@ Added in v1.0.0
   - [liftThrowable](#liftthrowable)
   - [toArray](#toarray)
   - [toRefinement](#torefinement)
-- [debugging](#debugging)
-  - [inspectNone](#inspectnone)
-  - [inspectSome](#inspectsome)
 - [do notation](#do-notation)
   - [Do](#do)
   - [bind](#bind)
@@ -42,6 +39,7 @@ Added in v1.0.0
   - [let](#let)
 - [elements](#elements)
   - [contains](#contains)
+  - [containsWith](#containswith)
 - [equivalence](#equivalence)
   - [getEquivalence](#getequivalence)
 - [error handling](#error-handling)
@@ -485,38 +483,6 @@ assert.deepStrictEqual(isPositive(-1), false)
 
 Added in v1.0.0
 
-# debugging
-
-## inspectNone
-
-Useful for debugging purposes, the `onNone` callback is is called if `self` is a `None`.
-
-**Signature**
-
-```ts
-export declare const inspectNone: {
-  (onNone: () => void): <A>(self: Option<A>) => Option<A>
-  <A>(self: Option<A>, onNone: () => void): Option<A>
-}
-```
-
-Added in v1.0.0
-
-## inspectSome
-
-Useful for debugging purposes, the `onSome` callback is called with the value of `self` if it is a `Some`.
-
-**Signature**
-
-```ts
-export declare const inspectSome: {
-  <A>(onSome: (a: A) => void): (self: Option<A>) => Option<A>
-  <A>(self: Option<A>, onSome: (a: A) => void): Option<A>
-}
-```
-
-Added in v1.0.0
-
 # do notation
 
 ## Do
@@ -580,12 +546,24 @@ Added in v1.0.0
 
 ## contains
 
+Returns a function that checks if an `Option` contains a given value using the default `Equivalence`.
+
+**Signature**
+
+```ts
+export declare const contains: { <A>(a: A): (self: Option<A>) => boolean; <A>(self: Option<A>, a: A): boolean }
+```
+
+Added in v1.0.0
+
+## containsWith
+
 Returns a function that checks if a `Option` contains a given value using a provided `isEquivalent` function.
 
 **Signature**
 
 ```ts
-export declare const contains: <A>(isEquivalent: (self: A, that: A) => boolean) => {
+export declare const containsWith: <A>(isEquivalent: (self: A, that: A) => boolean) => {
   (a: A): (self: Option<A>) => boolean
   (self: Option<A>, a: A): boolean
 }
@@ -594,13 +572,13 @@ export declare const contains: <A>(isEquivalent: (self: A, that: A) => boolean) 
 **Example**
 
 ```ts
-import { some, none, contains } from '@effect/data/Option'
+import { some, none, containsWith } from '@effect/data/Option'
 import { Equivalence } from '@effect/data/Number'
 import { pipe } from '@effect/data/Function'
 
-assert.deepStrictEqual(pipe(some(2), contains(Equivalence)(2)), true)
-assert.deepStrictEqual(pipe(some(1), contains(Equivalence)(2)), false)
-assert.deepStrictEqual(pipe(none(), contains(Equivalence)(2)), false)
+assert.deepStrictEqual(pipe(some(2), containsWith(Equivalence)(2)), true)
+assert.deepStrictEqual(pipe(some(1), containsWith(Equivalence)(2)), false)
+assert.deepStrictEqual(pipe(none(), containsWith(Equivalence)(2)), false)
 ```
 
 Added in v1.0.0

@@ -9,7 +9,6 @@ import { inspect } from "node:util"
 describe.concurrent("Either", () => {
   it("exports", () => {
     expect(Either.TypeId).exist
-    expect(Either.map).exist
   })
 
   it("toString", () => {
@@ -107,6 +106,6 @@ describe.concurrent("Either", () => {
   })
 
   it("pipe", () => {
-    expect(Either.right(1).pipe(Either.map((n) => n + 1))).toEqual(Either.right(2))
+    expect(Either.right(1).pipe(Either.mapRight((n) => n + 1))).toEqual(Either.right(2))
   })
 })

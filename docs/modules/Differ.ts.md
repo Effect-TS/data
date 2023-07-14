@@ -1,6 +1,6 @@
 ---
 title: Differ.ts
-nav_order: 7
+nav_order: 8
 parent: Modules
 ---
 
@@ -29,7 +29,6 @@ Added in v1.0.0
   - [TypeId (type alias)](#typeid-type-alias)
 - [utils](#utils)
   - [orElseEither](#orelseeither)
-  - [~~orElseResult~~](#orelseresult)
   - [transform](#transform)
   - [update](#update)
   - [updateWith](#updatewith)
@@ -234,26 +233,6 @@ knows how to diff the sum of their values.
 
 ```ts
 export declare const orElseEither: {
-  <Value2, Patch2>(that: Differ<Value2, Patch2>): <Value, Patch>(
-    self: Differ<Value, Patch>
-  ) => Differ<Either<Value, Value2>, OrPatch<Value, Value2, Patch, Patch2>>
-  <Value, Patch, Value2, Patch2>(self: Differ<Value, Patch>, that: Differ<Value2, Patch2>): Differ<
-    Either<Value, Value2>,
-    OrPatch<Value, Value2, Patch, Patch2>
-  >
-}
-```
-
-Added in v1.0.0
-
-## ~~orElseResult~~
-
-Use `orElseEither` instead.
-
-**Signature**
-
-```ts
-export declare const orElseResult: {
   <Value2, Patch2>(that: Differ<Value2, Patch2>): <Value, Patch>(
     self: Differ<Value, Patch>
   ) => Differ<Either<Value, Value2>, OrPatch<Value, Value2, Patch, Patch2>>

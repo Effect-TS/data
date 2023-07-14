@@ -1,6 +1,6 @@
 ---
 title: Order.ts
-nav_order: 33
+nav_order: 34
 parent: Modules
 ---
 
@@ -14,7 +14,6 @@ Added in v1.0.0
 
 - [combinators](#combinators)
   - [array](#array)
-  - [~~contramap~~](#contramap)
   - [mapInput](#mapinput)
   - [struct](#struct)
   - [tuple](#tuple)
@@ -63,21 +62,6 @@ It is useful when you need to compare two arrays of the same type and you have a
 
 ```ts
 export declare const array: <A>(O: Order<A>) => Order<readonly A[]>
-```
-
-Added in v1.0.0
-
-## ~~contramap~~
-
-Use `mapInput` instead.
-
-**Signature**
-
-```ts
-export declare const contramap: {
-  <B, A>(f: (b: B) => A): (self: Order<A>) => Order<B>
-  <A, B>(self: Order<A>, f: (b: B) => A): Order<B>
-}
 ```
 
 Added in v1.0.0

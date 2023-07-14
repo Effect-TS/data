@@ -1,10 +1,10 @@
 ---
-title: Random.ts
-nav_order: 37
+title: DeterministicRandom.ts
+nav_order: 7
 parent: Modules
 ---
 
-## Random overview
+## DeterministicRandom overview
 
 Copyright 2014 Thom Chiovoloni, released under the MIT license.
 

@@ -8,7 +8,6 @@ import { SIZE } from "@effect/data/internal/HashMap/config"
 import * as Node from "@effect/data/internal/HashMap/node"
 import * as Option from "@effect/data/Option"
 import { pipeArguments } from "@effect/data/Pipeable"
-import type { Predicate, Refinement } from "@effect/data/Predicate"
 import { isObject } from "@effect/data/Predicate"
 
 /** @internal */
@@ -379,7 +378,7 @@ export const union = Dual.dual<
   ) => HM.HashMap<K0 | K1, V0 | V1>
 >(2, <K0, V0, K1, V1>(self: HM.HashMap<K0, V0>, that: HM.HashMap<K1, V1>) => {
   const result: HM.HashMap<K0 | K1, V0 | V1> = beginMutation(self)
-  forEachWithIndex(that, (v, k) => set(result, k, v))
+  forEach(that, (v, k) => set(result, k, v))
   return endMutation(result)
 })
 
@@ -400,23 +399,17 @@ export const removeMany = Dual.dual<
     }
   }))
 
-/** @internal */
-export const map = Dual.dual<
-  <V, A>(f: (value: V) => A) => <K>(self: HM.HashMap<K, V>) => HM.HashMap<K, A>,
-  <K, V, A>(self: HM.HashMap<K, V>, f: (value: V) => A) => HM.HashMap<K, A>
->(2, (self, f) => mapWithIndex(self, (v) => f(v)))
-
 /**
  * Maps over the entries of the `HashMap` using the specified function.
  *
  * @since 1.0.0
  * @category mapping
  */
-export const mapWithIndex = Dual.dual<
+export const map = Dual.dual<
   <A, V, K>(f: (value: V, key: K) => A) => (self: HM.HashMap<K, V>) => HM.HashMap<K, A>,
   <K, V, A>(self: HM.HashMap<K, V>, f: (value: V, key: K) => A) => HM.HashMap<K, A>
 >(2, (self, f) =>
-  reduceWithIndex(
+  reduce(
     self,
     empty(),
     (map, value, key) => set(map, key, f(value, key))
@@ -424,12 +417,6 @@ export const mapWithIndex = Dual.dual<
 
 /** @internal */
 export const flatMap = Dual.dual<
-  <K, A, B>(f: (value: A) => HM.HashMap<K, B>) => (self: HM.HashMap<K, A>) => HM.HashMap<K, B>,
-  <K, A, B>(self: HM.HashMap<K, A>, f: (value: A) => HM.HashMap<K, B>) => HM.HashMap<K, B>
->(2, (self, f) => flatMapWithIndex(self, (v) => f(v)))
-
-/** @internal */
-export const flatMapWithIndex = Dual.dual<
   <A, K, B>(
     f: (value: A, key: K) => HM.HashMap<K, B>
   ) => (self: HM.HashMap<K, A>) => HM.HashMap<K, B>,
@@ -437,33 +424,21 @@ export const flatMapWithIndex = Dual.dual<
 >(
   2,
   (self, f) =>
-    reduceWithIndex(self, empty(), (zero, value, key) =>
+    reduce(self, empty(), (zero, value, key) =>
       mutate(
         zero,
-        (map) => forEachWithIndex(f(value, key), (value, key) => set(map, key, value))
+        (map) => forEach(f(value, key), (value, key) => set(map, key, value))
       ))
 )
 
 /** @internal */
 export const forEach = Dual.dual<
-  <V>(f: (value: V) => void) => <K>(self: HM.HashMap<K, V>) => void,
-  <K, V>(self: HM.HashMap<K, V>, f: (value: V) => void) => void
->(2, (self, f) => forEachWithIndex(self, (value) => f(value)))
-
-/** @internal */
-export const forEachWithIndex = Dual.dual<
   <V, K>(f: (value: V, key: K) => void) => (self: HM.HashMap<K, V>) => void,
   <V, K>(self: HM.HashMap<K, V>, f: (value: V, key: K) => void) => void
->(2, (self, f) => reduceWithIndex(self, void 0 as void, (_, value, key) => f(value, key)))
+>(2, (self, f) => reduce(self, void 0 as void, (_, value, key) => f(value, key)))
 
 /** @internal */
 export const reduce = Dual.dual<
-  <V, Z>(z: Z, f: (z: Z, v: V) => Z) => <K>(self: HM.HashMap<K, V>) => Z,
-  <K, V, Z>(self: HM.HashMap<K, V>, z: Z, f: (z: Z, v: V) => Z) => Z
->(3, (self, z, f) => reduceWithIndex(self, z, (acc, v) => f(acc, v)))
-
-/** @internal */
-export const reduceWithIndex = Dual.dual<
   <Z, V, K>(zero: Z, f: (accumulator: Z, value: V, key: K) => Z) => (self: HM.HashMap<K, V>) => Z,
   <Z, V, K>(self: HM.HashMap<K, V>, zero: Z, f: (accumulator: Z, value: V, key: K) => Z) => Z
 >(3, <Z, V, K>(self: HM.HashMap<K, V>, zero: Z, f: (accumulator: Z, value: V, key: K) => Z) => {
@@ -496,18 +471,6 @@ export const reduceWithIndex = Dual.dual<
 /** @internal */
 export const filter = Dual.dual<
   {
-    <A, B extends A>(f: Refinement<A, B>): <K>(self: HM.HashMap<K, A>) => HM.HashMap<K, B>
-    <A>(f: Predicate<A>): <K>(self: HM.HashMap<K, A>) => HM.HashMap<K, A>
-  },
-  {
-    <K, A, B extends A>(self: HM.HashMap<K, A>, f: Refinement<A, B>): HM.HashMap<K, B>
-    <K, A>(self: HM.HashMap<K, A>, f: Predicate<A>): HM.HashMap<K, A>
-  }
->(2, <K, A>(self: HM.HashMap<K, A>, f: Predicate<A>) => filterWithIndex(self, f))
-
-/** @internal */
-export const filterWithIndex = Dual.dual<
-  {
     <K, A, B extends A>(f: (a: A, k: K) => a is B): (self: HM.HashMap<K, A>) => HM.HashMap<K, B>
     <K, A>(f: (a: A, k: K) => boolean): (self: HM.HashMap<K, A>) => HM.HashMap<K, A>
   },
@@ -529,12 +492,6 @@ export const compact = <K, A>(self: HM.HashMap<K, Option.Option<A>>) => filterMa
 
 /** @internal */
 export const filterMap = Dual.dual<
-  <A, B>(f: (value: A) => Option.Option<B>) => <K>(self: HM.HashMap<K, A>) => HM.HashMap<K, B>,
-  <K, A, B>(self: HM.HashMap<K, A>, f: (value: A) => Option.Option<B>) => HM.HashMap<K, B>
->(2, (self, f) => filterMapWithIndex(self, f))
-
-/** @internal */
-export const filterMapWithIndex = Dual.dual<
   <A, K, B>(
     f: (value: A, key: K) => Option.Option<B>
   ) => (self: HM.HashMap<K, A>) => HM.HashMap<K, B>,

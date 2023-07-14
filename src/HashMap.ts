@@ -8,7 +8,6 @@ import * as HM from "@effect/data/internal/HashMap"
 import * as _keySet from "@effect/data/internal/HashMap/keySet"
 import type { Option } from "@effect/data/Option"
 import type { Pipeable } from "@effect/data/Pipeable"
-import type { Predicate, Refinement } from "@effect/data/Predicate"
 
 const TypeId: unique symbol = HM.HashMapTypeId as TypeId
 
@@ -282,39 +281,15 @@ export const removeMany: {
 } = HM.removeMany
 
 /**
- * Maps over the values of the `HashMap` using the specified function.
- *
- * @since 1.0.0
- * @category mapping
- */
-export const map: {
-  <V, A>(f: (value: V) => A): <K>(self: HashMap<K, V>) => HashMap<K, A>
-  <K, V, A>(self: HashMap<K, V>, f: (value: V) => A): HashMap<K, A>
-} = HM.map
-
-/**
  * Maps over the entries of the `HashMap` using the specified function.
  *
  * @since 1.0.0
  * @category mapping
  */
-export const mapWithIndex: {
+export const map: {
   <A, V, K>(f: (value: V, key: K) => A): (self: HashMap<K, V>) => HashMap<K, A>
   <K, V, A>(self: HashMap<K, V>, f: (value: V, key: K) => A): HashMap<K, A>
-} = HM.mapWithIndex
-
-/**
- * Chains over the values of the `HashMap` using the specified function.
- *
- * **NOTE**: the hash and equal of both maps have to be the same.
- *
- * @since 1.0.0
- * @category sequencing
- */
-export const flatMap: {
-  <K, A, B>(f: (value: A) => HashMap<K, B>): (self: HashMap<K, A>) => HashMap<K, B>
-  <K, A, B>(self: HashMap<K, A>, f: (value: A) => HashMap<K, B>): HashMap<K, B>
-} = HM.flatMap
+} = HM.map
 
 /**
  * Chains over the entries of the `HashMap` using the specified function.
@@ -324,21 +299,10 @@ export const flatMap: {
  * @since 1.0.0
  * @category sequencing
  */
-export const flatMapWithIndex: {
+export const flatMap: {
   <A, K, B>(f: (value: A, key: K) => HashMap<K, B>): (self: HashMap<K, A>) => HashMap<K, B>
   <K, A, B>(self: HashMap<K, A>, f: (value: A, key: K) => HashMap<K, B>): HashMap<K, B>
-} = HM.flatMapWithIndex
-
-/**
- * Applies the specified function to the values of the `HashMap`.
- *
- * @since 1.0.0
- * @category traversing
- */
-export const forEach: {
-  <V>(f: (value: V) => void): <K>(self: HashMap<K, V>) => void
-  <K, V>(self: HashMap<K, V>, f: (value: V) => void): void
-} = HM.forEach
+} = HM.flatMap
 
 /**
  * Applies the specified function to the entries of the `HashMap`.
@@ -346,21 +310,10 @@ export const forEach: {
  * @since 1.0.0
  * @category traversing
  */
-export const forEachWithIndex: {
+export const forEach: {
   <V, K>(f: (value: V, key: K) => void): (self: HashMap<K, V>) => void
   <V, K>(self: HashMap<K, V>, f: (value: V, key: K) => void): void
-} = HM.forEachWithIndex
-
-/**
- * Reduces the specified state over the values of the `HashMap`.
- *
- * @since 1.0.0
- * @category folding
- */
-export const reduce: {
-  <V, Z>(z: Z, f: (z: Z, v: V) => Z): <K>(self: HashMap<K, V>) => Z
-  <K, V, Z>(self: HashMap<K, V>, z: Z, f: (z: Z, v: V) => Z): Z
-} = HM.reduce
+} = HM.forEach
 
 /**
  * Reduces the specified state over the entries of the `HashMap`.
@@ -368,10 +321,10 @@ export const reduce: {
  * @since 1.0.0
  * @category folding
  */
-export const reduceWithIndex: {
+export const reduce: {
   <Z, V, K>(zero: Z, f: (accumulator: Z, value: V, key: K) => Z): (self: HashMap<K, V>) => Z
   <Z, V, K>(self: HashMap<K, V>, zero: Z, f: (accumulator: Z, value: V, key: K) => Z): Z
-} = HM.reduceWithIndex
+} = HM.reduce
 
 /**
  * Filters entries out of a `HashMap` using the specified predicate.
@@ -380,24 +333,11 @@ export const reduceWithIndex: {
  * @category filtering
  */
 export const filter: {
-  <A, B extends A>(f: Refinement<A, B>): <K>(self: HashMap<K, A>) => HashMap<K, B>
-  <A>(f: Predicate<A>): <K>(self: HashMap<K, A>) => HashMap<K, A>
-  <K, A, B extends A>(self: HashMap<K, A>, f: Refinement<A, B>): HashMap<K, B>
-  <K, A>(self: HashMap<K, A>, f: Predicate<A>): HashMap<K, A>
-} = HM.filter
-
-/**
- * Filters entries out of a `HashMap` using the specified predicate.
- *
- * @since 1.0.0
- * @category filtering
- */
-export const filterWithIndex: {
   <K, A, B extends A>(f: (a: A, k: K) => a is B): (self: HashMap<K, A>) => HashMap<K, B>
   <K, A>(f: (a: A, k: K) => boolean): (self: HashMap<K, A>) => HashMap<K, A>
   <K, A, B extends A>(self: HashMap<K, A>, f: (a: A, k: K) => a is B): HashMap<K, B>
   <K, A>(self: HashMap<K, A>, f: (a: A, k: K) => boolean): HashMap<K, A>
-} = HM.filterWithIndex
+} = HM.filter
 
 /**
  * Filters out `None` values from a `HashMap` of `Options`s.
@@ -408,25 +348,13 @@ export const filterWithIndex: {
 export const compact: <K, A>(self: HashMap<K, Option<A>>) => HashMap<K, A> = HM.compact
 
 /**
- * Maps over the values of the `HashMap` using the specified partial function
- * and filters out `None` values.
- *
- * @since 1.0.0
- * @category filtering
- */
-export const filterMap: {
-  <A, B>(f: (value: A) => Option<B>): <K>(self: HashMap<K, A>) => HashMap<K, B>
-  <K, A, B>(self: HashMap<K, A>, f: (value: A) => Option<B>): HashMap<K, B>
-} = HM.filterMap
-
-/**
  * Maps over the entries of the `HashMap` using the specified partial function
  * and filters out `None` values.
  *
  * @since 1.0.0
  * @category filtering
  */
-export const filterMapWithIndex: {
+export const filterMap: {
   <A, K, B>(f: (value: A, key: K) => Option<B>): (self: HashMap<K, A>) => HashMap<K, B>
   <K, A, B>(self: HashMap<K, A>, f: (value: A, key: K) => Option<B>): HashMap<K, B>
-} = HM.filterMapWithIndex
+} = HM.filterMap

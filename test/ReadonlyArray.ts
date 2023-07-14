@@ -1201,4 +1201,13 @@ describe.concurrent("ReadonlyArray", () => {
     RA.forEach(["a", "b", "c"], (a, i) => log.push(`${a}-${i}`))
     expect(log).toEqual(["a-0", "b-1", "c-2"])
   })
+
+  it("sortWith", () => {
+    type X = {
+      a: string
+      b: number
+    }
+    const chunk: ReadonlyArray<X> = [{ a: "a", b: 2 }, { a: "b", b: 1 }]
+    expect(RA.sortWith(chunk, (x) => x.b, Order.number)).toEqual([{ a: "b", b: 1 }, { a: "a", b: 2 }])
+  })
 })

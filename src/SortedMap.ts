@@ -161,25 +161,13 @@ export const headOption = <K, V>(self: SortedMap<K, V>): Option.Option<readonly 
  * @category mapping
  */
 export const map: {
-  <A, B>(f: (a: A) => B): <K>(self: SortedMap<K, A>) => SortedMap<K, B>
-  <K, A, B>(self: SortedMap<K, A>, f: (a: A) => B): SortedMap<K, B>
-} = Dual.dual<
-  <A, B>(f: (a: A) => B) => <K>(self: SortedMap<K, A>) => SortedMap<K, B>,
-  <K, A, B>(self: SortedMap<K, A>, f: (a: A) => B) => SortedMap<K, B>
->(2, (self, f) => mapWithIndex(self, (a) => f(a)))
-
-/**
- * @since 1.0.0
- * @category mapping
- */
-export const mapWithIndex: {
   <A, K, B>(f: (a: A, k: K) => B): (self: SortedMap<K, A>) => SortedMap<K, B>
   <K, A, B>(self: SortedMap<K, A>, f: (a: A, k: K) => B): SortedMap<K, B>
 } = Dual.dual<
   <A, K, B>(f: (a: A, k: K) => B) => (self: SortedMap<K, A>) => SortedMap<K, B>,
   <K, A, B>(self: SortedMap<K, A>, f: (a: A, k: K) => B) => SortedMap<K, B>
 >(2, <K, A, B>(self: SortedMap<K, A>, f: (a: A, k: K) => B) =>
-  reduceWithIndex(
+  reduce(
     self,
     empty<K, B>(RBT.getOrder(self.tree)),
     (acc, v, k) => set(acc, k, f(v, k))
@@ -196,24 +184,12 @@ export const keys = <K, V>(self: SortedMap<K, V>): IterableIterator<K> => RBT.ke
  * @category folding
  */
 export const reduce: {
-  <V, B>(zero: B, f: (accumulator: B, value: V) => B): <K>(self: SortedMap<K, V>) => B
-  <K, V, B>(self: SortedMap<K, V>, zero: B, f: (accumulator: B, value: V) => B): B
-} = Dual.dual<
-  <V, B>(zero: B, f: (accumulator: B, value: V) => B) => <K>(self: SortedMap<K, V>) => B,
-  <K, V, B>(self: SortedMap<K, V>, zero: B, f: (accumulator: B, value: V) => B) => B
->(3, (self, zero, f) => RBT.reduce(self.tree, zero, f))
-
-/**
- * @since 1.0.0
- * @category folding
- */
-export const reduceWithIndex: {
   <B, A, K>(zero: B, f: (acc: B, value: A, key: K) => B): (self: SortedMap<K, A>) => B
   <K, A, B>(self: SortedMap<K, A>, zero: B, f: (acc: B, value: A, key: K) => B): B
 } = Dual.dual<
   <B, A, K>(zero: B, f: (acc: B, value: A, key: K) => B) => (self: SortedMap<K, A>) => B,
   <K, A, B>(self: SortedMap<K, A>, zero: B, f: (acc: B, value: A, key: K) => B) => B
->(3, (self, zero, f) => RBT.reduceWithIndex(self.tree, zero, f))
+>(3, (self, zero, f) => RBT.reduce(self.tree, zero, f))
 
 /**
  * @since 1.0.0

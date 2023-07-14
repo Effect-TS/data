@@ -91,13 +91,8 @@ export const toLowerCase = (self: string): string => self.toLowerCase()
  *
  * @since 1.0.0
  */
-export const replace: {
-  (searchValue: string | RegExp, replaceValue: string): (self: string) => string
-  (self: string, searchValue: string | RegExp, replaceValue: string): string
-} = dual(
-  3,
-  (self: string, searchValue: string | RegExp, replaceValue: string): string => self.replace(searchValue, replaceValue)
-)
+export const replace = (searchValue: string | RegExp, replaceValue: string) =>
+  (self: string): string => self.replace(searchValue, replaceValue)
 
 /**
  * @example
@@ -138,10 +133,7 @@ export const trimEnd = (self: string): string => self.trimEnd()
  *
  * @since 1.0.0
  */
-export const slice: {
-  (start: number, end: number): (self: string) => string
-  (self: string, start: number, end: number): string
-} = dual(3, (self: string, start: number, end: number): string => self.slice(start, end))
+export const slice = (start?: number, end?: number) => (self: string): string => self.slice(start, end)
 
 /**
  * Test whether a `string` is empty.
@@ -195,92 +187,24 @@ export const split: {
 
 /**
  * Returns `true` if `searchString` appears as a substring of `self`, at one or more positions that are
- * greater than or equal to `0`; otherwise, returns `false`.
- *
- * @example
- * import * as S from '@effect/data/String'
- *
- * assert.deepStrictEqual(S.includes("abc", "b"), true)
- * assert.deepStrictEqual(S.includes("abc", "d"), false)
- *
- * @since 1.0.0
- */
-export const includes: {
-  (searchString: string): (self: string) => boolean
-  (self: string, searchString: string): boolean
-} = dual(2, (self: string, searchString: string): boolean => self.includes(searchString))
-
-/**
- * Returns `true` if `searchString` appears as a substring of `self`, at one or more positions that are
  * greater than or equal to `position`; otherwise, returns `false`.
  *
- * @example
- * import * as S from '@effect/data/String'
- *
- * assert.deepStrictEqual(S.includesWithPosition("abc", "b", 1), true)
- * assert.deepStrictEqual(S.includesWithPosition("abc", "a", 1), false)
- *
  * @since 1.0.0
  */
-export const includesWithPosition: {
-  (searchString: string, position: number): (self: string) => boolean
-  (self: string, searchString: string, position: number): boolean
-} = dual(
-  3,
-  (self: string, searchString: string, position: number): boolean => self.includes(searchString, position)
-)
+export const includes = (searchString: string, position?: number) =>
+  (self: string): boolean => self.includes(searchString, position)
 
 /**
- * Returns `true` if the sequence of elements of `searchString` is the
- * same as the corresponding elements of `s` starting at
- * position. Otherwise returns false.
- *
- * @example
- * import * as S from '@effect/data/String'
- *
- * assert.deepStrictEqual(S.startsWith("abc", "a"), true)
- * assert.deepStrictEqual(S.startsWith("bc", "a"), false)
- *
  * @since 1.0.0
  */
-export const startsWith: {
-  (searchString: string): (self: string) => boolean
-  (self: string, searchString: string): boolean
-} = dual(
-  2,
-  (self: string, searchString: string): boolean => self.startsWith(searchString)
-)
+export const startsWith = (searchString: string, position?: number) =>
+  (self: string): boolean => self.startsWith(searchString, position)
 
 /**
- * @example
- * import * as S from '@effect/data/String'
- *
- * assert.deepStrictEqual(S.startsWithPosition("abc", "b", 1), true)
- * assert.deepStrictEqual(S.startsWithPosition("bc", "a", 1), false)
- *
  * @since 1.0.0
  */
-export const startsWithPosition: {
-  (searchString: string, position: number): (self: string) => boolean
-  (self: string, searchString: string, position: number): boolean
-} = dual(
-  3,
-  (self: string, searchString: string, position: number): boolean => self.startsWith(searchString, position)
-)
-
-/**
- * @example
- * import * as S from '@effect/data/String'
- *
- * assert.deepStrictEqual(S.endsWith("abc", "c"), true)
- * assert.deepStrictEqual(S.endsWith("ab", "c"), false)
- *
- * @since 1.0.0
- */
-export const endsWith: {
-  (searchString: string): (self: string) => boolean
-  (self: string, searchString: string): boolean
-} = dual(2, (self: string, searchString: string): boolean => self.endsWith(searchString))
+export const endsWith = (searchString: string, position?: number) =>
+  (self: string): boolean => self.endsWith(searchString, position)
 
 /**
  * @example
@@ -293,9 +217,14 @@ export const endsWith: {
  *
  * @since 1.0.0
  */
-export const charCodeAt = (index: number) =>
-  (self: string): Option.Option<number> =>
+export const charCodeAt: {
+  (index: number): (self: string) => Option.Option<number>
+  (self: string, index: number): Option.Option<number>
+} = dual(
+  2,
+  (self: string, index: number): Option.Option<number> =>
     Option.filter(Option.some(self.charCodeAt(index)), (charCode) => !isNaN(charCode))
+)
 
 /**
  * @example
@@ -320,7 +249,10 @@ export const substring = (start: number, end?: number) => (self: string): string
  *
  * @since 1.0.0
  */
-export const at = (index: number) => (self: string): Option.Option<string> => Option.fromNullable(self.at(index))
+export const at: {
+  (index: number): (self: string) => Option.Option<string>
+  (self: string, index: number): Option.Option<string>
+} = dual(2, (self: string, index: number): Option.Option<string> => Option.fromNullable(self.at(index)))
 
 /**
  * @example
@@ -333,8 +265,13 @@ export const at = (index: number) => (self: string): Option.Option<string> => Op
  *
  * @since 1.0.0
  */
-export const charAt = (index: number) =>
-  (self: string): Option.Option<string> => Option.filter(Option.some(self.charAt(index)), isNonEmpty)
+export const charAt: {
+  (index: number): (self: string) => Option.Option<string>
+  (self: string, index: number): Option.Option<string>
+} = dual(
+  2,
+  (self: string, index: number): Option.Option<string> => Option.filter(Option.some(self.charAt(index)), isNonEmpty)
+)
 
 /**
  * @example
@@ -346,8 +283,10 @@ export const charAt = (index: number) =>
  *
  * @since 1.0.0
  */
-export const codePointAt = (index: number) =>
-  (self: string): Option.Option<number> => Option.fromNullable(self.codePointAt(index))
+export const codePointAt: {
+  (index: number): (self: string) => Option.Option<number>
+  (self: string, index: number): Option.Option<number>
+} = dual(2, (self: string, index: number): Option.Option<number> => Option.fromNullable(self.codePointAt(index)))
 
 /**
  * @example
@@ -485,9 +424,14 @@ export const replaceAll = (searchValue: string | RegExp, replaceValue: string) =
  *
  * @since 1.0.0
  */
-export const search = (regexp: RegExp | string) =>
-  (self: string): Option.Option<number> =>
+export const search: {
+  (regexp: RegExp | string): (self: string) => Option.Option<number>
+  (self: string, regexp: RegExp | string): Option.Option<number>
+} = dual(
+  2,
+  (self: string, regexp: RegExp | string): Option.Option<number> =>
     Option.filter(Option.some(self.search(regexp)), number.greaterThanOrEqualTo(0))
+)
 
 /**
  * @example
@@ -514,23 +458,6 @@ export const toLocaleLowerCase = (locale?: string | Array<string>) =>
  */
 export const toLocaleUpperCase = (locale?: string | Array<string>) =>
   (self: string): string => self.toLocaleUpperCase(locale)
-
-/**
- * @example
- * import * as S from '@effect/data/String'
- *
- * assert.deepStrictEqual(S.endsWithPosition("abc", "b", 2), true)
- * assert.deepStrictEqual(S.endsWithPosition("abc", "c", 2), false)
- *
- * @since 1.0.0
- */
-export const endsWithPosition: {
-  (searchString: string, position: number): (self: string) => boolean
-  (self: string, searchString: string, position: number): boolean
-} = dual(
-  3,
-  (self: string, searchString: string, position: number): boolean => self.endsWith(searchString, position)
-)
 
 /**
  * Keep the specified number of characters from the start of a string.
@@ -605,10 +532,10 @@ export const linesWithSeparators = (s: string): LinesIterator => linesSeparated(
  *
  * @since 1.0.0
  */
-export const stripMarginWith = dual<
-  (marginChar: string) => (self: string) => string,
-  (self: string, marginChar: string) => string
->(2, (self, marginChar) => {
+export const stripMarginWith: {
+  (marginChar: string): (self: string) => string
+  (self: string, marginChar: string): string
+} = dual(2, (self: string, marginChar: string): string => {
   let out = ""
 
   for (const line of linesWithSeparators(self)) {
@@ -634,7 +561,7 @@ export const stripMarginWith = dual<
  *
  * @since 1.0.0
  */
-export const stripMargin = (self: string): string => stripMarginWith("|")(self)
+export const stripMargin = (self: string): string => stripMarginWith(self, "|")
 
 class LinesIterator implements IterableIterator<string> {
   private index: number

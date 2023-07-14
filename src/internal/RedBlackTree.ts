@@ -152,7 +152,7 @@ const at = <K, V>(
 }
 
 /** @internal */
-export const find = Dual.dual<
+export const findAll = Dual.dual<
   <K>(key: K) => <V>(self: RBT.RedBlackTree<K, V>) => Chunk.Chunk<V>,
   <K, V>(self: RBT.RedBlackTree<K, V>, key: K) => Chunk.Chunk<V>
 >(2, <K, V>(self: RBT.RedBlackTree<K, V>, key: K) => {
@@ -720,17 +720,6 @@ export const forEachBetween = Dual.dual<
 
 /** @internal */
 export const reduce = Dual.dual<
-  <Z, V>(zero: Z, f: (accumulator: Z, value: V) => Z) => <K>(self: RBT.RedBlackTree<K, V>) => Z,
-  <Z, K, V>(self: RBT.RedBlackTree<K, V>, zero: Z, f: (accumulator: Z, value: V) => Z) => Z
->(3, (self, zero, f) =>
-  reduceWithIndex(
-    self,
-    zero,
-    (accumulator, value) => f(accumulator, value)
-  ))
-
-/** @internal */
-export const reduceWithIndex = Dual.dual<
   <Z, V, K>(
     zero: Z,
     f: (accumulator: Z, value: V, key: K) => Z

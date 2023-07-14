@@ -29,9 +29,7 @@ Added in v1.0.0
   - [concat](#concat)
   - [empty](#empty)
   - [endsWith](#endswith)
-  - [endsWithPosition](#endswithposition)
   - [includes](#includes)
-  - [includesWithPosition](#includeswithposition)
   - [indexOf](#indexof)
   - [isEmpty](#isempty)
   - [isNonEmpty](#isnonempty)
@@ -51,7 +49,6 @@ Added in v1.0.0
   - [slice](#slice)
   - [split](#split)
   - [startsWith](#startswith)
-  - [startsWithPosition](#startswithposition)
   - [stripMargin](#stripmargin)
   - [stripMarginWith](#stripmarginwith)
   - [substring](#substring)
@@ -119,7 +116,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const at: (index: number) => (self: string) => Option.Option<string>
+export declare const at: {
+  (index: number): (self: string) => Option.Option<string>
+  (self: string, index: number): Option.Option<string>
+}
 ```
 
 **Example**
@@ -140,7 +140,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const charAt: (index: number) => (self: string) => Option.Option<string>
+export declare const charAt: {
+  (index: number): (self: string) => Option.Option<string>
+  (self: string, index: number): Option.Option<string>
+}
 ```
 
 **Example**
@@ -161,7 +164,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const charCodeAt: (index: number) => (self: string) => Option.Option<number>
+export declare const charCodeAt: {
+  (index: number): (self: string) => Option.Option<number>
+  (self: string, index: number): Option.Option<number>
+}
 ```
 
 **Example**
@@ -182,7 +188,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const codePointAt: (index: number) => (self: string) => Option.Option<number>
+export declare const codePointAt: {
+  (index: number): (self: string) => Option.Option<number>
+  (self: string, index: number): Option.Option<number>
+}
 ```
 
 **Example**
@@ -224,41 +233,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const endsWith: {
-  (searchString: string): (self: string) => boolean
-  (self: string, searchString: string): boolean
-}
-```
-
-**Example**
-
-```ts
-import * as S from '@effect/data/String'
-
-assert.deepStrictEqual(S.endsWith('abc', 'c'), true)
-assert.deepStrictEqual(S.endsWith('ab', 'c'), false)
-```
-
-Added in v1.0.0
-
-## endsWithPosition
-
-**Signature**
-
-```ts
-export declare const endsWithPosition: {
-  (searchString: string, position: number): (self: string) => boolean
-  (self: string, searchString: string, position: number): boolean
-}
-```
-
-**Example**
-
-```ts
-import * as S from '@effect/data/String'
-
-assert.deepStrictEqual(S.endsWithPosition('abc', 'b', 2), true)
-assert.deepStrictEqual(S.endsWithPosition('abc', 'c', 2), false)
+export declare const endsWith: (searchString: string, position?: number) => (self: string) => boolean
 ```
 
 Added in v1.0.0
@@ -266,49 +241,12 @@ Added in v1.0.0
 ## includes
 
 Returns `true` if `searchString` appears as a substring of `self`, at one or more positions that are
-greater than or equal to `0`; otherwise, returns `false`.
-
-**Signature**
-
-```ts
-export declare const includes: {
-  (searchString: string): (self: string) => boolean
-  (self: string, searchString: string): boolean
-}
-```
-
-**Example**
-
-```ts
-import * as S from '@effect/data/String'
-
-assert.deepStrictEqual(S.includes('abc', 'b'), true)
-assert.deepStrictEqual(S.includes('abc', 'd'), false)
-```
-
-Added in v1.0.0
-
-## includesWithPosition
-
-Returns `true` if `searchString` appears as a substring of `self`, at one or more positions that are
 greater than or equal to `position`; otherwise, returns `false`.
 
 **Signature**
 
 ```ts
-export declare const includesWithPosition: {
-  (searchString: string, position: number): (self: string) => boolean
-  (self: string, searchString: string, position: number): boolean
-}
-```
-
-**Example**
-
-```ts
-import * as S from '@effect/data/String'
-
-assert.deepStrictEqual(S.includesWithPosition('abc', 'b', 1), true)
-assert.deepStrictEqual(S.includesWithPosition('abc', 'a', 1), false)
+export declare const includes: (searchString: string, position?: number) => (self: string) => boolean
 ```
 
 Added in v1.0.0
@@ -557,10 +495,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const replace: {
-  (searchValue: string | RegExp, replaceValue: string): (self: string) => string
-  (self: string, searchValue: string | RegExp, replaceValue: string): string
-}
+export declare const replace: (searchValue: string | RegExp, replaceValue: string) => (self: string) => string
 ```
 
 **Example**
@@ -599,7 +534,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const search: (regexp: RegExp | string) => (self: string) => Option.Option<number>
+export declare const search: {
+  (regexp: RegExp | string): (self: string) => Option.Option<number>
+  (self: string, regexp: RegExp | string): Option.Option<number>
+}
 ```
 
 **Example**
@@ -621,10 +559,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const slice: {
-  (start: number, end: number): (self: string) => string
-  (self: string, start: number, end: number): string
-}
+export declare const slice: (start?: number, end?: number) => (self: string) => string
 ```
 
 **Example**
@@ -663,48 +598,10 @@ Added in v1.0.0
 
 ## startsWith
 
-Returns `true` if the sequence of elements of `searchString` is the
-same as the corresponding elements of `s` starting at
-position. Otherwise returns false.
-
 **Signature**
 
 ```ts
-export declare const startsWith: {
-  (searchString: string): (self: string) => boolean
-  (self: string, searchString: string): boolean
-}
-```
-
-**Example**
-
-```ts
-import * as S from '@effect/data/String'
-
-assert.deepStrictEqual(S.startsWith('abc', 'a'), true)
-assert.deepStrictEqual(S.startsWith('bc', 'a'), false)
-```
-
-Added in v1.0.0
-
-## startsWithPosition
-
-**Signature**
-
-```ts
-export declare const startsWithPosition: {
-  (searchString: string, position: number): (self: string) => boolean
-  (self: string, searchString: string, position: number): boolean
-}
-```
-
-**Example**
-
-```ts
-import * as S from '@effect/data/String'
-
-assert.deepStrictEqual(S.startsWithPosition('abc', 'b', 1), true)
-assert.deepStrictEqual(S.startsWithPosition('bc', 'a', 1), false)
+export declare const startsWith: (searchString: string, position?: number) => (self: string) => boolean
 ```
 
 Added in v1.0.0
@@ -731,8 +628,10 @@ from the line.
 **Signature**
 
 ```ts
-export declare const stripMarginWith: ((marginChar: string) => (self: string) => string) &
-  ((self: string, marginChar: string) => string)
+export declare const stripMarginWith: {
+  (marginChar: string): (self: string) => string
+  (self: string, marginChar: string): string
+}
 ```
 
 Added in v1.0.0

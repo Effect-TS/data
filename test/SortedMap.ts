@@ -131,27 +131,25 @@ describe.concurrent("SortedMap", () => {
   })
 
   it("map", () => {
-    const map = makeSortedMap([0, 10], [1, 20], [2, 30])
+    const map1 = makeSortedMap([0, 10], [1, 20], [2, 30])
 
-    const result = Array.from(pipe(map, SM.map((value) => value.id)))
+    const result1 = Array.from(pipe(map1, SM.map((value) => value.id)))
 
     assert.deepEqual(
-      result,
+      result1,
       [
         [key(0), 10],
         [key(1), 20],
         [key(2), 30]
       ]
     )
-  })
 
-  it("mapWithIndex", () => {
-    const map = makeSortedMap([0, 10], [1, 20], [2, 30])
+    const map2 = makeSortedMap([0, 10], [1, 20], [2, 30])
 
-    const result = Array.from(pipe(map, SM.mapWithIndex((key, value) => key.id + value.id)))
+    const result2 = Array.from(pipe(map2, SM.map((key, value) => key.id + value.id)))
 
     assert.deepEqual(
-      result,
+      result2,
       [
         [key(0), 10],
         [key(1), 21],
@@ -161,19 +159,13 @@ describe.concurrent("SortedMap", () => {
   })
 
   it("reduce", () => {
-    const map = makeSortedMap([0, 10], [1, 20], [2, 30])
+    const map1 = makeSortedMap([0, 10], [1, 20], [2, 30])
+    const result1 = pipe(map1, SM.reduce("", (acc, value) => acc + value.id))
+    assert.strictEqual(result1, "102030")
 
-    const result = pipe(map, SM.reduce("", (acc, value) => acc + value.id))
-
-    assert.strictEqual(result, "102030")
-  })
-
-  it("reduceWithIndex", () => {
-    const map = makeSortedMap([0, 10], [1, 20], [2, 30])
-
-    const result = pipe(map, SM.reduceWithIndex("", (acc, value, key) => acc + key.id + value.id))
-
-    assert.strictEqual(result, "010120230")
+    const map2 = makeSortedMap([0, 10], [1, 20], [2, 30])
+    const result2 = pipe(map2, SM.reduce("", (acc, value, key) => acc + key.id + value.id))
+    assert.strictEqual(result2, "010120230")
   })
 
   it("remove", () => {

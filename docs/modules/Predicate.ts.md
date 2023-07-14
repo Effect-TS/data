@@ -1,6 +1,6 @@
 ---
 title: Predicate.ts
-nav_order: 36
+nav_order: 37
 parent: Modules
 ---
 
@@ -14,7 +14,6 @@ Added in v1.0.0
 
 - [combinators](#combinators)
   - [and](#and)
-  - [~~contramap~~](#contramap)
   - [eqv](#eqv)
   - [implies](#implies)
   - [mapInput](#mapinput)
@@ -93,21 +92,6 @@ const length = (n: number) => P.and(minLength(n), maxLength(n))
 assert.deepStrictEqual(length(2)('aa'), true)
 assert.deepStrictEqual(length(2)('a'), false)
 assert.deepStrictEqual(length(2)('aaa'), false)
-```
-
-Added in v1.0.0
-
-## ~~contramap~~
-
-Use `mapInput` instead.
-
-**Signature**
-
-```ts
-export declare const contramap: {
-  <B, A>(f: (b: B) => A): (self: Predicate<A>) => Predicate<B>
-  <A, B>(self: Predicate<A>, f: (b: B) => A): Predicate<B>
-}
 ```
 
 Added in v1.0.0

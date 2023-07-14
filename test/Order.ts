@@ -4,10 +4,6 @@ import { sort } from "@effect/data/ReadonlyArray"
 import * as U from "./util"
 
 describe.concurrent("Order", () => {
-  it("exports", () => {
-    expect(_.contramap).exist
-  })
-
   it("struct", () => {
     const O = _.struct({ a: _.string, b: _.string })
     U.deepStrictEqual(O({ a: "a", b: "b" }, { a: "a", b: "c" }), -1)

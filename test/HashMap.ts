@@ -118,9 +118,9 @@ describe.concurrent("HashMap", () => {
   })
 
   it("flatMap", () => {
-    const map = HM.make([key(0), value("a")], [key(1), value("bb")])
-    const result = pipe(
-      map,
+    const map1 = HM.make([key(0), value("a")], [key(1), value("bb")])
+    const result1 = pipe(
+      map1,
       HM.flatMap(({ s }) => {
         const newKey = key(s.length)
         const newValue = value(s)
@@ -128,47 +128,43 @@ describe.concurrent("HashMap", () => {
       })
     )
 
-    deepStrictEqual(HM.get(key(1))(result), Option.some(value("a")))
-    deepStrictEqual(HM.get(key(2))(result), Option.some(value("bb")))
-    deepStrictEqual(HM.get(key(3))(result), Option.none())
-  })
+    deepStrictEqual(HM.get(key(1))(result1), Option.some(value("a")))
+    deepStrictEqual(HM.get(key(2))(result1), Option.some(value("bb")))
+    deepStrictEqual(HM.get(key(3))(result1), Option.none())
 
-  it("flatMapWithIndex", () => {
-    const map = HM.make([key(1), value("a")], [key(2), value("bb")])
-    const result = pipe(
-      map,
-      HM.flatMapWithIndex(({ s }, { n }) => {
+    const map2 = HM.make([key(1), value("a")], [key(2), value("bb")])
+    const result2 = pipe(
+      map2,
+      HM.flatMap(({ s }, { n }) => {
         const newKey = key(s.length + n)
         const newValue = value(s)
         return pipe(HM.empty<Key, Value>(), HM.set(newKey, newValue))
       })
     )
 
-    deepStrictEqual(HM.get(key(2))(result), Option.some(value("a")))
-    deepStrictEqual(HM.get(key(4))(result), Option.some(value("bb")))
-    deepStrictEqual(HM.get(key(6))(result), Option.none())
+    deepStrictEqual(HM.get(key(2))(result2), Option.some(value("a")))
+    deepStrictEqual(HM.get(key(4))(result2), Option.some(value("bb")))
+    deepStrictEqual(HM.get(key(6))(result2), Option.none())
   })
 
   it("filterMap", () => {
-    const map = HM.make([key(0), value("a")], [key(1), value("bb")])
-    const result = pipe(
-      map,
+    const map1 = HM.make([key(0), value("a")], [key(1), value("bb")])
+    const result1 = pipe(
+      map1,
       HM.filterMap(({ s }) => s.length > 1 ? Option.some(value(s)) : Option.none())
     )
 
-    deepStrictEqual(HM.get(key(0))(result), Option.none())
-    deepStrictEqual(HM.get(key(1))(result), Option.some(value("bb")))
-  })
+    deepStrictEqual(HM.get(key(0))(result1), Option.none())
+    deepStrictEqual(HM.get(key(1))(result1), Option.some(value("bb")))
 
-  it("collectWithIndex", () => {
-    const map = HM.make([key(0), value("a")], [key(1), value("bb")])
-    const result = pipe(
-      map,
-      HM.filterMapWithIndex((v, { n }) => n > 0 ? Option.some(v) : Option.none())
+    const map2 = HM.make([key(0), value("a")], [key(1), value("bb")])
+    const result2 = pipe(
+      map2,
+      HM.filterMap((v, { n }) => n > 0 ? Option.some(v) : Option.none())
     )
 
-    deepStrictEqual(HM.get(key(0))(result), Option.none())
-    deepStrictEqual(HM.get(key(1))(result), Option.some(value("bb")))
+    deepStrictEqual(HM.get(key(0))(result2), Option.none())
+    deepStrictEqual(HM.get(key(1))(result2), Option.some(value("bb")))
   })
 
   it("compact", () => {
@@ -180,45 +176,41 @@ describe.concurrent("HashMap", () => {
   })
 
   it("filter", () => {
-    const map = HM.make([key(0), value("a")], [key(1), value("bb")])
-    const result = pipe(map, HM.filter(({ s }) => s.length > 1))
+    const map1 = HM.make([key(0), value("a")], [key(1), value("bb")])
+    const result1 = pipe(map1, HM.filter(({ s }) => s.length > 1))
 
-    deepStrictEqual(HM.get(key(0))(result), Option.none())
-    deepStrictEqual(HM.get(key(1))(result), Option.some(value("bb")))
-  })
+    deepStrictEqual(HM.get(key(0))(result1), Option.none())
+    deepStrictEqual(HM.get(key(1))(result1), Option.some(value("bb")))
 
-  it("filterWithIndex", () => {
-    const map = HM.make([key(0), value("a")], [key(1), value("bb")])
-    const result = pipe(map, HM.filterWithIndex(({ s }, { n }) => n > 0 && s.length > 0))
+    const map2 = HM.make([key(0), value("a")], [key(1), value("bb")])
+    const result2 = pipe(map2, HM.filter(({ s }, { n }) => n > 0 && s.length > 0))
 
-    deepStrictEqual(HM.get(key(0))(result), Option.none())
-    deepStrictEqual(HM.get(key(1))(result), Option.some(value("bb")))
+    deepStrictEqual(HM.get(key(0))(result2), Option.none())
+    deepStrictEqual(HM.get(key(1))(result2), Option.some(value("bb")))
   })
 
   it("forEach", () => {
-    const map = HM.make([key(0), value("a")], [key(1), value("b")])
-    const result: Array<string> = []
+    const map1 = HM.make([key(0), value("a")], [key(1), value("b")])
+    const result1: Array<string> = []
     pipe(
-      map,
+      map1,
       HM.forEach((v) => {
-        result.push(v.s)
+        result1.push(v.s)
       })
     )
 
-    deepStrictEqual(result, ["a", "b"])
-  })
+    deepStrictEqual(result1, ["a", "b"])
 
-  it("forEachWithIndex", () => {
-    const map = HM.make([key(0), value("a")], [key(1), value("b")])
-    const result: Array<readonly [number, string]> = []
+    const map2 = HM.make([key(0), value("a")], [key(1), value("b")])
+    const result2: Array<readonly [number, string]> = []
     pipe(
-      map,
-      HM.forEachWithIndex(({ s }, { n }) => {
-        result.push([n, s])
+      map2,
+      HM.forEach(({ s }, { n }) => {
+        result2.push([n, s])
       })
     )
 
-    deepStrictEqual(result, [[0, "a"], [1, "b"]])
+    deepStrictEqual(result2, [[0, "a"], [1, "b"]])
   })
 
   it("isEmpty", () => {
@@ -246,21 +238,19 @@ describe.concurrent("HashMap", () => {
   })
 
   it("map", () => {
-    const map = HM.make([key(0), value("a")], [key(1), value("bb")])
-    const result = pipe(map, HM.map(({ s }) => s.length))
+    const map1 = HM.make([key(0), value("a")], [key(1), value("bb")])
+    const result1 = pipe(map1, HM.map(({ s }) => s.length))
 
-    deepStrictEqual(HM.get(key(0))(result), Option.some(1))
-    deepStrictEqual(HM.get(key(1))(result), Option.some(2))
-    deepStrictEqual(HM.get(key(2))(result), Option.none())
-  })
+    deepStrictEqual(HM.get(key(0))(result1), Option.some(1))
+    deepStrictEqual(HM.get(key(1))(result1), Option.some(2))
+    deepStrictEqual(HM.get(key(2))(result1), Option.none())
 
-  it("mapWithIndex", () => {
-    const map = HM.make([key(0), value("a")], [key(1), value("bb")])
-    const result = pipe(map, HM.mapWithIndex(({ s }, { n }) => n + s.length))
+    const map2 = HM.make([key(0), value("a")], [key(1), value("bb")])
+    const result2 = pipe(map2, HM.map(({ s }, { n }) => n + s.length))
 
-    deepStrictEqual(HM.get(key(0))(result), Option.some(1))
-    deepStrictEqual(HM.get(key(1))(result), Option.some(3))
-    deepStrictEqual(HM.get(key(2))(result), Option.none())
+    deepStrictEqual(HM.get(key(0))(result2), Option.some(1))
+    deepStrictEqual(HM.get(key(1))(result2), Option.some(3))
+    deepStrictEqual(HM.get(key(2))(result2), Option.none())
   })
 
   it("modifyAt", () => {
@@ -302,23 +292,21 @@ describe.concurrent("HashMap", () => {
   })
 
   it("reduce", () => {
-    const map = HM.make([key(0), value("a")], [key(1), value("b")])
-    const result = pipe(map, HM.reduce("", (acc, { s }) => acc.length > 0 ? `${acc},${s}` : s))
+    const map1 = HM.make([key(0), value("a")], [key(1), value("b")])
+    const result1 = pipe(map1, HM.reduce("", (acc, { s }) => acc.length > 0 ? `${acc},${s}` : s))
 
-    assert.strictEqual(result, "a,b")
-  })
+    assert.strictEqual(result1, "a,b")
 
-  it("reduceWithIndex", () => {
-    const map = HM.make([key(0), value("a")], [key(1), value("b")])
-    const result = pipe(
-      map,
-      HM.reduceWithIndex(
+    const map2 = HM.make([key(0), value("a")], [key(1), value("b")])
+    const result2 = pipe(
+      map2,
+      HM.reduce(
         "",
         (acc, { s }, { n }) => acc.length > 0 ? `${acc},${n}:${s}` : `${n}:${s}`
       )
     )
 
-    assert.strictEqual(result, "0:a,1:b")
+    assert.strictEqual(result2, "0:a,1:b")
   })
 
   it("remove", () => {
