@@ -50,7 +50,6 @@ Added in v1.0.0
   - [slice](#slice)
   - [split](#split)
   - [startsWith](#startswith)
-  - [startsWithPosition](#startswithposition)
   - [stripMargin](#stripmargin)
   - [stripMarginWith](#stripmarginwith)
   - [substring](#substring)
@@ -637,36 +636,10 @@ Added in v1.0.0
 
 ## startsWith
 
-Returns `true` if the sequence of elements of `searchString` is the
-same as the corresponding elements of `s` starting at
-position. Otherwise returns false.
-
 **Signature**
 
 ```ts
 export declare const startsWith: {
-  (searchString: string): (self: string) => boolean
-  (self: string, searchString: string): boolean
-}
-```
-
-**Example**
-
-```ts
-import * as S from '@effect/data/String'
-
-assert.deepStrictEqual(S.startsWith('abc', 'a'), true)
-assert.deepStrictEqual(S.startsWith('bc', 'a'), false)
-```
-
-Added in v1.0.0
-
-## startsWithPosition
-
-**Signature**
-
-```ts
-export declare const startsWithPosition: {
   (searchString: string, position: number): (self: string) => boolean
   (self: string, searchString: string, position: number): boolean
 }
@@ -677,8 +650,8 @@ export declare const startsWithPosition: {
 ```ts
 import * as S from '@effect/data/String'
 
-assert.deepStrictEqual(S.startsWithPosition('abc', 'b', 1), true)
-assert.deepStrictEqual(S.startsWithPosition('bc', 'a', 1), false)
+assert.deepStrictEqual(S.startsWith('abc', 'b', 1), true)
+assert.deepStrictEqual(S.startsWith('bc', 'a', 1), false)
 ```
 
 Added in v1.0.0

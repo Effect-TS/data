@@ -214,36 +214,15 @@ export const includes: {
 )
 
 /**
- * Returns `true` if the sequence of elements of `searchString` is the
- * same as the corresponding elements of `s` starting at
- * position. Otherwise returns false.
- *
  * @example
  * import * as S from '@effect/data/String'
  *
- * assert.deepStrictEqual(S.startsWith("abc", "a"), true)
- * assert.deepStrictEqual(S.startsWith("bc", "a"), false)
+ * assert.deepStrictEqual(S.startsWith("abc", "b", 1), true)
+ * assert.deepStrictEqual(S.startsWith("bc", "a", 1), false)
  *
  * @since 1.0.0
  */
 export const startsWith: {
-  (searchString: string): (self: string) => boolean
-  (self: string, searchString: string): boolean
-} = dual(
-  2,
-  (self: string, searchString: string): boolean => self.startsWith(searchString)
-)
-
-/**
- * @example
- * import * as S from '@effect/data/String'
- *
- * assert.deepStrictEqual(S.startsWithPosition("abc", "b", 1), true)
- * assert.deepStrictEqual(S.startsWithPosition("bc", "a", 1), false)
- *
- * @since 1.0.0
- */
-export const startsWithPosition: {
   (searchString: string, position: number): (self: string) => boolean
   (self: string, searchString: string, position: number): boolean
 } = dual(
