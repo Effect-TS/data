@@ -38,7 +38,6 @@ Added in v1.0.0
   - [values](#values)
 - [mapping](#mapping)
   - [map](#map)
-  - [mapWithIndex](#mapwithindex)
 - [models](#models)
   - [HashMap (interface)](#hashmap-interface)
 - [refinements](#refinements)
@@ -339,27 +338,12 @@ Added in v1.0.0
 
 ## map
 
-Maps over the values of the `HashMap` using the specified function.
-
-**Signature**
-
-```ts
-export declare const map: {
-  <V, A>(f: (value: V) => A): <K>(self: HashMap<K, V>) => HashMap<K, A>
-  <K, V, A>(self: HashMap<K, V>, f: (value: V) => A): HashMap<K, A>
-}
-```
-
-Added in v1.0.0
-
-## mapWithIndex
-
 Maps over the entries of the `HashMap` using the specified function.
 
 **Signature**
 
 ```ts
-export declare const mapWithIndex: {
+export declare const map: {
   <A, V, K>(f: (value: V, key: K) => A): (self: HashMap<K, V>) => HashMap<K, A>
   <K, V, A>(self: HashMap<K, V>, f: (value: V, key: K) => A): HashMap<K, A>
 }

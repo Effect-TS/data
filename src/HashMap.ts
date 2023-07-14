@@ -282,26 +282,15 @@ export const removeMany: {
 } = HM.removeMany
 
 /**
- * Maps over the values of the `HashMap` using the specified function.
- *
- * @since 1.0.0
- * @category mapping
- */
-export const map: {
-  <V, A>(f: (value: V) => A): <K>(self: HashMap<K, V>) => HashMap<K, A>
-  <K, V, A>(self: HashMap<K, V>, f: (value: V) => A): HashMap<K, A>
-} = HM.map
-
-/**
  * Maps over the entries of the `HashMap` using the specified function.
  *
  * @since 1.0.0
  * @category mapping
  */
-export const mapWithIndex: {
+export const map: {
   <A, V, K>(f: (value: V, key: K) => A): (self: HashMap<K, V>) => HashMap<K, A>
   <K, V, A>(self: HashMap<K, V>, f: (value: V, key: K) => A): HashMap<K, A>
-} = HM.mapWithIndex
+} = HM.map
 
 /**
  * Chains over the values of the `HashMap` using the specified function.

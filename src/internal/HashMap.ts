@@ -400,19 +400,13 @@ export const removeMany = Dual.dual<
     }
   }))
 
-/** @internal */
-export const map = Dual.dual<
-  <V, A>(f: (value: V) => A) => <K>(self: HM.HashMap<K, V>) => HM.HashMap<K, A>,
-  <K, V, A>(self: HM.HashMap<K, V>, f: (value: V) => A) => HM.HashMap<K, A>
->(2, (self, f) => mapWithIndex(self, (v) => f(v)))
-
 /**
  * Maps over the entries of the `HashMap` using the specified function.
  *
  * @since 1.0.0
  * @category mapping
  */
-export const mapWithIndex = Dual.dual<
+export const map = Dual.dual<
   <A, V, K>(f: (value: V, key: K) => A) => (self: HM.HashMap<K, V>) => HM.HashMap<K, A>,
   <K, V, A>(self: HM.HashMap<K, V>, f: (value: V, key: K) => A) => HM.HashMap<K, A>
 >(2, (self, f) =>
