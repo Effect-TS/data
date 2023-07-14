@@ -261,9 +261,14 @@ export const endsWith: {
  *
  * @since 1.0.0
  */
-export const charCodeAt = (index: number) =>
-  (self: string): Option.Option<number> =>
+export const charCodeAt: {
+  (index: number): (self: string) => Option.Option<number>
+  (self: string, index: number): Option.Option<number>
+} = dual(
+  2,
+  (self: string, index: number): Option.Option<number> =>
     Option.filter(Option.some(self.charCodeAt(index)), (charCode) => !isNaN(charCode))
+)
 
 /**
  * @example

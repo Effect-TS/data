@@ -158,7 +158,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const charCodeAt: (index: number) => (self: string) => Option.Option<number>
+export declare const charCodeAt: {
+  (index: number): (self: string) => Option.Option<number>
+  (self: string, index: number): Option.Option<number>
+}
 ```
 
 **Example**
