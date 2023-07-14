@@ -309,8 +309,13 @@ export const at: {
  *
  * @since 1.0.0
  */
-export const charAt = (index: number) =>
-  (self: string): Option.Option<string> => Option.filter(Option.some(self.charAt(index)), isNonEmpty)
+export const charAt: {
+  (index: number): (self: string) => Option.Option<string>
+  (self: string, index: number): Option.Option<string>
+} = dual(
+  2,
+  (self: string, index: number): Option.Option<string> => Option.filter(Option.some(self.charAt(index)), isNonEmpty)
+)
 
 /**
  * @example
