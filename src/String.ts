@@ -234,15 +234,19 @@ export const startsWith: {
  * @example
  * import * as S from '@effect/data/String'
  *
- * assert.deepStrictEqual(S.endsWith("abc", "c"), true)
- * assert.deepStrictEqual(S.endsWith("ab", "c"), false)
+ * assert.deepStrictEqual(S.endsWith("abc", { searchString: "b", position: 2 }), true)
+ * assert.deepStrictEqual(S.endsWith("abc", { searchString: "c", position: 2 }), false)
  *
  * @since 1.0.0
  */
 export const endsWith: {
-  (searchString: string): (self: string) => boolean
-  (self: string, searchString: string): boolean
-} = dual(2, (self: string, searchString: string): boolean => self.endsWith(searchString))
+  (options: { searchString: string; position?: number }): (self: string) => boolean
+  (self: string, options: { searchString: string; position?: number }): boolean
+} = dual(
+  2,
+  (self: string, options: { searchString: string; position?: number }): boolean =>
+    self.endsWith(options.searchString, options.position)
+)
 
 /**
  * @example
@@ -476,23 +480,6 @@ export const toLocaleLowerCase = (locale?: string | Array<string>) =>
  */
 export const toLocaleUpperCase = (locale?: string | Array<string>) =>
   (self: string): string => self.toLocaleUpperCase(locale)
-
-/**
- * @example
- * import * as S from '@effect/data/String'
- *
- * assert.deepStrictEqual(S.endsWithPosition("abc", "b", 2), true)
- * assert.deepStrictEqual(S.endsWithPosition("abc", "c", 2), false)
- *
- * @since 1.0.0
- */
-export const endsWithPosition: {
-  (searchString: string, position: number): (self: string) => boolean
-  (self: string, searchString: string, position: number): boolean
-} = dual(
-  3,
-  (self: string, searchString: string, position: number): boolean => self.endsWith(searchString, position)
-)
 
 /**
  * Keep the specified number of characters from the start of a string.

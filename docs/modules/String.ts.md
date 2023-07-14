@@ -29,7 +29,6 @@ Added in v1.0.0
   - [concat](#concat)
   - [empty](#empty)
   - [endsWith](#endswith)
-  - [endsWithPosition](#endswithposition)
   - [includes](#includes)
   - [indexOf](#indexof)
   - [isEmpty](#isempty)
@@ -223,8 +222,8 @@ Added in v1.0.0
 
 ```ts
 export declare const endsWith: {
-  (searchString: string): (self: string) => boolean
-  (self: string, searchString: string): boolean
+  (options: { searchString: string; position?: number }): (self: string) => boolean
+  (self: string, options: { searchString: string; position?: number }): boolean
 }
 ```
 
@@ -233,30 +232,8 @@ export declare const endsWith: {
 ```ts
 import * as S from '@effect/data/String'
 
-assert.deepStrictEqual(S.endsWith('abc', 'c'), true)
-assert.deepStrictEqual(S.endsWith('ab', 'c'), false)
-```
-
-Added in v1.0.0
-
-## endsWithPosition
-
-**Signature**
-
-```ts
-export declare const endsWithPosition: {
-  (searchString: string, position: number): (self: string) => boolean
-  (self: string, searchString: string, position: number): boolean
-}
-```
-
-**Example**
-
-```ts
-import * as S from '@effect/data/String'
-
-assert.deepStrictEqual(S.endsWithPosition('abc', 'b', 2), true)
-assert.deepStrictEqual(S.endsWithPosition('abc', 'c', 2), false)
+assert.deepStrictEqual(S.endsWith('abc', { searchString: 'b', position: 2 }), true)
+assert.deepStrictEqual(S.endsWith('abc', { searchString: 'c', position: 2 }), false)
 ```
 
 Added in v1.0.0
