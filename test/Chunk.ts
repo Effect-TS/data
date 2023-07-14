@@ -4,6 +4,7 @@ import * as E from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
 import { identity, pipe } from "@effect/data/Function"
 import * as Option from "@effect/data/Option"
+import * as Order from "@effect/data/Order"
 import type { Predicate } from "@effect/data/Predicate"
 import * as RA from "@effect/data/ReadonlyArray"
 import * as Util from "@effect/data/test/util"
@@ -819,5 +820,14 @@ describe.concurrent("Chunk", () => {
     const as: Array<number> = []
     Chunk.forEach(Chunk.make(1, 2, 3, 4), (n) => as.push(n))
     expect(as).toEqual([1, 2, 3, 4])
+  })
+
+  it("sortWith", () => {
+    type X = {
+      a: string
+      b: number
+    }
+    const chunk: Chunk.Chunk<X> = Chunk.make({ a: "a", b: 2 }, { a: "b", b: 1 })
+    expect(Chunk.sortWith(chunk, (x) => x.b, Order.number)).toEqual(Chunk.make({ a: "b", b: 1 }, { a: "a", b: 2 }))
   })
 })

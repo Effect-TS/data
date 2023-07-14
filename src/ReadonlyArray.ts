@@ -14,8 +14,7 @@ import type { TypeLambda } from "@effect/data/HKT"
 import * as readonlyArray from "@effect/data/internal/ReadonlyArray"
 import type { Option } from "@effect/data/Option"
 import * as O from "@effect/data/Option"
-import * as order from "@effect/data/Order"
-import type { Order } from "@effect/data/Order"
+import * as Order from "@effect/data/Order"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as RR from "@effect/data/ReadonlyRecord"
 
@@ -861,13 +860,26 @@ export const reverseNonEmpty = <A>(
  * @since 1.0.0
  */
 export const sort: {
-  <B>(O: Order<B>): <A extends B>(self: Iterable<A>) => Array<A>
-  <A extends B, B>(self: Iterable<A>, O: Order<B>): Array<A>
-} = dual(2, <A extends B, B>(self: Iterable<A>, O: Order<B>): Array<A> => {
+  <B>(O: Order.Order<B>): <A extends B>(self: Iterable<A>) => Array<A>
+  <A extends B, B>(self: Iterable<A>, O: Order.Order<B>): Array<A>
+} = dual(2, <A extends B, B>(self: Iterable<A>, O: Order.Order<B>): Array<A> => {
   const out = Array.from(self)
   out.sort(O)
   return out
 })
+
+/**
+ * @since 1.0.0
+ * @category elements
+ */
+export const sortWith: {
+  <A, B>(f: (a: A) => B, order: Order.Order<B>): (self: ReadonlyArray<A>) => Array<A>
+  <A, B>(self: ReadonlyArray<A>, f: (a: A) => B, order: Order.Order<B>): Array<A>
+} = dual(
+  3,
+  <A, B>(self: ReadonlyArray<A>, f: (a: A) => B, order: Order.Order<B>): Array<A> =>
+    sort(self, Order.mapInput(order, f))
+)
 
 /**
  * Sort the elements of a `NonEmptyReadonlyArray` in increasing order, creating a new `NonEmptyArray`.
@@ -876,9 +888,12 @@ export const sort: {
  * @since 1.0.0
  */
 export const sortNonEmpty: {
-  <B>(O: Order<B>): <A extends B>(self: NonEmptyReadonlyArray<A>) => NonEmptyArray<A>
-  <A extends B, B>(self: NonEmptyReadonlyArray<A>, O: Order<B>): NonEmptyArray<A>
-} = dual(2, <A extends B, B>(self: NonEmptyReadonlyArray<A>, O: Order<B>): NonEmptyArray<A> => sort(O)(self) as any)
+  <B>(O: Order.Order<B>): <A extends B>(self: NonEmptyReadonlyArray<A>) => NonEmptyArray<A>
+  <A extends B, B>(self: NonEmptyReadonlyArray<A>, O: Order.Order<B>): NonEmptyArray<A>
+} = dual(
+  2,
+  <A extends B, B>(self: NonEmptyReadonlyArray<A>, O: Order.Order<B>): NonEmptyArray<A> => sort(O)(self) as any
+)
 
 /**
  * Sort the elements of an `Iterable` in increasing order, where elements are compared
@@ -887,7 +902,7 @@ export const sortNonEmpty: {
  * @category sorting
  * @since 1.0.0
  */
-export const sortBy = <B>(...orders: ReadonlyArray<Order<B>>) =>
+export const sortBy = <B>(...orders: ReadonlyArray<Order.Order<B>>) =>
   <A extends B>(self: Iterable<A>): Array<A> => {
     const input = fromIterable(self)
     return (isNonEmptyReadonlyArray(input) ? sortByNonEmpty(...orders)(input) : [])
@@ -898,8 +913,8 @@ export const sortBy = <B>(...orders: ReadonlyArray<Order<B>>) =>
  * @since 1.0.0
  */
 export const sortByNonEmpty = <B>(
-  ...orders: ReadonlyArray<Order<B>>
-): (<A extends B>(as: NonEmptyReadonlyArray<A>) => NonEmptyArray<A>) => sortNonEmpty(order.combineAll(orders))
+  ...orders: ReadonlyArray<Order.Order<B>>
+): (<A extends B>(as: NonEmptyReadonlyArray<A>) => NonEmptyArray<A>) => sortNonEmpty(Order.combineAll(orders))
 
 /**
  * Takes two `Iterable`s and returns an `Array` of corresponding pairs.
@@ -1833,17 +1848,17 @@ export const extend: {
  * @since 1.0.0
  */
 export const min: {
-  <A>(O: Order<A>): (self: NonEmptyReadonlyArray<A>) => A
-  <A>(self: NonEmptyReadonlyArray<A>, O: Order<A>): A
-} = dual(2, <A>(self: NonEmptyReadonlyArray<A>, O: Order<A>): A => self.reduce(order.min(O)))
+  <A>(O: Order.Order<A>): (self: NonEmptyReadonlyArray<A>) => A
+  <A>(self: NonEmptyReadonlyArray<A>, O: Order.Order<A>): A
+} = dual(2, <A>(self: NonEmptyReadonlyArray<A>, O: Order.Order<A>): A => self.reduce(Order.min(O)))
 
 /**
  * @since 1.0.0
  */
 export const max: {
-  <A>(O: Order<A>): (self: NonEmptyReadonlyArray<A>) => A
-  <A>(self: NonEmptyReadonlyArray<A>, O: Order<A>): A
-} = dual(2, <A>(self: NonEmptyReadonlyArray<A>, O: Order<A>): A => self.reduce(order.max(O)))
+  <A>(O: Order.Order<A>): (self: NonEmptyReadonlyArray<A>) => A
+  <A>(self: NonEmptyReadonlyArray<A>, O: Order.Order<A>): A
+} = dual(2, <A>(self: NonEmptyReadonlyArray<A>, O: Order.Order<A>): A => self.reduce(Order.max(O)))
 
 /**
  * @category constructors
@@ -1870,7 +1885,7 @@ export const unfold = <B, A>(b: B, f: (b: B) => Option<readonly [A, B]>): Array<
  * @category instances
  * @since 1.0.0
  */
-export const getOrder: <A>(O: Order<A>) => Order<ReadonlyArray<A>> = order.array
+export const getOrder: <A>(O: Order.Order<A>) => Order.Order<ReadonlyArray<A>> = Order.array
 
 /**
  * @category instances

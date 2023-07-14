@@ -10,7 +10,7 @@ import type { TypeLambda } from "@effect/data/HKT"
 import type { NonEmptyIterable } from "@effect/data/NonEmpty"
 import type { Option } from "@effect/data/Option"
 import * as O from "@effect/data/Option"
-import type { Order } from "@effect/data/Order"
+import * as Order from "@effect/data/Order"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
@@ -918,11 +918,23 @@ export const size = <A>(self: Chunk<A>): number => self.length
  * @category elements
  */
 export const sort: {
-  <B>(O: Order<B>): <A extends B>(self: Chunk<A>) => Chunk<A>
-  <A extends B, B>(self: Chunk<A>, O: Order<B>): Chunk<A>
+  <B>(O: Order.Order<B>): <A extends B>(self: Chunk<A>) => Chunk<A>
+  <A extends B, B>(self: Chunk<A>, O: Order.Order<B>): Chunk<A>
 } = dual(
   2,
-  <A extends B, B>(self: Chunk<A>, O: Order<B>): Chunk<A> => unsafeFromArray(RA.sort(toReadonlyArray(self), O))
+  <A extends B, B>(self: Chunk<A>, O: Order.Order<B>): Chunk<A> => unsafeFromArray(RA.sort(toReadonlyArray(self), O))
+)
+
+/**
+ * @since 1.0.0
+ * @category elements
+ */
+export const sortWith: {
+  <A, B>(f: (a: A) => B, order: Order.Order<B>): (self: Chunk<A>) => Chunk<A>
+  <A, B>(self: Chunk<A>, f: (a: A) => B, order: Order.Order<B>): Chunk<A>
+} = dual(
+  3,
+  <A, B>(self: Chunk<A>, f: (a: A) => B, order: Order.Order<B>): Chunk<A> => sort(self, Order.mapInput(order, f))
 )
 
 /**
