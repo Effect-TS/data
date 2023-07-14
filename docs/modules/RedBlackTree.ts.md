@@ -19,7 +19,7 @@ Added in v1.0.0
   - [fromIterable](#fromiterable)
   - [make](#make)
 - [elements](#elements)
-  - [find](#find)
+  - [findAll](#findall)
   - [findFirst](#findfirst)
   - [getAt](#getat)
   - [has](#has)
@@ -118,14 +118,14 @@ Added in v1.0.0
 
 # elements
 
-## find
+## findAll
 
 Finds all values in the tree associated with the specified key.
 
 **Signature**
 
 ```ts
-export declare const find: {
+export declare const findAll: {
   <K>(key: K): <V>(self: RedBlackTree<K, V>) => Chunk<V>
   <K, V>(self: RedBlackTree<K, V>, key: K): Chunk<V>
 }
@@ -135,7 +135,7 @@ Added in v1.0.0
 
 ## findFirst
 
-Finds the value in the tree associated with the specified key, if it exists.
+Finds the first value in the tree associated with the specified key, if it exists.
 
 **Signature**
 

@@ -152,7 +152,7 @@ const at = <K, V>(
 }
 
 /** @internal */
-export const find = Dual.dual<
+export const findAll = Dual.dual<
   <K>(key: K) => <V>(self: RBT.RedBlackTree<K, V>) => Chunk.Chunk<V>,
   <K, V>(self: RBT.RedBlackTree<K, V>, key: K) => Chunk.Chunk<V>
 >(2, <K, V>(self: RBT.RedBlackTree<K, V>, key: K) => {

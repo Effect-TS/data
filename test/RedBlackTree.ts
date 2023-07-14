@@ -316,7 +316,7 @@ describe.concurrent("RedBlackTree", () => {
     )
   })
 
-  it("find", () => {
+  it("findAll", () => {
     const tree = pipe(
       RedBlackTree.empty<number, string>(number.Order),
       RedBlackTree.insert(1, "a"),
@@ -326,7 +326,7 @@ describe.concurrent("RedBlackTree", () => {
       RedBlackTree.insert(1, "e")
     )
 
-    deepStrictEqual(Array.from(RedBlackTree.find(1)(tree)), ["a", "b", "e"])
+    deepStrictEqual(Array.from(RedBlackTree.findAll(1)(tree)), ["a", "b", "e"])
 
     const bigintTree = pipe(
       RedBlackTree.empty(Order.bigint),
@@ -338,10 +338,10 @@ describe.concurrent("RedBlackTree", () => {
       RedBlackTree.insert(2n, 6)
     )
 
-    deepStrictEqual(Array.from(RedBlackTree.find(1n)(bigintTree)), [1, 2, 3, 4, 5])
+    deepStrictEqual(Array.from(RedBlackTree.findAll(1n)(bigintTree)), [1, 2, 3, 4, 5])
   })
 
-  it("find Eq/Ord", () => {
+  it("findAll Eq/Ord", () => {
     class Key {
       constructor(readonly n: number, readonly s: string) {}
 
@@ -368,7 +368,7 @@ describe.concurrent("RedBlackTree", () => {
     )
 
     deepStrictEqual(Array.from(RedBlackTree.values(tree)), ["g", "f", "e", "b", "a", "c", "d"])
-    deepStrictEqual(Array.from(RedBlackTree.find(new Key(1, "0"))(tree)), ["a", "e", "f"])
+    deepStrictEqual(Array.from(RedBlackTree.findAll(new Key(1, "0"))(tree)), ["a", "e", "f"])
     deepStrictEqual(
       Array.from(RedBlackTree.values(RedBlackTree.removeFirst(new Key(1, "1"))(tree))),
       [

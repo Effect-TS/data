@@ -114,13 +114,13 @@ export const atReversed: {
  * @since 1.0.0
  * @category elements
  */
-export const find: {
+export const findAll: {
   <K>(key: K): <V>(self: RedBlackTree<K, V>) => Chunk<V>
   <K, V>(self: RedBlackTree<K, V>, key: K): Chunk<V>
-} = RBT.find
+} = RBT.findAll
 
 /**
- * Finds the value in the tree associated with the specified key, if it exists.
+ * Finds the first value in the tree associated with the specified key, if it exists.
  *
  * @category elements
  * @since 1.0.0
