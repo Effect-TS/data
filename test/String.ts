@@ -81,10 +81,10 @@ describe.concurrent("String", () => {
   })
 
   it("includes", () => {
-    expect(S.includes("abc", { searchString: "b" })).toBe(true)
-    expect(S.includes("abc", { searchString: "d" })).toBe(false)
-    expect(S.includes("abc", { searchString: "b", position: 1 })).toBe(true)
-    expect(S.includes("abc", { searchString: "a", position: 1 })).toBe(false)
+    expect(pipe("abc", S.includes("b"))).toBe(true)
+    expect(pipe("abc", S.includes("d"))).toBe(false)
+    expect(pipe("abc", S.includes("b", 1))).toBe(true)
+    expect(pipe("abc", S.includes("a", 1))).toBe(false)
   })
 
   it("startsWith", () => {

@@ -258,19 +258,7 @@ greater than or equal to `position`; otherwise, returns `false`.
 **Signature**
 
 ```ts
-export declare const includes: {
-  (options: { searchString: string; position?: number }): (self: string) => boolean
-  (self: string, options: { searchString: string; position?: number }): boolean
-}
-```
-
-**Example**
-
-```ts
-import * as S from '@effect/data/String'
-
-assert.deepStrictEqual(S.includes('abc', { searchString: 'b', position: 1 }), true)
-assert.deepStrictEqual(S.includes('abc', { searchString: 'a', position: 1 }), false)
+export declare const includes: (searchString: string, position?: number) => (self: string) => boolean
 ```
 
 Added in v1.0.0
