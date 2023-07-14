@@ -91,13 +91,8 @@ export const toLowerCase = (self: string): string => self.toLowerCase()
  *
  * @since 1.0.0
  */
-export const replace: {
-  (searchValue: string | RegExp, replaceValue: string): (self: string) => string
-  (self: string, searchValue: string | RegExp, replaceValue: string): string
-} = dual(
-  3,
-  (self: string, searchValue: string | RegExp, replaceValue: string): string => self.replace(searchValue, replaceValue)
-)
+export const replace = (searchValue: string | RegExp, replaceValue: string) =>
+  (self: string): string => self.replace(searchValue, replaceValue)
 
 /**
  * @example

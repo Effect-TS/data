@@ -519,10 +519,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const replace: {
-  (searchValue: string | RegExp, replaceValue: string): (self: string) => string
-  (self: string, searchValue: string | RegExp, replaceValue: string): string
-}
+export declare const replace: (searchValue: string | RegExp, replaceValue: string) => (self: string) => string
 ```
 
 **Example**
