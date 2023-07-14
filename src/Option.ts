@@ -3,6 +3,7 @@
  */
 import type * as Data from "@effect/data/Data"
 import type { Either } from "@effect/data/Either"
+import * as Equal from "@effect/data/Equal"
 import * as Equivalence from "@effect/data/Equivalence"
 import type { LazyArg } from "@effect/data/Function"
 import { constNull, constUndefined, dual, identity } from "@effect/data/Function"
@@ -1073,21 +1074,34 @@ export const liftPredicate: {
  * @param a - The value to compare against the `Option`.
  *
  * @example
- * import { some, none, contains } from '@effect/data/Option'
+ * import { some, none, containsWith } from '@effect/data/Option'
  * import { Equivalence } from '@effect/data/Number'
  * import { pipe } from "@effect/data/Function"
  *
- * assert.deepStrictEqual(pipe(some(2), contains(Equivalence)(2)), true)
- * assert.deepStrictEqual(pipe(some(1), contains(Equivalence)(2)), false)
- * assert.deepStrictEqual(pipe(none(), contains(Equivalence)(2)), false)
+ * assert.deepStrictEqual(pipe(some(2), containsWith(Equivalence)(2)), true)
+ * assert.deepStrictEqual(pipe(some(1), containsWith(Equivalence)(2)), false)
+ * assert.deepStrictEqual(pipe(none(), containsWith(Equivalence)(2)), false)
  *
  * @category elements
  * @since 1.0.0
  */
-export const contains = <A>(isEquivalent: (self: A, that: A) => boolean): {
+export const containsWith = <A>(isEquivalent: (self: A, that: A) => boolean): {
   (a: A): (self: Option<A>) => boolean
   (self: Option<A>, a: A): boolean
 } => dual(2, (self: Option<A>, a: A): boolean => isNone(self) ? false : isEquivalent(self.value, a))
+
+const _equivalence = Equal.equivalence()
+
+/**
+ * Returns a function that checks if an `Option` contains a given value using the default `Equivalence`.
+ *
+ * @category elements
+ * @since 1.0.0
+ */
+export const contains: {
+  <A>(a: A): (self: Option<A>) => boolean
+  <A>(self: Option<A>, a: A): boolean
+} = containsWith(_equivalence)
 
 /**
  * Check if a value in an `Option` type meets a certain predicate.

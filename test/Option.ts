@@ -1,5 +1,4 @@
 import * as E from "@effect/data/Either"
-import * as Equivalence from "@effect/data/Equivalence"
 import { pipe } from "@effect/data/Function"
 import * as N from "@effect/data/Number"
 import * as _ from "@effect/data/Option"
@@ -257,11 +256,20 @@ describe.concurrent("Option", () => {
     Util.deepStrictEqual(parseDirection("foo"), _.none())
   })
 
+  it("containsWith", () => {
+    const containsWith = _.containsWith<number>((self, that) => self % 2 === that % 2)
+    Util.deepStrictEqual(pipe(_.some(2), containsWith(2)), true)
+    Util.deepStrictEqual(pipe(_.some(4), containsWith(4)), true)
+    Util.deepStrictEqual(pipe(_.some(1), containsWith(3)), true)
+
+    Util.deepStrictEqual(pipe(_.none(), containsWith(2)), false)
+    Util.deepStrictEqual(pipe(_.some(2), containsWith(1)), false)
+  })
+
   it("contains", () => {
-    const contains = _.contains(Equivalence.number)
-    Util.deepStrictEqual(pipe(_.none(), contains(2)), false)
-    Util.deepStrictEqual(pipe(_.some(2), contains(2)), true)
-    Util.deepStrictEqual(pipe(_.some(2), contains(1)), false)
+    Util.deepStrictEqual(pipe(_.none(), _.contains(2)), false)
+    Util.deepStrictEqual(pipe(_.some(2), _.contains(2)), true)
+    Util.deepStrictEqual(pipe(_.some(2), _.contains(1)), false)
   })
 
   it("isNone", () => {

@@ -1192,7 +1192,10 @@ export const contains: {
  */
 export const containsWith: <A>(
   isEquivalent: (self: A, that: A) => boolean
-) => { (a: A): (self: Chunk<A>) => boolean; (self: Chunk<A>, a: A): boolean } = RA.containsWith
+) => {
+  (a: A): (self: Chunk<A>) => boolean
+  (self: Chunk<A>, a: A): boolean
+} = RA.containsWith
 
 /**
  * Returns the first element that satisfies the specified
