@@ -293,19 +293,6 @@ export const map: {
 } = HM.map
 
 /**
- * Chains over the values of the `HashMap` using the specified function.
- *
- * **NOTE**: the hash and equal of both maps have to be the same.
- *
- * @since 1.0.0
- * @category sequencing
- */
-export const flatMap: {
-  <K, A, B>(f: (value: A) => HashMap<K, B>): (self: HashMap<K, A>) => HashMap<K, B>
-  <K, A, B>(self: HashMap<K, A>, f: (value: A) => HashMap<K, B>): HashMap<K, B>
-} = HM.flatMap
-
-/**
  * Chains over the entries of the `HashMap` using the specified function.
  *
  * **NOTE**: the hash and equal of both maps have to be the same.
@@ -313,10 +300,10 @@ export const flatMap: {
  * @since 1.0.0
  * @category sequencing
  */
-export const flatMapWithIndex: {
+export const flatMap: {
   <A, K, B>(f: (value: A, key: K) => HashMap<K, B>): (self: HashMap<K, A>) => HashMap<K, B>
   <K, A, B>(self: HashMap<K, A>, f: (value: A, key: K) => HashMap<K, B>): HashMap<K, B>
-} = HM.flatMapWithIndex
+} = HM.flatMap
 
 /**
  * Applies the specified function to the values of the `HashMap`.

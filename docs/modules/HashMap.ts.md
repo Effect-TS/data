@@ -44,7 +44,6 @@ Added in v1.0.0
   - [isHashMap](#ishashmap)
 - [sequencing](#sequencing)
   - [flatMap](#flatmap)
-  - [flatMapWithIndex](#flatmapwithindex)
 - [symbol](#symbol)
   - [TypeId (type alias)](#typeid-type-alias)
 - [traversing](#traversing)
@@ -384,23 +383,6 @@ Added in v1.0.0
 
 ## flatMap
 
-Chains over the values of the `HashMap` using the specified function.
-
-**NOTE**: the hash and equal of both maps have to be the same.
-
-**Signature**
-
-```ts
-export declare const flatMap: {
-  <K, A, B>(f: (value: A) => HashMap<K, B>): (self: HashMap<K, A>) => HashMap<K, B>
-  <K, A, B>(self: HashMap<K, A>, f: (value: A) => HashMap<K, B>): HashMap<K, B>
-}
-```
-
-Added in v1.0.0
-
-## flatMapWithIndex
-
 Chains over the entries of the `HashMap` using the specified function.
 
 **NOTE**: the hash and equal of both maps have to be the same.
@@ -408,7 +390,7 @@ Chains over the entries of the `HashMap` using the specified function.
 **Signature**
 
 ```ts
-export declare const flatMapWithIndex: {
+export declare const flatMap: {
   <A, K, B>(f: (value: A, key: K) => HashMap<K, B>): (self: HashMap<K, A>) => HashMap<K, B>
   <K, A, B>(self: HashMap<K, A>, f: (value: A, key: K) => HashMap<K, B>): HashMap<K, B>
 }

@@ -418,12 +418,6 @@ export const map = Dual.dual<
 
 /** @internal */
 export const flatMap = Dual.dual<
-  <K, A, B>(f: (value: A) => HM.HashMap<K, B>) => (self: HM.HashMap<K, A>) => HM.HashMap<K, B>,
-  <K, A, B>(self: HM.HashMap<K, A>, f: (value: A) => HM.HashMap<K, B>) => HM.HashMap<K, B>
->(2, (self, f) => flatMapWithIndex(self, (v) => f(v)))
-
-/** @internal */
-export const flatMapWithIndex = Dual.dual<
   <A, K, B>(
     f: (value: A, key: K) => HM.HashMap<K, B>
   ) => (self: HM.HashMap<K, A>) => HM.HashMap<K, B>,
