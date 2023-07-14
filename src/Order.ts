@@ -119,15 +119,6 @@ export const mapInput: {
 )
 
 /**
- * Use `mapInput` instead.
- *
- * @category combinators
- * @since 1.0.0
- * @deprecated
- */
-export const contramap = mapInput
-
-/**
  * @category combining
  * @since 1.0.0
  */

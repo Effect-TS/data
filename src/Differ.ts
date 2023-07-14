@@ -200,14 +200,6 @@ export const orElseEither: {
 } = D.orElseEither
 
 /**
- * Use `orElseEither` instead.
- *
- * @since 1.0.0
- * @deprecated
- */
-export const orElseResult = orElseEither
-
-/**
  * Transforms the type of values that this differ knows how to differ using
  * the specified functions that map the new and old value types to each other.
  *

@@ -18,7 +18,6 @@ Added in v1.0.0
 
 - [combinators](#combinators)
   - [array](#array)
-  - [~~contramap~~](#contramap)
   - [mapInput](#mapinput)
   - [struct](#struct)
   - [tuple](#tuple)
@@ -55,21 +54,6 @@ Creates a new `Equivalence` for an array of values based on a given `Equivalence
 
 ```ts
 export declare const array: <A>(item: Equivalence<A>) => Equivalence<readonly A[]>
-```
-
-Added in v1.0.0
-
-## ~~contramap~~
-
-Use `mapInput` instead.
-
-**Signature**
-
-```ts
-export declare const contramap: {
-  <B, A>(f: (b: B) => A): (self: Equivalence<A>) => Equivalence<B>
-  <A, B>(self: Equivalence<A>, f: (b: B) => A): Equivalence<B>
-}
 ```
 
 Added in v1.0.0

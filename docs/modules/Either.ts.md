@@ -26,7 +26,6 @@ Added in v1.0.0
   - [isLeft](#isleft)
   - [isRight](#isright)
 - [mapping](#mapping)
-  - [~~map~~](#map)
   - [mapBoth](#mapboth)
   - [mapRight](#mapright)
 - [models](#models)
@@ -216,21 +215,6 @@ assert.deepStrictEqual(isRight(left('a')), false)
 Added in v1.0.0
 
 # mapping
-
-## ~~map~~
-
-Use `mapRight` instead.
-
-**Signature**
-
-```ts
-export declare const map: {
-  <A, B>(f: (a: A) => B): <E>(self: Either<E, A>) => Either<E, B>
-  <E, A, B>(self: Either<E, A>, f: (a: A) => B): Either<E, B>
-}
-```
-
-Added in v1.0.0
 
 ## mapBoth
 

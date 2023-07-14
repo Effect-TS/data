@@ -2,10 +2,6 @@ import * as _ from "@effect/data/Equivalence"
 import { pipe } from "@effect/data/Function"
 
 describe.concurrent("Equivalence", () => {
-  it("exports", () => {
-    expect(_.contramap).exist
-  })
-
   it("array", () => {
     const eq = _.array(_.number)
 

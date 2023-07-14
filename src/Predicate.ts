@@ -54,15 +54,6 @@ export const mapInput: {
 } = dual(2, <A, B>(self: Predicate<A>, f: (b: B) => A): Predicate<B> => (b) => self(f(b)))
 
 /**
- * Use `mapInput` instead.
- *
- * @category combinators
- * @since 1.0.0
- * @deprecated
- */
-export const contramap = mapInput
-
-/**
  * Tests if a value is a `string`.
  *
  * @param input - The value to test.
