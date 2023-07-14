@@ -2,4 +2,4 @@
 "@effect/data": minor
 ---
 
-HasMap: remove mapWithIndex in favour of map
+HashMap: remove mapWithIndex in favour of map

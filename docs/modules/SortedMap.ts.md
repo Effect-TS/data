@@ -32,7 +32,6 @@ Added in v1.0.0
   - [values](#values)
 - [mapping](#mapping)
   - [map](#map)
-  - [mapWithIndex](#mapwithindex)
 - [models](#models)
   - [SortedMap (interface)](#sortedmap-interface)
 - [predicates](#predicates)
@@ -222,19 +221,6 @@ Added in v1.0.0
 
 ```ts
 export declare const map: {
-  <A, B>(f: (a: A) => B): <K>(self: SortedMap<K, A>) => SortedMap<K, B>
-  <K, A, B>(self: SortedMap<K, A>, f: (a: A) => B): SortedMap<K, B>
-}
-```
-
-Added in v1.0.0
-
-## mapWithIndex
-
-**Signature**
-
-```ts
-export declare const mapWithIndex: {
   <A, K, B>(f: (a: A, k: K) => B): (self: SortedMap<K, A>) => SortedMap<K, B>
   <K, A, B>(self: SortedMap<K, A>, f: (a: A, k: K) => B): SortedMap<K, B>
 }

@@ -161,18 +161,6 @@ export const headOption = <K, V>(self: SortedMap<K, V>): Option.Option<readonly 
  * @category mapping
  */
 export const map: {
-  <A, B>(f: (a: A) => B): <K>(self: SortedMap<K, A>) => SortedMap<K, B>
-  <K, A, B>(self: SortedMap<K, A>, f: (a: A) => B): SortedMap<K, B>
-} = Dual.dual<
-  <A, B>(f: (a: A) => B) => <K>(self: SortedMap<K, A>) => SortedMap<K, B>,
-  <K, A, B>(self: SortedMap<K, A>, f: (a: A) => B) => SortedMap<K, B>
->(2, (self, f) => mapWithIndex(self, (a) => f(a)))
-
-/**
- * @since 1.0.0
- * @category mapping
- */
-export const mapWithIndex: {
   <A, K, B>(f: (a: A, k: K) => B): (self: SortedMap<K, A>) => SortedMap<K, B>
   <K, A, B>(self: SortedMap<K, A>, f: (a: A, k: K) => B): SortedMap<K, B>
 } = Dual.dual<
