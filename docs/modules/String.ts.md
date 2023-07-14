@@ -580,10 +580,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const slice: {
-  (start: number, end: number): (self: string) => string
-  (self: string, start: number, end: number): string
-}
+export declare const slice: (start?: number, end?: number) => (self: string) => string
 ```
 
 **Example**

@@ -133,10 +133,7 @@ export const trimEnd = (self: string): string => self.trimEnd()
  *
  * @since 1.0.0
  */
-export const slice: {
-  (start: number, end: number): (self: string) => string
-  (self: string, start: number, end: number): string
-} = dual(3, (self: string, start: number, end: number): string => self.slice(start, end))
+export const slice = (start?: number, end?: number) => (self: string): string => self.slice(start, end)
 
 /**
  * Test whether a `string` is empty.
