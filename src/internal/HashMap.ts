@@ -492,12 +492,6 @@ export const compact = <K, A>(self: HM.HashMap<K, Option.Option<A>>) => filterMa
 
 /** @internal */
 export const filterMap = Dual.dual<
-  <A, B>(f: (value: A) => Option.Option<B>) => <K>(self: HM.HashMap<K, A>) => HM.HashMap<K, B>,
-  <K, A, B>(self: HM.HashMap<K, A>, f: (value: A) => Option.Option<B>) => HM.HashMap<K, B>
->(2, (self, f) => filterMapWithIndex(self, f))
-
-/** @internal */
-export const filterMapWithIndex = Dual.dual<
   <A, K, B>(
     f: (value: A, key: K) => Option.Option<B>
   ) => (self: HM.HashMap<K, A>) => HM.HashMap<K, B>,

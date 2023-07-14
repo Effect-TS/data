@@ -26,7 +26,6 @@ Added in v1.0.0
   - [compact](#compact)
   - [filter](#filter)
   - [filterMap](#filtermap)
-  - [filterMapWithIndex](#filtermapwithindex)
 - [folding](#folding)
   - [reduce](#reduce)
 - [getter](#getter)
@@ -215,29 +214,13 @@ Added in v1.0.0
 
 ## filterMap
 
-Maps over the values of the `HashMap` using the specified partial function
-and filters out `None` values.
-
-**Signature**
-
-```ts
-export declare const filterMap: {
-  <A, B>(f: (value: A) => Option<B>): <K>(self: HashMap<K, A>) => HashMap<K, B>
-  <K, A, B>(self: HashMap<K, A>, f: (value: A) => Option<B>): HashMap<K, B>
-}
-```
-
-Added in v1.0.0
-
-## filterMapWithIndex
-
 Maps over the entries of the `HashMap` using the specified partial function
 and filters out `None` values.
 
 **Signature**
 
 ```ts
-export declare const filterMapWithIndex: {
+export declare const filterMap: {
   <A, K, B>(f: (value: A, key: K) => Option<B>): (self: HashMap<K, A>) => HashMap<K, B>
   <K, A, B>(self: HashMap<K, A>, f: (value: A, key: K) => Option<B>): HashMap<K, B>
 }

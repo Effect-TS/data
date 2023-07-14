@@ -348,25 +348,13 @@ export const filter: {
 export const compact: <K, A>(self: HashMap<K, Option<A>>) => HashMap<K, A> = HM.compact
 
 /**
- * Maps over the values of the `HashMap` using the specified partial function
- * and filters out `None` values.
- *
- * @since 1.0.0
- * @category filtering
- */
-export const filterMap: {
-  <A, B>(f: (value: A) => Option<B>): <K>(self: HashMap<K, A>) => HashMap<K, B>
-  <K, A, B>(self: HashMap<K, A>, f: (value: A) => Option<B>): HashMap<K, B>
-} = HM.filterMap
-
-/**
  * Maps over the entries of the `HashMap` using the specified partial function
  * and filters out `None` values.
  *
  * @since 1.0.0
  * @category filtering
  */
-export const filterMapWithIndex: {
+export const filterMap: {
   <A, K, B>(f: (value: A, key: K) => Option<B>): (self: HashMap<K, A>) => HashMap<K, B>
   <K, A, B>(self: HashMap<K, A>, f: (value: A, key: K) => Option<B>): HashMap<K, B>
-} = HM.filterMapWithIndex
+} = HM.filterMap
