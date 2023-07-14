@@ -31,7 +31,6 @@ Added in v1.0.0
   - [endsWith](#endswith)
   - [endsWithPosition](#endswithposition)
   - [includes](#includes)
-  - [includesWithPosition](#includeswithposition)
   - [indexOf](#indexof)
   - [isEmpty](#isempty)
   - [isNonEmpty](#isnonempty)
@@ -266,37 +265,12 @@ Added in v1.0.0
 ## includes
 
 Returns `true` if `searchString` appears as a substring of `self`, at one or more positions that are
-greater than or equal to `0`; otherwise, returns `false`.
-
-**Signature**
-
-```ts
-export declare const includes: {
-  (searchString: string): (self: string) => boolean
-  (self: string, searchString: string): boolean
-}
-```
-
-**Example**
-
-```ts
-import * as S from '@effect/data/String'
-
-assert.deepStrictEqual(S.includes('abc', 'b'), true)
-assert.deepStrictEqual(S.includes('abc', 'd'), false)
-```
-
-Added in v1.0.0
-
-## includesWithPosition
-
-Returns `true` if `searchString` appears as a substring of `self`, at one or more positions that are
 greater than or equal to `position`; otherwise, returns `false`.
 
 **Signature**
 
 ```ts
-export declare const includesWithPosition: {
+export declare const includes: {
   (searchString: string, position: number): (self: string) => boolean
   (self: string, searchString: string, position: number): boolean
 }
@@ -307,8 +281,8 @@ export declare const includesWithPosition: {
 ```ts
 import * as S from '@effect/data/String'
 
-assert.deepStrictEqual(S.includesWithPosition('abc', 'b', 1), true)
-assert.deepStrictEqual(S.includesWithPosition('abc', 'a', 1), false)
+assert.deepStrictEqual(S.includes('abc', 'b', 1), true)
+assert.deepStrictEqual(S.includes('abc', 'a', 1), false)
 ```
 
 Added in v1.0.0

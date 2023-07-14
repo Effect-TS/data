@@ -81,13 +81,10 @@ describe.concurrent("String", () => {
   })
 
   it("includes", () => {
-    expect(S.includes("abc", "b")).toBe(true)
-    expect(S.includes("abc", "d")).toBe(false)
-  })
-
-  it("includesWithPosition", () => {
-    expect(S.includesWithPosition("abc", "b", 1)).toBe(true)
-    expect(S.includesWithPosition("abc", "a", 1)).toBe(false)
+    expect(S.includes("abc", "b", 0)).toBe(true)
+    expect(S.includes("abc", "d", 0)).toBe(false)
+    expect(S.includes("abc", "b", 1)).toBe(true)
+    expect(S.includes("abc", "a", 1)).toBe(false)
   })
 
   it("startsWith", () => {

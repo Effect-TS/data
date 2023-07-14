@@ -195,34 +195,17 @@ export const split: {
 
 /**
  * Returns `true` if `searchString` appears as a substring of `self`, at one or more positions that are
- * greater than or equal to `0`; otherwise, returns `false`.
- *
- * @example
- * import * as S from '@effect/data/String'
- *
- * assert.deepStrictEqual(S.includes("abc", "b"), true)
- * assert.deepStrictEqual(S.includes("abc", "d"), false)
- *
- * @since 1.0.0
- */
-export const includes: {
-  (searchString: string): (self: string) => boolean
-  (self: string, searchString: string): boolean
-} = dual(2, (self: string, searchString: string): boolean => self.includes(searchString))
-
-/**
- * Returns `true` if `searchString` appears as a substring of `self`, at one or more positions that are
  * greater than or equal to `position`; otherwise, returns `false`.
  *
  * @example
  * import * as S from '@effect/data/String'
  *
- * assert.deepStrictEqual(S.includesWithPosition("abc", "b", 1), true)
- * assert.deepStrictEqual(S.includesWithPosition("abc", "a", 1), false)
+ * assert.deepStrictEqual(S.includes("abc", "b", 1), true)
+ * assert.deepStrictEqual(S.includes("abc", "a", 1), false)
  *
  * @since 1.0.0
  */
-export const includesWithPosition: {
+export const includes: {
   (searchString: string, position: number): (self: string) => boolean
   (self: string, searchString: string, position: number): boolean
 } = dual(
