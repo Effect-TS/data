@@ -718,44 +718,6 @@ export const tap: {
 } = dual(2, <A, _>(self: Option<A>, f: (a: A) => Option<_>): Option<A> => flatMap(self, (a) => map(f(a), () => a)))
 
 /**
- * Useful for debugging purposes, the `onSome` callback is called with the value of `self` if it is a `Some`.
- *
- * @param self - the `Option` to inspect
- * @param onSome - callback function that is called with the value of `self` if it is a `Some`
- *
- * @category debugging
- * @since 1.0.0
- */
-export const inspectSome: {
-  <A>(onSome: (a: A) => void): (self: Option<A>) => Option<A>
-  <A>(self: Option<A>, onSome: (a: A) => void): Option<A>
-} = dual(2, <A>(self: Option<A>, onSome: (a: A) => void): Option<A> => {
-  if (isSome(self)) {
-    onSome(self.value)
-  }
-  return self
-})
-
-/**
- * Useful for debugging purposes, the `onNone` callback is is called if `self` is a `None`.
- *
- * @param self - the `Option` to inspect
- * @param onNone - callback function that is is called if `self` is a `None`
- *
- * @category debugging
- * @since 1.0.0
- */
-export const inspectNone: {
-  (onNone: () => void): <A>(self: Option<A>) => Option<A>
-  <A>(self: Option<A>, onNone: () => void): Option<A>
-} = dual(2, <A>(self: Option<A>, onNone: () => void): Option<A> => {
-  if (isNone(self)) {
-    onNone()
-  }
-  return self
-})
-
-/**
  * @category combining
  * @since 1.0.0
  */

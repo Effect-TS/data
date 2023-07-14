@@ -32,9 +32,6 @@ Added in v1.0.0
   - [liftThrowable](#liftthrowable)
   - [toArray](#toarray)
   - [toRefinement](#torefinement)
-- [debugging](#debugging)
-  - [inspectNone](#inspectnone)
-  - [inspectSome](#inspectsome)
 - [do notation](#do-notation)
   - [Do](#do)
   - [bind](#bind)
@@ -481,38 +478,6 @@ const isPositive = O.toRefinement(parsePositive)
 
 assert.deepStrictEqual(isPositive(1), true)
 assert.deepStrictEqual(isPositive(-1), false)
-```
-
-Added in v1.0.0
-
-# debugging
-
-## inspectNone
-
-Useful for debugging purposes, the `onNone` callback is is called if `self` is a `None`.
-
-**Signature**
-
-```ts
-export declare const inspectNone: {
-  (onNone: () => void): <A>(self: Option<A>) => Option<A>
-  <A>(self: Option<A>, onNone: () => void): Option<A>
-}
-```
-
-Added in v1.0.0
-
-## inspectSome
-
-Useful for debugging purposes, the `onSome` callback is called with the value of `self` if it is a `Some`.
-
-**Signature**
-
-```ts
-export declare const inspectSome: {
-  <A>(onSome: (a: A) => void): (self: Option<A>) => Option<A>
-  <A>(self: Option<A>, onSome: (a: A) => void): Option<A>
-}
 ```
 
 Added in v1.0.0

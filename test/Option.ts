@@ -81,38 +81,6 @@ describe.concurrent("Option", () => {
     expect(pipe(_.none(), _.orElseEither(() => _.none()))).toEqual(_.none())
   })
 
-  it("inspectSome", () => {
-    const log: Array<number> = []
-    pipe(
-      _.some(1),
-      _.inspectSome(() => log.push(1))
-    )
-    pipe(
-      _.none(),
-      _.inspectSome(() => log.push(2))
-    )
-    Util.deepStrictEqual(
-      log,
-      [1]
-    )
-  })
-
-  it("inspectNone", () => {
-    const log: Array<number> = []
-    pipe(
-      _.some(1),
-      _.inspectNone(() => log.push(1))
-    )
-    pipe(
-      _.none(),
-      _.inspectNone(() => log.push(2))
-    )
-    Util.deepStrictEqual(
-      log,
-      [2]
-    )
-  })
-
   it("getOrThrow", () => {
     expect(pipe(_.some(1), _.getOrThrow)).toEqual(1)
     expect(() => pipe(_.none(), _.getOrThrow)).toThrowError(
