@@ -88,10 +88,10 @@ describe.concurrent("String", () => {
   })
 
   it("startsWith", () => {
-    expect(S.startsWith("abc", "a", 0)).toBe(true)
-    expect(S.startsWith("bc", "a", 0)).toBe(false)
-    expect(S.startsWith("abc", "b", 1)).toBe(true)
-    expect(S.startsWith("bc", "a", 1)).toBe(false)
+    expect(S.startsWith("abc", { searchString: "a" })).toBe(true)
+    expect(S.startsWith("bc", { searchString: "a" })).toBe(false)
+    expect(S.startsWith("abc", { searchString: "b", position: 1 })).toBe(true)
+    expect(S.startsWith("bc", { searchString: "a", position: 1 })).toBe(false)
   })
 
   it("endsWith", () => {

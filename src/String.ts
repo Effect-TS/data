@@ -217,17 +217,18 @@ export const includes: {
  * @example
  * import * as S from '@effect/data/String'
  *
- * assert.deepStrictEqual(S.startsWith("abc", "b", 1), true)
- * assert.deepStrictEqual(S.startsWith("bc", "a", 1), false)
+ * assert.deepStrictEqual(S.startsWith("abc", { searchString: "b", position: 1 }), true)
+ * assert.deepStrictEqual(S.startsWith("bc", { searchString: "a", position: 1 }), false)
  *
  * @since 1.0.0
  */
 export const startsWith: {
-  (searchString: string, position: number): (self: string) => boolean
-  (self: string, searchString: string, position: number): boolean
+  (options: { searchString: string; position?: number }): (self: string) => boolean
+  (self: string, options: { searchString: string; position?: number }): boolean
 } = dual(
-  3,
-  (self: string, searchString: string, position: number): boolean => self.startsWith(searchString, position)
+  2,
+  (self: string, options: { searchString: string; position?: number }): boolean =>
+    self.startsWith(options.searchString, options.position)
 )
 
 /**
