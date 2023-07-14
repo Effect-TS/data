@@ -11,6 +11,9 @@ type either = Unify.Unify<Either.Either<"LA", "RA"> | Either.Either<"LB", "RB">>
 // $ExpectType 0 | Option<string | number> | Either<"LA" | "LB", "RA" | "RB">
 type both = Unify.Unify<Either.Either<"LA", "RA"> | Either.Either<"LB", "RB"> | Option.Option<number> | Option.Option<string> | 0>
 
+// $ExpectType { [k: string]: string; }
+type obj = Unify.Unify<{ [k: string]: string }>
+
 // $ExpectType <N>(n: N) => Either<string, N>
 const b = Unify.unify(<N>(n: N) => Math.random() > 0 ? Either.right(n) : Either.left("ok"))
 

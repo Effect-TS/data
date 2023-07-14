@@ -13,11 +13,7 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [utils](#utils)
-  - [Blacklist (type alias)](#blacklist-type-alias)
-  - [ExtractTypes (type alias)](#extracttypes-type-alias)
-  - [MaybeReturn (type alias)](#maybereturn-type-alias)
   - [Unify (type alias)](#unify-type-alias)
-  - [Values (type alias)](#values-type-alias)
   - [blacklistSymbol (type alias)](#blacklistsymbol-type-alias)
   - [typeSymbol (type alias)](#typesymbol-type-alias)
   - [unify](#unify)
@@ -27,66 +23,13 @@ Added in v1.0.0
 
 # utils
 
-## Blacklist (type alias)
-
-**Signature**
-
-```ts
-export type Blacklist<X> = X extends {
-  [blacklistSymbol]?: any
-}
-  ? keyof NonNullable<X[blacklistSymbol]>
-  : never
-```
-
-Added in v1.0.0
-
-## ExtractTypes (type alias)
-
-**Signature**
-
-```ts
-export type ExtractTypes<
-  X extends {
-    [typeSymbol]?: any
-    [unifySymbol]?: any
-  }
-> = X extends any ? [NonNullable<X[unifySymbol]>, Blacklist<X>] : never
-```
-
-Added in v1.0.0
-
-## MaybeReturn (type alias)
-
-**Signature**
-
-```ts
-export type MaybeReturn<F> = F extends () => any ? ReturnType<F> : F
-```
-
-Added in v1.0.0
-
 ## Unify (type alias)
 
 **Signature**
 
 ```ts
-export type Unify<A> = Values<
-  ExtractTypes<Extract<A, { [typeSymbol]?: any; [unifySymbol]?: any }> & { [typeSymbol]: A }>
-> extends infer Z
-  ? Z | Exclude<A, Z>
-  : never
-```
-
-Added in v1.0.0
-
-## Values (type alias)
-
-**Signature**
-
-```ts
-export type Values<X extends [any, any]> = X extends any
-  ? { [k in keyof X[0]]-?: k extends X[1] ? never : MaybeReturn<X[0][k]> }[keyof X[0]]
+export type Unify<A> = Values<ExtractTypes<FilterIn<A> & { [typeSymbol]: A }>> extends infer Z
+  ? Z | Exclude<A, Z> | FilterOut<A>
   : never
 ```
 
