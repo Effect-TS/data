@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.14.3
+
+### Patch Changes
+
+- [#421](https://github.com/Effect-TS/data/pull/421) [`6e6f1c8`](https://github.com/Effect-TS/data/commit/6e6f1c84d123e801b2d20757cfaad764cc71f663) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Bugfix Unify on Record<string, any>
+
 ## 0.14.2
 
 ### Patch Changes
