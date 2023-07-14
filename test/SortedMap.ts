@@ -161,19 +161,13 @@ describe.concurrent("SortedMap", () => {
   })
 
   it("reduce", () => {
-    const map = makeSortedMap([0, 10], [1, 20], [2, 30])
+    const map1 = makeSortedMap([0, 10], [1, 20], [2, 30])
+    const result1 = pipe(map1, SM.reduce("", (acc, value) => acc + value.id))
+    assert.strictEqual(result1, "102030")
 
-    const result = pipe(map, SM.reduce("", (acc, value) => acc + value.id))
-
-    assert.strictEqual(result, "102030")
-  })
-
-  it("reduceWithIndex", () => {
-    const map = makeSortedMap([0, 10], [1, 20], [2, 30])
-
-    const result = pipe(map, SM.reduceWithIndex("", (acc, value, key) => acc + key.id + value.id))
-
-    assert.strictEqual(result, "010120230")
+    const map2 = makeSortedMap([0, 10], [1, 20], [2, 30])
+    const result2 = pipe(map2, SM.reduce("", (acc, value, key) => acc + key.id + value.id))
+    assert.strictEqual(result2, "010120230")
   })
 
   it("remove", () => {

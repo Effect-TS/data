@@ -24,7 +24,6 @@ Added in v1.0.0
   - [set](#set)
 - [folding](#folding)
   - [reduce](#reduce)
-  - [reduceWithIndex](#reducewithindex)
 - [getters](#getters)
   - [entries](#entries)
   - [getOrder](#getorder)
@@ -154,19 +153,6 @@ Added in v1.0.0
 
 ```ts
 export declare const reduce: {
-  <V, B>(zero: B, f: (accumulator: B, value: V) => B): <K>(self: SortedMap<K, V>) => B
-  <K, V, B>(self: SortedMap<K, V>, zero: B, f: (accumulator: B, value: V) => B): B
-}
-```
-
-Added in v1.0.0
-
-## reduceWithIndex
-
-**Signature**
-
-```ts
-export declare const reduceWithIndex: {
   <B, A, K>(zero: B, f: (acc: B, value: A, key: K) => B): (self: SortedMap<K, A>) => B
   <K, A, B>(self: SortedMap<K, A>, zero: B, f: (acc: B, value: A, key: K) => B): B
 }
