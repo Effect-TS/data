@@ -34,30 +34,18 @@ export declare const blacklistSymbol: unique symbol
  */
 export type blacklistSymbol = typeof blacklistSymbol
 
-/**
- * @since 1.0.0
- */
-export type MaybeReturn<F> = F extends () => any ? ReturnType<F> : F
+type MaybeReturn<F> = F extends () => any ? ReturnType<F> : F
 
-/**
- * @since 1.0.0
- */
-export type Values<X extends [any, any]> = X extends any
+type Values<X extends [any, any]> = X extends any
   ? { [k in keyof X[0]]-?: k extends X[1] ? never : MaybeReturn<X[0][k]> }[keyof X[0]]
   : never
 
-/**
- * @since 1.0.0
- */
-export type Blacklist<X> = X extends {
+type Blacklist<X> = X extends {
   [blacklistSymbol]?: any
 } ? keyof NonNullable<X[blacklistSymbol]>
   : never
 
-/**
- * @since 1.0.0
- */
-export type ExtractTypes<
+type ExtractTypes<
   X extends {
     [typeSymbol]?: any
     [unifySymbol]?: any
@@ -68,17 +56,21 @@ export type ExtractTypes<
 ]
   : never
 
+type FilterIn<A> = A extends any ? typeSymbol extends keyof A ? A : never : never
+
+type FilterOut<A> = A extends any ? typeSymbol extends keyof A ? never : A : never
+
 /**
  * @since 1.0.0
  */
 export type Unify<A> = Values<
   ExtractTypes<
     (
-      & Extract<A, { [typeSymbol]?: any; [unifySymbol]?: any }>
+      & FilterIn<A>
       & { [typeSymbol]: A }
     )
   >
-> extends infer Z ? Z | Exclude<A, Z> : never
+> extends infer Z ? Z | Exclude<A, Z> | FilterOut<A> : never
 
 /**
  * @since 1.0.0
