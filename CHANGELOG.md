@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.15.1
+
+### Patch Changes
+
+- [#427](https://github.com/Effect-TS/data/pull/427) [`4f09d13`](https://github.com/Effect-TS/data/commit/4f09d1372cbbafaee100b76ae84d00542fe42ac6) Thanks [@gcanti](https://github.com/gcanti)! - Duration: add support for DurationInput to all functions, closes #425
+
 ## 0.15.0
 
 ### Minor Changes
