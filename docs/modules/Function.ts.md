@@ -31,6 +31,7 @@ Added in v1.0.0
   - [constant](#constant)
   - [dual](#dual)
   - [flip](#flip)
+  - [flow](#flow)
   - [hole](#hole)
   - [identity](#identity)
   - [pipe](#pipe)
@@ -415,6 +416,93 @@ assert.deepStrictEqual(flip(f)('aaa')(2), -1)
 
 Added in v1.0.0
 
+## flow
+
+Performs left-to-right function composition. The first argument may have any arity, the remaining arguments must be unary.
+
+See also [`pipe`](#pipe).
+
+**Signature**
+
+```ts
+export declare function flow<A extends ReadonlyArray<unknown>, B>(ab: (...a: A) => B): (...a: A) => B
+export declare function flow<A extends ReadonlyArray<unknown>, B, C>(
+  ab: (...a: A) => B,
+  bc: (b: B) => C
+): (...a: A) => C
+export declare function flow<A extends ReadonlyArray<unknown>, B, C, D>(
+  ab: (...a: A) => B,
+  bc: (b: B) => C,
+  cd: (c: C) => D
+): (...a: A) => D
+export declare function flow<A extends ReadonlyArray<unknown>, B, C, D, E>(
+  ab: (...a: A) => B,
+  bc: (b: B) => C,
+  cd: (c: C) => D,
+  de: (d: D) => E
+): (...a: A) => E
+export declare function flow<A extends ReadonlyArray<unknown>, B, C, D, E, F>(
+  ab: (...a: A) => B,
+  bc: (b: B) => C,
+  cd: (c: C) => D,
+  de: (d: D) => E,
+  ef: (e: E) => F
+): (...a: A) => F
+export declare function flow<A extends ReadonlyArray<unknown>, B, C, D, E, F, G>(
+  ab: (...a: A) => B,
+  bc: (b: B) => C,
+  cd: (c: C) => D,
+  de: (d: D) => E,
+  ef: (e: E) => F,
+  fg: (f: F) => G
+): (...a: A) => G
+export declare function flow<A extends ReadonlyArray<unknown>, B, C, D, E, F, G, H>(
+  ab: (...a: A) => B,
+  bc: (b: B) => C,
+  cd: (c: C) => D,
+  de: (d: D) => E,
+  ef: (e: E) => F,
+  fg: (f: F) => G,
+  gh: (g: G) => H
+): (...a: A) => H
+export declare function flow<A extends ReadonlyArray<unknown>, B, C, D, E, F, G, H, I>(
+  ab: (...a: A) => B,
+  bc: (b: B) => C,
+  cd: (c: C) => D,
+  de: (d: D) => E,
+  ef: (e: E) => F,
+  fg: (f: F) => G,
+  gh: (g: G) => H,
+  hi: (h: H) => I
+): (...a: A) => I
+export declare function flow<A extends ReadonlyArray<unknown>, B, C, D, E, F, G, H, I, J>(
+  ab: (...a: A) => B,
+  bc: (b: B) => C,
+  cd: (c: C) => D,
+  de: (d: D) => E,
+  ef: (e: E) => F,
+  fg: (f: F) => G,
+  gh: (g: G) => H,
+  hi: (h: H) => I,
+  ij: (i: I) => J
+): (...a: A) => J
+```
+
+**Example**
+
+```ts
+import { flow } from '@effect/data/Function'
+
+const len = (s: string): number => s.length
+const double = (n: number): number => n * 2
+
+const f = flow(len, double)
+
+assert.strictEqual(f('aaa'), 6)
+```
+
+Added in v1.0.0
+
 ## hole
 
 Type hole simulation.
@@ -456,6 +544,8 @@ This is useful in combination with data-last functions as a simulation of method
 ```
 as.map(f).filter(g) -> pipe(as, map(f), filter(g))
 ```
+
+See also [`flow`](#flow).
 
 **Signature**
 
