@@ -170,7 +170,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const toHrTime: (self: Duration) => readonly [seconds: number, nanos: number]
+export declare const toHrTime: (self: DurationInput) => readonly [seconds: number, nanos: number]
 ```
 
 Added in v1.0.0
@@ -180,7 +180,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const toMillis: (self: Duration) => number
+export declare const toMillis: (self: DurationInput) => number
 ```
 
 Added in v1.0.0
@@ -194,7 +194,7 @@ If the duration is infinite, returns `Option.none()`
 **Signature**
 
 ```ts
-export declare const toNanos: (self: Duration) => Option.Option<bigint>
+export declare const toNanos: (self: DurationInput) => Option.Option<bigint>
 ```
 
 Added in v1.0.0
@@ -208,7 +208,7 @@ If the duration is infinite, it throws an error.
 **Signature**
 
 ```ts
-export declare const unsafeToNanos: (self: Duration) => bigint
+export declare const unsafeToNanos: (self: DurationInput) => bigint
 ```
 
 Added in v1.0.0
@@ -254,7 +254,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const sum: { (that: Duration): (self: Duration) => Duration; (self: Duration, that: Duration): Duration }
+export declare const sum: {
+  (that: DurationInput): (self: DurationInput) => Duration
+  (self: DurationInput, that: DurationInput): Duration
+}
 ```
 
 Added in v1.0.0
@@ -264,7 +267,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const times: { (times: number): (self: Duration) => Duration; (self: Duration, times: number): Duration }
+export declare const times: {
+  (times: number): (self: DurationInput) => Duration
+  (self: DurationInput, times: number): Duration
+}
 ```
 
 Added in v1.0.0
@@ -327,10 +333,10 @@ Added in v1.0.0
 ```ts
 export declare const match: {
   <A, B>(options: { readonly onMillis: (millis: number) => A; readonly onNanos: (nanos: bigint) => B }): (
-    self: Duration
+    self: DurationInput
   ) => A | B
   <A, B>(
-    self: Duration,
+    self: DurationInput,
     options: { readonly onMillis: (millis: number) => A; readonly onNanos: (nanos: bigint) => B }
   ): A | B
 }
@@ -343,18 +349,23 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const matchWith: (<A, B>(
-  that: Duration,
-  options: { readonly onMillis: (self: number, that: number) => A; readonly onNanos: (self: bigint, that: bigint) => B }
-) => (self: Duration) => A | B) &
-  (<A, B>(
-    self: Duration,
-    that: Duration,
+export declare const matchWith: {
+  <A, B>(
+    that: DurationInput,
     options: {
       readonly onMillis: (self: number, that: number) => A
       readonly onNanos: (self: bigint, that: bigint) => B
     }
-  ) => A | B)
+  ): (self: DurationInput) => A | B
+  <A, B>(
+    self: DurationInput,
+    that: DurationInput,
+    options: {
+      readonly onMillis: (self: number, that: number) => A
+      readonly onNanos: (self: bigint, that: bigint) => B
+    }
+  ): A | B
+}
 ```
 
 Added in v1.0.0
@@ -369,8 +380,8 @@ Checks if a `Duration` is between a `minimum` and `maximum` value.
 
 ```ts
 export declare const between: {
-  (minimum: Duration, maximum: Duration): (self: Duration) => boolean
-  (self: Duration, minimum: Duration, maximum: Duration): boolean
+  (minimum: DurationInput, maximum: DurationInput): (self: DurationInput) => boolean
+  (self: DurationInput, minimum: DurationInput, maximum: DurationInput): boolean
 }
 ```
 
@@ -382,8 +393,8 @@ Added in v1.0.0
 
 ```ts
 export declare const equals: {
-  (that: Duration): (self: Duration) => boolean
-  (self: Duration, that: Duration): boolean
+  (that: DurationInput): (self: DurationInput) => boolean
+  (self: DurationInput, that: DurationInput): boolean
 }
 ```
 
@@ -395,8 +406,8 @@ Added in v1.0.0
 
 ```ts
 export declare const greaterThan: {
-  (that: Duration): (self: Duration) => boolean
-  (self: Duration, that: Duration): boolean
+  (that: DurationInput): (self: DurationInput) => boolean
+  (self: DurationInput, that: DurationInput): boolean
 }
 ```
 
@@ -408,8 +419,8 @@ Added in v1.0.0
 
 ```ts
 export declare const greaterThanOrEqualTo: {
-  (self: Duration, that: Duration): boolean
-  (that: Duration): (self: Duration) => boolean
+  (that: DurationInput): (self: DurationInput) => boolean
+  (self: DurationInput, that: DurationInput): boolean
 }
 ```
 
@@ -421,8 +432,8 @@ Added in v1.0.0
 
 ```ts
 export declare const lessThan: {
-  (that: Duration): (self: Duration) => boolean
-  (self: Duration, that: Duration): boolean
+  (that: DurationInput): (self: DurationInput) => boolean
+  (self: DurationInput, that: DurationInput): boolean
 }
 ```
 
@@ -434,8 +445,8 @@ Added in v1.0.0
 
 ```ts
 export declare const lessThanOrEqualTo: {
-  (self: Duration, that: Duration): boolean
-  (that: Duration): (self: Duration) => boolean
+  (that: DurationInput): (self: DurationInput) => boolean
+  (self: DurationInput, that: DurationInput): boolean
 }
 ```
 
@@ -461,8 +472,8 @@ Added in v1.0.0
 
 ```ts
 export declare const clamp: {
-  (minimum: Duration, maximum: Duration): (self: Duration) => Duration
-  (self: Duration, minimum: Duration, maximum: Duration): Duration
+  (minimum: DurationInput, maximum: DurationInput): (self: DurationInput) => Duration
+  (self: DurationInput, minimum: DurationInput, maximum: DurationInput): Duration
 }
 ```
 
@@ -483,7 +494,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const max: { (that: Duration): (self: Duration) => Duration; (self: Duration, that: Duration): Duration }
+export declare const max: {
+  (that: DurationInput): (self: DurationInput) => Duration
+  (self: DurationInput, that: DurationInput): Duration
+}
 ```
 
 Added in v1.0.0
@@ -493,7 +507,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const min: { (that: Duration): (self: Duration) => Duration; (self: Duration, that: Duration): Duration }
+export declare const min: {
+  (that: DurationInput): (self: DurationInput) => Duration
+  (self: DurationInput, that: DurationInput): Duration
+}
 ```
 
 Added in v1.0.0
