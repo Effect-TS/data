@@ -402,8 +402,7 @@ describe.concurrent("Option", () => {
   })
 
   it("all/ tuple", () => {
-    const result = _.all([_.some(1), _.some("hello")])
-    assertType<_.Option<[number, string]>>(result)
+    assertType<_.Option<[number, string]>>(_.all([_.some(1), _.some("hello")]))
     assert.deepStrictEqual(_.all([]), _.some([]))
     assert.deepStrictEqual(_.all([_.some(1), _.some("hello")]), _.some([1, "hello"]))
     assert.deepStrictEqual(_.all([_.some(1), _.none()]), _.none())

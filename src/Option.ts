@@ -766,8 +766,8 @@ export const productMany = <A>(
  * @since 1.0.0
  */
 // @ts-expect-error
-export const all: <I extends Iterable<Option<any>> | Record<string, Option<any>>>(
-  input: Narrow<I>
+export const all: <const I extends Iterable<Option<any>> | Record<string, Option<any>>>(
+  input: I
 ) => [I] extends [ReadonlyArray<Option<any>>] ? Option<
   { -readonly [K in keyof I]: [I[K]] extends [Option<infer A>] ? A : never }
 >
@@ -796,8 +796,6 @@ export const all: <I extends Iterable<Option<any>> | Record<string, Option<any>>
     }
     return some(out)
   }
-
-type Narrow<A> = (A extends [] ? [] : never) | A
 
 /**
  * Zips two `Option` values together using a provided function, returning a new `Option` of the result.
