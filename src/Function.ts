@@ -78,15 +78,81 @@ export const dual: {
     body: DataFirst
   ): DataLast & DataFirst
 } = (arity, body) => {
-  const isDataFirst: (args: IArguments) => boolean = typeof arity === "number" ?
-    ((args) => args.length >= arity) :
-    arity
-  return function() {
-    if (isDataFirst(arguments)) {
-      // @ts-expect-error
-      return body.apply(this, arguments)
+  if (typeof arity === "function") {
+    return function() {
+      if (arity(arguments)) {
+        // @ts-expect-error
+        return body.apply(this, arguments)
+      }
+      return ((self: any) => body(self, ...arguments)) as any
     }
-    return ((self: any) => body(self, ...arguments)) as any
+  }
+
+  switch (arity) {
+    case 0:
+      return body
+
+    case 1:
+      return function(a) {
+        if (arguments.length >= 1) {
+          return body(a)
+        }
+        return function() {
+          return body(a)
+        }
+      }
+
+    case 2:
+      return function(a, b) {
+        if (arguments.length >= 2) {
+          return body(a, b)
+        }
+        return function(self: any) {
+          return body(self, a)
+        }
+      }
+
+    case 3:
+      return function(a, b, c) {
+        if (arguments.length >= 3) {
+          return body(a, b, c)
+        }
+        return function(self: any) {
+          return body(self, a, b)
+        }
+      }
+
+    case 4:
+      return function(a, b, c, d) {
+        if (arguments.length >= 4) {
+          return body(a, b, c, d)
+        }
+        return function(self: any) {
+          return body(self, a, b, c)
+        }
+      }
+
+    case 5:
+      return function(a, b, c, d, e) {
+        if (arguments.length >= 5) {
+          return body(a, b, c, d, e)
+        }
+        return function(self: any) {
+          return body(self, a, b, c, d)
+        }
+      }
+
+    default:
+      return function() {
+        if (arguments.length >= arity) {
+          // @ts-expect-error
+          return body.apply(this, arguments)
+        }
+        const args = arguments
+        return function(self: any) {
+          return body(self, ...args)
+        }
+      }
   }
 }
 /**
