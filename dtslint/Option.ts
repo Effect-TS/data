@@ -92,30 +92,20 @@ pipe(
 )
 
 // -------------------------------------------------------------------------------------
-// all - variadic
-// -------------------------------------------------------------------------------------
-
-// $ExpectType Option<[]>
-Option.all()
-
-// $ExpectType Option<[number]>
-Option.all(Option.some(1))
-
-// $ExpectType Option<[number, string]>
-Option.all(Option.some(1), Option.some('b'))
-
-// -------------------------------------------------------------------------------------
 // all - tuple
 // -------------------------------------------------------------------------------------
 
 // $ExpectType Option<[]>
-Option.all([] as const)
+Option.all([])
 
 // $ExpectType Option<[number]>
-Option.all([Option.some(1)] as const)
+Option.all([Option.some(1)])
 
 // $ExpectType Option<[number, string]>
-Option.all([Option.some(1), Option.some('b')] as const)
+Option.all([Option.some(1), Option.some('b')])
+
+// $ExpectType Option<[number, string]>
+pipe([Option.some(1), Option.some('b')] as const, Option.all)
 
 // -------------------------------------------------------------------------------------
 // all - struct
@@ -130,6 +120,9 @@ Option.all({ a: Option.some(1) })
 // $ExpectType Option<{ a: number; b: string; }>
 Option.all({ a: Option.some(1), b: Option.some('b') })
 
+// $ExpectType Option<{ a: number; b: string; }>
+pipe({ a: Option.some(1), b: Option.some('b') }, Option.all)
+
 // -------------------------------------------------------------------------------------
 // all - array
 // -------------------------------------------------------------------------------------
@@ -138,6 +131,9 @@ declare const optionArray: Array<Option.Option<string>>
 
 // $ExpectType Option<string[]>
 Option.all(optionArray)
+
+// $ExpectType Option<string[]>
+pipe(optionArray, Option.all)
 
 // -------------------------------------------------------------------------------------
 // all - record

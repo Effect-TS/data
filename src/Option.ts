@@ -760,55 +760,42 @@ export const productMany = <A>(
  *
  * assert.deepStrictEqual(O.all({ a: O.some(1), b: O.some("hello") }), O.some({ a: 1, b: "hello" }))
  * assert.deepStrictEqual(O.all({ a: O.some(1), b: O.none() }), O.none())
- * assert.deepStrictEqual(O.all(O.some(1), O.some("hello")), O.some([1, "hello"]))
  * assert.deepStrictEqual(O.all([O.some(1), O.some(2)]), O.some([1, 2]))
  *
  * @category combining
  * @since 1.0.0
  */
-export const all: {
-  <A extends ReadonlyArray<Option<any>>>(
-    elements: A
-  ): Option<{ -readonly [I in keyof A]: [A[I]] extends [Option<infer _A>] ? _A : never }>
+// @ts-expect-error
+export const all: <const I extends Iterable<Option<any>> | Record<string, Option<any>>>(
+  input: I
+) => [I] extends [ReadonlyArray<Option<any>>] ? Option<
+  { -readonly [K in keyof I]: [I[K]] extends [Option<infer A>] ? A : never }
+>
+  : [I] extends [Iterable<Option<infer A>>] ? Option<Array<A>>
+  : Option<{ -readonly [K in keyof I]: [I[K]] extends [Option<infer A>] ? A : never }> = (
+    input: Iterable<Option<any>> | Record<string, Option<any>>
+  ): Option<any> => {
+    if (Symbol.iterator in input) {
+      const out: Array<Option<any>> = []
+      for (const o of (input as Iterable<Option<any>>)) {
+        if (isNone(o)) {
+          return none()
+        }
+        out.push(o.value)
+      }
+      return some(out)
+    }
 
-  <A>(elements: Iterable<Option<A>>): Option<Array<A>>
-
-  <A extends ReadonlyArray<Option<any>>>(
-    ...elements: A
-  ): Option<{ -readonly [I in keyof A]: [A[I]] extends [Option<infer A>] ? A : never }>
-
-  <A extends Record<string, Option<any>>>(
-    fields: A
-  ): Option<{ -readonly [K in keyof A]: [A[K]] extends [Option<infer A>] ? A : never }>
-} = function() {
-  const collection: Record<string, Option<any>> | Iterable<Option<any>> =
-    arguments.length === 1 && isOption(arguments[0]) ?
-      [arguments[0]] :
-      arguments.length !== 1 ?
-      arguments :
-      arguments[0]
-
-  if (Symbol.iterator in collection) {
-    const out: Array<Option<any>> = []
-    for (const o of collection) {
+    const out: Record<string, any> = {}
+    for (const key of Object.keys(input)) {
+      const o = input[key]
       if (isNone(o)) {
         return none()
       }
-      out.push(o.value)
+      out[key] = o.value
     }
     return some(out)
   }
-
-  const out: any = {}
-  for (const key of Object.keys(collection)) {
-    const o = collection[key]
-    if (isNone(o)) {
-      return none()
-    }
-    out[key] = o.value
-  }
-  return some(out)
-}
 
 /**
  * Zips two `Option` values together using a provided function, returning a new `Option` of the result.
