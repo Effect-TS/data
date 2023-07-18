@@ -401,18 +401,12 @@ describe.concurrent("Option", () => {
     expect(isEquivalent(_.some(2), _.some(2))).toEqual(true)
   })
 
-  it("all/ arguments", () => {
-    assertType<_.Option<[number, string]>>(_.all(_.some(1), _.some("hello")))
-    assert.deepStrictEqual(_.all(), _.some([]))
-    assert.deepStrictEqual(_.all(_.some(1), _.some("hello")), _.some([1, "hello"]))
-    assert.deepStrictEqual(_.all(_.some(1), _.none()), _.none())
-  })
-
   it("all/ tuple", () => {
-    assertType<_.Option<[number, string]>>(_.all([_.some(1), _.some("hello")] as const))
-    assert.deepStrictEqual(_.all([] as const), _.some([]))
-    assert.deepStrictEqual(_.all([_.some(1), _.some("hello")] as const), _.some([1, "hello"]))
-    assert.deepStrictEqual(_.all([_.some(1), _.none()] as const), _.none())
+    const result = _.all([_.some(1), _.some("hello")])
+    assertType<_.Option<[number, string]>>(result)
+    assert.deepStrictEqual(_.all([]), _.some([]))
+    assert.deepStrictEqual(_.all([_.some(1), _.some("hello")]), _.some([1, "hello"]))
+    assert.deepStrictEqual(_.all([_.some(1), _.none()]), _.none())
   })
 
   it("all/ iterable", () => {
