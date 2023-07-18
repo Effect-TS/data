@@ -77,7 +77,7 @@ export const dual: {
     isDataFirst: (args: IArguments) => boolean,
     body: DataFirst
   ): DataLast & DataFirst
-} = (arity, body) => {
+} = function(arity, body) {
   if (typeof arity === "function") {
     return function() {
       if (arity(arguments)) {
