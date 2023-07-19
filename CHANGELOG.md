@@ -1,5 +1,15 @@
 # @effect/data
 
+## 0.16.0
+
+### Minor Changes
+
+- [#431](https://github.com/Effect-TS/data/pull/431) [`4758880`](https://github.com/Effect-TS/data/commit/4758880db8f6d7155800aa0b174c4f3fccc75088) Thanks [@tim-smart](https://github.com/tim-smart)! - drop variadic support for Option.all
+
+### Patch Changes
+
+- [#432](https://github.com/Effect-TS/data/pull/432) [`97405fc`](https://github.com/Effect-TS/data/commit/97405fc0454c43eba1d6fbb8e61b37cf576ec600) Thanks [@tim-smart](https://github.com/tim-smart)! - improve performance of dual
+
 ## 0.15.1
 
 ### Patch Changes
