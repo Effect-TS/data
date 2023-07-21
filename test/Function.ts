@@ -110,6 +110,21 @@ describe.concurrent("Function", () => {
     )
   })
 
+  it("flow", () => {
+    const flow = Function.flow // this alias is required in order to exclude the `@effect/babel-plugin` compiler and get 100% coverage
+    deepStrictEqual(flow(f)(2), 3)
+    deepStrictEqual(flow(f, g)(2), 6)
+    deepStrictEqual(flow(f, g, f)(2), 7)
+    deepStrictEqual(flow(f, g, f, g)(2), 14)
+    deepStrictEqual(flow(f, g, f, g, f)(2), 15)
+    deepStrictEqual(flow(f, g, f, g, f, g)(2), 30)
+    deepStrictEqual(flow(f, g, f, g, f, g, f)(2), 31)
+    deepStrictEqual(flow(f, g, f, g, f, g, f, g)(2), 62)
+    deepStrictEqual(flow(f, g, f, g, f, g, f, g, f)(2), 63)
+    // this is just to satisfy noImplicitReturns and 100% coverage
+    deepStrictEqual((Function.flow as any)(...[f, g, f, g, f, g, f, g, f, g]), undefined)
+  })
+
   it("dual", () => {
     // arity as number
     const f = Function.dual<
