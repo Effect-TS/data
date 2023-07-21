@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.16.1
+
+### Patch Changes
+
+- [#430](https://github.com/Effect-TS/data/pull/430) [`418d898`](https://github.com/Effect-TS/data/commit/418d898f4e92b3bfc47eaa66ac1cd25962f961ac) Thanks [@vecerek](https://github.com/vecerek)! - Function: add flow
+
 ## 0.16.0
 
 ### Minor Changes
