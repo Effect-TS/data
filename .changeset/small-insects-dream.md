@@ -1,5 +1,5 @@
 ---
-"@effect/data": minor
+"@effect/data": patch
 ---
 
 Function: add flow

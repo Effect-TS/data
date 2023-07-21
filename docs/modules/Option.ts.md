@@ -115,18 +115,13 @@ Takes a structure of `Option`s and returns an `Option` of values with the same s
 **Signature**
 
 ```ts
-export declare const all: {
-  <A extends readonly Option<any>[]>(elements: A): Option<{
-    -readonly [I in keyof A]: [A[I]] extends [Option<infer _A>] ? _A : never
-  }>
-  <A>(elements: Iterable<Option<A>>): Option<A[]>
-  <A extends readonly Option<any>[]>(...elements: A): Option<{
-    -readonly [I in keyof A]: [A[I]] extends [Option<infer A>] ? A : never
-  }>
-  <A extends Record<string, Option<any>>>(fields: A): Option<{
-    -readonly [K in keyof A]: [A[K]] extends [Option<infer A>] ? A : never
-  }>
-}
+export declare const all: <const I extends Iterable<Option<any>> | Record<string, Option<any>>>(
+  input: I
+) => [I] extends [readonly Option<any>[]]
+  ? Option<{ -readonly [K in keyof I]: [I[K]] extends [Option<infer A>] ? A : never }>
+  : [I] extends [Iterable<Option<infer A>>]
+  ? Option<A[]>
+  : Option<{ -readonly [K in keyof I]: [I[K]] extends [Option<infer A>] ? A : never }>
 ```
 
 **Example**
@@ -136,7 +131,6 @@ import * as O from '@effect/data/Option'
 
 assert.deepStrictEqual(O.all({ a: O.some(1), b: O.some('hello') }), O.some({ a: 1, b: 'hello' }))
 assert.deepStrictEqual(O.all({ a: O.some(1), b: O.none() }), O.none())
-assert.deepStrictEqual(O.all(O.some(1), O.some('hello')), O.some([1, 'hello']))
 assert.deepStrictEqual(O.all([O.some(1), O.some(2)]), O.some([1, 2]))
 ```
 
