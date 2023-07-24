@@ -1,6 +1,6 @@
 {
   "name": "@effect/data",
-  "version": "0.16.1",
+  "version": "0.16.2",
   "publishConfig": {
     "access": "public",
     "directory": "dist"
