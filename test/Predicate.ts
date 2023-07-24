@@ -195,8 +195,14 @@ describe.concurrent("Predicate", () => {
   it("isObject", () => {
     assert.deepStrictEqual(_.isObject({}), true)
     assert.deepStrictEqual(_.isObject([]), true)
+    assert.deepStrictEqual(_.isObject(() => 1), true)
     assert.deepStrictEqual(_.isObject(null), false)
     assert.deepStrictEqual(_.isObject(undefined), false)
+    assert.deepStrictEqual(_.isObject("a"), false)
+    assert.deepStrictEqual(_.isObject(1), false)
+    assert.deepStrictEqual(_.isObject(true), false)
+    assert.deepStrictEqual(_.isObject(1n), false)
+    assert.deepStrictEqual(_.isObject(Symbol.for("a")), false)
   })
 
   it("isNullable", () => {
