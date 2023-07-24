@@ -281,7 +281,8 @@ export const isUnknown: (input: unknown) => input is unknown = (_): _ is unknown
  * @category guards
  * @since 1.0.0
  */
-export const isObject = (input: unknown): input is object => typeof input === "object" && input != null
+export const isObject = (input: unknown): input is object =>
+  (typeof input === "object" && input != null) || isFunction(input)
 
 /**
  * A guard that succeeds when the input is `null` or `undefined`.
