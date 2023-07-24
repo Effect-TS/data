@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.16.2
+
+### Patch Changes
+
+- [#438](https://github.com/Effect-TS/data/pull/438) [`088fb1b`](https://github.com/Effect-TS/data/commit/088fb1bd49bb7043d368100d2e1dab949dceb277) Thanks [@gcanti](https://github.com/gcanti)! - Predicate: fix isObject implementation
+
 ## 0.16.1
 
 ### Patch Changes
