@@ -114,7 +114,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const all: <A>(collection: Iterable<Equivalence<A>>) => Equivalence<A[]>
+export declare const all: <A>(collection: Iterable<Equivalence<A>>) => Equivalence<readonly A[]>
 ```
 
 Added in v1.0.0
@@ -161,8 +161,8 @@ Added in v1.0.0
 
 ```ts
 export declare const product: {
-  <B>(that: Equivalence<B>): <A>(self: Equivalence<A>) => Equivalence<[A, B]>
-  <A, B>(self: Equivalence<A>, that: Equivalence<B>): Equivalence<[A, B]>
+  <B>(that: Equivalence<B>): <A>(self: Equivalence<A>) => Equivalence<readonly [A, B]>
+  <A, B>(self: Equivalence<A>, that: Equivalence<B>): Equivalence<readonly [A, B]>
 }
 ```
 
@@ -176,7 +176,7 @@ Added in v1.0.0
 export declare const productMany: <A>(
   self: Equivalence<A>,
   collection: Iterable<Equivalence<A>>
-) => Equivalence<[A, ...A[]]>
+) => Equivalence<readonly [A, ...A[]]>
 ```
 
 Added in v1.0.0

@@ -126,11 +126,11 @@ export const mapInput: {
  * @since 1.0.0
  */
 export const product: {
-  <B>(that: Equivalence<B>): <A>(self: Equivalence<A>) => Equivalence<[A, B]>
-  <A, B>(self: Equivalence<A>, that: Equivalence<B>): Equivalence<[A, B]>
+  <B>(that: Equivalence<B>): <A>(self: Equivalence<A>) => Equivalence<readonly [A, B]>
+  <A, B>(self: Equivalence<A>, that: Equivalence<B>): Equivalence<readonly [A, B]>
 } = dual(
   2,
-  <A, B>(self: Equivalence<A>, that: Equivalence<B>): Equivalence<[A, B]> =>
+  <A, B>(self: Equivalence<A>, that: Equivalence<B>): Equivalence<readonly [A, B]> =>
     make(([xa, xb], [ya, yb]) => self(xa, ya) && that(xb, yb))
 )
 
@@ -138,7 +138,7 @@ export const product: {
  * @category combining
  * @since 1.0.0
  */
-export const all = <A>(collection: Iterable<Equivalence<A>>): Equivalence<Array<A>> => {
+export const all = <A>(collection: Iterable<Equivalence<A>>): Equivalence<ReadonlyArray<A>> => {
   return make((x, y) => {
     const len = Math.min(x.length, y.length)
 
@@ -163,7 +163,7 @@ export const all = <A>(collection: Iterable<Equivalence<A>>): Equivalence<Array<
 export const productMany = <A>(
   self: Equivalence<A>,
   collection: Iterable<Equivalence<A>>
-): Equivalence<[A, ...Array<A>]> => {
+): Equivalence<readonly [A, ...Array<A>]> => {
   const equivalence = all(collection)
   return make((x, y) => !self(x[0], y[0]) ? false : equivalence(x.slice(1), y.slice(1)))
 }
