@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.16.3
+
+### Patch Changes
+
+- [#441](https://github.com/Effect-TS/data/pull/441) [`653ea77`](https://github.com/Effect-TS/data/commit/653ea772bcf050251e0114af943cbf546b6be001) Thanks [@sukovanej](https://github.com/sukovanej)! - Add `readonly` modifiers in `Order` and `Equivalence` modules.
+
 ## 0.16.2
 
 ### Patch Changes
