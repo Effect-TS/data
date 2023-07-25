@@ -112,7 +112,7 @@ of the tuple.
 ```ts
 export declare const tuple: <T extends readonly Order<any>[]>(
   ...elements: T
-) => Order<{ [I in keyof T]: [T[I]] extends [Order<infer A>] ? A : never }>
+) => Order<Readonly<{ [I in keyof T]: [T[I]] extends [Order<infer A>] ? A : never }>>
 ```
 
 Added in v1.0.0
@@ -124,7 +124,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const all: <A>(collection: Iterable<Order<A>>) => Order<A[]>
+export declare const all: <A>(collection: Iterable<Order<A>>) => Order<readonly A[]>
 ```
 
 Added in v1.0.0
@@ -171,8 +171,8 @@ Added in v1.0.0
 
 ```ts
 export declare const product: {
-  <B>(that: Order<B>): <A>(self: Order<A>) => Order<[A, B]>
-  <A, B>(self: Order<A>, that: Order<B>): Order<[A, B]>
+  <B>(that: Order<B>): <A>(self: Order<A>) => Order<readonly [A, B]>
+  <A, B>(self: Order<A>, that: Order<B>): Order<readonly [A, B]>
 }
 ```
 
@@ -184,8 +184,8 @@ Added in v1.0.0
 
 ```ts
 export declare const productMany: {
-  <A>(collection: Iterable<Order<A>>): (self: Order<A>) => Order<[A, ...A[]]>
-  <A>(self: Order<A>, collection: Iterable<Order<A>>): Order<[A, ...A[]]>
+  <A>(collection: Iterable<Order<A>>): (self: Order<A>) => Order<readonly [A, ...A[]]>
+  <A>(self: Order<A>, collection: Iterable<Order<A>>): Order<readonly [A, ...A[]]>
 }
 ```
 
