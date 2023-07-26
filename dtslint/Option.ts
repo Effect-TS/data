@@ -50,7 +50,7 @@ pipe(Option.some('a'), Option.getOrElse(() => null))
 
 // $ExpectType Option<{ a1: number; a2: string; }>
 pipe(
-  Option.Do(),
+  Option.Do,
   Option.bind('a1', () => Option.some(1)),
   Option.bind('a2', () => Option.some('b'))
 )

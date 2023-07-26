@@ -323,7 +323,7 @@ describe.concurrent("Option", () => {
   it("guard", () => {
     Util.deepStrictEqual(
       pipe(
-        _.Do(),
+        _.Do,
         _.bind("x", () => _.some("a")),
         _.bind("y", () => _.some("a")),
         _.filter(({ x, y }) => x === y)
@@ -332,7 +332,7 @@ describe.concurrent("Option", () => {
     )
     Util.deepStrictEqual(
       pipe(
-        _.Do(),
+        _.Do,
         _.bind("x", () => _.some("a")),
         _.bind("y", () => _.some("b")),
         _.filter(({ x, y }) => x === y)

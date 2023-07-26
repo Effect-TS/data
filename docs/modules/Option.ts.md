@@ -484,7 +484,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const Do: () => Option<{}>
+export declare const Do: Option<{}>
 ```
 
 Added in v1.0.0

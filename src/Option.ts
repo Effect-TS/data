@@ -1274,4 +1274,4 @@ export const bind: {
  * @category do notation
  * @since 1.0.0
  */
-export const Do = (): Option<{}> => some({})
+export const Do: Option<{}> = some({})
