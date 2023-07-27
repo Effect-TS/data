@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.17.0
+
+### Minor Changes
+
+- [#443](https://github.com/Effect-TS/data/pull/443) [`1f4eed5`](https://github.com/Effect-TS/data/commit/1f4eed5cc9e9a139b7fbfc08b104c1860be53dce) Thanks [@tim-smart](https://github.com/tim-smart)! - change Option.Do to a constant
+
 ## 0.16.3
 
 ### Patch Changes
