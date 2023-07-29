@@ -1,5 +1,5 @@
 import * as Either from "@effect/data/Either"
-import { pipe } from "@effect/data/Function"
+import { flow, pipe } from "@effect/data/Function"
 import * as N from "@effect/data/Number"
 import * as O from "@effect/data/Option"
 import * as S from "@effect/data/String"
@@ -168,5 +168,11 @@ describe.concurrent("Either", () => {
     expect(() => pipe(Either.left("e"), Either.getOrThrow)).toThrowError(
       new Error("getOrThrow called on a Left")
     )
+  })
+
+  it("flatMap", () => {
+    const f = Either.flatMap<string, string, number>(flow(S.length, Either.right))
+    Util.deepStrictEqual(pipe(Either.right("abc"), f), Either.right(3))
+    Util.deepStrictEqual(pipe(Either.left("maError"), f), Either.left("maError"))
   })
 })
