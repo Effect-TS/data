@@ -1,5 +1,29 @@
 # @effect/data
 
+## 0.17.1
+
+### Patch Changes
+
+- [#445](https://github.com/Effect-TS/data/pull/445) [`c9c698e`](https://github.com/Effect-TS/data/commit/c9c698e0dfab12c3de31b42c4bfc2ae04c827d3d) Thanks [@gcanti](https://github.com/gcanti)! - Either: add getOrNull getter
+
+- [#445](https://github.com/Effect-TS/data/pull/445) [`c9c698e`](https://github.com/Effect-TS/data/commit/c9c698e0dfab12c3de31b42c4bfc2ae04c827d3d) Thanks [@gcanti](https://github.com/gcanti)! - Either: add fromNullable (dual) constructor
+
+- [#445](https://github.com/Effect-TS/data/pull/445) [`c9c698e`](https://github.com/Effect-TS/data/commit/c9c698e0dfab12c3de31b42c4bfc2ae04c827d3d) Thanks [@gcanti](https://github.com/gcanti)! - Either: add getOrUndefined getter
+
+- [#445](https://github.com/Effect-TS/data/pull/445) [`c9c698e`](https://github.com/Effect-TS/data/commit/c9c698e0dfab12c3de31b42c4bfc2ae04c827d3d) Thanks [@gcanti](https://github.com/gcanti)! - Either: add flatMap
+
+- [#445](https://github.com/Effect-TS/data/pull/445) [`c9c698e`](https://github.com/Effect-TS/data/commit/c9c698e0dfab12c3de31b42c4bfc2ae04c827d3d) Thanks [@gcanti](https://github.com/gcanti)! - Either: add all
+
+- [#445](https://github.com/Effect-TS/data/pull/445) [`c9c698e`](https://github.com/Effect-TS/data/commit/c9c698e0dfab12c3de31b42c4bfc2ae04c827d3d) Thanks [@gcanti](https://github.com/gcanti)! - Either: add getOrThrowWith (dual) getter
+
+- [#445](https://github.com/Effect-TS/data/pull/445) [`c9c698e`](https://github.com/Effect-TS/data/commit/c9c698e0dfab12c3de31b42c4bfc2ae04c827d3d) Thanks [@gcanti](https://github.com/gcanti)! - Either: add try constructor
+
+- [#445](https://github.com/Effect-TS/data/pull/445) [`c9c698e`](https://github.com/Effect-TS/data/commit/c9c698e0dfab12c3de31b42c4bfc2ae04c827d3d) Thanks [@gcanti](https://github.com/gcanti)! - Either: add getOrElse (dual) getter
+
+- [#445](https://github.com/Effect-TS/data/pull/445) [`c9c698e`](https://github.com/Effect-TS/data/commit/c9c698e0dfab12c3de31b42c4bfc2ae04c827d3d) Thanks [@gcanti](https://github.com/gcanti)! - Either: add fromOption (dual) constructor
+
+- [#445](https://github.com/Effect-TS/data/pull/445) [`c9c698e`](https://github.com/Effect-TS/data/commit/c9c698e0dfab12c3de31b42c4bfc2ae04c827d3d) Thanks [@gcanti](https://github.com/gcanti)! - Either: add getOrThrow getter
+
 ## 0.17.0
 
 ### Minor Changes
