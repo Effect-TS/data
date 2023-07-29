@@ -484,6 +484,58 @@ export const flatMap: {
 )
 
 /**
+ * Takes a structure of `Option`s and returns an `Option` of values with the same structure.
+ *
+ * - If a tuple is supplied, then the returned `Option` will contain a tuple with the same length.
+ * - If a struct is supplied, then the returned `Option` will contain a struct with the same keys.
+ * - If an iterable is supplied, then the returned `Option` will contain an array.
+ *
+ * @param fields - the struct of `Option`s to be sequenced.
+ *
+ * @example
+ * import * as Either from "@effect/data/Either"
+ *
+ * assert.deepStrictEqual(Either.all([Either.right(1), Either.right(2)]), Either.right([1, 2]))
+ * assert.deepStrictEqual(Either.all({ a: Either.right(1), b: Either.right("hello") }), Either.right({ a: 1, b: "hello" }))
+ * assert.deepStrictEqual(Either.all({ a: Either.right(1), b: Either.left("error") }), Either.left("error"))
+ *
+ * @category combining
+ * @since 1.0.0
+ */
+// @ts-expect-error
+export const all: <const I extends Iterable<Either<any, any>> | Record<string, Either<any, any>>>(
+  input: I
+) => [I] extends [ReadonlyArray<Either<any, any>>] ? Either<
+  I[number] extends never ? never : [I[number]] extends [Either<infer E, any>] ? E : never,
+  { -readonly [K in keyof I]: [I[K]] extends [Either<any, infer A>] ? A : never }
+>
+  : [I] extends [Iterable<Either<infer E, infer A>>] ? Either<E, Array<A>>
+  : Either<I[keyof I] extends never ? never : [I[keyof I]] extends [Either<infer E, any>] ? E : never, { -readonly [K in keyof I]: [I[K]] extends [Either<any, infer A>] ? A : never }> = (
+    input: Iterable<Either<any, any>> | Record<string, Either<any, any>>
+  ): Either<any, any> => {
+    if (Symbol.iterator in input) {
+      const out: Array<Either<any, any>> = []
+      for (const e of (input as Iterable<Either<any, any>>)) {
+        if (isLeft(e)) {
+          return e
+        }
+        out.push(e.right)
+      }
+      return right(out)
+    }
+
+    const out: Record<string, any> = {}
+    for (const key of Object.keys(input)) {
+      const e = input[key]
+      if (isLeft(e)) {
+        return e
+      }
+      out[key] = e.right
+    }
+    return right(out)
+  }
+
+/**
  * @since 1.0.0
  */
 export const reverse = <E, A>(self: Either<E, A>): Either<A, E> => isLeft(self) ? right(self.left) : left(self.right)

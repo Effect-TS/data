@@ -175,4 +175,17 @@ describe.concurrent("Either", () => {
     Util.deepStrictEqual(pipe(Either.right("abc"), f), Either.right(3))
     Util.deepStrictEqual(pipe(Either.left("maError"), f), Either.left("maError"))
   })
+
+  it("all", () => {
+    // tuples and arrays
+    Util.deepStrictEqual(Either.all([]), Either.right([]))
+    Util.deepStrictEqual(Either.all([Either.right(1)]), Either.right([1]))
+    Util.deepStrictEqual(Either.all([Either.right(1), Either.right(true)]), Either.right([1, true]))
+    Util.deepStrictEqual(Either.all([Either.right(1), Either.left("e")]), Either.left("e"))
+    // structs and records
+    Util.deepStrictEqual(Either.all({}), Either.right({}))
+    Util.deepStrictEqual(Either.all({ a: Either.right(1) }), Either.right({ a: 1 }))
+    Util.deepStrictEqual(Either.all({ a: Either.right(1), b: Either.right(true) }), Either.right({ a: 1, b: true }))
+    Util.deepStrictEqual(Either.all({ a: Either.right(1), b: Either.left("e") }), Either.left("e"))
+  })
 })
