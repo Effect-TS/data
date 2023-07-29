@@ -162,4 +162,11 @@ describe.concurrent("Either", () => {
         new Error("Unexpected Left: e")
       )
   })
+
+  it("getOrThrow", () => {
+    expect(pipe(Either.right(1), Either.getOrThrow)).toEqual(1)
+    expect(() => pipe(Either.left("e"), Either.getOrThrow)).toThrowError(
+      new Error("getOrThrow called on a Left")
+    )
+  })
 })

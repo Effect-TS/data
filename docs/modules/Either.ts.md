@@ -24,6 +24,7 @@ Added in v1.0.0
   - [getLeft](#getleft)
   - [getOrElse](#getorelse)
   - [getOrNull](#getornull)
+  - [getOrThrow](#getorthrow)
   - [getOrThrowWith](#getorthrowwith)
   - [getOrUndefined](#getorundefined)
   - [getRight](#getright)
@@ -239,6 +240,29 @@ import * as Either from '@effect/data/Either'
 
 assert.deepStrictEqual(Either.getOrNull(Either.right(1)), 1)
 assert.deepStrictEqual(Either.getOrNull(Either.left('a')), null)
+```
+
+Added in v1.0.0
+
+## getOrThrow
+
+Extracts the value of an `Either` or throws if the `Either` is `Left`.
+
+The thrown error is a default error. To configure the error thrown, see {@link getOrThrowWith}.
+
+**Signature**
+
+```ts
+export declare const getOrThrow: <E, A>(self: Either<E, A>) => A
+```
+
+**Example**
+
+```ts
+import * as E from '@effect/data/Either'
+
+assert.deepStrictEqual(E.getOrThrow(E.right(1)), 1)
+assert.throws(() => E.getOrThrow(E.left('error')))
 ```
 
 Added in v1.0.0

@@ -450,6 +450,27 @@ export const getOrThrowWith: {
 })
 
 /**
+ * Extracts the value of an `Either` or throws if the `Either` is `Left`.
+ *
+ * The thrown error is a default error. To configure the error thrown, see  {@link getOrThrowWith}.
+ *
+ * @param self - The `Either` to extract the value from.
+ * @throws `Error("getOrThrow called on a Left")`
+ *
+ * @example
+ * import * as E from "@effect/data/Either"
+ *
+ * assert.deepStrictEqual(E.getOrThrow(E.right(1)), 1)
+ * assert.throws(() => E.getOrThrow(E.left("error")))
+ *
+ * @category getters
+ * @since 1.0.0
+ */
+export const getOrThrow: <E, A>(self: Either<E, A>) => A = getOrThrowWith(() =>
+  new Error("getOrThrow called on a Left")
+)
+
+/**
  * @since 1.0.0
  */
 export const reverse = <E, A>(self: Either<E, A>): Either<A, E> => isLeft(self) ? right(self.left) : left(self.right)
