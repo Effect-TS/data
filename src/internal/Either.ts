@@ -4,6 +4,7 @@
 
 import type * as Either from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
+import { dual } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import { EffectTypeId, effectVariance } from "@effect/data/internal/Effect"
 import * as option from "@effect/data/internal/Option"
@@ -120,3 +121,10 @@ export const getLeft = <E, A>(
 export const getRight = <E, A>(
   self: Either.Either<E, A>
 ): Option<A> => (isLeft(self) ? option.none : option.some(self.right))
+
+/** @internal */
+export const fromOption = dual(
+  2,
+  <A, E>(self: Option<A>, onNone: () => E): Either.Either<E, A> =>
+    option.isNone(self) ? left(onNone()) : right(self.value)
+)

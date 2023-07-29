@@ -4,12 +4,13 @@
 
 import type * as Data from "@effect/data/Data"
 import * as Equivalence from "@effect/data/Equivalence"
-import { dual, identity } from "@effect/data/Function"
+import type { LazyArg } from "@effect/data/Function"
+import { constNull, constUndefined, dual, identity } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
 import * as either from "@effect/data/internal/Either"
 import type { Option } from "@effect/data/Option"
 import type { Pipeable } from "@effect/data/Pipeable"
-import { isObject } from "@effect/data/Predicate"
+import { isFunction, isObject } from "@effect/data/Predicate"
 import type * as Unify from "@effect/data/Unify"
 
 /**
@@ -103,6 +104,78 @@ export const right: <A>(a: A) => Either<never, A> = either.right
  * @since 1.0.0
  */
 export const left: <E>(e: E) => Either<E, never> = either.left
+
+/**
+ * Takes a lazy default and a nullable value, if the value is not nully (`null` or `undefined`), turn it into a `Right`, if the value is nully use
+ * the provided default as a `Left`.
+ *
+ * @example
+ * import * as Either from '@effect/data/Either'
+ *
+ * assert.deepStrictEqual(Either.fromNullable(1, () => 'fallback'), Either.right(1))
+ * assert.deepStrictEqual(Either.fromNullable(null, () => 'fallback'), Either.left('fallback'))
+ *
+ * @category constructors
+ * @since 1.0.0
+ */
+export const fromNullable: {
+  <A, E>(onNullable: (a: A) => E): (self: A) => Either<E, NonNullable<A>>
+  <A, E>(self: A, onNullable: (a: A) => E): Either<E, NonNullable<A>>
+} = dual(
+  2,
+  <A, E>(self: A, onNullable: (a: A) => E): Either<E, NonNullable<A>> =>
+    self == null ? left(onNullable(self)) : right(self as NonNullable<A>)
+)
+
+/**
+ * @example
+ * import * as Either from '@effect/data/Either'
+ * import * as Option from '@effect/data/Option'
+ *
+ * assert.deepStrictEqual(Either.fromOption(Option.some(1), () => 'error'), Either.right(1))
+ * assert.deepStrictEqual(Either.fromOption(Option.none(), () => 'error'), Either.left('error'))
+ *
+ * @category constructors
+ * @since 1.0.0
+ */
+export const fromOption: {
+  <A, E>(self: Option<A>, onNone: () => E): Either<E, A>
+  <E>(onNone: () => E): <A>(self: Option<A>) => Either<E, A>
+} = either.fromOption
+
+const try_: {
+  <A, E>(
+    options: { readonly try: LazyArg<A>; readonly catch: (error: unknown) => E }
+  ): Either<E, A>
+  <A>(evaluate: LazyArg<A>): Either<unknown, A>
+} = (<A, E>(
+  evaluate: LazyArg<A> | { readonly try: LazyArg<A>; readonly catch: (error: unknown) => E }
+) => {
+  if (isFunction(evaluate)) {
+    try {
+      return right(evaluate())
+    } catch (e) {
+      return left(e)
+    }
+  } else {
+    try {
+      return right(evaluate.try())
+    } catch (e) {
+      return left(evaluate.catch(e))
+    }
+  }
+}) as any
+
+export {
+  /**
+   * Imports a synchronous side-effect into a pure `Either` value, translating any
+   * thrown exceptions into typed failed eithers creating with `Either.left`.
+   *
+   * @category constructors
+   * @since 1.0.0
+   */
+  try_ as try
+}
 
 /**
  * Tests if a value is a `Either`.
@@ -301,6 +374,166 @@ export const merge: <E, A>(self: Either<E, A>) => E | A = match({
   onLeft: identity,
   onRight: identity
 })
+
+/**
+ * Returns the wrapped value if it's a `Right` or a default value if is a `Left`.
+ *
+ * @example
+ * import * as Either from '@effect/data/Either'
+ *
+ * assert.deepStrictEqual(Either.getOrElse(Either.right(1), (error) => error + "!"), 1)
+ * assert.deepStrictEqual(Either.getOrElse(Either.left("not a number"), (error) => error + "!"), "not a number!")
+ *
+ * @category getters
+ * @since 1.0.0
+ */
+export const getOrElse: {
+  <E, B>(onLeft: (e: E) => B): <A>(self: Either<E, A>) => B | A
+  <E, A, B>(self: Either<E, A>, onLeft: (e: E) => B): A | B
+} = dual(
+  2,
+  <E, A, B>(self: Either<E, A>, onLeft: (e: E) => B): A | B => isLeft(self) ? onLeft(self.left) : self.right
+)
+
+/**
+ * @example
+ * import * as Either from '@effect/data/Either'
+ *
+ * assert.deepStrictEqual(Either.getOrNull(Either.right(1)), 1)
+ * assert.deepStrictEqual(Either.getOrNull(Either.left("a")), null)
+ *
+ * @category getters
+ * @since 1.0.0
+ */
+export const getOrNull: <E, A>(self: Either<E, A>) => A | null = getOrElse(constNull)
+
+/**
+ * @example
+ * import * as Either from '@effect/data/Either'
+ *
+ * assert.deepStrictEqual(Either.getOrUndefined(Either.right(1)), 1)
+ * assert.deepStrictEqual(Either.getOrUndefined(Either.left("a")), undefined)
+ *
+ * @category getters
+ * @since 1.0.0
+ */
+export const getOrUndefined: <E, A>(self: Either<E, A>) => A | undefined = getOrElse(constUndefined)
+
+/**
+ * Extracts the value of an `Either` or throws if the `Either` is `Left`.
+ *
+ * If a default error is sufficient for your use case and you don't need to configure the thrown error, see {@link getOrThrow}.
+ *
+ * @param self - The `Either` to extract the value from.
+ * @param onLeft - A function that will be called if the `Either` is `Left`. It returns the error to be thrown.
+ *
+ * @example
+ * import * as E from "@effect/data/Either"
+ *
+ * assert.deepStrictEqual(
+ *   E.getOrThrowWith(E.right(1), () => new Error('Unexpected Left')),
+ *   1
+ * )
+ * assert.throws(() => E.getOrThrowWith(E.left("error"), () => new Error('Unexpected Left')))
+ *
+ * @category getters
+ * @since 1.0.0
+ */
+export const getOrThrowWith: {
+  <E>(onLeft: (e: E) => unknown): <A>(self: Either<E, A>) => A
+  <E, A>(self: Either<E, A>, onLeft: (e: E) => unknown): A
+} = dual(2, <E, A>(self: Either<E, A>, onLeft: (e: E) => unknown): A => {
+  if (isRight(self)) {
+    return self.right
+  }
+  throw onLeft(self.left)
+})
+
+/**
+ * Extracts the value of an `Either` or throws if the `Either` is `Left`.
+ *
+ * The thrown error is a default error. To configure the error thrown, see  {@link getOrThrowWith}.
+ *
+ * @param self - The `Either` to extract the value from.
+ * @throws `Error("getOrThrow called on a Left")`
+ *
+ * @example
+ * import * as E from "@effect/data/Either"
+ *
+ * assert.deepStrictEqual(E.getOrThrow(E.right(1)), 1)
+ * assert.throws(() => E.getOrThrow(E.left("error")))
+ *
+ * @category getters
+ * @since 1.0.0
+ */
+export const getOrThrow: <E, A>(self: Either<E, A>) => A = getOrThrowWith(() =>
+  new Error("getOrThrow called on a Left")
+)
+
+/**
+ * @category combining
+ * @since 1.0.0
+ */
+export const flatMap: {
+  <A, E2, B>(f: (a: A) => Either<E2, B>): <E1>(self: Either<E1, A>) => Either<E1 | E2, B>
+  <E1, A, E2, B>(self: Either<E1, A>, f: (a: A) => Either<E2, B>): Either<E1 | E2, B>
+} = dual(
+  2,
+  <E1, A, E2, B>(self: Either<E1, A>, f: (a: A) => Either<E2, B>): Either<E1 | E2, B> =>
+    isLeft(self) ? left(self.left) : f(self.right)
+)
+
+/**
+ * Takes a structure of `Option`s and returns an `Option` of values with the same structure.
+ *
+ * - If a tuple is supplied, then the returned `Option` will contain a tuple with the same length.
+ * - If a struct is supplied, then the returned `Option` will contain a struct with the same keys.
+ * - If an iterable is supplied, then the returned `Option` will contain an array.
+ *
+ * @param fields - the struct of `Option`s to be sequenced.
+ *
+ * @example
+ * import * as Either from "@effect/data/Either"
+ *
+ * assert.deepStrictEqual(Either.all([Either.right(1), Either.right(2)]), Either.right([1, 2]))
+ * assert.deepStrictEqual(Either.all({ a: Either.right(1), b: Either.right("hello") }), Either.right({ a: 1, b: "hello" }))
+ * assert.deepStrictEqual(Either.all({ a: Either.right(1), b: Either.left("error") }), Either.left("error"))
+ *
+ * @category combining
+ * @since 1.0.0
+ */
+// @ts-expect-error
+export const all: <const I extends Iterable<Either<any, any>> | Record<string, Either<any, any>>>(
+  input: I
+) => [I] extends [ReadonlyArray<Either<any, any>>] ? Either<
+  I[number] extends never ? never : [I[number]] extends [Either<infer E, any>] ? E : never,
+  { -readonly [K in keyof I]: [I[K]] extends [Either<any, infer A>] ? A : never }
+>
+  : [I] extends [Iterable<Either<infer E, infer A>>] ? Either<E, Array<A>>
+  : Either<I[keyof I] extends never ? never : [I[keyof I]] extends [Either<infer E, any>] ? E : never, { -readonly [K in keyof I]: [I[K]] extends [Either<any, infer A>] ? A : never }> = (
+    input: Iterable<Either<any, any>> | Record<string, Either<any, any>>
+  ): Either<any, any> => {
+    if (Symbol.iterator in input) {
+      const out: Array<Either<any, any>> = []
+      for (const e of (input as Iterable<Either<any, any>>)) {
+        if (isLeft(e)) {
+          return e
+        }
+        out.push(e.right)
+      }
+      return right(out)
+    }
+
+    const out: Record<string, any> = {}
+    for (const key of Object.keys(input)) {
+      const e = input[key]
+      if (isLeft(e)) {
+        return e
+      }
+      out[key] = e.right
+    }
+    return right(out)
+  }
 
 /**
  * @since 1.0.0

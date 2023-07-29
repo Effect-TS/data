@@ -1,5 +1,5 @@
 import * as Either from "@effect/data/Either"
-import { pipe } from "@effect/data/Function"
+import { flow, pipe } from "@effect/data/Function"
 import * as N from "@effect/data/Number"
 import * as O from "@effect/data/Option"
 import * as S from "@effect/data/String"
@@ -107,5 +107,85 @@ describe.concurrent("Either", () => {
 
   it("pipe", () => {
     expect(Either.right(1).pipe(Either.mapRight((n) => n + 1))).toEqual(Either.right(2))
+  })
+
+  it("fromNullable", () => {
+    Util.deepStrictEqual(Either.fromNullable(null, () => "fallback"), Either.left("fallback"))
+    Util.deepStrictEqual(Either.fromNullable(undefined, () => "fallback"), Either.left("fallback"))
+    Util.deepStrictEqual(Either.fromNullable(1, () => "fallback"), Either.right(1))
+  })
+
+  it("fromOption", () => {
+    Util.deepStrictEqual(Either.fromOption(O.none(), () => "none"), Either.left("none"))
+    Util.deepStrictEqual(Either.fromOption(O.some(1), () => "none"), Either.right(1))
+  })
+
+  it("try", () => {
+    Util.deepStrictEqual(Either.try(() => 1), Either.right(1))
+    Util.deepStrictEqual(
+      Either.try(() => {
+        throw "b"
+      }),
+      Either.left("b")
+    )
+    Util.deepStrictEqual(Either.try({ try: () => 1, catch: (e) => new Error(String(e)) }), Either.right(1))
+    Util.deepStrictEqual(
+      Either.try({
+        try: () => {
+          throw "b"
+        },
+        catch: (e) => new Error(String(e))
+      }),
+      Either.left(new Error("b"))
+    )
+  })
+
+  it("getOrElse", () => {
+    Util.deepStrictEqual(Either.getOrElse(Either.right(1), (error) => error + "!"), 1)
+    Util.deepStrictEqual(Either.getOrElse(Either.left("not a number"), (error) => error + "!"), "not a number!")
+  })
+
+  it("getOrNull", () => {
+    Util.deepStrictEqual(Either.getOrNull(Either.right(1)), 1)
+    Util.deepStrictEqual(Either.getOrNull(Either.left("a")), null)
+  })
+
+  it("getOrUndefined", () => {
+    Util.deepStrictEqual(Either.getOrUndefined(Either.right(1)), 1)
+    Util.deepStrictEqual(Either.getOrUndefined(Either.left("a")), undefined)
+  })
+
+  it("getOrThrowWith", () => {
+    expect(pipe(Either.right(1), Either.getOrThrowWith((e) => new Error(`Unexpected Left: ${e}`)))).toEqual(1)
+    expect(() => pipe(Either.left("e"), Either.getOrThrowWith((e) => new Error(`Unexpected Left: ${e}`))))
+      .toThrowError(
+        new Error("Unexpected Left: e")
+      )
+  })
+
+  it("getOrThrow", () => {
+    expect(pipe(Either.right(1), Either.getOrThrow)).toEqual(1)
+    expect(() => pipe(Either.left("e"), Either.getOrThrow)).toThrowError(
+      new Error("getOrThrow called on a Left")
+    )
+  })
+
+  it("flatMap", () => {
+    const f = Either.flatMap<string, string, number>(flow(S.length, Either.right))
+    Util.deepStrictEqual(pipe(Either.right("abc"), f), Either.right(3))
+    Util.deepStrictEqual(pipe(Either.left("maError"), f), Either.left("maError"))
+  })
+
+  it("all", () => {
+    // tuples and arrays
+    Util.deepStrictEqual(Either.all([]), Either.right([]))
+    Util.deepStrictEqual(Either.all([Either.right(1)]), Either.right([1]))
+    Util.deepStrictEqual(Either.all([Either.right(1), Either.right(true)]), Either.right([1, true]))
+    Util.deepStrictEqual(Either.all([Either.right(1), Either.left("e")]), Either.left("e"))
+    // structs and records
+    Util.deepStrictEqual(Either.all({}), Either.right({}))
+    Util.deepStrictEqual(Either.all({ a: Either.right(1) }), Either.right({ a: 1 }))
+    Util.deepStrictEqual(Either.all({ a: Either.right(1), b: Either.right(true) }), Either.right({ a: 1, b: true }))
+    Util.deepStrictEqual(Either.all({ a: Either.right(1), b: Either.left("e") }), Either.left("e"))
   })
 })
