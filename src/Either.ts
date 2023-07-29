@@ -4,12 +4,13 @@
 
 import type * as Data from "@effect/data/Data"
 import * as Equivalence from "@effect/data/Equivalence"
+import type { LazyArg } from "@effect/data/Function"
 import { dual, identity } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
 import * as either from "@effect/data/internal/Either"
 import type { Option } from "@effect/data/Option"
 import type { Pipeable } from "@effect/data/Pipeable"
-import { isObject } from "@effect/data/Predicate"
+import { isFunction, isObject } from "@effect/data/Predicate"
 import type * as Unify from "@effect/data/Unify"
 
 /**
@@ -141,6 +142,40 @@ export const fromOption: {
   <A, E>(self: Option<A>, onNone: () => E): Either<E, A>
   <E>(onNone: () => E): <A>(self: Option<A>) => Either<E, A>
 } = either.fromOption
+
+const try_: {
+  <A, E>(
+    options: { readonly try: LazyArg<A>; readonly catch: (error: unknown) => E }
+  ): Either<E, A>
+  <A>(evaluate: LazyArg<A>): Either<unknown, A>
+} = (<A, E>(
+  evaluate: LazyArg<A> | { readonly try: LazyArg<A>; readonly catch: (error: unknown) => E }
+) => {
+  if (isFunction(evaluate)) {
+    try {
+      return right(evaluate())
+    } catch (e) {
+      return left(e)
+    }
+  } else {
+    try {
+      return right(evaluate.try())
+    } catch (e) {
+      return left(evaluate.catch(e))
+    }
+  }
+}) as any
+
+export {
+  /**
+   * Imports a synchronous side-effect into a pure `Either` value, translating any
+   * thrown exceptions into typed failed eithers creating with `Either.left`.
+   *
+   * @category constructors
+   * @since 1.0.0
+   */
+  try_ as try
+}
 
 /**
  * Tests if a value is a `Either`.

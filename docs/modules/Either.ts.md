@@ -17,6 +17,7 @@ Added in v1.0.0
   - [fromOption](#fromoption)
   - [left](#left)
   - [right](#right)
+  - [try](#try)
 - [equivalence](#equivalence)
   - [getEquivalence](#getequivalence)
 - [getters](#getters)
@@ -133,6 +134,19 @@ of this structure.
 
 ```ts
 export declare const right: <A>(a: A) => Either<never, A>
+```
+
+Added in v1.0.0
+
+## try
+
+Imports a synchronous side-effect into a pure `Either` value, translating any
+thrown exceptions into typed failed eithers creating with `Either.left`.
+
+**Signature**
+
+```ts
+export declare const try: { <A, E>(options: { readonly try: LazyArg<A>; readonly catch: (error: unknown) => E; }): Either<E, A>; <A>(evaluate: LazyArg<A>): Either<unknown, A>; }
 ```
 
 Added in v1.0.0

@@ -119,4 +119,24 @@ describe.concurrent("Either", () => {
     Util.deepStrictEqual(Either.fromOption(O.none(), () => "none"), Either.left("none"))
     Util.deepStrictEqual(Either.fromOption(O.some(1), () => "none"), Either.right(1))
   })
+
+  it("try", () => {
+    Util.deepStrictEqual(Either.try(() => 1), Either.right(1))
+    Util.deepStrictEqual(
+      Either.try(() => {
+        throw "b"
+      }),
+      Either.left("b")
+    )
+    Util.deepStrictEqual(Either.try({ try: () => 1, catch: (e) => new Error(String(e)) }), Either.right(1))
+    Util.deepStrictEqual(
+      Either.try({
+        try: () => {
+          throw "b"
+        },
+        catch: (e) => new Error(String(e))
+      }),
+      Either.left(new Error("b"))
+    )
+  })
 })
