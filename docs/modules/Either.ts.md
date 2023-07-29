@@ -23,6 +23,7 @@ Added in v1.0.0
 - [getters](#getters)
   - [getLeft](#getleft)
   - [getOrElse](#getorelse)
+  - [getOrNull](#getornull)
   - [getRight](#getright)
   - [merge](#merge)
 - [guards](#guards)
@@ -208,7 +209,6 @@ export declare const getOrElse: {
 
 ```ts
 import * as Either from '@effect/data/Either'
-import { pipe } from '@effect/data/Function'
 
 assert.deepStrictEqual(
   Either.getOrElse(Either.right(1), (error) => error + '!'),
@@ -218,6 +218,25 @@ assert.deepStrictEqual(
   Either.getOrElse(Either.left('not a number'), (error) => error + '!'),
   'not a number!'
 )
+```
+
+Added in v1.0.0
+
+## getOrNull
+
+**Signature**
+
+```ts
+export declare const getOrNull: <E, A>(self: Either<E, A>) => A | null
+```
+
+**Example**
+
+```ts
+import * as Either from '@effect/data/Either'
+
+assert.deepStrictEqual(Either.getOrNull(Either.right(1)), 1)
+assert.deepStrictEqual(Either.getOrNull(Either.left('a')), null)
 ```
 
 Added in v1.0.0

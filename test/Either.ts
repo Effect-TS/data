@@ -144,4 +144,9 @@ describe.concurrent("Either", () => {
     Util.deepStrictEqual(Either.getOrElse(Either.right(1), (error) => error + "!"), 1)
     Util.deepStrictEqual(Either.getOrElse(Either.left("not a number"), (error) => error + "!"), "not a number!")
   })
+
+  it("getOrNull", () => {
+    Util.deepStrictEqual(Either.getOrNull(Either.right(1)), 1)
+    Util.deepStrictEqual(Either.getOrNull(Either.left("a")), null)
+  })
 })

@@ -5,7 +5,7 @@
 import type * as Data from "@effect/data/Data"
 import * as Equivalence from "@effect/data/Equivalence"
 import type { LazyArg } from "@effect/data/Function"
-import { dual, identity } from "@effect/data/Function"
+import { constNull, dual, identity } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
 import * as either from "@effect/data/internal/Either"
 import type { Option } from "@effect/data/Option"
@@ -380,7 +380,6 @@ export const merge: <E, A>(self: Either<E, A>) => E | A = match({
  *
  * @example
  * import * as Either from '@effect/data/Either'
- * import { pipe } from '@effect/data/Function'
  *
  * assert.deepStrictEqual(Either.getOrElse(Either.right(1), (error) => error + "!"), 1)
  * assert.deepStrictEqual(Either.getOrElse(Either.left("not a number"), (error) => error + "!"), "not a number!")
@@ -395,6 +394,18 @@ export const getOrElse: {
   2,
   <E, A, B>(self: Either<E, A>, onLeft: (e: E) => B): A | B => isLeft(self) ? onLeft(self.left) : self.right
 )
+
+/**
+ * @example
+ * import * as Either from '@effect/data/Either'
+ *
+ * assert.deepStrictEqual(Either.getOrNull(Either.right(1)), 1)
+ * assert.deepStrictEqual(Either.getOrNull(Either.left("a")), null)
+ *
+ * @category getters
+ * @since 1.0.0
+ */
+export const getOrNull: <E, A>(self: Either<E, A>) => A | null = getOrElse(constNull)
 
 /**
  * @since 1.0.0
