@@ -56,6 +56,7 @@
       "require": "./build/cjs/*.js"
     }
   },
+  "packageManager": "pnpm@8.6.10",
   "devDependencies": {
     "@babel/cli": "^7.21.0",
     "@babel/core": "^7.21.3",
