@@ -108,4 +108,10 @@ describe.concurrent("Either", () => {
   it("pipe", () => {
     expect(Either.right(1).pipe(Either.mapRight((n) => n + 1))).toEqual(Either.right(2))
   })
+
+  it("fromNullable", () => {
+    Util.deepStrictEqual(Either.fromNullable(null, () => "fallback"), Either.left("fallback"))
+    Util.deepStrictEqual(Either.fromNullable(undefined, () => "fallback"), Either.left("fallback"))
+    Util.deepStrictEqual(Either.fromNullable(1, () => "fallback"), Either.right(1))
+  })
 })

@@ -13,6 +13,7 @@ Added in v1.0.0
 <h2 class="text-delta">Table of contents</h2>
 
 - [constructors](#constructors)
+  - [fromNullable](#fromnullable)
   - [left](#left)
   - [right](#right)
 - [equivalence](#equivalence)
@@ -48,6 +49,37 @@ Added in v1.0.0
 ---
 
 # constructors
+
+## fromNullable
+
+Takes a lazy default and a nullable value, if the value is not nully (`null` or `undefined`), turn it into a `Right`, if the value is nully use
+the provided default as a `Left`.
+
+**Signature**
+
+```ts
+export declare const fromNullable: {
+  <A, E>(onNullable: (a: A) => E): (a: A) => Either<E, NonNullable<A>>
+  <A, E>(a: A, onNullable: (a: A) => E): Either<E, NonNullable<A>>
+}
+```
+
+**Example**
+
+```ts
+import * as Either from '@effect/data/Either'
+
+assert.deepStrictEqual(
+  Either.fromNullable(1, () => 'fallback'),
+  Either.right(1)
+)
+assert.deepStrictEqual(
+  Either.fromNullable(null, () => 'fallback'),
+  Either.left('fallback')
+)
+```
+
+Added in v1.0.0
 
 ## left
 

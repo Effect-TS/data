@@ -105,6 +105,28 @@ export const right: <A>(a: A) => Either<never, A> = either.right
 export const left: <E>(e: E) => Either<E, never> = either.left
 
 /**
+ * Takes a lazy default and a nullable value, if the value is not nully (`null` or `undefined`), turn it into a `Right`, if the value is nully use
+ * the provided default as a `Left`.
+ *
+ * @example
+ * import * as Either from '@effect/data/Either'
+ *
+ * assert.deepStrictEqual(Either.fromNullable(1, () => 'fallback'), Either.right(1))
+ * assert.deepStrictEqual(Either.fromNullable(null, () => 'fallback'), Either.left('fallback'))
+ *
+ * @category constructors
+ * @since 1.0.0
+ */
+export const fromNullable: {
+  <A, E>(onNullable: (a: A) => E): (a: A) => Either<E, NonNullable<A>>
+  <A, E>(a: A, onNullable: (a: A) => E): Either<E, NonNullable<A>>
+} = dual(
+  2,
+  <A, E>(a: A, onNullable: (a: A) => E): Either<E, NonNullable<A>> =>
+    a == null ? left(onNullable(a)) : right(a as NonNullable<A>)
+)
+
+/**
  * Tests if a value is a `Either`.
  *
  * @param input - The value to test.
