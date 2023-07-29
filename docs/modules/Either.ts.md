@@ -24,6 +24,7 @@ Added in v1.0.0
   - [getLeft](#getleft)
   - [getOrElse](#getorelse)
   - [getOrNull](#getornull)
+  - [getOrUndefined](#getorundefined)
   - [getRight](#getright)
   - [merge](#merge)
 - [guards](#guards)
@@ -237,6 +238,25 @@ import * as Either from '@effect/data/Either'
 
 assert.deepStrictEqual(Either.getOrNull(Either.right(1)), 1)
 assert.deepStrictEqual(Either.getOrNull(Either.left('a')), null)
+```
+
+Added in v1.0.0
+
+## getOrUndefined
+
+**Signature**
+
+```ts
+export declare const getOrUndefined: <E, A>(self: Either<E, A>) => A | undefined
+```
+
+**Example**
+
+```ts
+import * as Either from '@effect/data/Either'
+
+assert.deepStrictEqual(Either.getOrUndefined(Either.right(1)), 1)
+assert.deepStrictEqual(Either.getOrUndefined(Either.left('a')), undefined)
 ```
 
 Added in v1.0.0

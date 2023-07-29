@@ -149,4 +149,9 @@ describe.concurrent("Either", () => {
     Util.deepStrictEqual(Either.getOrNull(Either.right(1)), 1)
     Util.deepStrictEqual(Either.getOrNull(Either.left("a")), null)
   })
+
+  it("getOrUndefined", () => {
+    Util.deepStrictEqual(Either.getOrUndefined(Either.right(1)), 1)
+    Util.deepStrictEqual(Either.getOrUndefined(Either.left("a")), undefined)
+  })
 })

@@ -5,7 +5,7 @@
 import type * as Data from "@effect/data/Data"
 import * as Equivalence from "@effect/data/Equivalence"
 import type { LazyArg } from "@effect/data/Function"
-import { constNull, dual, identity } from "@effect/data/Function"
+import { constNull, constUndefined, dual, identity } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
 import * as either from "@effect/data/internal/Either"
 import type { Option } from "@effect/data/Option"
@@ -406,6 +406,18 @@ export const getOrElse: {
  * @since 1.0.0
  */
 export const getOrNull: <E, A>(self: Either<E, A>) => A | null = getOrElse(constNull)
+
+/**
+ * @example
+ * import * as Either from '@effect/data/Either'
+ *
+ * assert.deepStrictEqual(Either.getOrUndefined(Either.right(1)), 1)
+ * assert.deepStrictEqual(Either.getOrUndefined(Either.left("a")), undefined)
+ *
+ * @category getters
+ * @since 1.0.0
+ */
+export const getOrUndefined: <E, A>(self: Either<E, A>) => A | undefined = getOrElse(constUndefined)
 
 /**
  * @since 1.0.0
