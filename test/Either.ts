@@ -114,4 +114,9 @@ describe.concurrent("Either", () => {
     Util.deepStrictEqual(Either.fromNullable(undefined, () => "fallback"), Either.left("fallback"))
     Util.deepStrictEqual(Either.fromNullable(1, () => "fallback"), Either.right(1))
   })
+
+  it("fromOption", () => {
+    Util.deepStrictEqual(Either.fromOption(O.none(), () => "none"), Either.left("none"))
+    Util.deepStrictEqual(Either.fromOption(O.some(1), () => "none"), Either.right(1))
+  })
 })

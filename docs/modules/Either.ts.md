@@ -14,6 +14,7 @@ Added in v1.0.0
 
 - [constructors](#constructors)
   - [fromNullable](#fromnullable)
+  - [fromOption](#fromoption)
   - [left](#left)
   - [right](#right)
 - [equivalence](#equivalence)
@@ -59,8 +60,8 @@ the provided default as a `Left`.
 
 ```ts
 export declare const fromNullable: {
-  <A, E>(onNullable: (a: A) => E): (a: A) => Either<E, NonNullable<A>>
-  <A, E>(a: A, onNullable: (a: A) => E): Either<E, NonNullable<A>>
+  <A, E>(onNullable: (a: A) => E): (self: A) => Either<E, NonNullable<A>>
+  <A, E>(self: A, onNullable: (a: A) => E): Either<E, NonNullable<A>>
 }
 ```
 
@@ -76,6 +77,35 @@ assert.deepStrictEqual(
 assert.deepStrictEqual(
   Either.fromNullable(null, () => 'fallback'),
   Either.left('fallback')
+)
+```
+
+Added in v1.0.0
+
+## fromOption
+
+**Signature**
+
+```ts
+export declare const fromOption: {
+  <A, E>(self: Option<A>, onNone: () => E): Either<E, A>
+  <E>(onNone: () => E): <A>(self: Option<A>) => Either<E, A>
+}
+```
+
+**Example**
+
+```ts
+import * as Either from '@effect/data/Either'
+import * as Option from '@effect/data/Option'
+
+assert.deepStrictEqual(
+  Either.fromOption(Option.some(1), () => 'error'),
+  Either.right(1)
+)
+assert.deepStrictEqual(
+  Either.fromOption(Option.none(), () => 'error'),
+  Either.left('error')
 )
 ```
 

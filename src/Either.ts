@@ -118,13 +118,29 @@ export const left: <E>(e: E) => Either<E, never> = either.left
  * @since 1.0.0
  */
 export const fromNullable: {
-  <A, E>(onNullable: (a: A) => E): (a: A) => Either<E, NonNullable<A>>
-  <A, E>(a: A, onNullable: (a: A) => E): Either<E, NonNullable<A>>
+  <A, E>(onNullable: (a: A) => E): (self: A) => Either<E, NonNullable<A>>
+  <A, E>(self: A, onNullable: (a: A) => E): Either<E, NonNullable<A>>
 } = dual(
   2,
-  <A, E>(a: A, onNullable: (a: A) => E): Either<E, NonNullable<A>> =>
-    a == null ? left(onNullable(a)) : right(a as NonNullable<A>)
+  <A, E>(self: A, onNullable: (a: A) => E): Either<E, NonNullable<A>> =>
+    self == null ? left(onNullable(self)) : right(self as NonNullable<A>)
 )
+
+/**
+ * @example
+ * import * as Either from '@effect/data/Either'
+ * import * as Option from '@effect/data/Option'
+ *
+ * assert.deepStrictEqual(Either.fromOption(Option.some(1), () => 'error'), Either.right(1))
+ * assert.deepStrictEqual(Either.fromOption(Option.none(), () => 'error'), Either.left('error'))
+ *
+ * @category constructors
+ * @since 1.0.0
+ */
+export const fromOption: {
+  <A, E>(self: Option<A>, onNone: () => E): Either<E, A>
+  <E>(onNone: () => E): <A>(self: Option<A>) => Either<E, A>
+} = either.fromOption
 
 /**
  * Tests if a value is a `Either`.
