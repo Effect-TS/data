@@ -376,6 +376,27 @@ export const merge: <E, A>(self: Either<E, A>) => E | A = match({
 })
 
 /**
+ * Returns the wrapped value if it's a `Right` or a default value if is a `Left`.
+ *
+ * @example
+ * import * as Either from '@effect/data/Either'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * assert.deepStrictEqual(Either.getOrElse(Either.right(1), (error) => error + "!"), 1)
+ * assert.deepStrictEqual(Either.getOrElse(Either.left("not a number"), (error) => error + "!"), "not a number!")
+ *
+ * @category getters
+ * @since 1.0.0
+ */
+export const getOrElse: {
+  <E, B>(onLeft: (e: E) => B): <A>(self: Either<E, A>) => B | A
+  <E, A, B>(self: Either<E, A>, onLeft: (e: E) => B): A | B
+} = dual(
+  2,
+  <E, A, B>(self: Either<E, A>, onLeft: (e: E) => B): A | B => isLeft(self) ? onLeft(self.left) : self.right
+)
+
+/**
  * @since 1.0.0
  */
 export const reverse = <E, A>(self: Either<E, A>): Either<A, E> => isLeft(self) ? right(self.left) : left(self.right)

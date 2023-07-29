@@ -22,6 +22,7 @@ Added in v1.0.0
   - [getEquivalence](#getequivalence)
 - [getters](#getters)
   - [getLeft](#getleft)
+  - [getOrElse](#getorelse)
   - [getRight](#getright)
   - [merge](#merge)
 - [guards](#guards)
@@ -186,6 +187,37 @@ import * as E from '@effect/data/Either'
 
 assert.deepStrictEqual(E.getLeft(E.right('ok')), O.none())
 assert.deepStrictEqual(E.getLeft(E.left('err')), O.some('err'))
+```
+
+Added in v1.0.0
+
+## getOrElse
+
+Returns the wrapped value if it's a `Right` or a default value if is a `Left`.
+
+**Signature**
+
+```ts
+export declare const getOrElse: {
+  <E, B>(onLeft: (e: E) => B): <A>(self: Either<E, A>) => B | A
+  <E, A, B>(self: Either<E, A>, onLeft: (e: E) => B): A | B
+}
+```
+
+**Example**
+
+```ts
+import * as Either from '@effect/data/Either'
+import { pipe } from '@effect/data/Function'
+
+assert.deepStrictEqual(
+  Either.getOrElse(Either.right(1), (error) => error + '!'),
+  1
+)
+assert.deepStrictEqual(
+  Either.getOrElse(Either.left('not a number'), (error) => error + '!'),
+  'not a number!'
+)
 ```
 
 Added in v1.0.0
