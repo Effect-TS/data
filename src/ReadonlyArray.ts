@@ -902,11 +902,10 @@ export const sortNonEmpty: {
  * @category sorting
  * @since 1.0.0
  */
-export const sortBy = <B>(...orders: ReadonlyArray<Order.Order<B>>) =>
-  <A extends B>(self: Iterable<A>): Array<A> => {
-    const input = fromIterable(self)
-    return (isNonEmptyReadonlyArray(input) ? sortByNonEmpty(...orders)(input) : [])
-  }
+export const sortBy = <B>(...orders: ReadonlyArray<Order.Order<B>>) => <A extends B>(self: Iterable<A>): Array<A> => {
+  const input = fromIterable(self)
+  return (isNonEmptyReadonlyArray(input) ? sortByNonEmpty(...orders)(input) : [])
+}
 
 /**
  * @category sorting
@@ -914,7 +913,7 @@ export const sortBy = <B>(...orders: ReadonlyArray<Order.Order<B>>) =>
  */
 export const sortByNonEmpty = <B>(
   ...orders: ReadonlyArray<Order.Order<B>>
-): (<A extends B>(as: NonEmptyReadonlyArray<A>) => NonEmptyArray<A>) => sortNonEmpty(Order.combineAll(orders))
+): <A extends B>(as: NonEmptyReadonlyArray<A>) => NonEmptyArray<A> => sortNonEmpty(Order.combineAll(orders))
 
 /**
  * Takes two `Iterable`s and returns an `Array` of corresponding pairs.
@@ -1761,7 +1760,8 @@ export const liftPredicate: {
  */
 export const liftOption = <A extends Array<unknown>, B>(
   f: (...a: A) => Option<B>
-) => (...a: A): Array<B> => fromOption(f(...a))
+) =>
+(...a: A): Array<B> => fromOption(f(...a))
 
 /**
  * @category conversions
@@ -1775,7 +1775,8 @@ export const fromNullable = <A>(a: A): Array<NonNullable<A>> => a == null ? empt
  */
 export const liftNullable = <A extends Array<unknown>, B>(
   f: (...a: A) => B | null | undefined
-): (...a: A) => Array<NonNullable<B>> => (...a) => fromNullable(f(...a))
+): (...a: A) => Array<NonNullable<B>> =>
+(...a) => fromNullable(f(...a))
 
 /**
  * @category combining
@@ -1797,10 +1798,10 @@ export const flatMapNullable: {
 export const liftEither = <A extends Array<unknown>, E, B>(
   f: (...a: A) => Either<E, B>
 ) =>
-  (...a: A): Array<B> => {
-    const e = f(...a)
-    return E.isLeft(e) ? [] : [e.right]
-  }
+(...a: A): Array<B> => {
+  const e = f(...a)
+  return E.isLeft(e) ? [] : [e.right]
+}
 
 /**
  * Check if a predicate holds true for every `ReadonlyArray` element.

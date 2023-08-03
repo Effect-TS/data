@@ -430,16 +430,16 @@ export const compose: {
   <A, B extends A, C extends B>(ab: Refinement<A, B>, bc: Refinement<B, C>): Refinement<A, C>
 } = dual(
   2,
-  <A, B extends A, C extends B>(ab: Refinement<A, B>, bc: Refinement<B, C>): Refinement<A, C> =>
-    (a): a is C => ab(a) && bc(a)
+  <A, B extends A, C extends B>(ab: Refinement<A, B>, bc: Refinement<B, C>): Refinement<A, C> => (a): a is C =>
+    ab(a) && bc(a)
 )
 
 /**
  * @category combining
  * @since 1.0.0
  */
-export const product = <A, B>(self: Predicate<A>, that: Predicate<B>): Predicate<readonly [A, B]> =>
-  ([a, b]) => self(a) && that(b)
+export const product = <A, B>(self: Predicate<A>, that: Predicate<B>): Predicate<readonly [A, B]> => ([a, b]) =>
+  self(a) && that(b)
 
 /**
  * @category combining
@@ -635,26 +635,24 @@ export const nand: {
  * @category elements
  * @since 1.0.0
  */
-export const every = <A>(collection: Iterable<Predicate<A>>): Predicate<A> =>
-  (a: A) => {
-    for (const p of collection) {
-      if (!p(a)) {
-        return false
-      }
+export const every = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => (a: A) => {
+  for (const p of collection) {
+    if (!p(a)) {
+      return false
     }
-    return true
   }
+  return true
+}
 
 /**
  * @category elements
  * @since 1.0.0
  */
-export const some = <A>(collection: Iterable<Predicate<A>>): Predicate<A> =>
-  (a) => {
-    for (const p of collection) {
-      if (p(a)) {
-        return true
-      }
+export const some = <A>(collection: Iterable<Predicate<A>>): Predicate<A> => (a) => {
+  for (const p of collection) {
+    if (p(a)) {
+      return true
     }
-    return false
   }
+  return false
+}

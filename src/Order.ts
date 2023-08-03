@@ -26,7 +26,8 @@ export interface OrderTypeLambda extends TypeLambda {
  */
 export const make = <A>(
   compare: (self: A, that: A) => -1 | 0 | 1
-): Order<A> => (self, that) => self === that ? 0 : compare(self, that)
+): Order<A> =>
+(self, that) => self === that ? 0 : compare(self, that)
 
 /**
  * @category instances

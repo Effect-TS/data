@@ -28,8 +28,8 @@ export interface EquivalenceTypeLambda extends TypeLambda {
  * @category constructors
  * @since 1.0.0
  */
-export const make = <A>(isEquivalent: (self: A, that: A) => boolean): Equivalence<A> =>
-  (self: A, that: A): boolean => self === that || isEquivalent(self, that)
+export const make = <A>(isEquivalent: (self: A, that: A) => boolean): Equivalence<A> => (self: A, that: A): boolean =>
+  self === that || isEquivalent(self, that)
 
 const isStrictEquivalent = (x: unknown, y: unknown) => x === y
 

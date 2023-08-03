@@ -51,9 +51,9 @@ type ExtractTypes<
     [unifySymbol]?: any
   }
 > = X extends any ? [
-  NonNullable<X[unifySymbol]>,
-  Blacklist<X>
-]
+    NonNullable<X[unifySymbol]>,
+    Blacklist<X>
+  ]
   : never
 
 type FilterIn<A> = A extends any ? typeSymbol extends keyof A ? A : never : never

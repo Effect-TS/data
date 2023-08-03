@@ -506,11 +506,14 @@ export const flatMap: {
 export const all: <const I extends Iterable<Either<any, any>> | Record<string, Either<any, any>>>(
   input: I
 ) => [I] extends [ReadonlyArray<Either<any, any>>] ? Either<
-  I[number] extends never ? never : [I[number]] extends [Either<infer E, any>] ? E : never,
-  { -readonly [K in keyof I]: [I[K]] extends [Either<any, infer A>] ? A : never }
->
+    I[number] extends never ? never : [I[number]] extends [Either<infer E, any>] ? E : never,
+    { -readonly [K in keyof I]: [I[K]] extends [Either<any, infer A>] ? A : never }
+  >
   : [I] extends [Iterable<Either<infer E, infer A>>] ? Either<E, Array<A>>
-  : Either<I[keyof I] extends never ? never : [I[keyof I]] extends [Either<infer E, any>] ? E : never, { -readonly [K in keyof I]: [I[K]] extends [Either<any, infer A>] ? A : never }> = (
+  : Either<
+    I[keyof I] extends never ? never : [I[keyof I]] extends [Either<infer E, any>] ? E : never,
+    { -readonly [K in keyof I]: [I[K]] extends [Either<any, infer A>] ? A : never }
+  > = (
     input: Iterable<Either<any, any>> | Record<string, Either<any, any>>
   ): Either<any, any> => {
     if (Symbol.iterator in input) {

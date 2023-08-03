@@ -173,7 +173,8 @@ export const merge = dual<
 })
 
 /** @internal */
-export const pick = <Services, S extends Array<C.ValidTagsById<Services>>>(...tags: S) =>
+export const pick =
+  <Services, S extends Array<C.ValidTagsById<Services>>>(...tags: S) =>
   (self: C.Context<Services>): C.Context<
     { [k in keyof S]: C.Tag.Identifier<S[k]> }[number]
   > => {
@@ -188,7 +189,8 @@ export const pick = <Services, S extends Array<C.ValidTagsById<Services>>>(...ta
   }
 
 /** @internal */
-export const omit = <Services, S extends Array<C.ValidTagsById<Services>>>(...tags: S) =>
+export const omit =
+  <Services, S extends Array<C.ValidTagsById<Services>>>(...tags: S) =>
   (self: C.Context<Services>): C.Context<
     Exclude<Services, { [k in keyof S]: C.Tag.Identifier<S[k]> }[keyof S]>
   > => {
