@@ -87,14 +87,15 @@ export const empty = <K, V = never>(ord: Order<K>): SortedMap<K, V> => new Sorte
  * @since 1.0.0
  * @category constructors
  */
-export const fromIterable = <K>(ord: Order<K>) =>
-  <V>(iterable: Iterable<readonly [K, V]>): SortedMap<K, V> => new SortedMapImpl(RBT.fromIterable<K, V>(ord)(iterable))
+export const fromIterable = <K>(ord: Order<K>) => <V>(iterable: Iterable<readonly [K, V]>): SortedMap<K, V> =>
+  new SortedMapImpl(RBT.fromIterable<K, V>(ord)(iterable))
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const make = <K>(ord: Order<K>) =>
+export const make =
+  <K>(ord: Order<K>) =>
   <Entries extends ReadonlyArray<readonly [K, any]>>(...entries: Entries): SortedMap<
     K,
     Entries[number] extends (readonly [any, infer V]) ? V : never

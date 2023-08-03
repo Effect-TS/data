@@ -321,7 +321,9 @@ export const constVoid: LazyArg<void> = constUndefined
  */
 export const flip = <A extends Array<unknown>, B extends Array<unknown>, C>(
   f: (...a: A) => (...b: B) => C
-): ((...b: B) => (...a: A) => C) => (...b) => (...a) => f(...a)(...b)
+): (...b: B) => (...a: A) => C =>
+(...b) =>
+(...a) => f(...a)(...b)
 
 /**
  * Composes two functions, `ab` and `bc` into a single function that takes in an argument `a` of type `A` and returns a result of type `C`.
@@ -369,7 +371,7 @@ export const absurd = <A>(_: never): A => {
  *
  * @since 1.0.0
  */
-export const tupled = <A extends ReadonlyArray<unknown>, B>(f: (...a: A) => B): ((a: A) => B) => (a) => f(...a)
+export const tupled = <A extends ReadonlyArray<unknown>, B>(f: (...a: A) => B): (a: A) => B => (a) => f(...a)
 
 /**
  * Inverse function of `tupled`
@@ -383,7 +385,7 @@ export const tupled = <A extends ReadonlyArray<unknown>, B>(f: (...a: A) => B): 
  *
  * @since 1.0.0
  */
-export const untupled = <A extends ReadonlyArray<unknown>, B>(f: (a: A) => B): ((...a: A) => B) => (...a) => f(a)
+export const untupled = <A extends ReadonlyArray<unknown>, B>(f: (a: A) => B): (...a: A) => B => (...a) => f(a)
 
 /**
  * Pipes the value of an expression into a pipeline of functions.

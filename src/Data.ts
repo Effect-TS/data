@@ -102,8 +102,8 @@ export const array = <As extends ReadonlyArray<any>>(as: As): Data<As> => unsafe
  */
 export const unsafeArray = <As extends ReadonlyArray<any>>(as: As): Data<As> => Object.setPrototypeOf(as, protoArr)
 
-const _case = <A extends Case>(): Case.Constructor<A> =>
-  (args) => (args === undefined ? struct({}) : struct(args)) as any
+const _case = <A extends Case>(): Case.Constructor<A> => (args) =>
+  (args === undefined ? struct({}) : struct(args)) as any
 
 export {
   /**
@@ -124,8 +124,8 @@ export {
 export const tagged = <A extends Case & { _tag: string }>(
   tag: A["_tag"]
 ): Case.Constructor<A, "_tag"> =>
-  // @ts-expect-error
-  (args) => args === undefined ? struct({ _tag: tag }) : struct({ ...args, _tag: tag })
+// @ts-expect-error
+(args) => args === undefined ? struct({ _tag: tag }) : struct({ ...args, _tag: tag })
 
 /**
  * @since 1.0.0

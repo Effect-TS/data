@@ -22,13 +22,13 @@ import * as order from "@effect/data/Order"
 export const pick = <S, Keys extends readonly [keyof S, ...Array<keyof S>]>(
   ...keys: Keys
 ) =>
-  (s: S): { [K in Keys[number]]: S[K] } => {
-    const out: any = {}
-    for (const k of keys) {
-      out[k] = s[k]
-    }
-    return out
+(s: S): { [K in Keys[number]]: S[K] } => {
+  const out: any = {}
+  for (const k of keys) {
+    out[k] = s[k]
   }
+  return out
+}
 
 /**
  * Create a new object by omitting properties of an existing object.
@@ -44,13 +44,13 @@ export const pick = <S, Keys extends readonly [keyof S, ...Array<keyof S>]>(
 export const omit = <S, Keys extends readonly [keyof S, ...Array<keyof S>]>(
   ...keys: Keys
 ) =>
-  (s: S): { [K in Exclude<keyof S, Keys[number]>]: S[K] } => {
-    const out: any = { ...s }
-    for (const k of keys) {
-      delete out[k]
-    }
-    return out
+(s: S): { [K in Exclude<keyof S, Keys[number]>]: S[K] } => {
+  const out: any = { ...s }
+  for (const k of keys) {
+    delete out[k]
   }
+  return out
+}
 
 /**
  * Given a struct of `Equivalence`s returns a new `Equivalence` that compares values of a struct

@@ -132,11 +132,11 @@ export declare namespace Brand {
    * @category models
    */
   export type Brands<P> = P extends Brand<any> ? Brand.UnionToIntersection<
-    {
-      [k in keyof P[BrandTypeId]]: k extends string | symbol ? Brand<k>
-        : never
-    }[keyof P[BrandTypeId]]
-  >
+      {
+        [k in keyof P[BrandTypeId]]: k extends string | symbol ? Brand<k>
+          : never
+      }[keyof P[BrandTypeId]]
+    >
     : never
 
   /**

@@ -65,5 +65,5 @@ export const isEqual = (u: unknown): u is Equal => typeof u === "object" && u !=
  * @since 1.0.0
  * @category instances
  */
-export const equivalence: <A>() => Equivalence<A> = () =>
-  (self, that) => Hash.hash(self) === Hash.hash(that) && equals(self, that)
+export const equivalence: <A>() => Equivalence<A> = () => (self, that) =>
+  Hash.hash(self) === Hash.hash(that) && equals(self, that)

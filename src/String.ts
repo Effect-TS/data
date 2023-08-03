@@ -91,8 +91,8 @@ export const toLowerCase = (self: string): string => self.toLowerCase()
  *
  * @since 1.0.0
  */
-export const replace = (searchValue: string | RegExp, replaceValue: string) =>
-  (self: string): string => self.replace(searchValue, replaceValue)
+export const replace = (searchValue: string | RegExp, replaceValue: string) => (self: string): string =>
+  self.replace(searchValue, replaceValue)
 
 /**
  * @example
@@ -191,20 +191,20 @@ export const split: {
  *
  * @since 1.0.0
  */
-export const includes = (searchString: string, position?: number) =>
-  (self: string): boolean => self.includes(searchString, position)
+export const includes = (searchString: string, position?: number) => (self: string): boolean =>
+  self.includes(searchString, position)
 
 /**
  * @since 1.0.0
  */
-export const startsWith = (searchString: string, position?: number) =>
-  (self: string): boolean => self.startsWith(searchString, position)
+export const startsWith = (searchString: string, position?: number) => (self: string): boolean =>
+  self.startsWith(searchString, position)
 
 /**
  * @since 1.0.0
  */
-export const endsWith = (searchString: string, position?: number) =>
-  (self: string): boolean => self.endsWith(searchString, position)
+export const endsWith = (searchString: string, position?: number) => (self: string): boolean =>
+  self.endsWith(searchString, position)
 
 /**
  * @example
@@ -298,9 +298,8 @@ export const codePointAt: {
  *
  * @since 1.0.0
  */
-export const indexOf = (searchString: string) =>
-  (self: string): Option.Option<number> =>
-    Option.filter(Option.some(self.indexOf(searchString)), number.greaterThanOrEqualTo(0))
+export const indexOf = (searchString: string) => (self: string): Option.Option<number> =>
+  Option.filter(Option.some(self.indexOf(searchString)), number.greaterThanOrEqualTo(0))
 
 /**
  * @example
@@ -313,9 +312,8 @@ export const indexOf = (searchString: string) =>
  *
  * @since 1.0.0
  */
-export const lastIndexOf = (searchString: string) =>
-  (self: string): Option.Option<number> =>
-    Option.filter(Option.some(self.lastIndexOf(searchString)), number.greaterThanOrEqualTo(0))
+export const lastIndexOf = (searchString: string) => (self: string): Option.Option<number> =>
+  Option.filter(Option.some(self.lastIndexOf(searchString)), number.greaterThanOrEqualTo(0))
 
 /**
  * @example
@@ -328,16 +326,17 @@ export const lastIndexOf = (searchString: string) =>
  *
  * @since 1.0.0
  */
-export const localeCompare = (that: string, locales?: Array<string>, options?: Intl.CollatorOptions) =>
-  (self: string): Ordering.Ordering => number.sign(self.localeCompare(that, locales, options))
+export const localeCompare =
+  (that: string, locales?: Array<string>, options?: Intl.CollatorOptions) => (self: string): Ordering.Ordering =>
+    number.sign(self.localeCompare(that, locales, options))
 
 /**
  * It is the `pipe`-able version of the native `match` method.
  *
  * @since 1.0.0
  */
-export const match = (regexp: RegExp | string) =>
-  (self: string): Option.Option<RegExpMatchArray> => Option.fromNullable(self.match(regexp))
+export const match = (regexp: RegExp | string) => (self: string): Option.Option<RegExpMatchArray> =>
+  Option.fromNullable(self.match(regexp))
 
 /**
  * It is the `pipe`-able version of the native `matchAll` method.
@@ -372,8 +371,8 @@ export const normalize = (form?: "NFC" | "NFD" | "NFKC" | "NFKD") => (self: stri
  *
  * @since 1.0.0
  */
-export const padEnd = (maxLength: number, fillString?: string) =>
-  (self: string): string => self.padEnd(maxLength, fillString)
+export const padEnd = (maxLength: number, fillString?: string) => (self: string): string =>
+  self.padEnd(maxLength, fillString)
 
 /**
  * @example
@@ -385,8 +384,8 @@ export const padEnd = (maxLength: number, fillString?: string) =>
  *
  * @since 1.0.0
  */
-export const padStart = (maxLength: number, fillString?: string) =>
-  (self: string): string => self.padStart(maxLength, fillString)
+export const padStart = (maxLength: number, fillString?: string) => (self: string): string =>
+  self.padStart(maxLength, fillString)
 
 /**
  * @example
@@ -409,8 +408,8 @@ export const repeat = (count: number) => (self: string): string => self.repeat(c
  *
  * @since 1.0.0
  */
-export const replaceAll = (searchValue: string | RegExp, replaceValue: string) =>
-  (self: string): string => self.replaceAll(searchValue, replaceValue)
+export const replaceAll = (searchValue: string | RegExp, replaceValue: string) => (self: string): string =>
+  self.replaceAll(searchValue, replaceValue)
 
 /**
  * @example
@@ -443,8 +442,8 @@ export const search: {
  *
  * @since 1.0.0
  */
-export const toLocaleLowerCase = (locale?: string | Array<string>) =>
-  (self: string): string => self.toLocaleLowerCase(locale)
+export const toLocaleLowerCase = (locale?: string | Array<string>) => (self: string): string =>
+  self.toLocaleLowerCase(locale)
 
 /**
  * @example
@@ -456,8 +455,8 @@ export const toLocaleLowerCase = (locale?: string | Array<string>) =>
  *
  * @since 1.0.0
  */
-export const toLocaleUpperCase = (locale?: string | Array<string>) =>
-  (self: string): string => self.toLocaleUpperCase(locale)
+export const toLocaleUpperCase = (locale?: string | Array<string>) => (self: string): string =>
+  self.toLocaleUpperCase(locale)
 
 /**
  * Keep the specified number of characters from the start of a string.

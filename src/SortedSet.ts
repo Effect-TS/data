@@ -88,16 +88,17 @@ export const empty = <A>(O: Order<A>): SortedSet<A> => new SortedSetImpl(RBT.emp
  * @category constructors
  */
 export const fromIterable = <K>(ord: Order<K>) =>
-  (
-    iterable: Iterable<K>
-  ): SortedSet<K> => new SortedSetImpl(RBT.fromIterable<K, boolean>(ord)(Array.from(iterable).map((k) => [k, true])))
+(
+  iterable: Iterable<K>
+): SortedSet<K> => new SortedSetImpl(RBT.fromIterable<K, boolean>(ord)(Array.from(iterable).map((k) => [k, true])))
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const make = <K>(ord: Order<K>) =>
-  <Entries extends ReadonlyArray<K>>(...entries: Entries): SortedSet<Entries[number]> => fromIterable(ord)(entries)
+export const make =
+  <K>(ord: Order<K>) => <Entries extends ReadonlyArray<K>>(...entries: Entries): SortedSet<Entries[number]> =>
+    fromIterable(ord)(entries)
 
 /**
  * @since 1.0.0

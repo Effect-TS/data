@@ -434,7 +434,8 @@ export const fromNullable = <A>(
  */
 export const liftNullable = <A extends ReadonlyArray<unknown>, B>(
   f: (...a: A) => B | null | undefined
-): ((...a: A) => Option<NonNullable<B>>) => (...a) => fromNullable(f(...a))
+): (...a: A) => Option<NonNullable<B>> =>
+(...a) => fromNullable(f(...a))
 
 /**
  * Returns the value of the `Option` if it is a `Some`, otherwise returns `null`.
@@ -489,14 +490,14 @@ export const getOrUndefined: <A>(self: Option<A>) => A | undefined = getOrElse(c
  */
 export const liftThrowable = <A extends ReadonlyArray<unknown>, B>(
   f: (...a: A) => B
-): ((...a: A) => Option<B>) =>
-  (...a) => {
-    try {
-      return some(f(...a))
-    } catch (e) {
-      return none()
-    }
+): (...a: A) => Option<B> =>
+(...a) => {
+  try {
+    return some(f(...a))
+  } catch (e) {
+    return none()
   }
+}
 
 /**
  * Extracts the value of an `Option` or throws if the `Option` is `None`.
@@ -769,8 +770,8 @@ export const productMany = <A>(
 export const all: <const I extends Iterable<Option<any>> | Record<string, Option<any>>>(
   input: I
 ) => [I] extends [ReadonlyArray<Option<any>>] ? Option<
-  { -readonly [K in keyof I]: [I[K]] extends [Option<infer A>] ? A : never }
->
+    { -readonly [K in keyof I]: [I[K]] extends [Option<infer A>] ? A : never }
+  >
   : [I] extends [Iterable<Option<infer A>>] ? Option<Array<A>>
   : Option<{ -readonly [K in keyof I]: [I[K]] extends [Option<infer A>] ? A : never }> = (
     input: Iterable<Option<any>> | Record<string, Option<any>>

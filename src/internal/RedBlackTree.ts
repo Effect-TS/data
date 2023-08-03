@@ -80,8 +80,8 @@ export const empty = <K, V = never>(ord: Order.Order<K>): RBT.RedBlackTree<K, V>
   new RedBlackTreeImpl<K, V>(ord, undefined)
 
 /** @internal */
-export const fromIterable = <K, V>(ord: Order.Order<K>) =>
-  (entries: Iterable<readonly [K, V]>): RBT.RedBlackTree<K, V> => {
+export const fromIterable =
+  <K, V>(ord: Order.Order<K>) => (entries: Iterable<readonly [K, V]>): RBT.RedBlackTree<K, V> => {
     let tree = empty<K, V>(ord)
     for (const [key, value] of entries) {
       tree = insert(tree, key, value)
@@ -90,7 +90,8 @@ export const fromIterable = <K, V>(ord: Order.Order<K>) =>
   }
 
 /** @internal */
-export const make = <K>(ord: Order.Order<K>) =>
+export const make =
+  <K>(ord: Order.Order<K>) =>
   <Entries extends Array<readonly [K, any]>>(...entries: Entries): RBT.RedBlackTree<
     K,
     Entries[number] extends readonly [any, infer V] ? V : never
