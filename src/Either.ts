@@ -301,6 +301,7 @@ export const mapBoth: {
  * @param self - The input `Either` value to map.
  * @param f - A transformation function to apply to the `Left` value of the input `Either`.
  *
+ * @category mapping
  * @since 1.0.0
  */
 export const mapLeft: {
@@ -320,7 +321,7 @@ export const mapLeft: {
  * @category mapping
  * @since 1.0.0
  */
-export const mapRight: {
+export const map: {
   <A, B>(f: (a: A) => B): <E>(self: Either<E, A>) => Either<E, B>
   <E, A, B>(self: Either<E, A>, f: (a: A) => B): Either<E, B>
 } = dual(

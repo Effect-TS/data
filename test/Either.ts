@@ -46,8 +46,8 @@ describe.concurrent("Either", () => {
     Util.deepStrictEqual(pipe(Either.left("e"), Either.getLeft), O.some("e"))
   })
 
-  it("mapRight", () => {
-    const f = Either.mapRight(S.length)
+  it("map", () => {
+    const f = Either.map(S.length)
     Util.deepStrictEqual(pipe(Either.right("abc"), f), Either.right(3))
     Util.deepStrictEqual(pipe(Either.left("s"), f), Either.left("s"))
   })
@@ -106,7 +106,7 @@ describe.concurrent("Either", () => {
   })
 
   it("pipe", () => {
-    expect(Either.right(1).pipe(Either.mapRight((n) => n + 1))).toEqual(Either.right(2))
+    expect(Either.right(1).pipe(Either.map((n) => n + 1))).toEqual(Either.right(2))
   })
 
   it("fromNullable", () => {
