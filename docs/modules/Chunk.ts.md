@@ -1003,10 +1003,10 @@ Added in v1.0.0
 
 ```ts
 export interface Chunk<A> extends Iterable<A>, Equal.Equal, Pipeable {
-  readonly _id: TypeId
-
+  readonly [TypeId]: {
+    readonly _A: () => A
+  }
   readonly length: number
-
   /** @internal */
   right: Chunk<A>
   /** @internal */
@@ -1015,6 +1015,8 @@ export interface Chunk<A> extends Iterable<A>, Equal.Equal, Pipeable {
   backing: Backing<A>
   /** @internal */
   depth: number
+  /** @internal */
+  toJSON(): unknown
 }
 ```
 

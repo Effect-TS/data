@@ -1,10 +1,10 @@
 ---
-title: DeterministicRandom.ts
-nav_order: 7
+title: PCGRandom.ts
+nav_order: 30
 parent: Modules
 ---
 
-## DeterministicRandom overview
+## PCGRandom overview
 
 Copyright 2014 Thom Chiovoloni, released under the MIT license.
 

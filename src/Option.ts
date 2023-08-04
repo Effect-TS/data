@@ -7,7 +7,6 @@ import * as Equal from "@effect/data/Equal"
 import * as Equivalence from "@effect/data/Equivalence"
 import type { LazyArg } from "@effect/data/Function"
 import { constNull, constUndefined, dual, identity } from "@effect/data/Function"
-import * as Gen from "@effect/data/GeneratorUtils"
 import type { TypeLambda } from "@effect/data/HKT"
 import * as either from "@effect/data/internal/Either"
 import * as option from "@effect/data/internal/Option"
@@ -16,8 +15,8 @@ import type { Order } from "@effect/data/Order"
 import * as order from "@effect/data/Order"
 import type { Pipeable } from "@effect/data/Pipeable"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
-import { isObject } from "@effect/data/Predicate"
 import type * as Unify from "@effect/data/Unify"
+import * as Gen from "@effect/data/UtilsGen"
 
 /**
  * @category models
@@ -43,7 +42,6 @@ export type TypeId = typeof TypeId
  */
 export interface None<A> extends Data.Case, Pipeable {
   readonly _tag: "None"
-  readonly _id: TypeId
   readonly [TypeId]: {
     readonly _A: (_: never) => A
   }
@@ -58,7 +56,6 @@ export interface None<A> extends Data.Case, Pipeable {
  */
 export interface Some<A> extends Data.Case, Pipeable {
   readonly _tag: "Some"
-  readonly _id: TypeId
   readonly value: A
   readonly [TypeId]: {
     readonly _A: (_: never) => A
@@ -123,8 +120,7 @@ export const some: <A>(value: A) => Option<A> = option.some
  * @category guards
  * @since 1.0.0
  */
-export const isOption = (input: unknown): input is Option<unknown> =>
-  isObject(input) && "_id" in input && input["_id"] === TypeId
+export const isOption: (input: unknown) => input is Option<unknown> = option.isOption
 
 /**
  * Determine if a `Option` is a `None`.

@@ -6,13 +6,13 @@ import type * as Data from "@effect/data/Data"
 import * as Equivalence from "@effect/data/Equivalence"
 import type { LazyArg } from "@effect/data/Function"
 import { constNull, constUndefined, dual, identity } from "@effect/data/Function"
-import * as Gen from "@effect/data/GeneratorUtils"
 import type { TypeLambda } from "@effect/data/HKT"
 import * as either from "@effect/data/internal/Either"
 import type { Option } from "@effect/data/Option"
 import type { Pipeable } from "@effect/data/Pipeable"
-import { isFunction, isObject } from "@effect/data/Predicate"
+import { isFunction } from "@effect/data/Predicate"
 import type * as Unify from "@effect/data/Unify"
+import * as Gen from "@effect/data/UtilsGen"
 
 /**
  * @category models
@@ -24,7 +24,7 @@ export type Either<E, A> = Left<E, A> | Right<E, A>
  * @category symbols
  * @since 1.0.0
  */
-export const TypeId = Symbol.for("@effect/data/Either")
+export const TypeId: unique symbol = either.TypeId
 
 /**
  * @category symbols
@@ -38,12 +38,11 @@ export type TypeId = typeof TypeId
  */
 export interface Left<E, A> extends Data.Case, Pipeable {
   readonly _tag: "Left"
-  readonly _id: TypeId
+  readonly left: E
   readonly [TypeId]: {
     readonly _A: (_: never) => A
     readonly _E: (_: never) => E
   }
-  get left(): E
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: EitherUnify<this>
   [Unify.blacklistSymbol]?: EitherUnifyBlacklist
@@ -55,8 +54,7 @@ export interface Left<E, A> extends Data.Case, Pipeable {
  */
 export interface Right<E, A> extends Data.Case, Pipeable {
   readonly _tag: "Right"
-  readonly _id: TypeId
-  get right(): A
+  readonly right: A
   readonly [TypeId]: {
     readonly _A: (_: never) => A
     readonly _E: (_: never) => E
@@ -193,8 +191,7 @@ export {
  * @category guards
  * @since 1.0.0
  */
-export const isEither = (input: unknown): input is Either<unknown, unknown> =>
-  isObject(input) && "_id" in input && input["_id"] === TypeId
+export const isEither: (input: unknown) => input is Either<unknown, unknown> = either.isEither
 
 /**
  * Determine if a `Either` is a `Left`.

@@ -1,121 +1,120 @@
 import * as Chunk from "@effect/data/Chunk"
 import type { Context, Tag } from "@effect/data/Context"
-import type * as CP from "@effect/data/DifferContextPatch"
+import { Structural } from "@effect/data/Data"
+import type { Differ } from "@effect/data/Differ"
 import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
-import * as Hash from "@effect/data/Hash"
-import { ContextImpl } from "@effect/data/internal/Context"
+import { makeContext } from "@effect/data/internal/Context"
 
 /** @internal */
-export const ContextPatchTypeId: CP.TypeId = Symbol.for(
+export const ContextPatchTypeId: Differ.Context.TypeId = Symbol.for(
   "@effect/data/DifferContextPatch"
-) as CP.TypeId
+) as Differ.Context.TypeId
 
 function variance<A, B>(a: A): B {
   return a as unknown as B
 }
 
 /** @internal */
-export class Empty<Input, Output> implements CP.ContextPatch<Input, Output> {
-  readonly _tag = "Empty"
-  readonly _Input: (_: Input) => void = variance
-  readonly _Output: (_: never) => Output = variance
-  readonly _id: CP.TypeId = ContextPatchTypeId;
-
-  [Hash.symbol]() {
-    return Hash.string(`ContextPatch(Empty)`)
+const PatchProto = Object.setPrototypeOf({
+  [ContextPatchTypeId]: {
+    _Value: variance,
+    _Patch: variance
   }
+}, Structural.prototype)
 
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id
-  }
+interface Empty<Input, Output> extends Differ.Context.Patch<Input, Output> {
+  readonly _tag: "Empty"
+}
+
+const EmptyProto = Object.setPrototypeOf({
+  _tag: "Empty"
+}, PatchProto)
+
+/**
+ * @internal
+ */
+export const empty = <Input, Output>(): Differ.Context.Patch<Input, Output> => Object.create(EmptyProto)
+
+/** @internal */
+export interface AndThen<Input, Output, Output2> extends Differ.Context.Patch<Input, Output2> {
+  readonly _tag: "AndThen"
+  readonly first: Differ.Context.Patch<Input, Output>
+  readonly second: Differ.Context.Patch<Output, Output2>
+}
+
+const AndThenProto = Object.setPrototypeOf({
+  _tag: "AndThen"
+}, PatchProto)
+
+const makeAndThen = <Input, Output, Output2>(
+  first: Differ.Context.Patch<Input, Output>,
+  second: Differ.Context.Patch<Output, Output2>
+): Differ.Context.Patch<Input, Output2> => {
+  const o = Object.create(AndThenProto)
+  o.first = first
+  o.second = second
+  return o
 }
 
 /** @internal */
-export class AndThen<Input, Output, Output2> implements CP.ContextPatch<Input, Output2> {
-  readonly _tag = "AndThen"
-  readonly _id: CP.TypeId = ContextPatchTypeId
-  readonly _Input: (_: Input) => void = variance
-  readonly _Output: (_: never) => Output2 = variance
-  constructor(
-    readonly first: CP.ContextPatch<Input, Output>,
-    readonly second: CP.ContextPatch<Output, Output2>
-  ) {}
+export interface AddService<Env, T, I> extends Differ.Context.Patch<Env, Env | I> {
+  readonly _tag: "AddService"
+  readonly tag: Tag<T, I>
+  readonly service: T
+}
 
-  [Hash.symbol]() {
-    return Hash.string(`ContextPatch(AndThen)`)
-  }
+const AddServiceProto = Object.setPrototypeOf({
+  _tag: "AddService"
+}, PatchProto)
 
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id &&
-      Equal.equals(this.first, (that as this).first) &&
-      Equal.equals(this.second, (that as this).second)
-  }
+const makeAddService = <Env, I, T>(
+  tag: Tag<T, I>,
+  service: T
+): Differ.Context.Patch<Env, Env | I> => {
+  const o = Object.create(AddServiceProto)
+  o.tag = tag
+  o.service = service
+  return o
 }
 
 /** @internal */
-export class AddService<Env, T, I> implements CP.ContextPatch<Env, Env | I> {
-  readonly _tag = "AddService"
-  readonly _id: CP.TypeId = ContextPatchTypeId
-  readonly _Input: (_: Env) => void = variance
-  readonly _Output: (_: never) => Env | I = variance
-  constructor(readonly tag: Tag<T, I>, readonly service: T) {}
+export interface RemoveService<Env, T, I> extends Differ.Context.Patch<Env, Exclude<Env, I>> {
+  readonly _tag: "RemoveService"
+  readonly tag: Tag<T, I>
+}
 
-  [Hash.symbol]() {
-    return Hash.string(`ContextPatch(AddService)`)
-  }
+const RemoveServiceProto = Object.setPrototypeOf({
+  _tag: "RemoveService"
+}, PatchProto)
 
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id &&
-      Equal.equals(this.tag, (that as this).tag) &&
-      Equal.equals(this.service, (that as this).service)
-  }
+const makeRemoveService = <Env, I, T>(
+  tag: Tag<T, I>
+): Differ.Context.Patch<Env, Exclude<Env, I>> => {
+  const o = Object.create(RemoveServiceProto)
+  o.tag = tag
+  return o
 }
 
 /** @internal */
-export class RemoveService<Env, T, I> implements CP.ContextPatch<Env | I, Env> {
-  readonly _tag = "RemoveService"
-  readonly _id: CP.TypeId = ContextPatchTypeId
-  readonly _Input: (_: Env | I) => void = variance
-  readonly _Output: (_: never) => Env = variance
-  constructor(readonly tag: Tag<T, I>) {}
-
-  [Hash.symbol]() {
-    return Hash.string(`ContextPatch(RemoveService)`)
-  }
-
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id &&
-      Equal.equals(this.tag, (that as this).tag)
-  }
+export interface UpdateService<Env, T, I> extends Differ.Context.Patch<Env | I, Env | I> {
+  readonly _tag: "UpdateService"
+  readonly tag: Tag<T, I>
+  readonly update: (service: T) => T
 }
 
-/** @internal */
-export class UpdateService<Env, T, I> implements CP.ContextPatch<Env | I, Env | I> {
-  readonly _tag = "UpdateService"
-  readonly _id: CP.TypeId = ContextPatchTypeId
-  readonly _Input: (_: Env | I) => void = variance
-  readonly _Output: (_: never) => Env | I = variance
-  constructor(
-    readonly tag: Tag<T, I>,
-    readonly update: (service: T) => T
-  ) {
-  }
+const UpdateServiceProto = Object.setPrototypeOf({
+  _tag: "UpdateService"
+}, PatchProto)
 
-  [Hash.symbol]() {
-    return Hash.string(`ContextPatch(AndThen)`)
-  }
-
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id &&
-      Equal.equals(this.tag, (that as this).tag) &&
-      Equal.equals(this.update, (that as this).update)
-  }
+const makeUpdateService = <Env, I, T>(
+  tag: Tag<T, I>,
+  update: (service: T) => T
+): Differ.Context.Patch<Env | I, Env | I> => {
+  const o = Object.create(UpdateServiceProto)
+  o.tag = tag
+  o.update = update
+  return o
 }
 
 type Instruction =
@@ -126,13 +125,10 @@ type Instruction =
   | UpdateService<any, any, any>
 
 /** @internal */
-export const empty = <Input = never, Output = never>(): CP.ContextPatch<Input, Output> => new Empty()
-
-/** @internal */
 export const diff = <Input, Output>(
   oldValue: Context<Input>,
   newValue: Context<Output>
-): CP.ContextPatch<Input, Output> => {
+): Differ.Context.Patch<Input, Output> => {
   const missingServices = new Map(oldValue.unsafeMap)
   let patch = empty<any, any>()
   for (const [tag, newService] of newValue.unsafeMap.entries()) {
@@ -140,15 +136,15 @@ export const diff = <Input, Output>(
       const old = missingServices.get(tag)!
       missingServices.delete(tag)
       if (!Equal.equals(old, newService)) {
-        patch = combine(new UpdateService(tag, () => newService))(patch)
+        patch = combine(makeUpdateService(tag, () => newService))(patch)
       }
     } else {
       missingServices.delete(tag)
-      patch = combine(new AddService(tag, newService))(patch)
+      patch = combine(makeAddService(tag, newService))(patch)
     }
   }
   for (const [tag] of missingServices.entries()) {
-    patch = combine(new RemoveService(tag))(patch)
+    patch = combine(makeRemoveService(tag))(patch)
   }
   return patch
 }
@@ -156,31 +152,31 @@ export const diff = <Input, Output>(
 /** @internal */
 export const combine = Dual.dual<
   <Output, Output2>(
-    that: CP.ContextPatch<Output, Output2>
+    that: Differ.Context.Patch<Output, Output2>
   ) => <Input>(
-    self: CP.ContextPatch<Input, Output>
-  ) => CP.ContextPatch<Input, Output2>,
+    self: Differ.Context.Patch<Input, Output>
+  ) => Differ.Context.Patch<Input, Output2>,
   <Input, Output, Output2>(
-    self: CP.ContextPatch<Input, Output>,
-    that: CP.ContextPatch<Output, Output2>
-  ) => CP.ContextPatch<Input, Output2>
->(2, (self, that) => new AndThen(self, that))
+    self: Differ.Context.Patch<Input, Output>,
+    that: Differ.Context.Patch<Output, Output2>
+  ) => Differ.Context.Patch<Input, Output2>
+>(2, (self, that) => makeAndThen(self, that))
 
 /** @internal */
 export const patch = Dual.dual<
   <Input>(
     context: Context<Input>
   ) => <Output>(
-    self: CP.ContextPatch<Input, Output>
+    self: Differ.Context.Patch<Input, Output>
   ) => Context<Output>,
   <Input, Output>(
-    self: CP.ContextPatch<Input, Output>,
+    self: Differ.Context.Patch<Input, Output>,
     context: Context<Input>
   ) => Context<Output>
->(2, <Input, Output>(self: CP.ContextPatch<Input, Output>, context: Context<Input>) => {
+>(2, <Input, Output>(self: Differ.Context.Patch<Input, Output>, context: Context<Input>) => {
   let wasServiceUpdated = false
-  let patches: Chunk.Chunk<CP.ContextPatch<unknown, unknown>> = Chunk.of(
-    self as CP.ContextPatch<unknown, unknown>
+  let patches: Chunk.Chunk<Differ.Context.Patch<unknown, unknown>> = Chunk.of(
+    self as Differ.Context.Patch<unknown, unknown>
   )
   const updatedContext: Map<Tag<any, any>, unknown> = new Map(context.unsafeMap)
   while (Chunk.isNonEmpty(patches)) {
@@ -214,7 +210,7 @@ export const patch = Dual.dual<
     }
   }
   if (!wasServiceUpdated) {
-    return new ContextImpl(updatedContext) as Context<Output>
+    return makeContext(updatedContext) as Context<Output>
   }
   const map = new Map()
   for (const [tag] of context.unsafeMap) {
@@ -226,5 +222,5 @@ export const patch = Dual.dual<
   for (const [tag, s] of updatedContext) {
     map.set(tag, s)
   }
-  return new ContextImpl(map) as Context<Output>
+  return makeContext(map) as Context<Output>
 })

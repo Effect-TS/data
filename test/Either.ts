@@ -42,8 +42,8 @@ describe.concurrent("Either", () => {
   })
 
   it("toString", () => {
-    expect(String(Either.right(1))).toEqual("right(1)")
-    expect(String(Either.left("e"))).toEqual(`left(e)`)
+    expect(String(Either.right(1))).toEqual(JSON.stringify(Either.right(1), null, 2))
+    expect(String(Either.left("e"))).toEqual(JSON.stringify(Either.left("e"), null, 2))
   })
 
   it("toJSON", () => {

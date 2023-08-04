@@ -1,145 +1,165 @@
 import * as Chunk from "@effect/data/Chunk"
+import { Structural } from "@effect/data/Data"
 import type { Differ } from "@effect/data/Differ"
-import type * as OP from "@effect/data/DifferOrPatch"
 import type { Either } from "@effect/data/Either"
 import * as E from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
-import * as Hash from "@effect/data/Hash"
 
 /** @internal */
-export const OrPatchTypeId: OP.TypeId = Symbol.for("@effect/data/DifferOrPatch") as OP.TypeId
+export const OrPatchTypeId: Differ.Or.TypeId = Symbol.for("@effect/data/DifferOrPatch") as Differ.Or.TypeId
 
 function variance<A, B>(a: A): B {
   return a as unknown as B
 }
 
 /** @internal */
-export class Empty<Value, Value2, Patch, Patch2> implements OP.OrPatch<Value, Value2, Patch, Patch2> {
-  readonly _tag = "Empty"
-  readonly _Value: (_: Value) => Value = variance
-  readonly _Value2: (_: Value2) => Value2 = variance
-  readonly _Patch: (_: Patch) => Patch = variance
-  readonly _Patch2: (_: Patch2) => Patch2 = variance
-  readonly _id: OP.TypeId = OrPatchTypeId;
-
-  [Hash.symbol]() {
-    return Hash.string(`OrPatch(Empty)`)
+const PatchProto = Object.setPrototypeOf({
+  [OrPatchTypeId]: {
+    _Value: variance,
+    _Key: variance,
+    _Patch: variance
   }
+}, Structural.prototype)
 
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id
-  }
+/** @internal */
+export interface Empty<Value, Value2, Patch, Patch2> extends Differ.Or.Patch<Value, Value2, Patch, Patch2> {
+  readonly _tag: "Empty"
+}
+
+const EmptyProto = Object.setPrototypeOf({
+  _tag: "Empty"
+}, PatchProto)
+
+/** @internal */
+export const empty = <Value, Value2, Patch, Patch2>(): Differ.Or.Patch<
+  Value,
+  Value2,
+  Patch,
+  Patch2
+> => Object.create(EmptyProto)
+
+/** @internal */
+export interface AndThen<Value, Value2, Patch, Patch2> extends Differ.Or.Patch<Value, Value2, Patch, Patch2> {
+  readonly _tag: "AndThen"
+  readonly first: Differ.Or.Patch<Value, Value2, Patch, Patch2>
+  readonly second: Differ.Or.Patch<Value, Value2, Patch, Patch2>
+}
+
+const AndThenProto = Object.setPrototypeOf({
+  _tag: "AndThen"
+}, PatchProto)
+
+/** @internal */
+export const makeAndThen = <Value, Value2, Patch, Patch2>(
+  first: Differ.Or.Patch<Value, Value2, Patch, Patch2>,
+  second: Differ.Or.Patch<Value, Value2, Patch, Patch2>
+): Differ.Or.Patch<
+  Value,
+  Value2,
+  Patch,
+  Patch2
+> => {
+  const o = Object.create(AndThenProto)
+  o.first = first
+  o.second = second
+  return o
 }
 
 /** @internal */
-export class AndThen<Value, Value2, Patch, Patch2> implements OP.OrPatch<Value, Value2, Patch, Patch2> {
-  readonly _tag = "AndThen"
-  readonly _Value: (_: Value) => Value = variance
-  readonly _Value2: (_: Value2) => Value2 = variance
-  readonly _Patch: (_: Patch) => Patch = variance
-  readonly _Patch2: (_: Patch2) => Patch2 = variance
-  readonly _id: OP.TypeId = OrPatchTypeId
-  constructor(
-    readonly first: OP.OrPatch<Value, Value2, Patch, Patch2>,
-    readonly second: OP.OrPatch<Value, Value2, Patch, Patch2>
-  ) {}
+export interface SetLeft<Value, Value2, Patch, Patch2> extends Differ.Or.Patch<Value, Value2, Patch, Patch2> {
+  readonly _tag: "SetLeft"
+  readonly value: Value
+}
 
-  [Hash.symbol]() {
-    return Hash.string(`OrPatch(AndThen)`)
-  }
+const SetLeftProto = Object.setPrototypeOf({
+  _tag: "SetLeft"
+}, PatchProto)
 
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id &&
-      Equal.equals(this.first, (that as this).first) &&
-      Equal.equals(this.second, (that as this).second)
-  }
+/** @internal */
+export const makeSetLeft = <Value, Value2, Patch, Patch2>(
+  value: Value
+): Differ.Or.Patch<
+  Value,
+  Value2,
+  Patch,
+  Patch2
+> => {
+  const o = Object.create(SetLeftProto)
+  o.value = value
+  return o
 }
 
 /** @internal */
-export class SetLeft<Value, Value2, Patch, Patch2> implements OP.OrPatch<Value, Value2, Patch, Patch2> {
-  readonly _tag = "SetLeft"
-  readonly _Value: (_: Value) => Value = variance
-  readonly _Value2: (_: Value2) => Value2 = variance
-  readonly _Patch: (_: Patch) => Patch = variance
-  readonly _Patch2: (_: Patch2) => Patch2 = variance
-  readonly _id: OP.TypeId = OrPatchTypeId
-  constructor(readonly value: Value) {}
+export interface SetRight<Value, Value2, Patch, Patch2> extends Differ.Or.Patch<Value, Value2, Patch, Patch2> {
+  readonly _tag: "SetRight"
+  readonly value: Value2
+}
 
-  [Hash.symbol]() {
-    return Hash.string(`OrPatch(SetLeft)`)
-  }
+const SetRightProto = Object.setPrototypeOf({
+  _tag: "SetRight"
+}, PatchProto)
 
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id &&
-      Equal.equals(this.value, (that as this).value)
-  }
+/** @internal */
+export const makeSetRight = <Value, Value2, Patch, Patch2>(
+  value: Value2
+): Differ.Or.Patch<
+  Value,
+  Value2,
+  Patch,
+  Patch2
+> => {
+  const o = Object.create(SetRightProto)
+  o.value = value
+  return o
 }
 
 /** @internal */
-export class SetRight<Value, Value2, Patch, Patch2> implements OP.OrPatch<Value, Value2, Patch, Patch2> {
-  readonly _tag = "SetRight"
-  readonly _Value: (_: Value) => Value = variance
-  readonly _Value2: (_: Value2) => Value2 = variance
-  readonly _Patch: (_: Patch) => Patch = variance
-  readonly _Patch2: (_: Patch2) => Patch2 = variance
-  readonly _id: OP.TypeId = OrPatchTypeId
-  constructor(readonly value: Value2) {}
+export interface UpdateLeft<Value, Value2, Patch, Patch2> extends Differ.Or.Patch<Value, Value2, Patch, Patch2> {
+  readonly _tag: "UpdateLeft"
+  readonly patch: Patch
+}
 
-  [Hash.symbol]() {
-    return Hash.string(`OrPatch(SetRight)`)
-  }
+const UpdateLeftProto = Object.setPrototypeOf({
+  _tag: "UpdateLeft"
+}, PatchProto)
 
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id &&
-      Equal.equals(this.value, (that as this).value)
-  }
+/** @internal */
+export const makeUpdateLeft = <Value, Value2, Patch, Patch2>(
+  patch: Patch
+): Differ.Or.Patch<
+  Value,
+  Value2,
+  Patch,
+  Patch2
+> => {
+  const o = Object.create(UpdateLeftProto)
+  o.patch = patch
+  return o
 }
 
 /** @internal */
-export class UpdateLeft<Value, Value2, Patch, Patch2> implements OP.OrPatch<Value, Value2, Patch, Patch2> {
-  readonly _tag = "UpdateLeft"
-  readonly _Value: (_: Value) => Value = variance
-  readonly _Value2: (_: Value2) => Value2 = variance
-  readonly _Patch: (_: Patch) => Patch = variance
-  readonly _Patch2: (_: Patch2) => Patch2 = variance
-  readonly _id: OP.TypeId = OrPatchTypeId
-  constructor(readonly patch: Patch) {}
-
-  [Hash.symbol]() {
-    return Hash.string(`OrPatch(UpdateLeft)`)
-  }
-
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id &&
-      Equal.equals(this.patch, (that as this).patch)
-  }
+export interface UpdateRight<Value, Value2, Patch, Patch2> extends Differ.Or.Patch<Value, Value2, Patch, Patch2> {
+  readonly _tag: "UpdateRight"
+  readonly patch: Patch2
 }
 
+const UpdateRightProto = Object.setPrototypeOf({
+  _tag: "UpdateRight"
+}, PatchProto)
+
 /** @internal */
-export class UpdateRight<Value, Value2, Patch, Patch2> implements OP.OrPatch<Value, Value2, Patch, Patch2> {
-  readonly _tag = "UpdateRight"
-  readonly _Value: (_: Value) => Value = variance
-  readonly _Value2: (_: Value2) => Value2 = variance
-  readonly _Patch: (_: Patch) => Patch = variance
-  readonly _Patch2: (_: Patch2) => Patch2 = variance
-  readonly _id: OP.TypeId = OrPatchTypeId
-  constructor(readonly patch: Patch2) {}
-
-  [Hash.symbol]() {
-    return Hash.string(`OrPatch(UpdateRight)`)
-  }
-
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id &&
-      Equal.equals(this.patch, (that as this).patch)
-  }
+export const makeUpdateRight = <Value, Value2, Patch, Patch2>(
+  patch: Patch2
+): Differ.Or.Patch<
+  Value,
+  Value2,
+  Patch,
+  Patch2
+> => {
+  const o = Object.create(UpdateRightProto)
+  o.patch = patch
+  return o
 }
 
 type Instruction =
@@ -151,14 +171,6 @@ type Instruction =
   | UpdateRight<any, any, any, any>
 
 /** @internal */
-export const empty = <Value, Value2, Patch, Patch2>(): OP.OrPatch<
-  Value,
-  Value2,
-  Patch,
-  Patch2
-> => new Empty()
-
-/** @internal */
 export const diff = <Value, Value2, Patch, Patch2>(
   options: {
     readonly oldValue: Either<Value, Value2>
@@ -166,33 +178,33 @@ export const diff = <Value, Value2, Patch, Patch2>(
     readonly left: Differ<Value, Patch>
     readonly right: Differ<Value2, Patch2>
   }
-): OP.OrPatch<Value, Value2, Patch, Patch2> => {
+): Differ.Or.Patch<Value, Value2, Patch, Patch2> => {
   switch (options.oldValue._tag) {
     case "Left": {
       switch (options.newValue._tag) {
         case "Left": {
           const valuePatch = options.left.diff(options.oldValue.left, options.newValue.left)
           if (Equal.equals(valuePatch, options.left.empty)) {
-            return new Empty()
+            return empty()
           }
-          return new UpdateLeft(valuePatch)
+          return makeUpdateLeft(valuePatch)
         }
         case "Right": {
-          return new SetRight(options.newValue.right)
+          return makeSetRight(options.newValue.right)
         }
       }
     }
     case "Right": {
       switch (options.newValue._tag) {
         case "Left": {
-          return new SetLeft(options.newValue.left)
+          return makeSetLeft(options.newValue.left)
         }
         case "Right": {
           const valuePatch = options.right.diff(options.oldValue.right, options.newValue.right)
           if (Equal.equals(valuePatch, options.right.empty)) {
-            return new Empty()
+            return empty()
           }
-          return new UpdateRight(valuePatch)
+          return makeUpdateRight(valuePatch)
         }
       }
     }
@@ -202,15 +214,15 @@ export const diff = <Value, Value2, Patch, Patch2>(
 /** @internal */
 export const combine = Dual.dual<
   <Value, Value2, Patch, Patch2>(
-    that: OP.OrPatch<Value, Value2, Patch, Patch2>
+    that: Differ.Or.Patch<Value, Value2, Patch, Patch2>
   ) => (
-    self: OP.OrPatch<Value, Value2, Patch, Patch2>
-  ) => OP.OrPatch<Value, Value2, Patch, Patch2>,
+    self: Differ.Or.Patch<Value, Value2, Patch, Patch2>
+  ) => Differ.Or.Patch<Value, Value2, Patch, Patch2>,
   <Value, Value2, Patch, Patch2>(
-    self: OP.OrPatch<Value, Value2, Patch, Patch2>,
-    that: OP.OrPatch<Value, Value2, Patch, Patch2>
-  ) => OP.OrPatch<Value, Value2, Patch, Patch2>
->(2, (self, that) => new AndThen(self, that))
+    self: Differ.Or.Patch<Value, Value2, Patch, Patch2>,
+    that: Differ.Or.Patch<Value, Value2, Patch, Patch2>
+  ) => Differ.Or.Patch<Value, Value2, Patch, Patch2>
+>(2, (self, that) => makeAndThen(self, that))
 
 /** @internal */
 export const patch = Dual.dual<
@@ -220,9 +232,9 @@ export const patch = Dual.dual<
       readonly left: Differ<Value, Patch>
       readonly right: Differ<Value2, Patch2>
     }
-  ) => (self: OP.OrPatch<Value, Value2, Patch, Patch2>) => Either<Value, Value2>,
+  ) => (self: Differ.Or.Patch<Value, Value2, Patch, Patch2>) => Either<Value, Value2>,
   <Value, Value2, Patch, Patch2>(
-    self: OP.OrPatch<Value, Value2, Patch, Patch2>,
+    self: Differ.Or.Patch<Value, Value2, Patch, Patch2>,
     options: {
       readonly oldValue: Either<Value, Value2>
       readonly left: Differ<Value, Patch>
@@ -230,14 +242,14 @@ export const patch = Dual.dual<
     }
   ) => Either<Value, Value2>
 >(2, <Value, Value2, Patch, Patch2>(
-  self: OP.OrPatch<Value, Value2, Patch, Patch2>,
+  self: Differ.Or.Patch<Value, Value2, Patch, Patch2>,
   { left, oldValue, right }: {
     oldValue: Either<Value, Value2>
     left: Differ<Value, Patch>
     right: Differ<Value2, Patch2>
   }
 ) => {
-  let patches: Chunk.Chunk<OP.OrPatch<Value, Value2, Patch, Patch2>> = Chunk.of(self)
+  let patches: Chunk.Chunk<Differ.Or.Patch<Value, Value2, Patch, Patch2>> = Chunk.of(self)
   let result = oldValue
   while (Chunk.isNonEmpty(patches)) {
     const head: Instruction = Chunk.headNonEmpty(patches) as Instruction

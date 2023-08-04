@@ -14,6 +14,9 @@ Added in v1.0.0
 
 - [constructors](#constructors)
   - [Class](#class)
+  - [Structural (class)](#structural-class)
+    - [[Hash.symbol] (method)](#hashsymbol-method)
+    - [[Equal.symbol] (method)](#equalsymbol-method)
   - [TaggedClass](#taggedclass)
   - [array](#array)
   - [case](#case)
@@ -50,6 +53,38 @@ Provides a constructor for a Case Class.
 export declare const Class: new <A extends Record<string, any>>(
   args: Types.Equals<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
 ) => Data<A>
+```
+
+Added in v1.0.0
+
+## Structural (class)
+
+**Signature**
+
+```ts
+export declare class Structural<A> {
+  constructor(args: Omit<A, keyof Equal.Equal>)
+}
+```
+
+Added in v1.0.0
+
+### [Hash.symbol] (method)
+
+**Signature**
+
+```ts
+[Hash.symbol](this: Equal.Equal)
+```
+
+Added in v1.0.0
+
+### [Equal.symbol] (method)
+
+**Signature**
+
+```ts
+[Equal.symbol](this: Equal.Equal, that: Equal.Equal)
 ```
 
 Added in v1.0.0

@@ -1,10 +1,10 @@
 ---
-title: GeneratorUtils.ts
-nav_order: 20
+title: UtilsGen.ts
+nav_order: 43
 parent: Modules
 ---
 
-## GeneratorUtils overview
+## UtilsGen overview
 
 Added in v1.0.0
 

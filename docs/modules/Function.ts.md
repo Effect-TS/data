@@ -1,6 +1,6 @@
 ---
 title: Function.ts
-nav_order: 19
+nav_order: 13
 parent: Modules
 ---
 

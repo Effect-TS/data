@@ -1,117 +1,106 @@
 import * as Chunk from "@effect/data/Chunk"
+import { Structural } from "@effect/data/Data"
 import type * as Differ from "@effect/data/Differ"
-import type * as HMP from "@effect/data/DifferHashMapPatch"
 import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
-import * as Hash from "@effect/data/Hash"
 import * as HashMap from "@effect/data/HashMap"
 
 /** @internal */
-export const HashMapPatchTypeId: HMP.TypeId = Symbol.for(
+export const HashMapPatchTypeId: Differ.Differ.HashMap.TypeId = Symbol.for(
   "@effect/data/DifferHashMapPatch"
-) as HMP.TypeId
+) as Differ.Differ.HashMap.TypeId
 
 function variance<A, B>(a: A): B {
   return a as unknown as B
 }
 
-class Empty<Key, Value, Patch> implements HMP.HashMapPatch<Key, Value, Patch> {
-  readonly _tag = "Empty"
-  readonly _Key: (_: Key) => Key = variance
-  readonly _Value: (_: Value) => Value = variance
-  readonly _Patch: (_: Patch) => Patch = variance
-  readonly _id: HMP.TypeId = HashMapPatchTypeId;
-
-  [Hash.symbol]() {
-    return Hash.string(`HashMapPatch(Empty)`)
+/** @internal */
+const PatchProto = Object.setPrototypeOf({
+  [HashMapPatchTypeId]: {
+    _Value: variance,
+    _Key: variance,
+    _Patch: variance
   }
+}, Structural.prototype)
 
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id
-  }
+interface Empty<Key, Value, Patch> extends Differ.Differ.HashMap.Patch<Key, Value, Patch> {
+  readonly _tag: "Empty"
 }
 
-class AndThen<Key, Value, Patch> implements HMP.HashMapPatch<Key, Value, Patch> {
-  readonly _tag = "AndThen"
-  readonly _Key: (_: Key) => Key = variance
-  readonly _Value: (_: Value) => Value = variance
-  readonly _Patch: (_: Patch) => Patch = variance
-  readonly _id: HMP.TypeId = HashMapPatchTypeId
-  constructor(
-    readonly first: HMP.HashMapPatch<Key, Value, Patch>,
-    readonly second: HMP.HashMapPatch<Key, Value, Patch>
-  ) {}
+const EmptyProto = Object.setPrototypeOf({
+  _tag: "Empty"
+}, PatchProto)
 
-  [Hash.symbol]() {
-    return Hash.string(`HashMapPatch(AndThen)`)
-  }
+/** @internal */
+export const empty = <Key, Value, Patch>(): Differ.Differ.HashMap.Patch<Key, Value, Patch> => Object.create(EmptyProto)
 
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id &&
-      Equal.equals(this.first, (that as this).first) &&
-      Equal.equals(this.second, (that as this).second)
-  }
+interface AndThen<Key, Value, Patch> extends Differ.Differ.HashMap.Patch<Key, Value, Patch> {
+  readonly _tag: "AndThen"
+  readonly first: Differ.Differ.HashMap.Patch<Key, Value, Patch>
+  readonly second: Differ.Differ.HashMap.Patch<Key, Value, Patch>
 }
 
-class Add<Key, Value, Patch> implements HMP.HashMapPatch<Key, Value, Patch> {
-  readonly _tag = "Add"
-  readonly _Key: (_: Key) => Key = variance
-  readonly _Value: (_: Value) => Value = variance
-  readonly _Patch: (_: Patch) => Patch = variance
-  readonly _id: HMP.TypeId = HashMapPatchTypeId
-  constructor(readonly key: Key, readonly value: Value) {}
+const AndThenProto = Object.setPrototypeOf({
+  _tag: "AndThen"
+}, PatchProto)
 
-  [Hash.symbol]() {
-    return Hash.string(`HashMapPatch(Add)`)
-  }
-
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id &&
-      Equal.equals(this.key, (that as this).key) &&
-      Equal.equals(this.value, (that as this).value)
-  }
+const makeAndThen = <Key, Value, Patch>(
+  first: Differ.Differ.HashMap.Patch<Key, Value, Patch>,
+  second: Differ.Differ.HashMap.Patch<Key, Value, Patch>
+): Differ.Differ.HashMap.Patch<Key, Value, Patch> => {
+  const o = Object.create(AndThenProto)
+  o.first = first
+  o.second = second
+  return o
 }
 
-class Remove<Key, Value, Patch> implements HMP.HashMapPatch<Key, Value, Patch> {
-  readonly _tag = "Remove"
-  readonly _Key: (_: Key) => Key = variance
-  readonly _Value: (_: Value) => Value = variance
-  readonly _Patch: (_: Patch) => Patch = variance
-  readonly _id: HMP.TypeId = HashMapPatchTypeId
-  constructor(readonly key: Key) {}
-
-  [Hash.symbol]() {
-    return Hash.string(`HashMapPatch(Remove)`)
-  }
-
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id &&
-      Equal.equals(this.key, (that as this).key)
-  }
+interface Add<Key, Value, Patch> extends Differ.Differ.HashMap.Patch<Key, Value, Patch> {
+  readonly _tag: "Add"
+  readonly key: Key
+  readonly value: Value
 }
 
-class Update<Key, Value, Patch> implements HMP.HashMapPatch<Key, Value, Patch> {
-  readonly _tag = "Update"
-  readonly _Key: (_: Key) => Key = variance
-  readonly _Value: (_: Value) => Value = variance
-  readonly _Patch: (_: Patch) => Patch = variance
-  readonly _id: HMP.TypeId = HashMapPatchTypeId
-  constructor(readonly key: Key, readonly patch: Patch) {}
+const AddProto = Object.setPrototypeOf({
+  _tag: "Add"
+}, PatchProto)
 
-  [Hash.symbol]() {
-    return Hash.string(`HashMapPatch(Update)`)
-  }
+const makeAdd = <Key, Value, Patch>(key: Key, value: Value): Differ.Differ.HashMap.Patch<Key, Value, Patch> => {
+  const o = Object.create(AddProto)
+  o.key = key
+  o.value = value
+  return o
+}
 
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id &&
-      Equal.equals(this.key, (that as this).key) &&
-      Equal.equals(this.patch, (that as this).patch)
-  }
+interface Remove<Key, Value, Patch> extends Differ.Differ.HashMap.Patch<Key, Value, Patch> {
+  readonly _tag: "Remove"
+  readonly key: Key
+}
+
+const RemoveProto = Object.setPrototypeOf({
+  _tag: "Remove"
+}, PatchProto)
+
+const makeRemove = <Key, Value, Patch>(key: Key): Differ.Differ.HashMap.Patch<Key, Value, Patch> => {
+  const o = Object.create(RemoveProto)
+  o.key = key
+  return o
+}
+
+interface Update<Key, Value, Patch> extends Differ.Differ.HashMap.Patch<Key, Value, Patch> {
+  readonly _tag: "Update"
+  readonly key: Key
+  readonly patch: Patch
+}
+
+const UpdateProto = Object.setPrototypeOf({
+  _tag: "Update"
+}, PatchProto)
+
+const makeUpdate = <Key, Value, Patch>(key: Key, patch: Patch): Differ.Differ.HashMap.Patch<Key, Value, Patch> => {
+  const o = Object.create(UpdateProto)
+  o.key = key
+  o.patch = patch
+  return o
 }
 
 type Instruction =
@@ -122,16 +111,13 @@ type Instruction =
   | AndThen<any, any, any>
 
 /** @internal */
-export const empty = <Key, Value, Patch>(): HMP.HashMapPatch<Key, Value, Patch> => new Empty()
-
-/** @internal */
 export const diff = <Key, Value, Patch>(
   options: {
     readonly oldValue: HashMap.HashMap<Key, Value>
     readonly newValue: HashMap.HashMap<Key, Value>
     readonly differ: Differ.Differ<Value, Patch>
   }
-): HMP.HashMapPatch<Key, Value, Patch> => {
+): Differ.Differ.HashMap.Patch<Key, Value, Patch> => {
   const [removed, patch] = HashMap.reduce(
     [options.oldValue, empty<Key, Value, Patch>()] as const,
     ([map, patch], newValue: Value, key: Key) => {
@@ -144,33 +130,33 @@ export const diff = <Key, Value, Patch>(
           }
           return [
             HashMap.remove(key)(map),
-            combine<Key, Value, Patch>(new Update(key, valuePatch))(patch)
+            combine<Key, Value, Patch>(makeUpdate(key, valuePatch))(patch)
           ] as const
         }
         case "None": {
-          return [map, combine<Key, Value, Patch>(new Add(key, newValue))(patch)] as const
+          return [map, combine<Key, Value, Patch>(makeAdd(key, newValue))(patch)] as const
         }
       }
     }
   )(options.newValue)
   return HashMap.reduce(
     patch,
-    (patch, _, key: Key) => combine<Key, Value, Patch>(new Remove(key))(patch)
+    (patch, _, key: Key) => combine<Key, Value, Patch>(makeRemove(key))(patch)
   )(removed)
 }
 
 /** @internal */
 export const combine = Dual.dual<
   <Key, Value, Patch>(
-    that: HMP.HashMapPatch<Key, Value, Patch>
+    that: Differ.Differ.HashMap.Patch<Key, Value, Patch>
   ) => (
-    self: HMP.HashMapPatch<Key, Value, Patch>
-  ) => HMP.HashMapPatch<Key, Value, Patch>,
+    self: Differ.Differ.HashMap.Patch<Key, Value, Patch>
+  ) => Differ.Differ.HashMap.Patch<Key, Value, Patch>,
   <Key, Value, Patch>(
-    self: HMP.HashMapPatch<Key, Value, Patch>,
-    that: HMP.HashMapPatch<Key, Value, Patch>
-  ) => HMP.HashMapPatch<Key, Value, Patch>
->(2, (self, that) => new AndThen(self, that))
+    self: Differ.Differ.HashMap.Patch<Key, Value, Patch>,
+    that: Differ.Differ.HashMap.Patch<Key, Value, Patch>
+  ) => Differ.Differ.HashMap.Patch<Key, Value, Patch>
+>(2, (self, that) => makeAndThen(self, that))
 
 /** @internal */
 export const patch = Dual.dual<
@@ -178,20 +164,20 @@ export const patch = Dual.dual<
     oldValue: HashMap.HashMap<Key, Value>,
     differ: Differ.Differ<Value, Patch>
   ) => (
-    self: HMP.HashMapPatch<Key, Value, Patch>
+    self: Differ.Differ.HashMap.Patch<Key, Value, Patch>
   ) => HashMap.HashMap<Key, Value>,
   <Key, Value, Patch>(
-    self: HMP.HashMapPatch<Key, Value, Patch>,
+    self: Differ.Differ.HashMap.Patch<Key, Value, Patch>,
     oldValue: HashMap.HashMap<Key, Value>,
     differ: Differ.Differ<Value, Patch>
   ) => HashMap.HashMap<Key, Value>
 >(3, <Key, Value, Patch>(
-  self: HMP.HashMapPatch<Key, Value, Patch>,
+  self: Differ.Differ.HashMap.Patch<Key, Value, Patch>,
   oldValue: HashMap.HashMap<Key, Value>,
   differ: Differ.Differ<Value, Patch>
 ) => {
   let map = oldValue
-  let patches: Chunk.Chunk<HMP.HashMapPatch<Key, Value, Patch>> = Chunk.of(self)
+  let patches: Chunk.Chunk<Differ.Differ.HashMap.Patch<Key, Value, Patch>> = Chunk.of(self)
   while (Chunk.isNonEmpty(patches)) {
     const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
     const tail = Chunk.tailNonEmpty(patches)

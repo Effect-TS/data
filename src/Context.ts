@@ -27,9 +27,14 @@ export type TagTypeId = typeof TagTypeId
  */
 export interface Tag<Identifier, Service> extends Pipeable {
   readonly _tag: "Tag"
-  readonly [TagTypeId]: { readonly _S: (_: Service) => Service; readonly _I: (_: Identifier) => Identifier }
+  readonly [TagTypeId]: {
+    readonly _S: (_: Service) => Service
+    readonly _I: (_: Identifier) => Identifier
+  }
   of(self: Service): Service
   context(self: Service): Context<Identifier>
+  readonly stack?: string | undefined
+  readonly identifier?: unknown | undefined
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: TagUnify<this>
   [Unify.blacklistSymbol]?: TagUnifyBlacklist
@@ -83,9 +88,9 @@ export declare namespace Tag {
  * @since 1.0.0
  * @category constructors
  */
-export const Tag = <Identifier, Service = Identifier>(key?: unknown): Tag<Identifier, Service> => new C.TagImpl(key)
+export const Tag: <Identifier, Service = Identifier>(identifier?: unknown) => Tag<Identifier, Service> = C.makeTag
 
-const TypeId: unique symbol = C.ContextTypeId as TypeId
+const TypeId: unique symbol = C.TypeId as TypeId
 
 /**
  * @since 1.0.0
@@ -104,11 +109,17 @@ export type ValidTagsById<R> = R extends infer S ? Tag<S, any> : never
  * @category models
  */
 export interface Context<Services> extends Equal, Pipeable {
-  readonly _id: TypeId
-  readonly _S: (_: Services) => unknown
-  /** @internal */
+  readonly [TypeId]: {
+    readonly _S: (_: Services) => unknown
+  }
   readonly unsafeMap: Map<Tag<any, any>, any>
 }
+
+/**
+ * @since 1.0.0
+ * @category constructors
+ */
+export const unsafeMake: <Services>(unsafeMap: Map<Tag<any, any>, any>) => Context<Services> = C.makeContext
 
 /**
  * Checks if the provided argument is a `Context`.

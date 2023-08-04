@@ -1,6 +1,6 @@
 ---
 title: NonEmptyIterable.ts
-nav_order: 32
+nav_order: 25
 parent: Modules
 ---
 

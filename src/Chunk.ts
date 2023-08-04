@@ -7,6 +7,7 @@ import * as Equivalence from "@effect/data/Equivalence"
 import { dual, identity, pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import type { TypeLambda } from "@effect/data/HKT"
+import * as Inspect from "@effect/data/internal/Inspect"
 import type { NonEmptyIterable } from "@effect/data/NonEmptyIterable"
 import type { Option } from "@effect/data/Option"
 import * as O from "@effect/data/Option"
@@ -31,10 +32,10 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  */
 export interface Chunk<A> extends Iterable<A>, Equal.Equal, Pipeable {
-  readonly _id: TypeId
-
+  readonly [TypeId]: {
+    readonly _A: () => A
+  }
   readonly length: number
-
   /** @internal */
   right: Chunk<A>
   /** @internal */
@@ -43,6 +44,8 @@ export interface Chunk<A> extends Iterable<A>, Equal.Equal, Pipeable {
   backing: Backing<A>
   /** @internal */
   depth: number
+  /** @internal */
+  toJSON(): unknown
 }
 
 /**
@@ -119,78 +122,29 @@ export const getEquivalence = <A>(isEquivalent: Equivalence.Equivalence<A>): Equ
 
 const _equivalence = getEquivalence(Equal.equals)
 
-class ChunkImpl<A> implements Chunk<A> {
-  readonly _id: typeof TypeId = TypeId
-
-  readonly length: number
-  readonly depth: number
-  readonly left: Chunk<A>
-  readonly right: Chunk<A>
-
-  constructor(readonly backing: Backing<A>) {
-    switch (backing._tag) {
-      case "IEmpty": {
-        this.length = 0
-        this.depth = 0
-        this.left = this
-        this.right = this
-        break
-      }
-      case "IConcat": {
-        this.length = backing.left.length + backing.right.length
-        this.depth = 1 + Math.max(backing.left.depth, backing.right.depth)
-        this.left = backing.left
-        this.right = backing.right
-        break
-      }
-      case "IArray": {
-        this.length = backing.array.length
-        this.depth = 0
-        this.left = _empty
-        this.right = _empty
-        break
-      }
-      case "ISingleton": {
-        this.length = 1
-        this.depth = 0
-        this.left = _empty
-        this.right = _empty
-        break
-      }
-      case "ISlice": {
-        this.length = backing.length
-        this.depth = backing.chunk.depth + 1
-        this.left = _empty
-        this.right = _empty
-        break
-      }
-    }
-  }
-
-  toString() {
+const ChunkProto = {
+  [TypeId]: {
+    _A: (_: never) => _
+  },
+  toString<A>(this: Chunk<A>) {
     return `Chunk(${toReadonlyArray(this).map(String).join(", ")})`
-  }
-
-  toJSON() {
+  },
+  toJSON<A>(this: Chunk<A>) {
     return {
       _tag: "Chunk",
       values: toReadonlyArray(this)
     }
-  }
-
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [Inspect.symbol]<A>(this: Chunk<A>) {
     return this.toJSON()
-  }
-
-  [Equal.symbol](that: unknown): boolean {
+  },
+  [Equal.symbol]<A>(this: Chunk<A>, that: unknown): boolean {
     return isChunk(that) && _equivalence(this, that)
-  }
-
-  [Hash.symbol](): number {
+  },
+  [Hash.symbol]<A>(this: Chunk<A>): number {
     return Hash.array(toReadonlyArray(this))
-  }
-
-  [Symbol.iterator](): Iterator<A> {
+  },
+  [Symbol.iterator]<A>(this: Chunk<A>): Iterator<A> {
     switch (this.backing._tag) {
       case "IArray": {
         return this.backing.array[Symbol.iterator]()
@@ -202,11 +156,53 @@ class ChunkImpl<A> implements Chunk<A> {
         return toReadonlyArray(this)[Symbol.iterator]()
       }
     }
-  }
-
-  pipe() {
+  },
+  pipe<A>(this: Chunk<A>) {
     return pipeArguments(this, arguments)
   }
+}
+
+const makeChunk = <A>(backing: Backing<A>): Chunk<A> => {
+  const chunk = Object.create(ChunkProto)
+  chunk.backing = backing
+  switch (backing._tag) {
+    case "IEmpty": {
+      chunk.length = 0
+      chunk.depth = 0
+      chunk.left = this
+      chunk.right = this
+      break
+    }
+    case "IConcat": {
+      chunk.length = backing.left.length + backing.right.length
+      chunk.depth = 1 + Math.max(backing.left.depth, backing.right.depth)
+      chunk.left = backing.left
+      chunk.right = backing.right
+      break
+    }
+    case "IArray": {
+      chunk.length = backing.array.length
+      chunk.depth = 0
+      chunk.left = _empty
+      chunk.right = _empty
+      break
+    }
+    case "ISingleton": {
+      chunk.length = 1
+      chunk.depth = 0
+      chunk.left = _empty
+      chunk.right = _empty
+      break
+    }
+    case "ISlice": {
+      chunk.length = backing.length
+      chunk.depth = backing.chunk.depth + 1
+      chunk.left = _empty
+      chunk.right = _empty
+      break
+    }
+  }
+  return chunk
 }
 
 /**
@@ -218,9 +214,9 @@ class ChunkImpl<A> implements Chunk<A> {
 export const isChunk: {
   <A>(u: Iterable<A>): u is Chunk<A>
   (u: unknown): u is Chunk<unknown>
-} = (u: unknown): u is Chunk<unknown> => isObject(u) && "_id" in u && u["_id"] === TypeId
+} = (u: unknown): u is Chunk<unknown> => isObject(u) && TypeId in u
 
-const _empty = new ChunkImpl<never>({ _tag: "IEmpty" })
+const _empty = makeChunk<never>({ _tag: "IEmpty" })
 
 /**
  * @category constructors
@@ -244,7 +240,7 @@ export const make = <As extends readonly [any, ...ReadonlyArray<any>]>(
  * @category constructors
  * @since 1.0.0
  */
-export const of = <A>(a: A): NonEmptyChunk<A> => new ChunkImpl({ _tag: "ISingleton", a }) as any
+export const of = <A>(a: A): NonEmptyChunk<A> => makeChunk({ _tag: "ISingleton", a }) as any
 
 /**
  * Converts from an `Iterable<A>`
@@ -253,7 +249,7 @@ export const of = <A>(a: A): NonEmptyChunk<A> => new ChunkImpl({ _tag: "ISinglet
  * @since 1.0.0
  */
 export const fromIterable = <A>(self: Iterable<A>): Chunk<A> =>
-  isChunk(self) ? self : new ChunkImpl({ _tag: "IArray", array: RA.fromIterable(self) })
+  isChunk(self) ? self : makeChunk({ _tag: "IArray", array: RA.fromIterable(self) })
 
 const copyToArray = <A>(self: Chunk<A>, array: Array<any>, initial: number): void => {
   switch (self.backing._tag) {
@@ -322,10 +318,10 @@ export const reverse = <A>(self: Chunk<A>): Chunk<A> => {
     case "ISingleton":
       return self
     case "IArray": {
-      return new ChunkImpl({ _tag: "IArray", array: RA.reverse(self.backing.array) })
+      return makeChunk({ _tag: "IArray", array: RA.reverse(self.backing.array) })
     }
     case "IConcat": {
-      return new ChunkImpl({ _tag: "IConcat", left: reverse(self.backing.right), right: reverse(self.backing.left) })
+      return makeChunk({ _tag: "IConcat", left: reverse(self.backing.right), right: reverse(self.backing.left) })
     }
     case "ISlice":
       return unsafeFromArray(RA.reverse(toReadonlyArray(self)))
@@ -353,7 +349,7 @@ export const get: {
  * @since 1.0.0
  * @category unsafe
  */
-export const unsafeFromArray = <A>(self: ReadonlyArray<A>): Chunk<A> => new ChunkImpl({ _tag: "IArray", array: self })
+export const unsafeFromArray = <A>(self: ReadonlyArray<A>): Chunk<A> => makeChunk({ _tag: "IArray", array: self })
 
 /**
  * Wraps an array into a chunk without copying, unsafe on mutable arrays
@@ -439,7 +435,7 @@ export const take: {
   } else {
     switch (self.backing._tag) {
       case "ISlice": {
-        return new ChunkImpl({
+        return makeChunk({
           _tag: "ISlice",
           chunk: self.backing.chunk,
           length: n,
@@ -448,7 +444,7 @@ export const take: {
       }
       case "IConcat": {
         if (n > self.left.length) {
-          return new ChunkImpl({
+          return makeChunk({
             _tag: "IConcat",
             left: self.left,
             right: take(self.right, n - self.left.length)
@@ -458,7 +454,7 @@ export const take: {
         return take(self.left, n)
       }
       default: {
-        return new ChunkImpl({
+        return makeChunk({
           _tag: "ISlice",
           chunk: self,
           offset: 0,
@@ -485,7 +481,7 @@ export const drop: {
   } else {
     switch (self.backing._tag) {
       case "ISlice": {
-        return new ChunkImpl({
+        return makeChunk({
           _tag: "ISlice",
           chunk: self.backing.chunk,
           offset: self.backing.offset + n,
@@ -496,14 +492,14 @@ export const drop: {
         if (n > self.left.length) {
           return drop(self.right, n - self.left.length)
         }
-        return new ChunkImpl({
+        return makeChunk({
           _tag: "IConcat",
           left: drop(self.left, n),
           right: self.right
         })
       }
       default: {
-        return new ChunkImpl({
+        return makeChunk({
           _tag: "ISlice",
           chunk: self,
           offset: n,
@@ -580,33 +576,33 @@ export const appendAll: {
   }
   const diff = that.depth - self.depth
   if (Math.abs(diff) <= 1) {
-    return new ChunkImpl<A | B>({ _tag: "IConcat", left: self, right: that })
+    return makeChunk<A | B>({ _tag: "IConcat", left: self, right: that })
   } else if (diff < -1) {
     if (self.left.depth >= self.right.depth) {
       const nr = appendAll(self.right, that)
-      return new ChunkImpl({ _tag: "IConcat", left: self.left, right: nr })
+      return makeChunk({ _tag: "IConcat", left: self.left, right: nr })
     } else {
       const nrr = appendAll(self.right.right, that)
       if (nrr.depth === self.depth - 3) {
-        const nr = new ChunkImpl({ _tag: "IConcat", left: self.right.left, right: nrr })
-        return new ChunkImpl({ _tag: "IConcat", left: self.left, right: nr })
+        const nr = makeChunk({ _tag: "IConcat", left: self.right.left, right: nrr })
+        return makeChunk({ _tag: "IConcat", left: self.left, right: nr })
       } else {
-        const nl = new ChunkImpl({ _tag: "IConcat", left: self.left, right: self.right.left })
-        return new ChunkImpl({ _tag: "IConcat", left: nl, right: nrr })
+        const nl = makeChunk({ _tag: "IConcat", left: self.left, right: self.right.left })
+        return makeChunk({ _tag: "IConcat", left: nl, right: nrr })
       }
     }
   } else {
     if (that.right.depth >= that.left.depth) {
       const nl = appendAll(self, that.left)
-      return new ChunkImpl({ _tag: "IConcat", left: nl, right: that.right })
+      return makeChunk({ _tag: "IConcat", left: nl, right: that.right })
     } else {
       const nll = appendAll(self, that.left.left)
       if (nll.depth === that.depth - 3) {
-        const nl = new ChunkImpl({ _tag: "IConcat", left: nll, right: that.left.right })
-        return new ChunkImpl({ _tag: "IConcat", left: nl, right: that.right })
+        const nl = makeChunk({ _tag: "IConcat", left: nll, right: that.left.right })
+        return makeChunk({ _tag: "IConcat", left: nl, right: that.right })
       } else {
-        const nr = new ChunkImpl({ _tag: "IConcat", left: that.left.right, right: that.right })
-        return new ChunkImpl({ _tag: "IConcat", left: nll, right: nr })
+        const nr = makeChunk({ _tag: "IConcat", left: that.left.right, right: that.right })
+        return makeChunk({ _tag: "IConcat", left: nll, right: nr })
       }
     }
   }
