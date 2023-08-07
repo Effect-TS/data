@@ -27,6 +27,7 @@ Added in v1.0.0
 - [constructors](#constructors)
   - [make](#make)
 - [instances](#instances)
+  - [Date](#date)
   - [bigint](#bigint)
   - [boolean](#boolean)
   - [number](#number)
@@ -204,6 +205,16 @@ export declare const make: <A>(compare: (self: A, that: A) => -1 | 0 | 1) => Ord
 Added in v1.0.0
 
 # instances
+
+## Date
+
+**Signature**
+
+```ts
+export declare const Date: Order<Date>
+```
+
+Added in v1.0.0
 
 ## bigint
 

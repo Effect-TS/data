@@ -30,6 +30,13 @@ describe.concurrent("Equivalence", () => {
     expect(eqPerson({ name: "a", age: 1 }, { name: "b", age: 2 })).toEqual(false)
   })
 
+  it("Date", () => {
+    const eq = _.Date
+    expect(eq(new Date(0), new Date(0))).toEqual(true)
+    expect(eq(new Date(0), new Date(1))).toEqual(false)
+    expect(eq(new Date(1), new Date(0))).toEqual(false)
+  })
+
   it("product", () => {
     const eq = _.product(_.string, _.string)
     expect(eq(["a", "b"], ["a", "b"])).toEqual(true)

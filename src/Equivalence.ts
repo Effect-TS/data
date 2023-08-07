@@ -122,6 +122,12 @@ export const mapInput: {
 )
 
 /**
+ * @category instances
+ * @since 1.0.0
+ */
+export const Date: Equivalence<Date> = mapInput(number, (date) => date.getTime())
+
+/**
  * @category combining
  * @since 1.0.0
  */

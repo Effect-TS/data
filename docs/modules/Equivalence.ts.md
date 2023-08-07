@@ -32,6 +32,7 @@ Added in v1.0.0
   - [make](#make)
   - [strict](#strict)
 - [instances](#instances)
+  - [Date](#date)
   - [bigint](#bigint)
   - [boolean](#boolean)
   - [number](#number)
@@ -206,6 +207,16 @@ export declare const strict: <A>() => Equivalence<A>
 Added in v1.0.0
 
 # instances
+
+## Date
+
+**Signature**
+
+```ts
+export declare const Date: Equivalence<Date>
+```
+
+Added in v1.0.0
 
 ## bigint
 
