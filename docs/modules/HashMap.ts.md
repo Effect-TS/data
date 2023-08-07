@@ -17,6 +17,7 @@ Added in v1.0.0
   - [fromIterable](#fromiterable)
   - [make](#make)
 - [elements](#elements)
+  - [find](#find)
   - [get](#get)
   - [getHash](#gethash)
   - [has](#has)
@@ -106,6 +107,22 @@ export declare const make: <Entries extends readonly (readonly [any, any])[]>(
 Added in v1.0.0
 
 # elements
+
+## find
+
+Returns the first element that satisfies the specified
+predicate, or `None` if no such element exists.
+
+**Signature**
+
+```ts
+export declare const find: {
+  <K, A>(predicate: (k: K, a: A) => boolean): (self: HashMap<K, A>) => Option<[K, A]>
+  <K, A>(self: HashMap<K, A>, predicate: (k: K, a: A) => boolean): Option<[K, A]>
+}
+```
+
+Added in v1.0.0
 
 ## get
 
@@ -321,7 +338,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface HashMap<Key, Value> extends Iterable<readonly [Key, Value]>, Equal, Pipeable {
+export interface HashMap<Key, Value> extends Iterable<[Key, Value]>, Equal, Pipeable {
   readonly _id: TypeId
 }
 ```

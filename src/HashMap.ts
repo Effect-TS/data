@@ -21,7 +21,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface HashMap<Key, Value> extends Iterable<readonly [Key, Value]>, Equal, Pipeable {
+export interface HashMap<Key, Value> extends Iterable<[Key, Value]>, Equal, Pipeable {
   readonly _id: TypeId
 }
 
@@ -358,3 +358,15 @@ export const filterMap: {
   <A, K, B>(f: (value: A, key: K) => Option<B>): (self: HashMap<K, A>) => HashMap<K, B>
   <K, A, B>(self: HashMap<K, A>, f: (value: A, key: K) => Option<B>): HashMap<K, B>
 } = HM.filterMap
+
+/**
+ * Returns the first element that satisfies the specified
+ * predicate, or `None` if no such element exists.
+ *
+ * @category elements
+ * @since 1.0.0
+ */
+export const find: {
+  <K, A>(predicate: (k: K, a: A) => boolean): (self: HashMap<K, A>) => Option<[K, A]>
+  <K, A>(self: HashMap<K, A>, predicate: (k: K, a: A) => boolean): Option<[K, A]>
+} = HM.find
