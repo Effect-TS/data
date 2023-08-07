@@ -37,6 +37,13 @@ describe.concurrent("Order", () => {
     U.deepStrictEqual(O("aa", "b"), 1)
   })
 
+  it("Date", () => {
+    const O = _.Date
+    U.deepStrictEqual(O(new Date(0), new Date(1)), -1)
+    U.deepStrictEqual(O(new Date(1), new Date(1)), 0)
+    U.deepStrictEqual(O(new Date(1), new Date(0)), 1)
+  })
+
   it("clamp", () => {
     const clamp = _.clamp(_.number)
     U.deepStrictEqual(clamp(2, 1, 10), 2)
