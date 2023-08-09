@@ -507,7 +507,7 @@ export const filterMap = Dual.dual<
   }))
 
 /** @internal */
-export const find: {
+export const findFirst: {
   <K, A>(predicate: (k: K, a: A) => boolean): (self: HM.HashMap<K, A>) => Option.Option<[K, A]>
   <K, A>(self: HM.HashMap<K, A>, predicate: (k: K, a: A) => boolean): Option.Option<[K, A]>
 } = Dual.dual(

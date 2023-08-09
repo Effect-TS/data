@@ -17,7 +17,7 @@ Added in v1.0.0
   - [fromIterable](#fromiterable)
   - [make](#make)
 - [elements](#elements)
-  - [find](#find)
+  - [findFirst](#findfirst)
   - [get](#get)
   - [getHash](#gethash)
   - [has](#has)
@@ -108,7 +108,7 @@ Added in v1.0.0
 
 # elements
 
-## find
+## findFirst
 
 Returns the first element that satisfies the specified
 predicate, or `None` if no such element exists.
@@ -116,7 +116,7 @@ predicate, or `None` if no such element exists.
 **Signature**
 
 ```ts
-export declare const find: {
+export declare const findFirst: {
   <K, A>(predicate: (k: K, a: A) => boolean): (self: HashMap<K, A>) => Option<[K, A]>
   <K, A>(self: HashMap<K, A>, predicate: (k: K, a: A) => boolean): Option<[K, A]>
 }

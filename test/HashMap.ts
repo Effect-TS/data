@@ -393,10 +393,10 @@ describe.concurrent("HashMap", () => {
     expect(HM.isHashMap({})).toBe(false)
   })
 
-  it("find", () => {
+  it("findFirst", () => {
     const map1 = HM.make([key(0), value("a")], [key(1), value("bb")])
-    expect(HM.find(map1, (k, _v) => k.n === 0)).toStrictEqual(Option.some([key(0), value("a")]))
-    expect(HM.find(map1, (_k, v) => v.s === "bb")).toStrictEqual(Option.some([key(1), value("bb")]))
-    expect(HM.find(map1, (k, v) => k.n === 0 && v.s === "bb")).toStrictEqual(Option.none())
+    expect(HM.findFirst(map1, (k, _v) => k.n === 0)).toStrictEqual(Option.some([key(0), value("a")]))
+    expect(HM.findFirst(map1, (_k, v) => v.s === "bb")).toStrictEqual(Option.some([key(1), value("bb")]))
+    expect(HM.findFirst(map1, (k, v) => k.n === 0 && v.s === "bb")).toStrictEqual(Option.none())
   })
 })
