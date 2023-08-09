@@ -40,7 +40,7 @@ export class HashMapImpl<K, V> implements HM.HashMap<K, V> {
     public _size: number
   ) {}
 
-  [Symbol.iterator](): Iterator<readonly [K, V]> {
+  [Symbol.iterator](): Iterator<[K, V]> {
     return new HashMapIterator(this, (k, v) => [k, v])
   }
 
@@ -505,3 +505,19 @@ export const filterMap = Dual.dual<
       }
     }
   }))
+
+/** @internal */
+export const find: {
+  <K, A>(predicate: (k: K, a: A) => boolean): (self: HM.HashMap<K, A>) => Option.Option<[K, A]>
+  <K, A>(self: HM.HashMap<K, A>, predicate: (k: K, a: A) => boolean): Option.Option<[K, A]>
+} = Dual.dual(
+  2,
+  <K, A>(self: HM.HashMap<K, A>, predicate: (k: K, a: A) => boolean): Option.Option<[K, A]> => {
+    for (const ka of self) {
+      if (predicate(ka[0], ka[1])) {
+        return Option.some(ka)
+      }
+    }
+    return Option.none()
+  }
+)
