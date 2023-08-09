@@ -2,4 +2,4 @@
 "@effect/data": patch
 ---
 
-HashMap: add find
+HashMap: add findFirst

@@ -366,7 +366,7 @@ export const filterMap: {
  * @category elements
  * @since 1.0.0
  */
-export const find: {
+export const findFirst: {
   <K, A>(predicate: (k: K, a: A) => boolean): (self: HashMap<K, A>) => Option<[K, A]>
   <K, A>(self: HashMap<K, A>, predicate: (k: K, a: A) => boolean): Option<[K, A]>
-} = HM.find
+} = HM.findFirst
