@@ -205,6 +205,16 @@ describe.concurrent("Predicate", () => {
     assert.deepStrictEqual(_.isObject(Symbol.for("a")), false)
   })
 
+  it("isTagged", () => {
+    assert.deepStrictEqual(_.isTagged(1, "a"), false)
+    assert.deepStrictEqual(_.isTagged("", "a"), false)
+    assert.deepStrictEqual(_.isTagged({}, "a"), false)
+    assert.deepStrictEqual(_.isTagged("a")({}), false)
+    assert.deepStrictEqual(_.isTagged({ a: "a" }, "a"), false)
+    assert.deepStrictEqual(_.isTagged({ _tag: "a" }, "a"), true)
+    assert.deepStrictEqual(_.isTagged("a")({ _tag: "a" }), true)
+  })
+
   it("isNullable", () => {
     assert.deepStrictEqual(_.isNullable(null), true)
     assert.deepStrictEqual(_.isNullable(undefined), true)
