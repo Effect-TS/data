@@ -285,6 +285,34 @@ export const isObject = (input: unknown): input is object =>
   (typeof input === "object" && input != null) || isFunction(input)
 
 /**
+ * Tests if a value is an `object` with a property `_tag` that matches the given tag.
+ *
+ * @param input - The value to test.
+ * @param tag - The tag to test for.
+ *
+ * @example
+ * import { isTagged } from "@effect/data/Predicate"
+ *
+ * assert.deepStrictEqual(isTagged(1, "a"), false)
+ * assert.deepStrictEqual(isTagged(null, "a"), false)
+ * assert.deepStrictEqual(isTagged({}, "a"), false)
+ * assert.deepStrictEqual(isTagged({ a: "a" }, "a"), false)
+ * assert.deepStrictEqual(isTagged({ _tag: "a" }, "a"), true)
+ * assert.deepStrictEqual(isTagged("a")({ _tag: "a" }), true)
+ *
+ * @category guards
+ * @since 1.0.0
+ */
+export const isTagged: {
+  <K extends string>(tag: K): (self: unknown) => self is { _tag: K }
+  <K extends string>(self: unknown, tag: K): self is { _tag: K }
+} = dual(
+  2,
+  <K extends string>(self: unknown, tag: K): self is { _tag: K } =>
+    isObject(self) && "_tag" in self && self["_tag"] === tag
+)
+
+/**
  * A guard that succeeds when the input is `null` or `undefined`.
  *
  * @param input - The value to test.
