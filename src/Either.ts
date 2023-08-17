@@ -6,6 +6,7 @@ import type * as Data from "@effect/data/Data"
 import * as Equivalence from "@effect/data/Equivalence"
 import type { LazyArg } from "@effect/data/Function"
 import { constNull, constUndefined, dual, identity } from "@effect/data/Function"
+import * as Gen from "@effect/data/Gen"
 import type { TypeLambda } from "@effect/data/HKT"
 import * as either from "@effect/data/internal/Either"
 import type { Option } from "@effect/data/Option"
@@ -542,3 +543,32 @@ export const all: <const I extends Iterable<Either<any, any>> | Record<string, E
  * @since 1.0.0
  */
 export const reverse = <E, A>(self: Either<E, A>): Either<A, E> => isLeft(self) ? right(self.left) : left(self.right)
+
+const adapter = Gen.adapter<EitherTypeLambda>()
+
+/**
+ * @category generators
+ * @since 1.0.0
+ */
+export const gen: Gen.Gen<EitherTypeLambda, Gen.Adapter<EitherTypeLambda>> = (f) => {
+  const iterator = f(adapter)
+  let state: IteratorYieldResult<any> | IteratorReturnResult<any> = iterator.next()
+  if (state.done) {
+    return right(void 0) as any
+  } else {
+    let current = state.value.value
+    if (isLeft(current)) {
+      return current
+    }
+    while (!state.done) {
+      state = iterator.next(current.right)
+      if (!state.done) {
+        current = state.value.value
+        if (isLeft(current)) {
+          return current
+        }
+      }
+    }
+    return right(state.value)
+  }
+}
