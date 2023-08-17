@@ -40,8 +40,8 @@ describe.concurrent("Option", () => {
   })
 
   it("toString", () => {
-    expect(String(_.none())).toEqual("none()")
-    expect(String(_.some(1))).toEqual("some(1)")
+    expect(String(_.none())).toEqual("None()")
+    expect(String(_.some(1))).toEqual("Some(1)")
   })
 
   it("toJSON", () => {
