@@ -1,5 +1,23 @@
 # @effect/data
 
+## 0.17.2
+
+### Patch Changes
+
+- [#458](https://github.com/Effect-TS/data/pull/458) [`c11ed2d`](https://github.com/Effect-TS/data/commit/c11ed2dacbabfd486b283fcb97160822f1aa4056) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Add Option.gen
+
+- [#448](https://github.com/Effect-TS/data/pull/448) [`04604b6`](https://github.com/Effect-TS/data/commit/04604b617130ba42466d1924eb8924f70c4d3a59) Thanks [@tim-smart](https://github.com/tim-smart)! - update build tools
+
+- [#454](https://github.com/Effect-TS/data/pull/454) [`dd211c8`](https://github.com/Effect-TS/data/commit/dd211c8d6223c23415a2e54c9932f416581db01b) Thanks [@gcanti](https://github.com/gcanti)! - Equivalence: add Date instance
+
+- [#454](https://github.com/Effect-TS/data/pull/454) [`dd211c8`](https://github.com/Effect-TS/data/commit/dd211c8d6223c23415a2e54c9932f416581db01b) Thanks [@gcanti](https://github.com/gcanti)! - Order: add Date instance
+
+- [#458](https://github.com/Effect-TS/data/pull/458) [`c11ed2d`](https://github.com/Effect-TS/data/commit/c11ed2dacbabfd486b283fcb97160822f1aa4056) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Add Either.gen
+
+- [#455](https://github.com/Effect-TS/data/pull/455) [`ef347cc`](https://github.com/Effect-TS/data/commit/ef347cce6791965138fb417ee9eb8e086c0b9ebd) Thanks [@gcanti](https://github.com/gcanti)! - HashMap: add findFirst
+
+- [#457](https://github.com/Effect-TS/data/pull/457) [`841bdcd`](https://github.com/Effect-TS/data/commit/841bdcd43e4ca53e129dc26674b64de42de79d82) Thanks [@jessekelly881](https://github.com/jessekelly881)! - added Predicate.isTagged
+
 ## 0.17.1
 
 ### Patch Changes
