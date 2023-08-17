@@ -24,7 +24,7 @@ export class Some<A> implements Option.Some<A> {
     return Hash.hash(this.i0)
   }
   toString() {
-    return `some(${String(this.i0)})`
+    return `Some(${String(this.i0)})`
   }
   toJSON() {
     return {
@@ -65,7 +65,7 @@ export class None<A> implements Option.None<A> {
     return Hash.hash(this._tag)
   }
   toString() {
-    return `none()`
+    return `None()`
   }
   toJSON() {
     return {
