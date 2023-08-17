@@ -52,6 +52,8 @@ Added in v1.0.0
   - [partitionMap](#partitionmap)
 - [folding](#folding)
   - [reduceCompact](#reducecompact)
+- [generators](#generators)
+  - [gen](#gen)
 - [getters](#getters)
   - [getOrElse](#getorelse)
   - [getOrNull](#getornull)
@@ -806,6 +808,18 @@ assert.deepStrictEqual(
   ),
   3
 )
+```
+
+Added in v1.0.0
+
+# generators
+
+## gen
+
+**Signature**
+
+```ts
+export declare const gen: Gen.Gen<OptionTypeLambda, Gen.Adapter<OptionTypeLambda>>
 ```
 
 Added in v1.0.0

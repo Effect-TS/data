@@ -23,6 +23,8 @@ Added in v1.0.0
   - [try](#try)
 - [equivalence](#equivalence)
   - [getEquivalence](#getequivalence)
+- [generators](#generators)
+  - [gen](#gen)
 - [getters](#getters)
   - [getLeft](#getleft)
   - [getOrElse](#getorelse)
@@ -223,6 +225,18 @@ export declare const getEquivalence: <E, A>(
   EE: Equivalence.Equivalence<E>,
   EA: Equivalence.Equivalence<A>
 ) => Equivalence.Equivalence<Either<E, A>>
+```
+
+Added in v1.0.0
+
+# generators
+
+## gen
+
+**Signature**
+
+```ts
+export declare const gen: Gen.Gen<EitherTypeLambda, Gen.Adapter<EitherTypeLambda>>
 ```
 
 Added in v1.0.0

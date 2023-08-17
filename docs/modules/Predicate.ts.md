@@ -48,6 +48,7 @@ Added in v1.0.0
   - [isRecord](#isrecord)
   - [isString](#isstring)
   - [isSymbol](#issymbol)
+  - [isTagged](#istagged)
   - [isUndefined](#isundefined)
   - [isUnknown](#isunknown)
 - [models](#models)
@@ -718,6 +719,34 @@ import { isSymbol } from '@effect/data/Predicate'
 assert.deepStrictEqual(isSymbol(Symbol.for('a')), true)
 
 assert.deepStrictEqual(isSymbol('a'), false)
+```
+
+Added in v1.0.0
+
+## isTagged
+
+Tests if a value is an `object` with a property `_tag` that matches the given tag.
+
+**Signature**
+
+```ts
+export declare const isTagged: {
+  <K extends string>(tag: K): (self: unknown) => self is { _tag: K }
+  <K extends string>(self: unknown, tag: K): self is { _tag: K }
+}
+```
+
+**Example**
+
+```ts
+import { isTagged } from '@effect/data/Predicate'
+
+assert.deepStrictEqual(isTagged(1, 'a'), false)
+assert.deepStrictEqual(isTagged(null, 'a'), false)
+assert.deepStrictEqual(isTagged({}, 'a'), false)
+assert.deepStrictEqual(isTagged({ a: 'a' }, 'a'), false)
+assert.deepStrictEqual(isTagged({ _tag: 'a' }, 'a'), true)
+assert.deepStrictEqual(isTagged('a')({ _tag: 'a' }), true)
 ```
 
 Added in v1.0.0

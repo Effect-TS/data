@@ -9,6 +9,36 @@ import { inspect } from "node:util"
 const p = (n: number): boolean => n > 2
 
 describe.concurrent("Option", () => {
+  it("gen", () => {
+    const a = _.gen(function*($) {
+      const x = yield* $(_.some(1))
+      const y = yield* $(_.some(2))
+      return x + y
+    })
+    // eslint-disable-next-line require-yield
+    const b = _.gen(function*() {
+      return 10
+    })
+    const c = _.gen(function*($) {
+      yield* $(_.some(1))
+      yield* $(_.some(2))
+    })
+    const d = _.gen(function*($) {
+      yield* $(_.some(1))
+      return yield* $(_.some(2))
+    })
+    const e = _.gen(function*($) {
+      yield* $(_.some(1))
+      yield* $(_.none())
+      return yield* $(_.some(2))
+    })
+    expect(a).toEqual(_.some(3))
+    expect(b).toEqual(_.some(undefined))
+    expect(c).toEqual(_.some(undefined))
+    expect(d).toEqual(_.some(2))
+    expect(e).toEqual(_.none())
+  })
+
   it("toString", () => {
     expect(String(_.none())).toEqual("none()")
     expect(String(_.some(1))).toEqual("some(1)")

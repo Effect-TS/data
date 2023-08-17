@@ -7,6 +7,7 @@ import * as Equal from "@effect/data/Equal"
 import * as Equivalence from "@effect/data/Equivalence"
 import type { LazyArg } from "@effect/data/Function"
 import { constNull, constUndefined, dual, identity } from "@effect/data/Function"
+import * as Gen from "@effect/data/Gen"
 import type { TypeLambda } from "@effect/data/HKT"
 import * as either from "@effect/data/internal/Either"
 import * as option from "@effect/data/internal/Option"
@@ -1276,3 +1277,32 @@ export const bind: {
  * @since 1.0.0
  */
 export const Do: Option<{}> = some({})
+
+const adapter = Gen.adapter<OptionTypeLambda>()
+
+/**
+ * @category generators
+ * @since 1.0.0
+ */
+export const gen: Gen.Gen<OptionTypeLambda, Gen.Adapter<OptionTypeLambda>> = (f) => {
+  const iterator = f(adapter)
+  let state: IteratorYieldResult<any> | IteratorReturnResult<any> = iterator.next()
+  if (state.done) {
+    return some(void 0)
+  } else {
+    let current = state.value.value
+    if (isNone(current)) {
+      return current
+    }
+    while (!state.done) {
+      state = iterator.next(current.value)
+      if (!state.done) {
+        current = state.value.value
+        if (isNone(current)) {
+          return current
+        }
+      }
+    }
+    return some(state.value)
+  }
+}
