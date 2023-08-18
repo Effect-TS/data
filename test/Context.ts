@@ -16,7 +16,7 @@ const B = Context.Tag<B>()
 interface C {
   c: number
 }
-const C = Context.Tag<C>()
+const C = Context.Tag<C>("C")
 
 describe.concurrent("Context", () => {
   it("global tag", () => {
@@ -63,7 +63,7 @@ describe.concurrent("Context", () => {
         Services,
         Context.unsafeGet(C)
       )
-    })
+    }, "Service not found: C")
   })
 
   it("picks services in env and merges", () => {
@@ -179,6 +179,21 @@ describe.concurrent("Context", () => {
     assert.deepNestedPropertyVal(result, "first.second.tag", B)
     assert.deepNestedPropertyVal(result, "second._tag", "RemoveService")
     assert.deepNestedPropertyVal(result, "second.tag", C)
+  })
+
+  it("error messages", () => {
+    assert.throw(() => {
+      Context.unsafeGet(Context.empty(), A)
+    }, "Service not found")
+    assert.throw(() => {
+      Context.get(Context.empty(), A as never)
+    }, "Service not found")
+    assert.throw(() => {
+      Context.unsafeGet(Context.empty(), C)
+    }, "Service not found: C")
+    assert.throw(() => {
+      Context.get(Context.empty(), C as never)
+    }, "Service not found: C")
   })
 
   it("pipe", () => {
