@@ -1,5 +1,13 @@
 # @effect/data
 
+## 0.17.3
+
+### Patch Changes
+
+- [#462](https://github.com/Effect-TS/data/pull/462) [`8cf2506`](https://github.com/Effect-TS/data/commit/8cf2506d74ffa50e1403f3c187c3d1ab48d44f3b) Thanks [@tim-smart](https://github.com/tim-smart)! - improve Context error messages
+
+- [#459](https://github.com/Effect-TS/data/pull/459) [`afc34f5`](https://github.com/Effect-TS/data/commit/afc34f57528612b1b1e048fbf3a2779993b12ca0) Thanks [@gcanti](https://github.com/gcanti)! - Option: align toString to Chunk & co
+
 ## 0.17.2
 
 ### Patch Changes
