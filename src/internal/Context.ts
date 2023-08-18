@@ -102,7 +102,7 @@ export class ContextImpl<Services> implements C.Context<Services> {
 }
 
 const serviceNotFoundError = (tag: TagImpl<any, any>) => {
-  const error = new Error(`Service not found${tag.i0 ? `: ${tag.i0}` : ""}`)
+  const error = new Error(`Service not found${tag.i0 ? `: ${String(tag.i0)}` : ""}`)
   if (tag.stack) {
     const lines = tag.stack.split("\n")
     if (lines.length > 2) {
