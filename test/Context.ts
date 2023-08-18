@@ -194,6 +194,11 @@ describe.concurrent("Context", () => {
     assert.throw(() => {
       Context.get(Context.empty(), C as never)
     }, "Service not found: C")
+    try {
+      Context.get(Context.empty(), C as never)
+    } catch (e) {
+      console.log(e)
+    }
   })
 
   it("pipe", () => {
