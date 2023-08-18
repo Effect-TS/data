@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.17.4
+
+### Patch Changes
+
+- [#463](https://github.com/Effect-TS/data/pull/463) [`603c66f`](https://github.com/Effect-TS/data/commit/603c66ffe615aa941f00d1fbbf395cfe725b06ea) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Add definition site tracing to tag
+
 ## 0.17.3
 
 ### Patch Changes
