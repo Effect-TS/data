@@ -16,7 +16,8 @@ export class TagImpl<Identifier, Service> implements C.Tag<Identifier, Service> 
   readonly _tag = "Tag"
   public i0: any | undefined = undefined
   public i1 = undefined
-  public i2 = undefined;
+  public i2 = undefined
+  private creationError: Error;
   [EffectTypeId] = effectVariance;
   [Equal.symbol](this: {}, that: unknown) {
     return this === that
@@ -31,10 +32,17 @@ export class TagImpl<Identifier, Service> implements C.Tag<Identifier, Service> 
     }
   }
   constructor(identifier?: unknown) {
+    const limit = Error.stackTraceLimit
+    Error.stackTraceLimit = 3
+    this.creationError = new Error()
+    Error.stackTraceLimit = limit
     if (typeof identifier !== "undefined") {
       this.i0 = identifier
       return G.globalValue(identifier, () => this)
     }
+  }
+  get stack() {
+    return this.creationError.stack
   }
   toString() {
     return JSON.stringify(this)
@@ -42,7 +50,8 @@ export class TagImpl<Identifier, Service> implements C.Tag<Identifier, Service> 
   toJSON() {
     return {
       _tag: "Tag",
-      identifier: this.i0
+      identifier: this.i0,
+      stack: this.stack
     }
   }
   [Symbol.for("nodejs.util.inspect.custom")]() {
@@ -92,9 +101,23 @@ export class ContextImpl<Services> implements C.Context<Services> {
   }
 }
 
-const serviceNotFoundError = (tag: C.Tag<any, any>) => {
-  const impl = tag as TagImpl<any, any>
-  return new Error(`Service not found${impl.i0 ? `: ${impl.i0}` : ""}`)
+const serviceNotFoundError = (tag: TagImpl<any, any>) => {
+  const error = new Error(`Service not found${tag.i0 ? `: ${tag.i0}` : ""}`)
+  if (tag.stack) {
+    const lines = tag.stack.split("\n")
+    if (lines.length > 2) {
+      const afterAt = lines[3].match(/at (.*)/)
+      if (afterAt) {
+        error.message = error.message + ` (defined at ${afterAt[1]})`
+      }
+    }
+  }
+  if (error.stack) {
+    const lines = error.stack.split("\n")
+    lines.splice(1, 3)
+    error.stack = lines.join("\n")
+  }
+  return error
 }
 
 /** @internal */
@@ -133,26 +156,21 @@ export const add = dual<
 })
 
 /** @internal */
-export const get = dual<
-  <Services, T extends C.ValidTagsById<Services>>(tag: T) => (self: C.Context<Services>) => C.Tag.Service<T>,
-  <Services, T extends C.ValidTagsById<Services>>(self: C.Context<Services>, tag: T) => C.Tag.Service<T>
->(2, (self, tag) => {
-  if (!self.unsafeMap.has(tag)) {
-    throw serviceNotFoundError(tag)
-  }
-  return self.unsafeMap.get(tag)! as any
-})
-
-/** @internal */
 export const unsafeGet = dual<
   <S, I>(tag: C.Tag<I, S>) => <Services>(self: C.Context<Services>) => S,
   <Services, S, I>(self: C.Context<Services>, tag: C.Tag<I, S>) => S
 >(2, (self, tag) => {
   if (!self.unsafeMap.has(tag)) {
-    throw serviceNotFoundError(tag)
+    throw serviceNotFoundError(tag as any)
   }
   return self.unsafeMap.get(tag)! as any
 })
+
+/** @internal */
+export const get: {
+  <Services, T extends C.ValidTagsById<Services>>(tag: T): (self: C.Context<Services>) => C.Tag.Service<T>
+  <Services, T extends C.ValidTagsById<Services>>(self: C.Context<Services>, tag: T): C.Tag.Service<T>
+} = unsafeGet
 
 /** @internal */
 export const getOption = dual<
