@@ -92,6 +92,11 @@ export class ContextImpl<Services> implements C.Context<Services> {
   }
 }
 
+const serviceNotFoundError = (tag: C.Tag<any, any>) => {
+  const impl = tag as TagImpl<any, any>
+  return new Error(`Service not found${impl.i0 ? `: ${impl.i0}` : ""}`)
+}
+
 /** @internal */
 export const isContext = (u: unknown): u is C.Context<never> =>
   typeof u === "object" && u !== null && "_id" in u && u["_id"] === ContextTypeId
@@ -133,7 +138,7 @@ export const get = dual<
   <Services, T extends C.ValidTagsById<Services>>(self: C.Context<Services>, tag: T) => C.Tag.Service<T>
 >(2, (self, tag) => {
   if (!self.unsafeMap.has(tag)) {
-    throw new Error("Service not found")
+    throw serviceNotFoundError(tag)
   }
   return self.unsafeMap.get(tag)! as any
 })
@@ -144,7 +149,7 @@ export const unsafeGet = dual<
   <Services, S, I>(self: C.Context<Services>, tag: C.Tag<I, S>) => S
 >(2, (self, tag) => {
   if (!self.unsafeMap.has(tag)) {
-    throw new Error("Service not found")
+    throw serviceNotFoundError(tag)
   }
   return self.unsafeMap.get(tag)! as any
 })
