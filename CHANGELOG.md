@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.17.5
+
+### Patch Changes
+
+- [#465](https://github.com/Effect-TS/data/pull/465) [`0f55e04`](https://github.com/Effect-TS/data/commit/0f55e043881f2b1abb4163ce75382335e0dcc820) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Fix symbol rendering
+
 ## 0.17.4
 
 ### Patch Changes
