@@ -76,5 +76,5 @@ export const makeRegistryBuilder  = <F extends TypeLambda>(): RegistryBuilder<F>
 
 // extract types from signature
 
-type SplitAt<X extends string, S extends string> = S extends '' ? never : S extends `${infer A}${X}${infer B}` ? SplitAt<X, A | B> : S
+type SplitAt<X extends string, S extends string> = S extends `${infer A}${X}${infer B}` ? SplitAt<X, A | B> : S extends '' ? never : S
 type SplitSignature<S extends string> = SplitAt<',', SplitAt<'<', SplitAt<'>', S>>>
