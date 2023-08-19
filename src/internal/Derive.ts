@@ -10,16 +10,8 @@ export interface HasName<TagName extends string, S extends string> {
   [Named]: S
 }
 
-declare module './Derive' {
-  interface AllowedTypes {
-    string: null  
-    number: null
-    boolean: null
-    Array: null
-  }
-}
 const SignatureError = Symbol()
-type SignatureError<Msg, Type> = Msg & Type & string
+type SignatureError<Msg, Type> = Msg & Type 
 
 type CheckString<T , N> = T extends string ? "string" : N
 type CheckNumber<T , N> = T extends number ? "number" : N
@@ -53,24 +45,25 @@ export interface Registry<F extends TypeLambda, Def extends string = never> {
   instanceOf: <S extends AnySignature>(signature: S & MatchSignature<S, Def>) => TypeOfSignature<S>
 }
 
-
-type AnyRegistry = Registry<any, any>
-type DefOfRegistry<T extends AnyRegistry> = ReturnType<T[typeof Def]>
-
-export const registerTC = <F extends TypeLambda,>() => <S extends string, I, O, Def extends string>(ctor: (x: Kind<F, never, never,never, I>) => Kind<F, never, never,never, O>, repr: S ) => (reg: Registry<F, Def>) : Registry<F, S | DefOfRegistry<typeof reg> > => {
+export const register1 = <F extends TypeLambda,>() => <S extends string, I, O, Def extends string>(ctor: (x: Kind<F, never, never,never, I>) => Kind<F, never, never,never, O>, repr: S ) => (reg: Registry<F, Def>) : Registry<F, S | Def > => {
   return reg
 }
-export const register = <F extends TypeLambda>() =>  <S extends string, T, Def extends string>(o: Kind<F, never, never,never, T>, repr: S ) => (reg: Registry<F, Def>) : Registry<F,S | DefOfRegistry<typeof reg> > => {
+export const register2 = <F extends TypeLambda,>() =><S extends string, I, I2, O, Def extends string>(ctor: (a: Kind<F, never, never, never, I>, b: Kind<F, never, never, never, I2>) => Kind<F, never, never, never, O>, repr: S) => (reg: Registry<F, Def>) : Registry<F, S | Def> => {
+  return reg
+}
+export const register = <F extends TypeLambda>() =>  <S extends string, T, Def extends string>(o: Kind<F, never, never,never, T>, repr: S ) => (reg: Registry<F, Def>) : Registry<F,S | Def> => {
   return reg
 }
 export interface RegistryBuilder<F extends TypeLambda> {
   register: <S extends string, T, Def extends string>(o: Kind<F, never, never, never, T>, repr: S) => (reg: Registry<F, Def>) => Registry<F, S | Def>;
-  registerTC: <S extends string, I, O, Def extends string>(ctor: (x: Kind<F, never, never, never, I>) => Kind<F, never, never, never, O>, repr: S) => (reg: Registry<F, Def>) => Registry<F, S | Def>;
+  register1: <S extends string, I, O, Def extends string>(ctor: (x: Kind<F, never, never, never, I>) => Kind<F, never, never, never, O>, repr: S) => (reg: Registry<F, Def>) => Registry<F, S | Def>;
+  register2: <S extends string, I, I2, O, Def extends string>(ctor: (a: Kind<F, never, never, never, I>, b: Kind<F, never, never, never, I2>) => Kind<F, never, never, never, O>, repr: S) => (reg: Registry<F, Def>) => Registry<F, S | Def>;
   empty: () => Registry<F, never>;
 }
 export const makeRegistryBuilder  = <F extends TypeLambda>(): RegistryBuilder<F> => ({
   register : register<F>(),
-  registerTC : registerTC<F>(),
+  register1 : register1<F>(),
+  register2: register2<F>(),
   empty: () : Registry<F, never> => DOIT
 })
 
