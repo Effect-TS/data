@@ -44,7 +44,7 @@ type ReprOfSignature<S extends AnySignature> = S['signature']
 
 const Def = Symbol()
 
-type Match<S extends string, Def extends string> = SlitAll<S> extends Def ? unknown : { error: `Missing type classe instance ${Exclude<SlitAll<S>, Def>}` }
+type Match<S extends string, Def extends string> = SplitSignature<S> extends Def ? unknown : { error: `Missing type classe instance ${Exclude<SplitSignature<S>, Def>}` }
 type MatchSignature<S extends AnySignature, Def extends string> = Match<ReprOfSignature<S>, Def>
 
 export interface Registry<F extends TypeLambda, Def extends string = never> {
@@ -76,7 +76,5 @@ export const makeRegistryBuilder  = <F extends TypeLambda>(): RegistryBuilder<F>
 
 // extract types from signature
 
-type SlitAllLeft<S extends string> = S extends `${infer A}<${infer B}` ? [A, ...SlitAllLeft<B>] : [S]
-type SlitAllRight<S extends string> = S extends `${infer A}>${infer B}` ? A extends '' ? SlitAllRight<B> : [A, ...SlitAllRight<B>] : S extends '' ? []: [S]
-type SlitInt<S extends string[]> = {[k in keyof S] : SlitAllRight<S[k]>  }
-type SlitAll<S extends string> = SlitInt<SlitAllLeft<S>>[number][number]
+type SplitAt<X extends string, S extends string> = S extends '' ? never : S extends `${infer A}${X}${infer B}` ? SplitAt<X, A> | SplitAt<X, B> : S
+type SplitSignature<S extends string> = SplitAt<',', SplitAt<'<', SplitAt<'>', S>>>
