@@ -6,8 +6,8 @@ const Named = Symbol()
 const TNamed = Symbol()
 
 export interface HasName<TagName extends string, S extends string> {
-  [TNamed]: TagName
-  [Named]: S
+  [TNamed]?: TagName
+  [Named]?: S
 }
 
 const SignatureError = Symbol()
