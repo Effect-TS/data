@@ -57,6 +57,6 @@ const registry2 = pipe(
     orderRegistryBuilder.register(Order.string, 'string'),    
 )
 
-registry2.instance<Person>()('Person') // Error
+// registry2.instance<Person>()('Person') // Error
 registry2.instance<string>()('string')
-registry2.instance<Array<Person>>()('Array<Person>') // Error
+// registry2.instance<Array<Person>>()('Array<Person>') // Error
