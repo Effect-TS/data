@@ -9,6 +9,7 @@
 import * as Either from "@effect/data/Either"
 import * as Base64 from "@effect/data/internal/Encoding/Base64"
 import * as Base64Url from "@effect/data/internal/Encoding/Base64Url"
+import * as Hex from "@effect/data/internal/Encoding/Hex"
 
 /**
  * Encodes a Uint8Array into a base64 (RFC4648) string.
@@ -87,3 +88,42 @@ export const decodeBase64Url = (str: string): Either.Either<Base64UrlDecodeError
  * @since 1.0.0
  */
 export const unsafeDecodeBase64Url = Base64Url.decode
+
+/**
+ * Encodes a Uint8Array into a hex string.
+ *
+ * @category encoding
+ * @since 1.0.0
+ */
+export const encodeHex = Hex.encode
+
+/**
+ * @since 1.0.0
+ */
+export class HexDecodeError {
+  /** @since 1.0.0 */
+  readonly _tag = "HexDecodeError"
+}
+
+/**
+ * Decodes a hex encoded string.
+ *
+ * @category encoding
+ * @since 1.0.0
+ */
+export const decodeHex = (str: string): Either.Either<HexDecodeError, Uint8Array> => {
+  try {
+    return Either.right(Hex.decode(str))
+  } catch {
+    return Either.left(new HexDecodeError())
+  }
+}
+
+/**
+ * Unsafely decodes a hex encoded string. Throws a type error if the
+ * given value isn't a valid hex string.
+ *
+ * @category encoding
+ * @since 1.0.0
+ */
+export const unsafeDecodeHex = Hex.decode
