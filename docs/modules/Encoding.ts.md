@@ -20,15 +20,20 @@ Added in v1.0.0
 - [encoding](#encoding)
   - [decodeBase64](#decodebase64)
   - [decodeBase64Url](#decodebase64url)
+  - [decodeHex](#decodehex)
   - [encodeBase64](#encodebase64)
   - [encodeBase64Url](#encodebase64url)
+  - [encodeHex](#encodehex)
   - [unsafeDecodeBase64](#unsafedecodebase64)
   - [unsafeDecodeBase64Url](#unsafedecodebase64url)
+  - [unsafeDecodeHex](#unsafedecodehex)
 - [utils](#utils)
   - [Base64DecodeError (class)](#base64decodeerror-class)
     - [\_tag (property)](#_tag-property)
   - [Base64UrlDecodeError (class)](#base64urldecodeerror-class)
     - [\_tag (property)](#_tag-property-1)
+  - [HexDecodeError (class)](#hexdecodeerror-class)
+    - [\_tag (property)](#_tag-property-2)
 
 ---
 
@@ -58,6 +63,18 @@ export declare const decodeBase64Url: (str: string) => Either.Either<Base64UrlDe
 
 Added in v1.0.0
 
+## decodeHex
+
+Decodes a hex encoded string.
+
+**Signature**
+
+```ts
+export declare const decodeHex: (str: string) => Either.Either<HexDecodeError, Uint8Array>
+```
+
+Added in v1.0.0
+
 ## encodeBase64
 
 Encodes a Uint8Array into a base64 (RFC4648) string.
@@ -78,6 +95,18 @@ Encodes a Uint8Array into a base64 (URL) string.
 
 ```ts
 export declare const encodeBase64Url: (data: Uint8Array) => string
+```
+
+Added in v1.0.0
+
+## encodeHex
+
+Encodes a Uint8Array into a hex string.
+
+**Signature**
+
+```ts
+export declare const encodeHex: typeof Hex.encode
 ```
 
 Added in v1.0.0
@@ -104,6 +133,19 @@ given value isn't a valid base64 (URL) string.
 
 ```ts
 export declare const unsafeDecodeBase64Url: (str: string) => Uint8Array
+```
+
+Added in v1.0.0
+
+## unsafeDecodeHex
+
+Unsafely decodes a hex encoded string. Throws a type error if the
+given value isn't a valid hex string.
+
+**Signature**
+
+```ts
+export declare const unsafeDecodeHex: typeof Hex.decode
 ```
 
 Added in v1.0.0
@@ -146,6 +188,26 @@ Added in v1.0.0
 
 ```ts
 readonly _tag: "Base64UrlDecodeError"
+```
+
+Added in v1.0.0
+
+## HexDecodeError (class)
+
+**Signature**
+
+```ts
+export declare class HexDecodeError
+```
+
+Added in v1.0.0
+
+### \_tag (property)
+
+**Signature**
+
+```ts
+readonly _tag: "HexDecodeError"
 ```
 
 Added in v1.0.0
