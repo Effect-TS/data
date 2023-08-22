@@ -1,6 +1,6 @@
 ---
 title: Brand.ts
-nav_order: 4
+nav_order: 3
 parent: Modules
 ---
 

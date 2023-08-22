@@ -17,10 +17,10 @@ import * as Base64 from "@effect/data/internal/Encoding/Base64"
 export const encodeBase64 = Base64.encode
 
 /**
- * @category encoding
  * @since 1.0.0
  */
 export class Base64DecodeError {
+  /** @since 1.0.0 */
   readonly _tag = "Base64DecodeError"
 }
 
