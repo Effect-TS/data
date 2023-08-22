@@ -10,6 +10,7 @@ This module provides encoding & decoding functionality for:
 
 - base64 (RFC4648)
 - base64 (URL)
+- hex
 
 Added in v1.0.0
 

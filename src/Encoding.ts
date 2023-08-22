@@ -3,6 +3,7 @@
  *
  * - base64 (RFC4648)
  * - base64 (URL)
+ * - hex
  *
  * @since 1.0.0
  */
