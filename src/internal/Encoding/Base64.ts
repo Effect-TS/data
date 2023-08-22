@@ -1,16 +1,4 @@
-/**
- * This module provides encoding & decoding functionality for the base64 (RFC4648) encoding scheme.
- *
- * @since 1.0.0
- */
-import * as Either from "@effect/data/Either"
-
-/**
- * Encodes a Uint8Array into a base64 (RFC4648) string.
- *
- * @category encoding
- * @since 1.0.0
- */
+/** @internal */
 export const encode = (bytes: Uint8Array) => {
   const length = bytes.length
 
@@ -42,28 +30,8 @@ export const encode = (bytes: Uint8Array) => {
   return result
 }
 
-/**
- * Decodes a base64 (RFC4648) encoded string.
- *
- * @category encoding
- * @since 1.0.0
- */
-export const decode = (str: string): Either.Either<Error, Uint8Array> => {
-  try {
-    return Either.right(unsafeDecode(str))
-  } catch (e) {
-    return Either.left(e as Error)
-  }
-}
-
-/**
- * Unsafely decodes a base64 (RFC4648) encoded string unsafely. Throws an error if the
- * given value isn't a valid base64 (RFC4648) string.
- *
- * @category encoding
- * @since 1.0.0
- */
-export const unsafeDecode = (str: string) => {
+/** @internal */
+export const decode = (str: string) => {
   const length = str.length
   if (length % 4 !== 0) {
     throw new Error("Invalid base64 string")
