@@ -34,12 +34,12 @@ export const encode = (bytes: Uint8Array) => {
 export const decode = (str: string) => {
   const length = str.length
   if (length % 4 !== 0) {
-    throw new Error("Invalid base64 string")
+    throw new TypeError("Invalid base64 string")
   }
 
   const index = str.indexOf("=")
   if (index !== -1 && ((index < length - 2) || (index === length - 2 && str[length - 1] !== "="))) {
-    throw new Error("Invalid base64 string")
+    throw new TypeError("Invalid base64 string")
   }
 
   const missingOctets = str.endsWith("==") ? 2 : str.endsWith("=") ? 1 : 0
@@ -61,12 +61,12 @@ export const decode = (str: string) => {
 /** @internal */
 function getBase64Code(charCode: number) {
   if (charCode >= base64codes.length) {
-    throw new Error("Invalid base64 string")
+    throw new TypeError("Invalid base64 string")
   }
 
   const code = base64codes[charCode]
   if (code === 255) {
-    throw new Error("Invalid base64 string")
+    throw new TypeError("Invalid base64 string")
   }
 
   return code
