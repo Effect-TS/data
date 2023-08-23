@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.17.6
+
+### Patch Changes
+
+- [#365](https://github.com/Effect-TS/data/pull/365) [`ea7c868`](https://github.com/Effect-TS/data/commit/ea7c86872a9d8b3aa430969762ddd99ef136f2e9) Thanks [@tim-smart](https://github.com/tim-smart)! - add taggedEnum constructor to Data
+
 ## 0.17.5
 
 ### Patch Changes
