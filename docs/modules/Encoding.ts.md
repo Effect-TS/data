@@ -18,17 +18,18 @@ Added in v1.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [encoding](#encoding)
+- [decoding](#decoding)
   - [decodeBase64](#decodebase64)
   - [decodeBase64Url](#decodebase64url)
   - [decodeHex](#decodehex)
+- [encoding](#encoding)
   - [encodeBase64](#encodebase64)
   - [encodeBase64Url](#encodebase64url)
   - [encodeHex](#encodehex)
 
 ---
 
-# encoding
+# decoding
 
 ## decodeBase64
 
@@ -65,6 +66,8 @@ export declare const decodeHex: (str: string) => Either.Either<HexDecodeError, U
 ```
 
 Added in v1.0.0
+
+# encoding
 
 ## encodeBase64
 

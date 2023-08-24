@@ -35,18 +35,23 @@ export const encode = (bytes: Uint8Array) => {
 /** @internal */
 export class Base64DecodeError {
   readonly _tag = "Base64DecodeError"
+  constructor(readonly input: string, readonly message: string) {}
 }
 
 /** @internal */
 export const decode = (str: string): Either.Either<Base64DecodeError, Uint8Array> => {
   const length = str.length
   if (length % 4 !== 0) {
-    return Either.left(new Base64DecodeError())
+    return Either.left(
+      new Base64DecodeError(str, `Length must be a multiple of 4, but is ${length}`)
+    )
   }
 
   const index = str.indexOf("=")
   if (index !== -1 && ((index < length - 2) || (index === length - 2 && str[length - 1] !== "="))) {
-    return Either.left(new Base64DecodeError())
+    return Either.left(
+      new Base64DecodeError(str, "Found a '=' character, but it is not at the end")
+    )
   }
 
   try {
@@ -64,20 +69,22 @@ export const decode = (str: string): Either.Either<Base64DecodeError, Uint8Array
     }
 
     return Either.right(result.subarray(0, result.length - missingOctets))
-  } catch {
-    return Either.left(new Base64DecodeError())
+  } catch (e) {
+    return Either.left(
+      new Base64DecodeError(str, e instanceof Error ? e.message : "Invalid input")
+    )
   }
 }
 
 /** @internal */
 function getBase64Code(charCode: number) {
   if (charCode >= base64codes.length) {
-    throw new TypeError("Invalid base64 char")
+    throw new TypeError(`Invalid character ${String.fromCharCode(charCode)}`)
   }
 
   const code = base64codes[charCode]
   if (code === 255) {
-    throw new TypeError("Invalid base64 char")
+    throw new TypeError(`Invalid character ${String.fromCharCode(charCode)}`)
   }
 
   return code

@@ -13,13 +13,14 @@ export const encode = (bytes: Uint8Array) => {
 /** @internal */
 export class HexDecodeError {
   readonly _tag = "HexDecodeError"
+  constructor(readonly input: string, readonly message: string) {}
 }
 
 /** @internal */
 export const decode = (str: string): Either.Either<HexDecodeError, Uint8Array> => {
   const bytes = new TextEncoder().encode(str)
   if (bytes.length % 2 !== 0) {
-    return Either.left(new HexDecodeError())
+    return Either.left(new HexDecodeError(str, `Length must be a multiple of 2, but is ${bytes.length}`))
   }
 
   try {
@@ -32,8 +33,8 @@ export const decode = (str: string): Either.Either<HexDecodeError, Uint8Array> =
     }
 
     return Either.right(result)
-  } catch {
-    return Either.left(new HexDecodeError())
+  } catch (e) {
+    return Either.left(new HexDecodeError(str, e instanceof Error ? e.message : "Invalid input"))
   }
 }
 
@@ -314,5 +315,5 @@ const fromHexChar = (byte: number) => {
     return byte - 65 + 10
   }
 
-  throw new TypeError("Invalid hex char")
+  throw new TypeError("Invalid input")
 }

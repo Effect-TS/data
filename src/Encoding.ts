@@ -26,7 +26,7 @@ export const encodeBase64: (bytes: Uint8Array) => string = Base64.encode
 /**
  * Decodes a base64 (RFC4648) encoded string.
  *
- * @category encoding
+ * @category decoding
  * @since 1.0.0
  */
 export const decodeBase64 = (str: string): Either.Either<Base64DecodeError, Uint8Array> => Base64.decode(str)
@@ -42,7 +42,7 @@ export const encodeBase64Url: (bytes: Uint8Array) => string = Base64Url.encode
 /**
  * Decodes a base64 (URL) encoded string.
  *
- * @category encoding
+ * @category decoding
  * @since 1.0.0
  */
 export const decodeBase64Url = (str: string): Either.Either<Base64UrlDecodeError, Uint8Array> => Base64Url.decode(str)
@@ -58,7 +58,7 @@ export const encodeHex: (bytes: Uint8Array) => string = Hex.encode
 /**
  * Decodes a hex encoded string.
  *
- * @category encoding
+ * @category decoding
  * @since 1.0.0
  */
 export const decodeHex = (str: string): Either.Either<HexDecodeError, Uint8Array> => Hex.decode(str)
