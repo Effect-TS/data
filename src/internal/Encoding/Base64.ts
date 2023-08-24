@@ -1,3 +1,5 @@
+import * as Either from "@effect/data/Either"
+
 /** @internal */
 export const encode = (bytes: Uint8Array) => {
   const length = bytes.length
@@ -31,42 +33,51 @@ export const encode = (bytes: Uint8Array) => {
 }
 
 /** @internal */
-export const decode = (str: string) => {
+export class Base64DecodeError {
+  readonly _tag = "Base64DecodeError"
+}
+
+/** @internal */
+export const decode = (str: string): Either.Either<Base64DecodeError, Uint8Array> => {
   const length = str.length
   if (length % 4 !== 0) {
-    throw new TypeError("Invalid base64 string")
+    return Either.left(new Base64DecodeError())
   }
 
   const index = str.indexOf("=")
   if (index !== -1 && ((index < length - 2) || (index === length - 2 && str[length - 1] !== "="))) {
-    throw new TypeError("Invalid base64 string")
+    return Either.left(new Base64DecodeError())
   }
 
-  const missingOctets = str.endsWith("==") ? 2 : str.endsWith("=") ? 1 : 0
-  const result = new Uint8Array(3 * (length / 4))
-  for (let i = 0, j = 0; i < length; i += 4, j += 3) {
-    const buffer = getBase64Code(str.charCodeAt(i)) << 18 |
-      getBase64Code(str.charCodeAt(i + 1)) << 12 |
-      getBase64Code(str.charCodeAt(i + 2)) << 6 |
-      getBase64Code(str.charCodeAt(i + 3))
+  try {
+    const missingOctets = str.endsWith("==") ? 2 : str.endsWith("=") ? 1 : 0
+    const result = new Uint8Array(3 * (length / 4))
+    for (let i = 0, j = 0; i < length; i += 4, j += 3) {
+      const buffer = getBase64Code(str.charCodeAt(i)) << 18 |
+        getBase64Code(str.charCodeAt(i + 1)) << 12 |
+        getBase64Code(str.charCodeAt(i + 2)) << 6 |
+        getBase64Code(str.charCodeAt(i + 3))
 
-    result[j] = buffer >> 16
-    result[j + 1] = (buffer >> 8) & 0xff
-    result[j + 2] = buffer & 0xff
+      result[j] = buffer >> 16
+      result[j + 1] = (buffer >> 8) & 0xff
+      result[j + 2] = buffer & 0xff
+    }
+
+    return Either.right(result.subarray(0, result.length - missingOctets))
+  } catch {
+    return Either.left(new Base64DecodeError())
   }
-
-  return result.subarray(0, result.length - missingOctets)
 }
 
 /** @internal */
 function getBase64Code(charCode: number) {
   if (charCode >= base64codes.length) {
-    throw new TypeError("Invalid base64 string")
+    throw new TypeError("Invalid base64 char")
   }
 
   const code = base64codes[charCode]
   if (code === 255) {
-    throw new TypeError("Invalid base64 string")
+    throw new TypeError("Invalid base64 char")
   }
 
   return code

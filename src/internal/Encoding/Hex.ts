@@ -1,3 +1,5 @@
+import * as Either from "@effect/data/Either"
+
 /** @internal */
 export const encode = (bytes: Uint8Array) => {
   const length = bytes.length * 2
@@ -12,21 +14,30 @@ export const encode = (bytes: Uint8Array) => {
 }
 
 /** @internal */
-export const decode = (str: string) => {
+export class HexDecodeError {
+  readonly _tag = "HexDecodeError"
+}
+
+/** @internal */
+export const decode = (str: string): Either.Either<HexDecodeError, Uint8Array> => {
   const bytes = new TextEncoder().encode(str)
   if (bytes.length % 2 !== 0) {
-    throw new TypeError("Invalid hex string")
+    return Either.left(new HexDecodeError())
   }
 
-  const length = bytes.length / 2
-  const result = new Uint8Array(length)
-  for (let i = 0; i < length; i++) {
-    const a = fromHexChar(bytes[i * 2])
-    const b = fromHexChar(bytes[i * 2 + 1])
-    result[i] = (a << 4) | b
-  }
+  try {
+    const length = bytes.length / 2
+    const result = new Uint8Array(length)
+    for (let i = 0; i < length; i++) {
+      const a = fromHexChar(bytes[i * 2])
+      const b = fromHexChar(bytes[i * 2 + 1])
+      result[i] = (a << 4) | b
+    }
 
-  return result
+    return Either.right(result)
+  } catch {
+    return Either.left(new HexDecodeError())
+  }
 }
 
 /** @internal */
@@ -49,5 +60,5 @@ const fromHexChar = (byte: number) => {
     return byte - 65 + 10
   }
 
-  throw new TypeError("Invalid hex string")
+  throw new TypeError("Invalid hex char")
 }
