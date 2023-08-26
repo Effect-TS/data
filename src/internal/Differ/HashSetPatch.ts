@@ -1,5 +1,5 @@
 import * as Chunk from "@effect/data/Chunk"
-import type * as HSP from "@effect/data/Differ/HashSetPatch"
+import type * as HSP from "@effect/data/DifferHashSetPatch"
 import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
@@ -7,7 +7,7 @@ import * as HashSet from "@effect/data/HashSet"
 
 /** @internal */
 export const HashSetPatchTypeId: HSP.TypeId = Symbol.for(
-  "@effect/data/Differ/HashSetPatch"
+  "@effect/data/DifferHashSetPatch"
 ) as HSP.TypeId
 
 function variance<A, B>(a: A): B {

@@ -1,9 +1,9 @@
-import * as G from "@effect/data/Global"
+import * as G from "@effect/data/GlobalValue"
 
 const a = G.globalValue("id", () => ({}))
 const b = G.globalValue("id", () => ({}))
 
-describe("Global", () => {
+describe("GlobalValue", () => {
   it("should give the same value when invoked with the same id", () => {
     assert.strictEqual(a, b)
   })

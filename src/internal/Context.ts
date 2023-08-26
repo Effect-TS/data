@@ -1,7 +1,7 @@
 import type * as C from "@effect/data/Context"
 import * as Equal from "@effect/data/Equal"
 import { dual } from "@effect/data/Function"
-import * as G from "@effect/data/Global"
+import * as G from "@effect/data/GlobalValue"
 import * as Hash from "@effect/data/Hash"
 import { EffectTypeId, effectVariance } from "@effect/data/internal/Effect"
 import type * as O from "@effect/data/Option"
