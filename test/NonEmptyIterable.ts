@@ -1,7 +1,7 @@
 import * as Chunk from "@effect/data/Chunk"
-import * as NonEmpty from "@effect/data/NonEmpty"
+import * as NonEmpty from "@effect/data/NonEmptyIterable"
 
-describe.concurrent("NonEmpty", () => {
+describe.concurrent("NonEmptyIterable", () => {
   it("should get head and rest", () => {
     const [head, rest] = NonEmpty.unprepend(Chunk.make(0, 1, 2))
     const restArray: Array<number> = []

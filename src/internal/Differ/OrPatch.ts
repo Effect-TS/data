@@ -1,6 +1,6 @@
 import * as Chunk from "@effect/data/Chunk"
 import type { Differ } from "@effect/data/Differ"
-import type * as OP from "@effect/data/Differ/OrPatch"
+import type * as OP from "@effect/data/DifferOrPatch"
 import type { Either } from "@effect/data/Either"
 import * as E from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
@@ -8,7 +8,7 @@ import * as Dual from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 
 /** @internal */
-export const OrPatchTypeId: OP.TypeId = Symbol.for("@effect/data/Differ/OrPatch") as OP.TypeId
+export const OrPatchTypeId: OP.TypeId = Symbol.for("@effect/data/DifferOrPatch") as OP.TypeId
 
 function variance<A, B>(a: A): B {
   return a as unknown as B

@@ -1,7 +1,7 @@
 /**
  * @since 1.0.0
  */
-const globalStoreId = Symbol.for("@effect/data/Global/globalStoreId")
+const globalStoreId = Symbol.for("@effect/data/GlobalValue/globalStoreId")
 
 if (!(globalStoreId in globalThis)) {
   ;(globalThis as any)[globalStoreId] = new Map()

@@ -1,6 +1,6 @@
 import * as Chunk from "@effect/data/Chunk"
 import type { Context, Tag } from "@effect/data/Context"
-import type * as CP from "@effect/data/Differ/ContextPatch"
+import type * as CP from "@effect/data/DifferContextPatch"
 import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
@@ -8,7 +8,7 @@ import { ContextImpl } from "@effect/data/internal/Context"
 
 /** @internal */
 export const ContextPatchTypeId: CP.TypeId = Symbol.for(
-  "@effect/data/Differ/ContextPatch"
+  "@effect/data/DifferContextPatch"
 ) as CP.TypeId
 
 function variance<A, B>(a: A): B {

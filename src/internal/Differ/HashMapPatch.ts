@@ -1,6 +1,6 @@
 import * as Chunk from "@effect/data/Chunk"
 import type * as Differ from "@effect/data/Differ"
-import type * as HMP from "@effect/data/Differ/HashMapPatch"
+import type * as HMP from "@effect/data/DifferHashMapPatch"
 import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
@@ -8,7 +8,7 @@ import * as HashMap from "@effect/data/HashMap"
 
 /** @internal */
 export const HashMapPatchTypeId: HMP.TypeId = Symbol.for(
-  "@effect/data/Differ/HashMapPatch"
+  "@effect/data/DifferHashMapPatch"
 ) as HMP.TypeId
 
 function variance<A, B>(a: A): B {

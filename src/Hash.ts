@@ -3,7 +3,7 @@
  */
 import { PCGRandom } from "@effect/data/DeterministicRandom"
 import { pipe } from "@effect/data/Function"
-import { globalValue } from "@effect/data/Global"
+import { globalValue } from "@effect/data/GlobalValue"
 
 /** @internal */
 const randomHashCache = globalValue(
