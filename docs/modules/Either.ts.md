@@ -39,8 +39,9 @@ Added in v1.0.0
   - [isLeft](#isleft)
   - [isRight](#isright)
 - [mapping](#mapping)
+  - [map](#map)
   - [mapBoth](#mapboth)
-  - [mapRight](#mapright)
+  - [mapLeft](#mapleft)
 - [models](#models)
   - [Either (type alias)](#either-type-alias)
   - [EitherUnify (interface)](#eitherunify-interface)
@@ -55,7 +56,6 @@ Added in v1.0.0
 - [type lambdas](#type-lambdas)
   - [EitherTypeLambda (interface)](#eithertypelambda-interface)
 - [utils](#utils)
-  - [mapLeft](#mapleft)
   - [reverse](#reverse)
 
 ---
@@ -487,6 +487,21 @@ Added in v1.0.0
 
 # mapping
 
+## map
+
+Maps the `Right` side of an `Either` value to a new `Either` value.
+
+**Signature**
+
+```ts
+export declare const map: {
+  <A, B>(f: (a: A) => B): <E>(self: Either<E, A>) => Either<E, B>
+  <E, A, B>(self: Either<E, A>, f: (a: A) => B): Either<E, B>
+}
+```
+
+Added in v1.0.0
+
 ## mapBoth
 
 **Signature**
@@ -505,16 +520,16 @@ export declare const mapBoth: {
 
 Added in v1.0.0
 
-## mapRight
+## mapLeft
 
-Maps the `Right` side of an `Either` value to a new `Either` value.
+Maps the `Left` side of an `Either` value to a new `Either` value.
 
 **Signature**
 
 ```ts
-export declare const mapRight: {
-  <A, B>(f: (a: A) => B): <E>(self: Either<E, A>) => Either<E, B>
-  <E, A, B>(self: Either<E, A>, f: (a: A) => B): Either<E, B>
+export declare const mapLeft: {
+  <E, G>(f: (e: E) => G): <A>(self: Either<E, A>) => Either<G, A>
+  <E, A, G>(self: Either<E, A>, f: (e: E) => G): Either<G, A>
 }
 ```
 
@@ -670,21 +685,6 @@ export interface EitherTypeLambda extends TypeLambda {
 Added in v1.0.0
 
 # utils
-
-## mapLeft
-
-Maps the `Left` side of an `Either` value to a new `Either` value.
-
-**Signature**
-
-```ts
-export declare const mapLeft: {
-  <E, G>(f: (e: E) => G): <A>(self: Either<E, A>) => Either<G, A>
-  <E, A, G>(self: Either<E, A>, f: (e: E) => G): Either<G, A>
-}
-```
-
-Added in v1.0.0
 
 ## reverse
 
