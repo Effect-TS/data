@@ -3,6 +3,7 @@
  */
 import * as Equal from "@effect/data/Equal"
 import * as Hash from "@effect/data/Hash"
+import type * as Types from "@effect/data/Types"
 
 /**
  * @category models
@@ -128,15 +129,6 @@ export const tagged = <A extends Case & { _tag: string }>(
 (args) => args === undefined ? struct({ _tag: tag }) : struct({ ...args, _tag: tag })
 
 /**
- * @since 1.0.0
- * @category models
- */
-export type IsEqualTo<X, Y> = (<T>() => T extends X ? 1 : 2) extends <
-  T
->() => T extends Y ? 1 : 2 ? true
-  : false
-
-/**
  * Provides a Tagged constructor for a Case Class.
  *
  * @since 1.0.0
@@ -145,7 +137,7 @@ export type IsEqualTo<X, Y> = (<T>() => T extends X ? 1 : 2) extends <
 export const TaggedClass = <Key extends string>(
   tag: Key
 ): new<A extends Record<string, any>>(
-  args: IsEqualTo<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
+  args: Types.Equals<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
 ) => Data<A & { _tag: Key }> => {
   class Base extends (Class as any) {
     readonly _tag = tag
@@ -160,7 +152,7 @@ export const TaggedClass = <Key extends string>(
  * @category constructors
  */
 export const Class: new<A extends Record<string, any>>(
-  args: IsEqualTo<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
+  args: Types.Equals<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
 ) => Data<A> = (() => {
   class Base<A> {
     constructor(args: Omit<A, keyof Equal.Equal>) {
@@ -187,8 +179,6 @@ export const Class: new<A extends Record<string, any>>(
   }
   return Base as any
 })()
-
-type Simplify<A> = { [K in keyof A]: A[K] } & {}
 
 /**
  * Create a tagged enum data type, which is a union of `Data` structs.
@@ -220,7 +210,7 @@ type Simplify<A> = { [K in keyof A]: A[K] } & {}
  */
 export type TaggedEnum<A extends Record<string, Record<string, any>>> = {
   readonly [Tag in keyof A]: Data<
-    Simplify<Readonly<A[Tag]> & { readonly _tag: Tag }>
+    Readonly<Types.Simplify<A[Tag] & { _tag: Tag }>>
   >
 }[keyof A]
 
@@ -269,7 +259,7 @@ export namespace TaggedEnum {
     Extract<A, { readonly _tag: K }>,
     "_tag" | keyof Case
   > extends infer T ? {} extends T ? void
-  : T
+    : T
     : never
 
   /**
