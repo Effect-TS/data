@@ -19,56 +19,52 @@ export type TypeId = typeof TypeId
  * @category models
  */
 export interface MutableHashSet<V> extends Iterable<V>, Pipeable {
-  readonly _id: TypeId
-  readonly _V: (_: V) => V
+  readonly [TypeId]: TypeId
 
   /** @internal */
   readonly keyMap: MutableHashMap.MutableHashMap<V, boolean>
 }
 
-/** @internal */
-class MutableHashSetImpl<V> implements MutableHashSet<V> {
-  readonly _id: TypeId = TypeId
-  readonly _V: (_: V) => V = (_) => _
-
-  constructor(readonly keyMap: MutableHashMap.MutableHashMap<V, boolean>) {}
-
-  [Symbol.iterator](): Iterator<V> {
+const mutableHashSetProto = {
+  [TypeId]: TypeId,
+  [Symbol.iterator](this: MutableHashSet<unknown>): Iterator<unknown> {
     return Array.from(this.keyMap).map(([_]) => _)[Symbol.iterator]()
-  }
-
+  },
   toString() {
     return `MutableHashSet(${Array.from(this).map(String).join(", ")})`
-  }
-
+  },
   toJSON() {
     return {
       _tag: "MutableHashSet",
       values: Array.from(this)
     }
-  }
-
+  },
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
-  }
-
+  },
   pipe() {
     return pipeArguments(this, arguments)
   }
+} as const
+
+const fromHashMap = <V>(keyMap: MutableHashMap.MutableHashMap<V, boolean>): MutableHashSet<V> => {
+  const set = Object.create(mutableHashSetProto)
+  set.keyMap = keyMap
+  return set
 }
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const empty = <K = never>(): MutableHashSet<K> => new MutableHashSetImpl(MutableHashMap.empty())
+export const empty = <K = never>(): MutableHashSet<K> => fromHashMap(MutableHashMap.empty())
 
 /**
  * @since 1.0.0
  * @category constructors
  */
 export const fromIterable = <K = never>(keys: Iterable<K>): MutableHashSet<K> =>
-  new MutableHashSetImpl(MutableHashMap.fromIterable(Array.from(keys).map((k) => [k, true])))
+  fromHashMap(MutableHashMap.fromIterable(Array.from(keys).map((k) => [k, true])))
 
 /**
  * @since 1.0.0

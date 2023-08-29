@@ -119,8 +119,7 @@ Added in v1.0.0
 
 ```ts
 export interface MutableHashSet<V> extends Iterable<V>, Pipeable {
-  readonly _id: TypeId
-  readonly _V: (_: V) => V
+  readonly [TypeId]: TypeId
 
   /** @internal */
   readonly keyMap: MutableHashMap.MutableHashMap<V, boolean>
