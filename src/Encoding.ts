@@ -8,12 +8,10 @@
  * @since 1.0.0
  */
 import type * as Either from "@effect/data/Either"
+import * as common from "@effect/data/internal/Encoding/Common"
 import * as Base64 from "@effect/data/internal/Encoding/Base64"
-import type { Base64DecodeError } from "@effect/data/internal/Encoding/Base64"
 import * as Base64Url from "@effect/data/internal/Encoding/Base64Url"
-import type { Base64UrlDecodeError } from "@effect/data/internal/Encoding/Base64Url"
 import * as Hex from "@effect/data/internal/Encoding/Hex"
-import type { HexDecodeError } from "@effect/data/internal/Encoding/Hex"
 
 /**
  * Encodes a Uint8Array into a base64 (RFC4648) string.
@@ -29,7 +27,7 @@ export const encodeBase64: (bytes: Uint8Array) => string = Base64.encode
  * @category decoding
  * @since 1.0.0
  */
-export const decodeBase64 = (str: string): Either.Either<Base64DecodeError, Uint8Array> => Base64.decode(str)
+export const decodeBase64 = (str: string): Either.Either<DecodeException, Uint8Array> => Base64.decode(str)
 
 /**
  * Encodes a Uint8Array into a base64 (URL) string.
@@ -45,7 +43,7 @@ export const encodeBase64Url: (bytes: Uint8Array) => string = Base64Url.encode
  * @category decoding
  * @since 1.0.0
  */
-export const decodeBase64Url = (str: string): Either.Either<Base64UrlDecodeError, Uint8Array> => Base64Url.decode(str)
+export const decodeBase64Url = (str: string): Either.Either<DecodeException, Uint8Array> => Base64Url.decode(str)
 
 /**
  * Encodes a Uint8Array into a hex string.
@@ -61,4 +59,45 @@ export const encodeHex: (bytes: Uint8Array) => string = Hex.encode
  * @category decoding
  * @since 1.0.0
  */
-export const decodeHex = (str: string): Either.Either<HexDecodeError, Uint8Array> => Hex.decode(str)
+export const decodeHex = (str: string): Either.Either<DecodeException, Uint8Array> => Hex.decode(str)
+
+/**
+ * @since 1.0.0
+ * @category symbols
+ */
+export const DecodeExceptionTypeId: unique symbol = common.DecodeExceptionTypeId
+
+/**
+ * @since 1.0.0
+ * @category symbols
+ */
+export type DecodeExceptionTypeId = typeof DecodeExceptionTypeId
+
+/**
+ * Represents a checked exception which occurs when decoding fails.
+ *
+ * @since 1.0.0
+ * @category models
+ */
+export interface DecodeException {
+  readonly _tag: "DecodeException"
+  readonly [DecodeExceptionTypeId]: DecodeExceptionTypeId
+  readonly input: string
+  readonly message?: string
+}
+
+/**
+ * Creates a checked exception which occurs when decoding fails.
+ *
+ * @since 1.0.0
+ * @category errors
+ */
+export const DecodeException: (input: string, message?: string) => DecodeException = common.DecodeException
+
+/**
+  * Returns `true` if the specified value is an `DecodeException`, `false` otherwise.
+  *
+  * @since 1.0.0
+  * @category refinements
+  */
+export const isDecodeException: (u: unknown) => u is DecodeException = common.isDecodeException

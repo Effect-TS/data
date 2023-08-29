@@ -1,4 +1,6 @@
 import * as Either from "@effect/data/Either"
+import type * as Encoding from "@effect/data/Encoding"
+import { DecodeException } from "@effect/data/internal/Encoding/Common"
 
 /** @internal */
 export const encode = (bytes: Uint8Array) => {
@@ -33,24 +35,18 @@ export const encode = (bytes: Uint8Array) => {
 }
 
 /** @internal */
-export class Base64DecodeError {
-  readonly _tag = "Base64DecodeError"
-  constructor(readonly input: string, readonly message: string) {}
-}
-
-/** @internal */
-export const decode = (str: string): Either.Either<Base64DecodeError, Uint8Array> => {
+export const decode = (str: string): Either.Either<Encoding.DecodeException, Uint8Array> => {
   const length = str.length
   if (length % 4 !== 0) {
     return Either.left(
-      new Base64DecodeError(str, `Length must be a multiple of 4, but is ${length}`)
+      DecodeException(str, `Length must be a multiple of 4, but is ${length}`)
     )
   }
 
   const index = str.indexOf("=")
   if (index !== -1 && ((index < length - 2) || (index === length - 2 && str[length - 1] !== "="))) {
     return Either.left(
-      new Base64DecodeError(str, "Found a '=' character, but it is not at the end")
+      DecodeException(str, "Found a '=' character, but it is not at the end")
     )
   }
 
@@ -71,7 +67,7 @@ export const decode = (str: string): Either.Either<Base64DecodeError, Uint8Array
     return Either.right(result.subarray(0, result.length - missingOctets))
   } catch (e) {
     return Either.left(
-      new Base64DecodeError(str, e instanceof Error ? e.message : "Invalid input")
+      DecodeException(str, e instanceof Error ? e.message : "Invalid input")
     )
   }
 }

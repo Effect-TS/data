@@ -1,4 +1,6 @@
 import * as Either from "@effect/data/Either"
+import type * as Encoding from "@effect/data/Encoding"
+import { DecodeException } from "@effect/data/internal/Encoding/Common"
 
 /** @internal */
 export const encode = (bytes: Uint8Array) => {
@@ -11,16 +13,10 @@ export const encode = (bytes: Uint8Array) => {
 }
 
 /** @internal */
-export class HexDecodeError {
-  readonly _tag = "HexDecodeError"
-  constructor(readonly input: string, readonly message: string) {}
-}
-
-/** @internal */
-export const decode = (str: string): Either.Either<HexDecodeError, Uint8Array> => {
+export const decode = (str: string): Either.Either<Encoding.DecodeException, Uint8Array> => {
   const bytes = new TextEncoder().encode(str)
   if (bytes.length % 2 !== 0) {
-    return Either.left(new HexDecodeError(str, `Length must be a multiple of 2, but is ${bytes.length}`))
+    return Either.left(DecodeException(str, `Length must be a multiple of 2, but is ${bytes.length}`))
   }
 
   try {
@@ -34,7 +30,7 @@ export const decode = (str: string): Either.Either<HexDecodeError, Uint8Array> =
 
     return Either.right(result)
   } catch (e) {
-    return Either.left(new HexDecodeError(str, e instanceof Error ? e.message : "Invalid input"))
+    return Either.left(DecodeException(str, e instanceof Error ? e.message : "Invalid input"))
   }
 }
 
