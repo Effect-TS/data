@@ -47,7 +47,9 @@ describe.concurrent("Base64", () => {
   })
 
   it.each(invalid)(`should refuse to decode %j`, (b64: string) => {
-    assert(Either.isLeft(Encoding.decodeBase64(b64)))
+    const result = Encoding.decodeBase64(b64)
+    assert(Either.isLeft(result))
+    assert(Encoding.isDecodeException(result.left))
   })
 })
 
@@ -84,7 +86,9 @@ describe.concurrent("Base64Url", () => {
   })
 
   it.each(invalid)(`should refuse to decode %j`, (b64url: string) => {
-    assert(Either.isLeft(Encoding.decodeBase64Url(b64url)))
+    const result = Encoding.decodeBase64Url(b64url)
+    assert(Either.isLeft(result))
+    assert(Encoding.isDecodeException(result.left))
   })
 })
 
@@ -121,6 +125,8 @@ describe.concurrent("Hex", () => {
   })
 
   it.each(invalid)(`should refuse to decode %j`, (hex: string) => {
-    assert(Either.isLeft(Encoding.decodeHex(hex)))
+    const result = Encoding.decodeHex(hex)
+    assert(Either.isLeft(result))
+    assert(Encoding.isDecodeException(result.left))
   })
 })
