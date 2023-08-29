@@ -9,7 +9,7 @@ import * as Option from "@effect/data/Option"
 import * as order from "@effect/data/Order"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
-import { isBigint, isNumber, isObject } from "@effect/data/Predicate"
+import { isBigint, isNumber } from "@effect/data/Predicate"
 
 const TypeId: unique symbol = Symbol.for("@effect/data/Duration")
 
@@ -27,7 +27,7 @@ export type TypeId = typeof TypeId
  * @category models
  */
 export interface Duration extends Equal.Equal, Pipeable {
-  readonly _id: TypeId
+  readonly [TypeId]: TypeId
   readonly value: DurationValue
 }
 /**
@@ -107,33 +107,15 @@ export const decode = (input: DurationInput): Duration => {
 const zeroValue: DurationValue = { _tag: "Millis", millis: 0 }
 const infinityValue: DurationValue = { _tag: "Infinity" }
 
-class DurationImpl implements Equal.Equal {
-  readonly _id: TypeId = TypeId
-  readonly value: DurationValue
-  constructor(input: number | bigint) {
-    if (isNumber(input)) {
-      if (isNaN(input) || input < 0) {
-        this.value = zeroValue
-      } else if (!Number.isFinite(input)) {
-        this.value = infinityValue
-      } else if (!Number.isInteger(input)) {
-        this.value = { _tag: "Nanos", nanos: BigInt(Math.round(input * 1_000_000)) }
-      } else {
-        this.value = { _tag: "Millis", millis: input }
-      }
-    } else if (input < BigInt(0)) {
-      this.value = zeroValue
-    } else {
-      this.value = { _tag: "Nanos", nanos: input }
-    }
-  }
-  [Hash.symbol](): number {
+const durationProto = {
+  [TypeId]: TypeId,
+  [Hash.symbol](this: Duration): number {
     return Hash.structure(this.value)
-  }
-  [Equal.symbol](that: unknown): boolean {
+  },
+  [Equal.symbol](this: Duration, that: unknown): boolean {
     return isDuration(that) && equals(this, that)
-  }
-  toString() {
+  },
+  toString(this: Duration) {
     switch (this.value._tag) {
       case "Millis":
         return `Duration("${this.value.millis} millis")`
@@ -142,8 +124,8 @@ class DurationImpl implements Equal.Equal {
       case "Infinity":
         return "Duration(Infinity)"
     }
-  }
-  toJSON() {
+  },
+  toJSON(this: Duration) {
     if (this.value._tag === "Nanos") {
       return {
         _tag: "Duration",
@@ -155,80 +137,100 @@ class DurationImpl implements Equal.Equal {
       _tag: "Duration",
       value: this.value
     }
-  }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [Symbol.for("nodejs.util.inspect.custom")](this: any) {
     return this.toJSON()
-  }
+  },
   pipe() {
     return pipeArguments(this, arguments)
   }
+} as const
+
+const make = (input: number | bigint): Duration => {
+  const duration = Object.create(durationProto)
+  if (isNumber(input)) {
+    if (isNaN(input) || input < 0) {
+      duration.value = zeroValue
+    } else if (!Number.isFinite(input)) {
+      duration.value = infinityValue
+    } else if (!Number.isInteger(input)) {
+      duration.value = { _tag: "Nanos", nanos: BigInt(Math.round(input * 1_000_000)) }
+    } else {
+      duration.value = { _tag: "Millis", millis: input }
+    }
+  } else if (input < BigInt(0)) {
+    duration.value = zeroValue
+  } else {
+    duration.value = { _tag: "Nanos", nanos: input }
+  }
+  return duration
 }
 
 /**
  * @since 1.0.0
  * @category guards
  */
-export const isDuration = (u: unknown): u is Duration => isObject(u) && "_id" in u && u["_id"] === TypeId
+export const isDuration = (u: unknown): u is Duration => typeof u === "object" && u !== null && TypeId in u
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const zero: Duration = new DurationImpl(0)
+export const zero: Duration = make(0)
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const infinity: Duration = new DurationImpl(Infinity)
+export const infinity: Duration = make(Infinity)
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const nanos = (nanos: bigint): Duration => new DurationImpl(nanos)
+export const nanos = (nanos: bigint): Duration => make(nanos)
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const micros = (micros: bigint): Duration => new DurationImpl(micros * bigint1e3)
+export const micros = (micros: bigint): Duration => make(micros * bigint1e3)
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const millis = (millis: number): Duration => new DurationImpl(millis)
+export const millis = (millis: number): Duration => make(millis)
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const seconds = (seconds: number): Duration => new DurationImpl(seconds * 1000)
+export const seconds = (seconds: number): Duration => make(seconds * 1000)
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const minutes = (minutes: number): Duration => new DurationImpl(minutes * 60_000)
+export const minutes = (minutes: number): Duration => make(minutes * 60_000)
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const hours = (hours: number): Duration => new DurationImpl(hours * 3_600_000)
+export const hours = (hours: number): Duration => make(hours * 3_600_000)
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const days = (days: number): Duration => new DurationImpl(days * 86_400_000)
+export const days = (days: number): Duration => make(days * 86_400_000)
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const weeks = (weeks: number): Duration => new DurationImpl(weeks * 604_800_000)
+export const weeks = (weeks: number): Duration => make(weeks * 604_800_000)
 
 /**
  * @since 1.0.0
@@ -463,8 +465,8 @@ export const times: {
   2,
   (self: DurationInput, times: number): Duration =>
     match(self, {
-      onMillis: (millis) => new DurationImpl(millis * times),
-      onNanos: (nanos) => new DurationImpl(nanos * BigInt(times))
+      onMillis: (millis) => make(millis * times),
+      onNanos: (nanos) => make(nanos * BigInt(times))
     })
 )
 
@@ -479,8 +481,8 @@ export const sum: {
   2,
   (self: DurationInput, that: DurationInput): Duration =>
     matchWith(self, that, {
-      onMillis: (self, that) => new DurationImpl(self + that),
-      onNanos: (self, that) => new DurationImpl(self + that)
+      onMillis: (self, that) => make(self + that),
+      onNanos: (self, that) => make(self + that)
     })
 )
 

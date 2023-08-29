@@ -283,7 +283,7 @@ Added in v1.0.0
 
 ```ts
 export interface Duration extends Equal.Equal, Pipeable {
-  readonly _id: TypeId
+  readonly [TypeId]: TypeId
   readonly value: DurationValue
 }
 ```
