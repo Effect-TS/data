@@ -21,47 +21,45 @@ export type TypeId = typeof TypeId
  * @category models
  */
 export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, Pipeable {
-  readonly _id: TypeId
+  readonly [TypeId]: TypeId
 
   /** @internal */
   readonly backingMap: MutableRef.MutableRef<HashMap.HashMap<K, V>>
 }
 
-/** @internal */
-class MutableHashMapImpl<K, V> implements MutableHashMap<K, V> {
-  readonly _id: TypeId = TypeId
-
-  readonly backingMap = MutableRef.make(HashMap.empty());
-
-  [Symbol.iterator](): Iterator<readonly [K, V]> {
+const mutableHashMapProto = {
+  [TypeId]: TypeId,
+  [Symbol.iterator](this: MutableHashMap<unknown, unknown>): Iterator<readonly [unknown, unknown]> {
     return this.backingMap.current[Symbol.iterator]()
-  }
-
+  },
   toString() {
     return `MutableHashMap(${Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")})`
-  }
-
+  },
   toJSON() {
     return {
       _tag: "MutableHashMap",
       values: Array.from(this)
     }
-  }
-
+  },
   [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toJSON()
-  }
-
+  },
   pipe() {
     return pipeArguments(this, arguments)
   }
+} as const
+
+const fromHashMap = <K, V>(backingMap: HashMap.HashMap<K, V>): MutableHashMap<K, V> => {
+  const map = Object.create(mutableHashMapProto)
+  map.backingMap = MutableRef.make(backingMap)
+  return map
 }
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const empty = <K = never, V = never>(): MutableHashMap<K, V> => new MutableHashMapImpl<K, V>()
+export const empty = <K = never, V = never>(): MutableHashMap<K, V> => fromHashMap<K, V>(HashMap.empty())
 
 /**
  * @since 1.0.0
@@ -78,13 +76,8 @@ export const make: <Entries extends Array<readonly [any, any]>>(
  * @since 1.0.0
  * @category conversions
  */
-export const fromIterable = <K, V>(entries: Iterable<readonly [K, V]>): MutableHashMap<K, V> => {
-  const map = empty<K, V>()
-  for (const entry of entries) {
-    set(map, entry[0], entry[1])
-  }
-  return map
-}
+export const fromIterable = <K, V>(entries: Iterable<readonly [K, V]>): MutableHashMap<K, V> =>
+  fromHashMap(HashMap.fromIterable(entries))
 
 /**
  * @since 1.0.0

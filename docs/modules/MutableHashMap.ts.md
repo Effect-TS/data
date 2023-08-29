@@ -118,7 +118,7 @@ Added in v1.0.0
 
 ```ts
 export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, Pipeable {
-  readonly _id: TypeId
+  readonly [TypeId]: TypeId
 
   /** @internal */
   readonly backingMap: MutableRef.MutableRef<HashMap.HashMap<K, V>>
