@@ -24,5 +24,5 @@ export const decode = (str: string): Either.Either<Encoding.DecodeException, Uin
   let sanitized = length % 4 === 2 ? `${str}==` : length % 4 === 3 ? `${str}=` : str
   sanitized = sanitized.replace(/-/g, "+").replace(/_/g, "/")
 
-  return Base64.decode(sanitized).pipe(Either.mapLeft((e) => DecodeException(e.input, e.message)))
+  return Base64.decode(sanitized)
 }
