@@ -1015,8 +1015,6 @@ export interface Chunk<A> extends Iterable<A>, Equal.Equal, Pipeable, Inspectabl
   backing: Backing<A>
   /** @internal */
   depth: number
-  /** @internal */
-  toJSON(): unknown
 }
 ```
 
