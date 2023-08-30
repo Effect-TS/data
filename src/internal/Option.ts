@@ -4,8 +4,8 @@
 
 import * as Equal from "@effect/data/Equal"
 import * as Hash from "@effect/data/Hash"
+import { NodeInspectSymbol } from "@effect/data/Inspectable"
 import { EffectTypeId, effectVariance } from "@effect/data/internal/Effect"
-import * as Inspect from "@effect/data/internal/Inspect"
 import type * as Option from "@effect/data/Option"
 import { pipeArguments } from "@effect/data/Pipeable"
 
@@ -16,7 +16,7 @@ const CommonProto = {
   [TypeId]: {
     _A: (_: never) => _
   },
-  [Inspect.symbol]<A>(this: Option.Option<A>) {
+  [NodeInspectSymbol]<A>(this: Option.Option<A>) {
     return (this as any).toJSON()
   },
   pipe() {

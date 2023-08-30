@@ -8,6 +8,7 @@
  * @since 1.0.0
  */
 import type { Equal } from "@effect/data/Equal"
+import type { Inspectable } from "@effect/data/Inspectable"
 import * as C from "@effect/data/internal/Context"
 import type { Option } from "@effect/data/Option"
 import type { Pipeable } from "@effect/data/Pipeable"
@@ -25,7 +26,7 @@ export type TagTypeId = typeof TagTypeId
  * @since 1.0.0
  * @category models
  */
-export interface Tag<Identifier, Service> extends Pipeable {
+export interface Tag<Identifier, Service> extends Pipeable, Inspectable {
   readonly _tag: "Tag"
   readonly [TagTypeId]: {
     readonly _S: (_: Service) => Service
@@ -108,7 +109,7 @@ export type ValidTagsById<R> = R extends infer S ? Tag<S, any> : never
  * @since 1.0.0
  * @category models
  */
-export interface Context<Services> extends Equal, Pipeable {
+export interface Context<Services> extends Equal, Pipeable, Inspectable {
   readonly [TypeId]: {
     readonly _S: (_: Services) => unknown
   }

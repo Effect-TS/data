@@ -3,6 +3,7 @@
  */
 
 import type { Equal } from "@effect/data/Equal"
+import type { Inspectable } from "@effect/data/Inspectable"
 import * as HS from "@effect/data/internal/HashSet"
 import type { Pipeable } from "@effect/data/Pipeable"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
@@ -19,8 +20,8 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface HashSet<A> extends Iterable<A>, Equal, Pipeable {
-  readonly _id: TypeId
+export interface HashSet<A> extends Iterable<A>, Equal, Pipeable, Inspectable {
+  readonly [TypeId]: TypeId
 }
 
 /**

@@ -5,6 +5,8 @@ import * as Equal from "@effect/data/Equal"
 import type * as equivalence from "@effect/data/Equivalence"
 import { dual } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
+import type { Inspectable } from "@effect/data/Inspectable"
+import { NodeInspectSymbol } from "@effect/data/Inspectable"
 import * as Option from "@effect/data/Option"
 import * as order from "@effect/data/Order"
 import type { Pipeable } from "@effect/data/Pipeable"
@@ -26,7 +28,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface Duration extends Equal.Equal, Pipeable {
+export interface Duration extends Equal.Equal, Pipeable, Inspectable {
   readonly [TypeId]: TypeId
   readonly value: DurationValue
 }
@@ -107,7 +109,7 @@ export const decode = (input: DurationInput): Duration => {
 const zeroValue: DurationValue = { _tag: "Millis", millis: 0 }
 const infinityValue: DurationValue = { _tag: "Infinity" }
 
-const durationProto = {
+const DurationProto: Omit<Duration, "value"> = {
   [TypeId]: TypeId,
   [Hash.symbol](this: Duration): number {
     return Hash.structure(this.value)
@@ -138,7 +140,7 @@ const durationProto = {
       value: this.value
     }
   },
-  [Symbol.for("nodejs.util.inspect.custom")](this: any) {
+  [NodeInspectSymbol]() {
     return this.toJSON()
   },
   pipe() {
@@ -147,7 +149,7 @@ const durationProto = {
 } as const
 
 const make = (input: number | bigint): Duration => {
-  const duration = Object.create(durationProto)
+  const duration = Object.create(DurationProto)
   if (isNumber(input)) {
     if (isNaN(input) || input < 0) {
       duration.value = zeroValue

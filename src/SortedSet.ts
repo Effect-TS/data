@@ -5,7 +5,8 @@ import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
 import { pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
-import * as Inspect from "@effect/data/internal/Inspect"
+import type { Inspectable } from "@effect/data/Inspectable"
+import { NodeInspectSymbol } from "@effect/data/Inspectable"
 import type { Order } from "@effect/data/Order"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
@@ -25,15 +26,15 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface SortedSet<A> extends Iterable<A>, Equal.Equal, Pipeable {
+export interface SortedSet<A> extends Iterable<A>, Equal.Equal, Pipeable, Inspectable {
   readonly [TypeId]: {
-    readonly _A: () => A
+    readonly _A: (_: never) => A
   }
   /** @internal */
   readonly keyTree: RBT.RedBlackTree<A, boolean>
 }
 
-const SortedSetProto = {
+const SortedSetProto: Omit<SortedSet<unknown>, "keyTree"> = {
   [TypeId]: {
     _A: (_: never) => _
   },
@@ -55,7 +56,7 @@ const SortedSetProto = {
       values: Array.from(this)
     }
   },
-  [Inspect.symbol]() {
+  [NodeInspectSymbol]() {
     return this.toJSON()
   },
   pipe() {

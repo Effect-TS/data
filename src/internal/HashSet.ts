@@ -3,6 +3,7 @@ import * as Dual from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import type { HashMap } from "@effect/data/HashMap"
 import type * as HS from "@effect/data/HashSet"
+import { NodeInspectSymbol } from "@effect/data/Inspectable"
 import * as HM from "@effect/data/internal/HashMap"
 import { pipeArguments } from "@effect/data/Pipeable"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
@@ -12,20 +13,19 @@ import { isObject } from "@effect/data/Predicate"
 export const HashSetTypeId: HS.TypeId = Symbol.for("@effect/data/HashSet") as HS.TypeId
 
 /** @internal */
-export class HashSetImpl<A> implements HS.HashSet<A> {
-  readonly _id: HS.TypeId = HashSetTypeId
+export interface HashSetImpl<A> extends HS.HashSet<A> {
+  readonly _keyMap: HashMap<A, unknown>
+}
 
-  constructor(readonly _keyMap: HashMap<A, unknown>) {}
-
-  [Symbol.iterator](): Iterator<A> {
+const HashSetProto: Omit<HashSetImpl<unknown>, "_keyMap"> = {
+  [HashSetTypeId]: HashSetTypeId,
+  [Symbol.iterator]<A>(this: HashSetImpl<A>): Iterator<A> {
     return HM.keys(this._keyMap)
-  }
-
-  [Hash.symbol](): number {
+  },
+  [Hash.symbol]<A>(this: HashSetImpl<A>): number {
     return Hash.combine(Hash.hash(this._keyMap))(Hash.hash("HashSet"))
-  }
-
-  [Equal.symbol](that: unknown): boolean {
+  },
+  [Equal.symbol]<A>(this: HashSetImpl<A>, that: unknown): boolean {
     if (isHashSet(that)) {
       return (
         HM.size(this._keyMap) === HM.size((that as HashSetImpl<A>)._keyMap) &&
@@ -33,36 +33,39 @@ export class HashSetImpl<A> implements HS.HashSet<A> {
       )
     }
     return false
-  }
-
+  },
   toString() {
     return `HashSet(${Array.from(this).map(String).join(", ")})`
-  }
-
+  },
   toJSON() {
     return {
       _tag: "HashSet",
       values: Array.from(this)
     }
-  }
-
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON()
-  }
-
+  },
   pipe() {
     return pipeArguments(this, arguments)
   }
 }
 
 /** @internal */
+export const makeImpl = <A>(keyMap: HashMap<A, unknown>): HashSetImpl<A> => {
+  const set = Object.create(HashSetProto)
+  set._keyMap = keyMap
+  return set
+}
+
+/** @internal */
 export const isHashSet: {
   <A>(u: Iterable<A>): u is HS.HashSet<A>
   (u: unknown): u is HS.HashSet<unknown>
-} = (u: unknown): u is HS.HashSet<unknown> => isObject(u) && "_id" in u && u["_id"] === HashSetTypeId
+} = (u: unknown): u is HS.HashSet<unknown> => isObject(u) && HashSetTypeId in u
 
 /** @internal */
-export const empty = <A = never>(): HS.HashSet<A> => new HashSetImpl(HM.empty<A, unknown>())
+export const empty = <A = never>(): HS.HashSet<A> => makeImpl(HM.empty<A, unknown>())
 
 /** @internal */
 export const fromIterable = <A>(elements: Iterable<A>): HS.HashSet<A> => {
@@ -129,7 +132,7 @@ export const size = <A>(self: HS.HashSet<A>): number => HM.size((self as HashSet
 
 /** @internal */
 export const beginMutation = <A>(self: HS.HashSet<A>): HS.HashSet<A> =>
-  new HashSetImpl(HM.beginMutation((self as HashSetImpl<A>)._keyMap))
+  makeImpl(HM.beginMutation((self as HashSetImpl<A>)._keyMap))
 
 /** @internal */
 export const endMutation = <A>(self: HS.HashSet<A>): HS.HashSet<A> => {
@@ -156,7 +159,7 @@ export const add = Dual.dual<
   <A>(self: HS.HashSet<A>, value: A) =>
     ((self as HashSetImpl<A>)._keyMap as HM.HashMapImpl<A, unknown>)._editable
       ? (HM.set(value as A, true as unknown)((self as HashSetImpl<A>)._keyMap), self)
-      : new HashSetImpl(HM.set(value as A, true as unknown)((self as HashSetImpl<A>)._keyMap))
+      : makeImpl(HM.set(value as A, true as unknown)((self as HashSetImpl<A>)._keyMap))
 )
 
 /** @internal */
@@ -168,7 +171,7 @@ export const remove = Dual.dual<
   <A>(self: HS.HashSet<A>, value: A) =>
     (((self as HashSetImpl<A>)._keyMap) as HM.HashMapImpl<A, unknown>)._editable
       ? (HM.remove(value)((self as HashSetImpl<A>)._keyMap), self)
-      : new HashSetImpl(HM.remove(value)((self as HashSetImpl<A>)._keyMap))
+      : makeImpl(HM.remove(value)((self as HashSetImpl<A>)._keyMap))
 )
 
 /** @internal */

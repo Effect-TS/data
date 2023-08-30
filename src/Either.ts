@@ -7,6 +7,7 @@ import * as Equivalence from "@effect/data/Equivalence"
 import type { LazyArg } from "@effect/data/Function"
 import { constNull, constUndefined, dual, identity } from "@effect/data/Function"
 import type { TypeLambda } from "@effect/data/HKT"
+import type { Inspectable } from "@effect/data/Inspectable"
 import * as either from "@effect/data/internal/Either"
 import type { Option } from "@effect/data/Option"
 import type { Pipeable } from "@effect/data/Pipeable"
@@ -36,7 +37,7 @@ export type TypeId = typeof TypeId
  * @category models
  * @since 1.0.0
  */
-export interface Left<E, A> extends Data.Case, Pipeable {
+export interface Left<E, A> extends Data.Case, Pipeable, Inspectable {
   readonly _tag: "Left"
   readonly left: E
   readonly [TypeId]: {
@@ -52,7 +53,7 @@ export interface Left<E, A> extends Data.Case, Pipeable {
  * @category models
  * @since 1.0.0
  */
-export interface Right<E, A> extends Data.Case, Pipeable {
+export interface Right<E, A> extends Data.Case, Pipeable, Inspectable {
   readonly _tag: "Right"
   readonly right: A
   readonly [TypeId]: {

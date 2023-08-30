@@ -5,6 +5,7 @@ import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
 import { pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
+import { type Inspectable, NodeInspectSymbol } from "@effect/data/Inspectable"
 import * as Option from "@effect/data/Option"
 import type { Order } from "@effect/data/Order"
 import type { Pipeable } from "@effect/data/Pipeable"
@@ -24,48 +25,44 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface SortedMap<K, V> extends Iterable<readonly [K, V]>, Equal.Equal, Pipeable {
-  readonly _id: TypeId
+export interface SortedMap<K, V> extends Iterable<readonly [K, V]>, Equal.Equal, Pipeable, Inspectable {
+  readonly [TypeId]: TypeId
   /** @internal */
   readonly tree: RBT.RedBlackTree<K, V>
 }
 
-/** @internal */
-class SortedMapImpl<K, V> implements Iterable<readonly [K, V]>, Equal.Equal {
-  readonly _id: TypeId = TypeId
-
-  constructor(readonly tree: RBT.RedBlackTree<K, V>) {}
-
-  [Hash.symbol](): number {
+const SortedMapProto: Omit<SortedMap<unknown, unknown>, "tree"> = {
+  [TypeId]: TypeId,
+  [Hash.symbol]<K, V>(this: SortedMap<K, V>): number {
     return pipe(Hash.hash(this.tree), Hash.combine(Hash.hash("@effect/data/SortedMap")))
-  }
-
-  [Equal.symbol](that: unknown): boolean {
+  },
+  [Equal.symbol]<K, V>(this: SortedMap<K, V>, that: unknown): boolean {
     return isSortedMap(that) && Equal.equals(this.tree, that.tree)
-  }
-
-  [Symbol.iterator](): Iterator<readonly [K, V]> {
+  },
+  [Symbol.iterator]<K, V>(this: SortedMap<K, V>): Iterator<readonly [K, V]> {
     return this.tree[Symbol.iterator]()
-  }
-
+  },
   toString() {
     return `SortedMap(${Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")})`
-  }
-
+  },
   toJSON() {
     return {
       _tag: "SortedMap",
       values: Array.from(this)
     }
-  }
-
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON()
-  }
-
+  },
   pipe() {
     return pipeArguments(this, arguments)
   }
+}
+
+const makeImpl = <K, V>(tree: RBT.RedBlackTree<K, V>): SortedMap<K, V> => {
+  const self = Object.create(SortedMapProto)
+  self.tree = tree
+  return self
 }
 
 /**
@@ -75,20 +72,20 @@ class SortedMapImpl<K, V> implements Iterable<readonly [K, V]>, Equal.Equal {
 export const isSortedMap: {
   <K, V>(u: Iterable<readonly [K, V]>): u is SortedMap<K, V>
   (u: unknown): u is SortedMap<unknown, unknown>
-} = (u: unknown): u is SortedMap<unknown, unknown> => isObject(u) && "_id" in u && u["_id"] === TypeId
+} = (u: unknown): u is SortedMap<unknown, unknown> => isObject(u) && TypeId in u
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const empty = <K, V = never>(ord: Order<K>): SortedMap<K, V> => new SortedMapImpl<K, V>(RBT.empty<K, V>(ord))
+export const empty = <K, V = never>(ord: Order<K>): SortedMap<K, V> => makeImpl<K, V>(RBT.empty<K, V>(ord))
 
 /**
  * @since 1.0.0
  * @category constructors
  */
 export const fromIterable = <K>(ord: Order<K>) => <V>(iterable: Iterable<readonly [K, V]>): SortedMap<K, V> =>
-  new SortedMapImpl(RBT.fromIterable<K, V>(ord)(iterable))
+  makeImpl(RBT.fromIterable<K, V>(ord)(iterable))
 
 /**
  * @since 1.0.0
@@ -202,7 +199,7 @@ export const remove: {
 } = Dual.dual<
   <K>(key: K) => <V>(self: SortedMap<K, V>) => SortedMap<K, V>,
   <K, V>(self: SortedMap<K, V>, key: K) => SortedMap<K, V>
->(2, (self, key) => new SortedMapImpl(RBT.removeFirst(self.tree, key)))
+>(2, (self, key) => makeImpl(RBT.removeFirst(self.tree, key)))
 
 /**
  * @since 1.0.0
@@ -216,8 +213,8 @@ export const set: {
   <K, V>(self: SortedMap<K, V>, key: K, value: V) => SortedMap<K, V>
 >(3, (self, key, value) =>
   RBT.has(self.tree, key)
-    ? new SortedMapImpl(RBT.insert(RBT.removeFirst(self.tree, key), key, value))
-    : new SortedMapImpl(RBT.insert(self.tree, key, value)))
+    ? makeImpl(RBT.insert(RBT.removeFirst(self.tree, key), key, value))
+    : makeImpl(RBT.insert(self.tree, key, value)))
 
 /**
  * @since 1.0.0

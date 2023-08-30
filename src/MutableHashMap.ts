@@ -3,6 +3,7 @@
  */
 import * as Dual from "@effect/data/Function"
 import * as HashMap from "@effect/data/HashMap"
+import { type Inspectable, NodeInspectSymbol } from "@effect/data/Inspectable"
 import * as MutableRef from "@effect/data/MutableRef"
 import * as Option from "@effect/data/Option"
 import type { Pipeable } from "@effect/data/Pipeable"
@@ -20,14 +21,14 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, Pipeable {
+export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, Pipeable, Inspectable {
   readonly [TypeId]: TypeId
 
   /** @internal */
   readonly backingMap: MutableRef.MutableRef<HashMap.HashMap<K, V>>
 }
 
-const mutableHashMapProto = {
+const MutableHashMapProto: Omit<MutableHashMap<unknown, unknown>, "backingMap"> = {
   [TypeId]: TypeId,
   [Symbol.iterator](this: MutableHashMap<unknown, unknown>): Iterator<readonly [unknown, unknown]> {
     return this.backingMap.current[Symbol.iterator]()
@@ -41,16 +42,16 @@ const mutableHashMapProto = {
       values: Array.from(this)
     }
   },
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  [NodeInspectSymbol]() {
     return this.toJSON()
   },
   pipe() {
     return pipeArguments(this, arguments)
   }
-} as const
+}
 
 const fromHashMap = <K, V>(backingMap: HashMap.HashMap<K, V>): MutableHashMap<K, V> => {
-  const map = Object.create(mutableHashMapProto)
+  const map = Object.create(MutableHashMapProto)
   map.backingMap = MutableRef.make(backingMap)
   return map
 }

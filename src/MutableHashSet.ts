@@ -2,6 +2,7 @@
  * @since 1.0.0
  */
 import * as Dual from "@effect/data/Function"
+import { type Inspectable, NodeInspectSymbol } from "@effect/data/Inspectable"
 import * as MutableHashMap from "@effect/data/MutableHashMap"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
@@ -18,14 +19,14 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface MutableHashSet<V> extends Iterable<V>, Pipeable {
+export interface MutableHashSet<V> extends Iterable<V>, Pipeable, Inspectable {
   readonly [TypeId]: TypeId
 
   /** @internal */
   readonly keyMap: MutableHashMap.MutableHashMap<V, boolean>
 }
 
-const mutableHashSetProto = {
+const MutableHashSetProto: Omit<MutableHashSet<unknown>, "keyMap"> = {
   [TypeId]: TypeId,
   [Symbol.iterator](this: MutableHashSet<unknown>): Iterator<unknown> {
     return Array.from(this.keyMap).map(([_]) => _)[Symbol.iterator]()
@@ -39,16 +40,16 @@ const mutableHashSetProto = {
       values: Array.from(this)
     }
   },
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  [NodeInspectSymbol]() {
     return this.toJSON()
   },
   pipe() {
     return pipeArguments(this, arguments)
   }
-} as const
+}
 
 const fromHashMap = <V>(keyMap: MutableHashMap.MutableHashMap<V, boolean>): MutableHashSet<V> => {
-  const set = Object.create(mutableHashSetProto)
+  const set = Object.create(MutableHashSetProto)
   set.keyMap = keyMap
   return set
 }

@@ -3,8 +3,8 @@ import * as Equal from "@effect/data/Equal"
 import { dual } from "@effect/data/Function"
 import { globalValue } from "@effect/data/GlobalValue"
 import * as Hash from "@effect/data/Hash"
-import { EffectTypeId, effectVariance } from "@effect/data/internal/Effect"
-import * as Inspect from "@effect/data/internal/Inspect"
+import { NodeInspectSymbol } from "@effect/data/Inspectable"
+import { type Effectable, EffectTypeId, effectVariance } from "@effect/data/internal/Effect"
 import type * as O from "@effect/data/Option"
 import * as option from "@effect/data/Option"
 import { pipeArguments } from "@effect/data/Pipeable"
@@ -13,12 +13,12 @@ import { pipeArguments } from "@effect/data/Pipeable"
 export const TagTypeId: C.TagTypeId = Symbol.for("@effect/data/Context/Tag") as C.TagTypeId
 
 /** @internal */
-export const TagProto = {
+export const TagProto: C.Tag<unknown, unknown> & Effectable = {
   _tag: "Tag",
   [EffectTypeId]: effectVariance,
   [TagTypeId]: {
-    _S: (_: never) => _,
-    _I: (_: never) => _
+    _S: (_: unknown) => _,
+    _I: (_: unknown) => _
   },
   [Equal.symbol](this: {}, that: unknown) {
     return this === that
@@ -32,12 +32,12 @@ export const TagProto = {
   toJSON<I, A>(this: C.Tag<I, A>) {
     return {
       _tag: "Tag",
-      identifier: (this as any).identifier,
-      stack: (this as any).stack
+      identifier: this.identifier,
+      stack: this.stack
     }
   },
-  [Inspect.symbol]() {
-    return (this as any).toJSON()
+  [NodeInspectSymbol]() {
+    return this.toJSON()
   },
   pipe() {
     return pipeArguments(this, arguments)
@@ -81,9 +81,9 @@ export const makeTag = <Identifier, Service = Identifier>(identifier?: unknown):
 export const TypeId: C.TypeId = Symbol.for("@effect/data/Context") as C.TypeId
 
 /** @internal */
-export const ContextProto = {
+export const ContextProto: Omit<C.Context<unknown>, "unsafeMap"> = {
   [TypeId]: {
-    _S: (_: never) => _
+    _S: (_: unknown) => _
   },
   [Equal.symbol]<A>(this: C.Context<A>, that: unknown): boolean {
     if (isContext(that)) {
@@ -113,7 +113,7 @@ export const ContextProto = {
       services: Array.from(this.unsafeMap)
     }
   },
-  [Inspect.symbol]() {
+  [NodeInspectSymbol]() {
     return (this as any).toJSON()
   }
 }

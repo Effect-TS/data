@@ -2,6 +2,8 @@
  * @since 1.0.0
  */
 import * as Dual from "@effect/data/Function"
+import { NodeInspectSymbol } from "@effect/data/Inspectable"
+import type { Inspectable } from "@effect/data/Inspectable"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
 
@@ -17,8 +19,8 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category model
  */
-export interface MutableList<A> extends Iterable<A>, Pipeable {
-  readonly _id: TypeId
+export interface MutableList<A> extends Iterable<A>, Pipeable, Inspectable {
+  readonly [TypeId]: TypeId
 
   /** @internal */
   head: LinkedListNode<A> | undefined
@@ -26,17 +28,11 @@ export interface MutableList<A> extends Iterable<A>, Pipeable {
   tail: LinkedListNode<A> | undefined
 }
 
-/** @internal */
-class MutableListImpl<A> implements MutableList<A> {
-  readonly _id: TypeId = TypeId
-
-  head: LinkedListNode<A> | undefined = undefined
-  tail: LinkedListNode<A> | undefined = undefined
-  _length = 0;
-
-  [Symbol.iterator](): Iterator<A> {
+const MutableListProto: Omit<MutableList<unknown>, "head" | "tail"> = {
+  [TypeId]: TypeId,
+  [Symbol.iterator](this: MutableList<unknown>): Iterator<unknown> {
     let done = false
-    let head: LinkedListNode<A> | undefined = this.head
+    let head: LinkedListNode<unknown> | undefined = this.head
     return {
       next() {
         if (done) {
@@ -57,26 +53,26 @@ class MutableListImpl<A> implements MutableList<A> {
         return { done: true, value }
       }
     }
-  }
-
+  },
   toString() {
     return `MutableList(${Array.from(this).map(String).join(", ")})`
-  }
-
+  },
   toJSON() {
     return {
       _tag: "MutableList",
       values: Array.from(this)
     }
-  }
-
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON()
-  }
-
+  },
   pipe() {
     return pipeArguments(this, arguments)
   }
+}
+
+interface MutableListImpl<A> extends MutableList<A> {
+  _length: number
 }
 
 /** @internal */
@@ -93,7 +89,13 @@ class LinkedListNode<T> {
  * @since 1.0.0
  * @category constructors
  */
-export const empty = <A>(): MutableList<A> => new MutableListImpl()
+export const empty = <A>(): MutableList<A> => {
+  const list = Object.create(MutableListProto)
+  list.head = undefined
+  list.tail = undefined
+  list._length = 0
+  return list
+}
 
 /**
  * Creates a new `MutableList` from an `Iterable`.
@@ -102,7 +104,7 @@ export const empty = <A>(): MutableList<A> => new MutableListImpl()
  * @category constructors
  */
 export const fromIterable = <A>(iterable: Iterable<A>): MutableList<A> => {
-  const list: MutableList<A> = new MutableListImpl()
+  const list = empty<A>()
   for (const element of iterable) {
     append(list, element)
   }

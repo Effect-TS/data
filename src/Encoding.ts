@@ -8,9 +8,9 @@
  * @since 1.0.0
  */
 import type * as Either from "@effect/data/Either"
-import * as common from "@effect/data/internal/Encoding/Common"
 import * as Base64 from "@effect/data/internal/Encoding/Base64"
 import * as Base64Url from "@effect/data/internal/Encoding/Base64Url"
+import * as common from "@effect/data/internal/Encoding/Common"
 import * as Hex from "@effect/data/internal/Encoding/Hex"
 
 /**
@@ -95,9 +95,9 @@ export interface DecodeException {
 export const DecodeException: (input: string, message?: string) => DecodeException = common.DecodeException
 
 /**
-  * Returns `true` if the specified value is an `DecodeException`, `false` otherwise.
-  *
-  * @since 1.0.0
-  * @category refinements
-  */
+ * Returns `true` if the specified value is an `DecodeException`, `false` otherwise.
+ *
+ * @since 1.0.0
+ * @category refinements
+ */
 export const isDecodeException: (u: unknown) => u is DecodeException = common.isDecodeException

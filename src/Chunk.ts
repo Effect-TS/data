@@ -7,7 +7,7 @@ import * as Equivalence from "@effect/data/Equivalence"
 import { dual, identity, pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import type { TypeLambda } from "@effect/data/HKT"
-import * as Inspect from "@effect/data/internal/Inspect"
+import { type Inspectable, NodeInspectSymbol } from "@effect/data/Inspectable"
 import type { NonEmptyIterable } from "@effect/data/NonEmptyIterable"
 import type { Option } from "@effect/data/Option"
 import * as O from "@effect/data/Option"
@@ -31,9 +31,9 @@ export type TypeId = typeof TypeId
  * @category models
  * @since 1.0.0
  */
-export interface Chunk<A> extends Iterable<A>, Equal.Equal, Pipeable {
+export interface Chunk<A> extends Iterable<A>, Equal.Equal, Pipeable, Inspectable {
   readonly [TypeId]: {
-    readonly _A: () => A
+    readonly _A: (_: never) => A
   }
   readonly length: number
   /** @internal */
@@ -122,7 +122,7 @@ export const getEquivalence = <A>(isEquivalent: Equivalence.Equivalence<A>): Equ
 
 const _equivalence = getEquivalence(Equal.equals)
 
-const ChunkProto = {
+const ChunkProto: Omit<Chunk<unknown>, "backing" | "depth" | "left" | "length" | "right"> = {
   [TypeId]: {
     _A: (_: never) => _
   },
@@ -135,7 +135,7 @@ const ChunkProto = {
       values: toReadonlyArray(this)
     }
   },
-  [Inspect.symbol]<A>(this: Chunk<A>) {
+  [NodeInspectSymbol]<A>(this: Chunk<A>) {
     return this.toJSON()
   },
   [Equal.symbol]<A>(this: Chunk<A>, that: unknown): boolean {

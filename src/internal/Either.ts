@@ -6,8 +6,8 @@ import type * as Either from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
 import { dual } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
+import { NodeInspectSymbol } from "@effect/data/Inspectable"
 import { EffectTypeId, effectVariance } from "@effect/data/internal/Effect"
-import * as Inspect from "@effect/data/internal/Inspect"
 import * as option from "@effect/data/internal/Option"
 import type { Option } from "@effect/data/Option"
 import { pipeArguments } from "@effect/data/Pipeable"
@@ -22,7 +22,7 @@ const CommonProto = {
   [TypeId]: {
     _A: (_: never) => _
   },
-  [Inspect.symbol]<E, A>(this: Either.Either<E, A>) {
+  [NodeInspectSymbol]<E, A>(this: Either.Either<E, A>) {
     return (this as any).toJSON()
   },
   pipe() {

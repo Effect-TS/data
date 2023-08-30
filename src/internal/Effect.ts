@@ -1,5 +1,15 @@
+import type * as Equal from "@effect/data/Equal"
+
 /** @internal */
 export const EffectTypeId = Symbol.for("@effect/io/Effect")
+
+/** @internal */
+export type EffectTypeId = typeof EffectTypeId
+
+/** @internal */
+export interface Effectable extends Equal.Equal {
+  readonly [EffectTypeId]: typeof effectVariance
+}
 
 /** @internal */
 export const effectVariance = {

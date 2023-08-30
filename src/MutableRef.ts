@@ -3,6 +3,7 @@
  */
 import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
+import { type Inspectable, NodeInspectSymbol } from "@effect/data/Inspectable"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
 
@@ -18,35 +19,27 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface MutableRef<T> extends Pipeable {
-  readonly _id: TypeId
-  readonly _T: (_: never) => T
+export interface MutableRef<T> extends Pipeable, Inspectable {
+  readonly [TypeId]: TypeId
 
   /** @internal */
   current: T
 }
 
-class MutableRefImpl<T> implements MutableRef<T> {
-  _T: (_: never) => T = (_) => _
-  _id: typeof TypeId = TypeId
-
-  constructor(public current: T) {}
-
-  toString() {
+const MutableRefProto: Omit<MutableRef<unknown>, "current"> = {
+  [TypeId]: TypeId,
+  toString<A>(this: MutableRef<A>): string {
     return `MutableRef(${String(this.current)})`
-  }
-
-  toJSON() {
+  },
+  toJSON<A>(this: MutableRef<A>) {
     return {
       _tag: "MutableRef",
       current: this.current
     }
-  }
-
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON()
-  }
-
+  },
   pipe() {
     return pipeArguments(this, arguments)
   }
@@ -56,7 +49,11 @@ class MutableRefImpl<T> implements MutableRef<T> {
  * @since 1.0.0
  * @category constructors
  */
-export const make = <T>(value: T): MutableRef<T> => new MutableRefImpl(value)
+export const make = <T>(value: T): MutableRef<T> => {
+  const ref = Object.create(MutableRefProto)
+  ref.current = value
+  return ref
+}
 
 /**
  * @since 1.0.0

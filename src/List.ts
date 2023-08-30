@@ -27,6 +27,7 @@ import * as Equal from "@effect/data/Equal"
 import * as Equivalence from "@effect/data/Equivalence"
 import { dual, identity, unsafeCoerce } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
+import { type Inspectable, NodeInspectSymbol } from "@effect/data/Inspectable"
 import * as Option from "@effect/data/Option"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
@@ -62,7 +63,7 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface Nil<A> extends Iterable<A>, Equal.Equal, Pipeable {
+export interface Nil<A> extends Iterable<A>, Equal.Equal, Pipeable, Inspectable {
   readonly [TypeId]: TypeId
   readonly _tag: "Nil"
 }
@@ -71,7 +72,7 @@ export interface Nil<A> extends Iterable<A>, Equal.Equal, Pipeable {
  * @since 1.0.0
  * @category models
  */
-export interface Cons<A> extends Iterable<A>, Equal.Equal, Pipeable {
+export interface Cons<A> extends Iterable<A>, Equal.Equal, Pipeable, Inspectable {
   readonly [TypeId]: TypeId
   readonly _tag: "Cons"
   readonly head: A
@@ -95,7 +96,7 @@ export const getEquivalence = <A>(isEquivalent: Equivalence.Equivalence<A>): Equ
 
 const _equivalence = getEquivalence(Equal.equals)
 
-const consProto = {
+const ConsProto: Omit<Cons<unknown>, "head" | "tail"> = {
   [TypeId]: TypeId,
   _tag: "Cons",
   toString(this: Cons<unknown>) {
@@ -107,7 +108,7 @@ const consProto = {
       values: toReadonlyArray(this)
     }
   },
-  [Symbol.for("nodejs.util.inspect.custom")](this: any) {
+  [NodeInspectSymbol](this: any) {
     return this.toJSON()
   },
   [Equal.symbol](this: Cons<unknown>, that: unknown): boolean {
@@ -146,7 +147,7 @@ const consProto = {
   pipe() {
     return pipeArguments(this, arguments)
   }
-} as const
+}
 
 interface MutableCons<A> extends Cons<A> {
   head: A
@@ -154,13 +155,13 @@ interface MutableCons<A> extends Cons<A> {
 }
 
 const makeCons = <A>(head: A, tail: List<A>): MutableCons<A> => {
-  const cons = Object.create(consProto)
+  const cons = Object.create(ConsProto)
   cons.head = head
   cons.tail = tail
   return cons
 }
 
-const nilProto = {
+const NilProto: Nil<unknown> = {
   [TypeId]: TypeId,
   _tag: "Nil",
   toString() {
@@ -171,7 +172,7 @@ const nilProto = {
       _tag: "List.Nil"
     }
   },
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  [NodeInspectSymbol]() {
     return this.toJSON()
   },
   [Hash.symbol](): number {
@@ -192,7 +193,7 @@ const nilProto = {
   }
 } as const
 
-const _Nil = Object.create(nilProto) as Nil<never>
+const _Nil = Object.create(NilProto) as Nil<never>
 
 /**
  * Returns `true` if the specified value is a `List`, `false` otherwise.
