@@ -574,7 +574,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Left<E, A> extends Data.Case, Pipeable {
+export interface Left<E, A> extends Data.Case, Pipeable, Inspectable {
   readonly _tag: 'Left'
   readonly left: E
   readonly [TypeId]: {
@@ -594,7 +594,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Right<E, A> extends Data.Case, Pipeable {
+export interface Right<E, A> extends Data.Case, Pipeable, Inspectable {
   readonly _tag: 'Right'
   readonly right: A
   readonly [TypeId]: {

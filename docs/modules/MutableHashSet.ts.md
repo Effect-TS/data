@@ -1,6 +1,6 @@
 ---
 title: MutableHashSet.ts
-nav_order: 21
+nav_order: 22
 parent: Modules
 ---
 
@@ -118,7 +118,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface MutableHashSet<V> extends Iterable<V>, Pipeable {
+export interface MutableHashSet<V> extends Iterable<V>, Pipeable, Inspectable {
   readonly [TypeId]: TypeId
 
   /** @internal */

@@ -1,6 +1,6 @@
 ---
 title: MutableList.ts
-nav_order: 22
+nav_order: 23
 parent: Modules
 ---
 
@@ -164,8 +164,8 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface MutableList<A> extends Iterable<A>, Pipeable {
-  readonly _id: TypeId
+export interface MutableList<A> extends Iterable<A>, Pipeable, Inspectable {
+  readonly [TypeId]: TypeId
 
   /** @internal */
   head: LinkedListNode<A> | undefined

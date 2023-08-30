@@ -340,8 +340,8 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface HashMap<Key, Value> extends Iterable<[Key, Value]>, Equal, Pipeable {
-  readonly _id: TypeId
+export interface HashMap<Key, Value> extends Iterable<[Key, Value]>, Equal, Pipeable, Inspectable {
+  [TypeId]: TypeId
 }
 ```
 
