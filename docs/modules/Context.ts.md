@@ -40,6 +40,9 @@ Added in v1.0.0
 - [unsafe](#unsafe)
   - [unsafeGet](#unsafeget)
 - [utils](#utils)
+  - [Tag (namespace)](#tag-namespace)
+    - [Identifier (type alias)](#identifier-type-alias)
+    - [Service (type alias)](#service-type-alias)
   - [add](#add)
   - [merge](#merge)
   - [omit](#omit)
@@ -348,6 +351,30 @@ assert.throws(() => Context.unsafeGet(Services, Timeout))
 Added in v1.0.0
 
 # utils
+
+## Tag (namespace)
+
+Added in v1.0.0
+
+### Identifier (type alias)
+
+**Signature**
+
+```ts
+export type Identifier<T extends Tag<any, any>> = T extends Tag<infer A, any> ? A : never
+```
+
+Added in v1.0.0
+
+### Service (type alias)
+
+**Signature**
+
+```ts
+export type Service<T extends Tag<any, any>> = T extends Tag<any, infer A> ? A : never
+```
+
+Added in v1.0.0
 
 ## add
 

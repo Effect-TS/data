@@ -22,6 +22,9 @@ export type Data<A extends Readonly<Record<string, any>> | ReadonlyArray<any>> =
  */
 export interface Case extends Equal.Equal {}
 
+/**
+ * @since 1.0.0
+ */
 export declare namespace Case {
   /**
    * @since 1.0.0

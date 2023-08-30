@@ -37,6 +37,9 @@ export interface RedBlackTree<Key, Value> extends Iterable<readonly [Key, Value]
  * @since 1.0.0
  */
 export declare namespace RedBlackTree {
+  /**
+   * @since 1.0.0
+   */
   export type Direction = number & {
     readonly Direction: unique symbol
   }

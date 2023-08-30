@@ -57,6 +57,8 @@ Added in v1.0.0
   - [lessThanReversed](#lessthanreversed)
   - [reversed](#reversed)
 - [utils](#utils)
+  - [RedBlackTree (namespace)](#redblacktree-namespace)
+    - [Direction (type alias)](#direction-type-alias)
   - [insert](#insert)
   - [removeFirst](#removefirst)
 
@@ -582,6 +584,22 @@ export declare const reversed: <K, V>(self: RedBlackTree<K, V>) => Iterable<read
 Added in v1.0.0
 
 # utils
+
+## RedBlackTree (namespace)
+
+Added in v1.0.0
+
+### Direction (type alias)
+
+**Signature**
+
+```ts
+export type Direction = number & {
+  readonly Direction: unique symbol
+}
+```
+
+Added in v1.0.0
 
 ## insert
 

@@ -28,6 +28,17 @@ Added in v1.0.0
 - [symbol](#symbol)
   - [TypeId (type alias)](#typeid-type-alias)
 - [utils](#utils)
+  - [Differ (namespace)](#differ-namespace)
+    - [Chunk (namespace)](#chunk-namespace)
+      - [Patch (type alias)](#patch-type-alias)
+    - [Context (namespace)](#context-namespace)
+      - [Patch (type alias)](#patch-type-alias-1)
+    - [HashMap (namespace)](#hashmap-namespace)
+      - [Patch (type alias)](#patch-type-alias-2)
+    - [HashSet (namespace)](#hashset-namespace)
+      - [Patch (type alias)](#patch-type-alias-3)
+    - [Or (namespace)](#or-namespace)
+      - [Patch (type alias)](#patch-type-alias-4)
   - [orElseEither](#orelseeither)
   - [transform](#transform)
   - [update](#update)
@@ -223,6 +234,80 @@ export type TypeId = typeof TypeId
 Added in v1.0.0
 
 # utils
+
+## Differ (namespace)
+
+Added in v1.0.0
+
+### Chunk (namespace)
+
+Added in v1.0.0
+
+#### Patch (type alias)
+
+**Signature**
+
+```ts
+export type Patch<Value, Patch> = ChunkPatch<Value, Patch>
+```
+
+Added in v1.0.0
+
+### Context (namespace)
+
+Added in v1.0.0
+
+#### Patch (type alias)
+
+**Signature**
+
+```ts
+export type Patch<Input, Output> = ContextPatch<Input, Output>
+```
+
+Added in v1.0.0
+
+### HashMap (namespace)
+
+Added in v1.0.0
+
+#### Patch (type alias)
+
+**Signature**
+
+```ts
+export type Patch<Key, Value, Patch> = HashMapPatch<Key, Value, Patch>
+```
+
+Added in v1.0.0
+
+### HashSet (namespace)
+
+Added in v1.0.0
+
+#### Patch (type alias)
+
+**Signature**
+
+```ts
+export type Patch<Value> = HashSetPatch<Value>
+```
+
+Added in v1.0.0
+
+### Or (namespace)
+
+Added in v1.0.0
+
+#### Patch (type alias)
+
+**Signature**
+
+```ts
+export type Patch<Value, Value2, Patch, Patch2> = OrPatch<Value, Value2, Patch, Patch2>
+```
+
+Added in v1.0.0
 
 ## orElseEither
 

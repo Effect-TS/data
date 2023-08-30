@@ -43,6 +43,16 @@ Added in v1.0.0
   - [BrandTypeId (type alias)](#brandtypeid-type-alias)
   - [RefinedConstructorsTypeId](#refinedconstructorstypeid)
   - [RefinedConstructorsTypeId (type alias)](#refinedconstructorstypeid-type-alias)
+- [utils](#utils)
+  - [Brand (namespace)](#brand-namespace)
+    - [BrandErrors (interface)](#branderrors-interface)
+    - [Constructor (interface)](#constructor-interface)
+    - [RefinementError (interface)](#refinementerror-interface)
+    - [Brands (type alias)](#brands-type-alias)
+    - [EnsureCommonBase (type alias)](#ensurecommonbase-type-alias)
+    - [FromConstructor (type alias)](#fromconstructor-type-alias)
+    - [Unbranded (type alias)](#unbranded-type-alias)
+    - [UnionToIntersection (type alias)](#uniontointersection-type-alias)
 
 ---
 
@@ -247,6 +257,145 @@ Added in v1.0.0
 
 ```ts
 export type RefinedConstructorsTypeId = typeof RefinedConstructorsTypeId
+```
+
+Added in v1.0.0
+
+# utils
+
+## Brand (namespace)
+
+Added in v1.0.0
+
+### BrandErrors (interface)
+
+Represents a list of refinement errors.
+
+**Signature**
+
+```ts
+export interface BrandErrors extends ReadonlyArray<RefinementError> {}
+```
+
+Added in v1.0.0
+
+### Constructor (interface)
+
+**Signature**
+
+```ts
+export interface Constructor<in out A extends Brand<any>> {
+  readonly [RefinedConstructorsTypeId]: RefinedConstructorsTypeId
+  /**
+   * Constructs a branded type from a value of type `A`, throwing an error if
+   * the provided `A` is not valid.
+   */
+  (args: Brand.Unbranded<A>): A
+  /**
+   * Constructs a branded type from a value of type `A`, returning `Some<A>`
+   * if the provided `A` is valid, `None` otherwise.
+   */
+  option: (args: Brand.Unbranded<A>) => Option.Option<A>
+  /**
+   * Constructs a branded type from a value of type `A`, returning `Right<A>`
+   * if the provided `A` is valid, `Left<BrandError>` otherwise.
+   */
+  either: (args: Brand.Unbranded<A>) => Either.Either<Brand.BrandErrors, A>
+  /**
+   * Attempts to refine the provided value of type `A`, returning `true` if
+   * the provided `A` is valid, `false` otherwise.
+   */
+  is: Refinement<Brand.Unbranded<A>, Brand.Unbranded<A> & A>
+}
+```
+
+Added in v1.0.0
+
+### RefinementError (interface)
+
+Represents an error that occurs when the provided value of the branded type does not pass the refinement predicate.
+
+**Signature**
+
+```ts
+export interface RefinementError {
+  readonly meta: unknown
+  readonly message: string
+}
+```
+
+Added in v1.0.0
+
+### Brands (type alias)
+
+A utility type to extract the brands from a branded type.
+
+**Signature**
+
+```ts
+export type Brands<P> = P extends Brand<any>
+  ? Brand.UnionToIntersection<
+      {
+        [k in keyof P[BrandTypeId]]: k extends string | symbol ? Brand<k> : never
+      }[keyof P[BrandTypeId]]
+    >
+  : never
+```
+
+Added in v1.0.0
+
+### EnsureCommonBase (type alias)
+
+A utility type that checks that all brands have the same base type.
+
+**Signature**
+
+```ts
+export type EnsureCommonBase<Brands extends readonly [Brand.Constructor<any>, ...Array<Brand.Constructor<any>>]> = {
+  [B in keyof Brands]: Brand.Unbranded<Brand.FromConstructor<Brands[0]>> extends Brand.Unbranded<
+    Brand.FromConstructor<Brands[B]>
+  >
+    ? Brand.Unbranded<Brand.FromConstructor<Brands[B]>> extends Brand.Unbranded<Brand.FromConstructor<Brands[0]>>
+      ? Brands[B]
+      : Brands[B]
+    : 'ERROR: All brands should have the same base type'
+}
+```
+
+Added in v1.0.0
+
+### FromConstructor (type alias)
+
+A utility type to extract a branded type from a `Brand.Constructor`.
+
+**Signature**
+
+```ts
+export type FromConstructor<A> = A extends Brand.Constructor<infer B> ? B : never
+```
+
+Added in v1.0.0
+
+### Unbranded (type alias)
+
+A utility type to extract the value type from a brand.
+
+**Signature**
+
+```ts
+export type Unbranded<P> = P extends infer Q & Brands<P> ? Q : P
+```
+
+Added in v1.0.0
+
+### UnionToIntersection (type alias)
+
+A utility type that transforms a union type `T` into an intersection type.
+
+**Signature**
+
+```ts
+export type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x: infer R) => any ? R : never
 ```
 
 Added in v1.0.0
