@@ -20,8 +20,12 @@ const PositiveInt = Brand.all(Int, Positive)
 
 describe.concurrent("Brand", () => {
   it("nominal", () => {
-    const Int = Brand.nominal<Int>()
-    assert.strictEqual(Int(1), 1)
+    type MyNumber = number & Brand.Brand<"MyNumber">
+    const MyNumber = Brand.nominal<MyNumber>()
+    assert.strictEqual(MyNumber(1), 1)
+    assert.strictEqual(MyNumber(1.1), 1.1)
+    assert.isTrue(MyNumber.is(1))
+    assert.isTrue(MyNumber.is(1.1))
   })
 
   it("refined", () => {
@@ -34,8 +38,8 @@ describe.concurrent("Brand", () => {
       Int.either(1.1),
       Either.left(Brand.error("Expected 1.1 to be an integer"))
     )
-    assert.isTrue(Int.refine(1))
-    assert.isFalse(Int.refine(1.1))
+    assert.isTrue(Int.is(1))
+    assert.isFalse(Int.is(1.1))
   })
 
   it("composition", () => {
@@ -55,7 +59,7 @@ describe.concurrent("Brand", () => {
         Brand.error("Expected -1.1 to be positive")
       ))
     )
-    assert.isTrue(PositiveInt.refine(1))
-    assert.isFalse(PositiveInt.refine(1.1))
+    assert.isTrue(PositiveInt.is(1))
+    assert.isFalse(PositiveInt.is(1.1))
   })
 })

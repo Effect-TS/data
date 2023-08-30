@@ -106,7 +106,7 @@ export declare namespace Brand {
      * Attempts to refine the provided value of type `A`, returning `true` if
      * the provided `A` is valid, `false` otherwise.
      */
-    refine: Refinement<Brand.Unbranded<A>, Brand.Unbranded<A> & A>
+    is: Refinement<Brand.Unbranded<A>, Brand.Unbranded<A> & A>
   }
 
   /**
@@ -242,7 +242,7 @@ export const refined: <A extends Brand<any>>(
     [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
     option: (args: any) => Option.getRight(either(args)),
     either,
-    refine: (args: any): args is Brand.Unbranded<A> & A => Either.isRight(either(args))
+    is: (args: any): args is Brand.Unbranded<A> & A => Either.isRight(either(args))
   })
 }
 
@@ -272,7 +272,7 @@ export const nominal: <A extends Brand<any>>() => Brand.Constructor<A> = <A exte
     [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
     option: (args: any) => Option.some(args),
     either: (args: any) => Either.right(args),
-    refine: (_args: any): _args is Brand.Unbranded<A> & A => true
+    is: (_args: any): _args is Brand.Unbranded<A> & A => true
   })
 }
 
@@ -339,6 +339,6 @@ export const all: <Brands extends readonly [Brand.Constructor<any>, ...Array<Bra
     [RefinedConstructorsTypeId]: RefinedConstructorsTypeId,
     option: (args: any) => Option.getRight(either(args)),
     either,
-    refine: (args: any): args is any => Either.isRight(either(args))
+    is: (args: any): args is any => Either.isRight(either(args))
   })
 }
