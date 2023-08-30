@@ -227,7 +227,7 @@ export type TaggedEnum<A extends Record<string, Record<string, any>>> = {
 /**
  * @since 1.0.0
  */
-export namespace TaggedEnum {
+export declare namespace TaggedEnum {
   /**
    * @since 1.0.0
    * @category models
@@ -269,7 +269,7 @@ export namespace TaggedEnum {
     Extract<A, { readonly _tag: K }>,
     "_tag" | keyof Case
   > extends infer T ? {} extends T ? void
-  : T
+    : T
     : never
 
   /**
