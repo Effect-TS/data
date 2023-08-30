@@ -17,7 +17,7 @@ const CommonProto = {
     _A: (_: never) => _
   },
   [NodeInspectSymbol]<A>(this: Option.Option<A>) {
-    return (this as any).toJSON()
+    return this.toJSON()
   },
   pipe() {
     return pipeArguments(this, arguments)
