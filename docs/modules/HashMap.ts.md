@@ -50,6 +50,8 @@ Added in v1.0.0
 - [unsafe](#unsafe)
   - [unsafeGet](#unsafeget)
 - [utils](#utils)
+  - [HashMap (namespace)](#hashmap-namespace)
+    - [UpdateFn (type alias)](#updatefn-type-alias)
   - [beginMutation](#beginmutation)
   - [endMutation](#endmutation)
   - [modify](#modify)
@@ -427,6 +429,20 @@ export declare const unsafeGet: {
 Added in v1.0.0
 
 # utils
+
+## HashMap (namespace)
+
+Added in v1.0.0
+
+### UpdateFn (type alias)
+
+**Signature**
+
+```ts
+export type UpdateFn<V> = (option: Option<V>) => Option<V>
+```
+
+Added in v1.0.0
 
 ## beginMutation
 

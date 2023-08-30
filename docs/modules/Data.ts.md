@@ -28,6 +28,14 @@ Added in v1.0.0
   - [Data (type alias)](#data-type-alias)
   - [IsEqualTo (type alias)](#isequalto-type-alias)
   - [TaggedEnum (type alias)](#taggedenum-type-alias)
+- [utils](#utils)
+  - [Case (namespace)](#case-namespace)
+    - [Constructor (interface)](#constructor-interface)
+  - [TaggedEnum (namespace)](#taggedenum-namespace)
+    - [WithGenerics (interface)](#withgenerics-interface)
+    - [Args (type alias)](#args-type-alias)
+    - [Kind (type alias)](#kind-type-alias)
+    - [Value (type alias)](#value-type-alias)
 
 ---
 
@@ -274,6 +282,88 @@ type HttpErrorPlain =
 export type TaggedEnum<A extends Record<string, Record<string, any>>> = {
   readonly [Tag in keyof A]: Data<Simplify<Readonly<A[Tag]> & { readonly _tag: Tag }>>
 }[keyof A]
+```
+
+Added in v1.0.0
+
+# utils
+
+## Case (namespace)
+
+Added in v1.0.0
+
+### Constructor (interface)
+
+**Signature**
+
+```ts
+export interface Constructor<A extends Case, T extends keyof A = never> {
+  (args: Omit<A, T | keyof Equal.Equal> extends Record<PropertyKey, never> ? void : Omit<A, T | keyof Equal.Equal>): A
+}
+```
+
+Added in v1.0.0
+
+## TaggedEnum (namespace)
+
+Added in v1.0.0
+
+### WithGenerics (interface)
+
+**Signature**
+
+```ts
+export interface WithGenerics<Count extends number> {
+  readonly taggedEnum: Data<{ readonly _tag: string }>
+  readonly numberOfGenerics: Count
+
+  readonly A: unknown
+  readonly B: unknown
+  readonly C: unknown
+  readonly D: unknown
+}
+```
+
+Added in v1.0.0
+
+### Args (type alias)
+
+**Signature**
+
+```ts
+export type Args<A extends Data<{ readonly _tag: string }>, K extends A['_tag']> = Omit<
+  Extract<A, { readonly _tag: K }>,
+  '_tag' | keyof Case
+> extends infer T
+  ? {} extends T
+    ? void
+    : T
+  : never
+```
+
+Added in v1.0.0
+
+### Kind (type alias)
+
+**Signature**
+
+```ts
+export type Kind<Z extends WithGenerics<number>, A = unknown, B = unknown, C = unknown, D = unknown> = (Z & {
+  readonly A: A
+  readonly B: B
+  readonly C: C
+  readonly D: D
+})['taggedEnum']
+```
+
+Added in v1.0.0
+
+### Value (type alias)
+
+**Signature**
+
+```ts
+export type Value<A extends Data<{ readonly _tag: string }>, K extends A['_tag']> = Extract<A, { readonly _tag: K }>
 ```
 
 Added in v1.0.0

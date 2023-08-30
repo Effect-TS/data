@@ -26,6 +26,8 @@ Added in v1.0.0
   - [EmptyMutableQueue](#emptymutablequeue)
   - [TypeId (type alias)](#typeid-type-alias)
 - [utils](#utils)
+  - [MutableQueue (namespace)](#mutablequeue-namespace)
+    - [Empty (type alias)](#empty-type-alias)
   - [offer](#offer)
   - [offerAll](#offerall)
   - [poll](#poll)
@@ -154,6 +156,20 @@ export type TypeId = typeof TypeId
 Added in v1.0.0
 
 # utils
+
+## MutableQueue (namespace)
+
+Added in v1.0.0
+
+### Empty (type alias)
+
+**Signature**
+
+```ts
+export type Empty = typeof EmptyMutableQueue
+```
+
+Added in v1.0.0
 
 ## offer
 

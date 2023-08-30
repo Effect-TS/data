@@ -53,8 +53,14 @@ export interface TagUnifyBlacklist {}
  * @since 1.0.0
  */
 export declare namespace Tag {
-  type Service<T extends Tag<any, any>> = T extends Tag<any, infer A> ? A : never
-  type Identifier<T extends Tag<any, any>> = T extends Tag<infer A, any> ? A : never
+  /**
+   * @since 1.0.0
+   */
+  export type Service<T extends Tag<any, any>> = T extends Tag<any, infer A> ? A : never
+  /**
+   * @since 1.0.0
+   */
+  export type Identifier<T extends Tag<any, any>> = T extends Tag<infer A, any> ? A : never
 }
 
 /**

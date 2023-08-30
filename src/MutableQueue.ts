@@ -38,6 +38,9 @@ export interface MutableQueue<A> extends Iterable<A>, Pipeable {
  * @since 1.0.0
  */
 export declare namespace MutableQueue {
+  /**
+   * @since 1.0.0
+   */
   export type Empty = typeof EmptyMutableQueue
 }
 

@@ -55,24 +55,57 @@ export interface Differ<Value, Patch> {
   readonly patch: (patch: Patch, oldValue: Value) => Value
 }
 
+/**
+ * @since 1.0.0
+ */
 export declare namespace Differ {
+  /**
+   * @since 1.0.0
+   */
   export namespace Or {
+    /**
+     * @since 1.0.0
+     */
     export type Patch<Value, Value2, Patch, Patch2> = OrPatch<Value, Value2, Patch, Patch2>
   }
 
+  /**
+   * @since 1.0.0
+   */
   export namespace Context {
+    /**
+     * @since 1.0.0
+     */
     export type Patch<Input, Output> = ContextPatch<Input, Output>
   }
 
+  /**
+   * @since 1.0.0
+   */
   export namespace Chunk {
+    /**
+     * @since 1.0.0
+     */
     export type Patch<Value, Patch> = ChunkPatch<Value, Patch>
   }
 
+  /**
+   * @since 1.0.0
+   */
   export namespace HashMap {
+    /**
+     * @since 1.0.0
+     */
     export type Patch<Key, Value, Patch> = HashMapPatch<Key, Value, Patch>
   }
 
+  /**
+   * @since 1.0.0
+   */
   export namespace HashSet {
+    /**
+     * @since 1.0.0
+     */
     export type Patch<Value> = HashSetPatch<Value>
   }
 }
