@@ -21,8 +21,8 @@ devDependencies:
     specifier: ^2.26.2
     version: 2.26.2
   '@definitelytyped/dtslint':
-    specifier: ^0.0.165
-    version: 0.0.165(typescript@5.1.6)
+    specifier: ^0.0.171
+    version: 0.0.171(typescript@5.1.6)
   '@effect/babel-plugin':
     specifier: ^0.2.0
     version: 0.2.0(@babel/core@7.22.9)
@@ -658,13 +658,13 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@definitelytyped/dts-critic@0.0.165(typescript@5.1.6):
-    resolution: {integrity: sha512-A9SaTgIjRl4nEn8h4Zx6UsMroObkJfGAETo6QX42+V1Fs+fFlgR7q2btSa0YR9dxjtZ0gb9TL06vzA5LmSRp+g==}
+  /@definitelytyped/dts-critic@0.0.171(typescript@5.1.6):
+    resolution: {integrity: sha512-w6pAimYBAlmkqXh8m1JAFojNClKI0z3xi3kz7/EVarqo8KvdFWqhxujxGOcQpBZINSEIMD7+CSrzQOur/kEaFw==}
     engines: {node: '>=10.17.0'}
     peerDependencies:
       typescript: '*'
     dependencies:
-      '@definitelytyped/header-parser': 0.0.165
+      '@definitelytyped/header-parser': 0.0.171
       command-exists: 1.2.9
       rimraf: 3.0.2
       semver: 7.5.4
@@ -673,17 +673,17 @@ packages:
       yargs: 15.4.1
     dev: true
 
-  /@definitelytyped/dtslint@0.0.165(typescript@5.1.6):
-    resolution: {integrity: sha512-q9WRDjZP8HxaSWAZIsfq8/G8GS2nLnHt5CqZkM2ZBmdTb+1toE3F0wQQBs7HPGJfIsx1XCW4zl0KC6Gpf4oxYg==}
+  /@definitelytyped/dtslint@0.0.171(typescript@5.1.6):
+    resolution: {integrity: sha512-25ZEof3FyNCOzPxs2PvqdyAcDdYjOLWi5CaU7fqFA2rY6Z/Eg6AZdbTH9tcvdOycVW4rctsDj7vuG3twFlQrtA==}
     engines: {node: '>=10.0.0'}
     hasBin: true
     peerDependencies:
       typescript: '>= 3.0.0-dev || >= 3.1.0-dev || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.7.0-dev || >= 3.8.0-dev || >= 3.9.0-dev || >= 4.0.0-dev || >=5.0.0-dev'
     dependencies:
-      '@definitelytyped/dts-critic': 0.0.165(typescript@5.1.6)
-      '@definitelytyped/header-parser': 0.0.165
-      '@definitelytyped/typescript-versions': 0.0.165
-      '@definitelytyped/utils': 0.0.165
+      '@definitelytyped/dts-critic': 0.0.171(typescript@5.1.6)
+      '@definitelytyped/header-parser': 0.0.171
+      '@definitelytyped/typescript-versions': 0.0.171
+      '@definitelytyped/utils': 0.0.171
       '@typescript-eslint/eslint-plugin': 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.46.0)(typescript@5.1.6)
       '@typescript-eslint/parser': 5.62.0(eslint@8.46.0)(typescript@5.1.6)
       '@typescript-eslint/types': 5.62.0
@@ -700,22 +700,22 @@ packages:
       - supports-color
     dev: true
 
-  /@definitelytyped/header-parser@0.0.165:
-    resolution: {integrity: sha512-UJkrgsNvY0qa2sbUdIcdT4P1iGi0MxvZ/TUB3psidyOAmqDbyPprlPbQwLp34k7NI+RQBRQogb8j4Dez4vRuLA==}
+  /@definitelytyped/header-parser@0.0.171:
+    resolution: {integrity: sha512-nl+yPAMHivSysrOrHlppHSbxy7p41JHdo0WkDf/kbf9nO0UGHKmWMbjmEWHeKf1L2uR7dv9bxXKUfcIZCtNBWQ==}
     dependencies:
-      '@definitelytyped/typescript-versions': 0.0.165
+      '@definitelytyped/typescript-versions': 0.0.171
       '@types/parsimmon': 1.10.6
       parsimmon: 1.18.1
     dev: true
 
-  /@definitelytyped/typescript-versions@0.0.165:
-    resolution: {integrity: sha512-aLAAhpNPWTSSxKL3B60z9NIxYqeU+K0OfjGDim8D4BlBn2EXBb43h5leQVb+w2YtIQhkUJAAN9bFYzp+beNf1g==}
+  /@definitelytyped/typescript-versions@0.0.171:
+    resolution: {integrity: sha512-SVqsNkBr+Fr/zZ/NoscCU0uGqkforkTsuTpl8C9t22DdexNx3O28qDB9FLfvlvxBqdIF2FunBLoQLFS+iPDwCA==}
     dev: true
 
-  /@definitelytyped/utils@0.0.165:
-    resolution: {integrity: sha512-Bg4l1XLfuIb+4/S3AVO5ozFO7XMybxr5m+6FNVkw/HVt/IYiuwR5hDfm7FLlJHw1TYsF8AsIXIu3S9fRlrNntw==}
+  /@definitelytyped/utils@0.0.171:
+    resolution: {integrity: sha512-RcfHxwPG1uqNekBS1ugIUD24We2fyKWGXpZ0pXTUKW/vGTBMpY+2WUJsYydq+97+AT7NLhwVNyvF0Ake7cqnIA==}
     dependencies:
-      '@definitelytyped/typescript-versions': 0.0.165
+      '@definitelytyped/typescript-versions': 0.0.171
       '@qiwi/npm-registry-client': 8.9.1
       '@types/node': 14.18.54
       charm: 1.0.2
@@ -6472,7 +6472,7 @@ packages:
       js-yaml: 3.14.1
       minimatch: 3.1.2
       mkdirp: 0.5.6
-      resolve: 1.22.2
+      resolve: 1.22.3
       semver: 5.7.2
       tslib: 1.14.1
       tsutils: 2.29.0(typescript@5.1.6)
