@@ -31,8 +31,10 @@ const EmptyProto = Object.setPrototypeOf({
   _tag: "Empty"
 }, PatchProto)
 
+const _empty = Object.create(EmptyProto)
+
 /** @internal */
-export const empty = <Value>(): Differ.HashSet.Patch<Value> => Object.create(EmptyProto)
+export const empty = <Value>(): Differ.HashSet.Patch<Value> => _empty
 
 interface AndThen<Value> extends Differ.HashSet.Patch<Value> {
   readonly _tag: "AndThen"

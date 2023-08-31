@@ -173,8 +173,10 @@ const visitLazyChildren = <K, V, A>(
   return applyCont(cont)
 }
 
+const _empty = makeImpl<never, never>(false, 0, new Node.EmptyNode(), 0)
+
 /** @internal */
-export const empty = <K = never, V = never>(): HM.HashMap<K, V> => makeImpl<K, V>(false, 0, new Node.EmptyNode(), 0)
+export const empty = <K = never, V = never>(): HM.HashMap<K, V> => _empty
 
 /** @internal */
 export const make = <Entries extends ReadonlyArray<readonly [any, any]>>(
