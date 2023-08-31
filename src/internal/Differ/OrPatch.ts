@@ -31,13 +31,15 @@ const EmptyProto = Object.setPrototypeOf({
   _tag: "Empty"
 }, PatchProto)
 
+const _empty = Object.create(EmptyProto)
+
 /** @internal */
 export const empty = <Value, Value2, Patch, Patch2>(): Differ.Or.Patch<
   Value,
   Value2,
   Patch,
   Patch2
-> => Object.create(EmptyProto)
+> => _empty
 
 /** @internal */
 export interface AndThen<Value, Value2, Patch, Patch2> extends Differ.Or.Patch<Value, Value2, Patch, Patch2> {

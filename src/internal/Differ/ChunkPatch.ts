@@ -30,10 +30,12 @@ const EmptyProto = Object.setPrototypeOf({
   _tag: "Empty"
 }, PatchProto)
 
+const _empty = Object.create(EmptyProto)
+
 /**
  * @internal
  */
-export const empty = <Value, Patch>(): Differ.Differ.Chunk.Patch<Value, Patch> => Object.create(EmptyProto)
+export const empty = <Value, Patch>(): Differ.Differ.Chunk.Patch<Value, Patch> => _empty
 
 interface AndThen<Value, Patch> extends Differ.Differ.Chunk.Patch<Value, Patch> {
   readonly _tag: "AndThen"

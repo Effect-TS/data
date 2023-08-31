@@ -150,8 +150,10 @@ export const isContext = (u: unknown): u is C.Context<never> => typeof u === "ob
 /** @internal */
 export const isTag = (u: unknown): u is C.Tag<any, any> => typeof u === "object" && u !== null && TagTypeId in u
 
+const _empty = makeContext(new Map())
+
 /** @internal */
-export const empty = (): C.Context<never> => makeContext<never>(new Map())
+export const empty = (): C.Context<never> => _empty
 
 /** @internal */
 export const make = <T extends C.Tag<any, any>>(

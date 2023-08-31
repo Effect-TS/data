@@ -64,8 +64,10 @@ export const isHashSet: {
   (u: unknown): u is HS.HashSet<unknown>
 } = (u: unknown): u is HS.HashSet<unknown> => isObject(u) && HashSetTypeId in u
 
+const _empty = makeImpl<never>(HM.empty())
+
 /** @internal */
-export const empty = <A = never>(): HS.HashSet<A> => makeImpl(HM.empty<A, unknown>())
+export const empty = <A = never>(): HS.HashSet<A> => _empty
 
 /** @internal */
 export const fromIterable = <A>(elements: Iterable<A>): HS.HashSet<A> => {

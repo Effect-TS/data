@@ -31,10 +31,12 @@ const EmptyProto = Object.setPrototypeOf({
   _tag: "Empty"
 }, PatchProto)
 
+const _empty = Object.create(EmptyProto)
+
 /**
  * @internal
  */
-export const empty = <Input, Output>(): Differ.Context.Patch<Input, Output> => Object.create(EmptyProto)
+export const empty = <Input, Output>(): Differ.Context.Patch<Input, Output> => _empty
 
 /** @internal */
 export interface AndThen<Input, Output, Output2> extends Differ.Context.Patch<Input, Output2> {
