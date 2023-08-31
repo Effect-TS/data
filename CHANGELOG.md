@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.18.2
+
+### Patch Changes
+
+- [#481](https://github.com/Effect-TS/data/pull/481) [`7a4027d`](https://github.com/Effect-TS/data/commit/7a4027db31d14cb083359ee82cd1e3cb7371e3db) Thanks [@tim-smart](https://github.com/tim-smart)! - constant empty constructors
+
 ## 0.18.1
 
 ### Patch Changes
