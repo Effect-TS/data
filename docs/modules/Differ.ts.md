@@ -21,6 +21,11 @@ Added in v1.0.0
 - [models](#models)
   - [Differ (interface)](#differ-interface)
 - [patch](#patch)
+  - [ChunkPatch](#chunkpatch)
+  - [ContextPatch](#contextpatch)
+  - [HashMapPatch](#hashmappatch)
+  - [HashSetPatch](#hashsetpatch)
+  - [OrPatch](#orpatch)
   - [combine](#combine)
   - [diff](#diff)
   - [empty](#empty)
@@ -163,6 +168,56 @@ export interface Differ<Value, Patch> {
 Added in v1.0.0
 
 # patch
+
+## ChunkPatch
+
+**Signature**
+
+```ts
+export declare const ChunkPatch: typeof ChunkPatch
+```
+
+Added in v1.0.0
+
+## ContextPatch
+
+**Signature**
+
+```ts
+export declare const ContextPatch: typeof ContextPatch
+```
+
+Added in v1.0.0
+
+## HashMapPatch
+
+**Signature**
+
+```ts
+export declare const HashMapPatch: typeof HashMapPatch
+```
+
+Added in v1.0.0
+
+## HashSetPatch
+
+**Signature**
+
+```ts
+export declare const HashSetPatch: typeof HashSetPatch
+```
+
+Added in v1.0.0
+
+## OrPatch
+
+**Signature**
+
+```ts
+export declare const OrPatch: typeof OrPatch
+```
+
+Added in v1.0.0
 
 ## combine
 

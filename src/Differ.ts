@@ -9,12 +9,39 @@ import * as Dual from "@effect/data/Function"
 import type { HashMap } from "@effect/data/HashMap"
 import type { HashSet } from "@effect/data/HashSet"
 import * as D from "@effect/data/internal/Differ"
-import * as HashSetPatch from "@effect/data/internal/Differ/HashSetPatch"
-
 import * as ChunkPatch from "@effect/data/internal/Differ/ChunkPatch"
 import * as ContextPatch from "@effect/data/internal/Differ/ContextPatch"
 import * as HashMapPatch from "@effect/data/internal/Differ/HashMapPatch"
+import * as HashSetPatch from "@effect/data/internal/Differ/HashSetPatch"
 import * as OrPatch from "@effect/data/internal/Differ/OrPatch"
+
+export {
+  /**
+   * @since 1.0.0
+   * @category patch
+   */
+  ChunkPatch,
+  /**
+   * @since 1.0.0
+   * @category patch
+   */
+  ContextPatch,
+  /**
+   * @since 1.0.0
+   * @category patch
+   */
+  HashMapPatch,
+  /**
+   * @since 1.0.0
+   * @category patch
+   */
+  HashSetPatch,
+  /**
+   * @since 1.0.0
+   * @category patch
+   */
+  OrPatch
+}
 
 /**
  * @since 1.0.0
