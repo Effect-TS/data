@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.18.1
+
+### Patch Changes
+
+- [#479](https://github.com/Effect-TS/data/pull/479) [`bd13dd8`](https://github.com/Effect-TS/data/commit/bd13dd8ae1ddeff3377eac580e66030124f836e9) Thanks [@tim-smart](https://github.com/tim-smart)! - export Differ patch modules
+
 ## 0.18.0
 
 ### Minor Changes
