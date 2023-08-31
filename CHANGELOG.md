@@ -1,5 +1,27 @@
 # @effect/data
 
+## 0.18.0
+
+### Minor Changes
+
+- [#476](https://github.com/Effect-TS/data/pull/476) [`844e3de`](https://github.com/Effect-TS/data/commit/844e3de9ba1890218d9c198ac58506fe7b5f0de2) Thanks [@gcanti](https://github.com/gcanti)! - Brand: rename `refine` to `is`
+
+- [#451](https://github.com/Effect-TS/data/pull/451) [`a9f8319`](https://github.com/Effect-TS/data/commit/a9f83198fbbbf17d13bb3d88aa302f08859d2079) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Revise Constructors and improve Module Structure
+
+- [#473](https://github.com/Effect-TS/data/pull/473) [`d42d579`](https://github.com/Effect-TS/data/commit/d42d579792f919f1ef2a1c4f57498f8bb685a668) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Rename Gen to GeneratorUtils and NonEmpty to NonEmptyIterable
+
+- [#472](https://github.com/Effect-TS/data/pull/472) [`ec30a36`](https://github.com/Effect-TS/data/commit/ec30a36f457b9084453128fa5350d95202ac4731) Thanks [@fubhy](https://github.com/fubhy)! - add Encoding module
+
+- [#473](https://github.com/Effect-TS/data/pull/473) [`d42d579`](https://github.com/Effect-TS/data/commit/d42d579792f919f1ef2a1c4f57498f8bb685a668) Thanks [@mikearnaldi](https://github.com/mikearnaldi)! - Flatten Structure
+
+- [#452](https://github.com/Effect-TS/data/pull/452) [`975ab2f`](https://github.com/Effect-TS/data/commit/975ab2f3ad7335c392224d209470ebca18130860) Thanks [@gcanti](https://github.com/gcanti)! - rename Either.mapRight to Either.map
+
+### Patch Changes
+
+- [#477](https://github.com/Effect-TS/data/pull/477) [`bf0eb9c`](https://github.com/Effect-TS/data/commit/bf0eb9ccac6d003110593ffdced7738046bd0892) Thanks [@gcanti](https://github.com/gcanti)! - Data: fix TaggedEnum namespace declaration (add declare)
+
+- [#461](https://github.com/Effect-TS/data/pull/461) [`41ddfb7`](https://github.com/Effect-TS/data/commit/41ddfb754c05023ad8286e2a923719ee24da3db2) Thanks [@jessekelly881](https://github.com/jessekelly881)! - added Types module
+
 ## 0.17.6
 
 ### Patch Changes
