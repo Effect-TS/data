@@ -20,3 +20,9 @@ type Equals1 = Types.Equals<{ a: number }, { a: number }>
 
 // $ExpectType false
 type Equals2 = Types.Equals<{ a: number }, { b: number }>
+
+// $ExpectType { a: number; }
+type Extend = Types.Extend<{ a: number }, { a: string }>
+
+// $ExpectType { a: number; b: string; }
+type Extend2 = Types.Extend<{ a: number }, { b: string }>

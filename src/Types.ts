@@ -81,3 +81,14 @@ export type Equals<X, Y> = (<T>() => T extends X ? 1 : 2) extends <
   T
 >() => T extends Y ? 1 : 2 ? true
   : false
+
+/**
+ * Extends an object type with another object type.
+ * @since 1.0.0
+ * @category models
+ */
+export type Extend<K, H> = Simplify<
+  {
+    [k in keyof K | keyof H]: k extends keyof K ? K[k] : k extends keyof H ? H[k] : never
+  }
+>
