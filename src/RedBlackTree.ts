@@ -3,6 +3,7 @@
  */
 import type { Chunk } from "@effect/data/Chunk"
 import type { Equal } from "@effect/data/Equal"
+import type { Inspectable } from "@effect/data/Inspectable"
 import * as RBT from "@effect/data/internal/RedBlackTree"
 import * as RBTI from "@effect/data/internal/RedBlackTree/iterator"
 import type { Option } from "@effect/data/Option"
@@ -29,8 +30,8 @@ export const Direction = RBTI.Direction
  * @since 1.0.0
  * @category models
  */
-export interface RedBlackTree<Key, Value> extends Iterable<readonly [Key, Value]>, Equal, Pipeable {
-  readonly _id: TypeId
+export interface RedBlackTree<Key, Value> extends Iterable<readonly [Key, Value]>, Equal, Pipeable, Inspectable {
+  readonly [TypeId]: TypeId
 }
 
 /**

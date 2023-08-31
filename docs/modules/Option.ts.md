@@ -1,6 +1,6 @@
 ---
 title: Option.ts
-nav_order: 34
+nav_order: 28
 parent: Modules
 ---
 
@@ -1117,9 +1117,8 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface None<A> extends Data.Case, Pipeable {
+export interface None<A> extends Data.Case, Pipeable, Inspectable {
   readonly _tag: 'None'
-  readonly _id: TypeId
   readonly [TypeId]: {
     readonly _A: (_: never) => A
   }
@@ -1168,9 +1167,8 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Some<A> extends Data.Case, Pipeable {
+export interface Some<A> extends Data.Case, Pipeable, Inspectable {
   readonly _tag: 'Some'
-  readonly _id: TypeId
   readonly value: A
   readonly [TypeId]: {
     readonly _A: (_: never) => A

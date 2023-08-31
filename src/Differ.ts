@@ -3,18 +3,24 @@
  */
 import type { Chunk } from "@effect/data/Chunk"
 import type { Context } from "@effect/data/Context"
-import type { ChunkPatch } from "@effect/data/DifferChunkPatch"
-import type { ContextPatch } from "@effect/data/DifferContextPatch"
-import type { HashMapPatch } from "@effect/data/DifferHashMapPatch"
-import type { HashSetPatch } from "@effect/data/DifferHashSetPatch"
-import type { OrPatch } from "@effect/data/DifferOrPatch"
 import type { Either } from "@effect/data/Either"
+import type { Equal } from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
 import type { HashMap } from "@effect/data/HashMap"
 import type { HashSet } from "@effect/data/HashSet"
 import * as D from "@effect/data/internal/Differ"
+import * as HashSetPatch from "@effect/data/internal/Differ/HashSetPatch"
 
-const TypeId: unique symbol = D.DifferTypeId as TypeId
+import * as ChunkPatch from "@effect/data/internal/Differ/ChunkPatch"
+import * as ContextPatch from "@effect/data/internal/Differ/ContextPatch"
+import * as HashMapPatch from "@effect/data/internal/Differ/HashMapPatch"
+import * as OrPatch from "@effect/data/internal/Differ/OrPatch"
+
+/**
+ * @since 1.0.0
+ * @category symbol
+ */
+export const TypeId: unique symbol = D.DifferTypeId as TypeId
 
 /**
  * @since 1.0.0
@@ -42,18 +48,21 @@ export type TypeId = typeof TypeId
  * @category models
  */
 export interface Differ<Value, Patch> {
-  readonly _id: TypeId
-  readonly _V: (_: Value) => Value
-  readonly _P: (_: Patch) => Patch
-  /** @internal */
+  readonly [TypeId]: {
+    readonly _V: (_: Value) => Value
+    readonly _P: (_: Patch) => Patch
+  }
   readonly empty: Patch
-  /** @internal */
   readonly diff: (oldValue: Value, newValue: Value) => Patch
-  /** @internal */
   readonly combine: (first: Patch, second: Patch) => Patch
-  /** @internal */
   readonly patch: (patch: Patch, oldValue: Value) => Value
 }
+
+const ChunkPatchTypeId: unique symbol = ChunkPatch.ChunkPatchTypeId as Differ.Chunk.TypeId
+const ContextPatchTypeId: unique symbol = ContextPatch.ContextPatchTypeId as Differ.Context.TypeId
+const HashMapPatchTypeId: unique symbol = HashMapPatch.HashMapPatchTypeId as Differ.HashMap.TypeId
+const HashSetPatchTypeId: unique symbol = HashSetPatch.HashSetPatchTypeId as Differ.HashSet.TypeId
+const OrPatchTypeId: unique symbol = OrPatch.OrPatchTypeId as Differ.Or.TypeId
 
 /**
  * @since 1.0.0
@@ -62,21 +71,26 @@ export declare namespace Differ {
   /**
    * @since 1.0.0
    */
-  export namespace Or {
-    /**
-     * @since 1.0.0
-     */
-    export type Patch<Value, Value2, Patch, Patch2> = OrPatch<Value, Value2, Patch, Patch2>
-  }
-
-  /**
-   * @since 1.0.0
-   */
   export namespace Context {
     /**
      * @since 1.0.0
+     * @category symbol
      */
-    export type Patch<Input, Output> = ContextPatch<Input, Output>
+    export type TypeId = typeof ContextPatchTypeId
+    /**
+     * A `Patch<Input, Output>` describes an update that transforms a `Env<Input>`
+     * to a `Env<Output>` as a data structure. This allows combining updates to
+     * different services in the environment in a compositional way.
+     *
+     * @since 1.0.0
+     * @category models
+     */
+    export interface Patch<Input, Output> extends Equal {
+      readonly [ContextPatchTypeId]: {
+        readonly _Input: (_: Input) => void
+        readonly _Output: (_: never) => Output
+      }
+    }
   }
 
   /**
@@ -85,8 +99,21 @@ export declare namespace Differ {
   export namespace Chunk {
     /**
      * @since 1.0.0
+     * @category symbol
      */
-    export type Patch<Value, Patch> = ChunkPatch<Value, Patch>
+    export type TypeId = typeof ChunkPatchTypeId
+    /**
+     * A patch which describes updates to a chunk of values.
+     *
+     * @since 1.0.0
+     * @category models
+     */
+    export interface Patch<Value, Patch> extends Equal {
+      readonly [ChunkPatchTypeId]: {
+        readonly _Value: (_: Value) => Value
+        readonly _Patch: (_: Patch) => Patch
+      }
+    }
   }
 
   /**
@@ -95,8 +122,22 @@ export declare namespace Differ {
   export namespace HashMap {
     /**
      * @since 1.0.0
+     * @category symbol
      */
-    export type Patch<Key, Value, Patch> = HashMapPatch<Key, Value, Patch>
+    export type TypeId = typeof HashMapPatchTypeId
+    /**
+     * A patch which describes updates to a map of keys and values.
+     *
+     * @since 1.0.0
+     * @category models
+     */
+    export interface Patch<Key, Value, Patch> extends Equal {
+      readonly [HashMapPatchTypeId]: {
+        readonly _Key: (_: Key) => Key
+        readonly _Value: (_: Value) => Value
+        readonly _Patch: (_: Patch) => Patch
+      }
+    }
   }
 
   /**
@@ -105,8 +146,45 @@ export declare namespace Differ {
   export namespace HashSet {
     /**
      * @since 1.0.0
+     * @category symbol
      */
-    export type Patch<Value> = HashSetPatch<Value>
+    export type TypeId = typeof HashSetPatchTypeId
+    /**
+     * A patch which describes updates to a set of values.
+     *
+     * @since 1.0.0
+     * @category models
+     */
+    export interface Patch<Value> extends Equal {
+      readonly [HashSetPatchTypeId]: {
+        readonly _Value: (_: Value) => Value
+      }
+    }
+  }
+
+  /**
+   * @since 1.0.0
+   */
+  export namespace Or {
+    /**
+     * @since 1.0.0
+     * @category symbol
+     */
+    export type TypeId = typeof OrPatchTypeId
+    /**
+     * A patch which describes updates to either one value or another.
+     *
+     * @since 1.0.0
+     * @category models
+     */
+    export interface Patch<Value, Value2, Patch, Patch2> extends Equal {
+      readonly [OrPatchTypeId]: {
+        readonly _Value: (_: Value) => Value
+        readonly _Value2: (_: Value2) => Value2
+        readonly _Patch: (_: Patch) => Patch
+        readonly _Patch2: (_: Patch2) => Patch2
+      }
+    }
   }
 }
 
@@ -116,18 +194,30 @@ export declare namespace Differ {
  * @since 1.0.0
  * @category patch
  */
-export const empty: <Value, Patch>(self: Differ<Value, Patch>) => Patch = (self) => self.empty
+export const empty: <Value, Patch>(self: Differ<Value, Patch>) => Patch = (
+  self
+) => self.empty
 
 /**
  * @since 1.0.0
  * @category patch
  */
 export const diff: {
-  <Value>(oldValue: Value, newValue: Value): <Patch>(self: Differ<Value, Patch>) => Patch
-  <Value, Patch>(self: Differ<Value, Patch>, oldValue: Value, newValue: Value): Patch
+  <Value>(oldValue: Value, newValue: Value): <Patch>(
+    self: Differ<Value, Patch>
+  ) => Patch
+  <Value, Patch>(
+    self: Differ<Value, Patch>,
+    oldValue: Value,
+    newValue: Value
+  ): Patch
 } = Dual.dual(
   3,
-  <Value, Patch>(self: Differ<Value, Patch>, oldValue: Value, newValue: Value): Patch => self.diff(oldValue, newValue)
+  <Value, Patch>(
+    self: Differ<Value, Patch>,
+    oldValue: Value,
+    newValue: Value
+  ): Patch => self.diff(oldValue, newValue)
 )
 
 /**
@@ -141,11 +231,21 @@ export const diff: {
  * @category patch
  */
 export const combine: {
-  <Patch>(first: Patch, second: Patch): <Value>(self: Differ<Value, Patch>) => Patch
-  <Value, Patch>(self: Differ<Value, Patch>, first: Patch, second: Patch): Patch
+  <Patch>(first: Patch, second: Patch): <Value>(
+    self: Differ<Value, Patch>
+  ) => Patch
+  <Value, Patch>(
+    self: Differ<Value, Patch>,
+    first: Patch,
+    second: Patch
+  ): Patch
 } = Dual.dual(
   3,
-  <Value, Patch>(self: Differ<Value, Patch>, first: Patch, second: Patch): Patch => self.combine(first, second)
+  <Value, Patch>(
+    self: Differ<Value, Patch>,
+    first: Patch,
+    second: Patch
+  ): Patch => self.combine(first, second)
 )
 
 /**
@@ -156,11 +256,21 @@ export const combine: {
  * @category patch
  */
 export const patch: {
-  <Patch, Value>(patch: Patch, oldValue: Value): (self: Differ<Value, Patch>) => Value
-  <Patch, Value>(self: Differ<Value, Patch>, patch: Patch, oldValue: Value): Value
+  <Patch, Value>(patch: Patch, oldValue: Value): (
+    self: Differ<Value, Patch>
+  ) => Value
+  <Patch, Value>(
+    self: Differ<Value, Patch>,
+    patch: Patch,
+    oldValue: Value
+  ): Value
 } = Dual.dual(
   3,
-  <Patch, Value>(self: Differ<Value, Patch>, patch: Patch, oldValue: Value): Value => self.patch(patch, oldValue)
+  <Patch, Value>(
+    self: Differ<Value, Patch>,
+    patch: Patch,
+    oldValue: Value
+  ): Value => self.patch(patch, oldValue)
 )
 
 /**
@@ -169,14 +279,12 @@ export const patch: {
  * @since 1.0.0
  * @category constructors
  */
-export const make: <Value, Patch>(
-  params: {
-    readonly empty: Patch
-    readonly diff: (oldValue: Value, newValue: Value) => Patch
-    readonly combine: (first: Patch, second: Patch) => Patch
-    readonly patch: (patch: Patch, oldValue: Value) => Value
-  }
-) => Differ<Value, Patch> = D.make
+export const make: <Value, Patch>(params: {
+  readonly empty: Patch
+  readonly diff: (oldValue: Value, newValue: Value) => Patch
+  readonly combine: (first: Patch, second: Patch) => Patch
+  readonly patch: (patch: Patch, oldValue: Value) => Value
+}) => Differ<Value, Patch> = D.make
 
 /**
  * Constructs a differ that knows how to diff `Env` values.
@@ -184,7 +292,10 @@ export const make: <Value, Patch>(
  * @since 1.0.0
  * @category constructors
  */
-export const environment: <A>() => Differ<Context<A>, ContextPatch<A, A>> = D.environment
+export const environment: <A>() => Differ<
+  Context<A>,
+  Differ.Context.Patch<A, A>
+> = D.environment
 
 /**
  * Constructs a differ that knows how to diff a `Chunk` of values given a
@@ -195,7 +306,7 @@ export const environment: <A>() => Differ<Context<A>, ContextPatch<A, A>> = D.en
  */
 export const chunk: <Value, Patch>(
   differ: Differ<Value, Patch>
-) => Differ<Chunk<Value>, ChunkPatch<Value, Patch>> = D.chunk
+) => Differ<Chunk<Value>, Differ.Chunk.Patch<Value, Patch>> = D.chunk
 
 /**
  * Constructs a differ that knows how to diff a `HashMap` of keys and values given
@@ -206,7 +317,7 @@ export const chunk: <Value, Patch>(
  */
 export const hashMap: <Key, Value, Patch>(
   differ: Differ<Value, Patch>
-) => Differ<HashMap<Key, Value>, HashMapPatch<Key, Value, Patch>> = D.hashMap
+) => Differ<HashMap<Key, Value>, Differ.HashMap.Patch<Key, Value, Patch>> = D.hashMap
 
 /**
  * Constructs a differ that knows how to diff a `HashSet` of values.
@@ -214,7 +325,10 @@ export const hashMap: <Key, Value, Patch>(
  * @since 1.0.0
  * @category constructors
  */
-export const hashSet: <Value>() => Differ<HashSet<Value>, HashSetPatch<Value>> = D.hashSet
+export const hashSet: <Value>() => Differ<
+  HashSet<Value>,
+  Differ.HashSet.Patch<Value>
+> = D.hashSet
 
 /**
  * Combines this differ and the specified differ to produce a differ that
@@ -223,13 +337,19 @@ export const hashSet: <Value>() => Differ<HashSet<Value>, HashSetPatch<Value>> =
  * @since 1.0.0
  */
 export const orElseEither: {
-  <Value2, Patch2>(
-    that: Differ<Value2, Patch2>
-  ): <Value, Patch>(self: Differ<Value, Patch>) => Differ<Either<Value, Value2>, OrPatch<Value, Value2, Patch, Patch2>>
+  <Value2, Patch2>(that: Differ<Value2, Patch2>): <Value, Patch>(
+    self: Differ<Value, Patch>
+  ) => Differ<
+    Either<Value, Value2>,
+    Differ.Or.Patch<Value, Value2, Patch, Patch2>
+  >
   <Value, Patch, Value2, Patch2>(
     self: Differ<Value, Patch>,
     that: Differ<Value2, Patch2>
-  ): Differ<Either<Value, Value2>, OrPatch<Value, Value2, Patch, Patch2>>
+  ): Differ<
+    Either<Value, Value2>,
+    Differ.Or.Patch<Value, Value2, Patch, Patch2>
+  >
 } = D.orElseEither
 
 /**
@@ -239,12 +359,10 @@ export const orElseEither: {
  * @since 1.0.0
  */
 export const transform: {
-  <Value, Value2>(
-    options: {
-      readonly toNew: (value: Value) => Value2
-      readonly toOld: (value: Value2) => Value
-    }
-  ): <Patch>(self: Differ<Value, Patch>) => Differ<Value2, Patch>
+  <Value, Value2>(options: {
+    readonly toNew: (value: Value) => Value2
+    readonly toOld: (value: Value2) => Value
+  }): <Patch>(self: Differ<Value, Patch>) => Differ<Value2, Patch>
   <Value, Patch, Value2>(
     self: Differ<Value, Patch>,
     options: {
@@ -279,9 +397,9 @@ export const updateWith: <A>(f: (x: A, y: A) => A) => Differ<A, (a: A) => A> = D
  * @since 1.0.0
  */
 export const zip: {
-  <Value2, Patch2>(
-    that: Differ<Value2, Patch2>
-  ): <Value, Patch>(self: Differ<Value, Patch>) => Differ<readonly [Value, Value2], readonly [Patch, Patch2]>
+  <Value2, Patch2>(that: Differ<Value2, Patch2>): <Value, Patch>(
+    self: Differ<Value, Patch>
+  ) => Differ<readonly [Value, Value2], readonly [Patch, Patch2]>
   <Value, Patch, Value2, Patch2>(
     self: Differ<Value, Patch>,
     that: Differ<Value2, Patch2>

@@ -5,6 +5,8 @@ import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
 import { pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
+import type { Inspectable } from "@effect/data/Inspectable"
+import { NodeInspectSymbol } from "@effect/data/Inspectable"
 import type { Order } from "@effect/data/Order"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
@@ -24,48 +26,48 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface SortedSet<A> extends Iterable<A>, Equal.Equal, Pipeable {
-  readonly _id: TypeId
+export interface SortedSet<A> extends Iterable<A>, Equal.Equal, Pipeable, Inspectable {
+  readonly [TypeId]: {
+    readonly _A: (_: never) => A
+  }
   /** @internal */
   readonly keyTree: RBT.RedBlackTree<A, boolean>
 }
 
-/** @internal */
-class SortedSetImpl<A> implements Iterable<A>, Equal.Equal, Pipeable {
-  readonly _id: TypeId = TypeId
-
-  constructor(readonly keyTree: RBT.RedBlackTree<A, boolean>) {}
-
-  [Hash.symbol](): number {
-    return pipe(Hash.hash(this.keyTree), Hash.combine(Hash.hash("@effect/data/SortedSet")))
-  }
-
-  [Equal.symbol](that: unknown): boolean {
+const SortedSetProto: Omit<SortedSet<unknown>, "keyTree"> = {
+  [TypeId]: {
+    _A: (_: never) => _
+  },
+  [Hash.symbol]<A>(this: SortedSet<A>): number {
+    return pipe(Hash.hash(this.keyTree), Hash.combine(Hash.hash(TypeId)))
+  },
+  [Equal.symbol]<A>(this: SortedSet<A>, that: unknown): boolean {
     return isSortedSet(that) && Equal.equals(this.keyTree, that.keyTree)
-  }
-
-  [Symbol.iterator](): Iterator<A> {
+  },
+  [Symbol.iterator]<A>(this: SortedSet<A>): Iterator<A> {
     return RBT.keys(this.keyTree)
-  }
-
-  toString() {
-    return `SortedSet(${Array.from(this).map(String).join(", ")})`
-  }
-
+  },
+  toString<A>(this: SortedSet<A>) {
+    return JSON.stringify(this, null, 2)
+  },
   toJSON() {
     return {
       _tag: "SortedSet",
       values: Array.from(this)
     }
-  }
-
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON()
-  }
-
+  },
   pipe() {
     return pipeArguments(this, arguments)
   }
+}
+
+const fromTree = <A>(keyTree: RBT.RedBlackTree<A, boolean>): SortedSet<A> => {
+  const a = Object.create(SortedSetProto)
+  a.keyTree = keyTree
+  return a
 }
 
 /**
@@ -75,22 +77,20 @@ class SortedSetImpl<A> implements Iterable<A>, Equal.Equal, Pipeable {
 export const isSortedSet: {
   <A>(u: Iterable<A>): u is SortedSet<A>
   (u: unknown): u is SortedSet<unknown>
-} = (u: unknown): u is SortedSet<unknown> => isObject(u) && "_id" in u && u["_id"] === TypeId
+} = (u: unknown): u is SortedSet<unknown> => isObject(u) && TypeId in u
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const empty = <A>(O: Order<A>): SortedSet<A> => new SortedSetImpl(RBT.empty(O))
+export const empty = <A>(O: Order<A>): SortedSet<A> => fromTree(RBT.empty(O))
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const fromIterable = <K>(ord: Order<K>) =>
-(
-  iterable: Iterable<K>
-): SortedSet<K> => new SortedSetImpl(RBT.fromIterable<K, boolean>(ord)(Array.from(iterable).map((k) => [k, true])))
+export const fromIterable = <K>(ord: Order<K>) => (iterable: Iterable<K>): SortedSet<K> =>
+  fromTree(RBT.fromIterable<K, boolean>(ord)(Array.from(iterable).map((k) => [k, true])))
 
 /**
  * @since 1.0.0
@@ -113,7 +113,7 @@ export const add: {
 >(2, (self, value) =>
   RBT.has(self.keyTree, value)
     ? self
-    : new SortedSetImpl(RBT.insert(self.keyTree, value, true)))
+    : fromTree(RBT.insert(self.keyTree, value, true)))
 
 /**
  * @since 1.0.0
@@ -316,7 +316,7 @@ export const remove: {
 } = Dual.dual<
   <A>(value: A) => (self: SortedSet<A>) => SortedSet<A>,
   <A>(self: SortedSet<A>, value: A) => SortedSet<A>
->(2, (self, value) => new SortedSetImpl(RBT.removeFirst(self.keyTree, value)))
+>(2, (self, value) => fromTree(RBT.removeFirst(self.keyTree, value)))
 
 /**
  * @since 1.0.0

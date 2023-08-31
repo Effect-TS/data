@@ -22,6 +22,7 @@ Added in v1.0.0
   - [Tag](#tag)
   - [empty](#empty)
   - [make](#make)
+  - [unsafeMake](#unsafemake)
 - [getters](#getters)
   - [get](#get)
   - [getOption](#getoption)
@@ -65,7 +66,7 @@ desireable to preserve the instance across reloads.
 **Signature**
 
 ```ts
-export declare const Tag: <Identifier, Service = Identifier>(key?: unknown) => Tag<Identifier, Service>
+export declare const Tag: <Identifier, Service = Identifier>(identifier?: unknown) => Tag<Identifier, Service>
 ```
 
 **Example**
@@ -119,6 +120,16 @@ const Port = Context.Tag<{ PORT: number }>()
 const Services = Context.make(Port, { PORT: 8080 })
 
 assert.deepStrictEqual(Context.get(Services, Port), { PORT: 8080 })
+```
+
+Added in v1.0.0
+
+## unsafeMake
+
+**Signature**
+
+```ts
+export declare const unsafeMake: <Services>(unsafeMap: Map<Tag<any, any>, any>) => Context<Services>
 ```
 
 Added in v1.0.0
@@ -234,10 +245,10 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Context<Services> extends Equal, Pipeable {
-  readonly _id: TypeId
-  readonly _S: (_: Services) => unknown
-  /** @internal */
+export interface Context<Services> extends Equal, Pipeable, Inspectable {
+  readonly [TypeId]: {
+    readonly _S: (_: Services) => unknown
+  }
   readonly unsafeMap: Map<Tag<any, any>, any>
 }
 ```
@@ -249,11 +260,16 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Tag<Identifier, Service> extends Pipeable {
+export interface Tag<Identifier, Service> extends Pipeable, Inspectable {
   readonly _tag: 'Tag'
-  readonly [TagTypeId]: { readonly _S: (_: Service) => Service; readonly _I: (_: Identifier) => Identifier }
+  readonly [TagTypeId]: {
+    readonly _S: (_: Service) => Service
+    readonly _I: (_: Identifier) => Identifier
+  }
   of(self: Service): Service
   context(self: Service): Context<Identifier>
+  readonly stack?: string | undefined
+  readonly identifier?: unknown | undefined
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: TagUnify<this>
   [Unify.blacklistSymbol]?: TagUnifyBlacklist

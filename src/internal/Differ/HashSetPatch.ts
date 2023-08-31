@@ -1,87 +1,94 @@
 import * as Chunk from "@effect/data/Chunk"
-import type * as HSP from "@effect/data/DifferHashSetPatch"
-import * as Equal from "@effect/data/Equal"
+import { Structural } from "@effect/data/Data"
+
+import type { Differ } from "@effect/data/Differ"
 import * as Dual from "@effect/data/Function"
-import * as Hash from "@effect/data/Hash"
 import * as HashSet from "@effect/data/HashSet"
 
 /** @internal */
-export const HashSetPatchTypeId: HSP.TypeId = Symbol.for(
+export const HashSetPatchTypeId: Differ.HashSet.TypeId = Symbol.for(
   "@effect/data/DifferHashSetPatch"
-) as HSP.TypeId
+) as Differ.HashSet.TypeId
 
 function variance<A, B>(a: A): B {
   return a as unknown as B
 }
 
-class Empty<Value> implements HSP.HashSetPatch<Value> {
-  readonly _tag = "Empty"
-  readonly _Value: (_: Value) => Value = variance
-  readonly _id: HSP.TypeId = HashSetPatchTypeId;
-
-  [Hash.symbol]() {
-    return Hash.string(`HashSetPatch(Empty)`)
+/** @internal */
+const PatchProto = Object.setPrototypeOf({
+  [HashSetPatchTypeId]: {
+    _Value: variance,
+    _Key: variance,
+    _Patch: variance
   }
+}, Structural.prototype)
 
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id
-  }
+interface Empty<Value> extends Differ.HashSet.Patch<Value> {
+  readonly _tag: "Empty"
 }
 
-class AndThen<Value> implements HSP.HashSetPatch<Value> {
-  readonly _tag = "AndThen"
-  readonly _Value: (_: Value) => Value = variance
-  readonly _id: HSP.TypeId = HashSetPatchTypeId
-  constructor(
-    readonly first: HSP.HashSetPatch<Value>,
-    readonly second: HSP.HashSetPatch<Value>
-  ) {}
+const EmptyProto = Object.setPrototypeOf({
+  _tag: "Empty"
+}, PatchProto)
 
-  [Hash.symbol]() {
-    return Hash.string(`HashSetPatch(AndThen)`)
-  }
+/** @internal */
+export const empty = <Value>(): Differ.HashSet.Patch<Value> => Object.create(EmptyProto)
 
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id &&
-      Equal.equals(this.first, (that as this).first) &&
-      Equal.equals(this.second, (that as this).second)
-  }
+interface AndThen<Value> extends Differ.HashSet.Patch<Value> {
+  readonly _tag: "AndThen"
+  readonly first: Differ.HashSet.Patch<Value>
+  readonly second: Differ.HashSet.Patch<Value>
 }
 
-class Add<Value> implements HSP.HashSetPatch<Value> {
-  readonly _tag = "Add"
-  readonly _Value: (_: Value) => Value = variance
-  readonly _id: HSP.TypeId = HashSetPatchTypeId
-  constructor(readonly value: Value) {}
+const AndThenProto = Object.setPrototypeOf({
+  _tag: "AndThen"
+}, PatchProto)
 
-  [Hash.symbol]() {
-    return Hash.string(`HashSetPatch(Add)`)
-  }
-
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id &&
-      Equal.equals(this.value, (that as this).value)
-  }
+/** @internal */
+export const makeAndThen = <Value>(
+  first: Differ.HashSet.Patch<Value>,
+  second: Differ.HashSet.Patch<Value>
+): Differ.HashSet.Patch<Value> => {
+  const o = Object.create(AndThenProto)
+  o.first = first
+  o.second = second
+  return o
 }
 
-class Remove<Value> implements HSP.HashSetPatch<Value> {
-  readonly _tag = "Remove"
-  readonly _Value: (_: Value) => Value = variance
-  readonly _id: HSP.TypeId = HashSetPatchTypeId
-  constructor(readonly value: Value) {}
+interface Add<Value> extends Differ.HashSet.Patch<Value> {
+  readonly _tag: "Add"
+  readonly value: Value
+}
 
-  [Hash.symbol]() {
-    return Hash.string(`HashSetPatch(Remove)`)
-  }
+const AddProto = Object.setPrototypeOf({
+  _tag: "Add"
+}, PatchProto)
 
-  [Equal.symbol](that: unknown) {
-    return typeof that === "object" && that !== null && "_id" in that && that["_id"] === this._id &&
-      "_tag" in that && that["_tag"] === this._id &&
-      Equal.equals(this.value, (that as this).value)
-  }
+/** @internal */
+export const makeAdd = <Value>(
+  value: Value
+): Differ.HashSet.Patch<Value> => {
+  const o = Object.create(AddProto)
+  o.value = value
+  return o
+}
+
+interface Remove<Value> extends Differ.HashSet.Patch<Value> {
+  readonly _tag: "Remove"
+  readonly value: Value
+}
+
+const RemoveProto = Object.setPrototypeOf({
+  _tag: "Remove"
+}, PatchProto)
+
+/** @internal */
+export const makeRemove = <Value>(
+  value: Value
+): Differ.HashSet.Patch<Value> => {
+  const o = Object.create(RemoveProto)
+  o.value = value
+  return o
 }
 
 type Instruction =
@@ -91,55 +98,52 @@ type Instruction =
   | Remove<any>
 
 /** @internal */
-export const empty = <Value>(): HSP.HashSetPatch<Value> => new Empty()
-
-/** @internal */
 export const diff = <Value>(
   oldValue: HashSet.HashSet<Value>,
   newValue: HashSet.HashSet<Value>
-): HSP.HashSetPatch<Value> => {
+): Differ.HashSet.Patch<Value> => {
   const [removed, patch] = HashSet.reduce(
     [oldValue, empty<Value>()] as const,
     ([set, patch], value: Value) => {
       if (HashSet.has(value)(set)) {
         return [HashSet.remove(value)(set), patch] as const
       }
-      return [set, combine(new Add(value))(patch)] as const
+      return [set, combine(makeAdd(value))(patch)] as const
     }
   )(newValue)
-  return HashSet.reduce(patch, (patch, value: Value) => combine(new Remove(value))(patch))(removed)
+  return HashSet.reduce(patch, (patch, value: Value) => combine(makeRemove(value))(patch))(removed)
 }
 
 /** @internal */
 export const combine = Dual.dual<
   <Value>(
-    that: HSP.HashSetPatch<Value>
+    that: Differ.HashSet.Patch<Value>
   ) => (
-    self: HSP.HashSetPatch<Value>
-  ) => HSP.HashSetPatch<Value>,
+    self: Differ.HashSet.Patch<Value>
+  ) => Differ.HashSet.Patch<Value>,
   <Value>(
-    self: HSP.HashSetPatch<Value>,
-    that: HSP.HashSetPatch<Value>
-  ) => HSP.HashSetPatch<Value>
->(2, (self, that) => new AndThen(self, that))
+    self: Differ.HashSet.Patch<Value>,
+    that: Differ.HashSet.Patch<Value>
+  ) => Differ.HashSet.Patch<Value>
+>(2, (self, that) => makeAndThen(self, that))
 
 /** @internal */
 export const patch = Dual.dual<
   <Value>(
     oldValue: HashSet.HashSet<Value>
   ) => (
-    self: HSP.HashSetPatch<Value>
+    self: Differ.HashSet.Patch<Value>
   ) => HashSet.HashSet<Value>,
   <Value>(
-    self: HSP.HashSetPatch<Value>,
+    self: Differ.HashSet.Patch<Value>,
     oldValue: HashSet.HashSet<Value>
   ) => HashSet.HashSet<Value>
 >(2, <Value>(
-  self: HSP.HashSetPatch<Value>,
+  self: Differ.HashSet.Patch<Value>,
   oldValue: HashSet.HashSet<Value>
 ) => {
   let set = oldValue
-  let patches: Chunk.Chunk<HSP.HashSetPatch<Value>> = Chunk.of(self)
+  let patches: Chunk.Chunk<Differ.HashSet.Patch<Value>> = Chunk.of(self)
   while (Chunk.isNonEmpty(patches)) {
     const head: Instruction = Chunk.headNonEmpty(patches) as Instruction
     const tail = Chunk.tailNonEmpty(patches)

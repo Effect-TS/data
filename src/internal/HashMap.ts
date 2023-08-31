@@ -3,6 +3,7 @@ import * as Dual from "@effect/data/Function"
 import { identity, pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import type * as HM from "@effect/data/HashMap"
+import { NodeInspectSymbol } from "@effect/data/Inspectable"
 import { fromBitmap, hashFragment, toBitmap } from "@effect/data/internal/HashMap/bitwise"
 import { SIZE } from "@effect/data/internal/HashMap/config"
 import * as Node from "@effect/data/internal/HashMap/node"
@@ -31,28 +32,26 @@ interface VisitResult<K, V, A> {
 }
 
 /** @internal */
-export class HashMapImpl<K, V> implements HM.HashMap<K, V> {
-  readonly _id: HM.TypeId = HashMapTypeId
-  constructor(
-    public _editable: boolean,
-    public _edit: number,
-    public _root: Node.Node<K, V>,
-    public _size: number
-  ) {}
+export interface HashMapImpl<K, V> extends HM.HashMap<K, V> {
+  _editable: boolean
+  _edit: number
+  _root: Node.Node<K, V>
+  _size: number
+}
 
-  [Symbol.iterator](): Iterator<[K, V]> {
+const HashMapProto: HM.HashMap<unknown, unknown> = {
+  [HashMapTypeId]: HashMapTypeId,
+  [Symbol.iterator]<K, V>(this: HashMapImpl<K, V>): Iterator<[K, V]> {
     return new HashMapIterator(this, (k, v) => [k, v])
-  }
-
+  },
   [Hash.symbol](): number {
     let hash = Hash.hash("HashMap")
     for (const item of this) {
       hash ^= Hash.combine(Hash.hash(item[0]))(Hash.hash(item[1]))
     }
     return hash
-  }
-
-  [Equal.symbol](that: unknown): boolean {
+  },
+  [Equal.symbol]<K, V>(this: HashMapImpl<K, V>, that: unknown): boolean {
     if (isHashMap(that)) {
       if ((that as HashMapImpl<K, V>)._size !== this._size) {
         return false
@@ -73,26 +72,36 @@ export class HashMapImpl<K, V> implements HM.HashMap<K, V> {
       return true
     }
     return false
-  }
-
-  toString() {
+  },
+  toString<K, V>(this: HashMapImpl<K, V>) {
     return `HashMap(${Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")})`
-  }
-
+  },
   toJSON() {
     return {
       _tag: "HashMap",
       values: Array.from(this)
     }
-  }
-
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON()
-  }
-
+  },
   pipe() {
     return pipeArguments(this, arguments)
   }
+}
+
+const makeImpl = <K, V>(
+  editable: boolean,
+  edit: number,
+  root: Node.Node<K, V>,
+  size: number
+): HashMapImpl<K, V> => {
+  const map = Object.create(HashMapProto)
+  map._editable = editable
+  map._edit = edit
+  map._root = root
+  map._size = size
+  return map
 }
 
 class HashMapIterator<K, V, T> implements IterableIterator<T> {
@@ -165,8 +174,7 @@ const visitLazyChildren = <K, V, A>(
 }
 
 /** @internal */
-export const empty = <K = never, V = never>(): HM.HashMap<K, V> =>
-  new HashMapImpl<K, V>(false, 0, new Node.EmptyNode(), 0)
+export const empty = <K = never, V = never>(): HM.HashMap<K, V> => makeImpl<K, V>(false, 0, new Node.EmptyNode(), 0)
 
 /** @internal */
 export const make = <Entries extends ReadonlyArray<readonly [any, any]>>(
@@ -189,7 +197,7 @@ export const fromIterable = <K, V>(entries: Iterable<readonly [K, V]>): HM.HashM
 export const isHashMap: {
   <K, V>(u: Iterable<readonly [K, V]>): u is HM.HashMap<K, V>
   (u: unknown): u is HM.HashMap<unknown, unknown>
-} = (u: unknown): u is HM.HashMap<unknown, unknown> => isObject(u) && "_id" in u && u["_id"] === HashMapTypeId
+} = (u: unknown): u is HM.HashMap<unknown, unknown> => isObject(u) && HashMapTypeId in u
 
 /** @internal */
 export const isEmpty = <K, V>(self: HM.HashMap<K, V>): boolean =>
@@ -292,7 +300,7 @@ export const setTree = Dual.dual<
   }
   return newRoot === (self as HashMapImpl<K, V>)._root
     ? self
-    : new HashMapImpl(
+    : makeImpl(
       (self as HashMapImpl<K, V>)._editable,
       (self as HashMapImpl<K, V>)._edit,
       newRoot,
@@ -313,7 +321,7 @@ export const size = <K, V>(self: HM.HashMap<K, V>): number => (self as HashMapIm
 
 /** @internal */
 export const beginMutation = <K, V>(self: HM.HashMap<K, V>): HM.HashMap<K, V> =>
-  new HashMapImpl(
+  makeImpl(
     true,
     (self as HashMapImpl<K, V>)._edit + 1,
     (self as HashMapImpl<K, V>)._root,

@@ -36,50 +36,44 @@ export declare namespace Case {
   }
 }
 
-const protoArr: Equal.Equal = (() => {
-  const proto = {
-    [Hash.symbol](this: Array<any>) {
-      return Hash.array(this)
-    },
-    [Equal.symbol](this: Array<any>, that: Equal.Equal) {
-      if (Array.isArray(that) && this.length === that.length) {
-        return this.every((v, i) => Equal.equals(v, (that as Array<any>)[i]))
-      } else {
-        return false
-      }
+const protoArr: Equal.Equal = Object.assign(Object.create(Array.prototype), {
+  [Hash.symbol](this: Array<any>) {
+    return Hash.array(this)
+  },
+  [Equal.symbol](this: Array<any>, that: Equal.Equal) {
+    if (Array.isArray(that) && this.length === that.length) {
+      return this.every((v, i) => Equal.equals(v, (that as Array<any>)[i]))
+    } else {
+      return false
     }
   }
-  return Object.setPrototypeOf(proto, Array.prototype)
-})()
+})
 
-const protoStruct: Equal.Equal = (() => {
-  const proto = {
-    [Hash.symbol](this: Equal.Equal) {
-      return Hash.structure(this)
-    },
-    [Equal.symbol](this: Equal.Equal, that: Equal.Equal) {
-      const selfKeys = Object.keys(this)
-      const thatKeys = Object.keys(that as object)
-      if (selfKeys.length !== thatKeys.length) {
+const protoStruct: Equal.Equal = {
+  [Hash.symbol](this: Equal.Equal) {
+    return Hash.structure(this)
+  },
+  [Equal.symbol](this: Equal.Equal, that: Equal.Equal) {
+    const selfKeys = Object.keys(this)
+    const thatKeys = Object.keys(that as object)
+    if (selfKeys.length !== thatKeys.length) {
+      return false
+    }
+    for (const key of selfKeys) {
+      if (!(key in (that as object) && Equal.equals((this as any)[key], (that as any)[key]))) {
         return false
       }
-      for (const key of selfKeys) {
-        if (!(key in (that as object) && Equal.equals((this as any)[key], (that as any)[key]))) {
-          return false
-        }
-      }
-      return true
     }
+    return true
   }
-  return Object.setPrototypeOf(proto, Object.prototype)
-})()
+}
 
 /**
  * @category constructors
  * @since 1.0.0
  */
 export const struct = <As extends Readonly<Record<string, any>>>(as: As): Data<As> =>
-  unsafeStruct(Object.assign({}, as))
+  Object.assign(Object.create(protoStruct), as)
 
 /**
  * @category constructors
@@ -107,7 +101,7 @@ export const array = <As extends ReadonlyArray<any>>(as: As): Data<As> => unsafe
 export const unsafeArray = <As extends ReadonlyArray<any>>(as: As): Data<As> => Object.setPrototypeOf(as, protoArr)
 
 const _case = <A extends Case>(): Case.Constructor<A> => (args) =>
-  (args === undefined ? struct({}) : struct(args)) as any
+  (args === undefined ? Object.create(protoStruct) : struct(args)) as any
 
 export {
   /**
@@ -128,8 +122,11 @@ export {
 export const tagged = <A extends Case & { _tag: string }>(
   tag: A["_tag"]
 ): Case.Constructor<A, "_tag"> =>
-// @ts-expect-error
-(args) => args === undefined ? struct({ _tag: tag }) : struct({ ...args, _tag: tag })
+(args) => {
+  const value = args === undefined ? Object.create(protoStruct) : struct(args)
+  value._tag = tag
+  return value
+}
 
 /**
  * Provides a Tagged constructor for a Case Class.
@@ -149,6 +146,40 @@ export const TaggedClass = <Key extends string>(
 }
 
 /**
+ * @since 1.0.0
+ * @category constructors
+ */
+export class Structural<A> {
+  constructor(args: Omit<A, keyof Equal.Equal>) {
+    if (args) {
+      Object.assign(this, args)
+    }
+  }
+  /**
+   * @since 1.0.0
+   */
+  [Hash.symbol](this: Equal.Equal) {
+    return Hash.structure(this)
+  }
+  /**
+   * @since 1.0.0
+   */
+  [Equal.symbol](this: Equal.Equal, that: Equal.Equal) {
+    const selfKeys = Object.keys(this)
+    const thatKeys = Object.keys(that as object)
+    if (selfKeys.length !== thatKeys.length) {
+      return false
+    }
+    for (const key of selfKeys) {
+      if (!(key in (that as object) && Equal.equals((this as any)[key], (that as any)[key]))) {
+        return false
+      }
+    }
+    return true
+  }
+}
+
+/**
  * Provides a constructor for a Case Class.
  *
  * @since 1.0.0
@@ -156,32 +187,7 @@ export const TaggedClass = <Key extends string>(
  */
 export const Class: new<A extends Record<string, any>>(
   args: Types.Equals<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
-) => Data<A> = (() => {
-  class Base<A> {
-    constructor(args: Omit<A, keyof Equal.Equal>) {
-      if (args) {
-        Object.assign(this, args)
-      }
-    }
-    [Hash.symbol](this: Equal.Equal) {
-      return Hash.structure(this)
-    }
-    [Equal.symbol](this: Equal.Equal, that: Equal.Equal) {
-      const selfKeys = Object.keys(this)
-      const thatKeys = Object.keys(that as object)
-      if (selfKeys.length !== thatKeys.length) {
-        return false
-      }
-      for (const key of selfKeys) {
-        if (!(key in (that as object) && Equal.equals((this as any)[key], (that as any)[key]))) {
-          return false
-        }
-      }
-      return true
-    }
-  }
-  return Base as any
-})()
+) => Data<A> = Structural as any
 
 /**
  * Create a tagged enum data type, which is a union of `Data` structs.

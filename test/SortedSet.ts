@@ -27,9 +27,16 @@ function makeNumericSortedSet(
 }
 
 describe.concurrent("SortedSet", () => {
+  it("is", () => {
+    const set = makeNumericSortedSet(0, 1, 2)
+    const arr = Array.from(set)
+    expect(SortedSet.isSortedSet(set)).toBe(true)
+    expect(SortedSet.isSortedSet(arr)).toBe(false)
+  })
+
   it("toString", () => {
     const set = makeNumericSortedSet(0, 1, 2)
-    expect(String(set)).toEqual("SortedSet(0, 1, 2)")
+    expect(String(set)).toEqual(JSON.stringify(set, null, 2))
   })
 
   it("toJSON", () => {

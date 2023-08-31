@@ -1,6 +1,6 @@
 ---
 title: Duration.ts
-nav_order: 14
+nav_order: 8
 parent: Modules
 ---
 
@@ -282,8 +282,8 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Duration extends Equal.Equal, Pipeable {
-  readonly _id: TypeId
+export interface Duration extends Equal.Equal, Pipeable, Inspectable {
+  readonly [TypeId]: TypeId
   readonly value: DurationValue
 }
 ```

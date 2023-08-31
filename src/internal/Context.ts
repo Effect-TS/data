@@ -1,9 +1,10 @@
 import type * as C from "@effect/data/Context"
 import * as Equal from "@effect/data/Equal"
 import { dual } from "@effect/data/Function"
-import * as G from "@effect/data/GlobalValue"
+import { globalValue } from "@effect/data/GlobalValue"
 import * as Hash from "@effect/data/Hash"
-import { EffectTypeId, effectVariance } from "@effect/data/internal/Effect"
+import { NodeInspectSymbol } from "@effect/data/Inspectable"
+import { type Effectable, EffectTypeId, effectVariance } from "@effect/data/internal/Effect"
 import type * as O from "@effect/data/Option"
 import * as option from "@effect/data/Option"
 import { pipeArguments } from "@effect/data/Pipeable"
@@ -12,71 +13,79 @@ import { pipeArguments } from "@effect/data/Pipeable"
 export const TagTypeId: C.TagTypeId = Symbol.for("@effect/data/Context/Tag") as C.TagTypeId
 
 /** @internal */
-export class TagImpl<Identifier, Service> implements C.Tag<Identifier, Service> {
-  readonly _tag = "Tag"
-  public i0: any | undefined = undefined
-  public i1 = undefined
-  public i2 = undefined
-  private creationError: Error;
-  [EffectTypeId] = effectVariance;
+export const TagProto: C.Tag<unknown, unknown> & Effectable = {
+  _tag: "Tag",
+  [EffectTypeId]: effectVariance,
+  [TagTypeId]: {
+    _S: (_: unknown) => _,
+    _I: (_: unknown) => _
+  },
   [Equal.symbol](this: {}, that: unknown) {
     return this === that
-  }
+  },
   [Hash.symbol](this: {}) {
     return Hash.random(this)
-  }
-  get [TagTypeId]() {
-    return {
-      _S: (_: Service) => _,
-      _I: (_: Identifier) => _
-    }
-  }
-  constructor(identifier?: unknown) {
-    const limit = Error.stackTraceLimit
-    Error.stackTraceLimit = 3
-    this.creationError = new Error()
-    Error.stackTraceLimit = limit
-    if (typeof identifier !== "undefined") {
-      this.i0 = identifier
-      return G.globalValue(identifier, () => this)
-    }
-  }
-  get stack() {
-    return this.creationError.stack
-  }
+  },
   toString() {
-    return JSON.stringify(this)
-  }
-  toJSON() {
+    return JSON.stringify(this, null, 2)
+  },
+  toJSON<I, A>(this: C.Tag<I, A>) {
     return {
       _tag: "Tag",
-      identifier: this.i0,
+      identifier: this.identifier,
       stack: this.stack
     }
-  }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON()
-  }
+  },
   pipe() {
     return pipeArguments(this, arguments)
-  }
-  of(self: Service): Service {
+  },
+  of<Service>(self: Service): Service {
     return self
-  }
-  context(this: C.Tag<Identifier, Service>, self: Service): C.Context<Identifier> {
+  },
+  context<Identifier, Service>(
+    this: C.Tag<Identifier, Service>,
+    self: Service
+  ): C.Context<Identifier> {
     return make(this, self)
   }
 }
 
-/** @internal */
-export const ContextTypeId: C.TypeId = Symbol.for("@effect/data/Context") as C.TypeId
+const tagRegistry = globalValue("@effect/data/Context/Tag/tagRegistry", () => new Map<any, C.Tag<any, any>>())
 
 /** @internal */
-export class ContextImpl<Services> implements C.Context<Services> {
-  _id: C.TypeId = ContextTypeId
-  _S = (_: Services) => _;
+export const makeTag = <Identifier, Service = Identifier>(identifier?: unknown): C.Tag<Identifier, Service> => {
+  if (identifier && tagRegistry.has(identifier)) {
+    return tagRegistry.get(identifier)!
+  }
+  const limit = Error.stackTraceLimit
+  Error.stackTraceLimit = 2
+  const creationError = new Error()
+  Error.stackTraceLimit = limit
+  const tag = Object.create(TagProto)
+  Object.defineProperty(tag, "stack", {
+    get() {
+      return creationError.stack
+    }
+  })
+  if (identifier) {
+    tag.identifier = identifier
+    tagRegistry.set(identifier, tag)
+  }
+  return tag
+}
 
-  [Equal.symbol](that: unknown): boolean {
+/** @internal */
+export const TypeId: C.TypeId = Symbol.for("@effect/data/Context") as C.TypeId
+
+/** @internal */
+export const ContextProto: Omit<C.Context<unknown>, "unsafeMap"> = {
+  [TypeId]: {
+    _S: (_: unknown) => _
+  },
+  [Equal.symbol]<A>(this: C.Context<A>, that: unknown): boolean {
     if (isContext(that)) {
       if (this.unsafeMap.size === that.unsafeMap.size) {
         for (const k of this.unsafeMap.keys()) {
@@ -88,25 +97,40 @@ export class ContextImpl<Services> implements C.Context<Services> {
       }
     }
     return false
-  }
-
-  [Hash.symbol](): number {
+  },
+  [Hash.symbol]<A>(this: C.Context<A>): number {
     return Hash.number(this.unsafeMap.size)
-  }
-
-  constructor(readonly unsafeMap: Map<C.Tag<unknown, unknown>, any>) {}
-
-  pipe() {
+  },
+  pipe<A>(this: C.Context<A>) {
     return pipeArguments(this, arguments)
+  },
+  toString() {
+    return JSON.stringify(this, null, 2)
+  },
+  toJSON<A>(this: C.Context<A>) {
+    return {
+      _tag: "Context",
+      services: Array.from(this.unsafeMap)
+    }
+  },
+  [NodeInspectSymbol]() {
+    return (this as any).toJSON()
   }
 }
 
-const serviceNotFoundError = (tag: TagImpl<any, any>) => {
-  const error = new Error(`Service not found${tag.i0 ? `: ${String(tag.i0)}` : ""}`)
+/** @internal */
+export const makeContext = <Services>(unsafeMap: Map<C.Tag<any, any>, any>): C.Context<Services> => {
+  const context = Object.create(ContextProto)
+  context.unsafeMap = unsafeMap
+  return context
+}
+
+const serviceNotFoundError = (tag: C.Tag<any, any>) => {
+  const error = new Error(`Service not found${tag.identifier ? `: ${String(tag.identifier)}` : ""}`)
   if (tag.stack) {
     const lines = tag.stack.split("\n")
     if (lines.length > 2) {
-      const afterAt = lines[3].match(/at (.*)/)
+      const afterAt = lines[2].match(/at (.*)/)
       if (afterAt) {
         error.message = error.message + ` (defined at ${afterAt[1]})`
       }
@@ -121,20 +145,19 @@ const serviceNotFoundError = (tag: TagImpl<any, any>) => {
 }
 
 /** @internal */
-export const isContext = (u: unknown): u is C.Context<never> =>
-  typeof u === "object" && u !== null && "_id" in u && u["_id"] === ContextTypeId
+export const isContext = (u: unknown): u is C.Context<never> => typeof u === "object" && u !== null && TypeId in u
 
 /** @internal */
 export const isTag = (u: unknown): u is C.Tag<any, any> => typeof u === "object" && u !== null && TagTypeId in u
 
 /** @internal */
-export const empty = (): C.Context<never> => new ContextImpl<never>(new Map())
+export const empty = (): C.Context<never> => makeContext<never>(new Map())
 
 /** @internal */
 export const make = <T extends C.Tag<any, any>>(
   tag: T,
   service: C.Tag.Service<T>
-): C.Context<C.Tag.Identifier<T>> => new ContextImpl(new Map([[tag, service]]))
+): C.Context<C.Tag.Identifier<T>> => makeContext(new Map([[tag, service]]))
 
 /** @internal */
 export const add = dual<
@@ -152,7 +175,7 @@ export const add = dual<
 >(3, (self, tag, service) => {
   const map = new Map(self.unsafeMap)
   map.set(tag as C.Tag<unknown, unknown>, service)
-  return new ContextImpl(map)
+  return makeContext(map)
 })
 
 /** @internal */
@@ -192,7 +215,7 @@ export const merge = dual<
   for (const [tag, s] of that.unsafeMap) {
     map.set(tag, s)
   }
-  return new ContextImpl(map)
+  return makeContext(map)
 })
 
 /** @internal */
@@ -208,7 +231,7 @@ export const pick =
         newEnv.set(tag, s)
       }
     }
-    return new ContextImpl<{ [k in keyof S]: C.Tag.Identifier<S[k]> }[number]>(newEnv)
+    return makeContext<{ [k in keyof S]: C.Tag.Identifier<S[k]> }[number]>(newEnv)
   }
 
 /** @internal */
@@ -221,5 +244,5 @@ export const omit =
     for (const tag of tags) {
       newEnv.delete(tag)
     }
-    return new ContextImpl(newEnv)
+    return makeContext(newEnv)
   }

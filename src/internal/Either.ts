@@ -6,99 +6,68 @@ import type * as Either from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
 import { dual } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
+import { NodeInspectSymbol } from "@effect/data/Inspectable"
 import { EffectTypeId, effectVariance } from "@effect/data/internal/Effect"
 import * as option from "@effect/data/internal/Option"
 import type { Option } from "@effect/data/Option"
 import { pipeArguments } from "@effect/data/Pipeable"
 
-const TypeId: Either.TypeId = Symbol.for("@effect/data/Either") as Either.TypeId
+/**
+ * @internal
+ */
+export const TypeId: Either.TypeId = Symbol.for("@effect/data/Either") as Either.TypeId
 
-/** @internal */
-export class Right<E, A> implements Either.Right<E, A> {
-  readonly _tag = "Right"
-  readonly _id: typeof TypeId = TypeId
-  public i1 = undefined
-  public i2 = undefined;
-  [EffectTypeId] = effectVariance;
-  [Equal.symbol](this: this, that: unknown) {
-    return isEither(that) && isRight(that) && Equal.equals((that as unknown as Right<E, A>).i0, this.i0)
-  }
-  [Hash.symbol](this: this) {
-    return Hash.hash(this.i0)
-  }
-  get right() {
-    return this.i0
-  }
-  constructor(readonly i0: A) {
-  }
-  get [TypeId]() {
-    return {
-      _E: (_: never) => _,
-      _A: (_: never) => _
-    }
-  }
-  toString() {
-    return `right(${String(this.i0)})`
-  }
-  toJSON() {
-    return {
-      _tag: this._tag,
-      right: this.i0
-    }
-  }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
-    return this.toJSON()
-  }
+const CommonProto = {
+  [EffectTypeId]: effectVariance,
+  [TypeId]: {
+    _A: (_: never) => _
+  },
+  [NodeInspectSymbol]<E, A>(this: Either.Either<E, A>) {
+    return (this as any).toJSON()
+  },
   pipe() {
     return pipeArguments(this, arguments)
+  },
+  toString<E, A>(this: Either.Left<E, A>) {
+    return JSON.stringify(this, null, 2)
   }
 }
 
-/** @internal */
-export class Left<E, A> implements Either.Left<E, A> {
-  readonly _tag = "Left"
-  readonly _id: typeof TypeId = TypeId
-  public i1 = undefined
-  public i2 = undefined;
-  [EffectTypeId] = effectVariance;
-  [Equal.symbol](this: this, that: unknown) {
-    return isEither(that) && isLeft(that) && Equal.equals((that as unknown as Left<E, A>).i0, this.i0)
-  }
-  [Hash.symbol](this: this) {
-    return Hash.hash(this.i0)
-  }
-  get [TypeId]() {
-    return {
-      _E: (_: never) => _,
-      _A: (_: never) => _
-    }
-  }
-  get left() {
-    return this.i0
-  }
-  constructor(readonly i0: E) {
-  }
-  toString() {
-    return `left(${String(this.i0)})`
-  }
-  toJSON() {
+const RightProto = Object.assign(Object.create(CommonProto), {
+  _tag: "Right",
+  [Equal.symbol]<E, A>(this: Either.Right<E, A>, that: unknown): boolean {
+    return isEither(that) && isRight(that) && Equal.equals(that.right, this.right)
+  },
+  [Hash.symbol]<E, A>(this: Either.Right<E, A>) {
+    return Hash.combine(Hash.hash(this._tag))(Hash.hash(this.right))
+  },
+  toJSON<E, A>(this: Either.Right<E, A>) {
     return {
       _tag: this._tag,
-      left: this.i0
+      right: this.right
     }
   }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
-    return this.toJSON()
+})
+
+const LeftProto = Object.assign(Object.create(CommonProto), {
+  _tag: "Left",
+  [Equal.symbol]<E, A>(this: Either.Left<E, A>, that: unknown): boolean {
+    return isEither(that) && isLeft(that) && Equal.equals(that.left, this.left)
+  },
+  [Hash.symbol]<E, A>(this: Either.Left<E, A>) {
+    return Hash.combine(Hash.hash(this._tag))(Hash.hash(this.left))
+  },
+  toJSON<E, A>(this: Either.Left<E, A>) {
+    return {
+      _tag: this._tag,
+      left: this.left
+    }
   }
-  pipe() {
-    return pipeArguments(this, arguments)
-  }
-}
+})
 
 /** @internal */
 export const isEither = (input: unknown): input is Either.Either<unknown, unknown> =>
-  typeof input === "object" && input != null && "_tag" in input &&
-  (input["_tag"] === "Left" || input["_tag"] === "Right") && Equal.isEqual(input)
+  typeof input === "object" && input != null && TypeId in input
 
 /** @internal */
 export const isLeft = <E, A>(ma: Either.Either<E, A>): ma is Either.Left<E, A> => ma._tag === "Left"
@@ -107,10 +76,18 @@ export const isLeft = <E, A>(ma: Either.Either<E, A>): ma is Either.Left<E, A> =
 export const isRight = <E, A>(ma: Either.Either<E, A>): ma is Either.Right<E, A> => ma._tag === "Right"
 
 /** @internal */
-export const left = <E>(e: E): Either.Either<E, never> => new Left(e)
+export const left = <E>(left: E): Either.Either<E, never> => {
+  const a = Object.create(LeftProto)
+  a.left = left
+  return a
+}
 
 /** @internal */
-export const right = <A>(a: A): Either.Either<never, A> => new Right(a)
+export const right = <A>(right: A): Either.Either<never, A> => {
+  const a = Object.create(RightProto)
+  a.right = right
+  return a
+}
 
 /** @internal */
 export const getLeft = <E, A>(

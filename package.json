@@ -38,7 +38,7 @@
     "build-pack": "concurrently \"pnpm build-cjs\" \"pnpm build-mjs\" && pnpm build-post",
     "build-all": "tsc -b tsconfig.json",
     "build-watch": "tsc -b tsconfig.json --watch",
-    "lint": "eslint --ext .ts,.tsx src/**/* test/**/*",
+    "lint": "eslint src test",
     "autofix": "pnpm lint --fix",
     "tc": "tsc --noEmit",
     "docs": "docgen",

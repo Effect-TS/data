@@ -14,6 +14,5 @@ export const DecodeException = (input: string, message?: string): Encoding.Decod
 })
 
 /** @internal */
-export const isDecodeException = (u: unknown): u is Encoding.DecodeException => {
-  return typeof u === "object" && u != null && DecodeExceptionTypeId in u
-}
+export const isDecodeException = (u: unknown): u is Encoding.DecodeException =>
+  typeof u === "object" && u != null && DecodeExceptionTypeId in u

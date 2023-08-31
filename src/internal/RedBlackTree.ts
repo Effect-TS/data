@@ -2,6 +2,7 @@ import * as Chunk from "@effect/data/Chunk"
 import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
+import { NodeInspectSymbol } from "@effect/data/Inspectable"
 import { Direction, RedBlackTreeIterator } from "@effect/data/internal/RedBlackTree/iterator"
 import * as Node from "@effect/data/internal/RedBlackTree/node"
 import { Stack } from "@effect/data/internal/Stack"
@@ -13,22 +14,22 @@ import { isObject } from "@effect/data/Predicate"
 import type * as RBT from "@effect/data/RedBlackTree"
 
 const RedBlackTreeSymbolKey = "@effect/data/RedBlackTree"
+
 /** @internal */
 export const RedBlackTreeTypeId: RBT.TypeId = Symbol.for(RedBlackTreeSymbolKey) as RBT.TypeId
 
-export class RedBlackTreeImpl<K, V> implements RBT.RedBlackTree<K, V> {
-  readonly _id: RBT.TypeId = RedBlackTreeTypeId
+/** @internal */
+export interface RedBlackTreeImpl<K, V> extends RBT.RedBlackTree<K, V> {
+  readonly _ord: Order.Order<K>
+  readonly _root: Node.Node<K, V> | undefined
+}
 
-  constructor(
-    readonly _ord: Order.Order<K>,
-    readonly _root: Node.Node<K, V> | undefined
-  ) {}
-
+const RedBlackTreeProto: RBT.RedBlackTree<unknown, unknown> = {
+  [RedBlackTreeTypeId]: RedBlackTreeTypeId,
   [Hash.symbol](): number {
     return Hash.combine(Hash.hash(RedBlackTreeSymbolKey))(Hash.array(Array.from(this)))
-  }
-
-  [Equal.symbol](that: unknown): boolean {
+  },
+  [Equal.symbol]<K, V>(this: RedBlackTreeImpl<K, V>, that: unknown): boolean {
     if (isRedBlackTree(that)) {
       if ((this._root?.count ?? 0) !== ((that as RedBlackTreeImpl<K, V>)._root?.count ?? 0)) {
         return false
@@ -36,9 +37,8 @@ export class RedBlackTreeImpl<K, V> implements RBT.RedBlackTree<K, V> {
       return Equal.equals(Array.from(this), Array.from(that))
     }
     return false
-  }
-
-  [Symbol.iterator](): RedBlackTreeIterator<K, V> {
+  },
+  [Symbol.iterator]<K, V>(this: RedBlackTreeImpl<K, V>): RedBlackTreeIterator<K, V> {
     const stack: Array<Node.Node<K, V>> = []
     let n = this._root
     while (n != null) {
@@ -46,38 +46,39 @@ export class RedBlackTreeImpl<K, V> implements RBT.RedBlackTree<K, V> {
       n = n.left
     }
     return new RedBlackTreeIterator(this, stack, Direction.Forward)
-  }
-
+  },
   toString() {
     return `RedBlackTree(${Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")})`
-  }
-
+  },
   toJSON() {
     return {
       _tag: "RedBlackTree",
       values: Array.from(this)
     }
-  }
-
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON()
-  }
-
+  },
   pipe() {
     return pipeArguments(this, arguments)
   }
+}
+
+const makeImpl = <K, V>(ord: Order.Order<K>, root: Node.Node<K, V> | undefined): RedBlackTreeImpl<K, V> => {
+  const tree = Object.create(RedBlackTreeProto)
+  tree._ord = ord
+  tree._root = root
+  return tree
 }
 
 /** @internal */
 export const isRedBlackTree: {
   <K, V>(u: Iterable<readonly [K, V]>): u is RBT.RedBlackTree<K, V>
   (u: unknown): u is RBT.RedBlackTree<unknown, unknown>
-} = (u: unknown): u is RBT.RedBlackTree<unknown, unknown> =>
-  isObject(u) && "_id" in u && u["_id"] === RedBlackTreeTypeId
+} = (u: unknown): u is RBT.RedBlackTree<unknown, unknown> => isObject(u) && RedBlackTreeTypeId in u
 
 /** @internal */
-export const empty = <K, V = never>(ord: Order.Order<K>): RBT.RedBlackTree<K, V> =>
-  new RedBlackTreeImpl<K, V>(ord, undefined)
+export const empty = <K, V = never>(ord: Order.Order<K>): RBT.RedBlackTree<K, V> => makeImpl<K, V>(ord, undefined)
 
 /** @internal */
 export const fromIterable =
@@ -421,7 +422,7 @@ export const insert = Dual.dual<
   }
   // Return new tree
   n_stack[0]!.color = Node.Color.Black
-  return new RedBlackTreeImpl((self as RedBlackTreeImpl<K, V>)._ord, n_stack[0])
+  return makeImpl((self as RedBlackTreeImpl<K, V>)._ord, n_stack[0])
 })
 
 /** @internal */
@@ -816,7 +817,7 @@ export const removeFirst = Dual.dual<
     for (let i = 0; i < cstack.length; ++i) {
       cstack[i]!.count--
     }
-    return new RedBlackTreeImpl(ord, cstack[0])
+    return makeImpl(ord, cstack[0])
   } else {
     if (n.left !== undefined || n.right !== undefined) {
       // Second easy case:  Single child black parent
@@ -830,10 +831,10 @@ export const removeFirst = Dual.dual<
       for (let i = 0; i < cstack.length - 1; ++i) {
         cstack[i]!.count--
       }
-      return new RedBlackTreeImpl(ord, cstack[0])
+      return makeImpl(ord, cstack[0])
     } else if (cstack.length === 1) {
       // Third easy case: root
-      return new RedBlackTreeImpl(ord, undefined)
+      return makeImpl(ord, undefined)
     } else {
       // Hard case: Repaint n, and then do some nasty stuff
       for (let i = 0; i < cstack.length; ++i) {
@@ -849,7 +850,7 @@ export const removeFirst = Dual.dual<
       }
     }
   }
-  return new RedBlackTreeImpl(ord, cstack[0])
+  return makeImpl(ord, cstack[0])
 })
 
 /** @internal */

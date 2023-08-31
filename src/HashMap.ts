@@ -4,6 +4,7 @@
 
 import type { Equal } from "@effect/data/Equal"
 import type { HashSet } from "@effect/data/HashSet"
+import type { Inspectable } from "@effect/data/Inspectable"
 import * as HM from "@effect/data/internal/HashMap"
 import * as _keySet from "@effect/data/internal/HashMap/keySet"
 import type { Option } from "@effect/data/Option"
@@ -21,8 +22,8 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface HashMap<Key, Value> extends Iterable<[Key, Value]>, Equal, Pipeable {
-  readonly _id: TypeId
+export interface HashMap<Key, Value> extends Iterable<[Key, Value]>, Equal, Pipeable, Inspectable {
+  [TypeId]: TypeId
 }
 
 /**

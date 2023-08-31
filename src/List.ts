@@ -27,6 +27,7 @@ import * as Equal from "@effect/data/Equal"
 import * as Equivalence from "@effect/data/Equivalence"
 import { dual, identity, unsafeCoerce } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
+import { type Inspectable, NodeInspectSymbol } from "@effect/data/Inspectable"
 import * as Option from "@effect/data/Option"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
@@ -62,8 +63,8 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface Nil<A> extends Iterable<A>, Equal.Equal, Pipeable {
-  readonly _id: TypeId
+export interface Nil<A> extends Iterable<A>, Equal.Equal, Pipeable, Inspectable {
+  readonly [TypeId]: TypeId
   readonly _tag: "Nil"
 }
 
@@ -71,8 +72,8 @@ export interface Nil<A> extends Iterable<A>, Equal.Equal, Pipeable {
  * @since 1.0.0
  * @category models
  */
-export interface Cons<A> extends Iterable<A>, Equal.Equal, Pipeable {
-  readonly _id: TypeId
+export interface Cons<A> extends Iterable<A>, Equal.Equal, Pipeable, Inspectable {
+  readonly [TypeId]: TypeId
   readonly _tag: "Cons"
   readonly head: A
   readonly tail: List<A>
@@ -95,34 +96,33 @@ export const getEquivalence = <A>(isEquivalent: Equivalence.Equivalence<A>): Equ
 
 const _equivalence = getEquivalence(Equal.equals)
 
-class ConsImpl<A> implements Cons<A> {
-  readonly _tag = "Cons"
-  readonly _id: typeof TypeId = TypeId
-  constructor(readonly head: A, public tail: List<A>) {}
-  toString() {
+const ConsProto: Omit<Cons<unknown>, "head" | "tail"> = {
+  [TypeId]: TypeId,
+  _tag: "Cons",
+  toString(this: Cons<unknown>) {
     return `List.Cons(${toReadonlyArray(this).map(String).join(", ")})`
-  }
-  toJSON() {
+  },
+  toJSON(this: Cons<unknown>) {
     return {
       _tag: "List.Cons",
       values: toReadonlyArray(this)
     }
-  }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol](this: any) {
     return this.toJSON()
-  }
-  [Equal.symbol](that: unknown): boolean {
+  },
+  [Equal.symbol](this: Cons<unknown>, that: unknown): boolean {
     return isList(that) &&
       this._tag === that._tag &&
       _equivalence(this, that)
-  }
-  [Hash.symbol](): number {
+  },
+  [Hash.symbol](this: Cons<unknown>): number {
     return Hash.array(toReadonlyArray(this))
-  }
-  [Symbol.iterator](): Iterator<A> {
+  },
+  [Symbol.iterator](this: Cons<unknown>): Iterator<unknown> {
     let done = false
     // eslint-disable-next-line @typescript-eslint/no-this-alias
-    let self: List<A> = this
+    let self: List<unknown> = this
     return {
       next() {
         if (done) {
@@ -132,7 +132,7 @@ class ConsImpl<A> implements Cons<A> {
           done = true
           return this.return!()
         }
-        const value: A = self.head
+        const value: unknown = self.head
         self = self.tail
         return { done, value }
       },
@@ -143,43 +143,57 @@ class ConsImpl<A> implements Cons<A> {
         return { done: true, value }
       }
     }
-  }
+  },
   pipe() {
     return pipeArguments(this, arguments)
   }
 }
 
-class NilImpl<A> implements Nil<A> {
-  readonly _tag = "Nil"
-  readonly _id: typeof TypeId = TypeId
+interface MutableCons<A> extends Cons<A> {
+  head: A
+  tail: List<A>
+}
+
+const makeCons = <A>(head: A, tail: List<A>): MutableCons<A> => {
+  const cons = Object.create(ConsProto)
+  cons.head = head
+  cons.tail = tail
+  return cons
+}
+
+const NilProto: Nil<unknown> = {
+  [TypeId]: TypeId,
+  _tag: "Nil",
   toString() {
     return `List.Nil`
-  }
+  },
   toJSON() {
     return {
       _tag: "List.Nil"
     }
-  }
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON()
-  }
+  },
   [Hash.symbol](): number {
     return Hash.array(toReadonlyArray(this))
-  }
+  },
   [Equal.symbol](that: unknown): boolean {
     return isList(that) && this._tag === that._tag
-  }
-  [Symbol.iterator](): Iterator<A> {
+  },
+  [Symbol.iterator](): Iterator<unknown> {
     return {
       next() {
         return { done: true, value: undefined }
       }
     }
-  }
+  },
   pipe() {
     return pipeArguments(this, arguments)
   }
-}
+} as const
+
+const _Nil = Object.create(NilProto) as Nil<never>
 
 /**
  * Returns `true` if the specified value is a `List`, `false` otherwise.
@@ -190,7 +204,7 @@ class NilImpl<A> implements Nil<A> {
 export const isList: {
   <A>(u: Iterable<A>): u is List<A>
   (u: unknown): u is List<unknown>
-} = (u: unknown): u is List<unknown> => isObject(u) && "_id" in u && u["_id"] === TypeId
+} = (u: unknown): u is List<unknown> => isObject(u) && TypeId in u
 
 /**
  * Returns `true` if the specified value is a `List.Nil<A>`, `false` otherwise.
@@ -224,8 +238,6 @@ export const size = <A>(self: List<A>): number => {
   return len
 }
 
-const _Nil = new NilImpl<never>()
-
 /**
  * Constructs a new empty `List<A>`.
  *
@@ -240,7 +252,7 @@ export const nil = <A = never>(): List<A> => _Nil
  * @since 1.0.0
  * @category constructors
  */
-export const cons = <A>(head: A, tail: List<A>): Cons<A> => new ConsImpl(head, tail)
+export const cons = <A>(head: A, tail: List<A>): Cons<A> => makeCons(head, tail)
 
 /**
  * Constructs a new empty `List<A>`.
@@ -258,7 +270,7 @@ export const empty = nil
  * @since 1.0.0
  * @category constructors
  */
-export const of = <A>(value: A): Cons<A> => new ConsImpl(value, _Nil)
+export const of = <A>(value: A): Cons<A> => makeCons(value, _Nil)
 
 /**
  * Constructs a new `List<A>` from the specified `Iterable<A>`.
@@ -270,10 +282,10 @@ export const fromIterable = <A>(prefix: Iterable<A>): List<A> => {
   const iterator = prefix[Symbol.iterator]()
   let next: IteratorResult<A>
   if ((next = iterator.next()) && !next.done) {
-    const result = new ConsImpl(next.value, _Nil)
+    const result = makeCons(next.value, _Nil)
     let curr = result
     while ((next = iterator.next()) && !next.done) {
-      const temp = new ConsImpl(next.value, _Nil)
+      const temp = makeCons(next.value, _Nil)
       curr.tail = temp
       curr = temp
     }
@@ -352,11 +364,11 @@ export const prependAll: {
   } else if (isNil(prefix)) {
     return self
   } else {
-    const result = new ConsImpl<A | B>(prefix.head, self)
+    const result = makeCons<A | B>(prefix.head, self)
     let curr = result
     let that = prefix.tail
     while (!isNil(that)) {
-      const temp = new ConsImpl<A | B>(that.head, self)
+      const temp = makeCons<A | B>(that.head, self)
       curr.tail = temp
       curr = temp
       that = that.tail
@@ -390,7 +402,7 @@ export const prependAllReversed: {
   let out: List<A | B> = self
   let pres = prefix
   while (isCons(pres)) {
-    out = new ConsImpl(pres.head, out)
+    out = makeCons(pres.head, out)
     pres = pres.tail
   }
   return out
@@ -523,13 +535,13 @@ const partialFill = <A>(
   predicate: Predicate<A>,
   isFlipped: boolean
 ): List<A> => {
-  const newHead = new ConsImpl<A>(unsafeHead(origStart)!, _Nil)
+  const newHead = makeCons<A>(unsafeHead(origStart)!, _Nil)
   let toProcess = unsafeTail(origStart)! as Cons<A>
   let currentLast = newHead
 
   // we know that all elements are :: until at least firstMiss.tail
   while (!(toProcess === firstMiss)) {
-    const newElem = new ConsImpl(unsafeHead(toProcess)!, _Nil)
+    const newElem = makeCons(unsafeHead(toProcess)!, _Nil)
     currentLast.tail = newElem
     currentLast = unsafeCoerce(newElem)
     toProcess = unsafeCoerce(toProcess.tail)
@@ -549,7 +561,7 @@ const partialFill = <A>(
     } else {
       // its not a match - do we have outstanding elements?
       while (!(nextToCopy === next)) {
-        const newElem = new ConsImpl(unsafeHead(nextToCopy)!, _Nil)
+        const newElem = makeCons(unsafeHead(nextToCopy)!, _Nil)
         currentLast.tail = newElem
         currentLast = newElem
         nextToCopy = unsafeCoerce(nextToCopy.tail)
@@ -630,12 +642,12 @@ export const flatMap: {
   <A, B>(self: List<A>, f: (a: A) => List<B>): List<B>
 } = dual(2, <A, B>(self: List<A>, f: (a: A) => List<B>): List<B> => {
   let rest = self
-  let head: ConsImpl<B> | undefined = undefined
-  let tail: ConsImpl<B> | undefined = undefined
+  let head: MutableCons<B> | undefined = undefined
+  let tail: MutableCons<B> | undefined = undefined
   while (!isNil(rest)) {
     let bs = f(rest.head)
     while (!isNil(bs)) {
-      const next = new ConsImpl(bs.head, _Nil)
+      const next = makeCons(bs.head, _Nil)
       if (tail === undefined) {
         head = next
       } else {
@@ -709,11 +721,11 @@ export const map: {
   if (isNil(self)) {
     return self as unknown as List<B>
   } else {
-    const head = new ConsImpl(f(self.head), _Nil)
+    const head = makeCons(f(self.head), _Nil)
     let nextHead = head
     let rest = self.tail
     while (!isNil(rest)) {
-      const next = new ConsImpl(f(rest.head), _Nil)
+      const next = makeCons(f(rest.head), _Nil)
       nextHead.tail = next
       nextHead = next
       rest = rest.tail
@@ -868,7 +880,7 @@ export const take: {
   let these = make(unsafeHead(self))
   let current = unsafeTail(self)!
   for (let i = 1; i < n; i++) {
-    these = new ConsImpl(unsafeHead(current), these)
+    these = makeCons(unsafeHead(current), these)
     current = unsafeTail(current!)
   }
   return reverse(these)

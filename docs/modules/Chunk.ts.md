@@ -1002,11 +1002,11 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Chunk<A> extends Iterable<A>, Equal.Equal, Pipeable {
-  readonly _id: TypeId
-
+export interface Chunk<A> extends Iterable<A>, Equal.Equal, Pipeable, Inspectable {
+  readonly [TypeId]: {
+    readonly _A: (_: never) => A
+  }
   readonly length: number
-
   /** @internal */
   right: Chunk<A>
   /** @internal */

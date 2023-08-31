@@ -1,6 +1,6 @@
 ---
 title: Either.ts
-nav_order: 15
+nav_order: 9
 parent: Modules
 ---
 
@@ -574,14 +574,13 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Left<E, A> extends Data.Case, Pipeable {
+export interface Left<E, A> extends Data.Case, Pipeable, Inspectable {
   readonly _tag: 'Left'
-  readonly _id: TypeId
+  readonly left: E
   readonly [TypeId]: {
     readonly _A: (_: never) => A
     readonly _E: (_: never) => E
   }
-  get left(): E
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: EitherUnify<this>
   [Unify.blacklistSymbol]?: EitherUnifyBlacklist
@@ -595,10 +594,9 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Right<E, A> extends Data.Case, Pipeable {
+export interface Right<E, A> extends Data.Case, Pipeable, Inspectable {
   readonly _tag: 'Right'
-  readonly _id: TypeId
-  get right(): A
+  readonly right: A
   readonly [TypeId]: {
     readonly _A: (_: never) => A
     readonly _E: (_: never) => E

@@ -1,6 +1,6 @@
 ---
 title: MutableRef.ts
-nav_order: 31
+nav_order: 25
 parent: Modules
 ---
 
@@ -167,9 +167,8 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface MutableRef<T> extends Pipeable {
-  readonly _id: TypeId
-  readonly _T: (_: never) => T
+export interface MutableRef<T> extends Pipeable, Inspectable {
+  readonly [TypeId]: TypeId
 
   /** @internal */
   current: T

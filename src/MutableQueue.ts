@@ -3,6 +3,7 @@
  */
 import * as Chunk from "@effect/data/Chunk"
 import * as Dual from "@effect/data/Function"
+import { type Inspectable, NodeInspectSymbol } from "@effect/data/Inspectable"
 import * as MutableList from "@effect/data/MutableList"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
@@ -25,8 +26,8 @@ export const EmptyMutableQueue = Symbol.for("@effect/data/mutable/MutableQueue/E
  * @since 1.0.0
  * @category model
  */
-export interface MutableQueue<A> extends Iterable<A>, Pipeable {
-  readonly _id: TypeId
+export interface MutableQueue<A> extends Iterable<A>, Pipeable, Inspectable {
+  readonly [TypeId]: TypeId
 
   /** @internal */
   queue: MutableList.MutableList<A>
@@ -44,37 +45,33 @@ export declare namespace MutableQueue {
   export type Empty = typeof EmptyMutableQueue
 }
 
-/** @internal */
-class MutableQueueImpl<A> implements MutableQueue<A> {
-  readonly _tag = "Bounded"
-  readonly _id: TypeId = TypeId
-
-  queue: MutableList.MutableList<A> = MutableList.empty()
-
-  constructor(readonly capacity: number | undefined = undefined) {}
-
-  [Symbol.iterator](): Iterator<A> {
+const MutableQueueProto: Omit<MutableQueue<unknown>, "queue" | "capacity"> = {
+  [TypeId]: TypeId,
+  [Symbol.iterator]<A>(this: MutableQueue<A>): Iterator<A> {
     return Array.from(this.queue)[Symbol.iterator]()
-  }
-
+  },
   toString() {
     return `MutableQueue(${Array.from(this).map(String).join(", ")})`
-  }
-
+  },
   toJSON() {
     return {
       _tag: "MutableQueue",
       values: Array.from(this)
     }
-  }
-
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON()
-  }
-
+  },
   pipe() {
     return pipeArguments(this, arguments)
   }
+}
+
+const make = <A>(capacity: number | undefined): MutableQueue<A> => {
+  const queue = Object.create(MutableQueueProto)
+  queue.queue = MutableList.empty()
+  queue.capacity = capacity
+  return queue
 }
 
 /**
@@ -83,7 +80,7 @@ class MutableQueueImpl<A> implements MutableQueue<A> {
  * @since 1.0.0
  * @category constructors
  */
-export const bounded = <A>(capacity: number): MutableQueue<A> => new MutableQueueImpl(capacity)
+export const bounded = <A>(capacity: number): MutableQueue<A> => make(capacity)
 
 /**
  * Creates a new unbounded `MutableQueue`.
@@ -91,7 +88,7 @@ export const bounded = <A>(capacity: number): MutableQueue<A> => new MutableQueu
  * @since 1.0.0
  * @category constructors
  */
-export const unbounded = <A>(): MutableQueue<A> => new MutableQueueImpl()
+export const unbounded = <A>(): MutableQueue<A> => make(undefined)
 
 /**
  * Returns the current number of elements in the queue.
@@ -143,7 +140,7 @@ export const offer: {
   <A>(value: A) => (self: MutableQueue<A>) => boolean,
   <A>(self: MutableQueue<A>, value: A) => boolean
 >(2, <A>(self: MutableQueue<A>, value: A) => {
-  const queueLength = MutableList.length((self as MutableQueueImpl<A>).queue)
+  const queueLength = MutableList.length(self.queue)
   if (self.capacity !== undefined && queueLength === self.capacity) {
     return false
   }

@@ -1,6 +1,6 @@
 ---
 title: Differ.ts
-nav_order: 8
+nav_order: 7
 parent: Modules
 ---
 
@@ -26,19 +26,25 @@ Added in v1.0.0
   - [empty](#empty)
   - [patch](#patch-1)
 - [symbol](#symbol)
+  - [TypeId](#typeid)
   - [TypeId (type alias)](#typeid-type-alias)
 - [utils](#utils)
   - [Differ (namespace)](#differ-namespace)
     - [Chunk (namespace)](#chunk-namespace)
-      - [Patch (type alias)](#patch-type-alias)
+      - [Patch (interface)](#patch-interface)
+      - [TypeId (type alias)](#typeid-type-alias-1)
     - [Context (namespace)](#context-namespace)
-      - [Patch (type alias)](#patch-type-alias-1)
+      - [Patch (interface)](#patch-interface-1)
+      - [TypeId (type alias)](#typeid-type-alias-2)
     - [HashMap (namespace)](#hashmap-namespace)
-      - [Patch (type alias)](#patch-type-alias-2)
+      - [Patch (interface)](#patch-interface-2)
+      - [TypeId (type alias)](#typeid-type-alias-3)
     - [HashSet (namespace)](#hashset-namespace)
-      - [Patch (type alias)](#patch-type-alias-3)
+      - [Patch (interface)](#patch-interface-3)
+      - [TypeId (type alias)](#typeid-type-alias-4)
     - [Or (namespace)](#or-namespace)
-      - [Patch (type alias)](#patch-type-alias-4)
+      - [Patch (interface)](#patch-interface-4)
+      - [TypeId (type alias)](#typeid-type-alias-5)
   - [orElseEither](#orelseeither)
   - [transform](#transform)
   - [update](#update)
@@ -59,7 +65,7 @@ differ that knows how to diff the values.
 ```ts
 export declare const chunk: <Value, Patch>(
   differ: Differ<Value, Patch>
-) => Differ<Chunk<Value>, ChunkPatch<Value, Patch>>
+) => Differ<Chunk<Value>, Differ.Chunk.Patch<Value, Patch>>
 ```
 
 Added in v1.0.0
@@ -71,7 +77,7 @@ Constructs a differ that knows how to diff `Env` values.
 **Signature**
 
 ```ts
-export declare const environment: <A>() => Differ<Context<A>, ContextPatch<A, A>>
+export declare const environment: <A>() => Differ<Context<A>, Differ.Context.Patch<A, A>>
 ```
 
 Added in v1.0.0
@@ -86,7 +92,7 @@ a differ that knows how to diff the values.
 ```ts
 export declare const hashMap: <Key, Value, Patch>(
   differ: Differ<Value, Patch>
-) => Differ<HashMap<Key, Value>, HashMapPatch<Key, Value, Patch>>
+) => Differ<HashMap<Key, Value>, Differ.HashMap.Patch<Key, Value, Patch>>
 ```
 
 Added in v1.0.0
@@ -98,7 +104,7 @@ Constructs a differ that knows how to diff a `HashSet` of values.
 **Signature**
 
 ```ts
-export declare const hashSet: <Value>() => Differ<HashSet<Value>, HashSetPatch<Value>>
+export declare const hashSet: <Value>() => Differ<HashSet<Value>, Differ.HashSet.Patch<Value>>
 ```
 
 Added in v1.0.0
@@ -143,16 +149,13 @@ values for arbitrarily complex data types compositionally.
 
 ```ts
 export interface Differ<Value, Patch> {
-  readonly _id: TypeId
-  readonly _V: (_: Value) => Value
-  readonly _P: (_: Patch) => Patch
-  /** @internal */
+  readonly [TypeId]: {
+    readonly _V: (_: Value) => Value
+    readonly _P: (_: Patch) => Patch
+  }
   readonly empty: Patch
-  /** @internal */
   readonly diff: (oldValue: Value, newValue: Value) => Patch
-  /** @internal */
   readonly combine: (first: Patch, second: Patch) => Patch
-  /** @internal */
   readonly patch: (patch: Patch, oldValue: Value) => Value
 }
 ```
@@ -223,6 +226,16 @@ Added in v1.0.0
 
 # symbol
 
+## TypeId
+
+**Signature**
+
+```ts
+export declare const TypeId: typeof TypeId
+```
+
+Added in v1.0.0
+
 ## TypeId (type alias)
 
 **Signature**
@@ -243,12 +256,29 @@ Added in v1.0.0
 
 Added in v1.0.0
 
-#### Patch (type alias)
+#### Patch (interface)
+
+A patch which describes updates to a chunk of values.
 
 **Signature**
 
 ```ts
-export type Patch<Value, Patch> = ChunkPatch<Value, Patch>
+export interface Patch<Value, Patch> extends Equal {
+  readonly [ChunkPatchTypeId]: {
+    readonly _Value: (_: Value) => Value
+    readonly _Patch: (_: Patch) => Patch
+  }
+}
+```
+
+Added in v1.0.0
+
+#### TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof ChunkPatchTypeId
 ```
 
 Added in v1.0.0
@@ -257,12 +287,31 @@ Added in v1.0.0
 
 Added in v1.0.0
 
-#### Patch (type alias)
+#### Patch (interface)
+
+A `Patch<Input, Output>` describes an update that transforms a `Env<Input>`
+to a `Env<Output>` as a data structure. This allows combining updates to
+different services in the environment in a compositional way.
 
 **Signature**
 
 ```ts
-export type Patch<Input, Output> = ContextPatch<Input, Output>
+export interface Patch<Input, Output> extends Equal {
+  readonly [ContextPatchTypeId]: {
+    readonly _Input: (_: Input) => void
+    readonly _Output: (_: never) => Output
+  }
+}
+```
+
+Added in v1.0.0
+
+#### TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof ContextPatchTypeId
 ```
 
 Added in v1.0.0
@@ -271,12 +320,30 @@ Added in v1.0.0
 
 Added in v1.0.0
 
-#### Patch (type alias)
+#### Patch (interface)
+
+A patch which describes updates to a map of keys and values.
 
 **Signature**
 
 ```ts
-export type Patch<Key, Value, Patch> = HashMapPatch<Key, Value, Patch>
+export interface Patch<Key, Value, Patch> extends Equal {
+  readonly [HashMapPatchTypeId]: {
+    readonly _Key: (_: Key) => Key
+    readonly _Value: (_: Value) => Value
+    readonly _Patch: (_: Patch) => Patch
+  }
+}
+```
+
+Added in v1.0.0
+
+#### TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof HashMapPatchTypeId
 ```
 
 Added in v1.0.0
@@ -285,12 +352,28 @@ Added in v1.0.0
 
 Added in v1.0.0
 
-#### Patch (type alias)
+#### Patch (interface)
+
+A patch which describes updates to a set of values.
 
 **Signature**
 
 ```ts
-export type Patch<Value> = HashSetPatch<Value>
+export interface Patch<Value> extends Equal {
+  readonly [HashSetPatchTypeId]: {
+    readonly _Value: (_: Value) => Value
+  }
+}
+```
+
+Added in v1.0.0
+
+#### TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof HashSetPatchTypeId
 ```
 
 Added in v1.0.0
@@ -299,12 +382,31 @@ Added in v1.0.0
 
 Added in v1.0.0
 
-#### Patch (type alias)
+#### Patch (interface)
+
+A patch which describes updates to either one value or another.
 
 **Signature**
 
 ```ts
-export type Patch<Value, Value2, Patch, Patch2> = OrPatch<Value, Value2, Patch, Patch2>
+export interface Patch<Value, Value2, Patch, Patch2> extends Equal {
+  readonly [OrPatchTypeId]: {
+    readonly _Value: (_: Value) => Value
+    readonly _Value2: (_: Value2) => Value2
+    readonly _Patch: (_: Patch) => Patch
+    readonly _Patch2: (_: Patch2) => Patch2
+  }
+}
+```
+
+Added in v1.0.0
+
+#### TypeId (type alias)
+
+**Signature**
+
+```ts
+export type TypeId = typeof OrPatchTypeId
 ```
 
 Added in v1.0.0
@@ -320,10 +422,10 @@ knows how to diff the sum of their values.
 export declare const orElseEither: {
   <Value2, Patch2>(that: Differ<Value2, Patch2>): <Value, Patch>(
     self: Differ<Value, Patch>
-  ) => Differ<Either<Value, Value2>, OrPatch<Value, Value2, Patch, Patch2>>
+  ) => Differ<Either<Value, Value2>, Differ.Or.Patch<Value, Value2, Patch, Patch2>>
   <Value, Patch, Value2, Patch2>(self: Differ<Value, Patch>, that: Differ<Value2, Patch2>): Differ<
     Either<Value, Value2>,
-    OrPatch<Value, Value2, Patch, Patch2>
+    Differ.Or.Patch<Value, Value2, Patch, Patch2>
   >
 }
 ```

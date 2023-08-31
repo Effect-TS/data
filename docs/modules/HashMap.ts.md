@@ -1,6 +1,6 @@
 ---
 title: HashMap.ts
-nav_order: 23
+nav_order: 16
 parent: Modules
 ---
 
@@ -340,8 +340,8 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface HashMap<Key, Value> extends Iterable<[Key, Value]>, Equal, Pipeable {
-  readonly _id: TypeId
+export interface HashMap<Key, Value> extends Iterable<[Key, Value]>, Equal, Pipeable, Inspectable {
+  [TypeId]: TypeId
 }
 ```
 

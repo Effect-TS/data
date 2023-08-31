@@ -1,53 +1,48 @@
 import type { Chunk } from "@effect/data/Chunk"
 import type { Context } from "@effect/data/Context"
 import type * as D from "@effect/data/Differ"
-import * as ChunkPatch from "@effect/data/DifferChunkPatch"
-import * as ContextPatch from "@effect/data/DifferContextPatch"
-import * as HashMapPatch from "@effect/data/DifferHashMapPatch"
-import * as HashSetPatch from "@effect/data/DifferHashSetPatch"
-import * as OrPatch from "@effect/data/DifferOrPatch"
 import type { Either } from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
 import { constant, identity } from "@effect/data/Function"
 import type { HashMap } from "@effect/data/HashMap"
 import type { HashSet } from "@effect/data/HashSet"
+import * as ChunkPatch from "@effect/data/internal/Differ/ChunkPatch"
+import * as ContextPatch from "@effect/data/internal/Differ/ContextPatch"
+import * as HashMapPatch from "@effect/data/internal/Differ/HashMapPatch"
+import * as HashSetPatch from "@effect/data/internal/Differ/HashSetPatch"
+import * as OrPatch from "@effect/data/internal/Differ/OrPatch"
 
 /** @internal */
 export const DifferTypeId: D.TypeId = Symbol.for("@effect/data/Differ") as D.TypeId
 
 /** @internal */
-class DifferImpl<Value, Patch> implements D.Differ<Value, Patch> {
-  readonly empty: Patch
-  readonly diff: (oldValue: Value, newValue: Value) => Patch
-  readonly combine: (first: Patch, second: Patch) => Patch
-  readonly patch: (patch: Patch, oldValue: Value) => Value
-  readonly _id: D.TypeId = DifferTypeId
-  readonly _P: (_: Patch) => Patch = identity
-  readonly _V: (_: Value) => Value = identity
-  constructor(params: {
-    readonly empty: Patch
-    readonly diff: (oldValue: Value, newValue: Value) => Patch
-    readonly combine: (first: Patch, second: Patch) => Patch
-    readonly patch: (patch: Patch, oldValue: Value) => Value
-  }) {
-    this.empty = params.empty
-    this.diff = params.diff
-    this.combine = params.combine
-    this.patch = params.patch
+export const DifferProto = {
+  [DifferTypeId]: {
+    _P: identity,
+    _V: identity
   }
 }
 
 /** @internal */
-export const make = <Value, Patch>(params: {
-  readonly empty: Patch
-  readonly diff: (oldValue: Value, newValue: Value) => Patch
-  readonly combine: (first: Patch, second: Patch) => Patch
-  readonly patch: (patch: Patch, oldValue: Value) => Value
-}): D.Differ<Value, Patch> => new DifferImpl(params)
+export const make = <Value, Patch>(
+  params: {
+    readonly empty: Patch
+    readonly diff: (oldValue: Value, newValue: Value) => Patch
+    readonly combine: (first: Patch, second: Patch) => Patch
+    readonly patch: (patch: Patch, oldValue: Value) => Value
+  }
+): D.Differ<Value, Patch> => {
+  const differ = Object.create(DifferProto)
+  differ.empty = params.empty
+  differ.diff = params.diff
+  differ.combine = params.combine
+  differ.patch = params.patch
+  return differ
+}
 
 /** @internal */
-export const environment = <A>(): D.Differ<Context<A>, ContextPatch.ContextPatch<A, A>> =>
+export const environment = <A>(): D.Differ<Context<A>, D.Differ.Context.Patch<A, A>> =>
   make({
     empty: ContextPatch.empty(),
     combine: (first, second) => ContextPatch.combine(second)(first),
@@ -58,7 +53,7 @@ export const environment = <A>(): D.Differ<Context<A>, ContextPatch.ContextPatch
 /** @internal */
 export const chunk = <Value, Patch>(
   differ: D.Differ<Value, Patch>
-): D.Differ<Chunk<Value>, ChunkPatch.ChunkPatch<Value, Patch>> =>
+): D.Differ<Chunk<Value>, D.Differ.Chunk.Patch<Value, Patch>> =>
   make({
     empty: ChunkPatch.empty(),
     combine: (first, second) => ChunkPatch.combine(second)(first),
@@ -69,7 +64,7 @@ export const chunk = <Value, Patch>(
 /** @internal */
 export const hashMap = <Key, Value, Patch>(
   differ: D.Differ<Value, Patch>
-): D.Differ<HashMap<Key, Value>, HashMapPatch.HashMapPatch<Key, Value, Patch>> =>
+): D.Differ<HashMap<Key, Value>, D.Differ.HashMap.Patch<Key, Value, Patch>> =>
   make({
     empty: HashMapPatch.empty(),
     combine: (first, second) => HashMapPatch.combine(second)(first),
@@ -78,7 +73,7 @@ export const hashMap = <Key, Value, Patch>(
   })
 
 /** @internal */
-export const hashSet = <Value>(): D.Differ<HashSet<Value>, HashSetPatch.HashSetPatch<Value>> =>
+export const hashSet = <Value>(): D.Differ<HashSet<Value>, D.Differ.HashSet.Patch<Value>> =>
   make({
     empty: HashSetPatch.empty(),
     combine: (first, second) => HashSetPatch.combine(second)(first),
@@ -90,11 +85,11 @@ export const hashSet = <Value>(): D.Differ<HashSet<Value>, HashSetPatch.HashSetP
 export const orElseEither = Dual.dual<
   <Value2, Patch2>(that: D.Differ<Value2, Patch2>) => <Value, Patch>(
     self: D.Differ<Value, Patch>
-  ) => D.Differ<Either<Value, Value2>, OrPatch.OrPatch<Value, Value2, Patch, Patch2>>,
+  ) => D.Differ<Either<Value, Value2>, D.Differ.Or.Patch<Value, Value2, Patch, Patch2>>,
   <Value, Patch, Value2, Patch2>(
     self: D.Differ<Value, Patch>,
     that: D.Differ<Value2, Patch2>
-  ) => D.Differ<Either<Value, Value2>, OrPatch.OrPatch<Value, Value2, Patch, Patch2>>
+  ) => D.Differ<Either<Value, Value2>, D.Differ.Or.Patch<Value, Value2, Patch, Patch2>>
 >(2, (self, that) =>
   make({
     empty: OrPatch.empty(),

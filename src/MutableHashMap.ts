@@ -3,6 +3,7 @@
  */
 import * as Dual from "@effect/data/Function"
 import * as HashMap from "@effect/data/HashMap"
+import { type Inspectable, NodeInspectSymbol } from "@effect/data/Inspectable"
 import * as MutableRef from "@effect/data/MutableRef"
 import * as Option from "@effect/data/Option"
 import type { Pipeable } from "@effect/data/Pipeable"
@@ -20,48 +21,46 @@ export type TypeId = typeof TypeId
  * @since 1.0.0
  * @category models
  */
-export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, Pipeable {
-  readonly _id: TypeId
+export interface MutableHashMap<K, V> extends Iterable<readonly [K, V]>, Pipeable, Inspectable {
+  readonly [TypeId]: TypeId
 
   /** @internal */
   readonly backingMap: MutableRef.MutableRef<HashMap.HashMap<K, V>>
 }
 
-/** @internal */
-class MutableHashMapImpl<K, V> implements MutableHashMap<K, V> {
-  readonly _id: TypeId = TypeId
-
-  readonly backingMap = MutableRef.make(HashMap.empty());
-
-  [Symbol.iterator](): Iterator<readonly [K, V]> {
+const MutableHashMapProto: Omit<MutableHashMap<unknown, unknown>, "backingMap"> = {
+  [TypeId]: TypeId,
+  [Symbol.iterator](this: MutableHashMap<unknown, unknown>): Iterator<readonly [unknown, unknown]> {
     return this.backingMap.current[Symbol.iterator]()
-  }
-
+  },
   toString() {
     return `MutableHashMap(${Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")})`
-  }
-
+  },
   toJSON() {
     return {
       _tag: "MutableHashMap",
       values: Array.from(this)
     }
-  }
-
-  [Symbol.for("nodejs.util.inspect.custom")]() {
+  },
+  [NodeInspectSymbol]() {
     return this.toJSON()
-  }
-
+  },
   pipe() {
     return pipeArguments(this, arguments)
   }
+}
+
+const fromHashMap = <K, V>(backingMap: HashMap.HashMap<K, V>): MutableHashMap<K, V> => {
+  const map = Object.create(MutableHashMapProto)
+  map.backingMap = MutableRef.make(backingMap)
+  return map
 }
 
 /**
  * @since 1.0.0
  * @category constructors
  */
-export const empty = <K = never, V = never>(): MutableHashMap<K, V> => new MutableHashMapImpl<K, V>()
+export const empty = <K = never, V = never>(): MutableHashMap<K, V> => fromHashMap<K, V>(HashMap.empty())
 
 /**
  * @since 1.0.0
@@ -78,13 +77,8 @@ export const make: <Entries extends Array<readonly [any, any]>>(
  * @since 1.0.0
  * @category conversions
  */
-export const fromIterable = <K, V>(entries: Iterable<readonly [K, V]>): MutableHashMap<K, V> => {
-  const map = empty<K, V>()
-  for (const entry of entries) {
-    set(map, entry[0], entry[1])
-  }
-  return map
-}
+export const fromIterable = <K, V>(entries: Iterable<readonly [K, V]>): MutableHashMap<K, V> =>
+  fromHashMap(HashMap.fromIterable(entries))
 
 /**
  * @since 1.0.0
