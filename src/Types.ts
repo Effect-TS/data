@@ -83,12 +83,33 @@ export type Equals<X, Y> = (<T>() => T extends X ? 1 : 2) extends <
   : false
 
 /**
- * Extends an object type with another object type.
+ * Merges two object where the keys of the left object take precedence in the case of a conflict.
+ *
+ * @example
+ * import { MergeLeft } from "@effect/data/Types"
+ * type MergeLeft = MergeLeft<{ a: number, b: number; }, { a: string }> // { a: number; b: number; }
+ *
  * @since 1.0.0
  * @category models
  */
-export type Extend<K, H> = Simplify<
+export type MergeLeft<K, H> = Simplify<
   {
     [k in keyof K | keyof H]: k extends keyof K ? K[k] : k extends keyof H ? H[k] : never
+  }
+>
+
+/**
+ * Merges two object where the keys of the right object take precedence in the case of a conflict.
+ *
+ * @example
+ * import { MergeRight } from "@effect/data/Types"
+ * type MergeRight = MergeRight<{ a: number, b: number; }, { a: string }> // { a: string; b: number; }
+ *
+ * @since 1.0.0
+ * @category models
+ */
+export type MergeRight<K, H> = Simplify<
+  {
+    [k in keyof K | keyof H]: k extends keyof H ? H[k] : k extends keyof K ? K[k] : never
   }
 >
