@@ -26,7 +26,6 @@ Added in v1.0.0
 - [models](#models)
   - [Case (interface)](#case-interface)
   - [Data (type alias)](#data-type-alias)
-  - [IsEqualTo (type alias)](#isequalto-type-alias)
   - [TaggedEnum (type alias)](#taggedenum-type-alias)
 - [utils](#utils)
   - [Case (namespace)](#case-namespace)
@@ -49,7 +48,7 @@ Provides a constructor for a Case Class.
 
 ```ts
 export declare const Class: new <A extends Record<string, any>>(
-  args: IsEqualTo<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
+  args: Types.Equals<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
 ) => Data<A>
 ```
 
@@ -65,7 +64,7 @@ Provides a Tagged constructor for a Case Class.
 export declare const TaggedClass: <Key extends string>(
   tag: Key
 ) => new <A extends Record<string, any>>(
-  args: IsEqualTo<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
+  args: Types.Equals<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
 ) => Data<A & { _tag: Key }>
 ```
 
@@ -240,16 +239,6 @@ export type Data<A extends Readonly<Record<string, any>> | ReadonlyArray<any>> =
 
 Added in v1.0.0
 
-## IsEqualTo (type alias)
-
-**Signature**
-
-```ts
-export type IsEqualTo<X, Y> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? true : false
-```
-
-Added in v1.0.0
-
 ## TaggedEnum (type alias)
 
 Create a tagged enum data type, which is a union of `Data` structs.
@@ -280,7 +269,7 @@ type HttpErrorPlain =
 
 ```ts
 export type TaggedEnum<A extends Record<string, Record<string, any>>> = {
-  readonly [Tag in keyof A]: Data<Simplify<Readonly<A[Tag]> & { readonly _tag: Tag }>>
+  readonly [Tag in keyof A]: Data<Readonly<Types.Simplify<A[Tag] & { _tag: Tag }>>>
 }[keyof A]
 ```
 

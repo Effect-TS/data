@@ -21,6 +21,7 @@ import { identity } from "@effect/data/Function"
 import * as Option from "@effect/data/Option"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
 import * as ReadonlyArray from "@effect/data/ReadonlyArray"
+import type * as Types from "@effect/data/Types"
 
 /**
  * @since 1.0.0
@@ -131,7 +132,7 @@ export declare namespace Brand {
    * @since 1.0.0
    * @category models
    */
-  export type Brands<P> = P extends Brand<any> ? Brand.UnionToIntersection<
+  export type Brands<P> = P extends Brand<any> ? Types.UnionToIntersection<
       {
         [k in keyof P[BrandTypeId]]: k extends string | symbol ? Brand<k>
           : never
@@ -155,15 +156,6 @@ export declare namespace Brand {
       : Brands[B]
       : "ERROR: All brands should have the same base type"
   }
-
-  /**
-   * A utility type that transforms a union type `T` into an intersection type.
-   *
-   * @since 1.0.0
-   * @category models
-   */
-  export type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x: infer R) => any ? R
-    : never
 }
 
 /**
@@ -305,12 +297,12 @@ export const nominal: <A extends Brand<any>>() => Brand.Constructor<A> = <A exte
 export const all: <Brands extends readonly [Brand.Constructor<any>, ...Array<Brand.Constructor<any>>]>(
   ...brands: Brand.EnsureCommonBase<Brands>
 ) => Brand.Constructor<
-  Brand.UnionToIntersection<{ [B in keyof Brands]: Brand.FromConstructor<Brands[B]> }[number]> extends
+  Types.UnionToIntersection<{ [B in keyof Brands]: Brand.FromConstructor<Brands[B]> }[number]> extends
     infer X extends Brand<any> ? X : Brand<any>
 > = <
   Brands extends readonly [Brand.Constructor<any>, ...Array<Brand.Constructor<any>>]
 >(...brands: Brand.EnsureCommonBase<Brands>): Brand.Constructor<
-  Brand.UnionToIntersection<
+  Types.UnionToIntersection<
     {
       [B in keyof Brands]: Brand.FromConstructor<Brands[B]>
     }[number]
