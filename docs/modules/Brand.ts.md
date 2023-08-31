@@ -52,7 +52,6 @@ Added in v1.0.0
     - [EnsureCommonBase (type alias)](#ensurecommonbase-type-alias)
     - [FromConstructor (type alias)](#fromconstructor-type-alias)
     - [Unbranded (type alias)](#unbranded-type-alias)
-    - [UnionToIntersection (type alias)](#uniontointersection-type-alias)
 
 ---
 
@@ -334,7 +333,7 @@ A utility type to extract the brands from a branded type.
 
 ```ts
 export type Brands<P> = P extends Brand<any>
-  ? Brand.UnionToIntersection<
+  ? Types.UnionToIntersection<
       {
         [k in keyof P[BrandTypeId]]: k extends string | symbol ? Brand<k> : never
       }[keyof P[BrandTypeId]]
@@ -384,18 +383,6 @@ A utility type to extract the value type from a brand.
 
 ```ts
 export type Unbranded<P> = P extends infer Q & Brands<P> ? Q : P
-```
-
-Added in v1.0.0
-
-### UnionToIntersection (type alias)
-
-A utility type that transforms a union type `T` into an intersection type.
-
-**Signature**
-
-```ts
-export type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x: infer R) => any ? R : never
 ```
 
 Added in v1.0.0
