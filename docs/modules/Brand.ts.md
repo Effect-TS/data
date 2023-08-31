@@ -71,7 +71,7 @@ This API is useful when you want to validate that the input data passes multiple
 export declare const all: <Brands extends readonly [Brand.Constructor<any>, ...Brand.Constructor<any>[]]>(
   ...brands: Brand.EnsureCommonBase<Brands>
 ) => Brand.Constructor<
-  Brand.UnionToIntersection<
+  Types.UnionToIntersection<
     { [B in keyof Brands]: Brand.FromConstructor<Brands[B]> }[number]
   > extends infer X extends Brand<any>
     ? X

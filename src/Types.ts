@@ -7,9 +7,9 @@
 /**
  * Returns the tags in a type.
  * @example
- * import { Tags } from "@effect/data/Types"
+ * import * as Types from "@effect/data/Types"
  *
- * type Res = Tags<string | { _tag: "a" } | { _tag: "b" } > // "a" | "b"
+ * type Res = Types.Tags<string | { _tag: "a" } | { _tag: "b" } > // "a" | "b"
  *
  * @category types
  * @since 1.0.0
@@ -19,9 +19,9 @@ export type Tags<E> = E extends { _tag: string } ? E["_tag"] : never
 /**
  * Excludes the tagged object from the type.
  * @example
- * import { ExcludeTag } from "@effect/data/Types"
+ * import * as Types from "@effect/data/Types"
  *
- * type Res = ExcludeTag<string | { _tag: "a" } | { _tag: "b" }, "a"> // string | { _tag: "b" }
+ * type Res = Types.ExcludeTag<string | { _tag: "a" } | { _tag: "b" }, "a"> // string | { _tag: "b" }
  *
  * @category types
  * @since 1.0.0
@@ -32,9 +32,9 @@ export type ExcludeTag<E, K extends Tags<E>> = Exclude<E, { _tag: K }>
  * Extracts the type of the given tag.
  *
  * @example
- * import { ExtractTag } from "@effect/data/Types"
+ * import * as Types from "@effect/data/Types"
  *
- * type Res = ExtractTag<{ _tag: "a", a: number } | { _tag: "b", b: number }, "b"> // { _tag: "b", b: number }
+ * type Res = Types.ExtractTag<{ _tag: "a", a: number } | { _tag: "b", b: number }, "b"> // { _tag: "b", b: number }
  *
  * @category types
  * @since 1.0.0
@@ -54,9 +54,9 @@ export type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) ext
  * Simplifies the type signature of a type.
  *
  * @example
- * import { Simplify } from "@effect/data/Types"
+ * import * as Types from "@effect/data/Types"
  *
- * type Res = Simplify<{ a: number } & { b: number }> // { a: number; b: number; }
+ * type Res = Types.Simplify<{ a: number } & { b: number }> // { a: number; b: number; }
  *
  * @since 1.0.0
  * @category types
@@ -69,10 +69,10 @@ export type Simplify<A> = {
  * Determines if two types are equal.
  *
  * @example
- * import { Equals } from "@effect/data/Types"
+ * import * as Types from "@effect/data/Types"
  *
- * type Res1 = Equals<{ a: number }, { a: number }> // true
- * type Res2 = Equals<{ a: number }, { b: number }> // false
+ * type Res1 = Types.Equals<{ a: number }, { a: number }> // true
+ * type Res2 = Types.Equals<{ a: number }, { b: number }> // false
  *
  * @since 1.0.0
  * @category models
@@ -86,8 +86,8 @@ export type Equals<X, Y> = (<T>() => T extends X ? 1 : 2) extends <
  * Merges two object where the keys of the left object take precedence in the case of a conflict.
  *
  * @example
- * import { MergeLeft } from "@effect/data/Types"
- * type MergeLeft = MergeLeft<{ a: number, b: number; }, { a: string }> // { a: number; b: number; }
+ * import * as Types from "@effect/data/Types"
+ * type MergeLeft = Types.MergeLeft<{ a: number, b: number; }, { a: string }> // { a: number; b: number; }
  *
  * @since 1.0.0
  * @category models
@@ -102,8 +102,8 @@ export type MergeLeft<K, H> = Simplify<
  * Merges two object where the keys of the right object take precedence in the case of a conflict.
  *
  * @example
- * import { MergeRight } from "@effect/data/Types"
- * type MergeRight = MergeRight<{ a: number, b: number; }, { a: string }> // { a: string; b: number; }
+ * import * as Types from "@effect/data/Types"
+ * type MergeRight = Types.MergeRight<{ a: number, b: number; }, { a: string }> // { a: string; b: number; }
  *
  * @since 1.0.0
  * @category models
