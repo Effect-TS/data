@@ -235,6 +235,12 @@ describe.concurrent("Predicate", () => {
     assert.deepStrictEqual(_.isError({}), false)
   })
 
+  it("isUint8Array", () => {
+    assert.deepStrictEqual(_.isUint8Array(new Uint8Array()), true)
+    assert.deepStrictEqual(_.isUint8Array(null), false)
+    assert.deepStrictEqual(_.isUint8Array({}), false)
+  })
+
   it("isDate", () => {
     assert.deepStrictEqual(_.isDate(new Date()), true)
     assert.deepStrictEqual(_.isDate(null), false)
