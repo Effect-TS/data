@@ -20,12 +20,18 @@ Added in v1.0.0
 
 - [decoding](#decoding)
   - [decodeBase64](#decodebase64)
+  - [decodeBase64String](#decodebase64string)
   - [decodeBase64Url](#decodebase64url)
+  - [decodeBase64UrlString](#decodebase64urlstring)
   - [decodeHex](#decodehex)
+  - [decodeHexString](#decodehexstring)
 - [encoding](#encoding)
   - [encodeBase64](#encodebase64)
+  - [encodeBase64String](#encodebase64string)
   - [encodeBase64Url](#encodebase64url)
+  - [encodeBase64UrlString](#encodebase64urlstring)
   - [encodeHex](#encodehex)
+  - [encodeHexString](#encodehexstring)
 - [errors](#errors)
   - [DecodeException](#decodeexception)
 - [models](#models)
@@ -42,7 +48,7 @@ Added in v1.0.0
 
 ## decodeBase64
 
-Decodes a base64 (RFC4648) encoded string.
+Decodes a base64 (RFC4648) encoded `string` into a `Uint8Array`.
 
 **Signature**
 
@@ -52,9 +58,21 @@ export declare const decodeBase64: (str: string) => Either.Either<DecodeExceptio
 
 Added in v1.0.0
 
+## decodeBase64String
+
+Decodes a base64 (RFC4648) encoded `string` into a UTF-8 `string`.
+
+**Signature**
+
+```ts
+export declare const decodeBase64String: (str: string) => Either.Either<DecodeException, string>
+```
+
+Added in v1.0.0
+
 ## decodeBase64Url
 
-Decodes a base64 (URL) encoded string.
+Decodes a base64 (URL) encoded `string` into a `Uint8Array`.
 
 **Signature**
 
@@ -64,9 +82,21 @@ export declare const decodeBase64Url: (str: string) => Either.Either<DecodeExcep
 
 Added in v1.0.0
 
+## decodeBase64UrlString
+
+Decodes a base64 (URL) encoded `string` into a UTF-8 `string`.
+
+**Signature**
+
+```ts
+export declare const decodeBase64UrlString: (str: string) => Either.Either<DecodeException, string>
+```
+
+Added in v1.0.0
+
 ## decodeHex
 
-Decodes a hex encoded string.
+Decodes a hex encoded `string` into a `Uint8Array`.
 
 **Signature**
 
@@ -76,11 +106,23 @@ export declare const decodeHex: (str: string) => Either.Either<DecodeException, 
 
 Added in v1.0.0
 
+## decodeHexString
+
+Decodes a hex encoded `string` into a UTF-8 `string`.
+
+**Signature**
+
+```ts
+export declare const decodeHexString: (str: string) => Either.Either<DecodeException, string>
+```
+
+Added in v1.0.0
+
 # encoding
 
 ## encodeBase64
 
-Encodes a Uint8Array into a base64 (RFC4648) string.
+Encodes a `Uint8Array` into a base64 (RFC4648) `string`.
 
 **Signature**
 
@@ -90,9 +132,21 @@ export declare const encodeBase64: (bytes: Uint8Array) => string
 
 Added in v1.0.0
 
+## encodeBase64String
+
+Encodes a `string` into a base64 (RFC4648) `string`.
+
+**Signature**
+
+```ts
+export declare const encodeBase64String: (str: string) => string
+```
+
+Added in v1.0.0
+
 ## encodeBase64Url
 
-Encodes a Uint8Array into a base64 (URL) string.
+Encodes a `Uint8Array` into a base64 (URL) `string`.
 
 **Signature**
 
@@ -102,14 +156,38 @@ export declare const encodeBase64Url: (bytes: Uint8Array) => string
 
 Added in v1.0.0
 
+## encodeBase64UrlString
+
+Encodes a `string` into a base64 (URL) `string`.
+
+**Signature**
+
+```ts
+export declare const encodeBase64UrlString: (str: string) => string
+```
+
+Added in v1.0.0
+
 ## encodeHex
 
-Encodes a Uint8Array into a hex string.
+Encodes a `Uint8Array` into a hex `string`.
 
 **Signature**
 
 ```ts
 export declare const encodeHex: (bytes: Uint8Array) => string
+```
+
+Added in v1.0.0
+
+## encodeHexString
+
+Encodes a `string` into a hex `string`.
+
+**Signature**
+
+```ts
+export declare const encodeHexString: (str: string) => string
 ```
 
 Added in v1.0.0
