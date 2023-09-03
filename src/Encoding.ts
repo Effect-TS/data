@@ -14,20 +14,13 @@ import * as Common from "@effect/data/internal/Encoding/Common"
 import * as Hex from "@effect/data/internal/Encoding/Hex"
 
 /**
- * Encodes a `Uint8Array` into a base64 (RFC4648) `string`.
+ * Encodes the given value into a base64 (RFC4648) `string`.
  *
  * @category encoding
  * @since 1.0.0
  */
-export const encodeBase64: (bytes: Uint8Array) => string = Base64.encode
-
-/**
- * Encodes a `string` into a base64 (RFC4648) `string`.
- *
- * @category encoding
- * @since 1.0.0
- */
-export const encodeBase64String = (str: string) => encodeBase64(Common.encoder.encode(str))
+export const encodeBase64: (input: Uint8Array | string) => string = (input) =>
+  typeof input === "string" ? Base64.encode(Common.encoder.encode(input)) : Base64.encode(input)
 
 /**
  * Decodes a base64 (RFC4648) encoded `string` into a `Uint8Array`.
@@ -46,20 +39,13 @@ export const decodeBase64 = (str: string): Either.Either<DecodeException, Uint8A
 export const decodeBase64String = (str: string) => Either.map(decodeBase64(str), (_) => Common.decoder.decode(_))
 
 /**
- * Encodes a `Uint8Array` into a base64 (URL) `string`.
+ * Encodes the given value into a base64 (URL) `string`.
  *
  * @category encoding
  * @since 1.0.0
  */
-export const encodeBase64Url: (bytes: Uint8Array) => string = Base64Url.encode
-
-/**
- * Encodes a `string` into a base64 (URL) `string`.
- *
- * @category encoding
- * @since 1.0.0
- */
-export const encodeBase64UrlString = (str: string) => encodeBase64Url(Common.encoder.encode(str))
+export const encodeBase64Url: (input: Uint8Array | string) => string = (input) =>
+  typeof input === "string" ? Base64Url.encode(Common.encoder.encode(input)) : Base64Url.encode(input)
 
 /**
  * Decodes a base64 (URL) encoded `string` into a `Uint8Array`.
@@ -78,20 +64,13 @@ export const decodeBase64Url = (str: string): Either.Either<DecodeException, Uin
 export const decodeBase64UrlString = (str: string) => Either.map(decodeBase64Url(str), (_) => Common.decoder.decode(_))
 
 /**
- * Encodes a `Uint8Array` into a hex `string`.
+ * Encodes the given value into a hex `string`.
  *
  * @category encoding
  * @since 1.0.0
  */
-export const encodeHex: (bytes: Uint8Array) => string = Hex.encode
-
-/**
- * Encodes a `string` into a hex `string`.
- *
- * @category encoding
- * @since 1.0.0
- */
-export const encodeHexString = (str: string) => encodeHex(Common.encoder.encode(str))
+export const encodeHex: (input: Uint8Array | string) => string = (input) =>
+  typeof input === "string" ? Hex.encode(Common.encoder.encode(input)) : Hex.encode(input)
 
 /**
  * Decodes a hex encoded `string` into a `Uint8Array`.

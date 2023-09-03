@@ -48,12 +48,8 @@ describe.concurrent("Base64", () => {
   })
 
   it.each(valid)(`should encode %j => %j`, (raw: string, b64: string) => {
-    const bytes = new TextEncoder().encode(raw)
-    strictEqual(Encoding.encodeBase64(bytes), b64)
-  })
-
-  it.each(valid)(`should encode %j => %j (from string)`, (raw: string, b64: string) => {
-    strictEqual(Encoding.encodeBase64String(raw), b64)
+    strictEqual(Encoding.encodeBase64(raw), b64)
+    strictEqual(Encoding.encodeBase64(new TextEncoder().encode(raw)), b64)
   })
 
   it.each(invalid)(`should refuse to decode %j`, (b64: string) => {
@@ -97,12 +93,8 @@ describe.concurrent("Base64Url", () => {
   })
 
   it.each(valid)(`should encode %j => %j`, (raw: string, b64url: string) => {
-    const bytes = new TextEncoder().encode(raw)
-    strictEqual(Encoding.encodeBase64Url(bytes), b64url)
-  })
-
-  it.each(valid)(`should encode %j => %j (from string)`, (raw: string, b64: string) => {
-    strictEqual(Encoding.encodeBase64UrlString(raw), b64)
+    strictEqual(Encoding.encodeBase64Url(raw), b64url)
+    strictEqual(Encoding.encodeBase64Url(new TextEncoder().encode(raw)), b64url)
   })
 
   it.each(invalid)(`should refuse to decode %j`, (b64url: string) => {
@@ -159,7 +151,7 @@ describe.concurrent("Hex", () => {
   })
 
   it.each(strings)(`should encode %j <= %j`, (hex: string, raw: string) => {
-    strictEqual(Encoding.encodeHexString(raw), hex)
+    strictEqual(Encoding.encodeHex(raw), hex)
   })
 
   it.each(invalid)(`should refuse to decode %j`, (hex: string) => {
