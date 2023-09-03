@@ -34,16 +34,22 @@ describe.concurrent("Base64", () => {
     "abcd\0nonsense"
   ]
 
-  it.each(valid)(`should decode %j => %j`, (raw: string, b64: string) => {
+  it.each(valid)(`should decode %j <= %j`, (raw: string, b64: string) => {
     const bytes = new TextEncoder().encode(raw)
     const decoded = Encoding.decodeBase64(b64)
     assert(Either.isRight(decoded))
     deepStrictEqual(decoded.right, bytes)
   })
 
-  it.each(valid)(`should encode %j <= %j`, (raw: string, b64: string) => {
-    const bytes = new TextEncoder().encode(raw)
-    strictEqual(Encoding.encodeBase64(bytes), b64)
+  it.each(valid)(`should decode %j <= %j (to string)`, (raw: string, b64: string) => {
+    const decoded = Encoding.decodeBase64String(b64)
+    assert(Either.isRight(decoded))
+    deepStrictEqual(decoded.right, raw)
+  })
+
+  it.each(valid)(`should encode %j => %j`, (raw: string, b64: string) => {
+    strictEqual(Encoding.encodeBase64(raw), b64)
+    strictEqual(Encoding.encodeBase64(new TextEncoder().encode(raw)), b64)
   })
 
   it.each(invalid)(`should refuse to decode %j`, (b64: string) => {
@@ -73,16 +79,22 @@ describe.concurrent("Base64Url", () => {
     "PDw/Pz8+Pg=="
   ]
 
-  it.each(valid)(`should decode %j => %j`, (raw: string, b64url: string) => {
+  it.each(valid)(`should decode %j <= %j`, (raw: string, b64url: string) => {
     const bytes = new TextEncoder().encode(raw)
     const decoded = Encoding.decodeBase64Url(b64url)
     assert(Either.isRight(decoded))
     deepStrictEqual(decoded.right, bytes)
   })
 
-  it.each(valid)(`should encode %j <= %j`, (raw: string, b64url: string) => {
-    const bytes = new TextEncoder().encode(raw)
-    strictEqual(Encoding.encodeBase64Url(bytes), b64url)
+  it.each(valid)(`should decode %j <= %j (to string)`, (raw: string, b64: string) => {
+    const decoded = Encoding.decodeBase64UrlString(b64)
+    assert(Either.isRight(decoded))
+    deepStrictEqual(decoded.right, raw)
+  })
+
+  it.each(valid)(`should encode %j => %j`, (raw: string, b64url: string) => {
+    strictEqual(Encoding.encodeBase64Url(raw), b64url)
+    strictEqual(Encoding.encodeBase64Url(new TextEncoder().encode(raw)), b64url)
   })
 
   it.each(invalid)(`should refuse to decode %j`, (b64url: string) => {
@@ -93,7 +105,7 @@ describe.concurrent("Base64Url", () => {
 })
 
 describe.concurrent("Hex", () => {
-  const valid: Array<[string, Uint8Array]> = [
+  const valid: Array<[hex: string, bytes: Uint8Array]> = [
     ["", Uint8Array.from([])],
     ["0001020304050607", Uint8Array.from([0, 1, 2, 3, 4, 5, 6, 7])],
     ["08090a0b0c0d0e0f", Uint8Array.from([8, 9, 10, 11, 12, 13, 14, 15])],
@@ -101,6 +113,14 @@ describe.concurrent("Hex", () => {
     ["f8f9fafbfcfdfeff", Uint8Array.from([0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff])],
     ["67", new TextEncoder().encode("g")],
     ["e3a1", Uint8Array.from([0xe3, 0xa1])]
+  ]
+
+  const strings: Array<[hex: string, raw: string]> = [
+    ["", ""],
+    ["68656c6c6f20776f726c64", "hello world"],
+    ["666f6f", "foo"],
+    ["666f6f20626172", "foo bar"],
+    ["67", "g"]
   ]
 
   const invalid: Array<string> = [
@@ -120,8 +140,18 @@ describe.concurrent("Hex", () => {
     deepStrictEqual(decoded.right, bytes)
   })
 
+  it.each(strings)(`should decode %j => %j to string`, (hex: string, str: string) => {
+    const decoded = Encoding.decodeHexString(hex)
+    assert(Either.isRight(decoded))
+    deepStrictEqual(decoded.right, str)
+  })
+
   it.each(valid)(`should encode %j <= %o`, (hex: string, bytes: Uint8Array) => {
     strictEqual(Encoding.encodeHex(bytes), hex)
+  })
+
+  it.each(strings)(`should encode %j <= %j`, (hex: string, raw: string) => {
+    strictEqual(Encoding.encodeHex(raw), hex)
   })
 
   it.each(invalid)(`should refuse to decode %j`, (hex: string) => {
