@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.18.4
+
+### Patch Changes
+
+- [#486](https://github.com/Effect-TS/data/pull/486) [`c523197`](https://github.com/Effect-TS/data/commit/c5231971f3e153c06d863a7b798040e7f47cf536) Thanks [@fubhy](https://github.com/fubhy)! - Add `string` encoding & decoding variants
+
 ## 0.18.3
 
 ### Patch Changes
