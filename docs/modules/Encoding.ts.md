@@ -27,11 +27,8 @@ Added in v1.0.0
   - [decodeHexString](#decodehexstring)
 - [encoding](#encoding)
   - [encodeBase64](#encodebase64)
-  - [encodeBase64String](#encodebase64string)
   - [encodeBase64Url](#encodebase64url)
-  - [encodeBase64UrlString](#encodebase64urlstring)
   - [encodeHex](#encodehex)
-  - [encodeHexString](#encodehexstring)
 - [errors](#errors)
   - [DecodeException](#decodeexception)
 - [models](#models)
@@ -122,72 +119,36 @@ Added in v1.0.0
 
 ## encodeBase64
 
-Encodes a `Uint8Array` into a base64 (RFC4648) `string`.
+Encodes the given value into a base64 (RFC4648) `string`.
 
 **Signature**
 
 ```ts
-export declare const encodeBase64: (bytes: Uint8Array) => string
-```
-
-Added in v1.0.0
-
-## encodeBase64String
-
-Encodes a `string` into a base64 (RFC4648) `string`.
-
-**Signature**
-
-```ts
-export declare const encodeBase64String: (str: string) => string
+export declare const encodeBase64: (input: Uint8Array | string) => string
 ```
 
 Added in v1.0.0
 
 ## encodeBase64Url
 
-Encodes a `Uint8Array` into a base64 (URL) `string`.
+Encodes the given value into a base64 (URL) `string`.
 
 **Signature**
 
 ```ts
-export declare const encodeBase64Url: (bytes: Uint8Array) => string
-```
-
-Added in v1.0.0
-
-## encodeBase64UrlString
-
-Encodes a `string` into a base64 (URL) `string`.
-
-**Signature**
-
-```ts
-export declare const encodeBase64UrlString: (str: string) => string
+export declare const encodeBase64Url: (input: Uint8Array | string) => string
 ```
 
 Added in v1.0.0
 
 ## encodeHex
 
-Encodes a `Uint8Array` into a hex `string`.
+Encodes the given value into a hex `string`.
 
 **Signature**
 
 ```ts
-export declare const encodeHex: (bytes: Uint8Array) => string
-```
-
-Added in v1.0.0
-
-## encodeHexString
-
-Encodes a `string` into a hex `string`.
-
-**Signature**
-
-```ts
-export declare const encodeHexString: (str: string) => string
+export declare const encodeHex: (input: Uint8Array | string) => string
 ```
 
 Added in v1.0.0
