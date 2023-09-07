@@ -23,10 +23,6 @@ export interface Equal extends Hash.Hash {
  * @category equality
  */
 export function equals<B>(that: B): <A>(self: A) => boolean
-/**
- * @since 1.0.0
- * @category equality
- */
 export function equals<A, B>(self: A, that: B): boolean
 export function equals(): any {
   if (arguments.length === 1) {
@@ -65,5 +61,4 @@ export const isEqual = (u: unknown): u is Equal => typeof u === "object" && u !=
  * @since 1.0.0
  * @category instances
  */
-export const equivalence: <A>() => Equivalence<A> = () => (self, that) =>
-  Hash.hash(self) === Hash.hash(that) && equals(self, that)
+export const equivalence: <A>() => Equivalence<A> = () => (self, that) => equals(self, that)
