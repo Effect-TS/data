@@ -6,7 +6,7 @@ import type * as Either from "@effect/data/Either"
 import * as Equal from "@effect/data/Equal"
 import { dual } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
-import { NodeInspectSymbol } from "@effect/data/Inspectable"
+import { NodeInspectSymbol, toJSON, toString } from "@effect/data/Inspectable"
 import { EffectTypeId, effectVariance } from "@effect/data/internal/Effect"
 import * as option from "@effect/data/internal/Option"
 import type { Option } from "@effect/data/Option"
@@ -23,13 +23,13 @@ const CommonProto = {
     _A: (_: never) => _
   },
   [NodeInspectSymbol]<E, A>(this: Either.Either<E, A>) {
-    return (this as any).toJSON()
+    return this.toJSON()
   },
   pipe() {
     return pipeArguments(this, arguments)
   },
   toString<E, A>(this: Either.Left<E, A>) {
-    return JSON.stringify(this, null, 2)
+    return toString(this.toJSON())
   }
 }
 
@@ -43,8 +43,9 @@ const RightProto = Object.assign(Object.create(CommonProto), {
   },
   toJSON<E, A>(this: Either.Right<E, A>) {
     return {
+      _id: "Either",
       _tag: this._tag,
-      right: this.right
+      right: toJSON(this.right)
     }
   }
 })
@@ -59,8 +60,9 @@ const LeftProto = Object.assign(Object.create(CommonProto), {
   },
   toJSON<E, A>(this: Either.Left<E, A>) {
     return {
+      _id: "Either",
       _tag: this._tag,
-      left: this.left
+      left: toJSON(this.left)
     }
   }
 })

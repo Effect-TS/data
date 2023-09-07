@@ -29,12 +29,27 @@ describe.concurrent("Chunk", () => {
   })
 
   it("toString", () => {
-    expect(String(Chunk.make(0, 1, 2))).toEqual("Chunk(0, 1, 2)")
+    expect(String(Chunk.make(0, 1, 2))).toEqual(`_id: Chunk
+values:
+  - 0
+  - 1
+  - 2`)
+    expect(String(Chunk.make(Chunk.make(1, 2, 3)))).toEqual(`_id: Chunk
+values:
+  -
+    _id: Chunk
+    values:
+      - 1
+      - 2
+      - 3`)
   })
 
   it("toJSON", () => {
-    expect(JSON.stringify(Chunk.make(0, 1, 2))).toEqual(
-      JSON.stringify({ _tag: "Chunk", values: [0, 1, 2] })
+    expect(Chunk.make(0, 1, 2).toJSON()).toEqual(
+      { _id: "Chunk", values: [0, 1, 2] }
+    )
+    expect(Chunk.make(Chunk.make(1, 2, 3)).toJSON()).toEqual(
+      { _id: "Chunk", values: [{ _id: "Chunk", values: [1, 2, 3] }] }
     )
   })
 
@@ -45,7 +60,7 @@ describe.concurrent("Chunk", () => {
   })
 
   it("inspect", () => {
-    expect(inspect(Chunk.make(0, 1, 2))).toEqual(inspect({ _tag: "Chunk", values: [0, 1, 2] }))
+    expect(inspect(Chunk.make(0, 1, 2))).toEqual(inspect({ _id: "Chunk", values: [0, 1, 2] }))
   })
 
   it("modifyOption", () => {

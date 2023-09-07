@@ -53,14 +53,24 @@ describe.concurrent("SortedMap", () => {
   test("toString", () => {
     const map = makeNumericSortedMap([0, 10], [1, 20], [2, 30])
 
-    expect(String(map)).toEqual("SortedMap([0, 10], [1, 20], [2, 30])")
+    expect(String(map)).toEqual(`_id: SortedMap
+values:
+  -
+    - 0
+    - 10
+  -
+    - 1
+    - 20
+  -
+    - 2
+    - 30`)
   })
 
   test("toJSON", () => {
     const map = makeNumericSortedMap([0, 10], [1, 20], [2, 30])
 
-    expect(JSON.stringify(map)).toEqual(
-      JSON.stringify({ _tag: "SortedMap", values: [[0, 10], [1, 20], [2, 30]] })
+    expect(map.toJSON()).toEqual(
+      { _id: "SortedMap", values: [[0, 10], [1, 20], [2, 30]] }
     )
   })
 
@@ -68,7 +78,7 @@ describe.concurrent("SortedMap", () => {
     const map = makeNumericSortedMap([0, 10], [1, 20], [2, 30])
 
     expect(inspect(map)).toEqual(
-      inspect({ _tag: "SortedMap", values: [[0, 10], [1, 20], [2, 30]] })
+      inspect({ _id: "SortedMap", values: [[0, 10], [1, 20], [2, 30]] })
     )
   })
 

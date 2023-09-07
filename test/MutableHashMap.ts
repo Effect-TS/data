@@ -44,7 +44,14 @@ describe.concurrent("MutableHashMap", () => {
       [1, "b"]
     )
 
-    expect(String(map)).toEqual("MutableHashMap([0, a], [1, b])")
+    expect(String(map)).toEqual(`_id: MutableHashMap
+values:
+  -
+    - 0
+    - a
+  -
+    - 1
+    - b`)
   })
 
   it("toJSON", () => {
@@ -53,8 +60,8 @@ describe.concurrent("MutableHashMap", () => {
       [1, "b"]
     )
 
-    expect(JSON.stringify(map)).toEqual(
-      JSON.stringify({ _tag: "MutableHashMap", values: [[0, "a"], [1, "b"]] })
+    expect(map.toJSON()).toEqual(
+      { _id: "MutableHashMap", values: [[0, "a"], [1, "b"]] }
     )
   })
 
@@ -64,7 +71,7 @@ describe.concurrent("MutableHashMap", () => {
       [1, "b"]
     )
 
-    expect(inspect(map)).toEqual(inspect({ _tag: "MutableHashMap", values: [[0, "a"], [1, "b"]] }))
+    expect(inspect(map)).toEqual(inspect({ _id: "MutableHashMap", values: [[0, "a"], [1, "b"]] }))
   })
 
   it("make", () => {

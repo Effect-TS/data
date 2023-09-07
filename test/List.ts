@@ -205,22 +205,31 @@ describe.concurrent("List", () => {
   })
 
   it("toString", () => {
-    expect(String(List.empty())).toEqual("List.Nil")
-    expect(String(List.make(0, 1, 2))).toEqual("List.Cons(0, 1, 2)")
+    expect(String(List.empty())).toEqual(`_id: List
+_tag: Nil`)
+    expect(String(List.make(0, 1, 2))).toEqual(`_id: List
+_tag: Cons
+values:
+  - 0
+  - 1
+  - 2`)
   })
 
   it("toJSON", () => {
-    expect(JSON.stringify(List.empty())).toEqual(
-      JSON.stringify({ _tag: "List.Nil" })
+    expect(List.empty().toJSON()).toEqual(
+      { _id: "List", _tag: "Nil" }
     )
-    expect(JSON.stringify(List.make(0, 1, 2))).toEqual(
-      JSON.stringify({ _tag: "List.Cons", values: [0, 1, 2] })
+    expect(List.make(0, 1, 2).toJSON()).toEqual(
+      { _id: "List", _tag: "Cons", values: [0, 1, 2] }
+    )
+    expect(List.make(0, 1, List.empty()).toJSON()).toEqual(
+      { _id: "List", _tag: "Cons", values: [0, 1, { _id: "List", _tag: "Nil" }] }
     )
   })
 
   it("inspect", () => {
-    expect(inspect(List.empty())).toEqual(inspect({ _tag: "List.Nil" }))
-    expect(inspect(List.make(0, 1, 2))).toEqual(inspect({ _tag: "List.Cons", values: [0, 1, 2] }))
+    expect(inspect(List.empty())).toEqual(inspect({ _id: "List", _tag: "Nil" }))
+    expect(inspect(List.make(0, 1, 2))).toEqual(inspect({ _id: "List", _tag: "Cons", values: [0, 1, 2] }))
   })
 
   it("equals", () => {

@@ -3,7 +3,7 @@
  */
 import * as Dual from "@effect/data/Function"
 import * as HashMap from "@effect/data/HashMap"
-import { type Inspectable, NodeInspectSymbol } from "@effect/data/Inspectable"
+import { type Inspectable, NodeInspectSymbol, toJSON, toString } from "@effect/data/Inspectable"
 import * as MutableRef from "@effect/data/MutableRef"
 import * as Option from "@effect/data/Option"
 import type { Pipeable } from "@effect/data/Pipeable"
@@ -34,12 +34,12 @@ const MutableHashMapProto: Omit<MutableHashMap<unknown, unknown>, "backingMap"> 
     return this.backingMap.current[Symbol.iterator]()
   },
   toString() {
-    return `MutableHashMap(${Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")})`
+    return toString(this.toJSON())
   },
   toJSON() {
     return {
-      _tag: "MutableHashMap",
-      values: Array.from(this)
+      _id: "MutableHashMap",
+      values: Array.from(this).map(toJSON)
     }
   },
   [NodeInspectSymbol]() {

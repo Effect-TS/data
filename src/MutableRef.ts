@@ -3,7 +3,7 @@
  */
 import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
-import { type Inspectable, NodeInspectSymbol } from "@effect/data/Inspectable"
+import { type Inspectable, NodeInspectSymbol, toJSON, toString } from "@effect/data/Inspectable"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
 
@@ -29,12 +29,12 @@ export interface MutableRef<T> extends Pipeable, Inspectable {
 const MutableRefProto: Omit<MutableRef<unknown>, "current"> = {
   [TypeId]: TypeId,
   toString<A>(this: MutableRef<A>): string {
-    return `MutableRef(${String(this.current)})`
+    return toString(this.toJSON())
   },
   toJSON<A>(this: MutableRef<A>) {
     return {
-      _tag: "MutableRef",
-      current: this.current
+      _id: "MutableRef",
+      current: toJSON(this.current)
     }
   },
   [NodeInspectSymbol]() {

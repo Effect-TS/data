@@ -6,7 +6,7 @@ import type * as equivalence from "@effect/data/Equivalence"
 import { dual } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import type { Inspectable } from "@effect/data/Inspectable"
-import { NodeInspectSymbol } from "@effect/data/Inspectable"
+import { NodeInspectSymbol, toString } from "@effect/data/Inspectable"
 import * as Option from "@effect/data/Option"
 import * as order from "@effect/data/Order"
 import type { Pipeable } from "@effect/data/Pipeable"
@@ -118,26 +118,16 @@ const DurationProto: Omit<Duration, "value"> = {
     return isDuration(that) && equals(this, that)
   },
   toString(this: Duration) {
-    switch (this.value._tag) {
-      case "Millis":
-        return `Duration("${this.value.millis} millis")`
-      case "Nanos":
-        return `Duration("${this.value.nanos} nanos")`
-      case "Infinity":
-        return "Duration(Infinity)"
-    }
+    return toString(this.toJSON())
   },
   toJSON(this: Duration) {
-    if (this.value._tag === "Nanos") {
-      return {
-        _tag: "Duration",
-        value: { _tag: "Nanos", hrtime: toHrTime(this) }
-      }
-    }
-
-    return {
-      _tag: "Duration",
-      value: this.value
+    switch (this.value._tag) {
+      case "Millis":
+        return { _id: "Duration", _tag: "Millis", millis: this.value.millis }
+      case "Nanos":
+        return { _id: "Duration", _tag: "Nanos", hrtime: toHrTime(this) }
+      case "Infinity":
+        return { _id: "Duration", _tag: "Infinity" }
     }
   },
   [NodeInspectSymbol]() {

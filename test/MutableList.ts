@@ -5,18 +5,22 @@ import { inspect } from "node:util"
 
 describe.concurrent("MutableList", () => {
   it("toString", () => {
-    expect(String(MutableList.make(0, 1, 2))).toEqual("MutableList(0, 1, 2)")
+    expect(String(MutableList.make(0, 1, 2))).toEqual(`_id: MutableList
+values:
+  - 0
+  - 1
+  - 2`)
   })
 
   it("toJSON", () => {
-    expect(JSON.stringify(MutableList.make(0, 1, 2))).toEqual(
-      JSON.stringify({ _tag: "MutableList", values: [0, 1, 2] })
+    expect(MutableList.make(0, 1, 2).toJSON()).toEqual(
+      { _id: "MutableList", values: [0, 1, 2] }
     )
   })
 
   it("inspect", () => {
     expect(inspect(MutableList.make(0, 1, 2))).toEqual(
-      inspect({ _tag: "MutableList", values: [0, 1, 2] })
+      inspect({ _id: "MutableList", values: [0, 1, 2] })
     )
   })
 

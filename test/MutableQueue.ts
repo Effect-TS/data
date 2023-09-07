@@ -6,19 +6,22 @@ describe.concurrent("MutableQueue", () => {
   it("toString", () => {
     const queue = MutableQueue.bounded<number>(2)
     MutableQueue.offerAll([0, 1, 2])(queue)
-    expect(String(queue)).toEqual("MutableQueue(0, 1)")
+    expect(String(queue)).toEqual(`_id: MutableQueue
+values:
+  - 0
+  - 1`)
   })
 
   it("toJSON", () => {
     const queue = MutableQueue.bounded<number>(2)
     MutableQueue.offerAll([0, 1, 2])(queue)
-    expect(JSON.stringify(queue)).toEqual(JSON.stringify({ _tag: "MutableQueue", values: [0, 1] }))
+    expect(queue.toJSON()).toEqual({ _id: "MutableQueue", values: [0, 1] })
   })
 
   it("inspect", () => {
     const queue = MutableQueue.bounded<number>(2)
     MutableQueue.offerAll([0, 1, 2])(queue)
-    expect(inspect(queue)).toEqual(inspect({ _tag: "MutableQueue", values: [0, 1] }))
+    expect(inspect(queue)).toEqual(inspect({ _id: "MutableQueue", values: [0, 1] }))
   })
 
   describe.concurrent("bounded", () => {

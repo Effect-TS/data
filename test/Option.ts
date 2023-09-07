@@ -1,3 +1,4 @@
+import * as Chunk from "@effect/data/Chunk"
 import * as E from "@effect/data/Either"
 import { pipe } from "@effect/data/Function"
 import * as N from "@effect/data/Number"
@@ -40,22 +41,33 @@ describe.concurrent("Option", () => {
   })
 
   it("toString", () => {
-    expect(String(_.none())).toEqual(JSON.stringify(_.none(), null, 2))
-    expect(String(_.some(1))).toEqual(JSON.stringify(_.some(1), null, 2))
+    expect(String(_.none())).toEqual(`_id: Option
+_tag: None`)
+    expect(String(_.some(1))).toEqual(`_id: Option
+_tag: Some
+value: 1`)
+    expect(String(_.some(Chunk.make(1, 2, 3)))).toEqual(`_id: Option
+_tag: Some
+value:
+  _id: Chunk
+  values:
+    - 1
+    - 2
+    - 3`)
   })
 
   it("toJSON", () => {
-    expect(JSON.stringify(_.none())).toEqual(
-      JSON.stringify({ _tag: "None" })
+    expect(_.none().toJSON()).toEqual(
+      { _id: "Option", _tag: "None" }
     )
-    expect(JSON.stringify(_.some(1))).toEqual(
-      JSON.stringify({ _tag: "Some", value: 1 })
+    expect(_.some(1).toJSON()).toEqual(
+      { _id: "Option", _tag: "Some", value: 1 }
     )
   })
 
   it("inspect", () => {
-    expect(inspect(_.none())).toEqual(inspect({ _tag: "None" }))
-    expect(inspect(_.some(1))).toEqual(inspect({ _tag: "Some", value: 1 }))
+    expect(inspect(_.none())).toEqual(inspect({ _id: "Option", _tag: "None" }))
+    expect(inspect(_.some(1))).toEqual(inspect({ _id: "Option", _tag: "Some", value: 1 }))
   })
 
   it("getRight", () => {
