@@ -39,24 +39,6 @@ export const toJSON = (x: unknown): unknown => {
   return x
 }
 
-const _toString = (x: any, indentation: string): string => {
-  if (Array.isArray(x)) {
-    if (x.length > 0) {
-      return (indentation ? "\n" : "") + x.map((a) => indentation + "-" + _toString(a, indentation + "  "))
-        .join("\n")
-    }
-    return (indentation ? " []" : "[]")
-  } else if (typeof x === "object" && x !== null) {
-    const keys = Object.keys(x)
-    if (keys.length > 0) {
-      return (indentation ? "\n" : "") +
-        keys.map((k) => indentation + k + ":" + _toString(x[k], indentation + "  ")).join("\n")
-    }
-    return (indentation ? " {}" : "{}")
-  }
-  return (indentation ? " " : "") + String(x)
-}
-
 /**
  * @since 1.0.0
  */
