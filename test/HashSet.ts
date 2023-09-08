@@ -32,17 +32,23 @@ describe.concurrent("HashSet", () => {
 
   it("toString", () => {
     const map = HashSet.make(0, "a")
-    expect(String(map)).toEqual("HashSet(0, a)")
+    expect(String(map)).toEqual(`{
+  "_id": "HashSet",
+  "values": [
+    0,
+    "a"
+  ]
+}`)
   })
 
   it("toJSON", () => {
     const map = HashSet.make(0, "a")
-    expect(JSON.stringify(map)).toEqual(JSON.stringify({ _tag: "HashSet", values: [0, "a"] }))
+    expect(map.toJSON()).toEqual({ _id: "HashSet", values: [0, "a"] })
   })
 
   it("inspect", () => {
     const map = HashSet.make(0, "a")
-    expect(inspect(map)).toEqual(inspect({ _tag: "HashSet", values: [0, "a"] }))
+    expect(inspect(map)).toEqual(inspect({ _id: "HashSet", values: [0, "a"] }))
   })
 
   it("add", () => {

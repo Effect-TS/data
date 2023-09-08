@@ -6,7 +6,7 @@ import * as Dual from "@effect/data/Function"
 import { pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import type { Inspectable } from "@effect/data/Inspectable"
-import { NodeInspectSymbol } from "@effect/data/Inspectable"
+import { NodeInspectSymbol, toJSON, toString } from "@effect/data/Inspectable"
 import type { Order } from "@effect/data/Order"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
@@ -48,12 +48,12 @@ const SortedSetProto: Omit<SortedSet<unknown>, "keyTree"> = {
     return RBT.keys(this.keyTree)
   },
   toString<A>(this: SortedSet<A>) {
-    return JSON.stringify(this, null, 2)
+    return toString(this.toJSON())
   },
   toJSON() {
     return {
-      _tag: "SortedSet",
-      values: Array.from(this)
+      _id: "SortedSet",
+      values: Array.from(this).map(toJSON)
     }
   },
   [NodeInspectSymbol]() {

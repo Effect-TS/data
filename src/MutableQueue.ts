@@ -3,7 +3,7 @@
  */
 import * as Chunk from "@effect/data/Chunk"
 import * as Dual from "@effect/data/Function"
-import { type Inspectable, NodeInspectSymbol } from "@effect/data/Inspectable"
+import { type Inspectable, NodeInspectSymbol, toJSON, toString } from "@effect/data/Inspectable"
 import * as MutableList from "@effect/data/MutableList"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
@@ -51,12 +51,12 @@ const MutableQueueProto: Omit<MutableQueue<unknown>, "queue" | "capacity"> = {
     return Array.from(this.queue)[Symbol.iterator]()
   },
   toString() {
-    return `MutableQueue(${Array.from(this).map(String).join(", ")})`
+    return toString(this.toJSON())
   },
   toJSON() {
     return {
-      _tag: "MutableQueue",
-      values: Array.from(this)
+      _id: "MutableQueue",
+      values: Array.from(this).map(toJSON)
     }
   },
   [NodeInspectSymbol]() {

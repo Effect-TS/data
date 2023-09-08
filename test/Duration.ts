@@ -174,32 +174,52 @@ describe.concurrent("Duration", () => {
   })
 
   it("toString", () => {
-    expect(String(Duration.seconds(2))).toEqual(`Duration("2000 millis")`)
-    expect(String(Duration.nanos(10n))).toEqual(`Duration("10 nanos")`)
-    expect(String(Duration.millis(Infinity))).toEqual("Duration(Infinity)")
+    expect(String(Duration.seconds(2))).toEqual(`{
+  "_id": "Duration",
+  "_tag": "Millis",
+  "millis": 2000
+}`)
+    expect(String(Duration.nanos(10n))).toEqual(`{
+  "_id": "Duration",
+  "_tag": "Nanos",
+  "hrtime": [
+    0,
+    10
+  ]
+}`)
+    expect(String(Duration.millis(Infinity))).toEqual(`{
+  "_id": "Duration",
+  "_tag": "Infinity"
+}`)
   })
 
   it("toJSON", () => {
-    expect(JSON.stringify(Duration.seconds(2))).toEqual(
-      JSON.stringify({ _tag: "Duration", value: { _tag: "Millis", millis: 2000 } })
+    expect(Duration.seconds(2).toJSON()).toEqual(
+      { _id: "Duration", _tag: "Millis", millis: 2000 }
     )
   })
 
   it("toJSON/ non-integer millis", () => {
-    expect(JSON.stringify(Duration.millis(1.5))).toEqual(
-      JSON.stringify({ _tag: "Duration", value: { _tag: "Nanos", hrtime: [0, 1_500_000] } })
+    expect(Duration.millis(1.5).toJSON()).toEqual(
+      { _id: "Duration", _tag: "Nanos", hrtime: [0, 1_500_000] }
     )
   })
 
   it("toJSON/ nanos", () => {
-    expect(JSON.stringify(Duration.nanos(5n))).toEqual(
-      JSON.stringify({ _tag: "Duration", value: { _tag: "Nanos", hrtime: [0, 5] } })
+    expect(Duration.nanos(5n).toJSON()).toEqual(
+      { _id: "Duration", _tag: "Nanos", hrtime: [0, 5] }
     )
   })
 
   it("toJSON/ infinity", () => {
-    expect(JSON.stringify(Duration.infinity)).toEqual(
-      JSON.stringify({ _tag: "Duration", value: { _tag: "Infinity" } })
+    expect(Duration.infinity.toJSON()).toEqual(
+      { _id: "Duration", _tag: "Infinity" }
+    )
+  })
+
+  it(`inspect`, () => {
+    expect(inspect(Duration.millis(1000))).toEqual(
+      inspect({ _id: "Duration", _tag: "Millis", millis: 1000 })
     )
   })
 
@@ -214,12 +234,6 @@ describe.concurrent("Duration", () => {
   it("isDuration", () => {
     expect(Duration.isDuration(Duration.millis(100))).toBe(true)
     expect(Duration.isDuration(null)).toBe(false)
-  })
-
-  it(`inspect`, () => {
-    expect(inspect(Duration.millis(1000))).toEqual(
-      inspect({ _tag: "Duration", value: { _tag: "Millis", millis: 1000 } })
-    )
   })
 
   it("zero", () => {

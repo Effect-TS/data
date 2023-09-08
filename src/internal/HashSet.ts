@@ -3,7 +3,7 @@ import * as Dual from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import type { HashMap } from "@effect/data/HashMap"
 import type * as HS from "@effect/data/HashSet"
-import { NodeInspectSymbol } from "@effect/data/Inspectable"
+import { NodeInspectSymbol, toJSON, toString } from "@effect/data/Inspectable"
 import * as HM from "@effect/data/internal/HashMap"
 import { pipeArguments } from "@effect/data/Pipeable"
 import type { Predicate, Refinement } from "@effect/data/Predicate"
@@ -35,12 +35,12 @@ const HashSetProto: Omit<HashSetImpl<unknown>, "_keyMap"> = {
     return false
   },
   toString() {
-    return `HashSet(${Array.from(this).map(String).join(", ")})`
+    return toString(this.toJSON())
   },
   toJSON() {
     return {
-      _tag: "HashSet",
-      values: Array.from(this)
+      _id: "HashSet",
+      values: Array.from(this).map(toJSON)
     }
   },
   [NodeInspectSymbol]() {

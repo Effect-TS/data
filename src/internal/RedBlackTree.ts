@@ -2,7 +2,7 @@ import * as Chunk from "@effect/data/Chunk"
 import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
-import { NodeInspectSymbol } from "@effect/data/Inspectable"
+import { NodeInspectSymbol, toJSON, toString } from "@effect/data/Inspectable"
 import { Direction, RedBlackTreeIterator } from "@effect/data/internal/RedBlackTree/iterator"
 import * as Node from "@effect/data/internal/RedBlackTree/node"
 import { Stack } from "@effect/data/internal/Stack"
@@ -48,12 +48,12 @@ const RedBlackTreeProto: RBT.RedBlackTree<unknown, unknown> = {
     return new RedBlackTreeIterator(this, stack, Direction.Forward)
   },
   toString() {
-    return `RedBlackTree(${Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")})`
+    return toString(this.toJSON())
   },
   toJSON() {
     return {
-      _tag: "RedBlackTree",
-      values: Array.from(this)
+      _id: "RedBlackTree",
+      values: Array.from(this).map(toJSON)
     }
   },
   [NodeInspectSymbol]() {

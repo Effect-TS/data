@@ -36,17 +36,24 @@ describe.concurrent("SortedSet", () => {
 
   it("toString", () => {
     const set = makeNumericSortedSet(0, 1, 2)
-    expect(String(set)).toEqual(JSON.stringify(set, null, 2))
+    expect(String(set)).toEqual(`{
+  "_id": "SortedSet",
+  "values": [
+    0,
+    1,
+    2
+  ]
+}`)
   })
 
   it("toJSON", () => {
     const set = makeNumericSortedSet(0, 1, 2)
-    expect(JSON.stringify(set)).toEqual(JSON.stringify({ _tag: "SortedSet", values: [0, 1, 2] }))
+    expect(set.toJSON()).toEqual({ _id: "SortedSet", values: [0, 1, 2] })
   })
 
   it("inspect", () => {
     const set = makeNumericSortedSet(0, 1, 2)
-    expect(inspect(set)).toEqual(inspect({ _tag: "SortedSet", values: [0, 1, 2] }))
+    expect(inspect(set)).toEqual(inspect({ _id: "SortedSet", values: [0, 1, 2] }))
   })
 
   it("add", () => {

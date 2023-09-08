@@ -2,7 +2,7 @@
  * @since 1.0.0
  */
 import * as Dual from "@effect/data/Function"
-import { NodeInspectSymbol } from "@effect/data/Inspectable"
+import { NodeInspectSymbol, toJSON, toString } from "@effect/data/Inspectable"
 import type { Inspectable } from "@effect/data/Inspectable"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
@@ -55,12 +55,12 @@ const MutableListProto: Omit<MutableList<unknown>, "head" | "tail"> = {
     }
   },
   toString() {
-    return `MutableList(${Array.from(this).map(String).join(", ")})`
+    return toString(this.toJSON())
   },
   toJSON() {
     return {
-      _tag: "MutableList",
-      values: Array.from(this)
+      _id: "MutableList",
+      values: Array.from(this).map(toJSON)
     }
   },
   [NodeInspectSymbol]() {

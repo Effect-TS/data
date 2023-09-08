@@ -27,7 +27,7 @@ import * as Equal from "@effect/data/Equal"
 import * as Equivalence from "@effect/data/Equivalence"
 import { dual, identity, unsafeCoerce } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
-import { type Inspectable, NodeInspectSymbol } from "@effect/data/Inspectable"
+import { type Inspectable, NodeInspectSymbol, toJSON, toString } from "@effect/data/Inspectable"
 import * as Option from "@effect/data/Option"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
@@ -100,15 +100,16 @@ const ConsProto: Omit<Cons<unknown>, "head" | "tail"> = {
   [TypeId]: TypeId,
   _tag: "Cons",
   toString(this: Cons<unknown>) {
-    return `List.Cons(${toReadonlyArray(this).map(String).join(", ")})`
+    return toString(this.toJSON())
   },
   toJSON(this: Cons<unknown>) {
     return {
-      _tag: "List.Cons",
-      values: toReadonlyArray(this)
+      _id: "List",
+      _tag: "Cons",
+      values: toReadonlyArray(this).map(toJSON)
     }
   },
-  [NodeInspectSymbol](this: any) {
+  [NodeInspectSymbol]() {
     return this.toJSON()
   },
   [Equal.symbol](this: Cons<unknown>, that: unknown): boolean {
@@ -165,11 +166,12 @@ const NilProto: Nil<unknown> = {
   [TypeId]: TypeId,
   _tag: "Nil",
   toString() {
-    return `List.Nil`
+    return toString(this.toJSON())
   },
   toJSON() {
     return {
-      _tag: "List.Nil"
+      _id: "List",
+      _tag: "Nil"
     }
   },
   [NodeInspectSymbol]() {

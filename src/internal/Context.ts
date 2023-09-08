@@ -3,7 +3,7 @@ import * as Equal from "@effect/data/Equal"
 import { dual } from "@effect/data/Function"
 import { globalValue } from "@effect/data/GlobalValue"
 import * as Hash from "@effect/data/Hash"
-import { NodeInspectSymbol } from "@effect/data/Inspectable"
+import { NodeInspectSymbol, toJSON, toString } from "@effect/data/Inspectable"
 import { type Effectable, EffectTypeId, effectVariance } from "@effect/data/internal/Effect"
 import type * as O from "@effect/data/Option"
 import * as option from "@effect/data/Option"
@@ -27,11 +27,11 @@ export const TagProto: C.Tag<unknown, unknown> & Effectable = {
     return Hash.random(this)
   },
   toString() {
-    return JSON.stringify(this, null, 2)
+    return toString(this.toJSON())
   },
   toJSON<I, A>(this: C.Tag<I, A>) {
     return {
-      _tag: "Tag",
+      _id: "Tag",
       identifier: this.identifier,
       stack: this.stack
     }
@@ -105,12 +105,12 @@ export const ContextProto: Omit<C.Context<unknown>, "unsafeMap"> = {
     return pipeArguments(this, arguments)
   },
   toString() {
-    return JSON.stringify(this, null, 2)
+    return toString(this.toJSON())
   },
   toJSON<A>(this: C.Context<A>) {
     return {
-      _tag: "Context",
-      services: Array.from(this.unsafeMap)
+      _id: "Context",
+      services: Array.from(this.unsafeMap).map(toJSON)
     }
   },
   [NodeInspectSymbol]() {

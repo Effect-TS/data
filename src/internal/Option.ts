@@ -4,7 +4,7 @@
 
 import * as Equal from "@effect/data/Equal"
 import * as Hash from "@effect/data/Hash"
-import { NodeInspectSymbol } from "@effect/data/Inspectable"
+import { NodeInspectSymbol, toJSON, toString } from "@effect/data/Inspectable"
 import { EffectTypeId, effectVariance } from "@effect/data/internal/Effect"
 import type * as Option from "@effect/data/Option"
 import { pipeArguments } from "@effect/data/Pipeable"
@@ -23,7 +23,7 @@ const CommonProto = {
     return pipeArguments(this, arguments)
   },
   toString<A>(this: Option.Option<A>) {
-    return JSON.stringify(this, null, 2)
+    return toString(this.toJSON())
   }
 }
 
@@ -37,8 +37,9 @@ const SomeProto = Object.assign(Object.create(CommonProto), {
   },
   toJSON<A>(this: Option.Some<A>) {
     return {
+      _id: "Option",
       _tag: this._tag,
-      value: this.value
+      value: toJSON(this.value)
     }
   }
 })
@@ -53,6 +54,7 @@ const NoneProto = Object.assign(Object.create(CommonProto), {
   },
   toJSON<A>(this: Option.None<A>) {
     return {
+      _id: "Option",
       _tag: this._tag
     }
   }

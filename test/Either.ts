@@ -1,3 +1,4 @@
+import * as Chunk from "@effect/data/Chunk"
 import * as Either from "@effect/data/Either"
 import { flow, pipe } from "@effect/data/Function"
 import * as N from "@effect/data/Number"
@@ -42,22 +43,54 @@ describe.concurrent("Either", () => {
   })
 
   it("toString", () => {
-    expect(String(Either.right(1))).toEqual(JSON.stringify(Either.right(1), null, 2))
-    expect(String(Either.left("e"))).toEqual(JSON.stringify(Either.left("e"), null, 2))
+    expect(String(Either.right(1))).toEqual(`{
+  "_id": "Either",
+  "_tag": "Right",
+  "right": 1
+}`)
+    expect(String(Either.left("e"))).toEqual(`{
+  "_id": "Either",
+  "_tag": "Left",
+  "left": "e"
+}`)
+    expect(String(Either.right(Chunk.make(1, 2, 3)))).toEqual(`{
+  "_id": "Either",
+  "_tag": "Right",
+  "right": {
+    "_id": "Chunk",
+    "values": [
+      1,
+      2,
+      3
+    ]
+  }
+}`)
+    expect(String(Either.left(Chunk.make(1, 2, 3)))).toEqual(`{
+  "_id": "Either",
+  "_tag": "Left",
+  "left": {
+    "_id": "Chunk",
+    "values": [
+      1,
+      2,
+      3
+    ]
+  }
+}`)
   })
 
   it("toJSON", () => {
-    expect(JSON.stringify(Either.right(1))).toEqual(
-      JSON.stringify({ _tag: "Right", right: 1 })
+    expect(Either.right(1).toJSON()).toEqual(
+      { _id: "Either", _tag: "Right", right: 1 }
     )
-    expect(JSON.stringify(Either.left("e"))).toEqual(
-      JSON.stringify({ _tag: "Left", left: "e" })
+    expect(Either.left("e").toJSON()).toEqual(
+      { _id: "Either", _tag: "Left", left: "e" }
     )
   })
 
   it("inspect", () => {
-    expect(inspect(Either.right(1))).toEqual(inspect({ _tag: "Right", right: 1 }))
-    expect(inspect(Either.left("e"))).toEqual(inspect({ _tag: "Left", left: "e" }))
+    expect(inspect(Either.right(1))).toEqual(inspect({ _id: "Either", _tag: "Right", right: 1 }))
+    expect(inspect(Either.left("e"))).toEqual(inspect({ _id: "Either", _tag: "Left", left: "e" }))
   })
 
   it("isEither", () => {

@@ -2,7 +2,7 @@
  * @since 1.0.0
  */
 import * as Dual from "@effect/data/Function"
-import { type Inspectable, NodeInspectSymbol } from "@effect/data/Inspectable"
+import { type Inspectable, NodeInspectSymbol, toJSON, toString } from "@effect/data/Inspectable"
 import * as MutableHashMap from "@effect/data/MutableHashMap"
 import type { Pipeable } from "@effect/data/Pipeable"
 import { pipeArguments } from "@effect/data/Pipeable"
@@ -32,12 +32,12 @@ const MutableHashSetProto: Omit<MutableHashSet<unknown>, "keyMap"> = {
     return Array.from(this.keyMap).map(([_]) => _)[Symbol.iterator]()
   },
   toString() {
-    return `MutableHashSet(${Array.from(this).map(String).join(", ")})`
+    return toString(this.toJSON())
   },
   toJSON() {
     return {
-      _tag: "MutableHashSet",
-      values: Array.from(this)
+      _id: "MutableHashSet",
+      values: Array.from(this).map(toJSON)
     }
   },
   [NodeInspectSymbol]() {

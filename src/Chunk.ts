@@ -7,7 +7,7 @@ import * as Equivalence from "@effect/data/Equivalence"
 import { dual, identity, pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import type { TypeLambda } from "@effect/data/HKT"
-import { type Inspectable, NodeInspectSymbol } from "@effect/data/Inspectable"
+import { type Inspectable, NodeInspectSymbol, toJSON, toString } from "@effect/data/Inspectable"
 import type { NonEmptyIterable } from "@effect/data/NonEmptyIterable"
 import type { Option } from "@effect/data/Option"
 import * as O from "@effect/data/Option"
@@ -125,12 +125,12 @@ const ChunkProto: Omit<Chunk<unknown>, "backing" | "depth" | "left" | "length" |
     _A: (_: never) => _
   },
   toString<A>(this: Chunk<A>) {
-    return `Chunk(${toReadonlyArray(this).map(String).join(", ")})`
+    return toString(this.toJSON())
   },
   toJSON<A>(this: Chunk<A>) {
     return {
-      _tag: "Chunk",
-      values: toReadonlyArray(this)
+      _id: "Chunk",
+      values: toReadonlyArray(this).map(toJSON)
     }
   },
   [NodeInspectSymbol]<A>(this: Chunk<A>) {

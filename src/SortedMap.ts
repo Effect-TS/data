@@ -5,7 +5,7 @@ import * as Equal from "@effect/data/Equal"
 import * as Dual from "@effect/data/Function"
 import { pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
-import { type Inspectable, NodeInspectSymbol } from "@effect/data/Inspectable"
+import { type Inspectable, NodeInspectSymbol, toJSON, toString } from "@effect/data/Inspectable"
 import * as Option from "@effect/data/Option"
 import type { Order } from "@effect/data/Order"
 import type { Pipeable } from "@effect/data/Pipeable"
@@ -43,12 +43,12 @@ const SortedMapProto: Omit<SortedMap<unknown, unknown>, "tree"> = {
     return this.tree[Symbol.iterator]()
   },
   toString() {
-    return `SortedMap(${Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")})`
+    return toString(this.toJSON())
   },
   toJSON() {
     return {
-      _tag: "SortedMap",
-      values: Array.from(this)
+      _id: "SortedMap",
+      values: Array.from(this).map(toJSON)
     }
   },
   [NodeInspectSymbol]() {

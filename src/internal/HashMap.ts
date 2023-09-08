@@ -3,7 +3,7 @@ import * as Dual from "@effect/data/Function"
 import { identity, pipe } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import type * as HM from "@effect/data/HashMap"
-import { NodeInspectSymbol } from "@effect/data/Inspectable"
+import { NodeInspectSymbol, toJSON, toString } from "@effect/data/Inspectable"
 import { fromBitmap, hashFragment, toBitmap } from "@effect/data/internal/HashMap/bitwise"
 import { SIZE } from "@effect/data/internal/HashMap/config"
 import * as Node from "@effect/data/internal/HashMap/node"
@@ -74,12 +74,12 @@ const HashMapProto: HM.HashMap<unknown, unknown> = {
     return false
   },
   toString<K, V>(this: HashMapImpl<K, V>) {
-    return `HashMap(${Array.from(this).map(([k, v]) => `[${String(k)}, ${String(v)}]`).join(", ")})`
+    return toString(this.toJSON())
   },
   toJSON() {
     return {
-      _tag: "HashMap",
-      values: Array.from(this)
+      _id: "HashMap",
+      values: Array.from(this).map(toJSON)
     }
   },
   [NodeInspectSymbol]() {

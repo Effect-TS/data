@@ -19,6 +19,19 @@ interface C {
 const C = Context.Tag<C>("C")
 
 describe.concurrent("Context", () => {
+  it("Tag.toJson()", () => {
+    const json: any = A.toJSON()
+    expect(json["_id"]).toEqual("Tag")
+    expect(json["identifier"]).toEqual(undefined)
+    expect(typeof json["stack"]).toEqual("string")
+  })
+
+  it("Context.toJson()", () => {
+    const json: any = Context.empty().toJSON()
+    expect(json["_id"]).toEqual("Context")
+    expect(json["services"]).toEqual([])
+  })
+
   it("global tag", () => {
     const a = Context.Tag<number>("@effect/data/test/Context/Tag")
     const b = Context.Tag<number>("@effect/data/test/Context/Tag")
