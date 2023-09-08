@@ -44,14 +44,19 @@ describe.concurrent("MutableHashMap", () => {
       [1, "b"]
     )
 
-    expect(String(map)).toEqual(`_id: MutableHashMap
-values:
-  -
-    - 0
-    - a
-  -
-    - 1
-    - b`)
+    expect(String(map)).toEqual(`{
+  "_id": "MutableHashMap",
+  "values": [
+    [
+      0,
+      "a"
+    ],
+    [
+      1,
+      "b"
+    ]
+  ]
+}`)
   })
 
   it("toJSON", () => {

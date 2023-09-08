@@ -29,19 +29,27 @@ describe.concurrent("Chunk", () => {
   })
 
   it("toString", () => {
-    expect(String(Chunk.make(0, 1, 2))).toEqual(`_id: Chunk
-values:
-  - 0
-  - 1
-  - 2`)
-    expect(String(Chunk.make(Chunk.make(1, 2, 3)))).toEqual(`_id: Chunk
-values:
-  -
-    _id: Chunk
-    values:
-      - 1
-      - 2
-      - 3`)
+    expect(String(Chunk.make(0, 1, 2))).toEqual(`{
+  "_id": "Chunk",
+  "values": [
+    0,
+    1,
+    2
+  ]
+}`)
+    expect(String(Chunk.make(Chunk.make(1, 2, 3)))).toEqual(`{
+  "_id": "Chunk",
+  "values": [
+    {
+      "_id": "Chunk",
+      "values": [
+        1,
+        2,
+        3
+      ]
+    }
+  ]
+}`)
   })
 
   it("toJSON", () => {

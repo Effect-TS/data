@@ -36,11 +36,14 @@ describe.concurrent("SortedSet", () => {
 
   it("toString", () => {
     const set = makeNumericSortedSet(0, 1, 2)
-    expect(String(set)).toEqual(`_id: SortedSet
-values:
-  - 0
-  - 1
-  - 2`)
+    expect(String(set)).toEqual(`{
+  "_id": "SortedSet",
+  "values": [
+    0,
+    1,
+    2
+  ]
+}`)
   })
 
   it("toJSON", () => {

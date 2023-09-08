@@ -60,4 +60,4 @@ const _toString = (x: any, indentation: string): string => {
 /**
  * @since 1.0.0
  */
-export const toString = (x: unknown): string => _toString(x, "")
+export const toString = (x: unknown): string => JSON.stringify(x, null, 2)

@@ -53,17 +53,23 @@ describe.concurrent("SortedMap", () => {
   test("toString", () => {
     const map = makeNumericSortedMap([0, 10], [1, 20], [2, 30])
 
-    expect(String(map)).toEqual(`_id: SortedMap
-values:
-  -
-    - 0
-    - 10
-  -
-    - 1
-    - 20
-  -
-    - 2
-    - 30`)
+    expect(String(map)).toEqual(`{
+  "_id": "SortedMap",
+  "values": [
+    [
+      0,
+      10
+    ],
+    [
+      1,
+      20
+    ],
+    [
+      2,
+      30
+    ]
+  ]
+}`)
   })
 
   test("toJSON", () => {

@@ -48,11 +48,15 @@ describe.concurrent("HashMap", () => {
 
   it("toString", () => {
     const map = HM.make([0, "a"])
-    expect(String(map)).toEqual(`_id: HashMap
-values:
-  -
-    - 0
-    - a`)
+    expect(String(map)).toEqual(`{
+  "_id": "HashMap",
+  "values": [
+    [
+      0,
+      "a"
+    ]
+  ]
+}`)
   })
 
   it("toJSON", () => {

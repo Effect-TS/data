@@ -16,14 +16,19 @@ describe.concurrent("RedBlackTree", () => {
       RedBlackTree.insert(0, "b")
     )
 
-    expect(String(tree)).toEqual(`_id: RedBlackTree
-values:
-  -
-    - 0
-    - b
-  -
-    - 1
-    - a`)
+    expect(String(tree)).toEqual(`{
+  "_id": "RedBlackTree",
+  "values": [
+    [
+      0,
+      "b"
+    ],
+    [
+      1,
+      "a"
+    ]
+  ]
+}`)
   })
 
   it("toJSON", () => {

@@ -41,19 +41,27 @@ describe.concurrent("Option", () => {
   })
 
   it("toString", () => {
-    expect(String(_.none())).toEqual(`_id: Option
-_tag: None`)
-    expect(String(_.some(1))).toEqual(`_id: Option
-_tag: Some
-value: 1`)
-    expect(String(_.some(Chunk.make(1, 2, 3)))).toEqual(`_id: Option
-_tag: Some
-value:
-  _id: Chunk
-  values:
-    - 1
-    - 2
-    - 3`)
+    expect(String(_.none())).toEqual(`{
+  "_id": "Option",
+  "_tag": "None"
+}`)
+    expect(String(_.some(1))).toEqual(`{
+  "_id": "Option",
+  "_tag": "Some",
+  "value": 1
+}`)
+    expect(String(_.some(Chunk.make(1, 2, 3)))).toEqual(`{
+  "_id": "Option",
+  "_tag": "Some",
+  "value": {
+    "_id": "Chunk",
+    "values": [
+      1,
+      2,
+      3
+    ]
+  }
+}`)
   })
 
   it("toJSON", () => {

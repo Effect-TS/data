@@ -174,16 +174,23 @@ describe.concurrent("Duration", () => {
   })
 
   it("toString", () => {
-    expect(String(Duration.seconds(2))).toEqual(`_id: Duration
-_tag: Millis
-millis: 2000`)
-    expect(String(Duration.nanos(10n))).toEqual(`_id: Duration
-_tag: Nanos
-hrtime:
-  - 0
-  - 10`)
-    expect(String(Duration.millis(Infinity))).toEqual(`_id: Duration
-_tag: Infinity`)
+    expect(String(Duration.seconds(2))).toEqual(`{
+  "_id": "Duration",
+  "_tag": "Millis",
+  "millis": 2000
+}`)
+    expect(String(Duration.nanos(10n))).toEqual(`{
+  "_id": "Duration",
+  "_tag": "Nanos",
+  "hrtime": [
+    0,
+    10
+  ]
+}`)
+    expect(String(Duration.millis(Infinity))).toEqual(`{
+  "_id": "Duration",
+  "_tag": "Infinity"
+}`)
   })
 
   it("toJSON", () => {

@@ -32,10 +32,13 @@ describe.concurrent("HashSet", () => {
 
   it("toString", () => {
     const map = HashSet.make(0, "a")
-    expect(String(map)).toEqual(`_id: HashSet
-values:
-  - 0
-  - a`)
+    expect(String(map)).toEqual(`{
+  "_id": "HashSet",
+  "values": [
+    0,
+    "a"
+  ]
+}`)
   })
 
   it("toJSON", () => {

@@ -26,16 +26,21 @@ describe.concurrent("MutableHashSet", () => {
       new Value(2, 3)
     )
 
-    expect(String(set)).toEqual(`_id: MutableHashSet
-values:
-  -
-    _id: Value
-    a: 0
-    b: 1
-  -
-    _id: Value
-    a: 2
-    b: 3`)
+    expect(String(set)).toEqual(`{
+  "_id": "MutableHashSet",
+  "values": [
+    {
+      "_id": "Value",
+      "a": 0,
+      "b": 1
+    },
+    {
+      "_id": "Value",
+      "a": 2,
+      "b": 3
+    }
+  ]
+}`)
   })
 
   it("toJSON", () => {

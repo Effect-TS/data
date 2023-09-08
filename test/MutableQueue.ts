@@ -6,10 +6,13 @@ describe.concurrent("MutableQueue", () => {
   it("toString", () => {
     const queue = MutableQueue.bounded<number>(2)
     MutableQueue.offerAll([0, 1, 2])(queue)
-    expect(String(queue)).toEqual(`_id: MutableQueue
-values:
-  - 0
-  - 1`)
+    expect(String(queue)).toEqual(`{
+  "_id": "MutableQueue",
+  "values": [
+    0,
+    1
+  ]
+}`)
   })
 
   it("toJSON", () => {

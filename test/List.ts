@@ -205,14 +205,19 @@ describe.concurrent("List", () => {
   })
 
   it("toString", () => {
-    expect(String(List.empty())).toEqual(`_id: List
-_tag: Nil`)
-    expect(String(List.make(0, 1, 2))).toEqual(`_id: List
-_tag: Cons
-values:
-  - 0
-  - 1
-  - 2`)
+    expect(String(List.empty())).toEqual(`{
+  "_id": "List",
+  "_tag": "Nil"
+}`)
+    expect(String(List.make(0, 1, 2))).toEqual(`{
+  "_id": "List",
+  "_tag": "Cons",
+  "values": [
+    0,
+    1,
+    2
+  ]
+}`)
   })
 
   it("toJSON", () => {

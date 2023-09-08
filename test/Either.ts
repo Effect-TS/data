@@ -43,28 +43,40 @@ describe.concurrent("Either", () => {
   })
 
   it("toString", () => {
-    expect(String(Either.right(1))).toEqual(`_id: Either
-_tag: Right
-right: 1`)
-    expect(String(Either.left("e"))).toEqual(`_id: Either
-_tag: Left
-left: e`)
-    expect(String(Either.right(Chunk.make(1, 2, 3)))).toEqual(`_id: Either
-_tag: Right
-right:
-  _id: Chunk
-  values:
-    - 1
-    - 2
-    - 3`)
-    expect(String(Either.left(Chunk.make(1, 2, 3)))).toEqual(`_id: Either
-_tag: Left
-left:
-  _id: Chunk
-  values:
-    - 1
-    - 2
-    - 3`)
+    expect(String(Either.right(1))).toEqual(`{
+  "_id": "Either",
+  "_tag": "Right",
+  "right": 1
+}`)
+    expect(String(Either.left("e"))).toEqual(`{
+  "_id": "Either",
+  "_tag": "Left",
+  "left": "e"
+}`)
+    expect(String(Either.right(Chunk.make(1, 2, 3)))).toEqual(`{
+  "_id": "Either",
+  "_tag": "Right",
+  "right": {
+    "_id": "Chunk",
+    "values": [
+      1,
+      2,
+      3
+    ]
+  }
+}`)
+    expect(String(Either.left(Chunk.make(1, 2, 3)))).toEqual(`{
+  "_id": "Either",
+  "_tag": "Left",
+  "left": {
+    "_id": "Chunk",
+    "values": [
+      1,
+      2,
+      3
+    ]
+  }
+}`)
   })
 
   it("toJSON", () => {
