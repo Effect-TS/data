@@ -369,6 +369,24 @@ export const isNotNullable = <A>(input: A): input is NonNullable<A> => input !==
 export const isError = (input: unknown): input is Error => input instanceof Error
 
 /**
+ * A guard that succeeds when the input is a `Uint8Array`.
+ *
+ * @param input - The value to test.
+ *
+ * @example
+ * import { isUint8Array } from "@effect/data/Predicate"
+ *
+ * assert.deepStrictEqual(isUint8Array(new Uint8Array()), true)
+ *
+ * assert.deepStrictEqual(isUint8Array(null), false)
+ * assert.deepStrictEqual(isUint8Array({}), false)
+ *
+ * @category guards
+ * @since 1.0.0
+ */
+export const isUint8Array = (input: unknown): input is Uint8Array => input instanceof Uint8Array
+
+/**
  * A guard that succeeds when the input is a `Date`.
  *
  * @param input - The value to test.

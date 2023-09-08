@@ -49,6 +49,7 @@ Added in v1.0.0
   - [isString](#isstring)
   - [isSymbol](#issymbol)
   - [isTagged](#istagged)
+  - [isUint8Array](#isuint8array)
   - [isUndefined](#isundefined)
   - [isUnknown](#isunknown)
 - [models](#models)
@@ -747,6 +748,29 @@ assert.deepStrictEqual(isTagged({}, 'a'), false)
 assert.deepStrictEqual(isTagged({ a: 'a' }, 'a'), false)
 assert.deepStrictEqual(isTagged({ _tag: 'a' }, 'a'), true)
 assert.deepStrictEqual(isTagged('a')({ _tag: 'a' }), true)
+```
+
+Added in v1.0.0
+
+## isUint8Array
+
+A guard that succeeds when the input is a `Uint8Array`.
+
+**Signature**
+
+```ts
+export declare const isUint8Array: (input: unknown) => input is Uint8Array
+```
+
+**Example**
+
+```ts
+import { isUint8Array } from '@effect/data/Predicate'
+
+assert.deepStrictEqual(isUint8Array(new Uint8Array()), true)
+
+assert.deepStrictEqual(isUint8Array(null), false)
+assert.deepStrictEqual(isUint8Array({}), false)
 ```
 
 Added in v1.0.0
