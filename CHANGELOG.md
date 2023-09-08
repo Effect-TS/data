@@ -1,5 +1,15 @@
 # @effect/data
 
+## 0.18.5
+
+### Patch Changes
+
+- [#485](https://github.com/Effect-TS/data/pull/485) [`d96a5a4`](https://github.com/Effect-TS/data/commit/d96a5a4f89e5540691043eb46854d5354b496b2a) Thanks [@fubhy](https://github.com/fubhy)! - Add `Uint8Array` predicate
+
+- [#490](https://github.com/Effect-TS/data/pull/490) [`c2c34a1`](https://github.com/Effect-TS/data/commit/c2c34a169e4d7ccd825524f8fa1bbae0d63b0983) Thanks [@gcanti](https://github.com/gcanti)! - Equal: remove redundant code from `equivalence` instance implementation
+
+- [#493](https://github.com/Effect-TS/data/pull/493) [`acbd896`](https://github.com/Effect-TS/data/commit/acbd896de0a2757a52a3578ba297c74ea45643c9) Thanks [@gcanti](https://github.com/gcanti)! - refactor toJSON / toString, closes #492
+
 ## 0.18.4
 
 ### Patch Changes
