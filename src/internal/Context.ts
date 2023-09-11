@@ -8,12 +8,13 @@ import { type Effectable, EffectTypeId, effectVariance } from "@effect/data/inte
 import type * as O from "@effect/data/Option"
 import * as option from "@effect/data/Option"
 import { pipeArguments } from "@effect/data/Pipeable"
+import * as Traceable from "@effect/data/Traceable"
 
 /** @internal */
 export const TagTypeId: C.TagTypeId = Symbol.for("@effect/data/Context/Tag") as C.TagTypeId
 
 /** @internal */
-export const TagProto: C.Tag<unknown, unknown> & Effectable = {
+export const TagProto: Omit<C.Tag<unknown, unknown>, keyof Traceable.Traceable> & Effectable = {
   _tag: "Tag",
   [EffectTypeId]: effectVariance,
   [TagTypeId]: {
@@ -32,8 +33,7 @@ export const TagProto: C.Tag<unknown, unknown> & Effectable = {
   toJSON<I, A>(this: C.Tag<I, A>) {
     return {
       _id: "Tag",
-      identifier: this.identifier,
-      stack: this.stack
+      identifier: this.identifier
     }
   },
   [NodeInspectSymbol]() {
@@ -60,16 +60,8 @@ export const makeTag = <Identifier, Service = Identifier>(identifier?: unknown):
   if (identifier && tagRegistry.has(identifier)) {
     return tagRegistry.get(identifier)!
   }
-  const limit = Error.stackTraceLimit
-  Error.stackTraceLimit = 2
-  const creationError = new Error()
-  Error.stackTraceLimit = limit
   const tag = Object.create(TagProto)
-  Object.defineProperty(tag, "stack", {
-    get() {
-      return creationError.stack
-    }
-  })
+  tag[Traceable.symbol] = Traceable.capture()
   if (identifier) {
     tag.identifier = identifier
     tagRegistry.set(identifier, tag)
@@ -127,13 +119,11 @@ export const makeContext = <Services>(unsafeMap: Map<C.Tag<any, any>, any>): C.C
 
 const serviceNotFoundError = (tag: C.Tag<any, any>) => {
   const error = new Error(`Service not found${tag.identifier ? `: ${String(tag.identifier)}` : ""}`)
-  if (tag.stack) {
-    const lines = tag.stack.split("\n")
-    if (lines.length > 2) {
-      const afterAt = lines[2].match(/at (.*)/)
-      if (afterAt) {
-        error.message = error.message + ` (defined at ${afterAt[1]})`
-      }
+  const stack = Traceable.stack(tag)
+  if (stack) {
+    const afterAt = stack[0].match(/at (.*)/)
+    if (afterAt) {
+      error.message = error.message + ` (defined at ${afterAt[1]})`
     }
   }
   if (error.stack) {

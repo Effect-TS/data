@@ -23,7 +23,6 @@ describe.concurrent("Context", () => {
     const json: any = A.toJSON()
     expect(json["_id"]).toEqual("Tag")
     expect(json["identifier"]).toEqual(undefined)
-    expect(typeof json["stack"]).toEqual("string")
   })
 
   it("Context.toJson()", () => {

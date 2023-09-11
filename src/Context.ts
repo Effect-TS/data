@@ -12,6 +12,7 @@ import type { Inspectable } from "@effect/data/Inspectable"
 import * as C from "@effect/data/internal/Context"
 import type { Option } from "@effect/data/Option"
 import type { Pipeable } from "@effect/data/Pipeable"
+import type { Traceable } from "@effect/data/Traceable"
 import type * as Unify from "@effect/data/Unify"
 
 const TagTypeId: unique symbol = C.TagTypeId
@@ -26,7 +27,7 @@ export type TagTypeId = typeof TagTypeId
  * @since 1.0.0
  * @category models
  */
-export interface Tag<Identifier, Service> extends Pipeable, Inspectable {
+export interface Tag<Identifier, Service> extends Pipeable, Inspectable, Traceable {
   readonly _tag: "Tag"
   readonly [TagTypeId]: {
     readonly _S: (_: Service) => Service
@@ -34,7 +35,6 @@ export interface Tag<Identifier, Service> extends Pipeable, Inspectable {
   }
   of(self: Service): Service
   context(self: Service): Context<Identifier>
-  readonly stack?: string | undefined
   readonly identifier?: unknown | undefined
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: TagUnify<this>
