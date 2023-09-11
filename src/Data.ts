@@ -170,9 +170,10 @@ export const tagged = <A extends Case & { _tag: string }>(
 export const traced = <A extends Traced<A> & { _tag: string }>(
   tag: A["_tag"]
 ): Traced.Constructor<A, "_tag"> => {
-  const proto = Object.assign(Object.create(protoTraced), {
+  const proto = {
+    ...protoTraced,
     [Traceable.symbol]: Traceable.capture()
-  })
+  }
   return (args) => {
     const value = args === undefined ? Object.create(proto) : Object.assign(Object.create(proto), args)
     value._tag = tag
