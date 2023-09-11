@@ -1,3 +1,5 @@
+import * as ReadonlyArray from "@effect/data/ReadonlyArray"
+
 /**
  * @since 1.0.0
  * @category symbols
@@ -9,7 +11,7 @@ export const symbol: unique symbol = Symbol.for("@effect/data/Traceable")
  * @category models
  */
 export interface Traceable {
-  readonly [symbol]: () => ReadonlyArray<string> | undefined
+  readonly [symbol]: () => ReadonlyArray.NonEmptyReadonlyArray<string> | undefined
 }
 
 /**
@@ -22,13 +24,17 @@ export const isTraceable = (u: unknown): u is Traceable => typeof u === "object"
  * @since 1.0.0
  * @category models
  */
-export const stack = (u: unknown): ReadonlyArray<string> | undefined => isTraceable(u) ? u[symbol]() : undefined
+export const stack = (u: unknown): ReadonlyArray.NonEmptyReadonlyArray<string> | undefined =>
+  isTraceable(u) ? u[symbol]() : undefined
 
 /**
  * @since 1.0.0
  * @category utils
  */
-export const capture: (skipFrames?: number, maxSize?: number) => () => ReadonlyArray<string> | undefined = (
+export const capture: (
+  skipFrames?: number,
+  maxSize?: number
+) => () => ReadonlyArray.NonEmptyReadonlyArray<string> | undefined = (
   skipFrames = 1,
   frames = 1
 ) => {
@@ -40,7 +46,7 @@ export const capture: (skipFrames?: number, maxSize?: number) => () => ReadonlyA
     return () => undefined
   }
   const lines = error.stack.split("\n").slice(2 + skipFrames)
-  if (!lines.length) {
+  if (!ReadonlyArray.isNonEmptyReadonlyArray(lines)) {
     return () => undefined
   }
   return () => lines
