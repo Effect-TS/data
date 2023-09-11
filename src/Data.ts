@@ -210,7 +210,7 @@ export const Class: new<A extends Record<string, any>>(
  * assert.deepStrictEqual(notFound.message, "Not Found")
  *
  * // $ExpectType HttpError
- * type Inferred = Traceable.Traceable.Infer<HttpError>
+ * type Inferred = Traceable.Traceable.Infer<typeof notFound>
  *
  * @since 1.0.0
  * @category constructors

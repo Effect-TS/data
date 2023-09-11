@@ -138,7 +138,7 @@ assert.deepStrictEqual(notFound.status, 404)
 assert.deepStrictEqual(notFound.message, 'Not Found')
 
 // $ExpectType HttpError
-type Inferred = Traceable.Traceable.Infer<HttpError>
+type Inferred = Traceable.Traceable.Infer<typeof notFound>
 ```
 
 Added in v1.0.0
