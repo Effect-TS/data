@@ -148,6 +148,9 @@ describe.concurrent("Data", () => {
     expect(Traceable.stack(a)?.[0]).toMatch(
       new RegExp(/test\/Data\.ts:\d+:\d+/)
     )
+    expect(Traceable.capturedAt(a)).toMatch(
+      new RegExp(/test\/Data\.ts:\d+:\d+/)
+    )
   })
 
   it("tagged - empty", () => {
