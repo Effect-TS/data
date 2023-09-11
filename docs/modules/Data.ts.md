@@ -18,6 +18,7 @@ Added in v1.0.0
     - [[Hash.symbol] (method)](#hashsymbol-method)
     - [[Equal.symbol] (method)](#equalsymbol-method)
   - [TaggedClass](#taggedclass)
+  - [TaggedError](#taggederror)
   - [array](#array)
   - [case](#case)
   - [struct](#struct)
@@ -101,6 +102,22 @@ export declare const TaggedClass: <Key extends string>(
 ) => new <A extends Record<string, any>>(
   args: Types.Equals<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
 ) => Data<A & { _tag: Key }>
+```
+
+Added in v1.0.0
+
+## TaggedError
+
+Provides a Tagged constructor for a Case Class, that also implements `Traceable`.
+
+**Signature**
+
+```ts
+export declare const TaggedError: <Key extends string>(
+  tag: Key
+) => new <A extends Record<string, any>>(
+  args: Types.Equals<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
+) => Readonly<A & { _tag: Key }> & Equal.Equal & Traceable.Traceable
 ```
 
 Added in v1.0.0

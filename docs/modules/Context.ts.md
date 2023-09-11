@@ -260,7 +260,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export interface Tag<Identifier, Service> extends Pipeable, Inspectable {
+export interface Tag<Identifier, Service> extends Pipeable, Inspectable, Traceable {
   readonly _tag: 'Tag'
   readonly [TagTypeId]: {
     readonly _S: (_: Service) => Service
@@ -268,7 +268,6 @@ export interface Tag<Identifier, Service> extends Pipeable, Inspectable {
   }
   of(self: Service): Service
   context(self: Service): Context<Identifier>
-  readonly stack?: string | undefined
   readonly identifier?: unknown | undefined
   [Unify.typeSymbol]?: unknown
   [Unify.unifySymbol]?: TagUnify<this>
