@@ -56,6 +56,13 @@ export const isTraceable = (u: unknown): u is Traceable => typeof u === "object"
 
 /**
  * @since 1.0.0
+ * @category refinements
+ */
+export const isTraceableWithType = (u: unknown): u is Traceable.WithType<unknown> =>
+  isTraceable(u) && WithTypeTypeId in u
+
+/**
+ * @since 1.0.0
  * @category models
  */
 export const stack = (u: unknown): ReadonlyArray.NonEmptyReadonlyArray<string> | undefined =>

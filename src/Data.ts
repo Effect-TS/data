@@ -194,6 +194,24 @@ export const Class: new<A extends Record<string, any>>(
 /**
  * Provides a Tagged constructor for a Case Class, that also implements `Traceable`.
  *
+ * @example
+ * import * as Data from "@effect/data/Data"
+ * import * as Traceable from "@effect/data/Traceable"
+ *
+ * class HttpError extends Data.TaggedError<HttpError>()("HttpError")<{
+ *   status: number;
+ *   message: string
+ * }> {}
+ *
+ * const notFound = new HttpError({ status: 404, message: "Not Found" })
+ * assert.ok(Traceable.stack(notFound) !== undefined)
+ * assert.deepStrictEqual(notFound._tag, "HttpError")
+ * assert.deepStrictEqual(notFound.status, 404)
+ * assert.deepStrictEqual(notFound.message, "Not Found")
+ *
+ * // $ExpectType HttpError
+ * type Inferred = Traceable.Traceable.Infer<HttpError>
+ *
  * @since 1.0.0
  * @category constructors
  */

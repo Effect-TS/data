@@ -113,11 +113,32 @@ Provides a Tagged constructor for a Case Class, that also implements `Traceable`
 **Signature**
 
 ```ts
-export declare const TaggedError: <Key extends string>(
+export declare const TaggedError: <T>() => <Key extends string>(
   tag: Key
 ) => new <A extends Record<string, any>>(
   args: Types.Equals<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
-) => Readonly<A & { _tag: Key }> & Equal.Equal & Traceable.Traceable
+) => Readonly<A & { _tag: Key }> & Equal.Equal & Traceable.Traceable.WithType<T>
+```
+
+**Example**
+
+```ts
+import * as Data from '@effect/data/Data'
+import * as Traceable from '@effect/data/Traceable'
+
+class HttpError extends Data.TaggedError<HttpError>()('HttpError')<{
+  status: number
+  message: string
+}> {}
+
+const notFound = new HttpError({ status: 404, message: 'Not Found' })
+assert.ok(Traceable.stack(notFound) !== undefined)
+assert.deepStrictEqual(notFound._tag, 'HttpError')
+assert.deepStrictEqual(notFound.status, 404)
+assert.deepStrictEqual(notFound.message, 'Not Found')
+
+// $ExpectType HttpError
+type Inferred = Traceable.Traceable.Infer<HttpError>
 ```
 
 Added in v1.0.0
