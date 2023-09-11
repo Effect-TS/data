@@ -3,6 +3,7 @@
  */
 import * as Equal from "@effect/data/Equal"
 import * as Hash from "@effect/data/Hash"
+import * as Traceable from "@effect/data/Traceable"
 import type * as Types from "@effect/data/Types"
 
 /**
@@ -188,6 +189,27 @@ export class Structural<A> {
 export const Class: new<A extends Record<string, any>>(
   args: Types.Equals<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
 ) => Data<A> = Structural as any
+
+/**
+ * Provides a Tagged constructor for a Case Class, that also implements `Traceable`.
+ *
+ * @since 1.0.0
+ * @category constructors
+ */
+export const TaggedError = <Key extends string>(
+  tag: Key
+): new<A extends Record<string, any>>(
+  args: Types.Equals<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
+) => Data<A & { _tag: Key }> & Traceable.Traceable => {
+  const stackFn = Traceable.capture()
+  class Base extends (Class as any) {
+    readonly _tag = tag
+    public [Traceable.symbol]() {
+      return stackFn()
+    }
+  }
+  return Base as any
+}
 
 /**
  * Create a tagged enum data type, which is a union of `Data` structs.

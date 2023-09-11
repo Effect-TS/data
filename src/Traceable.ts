@@ -16,14 +16,13 @@ export interface Traceable {
  * @since 1.0.0
  * @category refinements
  */
-export const isTraceable = (u: unknown): u is Traceable =>
-  ((typeof u === "object" && u !== null) || typeof u === "function") && symbol in u
+export const isTraceable = (u: unknown): u is Traceable => typeof u === "object" && u !== null && symbol in u
 
 /**
  * @since 1.0.0
  * @category models
  */
-export const stack = (u: Traceable): ReadonlyArray<string> | undefined => u[symbol]()
+export const stack = (u: unknown): ReadonlyArray<string> | undefined => isTraceable(u) ? u[symbol]() : undefined
 
 /**
  * @since 1.0.0

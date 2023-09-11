@@ -1,5 +1,6 @@
 import * as Data from "@effect/data/Data"
 import * as Equal from "@effect/data/Equal"
+import * as Traceable from "@effect/data/Traceable"
 
 describe.concurrent("Data", () => {
   it("struct", () => {
@@ -129,6 +130,24 @@ describe.concurrent("Data", () => {
     expect(c.name).toBe("Foo")
     expect(Equal.equals(a, b)).toBe(true)
     expect(Equal.equals(a, c)).toBe(false)
+  })
+
+  it("tagged error", () => {
+    class HttpFailure extends Data.TaggedError("HttpFailure")<{ message: string }> {}
+    const a = new HttpFailure({ message: "foo" })
+    const b = new HttpFailure({ message: "foo" })
+    const c = new HttpFailure({ message: "bar" })
+
+    expect(a._tag).toBe("HttpFailure")
+    expect(a.message).toBe("foo")
+    expect(b.message).toBe("foo")
+    expect(c.message).toBe("bar")
+    expect(Equal.equals(a, b)).toBe(true)
+    expect(Equal.equals(a, c)).toBe(false)
+    expect(Traceable.stack(a)?.length).toEqual(1)
+    expect(Traceable.stack(a)?.[0]).toMatch(
+      new RegExp(/test\/Data\.ts:\d+:\d+/)
+    )
   })
 
   it("tagged - empty", () => {
