@@ -2,6 +2,7 @@
  * @since 1.0.0
  */
 import * as Equal from "@effect/data/Equal"
+import { identity } from "@effect/data/Function"
 import * as Hash from "@effect/data/Hash"
 import * as Traceable from "@effect/data/Traceable"
 import type * as Types from "@effect/data/Types"
@@ -196,18 +197,21 @@ export const Class: new<A extends Record<string, any>>(
  * @since 1.0.0
  * @category constructors
  */
-export const TaggedError = <Key extends string>(
+export const TaggedError = <T>() =>
+<Key extends string>(
   tag: Key
 ): new<A extends Record<string, any>>(
   args: Types.Equals<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
-) => Data<A & { _tag: Key }> & Traceable.Traceable => {
-  const stackFn = Traceable.capture()
-  class Base extends (Class as any) {
-    readonly _tag = tag
-    public [Traceable.symbol]() {
-      return stackFn()
+) => Data<A & { _tag: Key }> & Traceable.Traceable.WithType<T> => {
+  function Base(this: any, args: any) {
+    this._tag = tag
+    if (args) {
+      Object.assign(this, args)
     }
   }
+  Base.prototype = Object.create(Class.prototype)
+  Base.prototype[Traceable.symbol] = Traceable.capture()
+  Base.prototype[Traceable.WithTypeTypeId] = identity
   return Base as any
 }
 

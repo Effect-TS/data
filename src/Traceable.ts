@@ -19,6 +19,37 @@ export interface Traceable {
 
 /**
  * @since 1.0.0
+ * @category symbols
+ */
+export const WithTypeTypeId: unique symbol = Symbol.for("@effect/data/Traceable/Traceable.WithType")
+
+/**
+ * @since 1.0.0
+ * @category symbols
+ */
+export type WithTypeTypeId = typeof WithTypeTypeId
+
+/**
+ * @since 1.0.0
+ * @category models
+ */
+export declare namespace Traceable {
+  /**
+   * @since 1.0.0
+   * @category models
+   */
+  export interface WithType<A> extends Traceable {
+    readonly [WithTypeTypeId]: (_: A) => A
+  }
+
+  /**
+   * @since 1.0.0
+   */
+  export type Infer<A extends WithType<any>> = Parameters<A[WithTypeTypeId]>[0]
+}
+
+/**
+ * @since 1.0.0
  * @category refinements
  */
 export const isTraceable = (u: unknown): u is Traceable => typeof u === "object" && u !== null && symbol in u

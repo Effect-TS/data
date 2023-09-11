@@ -133,7 +133,7 @@ describe.concurrent("Data", () => {
   })
 
   it("tagged error", () => {
-    class HttpFailure extends Data.TaggedError("HttpFailure")<{ message: string }> {}
+    class HttpFailure extends Data.TaggedError<HttpFailure>()("HttpFailure")<{ message: string }> {}
     const a = new HttpFailure({ message: "foo" })
     const b = new HttpFailure({ message: "foo" })
     const c = new HttpFailure({ message: "bar" })
