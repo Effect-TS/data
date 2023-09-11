@@ -96,6 +96,29 @@ describe.concurrent("Data", () => {
     expect(Equal.equals(a, c)).toBe(false)
   })
 
+  it("traced", () => {
+    interface Fail extends Data.Traced<Fail> {
+      readonly _tag: "Fail"
+      readonly name: string
+    }
+
+    const Fail = Data.traced<Fail>("Fail")
+
+    const a = Fail({ name: "Mike" })
+    const b = Fail({ name: "Mike" })
+    const c = Fail({ name: "Foo" })
+
+    expect(a._tag).toBe("Fail")
+    expect(a.name).toBe("Mike")
+    expect(b.name).toBe("Mike")
+    expect(c.name).toBe("Foo")
+    expect(Equal.equals(a, b)).toBe(true)
+    expect(Equal.equals(a, c)).toBe(false)
+    expect(Traceable.capturedAt(a)).toMatch(
+      new RegExp(/test\/Data\.ts:\d+:\d+/)
+    )
+  })
+
   it("case class", () => {
     class Person extends Data.Class<{ name: string }> {}
     const a = new Person({ name: "Mike" })
@@ -132,8 +155,8 @@ describe.concurrent("Data", () => {
     expect(Equal.equals(a, c)).toBe(false)
   })
 
-  it("tagged error", () => {
-    class HttpFailure extends Data.TaggedError<HttpFailure>()("HttpFailure")<{ message: string }> {}
+  it("error class", () => {
+    class HttpFailure extends Data.Error<HttpFailure>()("HttpFailure")<{ message: string }> {}
     const a = new HttpFailure({ message: "foo" })
     const b = new HttpFailure({ message: "foo" })
     const c = new HttpFailure({ message: "bar" })
@@ -144,10 +167,6 @@ describe.concurrent("Data", () => {
     expect(c.message).toBe("bar")
     expect(Equal.equals(a, b)).toBe(true)
     expect(Equal.equals(a, c)).toBe(false)
-    expect(Traceable.stack(a)?.length).toEqual(1)
-    expect(Traceable.stack(a)?.[0]).toMatch(
-      new RegExp(/test\/Data\.ts:\d+:\d+/)
-    )
     expect(Traceable.capturedAt(a)).toMatch(
       new RegExp(/test\/Data\.ts:\d+:\d+/)
     )

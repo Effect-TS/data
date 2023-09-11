@@ -38,6 +38,32 @@ export declare namespace Case {
   }
 }
 
+/**
+ * `Traced` represents a datatype that implements `Case` and `Traceable.WithType`.
+ *
+ * It is useful for creating error types that can be traced.
+ *
+ * @since 1.0.0
+ * @category models
+ */
+export interface Traced<A> extends Case, Traceable.Traceable.WithType<A> {}
+
+/**
+ * @since 1.0.0
+ */
+export declare namespace Traced {
+  /**
+   * @since 1.0.0
+   * @category models
+   */
+  export interface Constructor<A extends Traced<any>, T extends keyof A = never> {
+    (
+      args: Omit<A, T | keyof Traced<unknown>> extends Record<PropertyKey, never> ? void
+        : Omit<A, T | keyof Traced<unknown>>
+    ): A
+  }
+}
+
 const protoArr: Equal.Equal = Object.assign(Object.create(Array.prototype), {
   [Hash.symbol](this: Array<any>) {
     return Hash.array(this)
@@ -68,6 +94,11 @@ const protoStruct: Equal.Equal = {
     }
     return true
   }
+}
+
+const protoTraced: Omit<Traced<unknown>, keyof Traceable.Traceable> = {
+  ...protoStruct,
+  [Traceable.WithTypeTypeId]: identity
 }
 
 /**
@@ -128,6 +159,25 @@ export const tagged = <A extends Case & { _tag: string }>(
   const value = args === undefined ? Object.create(protoStruct) : struct(args)
   value._tag = tag
   return value
+}
+
+/**
+ * Provides a tagged constructor for the specified `Traced`.
+ *
+ * @since 1.0.0
+ * @category constructors
+ */
+export const traced = <A extends Traced<A> & { _tag: string }>(
+  tag: A["_tag"]
+): Traced.Constructor<A, "_tag"> => {
+  const proto = Object.assign(Object.create(protoTraced), {
+    [Traceable.symbol]: Traceable.capture()
+  })
+  return (args) => {
+    const value = args === undefined ? Object.create(proto) : Object.assign(Object.create(proto), args)
+    value._tag = tag
+    return value
+  }
 }
 
 /**
@@ -198,7 +248,7 @@ export const Class: new<A extends Record<string, any>>(
  * import * as Data from "@effect/data/Data"
  * import * as Traceable from "@effect/data/Traceable"
  *
- * class HttpError extends Data.TaggedError<HttpError>()("HttpError")<{
+ * class HttpError extends Data.Error<HttpError>()("HttpError")<{
  *   status: number;
  *   message: string
  * }> {}
@@ -215,7 +265,7 @@ export const Class: new<A extends Record<string, any>>(
  * @since 1.0.0
  * @category constructors
  */
-export const TaggedError = <T>() =>
+export const Error = <T>() =>
 <Key extends string>(
   tag: Key
 ): new<A extends Record<string, any>>(

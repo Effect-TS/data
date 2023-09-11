@@ -14,16 +14,17 @@ Added in v1.0.0
 
 - [constructors](#constructors)
   - [Class](#class)
+  - [Error](#error)
   - [Structural (class)](#structural-class)
     - [[Hash.symbol] (method)](#hashsymbol-method)
     - [[Equal.symbol] (method)](#equalsymbol-method)
   - [TaggedClass](#taggedclass)
-  - [TaggedError](#taggederror)
   - [array](#array)
   - [case](#case)
   - [struct](#struct)
   - [tagged](#tagged)
   - [taggedEnum](#taggedenum)
+  - [traced](#traced)
   - [tuple](#tuple)
   - [unsafeArray](#unsafearray)
   - [unsafeStruct](#unsafestruct)
@@ -31,6 +32,7 @@ Added in v1.0.0
   - [Case (interface)](#case-interface)
   - [Data (type alias)](#data-type-alias)
   - [TaggedEnum (type alias)](#taggedenum-type-alias)
+  - [Traced (interface)](#traced-interface)
 - [utils](#utils)
   - [Case (namespace)](#case-namespace)
     - [Constructor (interface)](#constructor-interface)
@@ -39,6 +41,8 @@ Added in v1.0.0
     - [Args (type alias)](#args-type-alias)
     - [Kind (type alias)](#kind-type-alias)
     - [Value (type alias)](#value-type-alias)
+  - [Traced (namespace)](#traced-namespace)
+    - [Constructor (interface)](#constructor-interface-1)
 
 ---
 
@@ -54,6 +58,43 @@ Provides a constructor for a Case Class.
 export declare const Class: new <A extends Record<string, any>>(
   args: Types.Equals<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
 ) => Data<A>
+```
+
+Added in v1.0.0
+
+## Error
+
+Provides a Tagged constructor for a Case Class, that also implements `Traceable`.
+
+**Signature**
+
+```ts
+export declare const Error: <T>() => <Key extends string>(
+  tag: Key
+) => new <A extends Record<string, any>>(
+  args: Types.Equals<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
+) => Readonly<A & { _tag: Key }> & Equal.Equal & Traceable.Traceable.WithType<T>
+```
+
+**Example**
+
+```ts
+import * as Data from '@effect/data/Data'
+import * as Traceable from '@effect/data/Traceable'
+
+class HttpError extends Data.Error<HttpError>()('HttpError')<{
+  status: number
+  message: string
+}> {}
+
+const notFound = new HttpError({ status: 404, message: 'Not Found' })
+assert.ok(Traceable.stack(notFound) !== undefined)
+assert.deepStrictEqual(notFound._tag, 'HttpError')
+assert.deepStrictEqual(notFound.status, 404)
+assert.deepStrictEqual(notFound.message, 'Not Found')
+
+// $ExpectType HttpError
+type Inferred = Traceable.Traceable.Infer<typeof notFound>
 ```
 
 Added in v1.0.0
@@ -102,43 +143,6 @@ export declare const TaggedClass: <Key extends string>(
 ) => new <A extends Record<string, any>>(
   args: Types.Equals<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
 ) => Data<A & { _tag: Key }>
-```
-
-Added in v1.0.0
-
-## TaggedError
-
-Provides a Tagged constructor for a Case Class, that also implements `Traceable`.
-
-**Signature**
-
-```ts
-export declare const TaggedError: <T>() => <Key extends string>(
-  tag: Key
-) => new <A extends Record<string, any>>(
-  args: Types.Equals<Omit<A, keyof Equal.Equal>, {}> extends true ? void : Omit<A, keyof Equal.Equal>
-) => Readonly<A & { _tag: Key }> & Equal.Equal & Traceable.Traceable.WithType<T>
-```
-
-**Example**
-
-```ts
-import * as Data from '@effect/data/Data'
-import * as Traceable from '@effect/data/Traceable'
-
-class HttpError extends Data.TaggedError<HttpError>()('HttpError')<{
-  status: number
-  message: string
-}> {}
-
-const notFound = new HttpError({ status: 404, message: 'Not Found' })
-assert.ok(Traceable.stack(notFound) !== undefined)
-assert.deepStrictEqual(notFound._tag, 'HttpError')
-assert.deepStrictEqual(notFound.status, 404)
-assert.deepStrictEqual(notFound.message, 'Not Found')
-
-// $ExpectType HttpError
-type Inferred = Traceable.Traceable.Infer<typeof notFound>
 ```
 
 Added in v1.0.0
@@ -256,6 +260,18 @@ const success = MyResult('Success')({ value: 1 })
 
 Added in v1.0.0
 
+## traced
+
+Provides a tagged constructor for the specified `Traced`.
+
+**Signature**
+
+```ts
+export declare const traced: <A extends Traced<A> & { _tag: string }>(tag: A['_tag']) => Traced.Constructor<A, '_tag'>
+```
+
+Added in v1.0.0
+
 ## tuple
 
 **Signature**
@@ -348,6 +364,20 @@ export type TaggedEnum<A extends Record<string, Record<string, any>>> = {
 
 Added in v1.0.0
 
+## Traced (interface)
+
+`Traced` represents a datatype that implements `Case` and `Traceable.WithType`.
+
+It is useful for creating error types that can be traced.
+
+**Signature**
+
+```ts
+export interface Traced<A> extends Case, Traceable.Traceable.WithType<A> {}
+```
+
+Added in v1.0.0
+
 # utils
 
 ## Case (namespace)
@@ -426,6 +456,26 @@ Added in v1.0.0
 
 ```ts
 export type Value<A extends Data<{ readonly _tag: string }>, K extends A['_tag']> = Extract<A, { readonly _tag: K }>
+```
+
+Added in v1.0.0
+
+## Traced (namespace)
+
+Added in v1.0.0
+
+### Constructor (interface)
+
+**Signature**
+
+```ts
+export interface Constructor<A extends Traced<any>, T extends keyof A = never> {
+  (
+    args: Omit<A, T | keyof Traced<unknown>> extends Record<PropertyKey, never>
+      ? void
+      : Omit<A, T | keyof Traced<unknown>>
+  ): A
+}
 ```
 
 Added in v1.0.0
