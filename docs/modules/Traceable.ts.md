@@ -12,12 +12,14 @@ Added in v1.0.0
 
 <h2 class="text-delta">Table of contents</h2>
 
+- [accessors](#accessors)
+  - [capturedAt](#capturedat)
+  - [stack](#stack)
 - [models](#models)
   - [Traceable (interface)](#traceable-interface)
   - [Traceable (namespace)](#traceable-namespace)
     - [WithType (interface)](#withtype-interface)
     - [Infer (type alias)](#infer-type-alias)
-  - [stack](#stack)
 - [refinements](#refinements)
   - [isTraceable](#istraceable)
   - [isTraceableWithType](#istraceablewithtype)
@@ -29,6 +31,28 @@ Added in v1.0.0
   - [capture](#capture)
 
 ---
+
+# accessors
+
+## capturedAt
+
+**Signature**
+
+```ts
+export declare const capturedAt: (u: unknown) => string | undefined
+```
+
+Added in v1.0.0
+
+## stack
+
+**Signature**
+
+```ts
+export declare const stack: (u: unknown) => ReadonlyArray.NonEmptyReadonlyArray<string> | undefined
+```
+
+Added in v1.0.0
 
 # models
 
@@ -66,16 +90,6 @@ Added in v1.0.0
 
 ```ts
 export type Infer<A extends WithType<any>> = Parameters<A[WithTypeTypeId]>[0]
-```
-
-Added in v1.0.0
-
-## stack
-
-**Signature**
-
-```ts
-export declare const stack: (u: unknown) => ReadonlyArray.NonEmptyReadonlyArray<string> | undefined
 ```
 
 Added in v1.0.0

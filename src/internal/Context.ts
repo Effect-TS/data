@@ -119,12 +119,9 @@ export const makeContext = <Services>(unsafeMap: Map<C.Tag<any, any>, any>): C.C
 
 const serviceNotFoundError = (tag: C.Tag<any, any>) => {
   const error = new Error(`Service not found${tag.identifier ? `: ${String(tag.identifier)}` : ""}`)
-  const stack = Traceable.stack(tag)
-  if (stack) {
-    const afterAt = stack[0].match(/at (.*)/)
-    if (afterAt) {
-      error.message = error.message + ` (defined at ${afterAt[1]})`
-    }
+  const location = Traceable.capturedAt(tag)
+  if (location) {
+    error.message = error.message + ` (defined at ${location})`
   }
   if (error.stack) {
     const lines = error.stack.split("\n")

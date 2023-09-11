@@ -63,10 +63,23 @@ export const isTraceableWithType = (u: unknown): u is Traceable.WithType<unknown
 
 /**
  * @since 1.0.0
- * @category models
+ * @category accessors
  */
 export const stack = (u: unknown): ReadonlyArray.NonEmptyReadonlyArray<string> | undefined =>
   isTraceable(u) ? u[symbol]() : undefined
+
+/**
+ * @since 1.0.0
+ * @category accessors
+ */
+export const capturedAt = (u: unknown): string | undefined => {
+  const lines = stack(u)
+  if (!lines) {
+    return undefined
+  }
+  const afterAt = lines[0].match(/at (.*)/)
+  return afterAt ? afterAt[1] : undefined
+}
 
 /**
  * @since 1.0.0
