@@ -1,6 +1,7 @@
 /**
  * @since 1.0.0
  */
+import { constUndefined } from "@effect/data/Function"
 import * as ReadonlyArray from "@effect/data/ReadonlyArray"
 
 /**
@@ -97,11 +98,11 @@ export const capture: (
   const error = new Error()
   Error.stackTraceLimit = limit
   if (!error.stack) {
-    return () => undefined
+    return constUndefined
   }
   const lines = error.stack.split("\n").slice(2 + skipFrames)
   if (!ReadonlyArray.isNonEmptyReadonlyArray(lines)) {
-    return () => undefined
+    return constUndefined
   }
   return () => lines
 }
