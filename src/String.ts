@@ -53,11 +53,20 @@ export const Order: order.Order<string> = order.string
 export const empty: "" = "" as const
 
 /**
+ * Concatenates two strings at the type level.
+ * 
+ * @since 1.0.0
+ */
+export type Concat<A extends string, B extends string> = `${A}${B}`
+
+/**
+ * Concatenates two strings at runtime.
+ * 
  * @since 1.0.0
  */
 export const concat: {
-  (that: string): (self: string) => string
-  (self: string, that: string): string
+  <B extends string>(that: B): <A extends string>(self: A) => Concat<A, B>
+  <A extends string, B extends string>(self: A, that: B): Concat<A, B>
 } = dual(2, (self: string, that: string): string => self + that)
 
 /**
@@ -69,7 +78,7 @@ export const concat: {
  *
  * @since 1.0.0
  */
-export const toUpperCase = (self: string): string => self.toUpperCase()
+export const toUpperCase = <S extends string>(self: S): Uppercase<S> => self.toUpperCase() as Uppercase<S>
 
 /**
  * @example
@@ -80,7 +89,37 @@ export const toUpperCase = (self: string): string => self.toUpperCase()
  *
  * @since 1.0.0
  */
-export const toLowerCase = (self: string): string => self.toLowerCase()
+export const toLowerCase = <T extends string>(self: T): Lowercase<T> => self.toLowerCase() as Lowercase<T>
+
+/**
+ * @example
+ * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * assert.deepStrictEqual(pipe('abc', S.capitalize), 'A')
+ *
+ * @since 1.0.0
+ */
+export const capitalize = <T extends string>(self: T): Capitalize<T> => {
+  if (self.length === 0) return self as Capitalize<T>
+
+  return (toUpperCase(self[0]) + self.slice(1)) as Capitalize<T>
+}
+
+/**
+ * @example
+ * import * as S from '@effect/data/String'
+ * import { pipe } from '@effect/data/Function'
+ *
+ * assert.deepStrictEqual(pipe('ABC', S.uncapitalize), 'aBC')
+ *
+ * @since 1.0.0
+ */
+export const uncapitalize = <T extends string>(self: T): Uncapitalize<T> => {
+  if (self.length === 0) return self as Uncapitalize<T>
+
+  return (toLowerCase(self[0]) + self.slice(1)) as Uncapitalize<T>
+}
 
 /**
  * @example
@@ -95,6 +134,11 @@ export const replace = (searchValue: string | RegExp, replaceValue: string) => (
   self.replace(searchValue, replaceValue)
 
 /**
+ * @since 1.0.0
+ */
+export type Trim<A extends string> = TrimEnd<TrimStart<A>>
+
+/**
  * @example
  * import * as S from '@effect/data/String'
  *
@@ -102,7 +146,20 @@ export const replace = (searchValue: string | RegExp, replaceValue: string) => (
  *
  * @since 1.0.0
  */
-export const trim = (self: string): string => self.trim()
+export const trim = <A extends string>(self: A): Trim<A> => self.trim() as Trim<A>
+
+/**
+ * @since 1.0.0
+ */
+export type TrimStart<A extends string> = A extends ` ${infer B}`
+  ? TrimStart<B>
+  : A extends `\n${infer B}`
+  ? TrimStart<B>
+  : A extends `\t${infer B}`
+  ? TrimStart<B>
+  : A extends `\r${infer B}`
+  ? TrimStart<B>
+  : A
 
 /**
  * @example
@@ -112,7 +169,20 @@ export const trim = (self: string): string => self.trim()
  *
  * @since 1.0.0
  */
-export const trimStart = (self: string): string => self.trimStart()
+export const trimStart = <A extends string>(self: A): TrimStart<A> => self.trimStart() as TrimStart<A>
+
+/**
+ * @since 1.0.0
+ */
+export type TrimEnd<A extends string> = A extends `${infer B} `
+  ? TrimEnd<B>
+  : A extends `${infer B}\n`
+  ? TrimEnd<B>
+  : A extends `${infer B}\t`
+  ? TrimEnd<B>
+  : A extends `${infer B}\r`
+  ? TrimEnd<B>
+  : A
 
 /**
  * @example
@@ -122,7 +192,7 @@ export const trimStart = (self: string): string => self.trimStart()
  *
  * @since 1.0.0
  */
-export const trimEnd = (self: string): string => self.trimEnd()
+export const trimEnd = <A extends string>(self: A): TrimEnd<A> => self.trimEnd() as TrimEnd<A>
 
 /**
  * @example
