@@ -22,7 +22,12 @@ Added in v1.0.0
   - [Equivalence](#equivalence)
   - [Order](#order)
 - [utils](#utils)
+  - [Concat (type alias)](#concat-type-alias)
+  - [Trim (type alias)](#trim-type-alias)
+  - [TrimEnd (type alias)](#trimend-type-alias)
+  - [TrimStart (type alias)](#trimstart-type-alias)
   - [at](#at)
+  - [capitalize](#capitalize)
   - [charAt](#charat)
   - [charCodeAt](#charcodeat)
   - [codePointAt](#codepointat)
@@ -61,6 +66,7 @@ Added in v1.0.0
   - [trim](#trim)
   - [trimEnd](#trimend)
   - [trimStart](#trimstart)
+  - [uncapitalize](#uncapitalize)
 
 ---
 
@@ -111,6 +117,64 @@ Added in v1.0.0
 
 # utils
 
+## Concat (type alias)
+
+Concatenates two strings at the type level.
+
+**Signature**
+
+```ts
+export type Concat<A extends string, B extends string> = `${A}${B}`
+```
+
+Added in v1.0.0
+
+## Trim (type alias)
+
+**Signature**
+
+```ts
+export type Trim<A extends string> = TrimEnd<TrimStart<A>>
+```
+
+Added in v1.0.0
+
+## TrimEnd (type alias)
+
+**Signature**
+
+```ts
+export type TrimEnd<A extends string> = A extends `${infer B} `
+  ? TrimEnd<B>
+  : A extends `${infer B}\n`
+  ? TrimEnd<B>
+  : A extends `${infer B}\t`
+  ? TrimEnd<B>
+  : A extends `${infer B}\r`
+  ? TrimEnd<B>
+  : A
+```
+
+Added in v1.0.0
+
+## TrimStart (type alias)
+
+**Signature**
+
+```ts
+export type TrimStart<A extends string> = A extends ` ${infer B}`
+  ? TrimStart<B>
+  : A extends `\n${infer B}`
+  ? TrimStart<B>
+  : A extends `\t${infer B}`
+  ? TrimStart<B>
+  : A extends `\r${infer B}`
+  ? TrimStart<B>
+  : A
+```
+
+Added in v1.0.0
+
 ## at
 
 **Signature**
@@ -131,6 +195,25 @@ import { pipe } from '@effect/data/Function'
 
 assert.deepStrictEqual(pipe('abc', S.at(1)), Option.some('b'))
 assert.deepStrictEqual(pipe('abc', S.at(4)), Option.none())
+```
+
+Added in v1.0.0
+
+## capitalize
+
+**Signature**
+
+```ts
+export declare const capitalize: <T extends string>(self: T) => Capitalize<T>
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+import { pipe } from '@effect/data/Function'
+
+assert.deepStrictEqual(pipe('abc', S.capitalize), 'Abc')
 ```
 
 Added in v1.0.0
@@ -208,10 +291,15 @@ Added in v1.0.0
 
 ## concat
 
+Concatenates two strings at runtime.
+
 **Signature**
 
 ```ts
-export declare const concat: { (that: string): (self: string) => string; (self: string, that: string): string }
+export declare const concat: {
+  <B extends string>(that: B): <A extends string>(self: A) => `${A}${B}`
+  <A extends string, B extends string>(self: A, that: B): `${A}${B}`
+}
 ```
 
 Added in v1.0.0
@@ -755,7 +843,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const toLowerCase: (self: string) => string
+export declare const toLowerCase: <T extends string>(self: T) => Lowercase<T>
 ```
 
 **Example**
@@ -774,7 +862,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const toUpperCase: (self: string) => string
+export declare const toUpperCase: <S extends string>(self: S) => Uppercase<S>
 ```
 
 **Example**
@@ -793,7 +881,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const trim: (self: string) => string
+export declare const trim: <A extends string>(self: A) => TrimEnd<TrimStart<A>>
 ```
 
 **Example**
@@ -811,7 +899,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const trimEnd: (self: string) => string
+export declare const trimEnd: <A extends string>(self: A) => TrimEnd<A>
 ```
 
 **Example**
@@ -829,7 +917,7 @@ Added in v1.0.0
 **Signature**
 
 ```ts
-export declare const trimStart: (self: string) => string
+export declare const trimStart: <A extends string>(self: A) => TrimStart<A>
 ```
 
 **Example**
@@ -838,6 +926,25 @@ export declare const trimStart: (self: string) => string
 import * as S from '@effect/data/String'
 
 assert.deepStrictEqual(S.trimStart(' a '), 'a ')
+```
+
+Added in v1.0.0
+
+## uncapitalize
+
+**Signature**
+
+```ts
+export declare const uncapitalize: <T extends string>(self: T) => Uncapitalize<T>
+```
+
+**Example**
+
+```ts
+import * as S from '@effect/data/String'
+import { pipe } from '@effect/data/Function'
+
+assert.deepStrictEqual(pipe('ABC', S.uncapitalize), 'aBC')
 ```
 
 Added in v1.0.0
