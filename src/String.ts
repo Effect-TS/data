@@ -54,14 +54,14 @@ export const empty: "" = "" as const
 
 /**
  * Concatenates two strings at the type level.
- * 
+ *
  * @since 1.0.0
  */
 export type Concat<A extends string, B extends string> = `${A}${B}`
 
 /**
  * Concatenates two strings at runtime.
- * 
+ *
  * @since 1.0.0
  */
 export const concat: {
@@ -151,14 +151,10 @@ export const trim = <A extends string>(self: A): Trim<A> => self.trim() as Trim<
 /**
  * @since 1.0.0
  */
-export type TrimStart<A extends string> = A extends ` ${infer B}`
-  ? TrimStart<B>
-  : A extends `\n${infer B}`
-  ? TrimStart<B>
-  : A extends `\t${infer B}`
-  ? TrimStart<B>
-  : A extends `\r${infer B}`
-  ? TrimStart<B>
+export type TrimStart<A extends string> = A extends ` ${infer B}` ? TrimStart<B>
+  : A extends `\n${infer B}` ? TrimStart<B>
+  : A extends `\t${infer B}` ? TrimStart<B>
+  : A extends `\r${infer B}` ? TrimStart<B>
   : A
 
 /**
@@ -174,14 +170,10 @@ export const trimStart = <A extends string>(self: A): TrimStart<A> => self.trimS
 /**
  * @since 1.0.0
  */
-export type TrimEnd<A extends string> = A extends `${infer B} `
-  ? TrimEnd<B>
-  : A extends `${infer B}\n`
-  ? TrimEnd<B>
-  : A extends `${infer B}\t`
-  ? TrimEnd<B>
-  : A extends `${infer B}\r`
-  ? TrimEnd<B>
+export type TrimEnd<A extends string> = A extends `${infer B} ` ? TrimEnd<B>
+  : A extends `${infer B}\n` ? TrimEnd<B>
+  : A extends `${infer B}\t` ? TrimEnd<B>
+  : A extends `${infer B}\r` ? TrimEnd<B>
   : A
 
 /**

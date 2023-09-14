@@ -64,7 +64,7 @@ describe.concurrent("String", () => {
     expect(S.capitalize("abc")).toBe("Abc")
   })
 
-  it('uncapitalize', () => { 
+  it("uncapitalize", () => {
     expect(S.uncapitalize("")).toBe("")
     expect(S.uncapitalize("Abc")).toBe("abc")
   })
