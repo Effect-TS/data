@@ -1,5 +1,47 @@
 import * as S from '@effect/data/String'
 
+// -----------------------------------------------------------------------------
+// apis
+// -----------------------------------------------------------------------------
+
+// $ExpectType "FooBar"
+S.concat(S.capitalize("foo"), S.capitalize("bar"))
+
+// $ExpectType "FOO"
+S.toUpperCase("foo")
+
+// $ExpectType "bar"
+S.toLowerCase("BAR")
+
+// $ExpectType "Foo"
+S.capitalize("foo")
+
+// $ExpectType "bAR"
+S.uncapitalize("BAR")
+
+// $ExpectType "foo"
+S.trim("   foo   ")
+
+// $ExpectType "foo"
+S.trim(`
+  \t     foo
+  \r\n
+`)
+
+// $ExpectType " foo"
+S.trimEnd(` foo
+  \r\n
+`)
+
+// $ExpectType "foo "
+S.trimStart(`
+   \r\n\t   foo `)
+
+
+// -----------------------------------------------------------------------------
+// types
+// -----------------------------------------------------------------------------
+
 type FooCapitalCase = "Foo"
 type BarCapitalCase = "Bar"
 type FooLowerCase = "foo"
@@ -16,7 +58,7 @@ export type BarToLowerCase = Lowercase<BarCapitalCase>
 // $ExpectType "Foo"
 export type FooCapitalized = Capitalize<FooLowerCase>
 
-// $ExpectType "Foo"
+// $ExpectType "bar"
 export type BarUncapitalized = Uncapitalize<BarCapitalCase>
 
 type LeadingSpaces = "   foo"
