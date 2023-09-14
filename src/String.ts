@@ -96,7 +96,7 @@ export const toLowerCase = <T extends string>(self: T): Lowercase<T> => self.toL
  * import * as S from '@effect/data/String'
  * import { pipe } from '@effect/data/Function'
  *
- * assert.deepStrictEqual(pipe('abc', S.capitalize), 'A')
+ * assert.deepStrictEqual(pipe('abc', S.capitalize), 'Abc')
  *
  * @since 1.0.0
  */
