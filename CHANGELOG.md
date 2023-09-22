@@ -1,5 +1,13 @@
 # @effect/data
 
+## 0.18.6
+
+### Patch Changes
+
+- [#501](https://github.com/Effect-TS/data/pull/501) [`c186123`](https://github.com/Effect-TS/data/commit/c1861230bf9137119846cb366d430c9a750dc4ff) Thanks [@gcanti](https://github.com/gcanti)! - Either: add orElse, closes #500
+
+- [#498](https://github.com/Effect-TS/data/pull/498) [`93b619b`](https://github.com/Effect-TS/data/commit/93b619b8c3e3989550a022bd5060814fc5d43133) Thanks [@TylorS](https://github.com/TylorS)! - Add type-level helpers to String for working with string literal types
+
 ## 0.18.5
 
 ### Patch Changes
