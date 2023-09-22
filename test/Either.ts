@@ -251,4 +251,11 @@ describe.concurrent("Either", () => {
     Util.deepStrictEqual(Either.all({ a: Either.right(1), b: Either.right(true) }), Either.right({ a: 1, b: true }))
     Util.deepStrictEqual(Either.all({ a: Either.right(1), b: Either.left("e") }), Either.left("e"))
   })
+
+  it("orElse", () => {
+    Util.deepStrictEqual(pipe(Either.right(1), Either.orElse(() => Either.right(2))), Either.right(1))
+    Util.deepStrictEqual(pipe(Either.right(1), Either.orElse(() => Either.left("b"))), Either.right(1))
+    Util.deepStrictEqual(pipe(Either.left("a"), Either.orElse(() => Either.right(2))), Either.right(2))
+    Util.deepStrictEqual(pipe(Either.left("a"), Either.orElse(() => Either.left("b"))), Either.left("b"))
+  })
 })

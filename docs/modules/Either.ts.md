@@ -23,6 +23,8 @@ Added in v1.0.0
   - [try](#try)
 - [equivalence](#equivalence)
   - [getEquivalence](#getequivalence)
+- [error handling](#error-handling)
+  - [orElse](#orelse)
 - [generators](#generators)
   - [gen](#gen)
 - [getters](#getters)
@@ -225,6 +227,23 @@ export declare const getEquivalence: <E, A>(
   EE: Equivalence.Equivalence<E>,
   EA: Equivalence.Equivalence<A>
 ) => Equivalence.Equivalence<Either<E, A>>
+```
+
+Added in v1.0.0
+
+# error handling
+
+## orElse
+
+Returns `self` if it is a `Right` or `that` otherwise.
+
+**Signature**
+
+```ts
+export declare const orElse: {
+  <E1, E2, B>(that: (e1: E1) => Either<E2, B>): <A>(self: Either<E1, A>) => Either<E2, B | A>
+  <E1, A, E2, B>(self: Either<E1, A>, that: (e1: E1) => Either<E2, B>): Either<E2, A | B>
+}
 ```
 
 Added in v1.0.0
