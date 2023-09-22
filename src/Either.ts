@@ -471,6 +471,24 @@ export const getOrThrow: <E, A>(self: Either<E, A>) => A = getOrThrowWith(() =>
 )
 
 /**
+ * Returns `self` if it is a `Right` or `that` otherwise.
+ *
+ * @param self - The input `Either` value to check and potentially return.
+ * @param that - A function that takes the error value from `self` (if it's a `Left`) and returns a new `Either` value.
+ *
+ * @category error handling
+ * @since 1.0.0
+ */
+export const orElse: {
+  <E1, E2, B>(that: (e1: E1) => Either<E2, B>): <A>(self: Either<E1, A>) => Either<E2, A | B>
+  <E1, A, E2, B>(self: Either<E1, A>, that: (e1: E1) => Either<E2, B>): Either<E2, A | B>
+} = dual(
+  2,
+  <E1, A, E2, B>(self: Either<E1, A>, that: (e1: E1) => Either<E2, B>): Either<E2, A | B> =>
+    isLeft(self) ? that(self.left) : right(self.right)
+)
+
+/**
  * @category combining
  * @since 1.0.0
  */
