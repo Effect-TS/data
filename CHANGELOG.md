@@ -1,5 +1,11 @@
 # @effect/data
 
+## 0.18.7
+
+### Patch Changes
+
+- [#504](https://github.com/Effect-TS/data/pull/504) [`0ff7653`](https://github.com/Effect-TS/data/commit/0ff7653c021eb2b7db6f6767da83a074fdc2087b) Thanks [@gcanti](https://github.com/gcanti)! - Duration: add toSeconds, closes #503
+
 ## 0.18.6
 
 ### Patch Changes
