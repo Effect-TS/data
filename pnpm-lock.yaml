@@ -36,8 +36,8 @@ devDependencies:
     specifier: ^0.1.2
     version: 0.1.2
   '@effect/language-service':
-    specifier: ^0.0.19
-    version: 0.0.19
+    specifier: ^0.0.21
+    version: 0.0.21
   '@types/chai':
     specifier: ^4.3.5
     version: 4.3.5
@@ -731,11 +731,8 @@ packages:
       diff: 5.1.0
     dev: true
 
-  /@effect/language-service@0.0.19:
-    resolution: {integrity: sha512-sKNVo031dkwLfe1jHZzdTiF1UXgLq1lAYd2JG7q416dlmMoxRcMXrZWyw6a/SxIDM0hyIJAEmrz5iUkQPcPdBQ==}
-    dependencies:
-      '@fp-ts/core': 0.0.11
-      '@fp-ts/data': 0.0.41
+  /@effect/language-service@0.0.21:
+    resolution: {integrity: sha512-e8vfKbjnbYiyneBincEFS0tzXluopGK77OkVFbPRtUbNDS5tJfb+jiwOQEiqASDsadcZmd+9J9+Q6v/z7GuN2g==}
     dev: true
 
   /@esbuild/android-arm64@0.18.20:
@@ -971,16 +968,6 @@ packages:
   /@eslint/js@8.48.0:
     resolution: {integrity: sha512-ZSjtmelB7IJfWD2Fvb7+Z+ChTIKWq6kjda95fLcQKNS5aheVHn4IkfgRQE3sIIzTcSLwLcLZUD9UBt+V7+h+Pw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    dev: true
-
-  /@fp-ts/core@0.0.11:
-    resolution: {integrity: sha512-BCAJBYzghwoJpcUOARJ1tui50HoYJFlV2pJlVMlsEkDFhD8MTtq8xQVpZCRF66RmtkxtGBYINCQ+5H1lRaL35Q==}
-    dev: true
-
-  /@fp-ts/data@0.0.41:
-    resolution: {integrity: sha512-0S93kOQ91D7wp60q/PSVWvMsJjSWJutjt4qX/BvVNV7+fymuC2hTfW2HlE2OcMK11xCNiI6Rq2AkvyzoMhOlpg==}
-    dependencies:
-      '@fp-ts/core': 0.0.11
     dev: true
 
   /@humanwhocodes/config-array@0.11.11:
